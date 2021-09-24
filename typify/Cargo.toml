@@ -1,0 +1,12 @@
+[package]
+name = "typify"
+version = "0.0.1"
+authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
+edition = "2018"
+license = "Apache-2.0"
+description = "JSON schema to rust type code generator"
+
+[dependencies]
+typify-macro = { path = "../typify-macro" }
+typify-impl = { path = "../typify-impl" }
+rustfmt-wrapper = { path = "../rustfmt-wrapper" }

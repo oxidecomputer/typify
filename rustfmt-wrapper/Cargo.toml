@@ -1,0 +1,11 @@
+[package]
+name = "rustfmt-wrapper"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+toolchain_find = "0.2.0"
+thiserror = "1.0.25"
+
+[dev-dependencies]
+quote = "1.0.9"

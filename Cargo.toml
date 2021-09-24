@@ -1,0 +1,15 @@
+[workspace]
+members = [
+	"example-macro",
+	"typify",
+	"typify-macro",
+	"typify-impl",
+	"rustfmt-wrapper"
+]
+
+default-members = [
+	"typify",
+	"typify-macro",
+	"typify-impl",
+	"rustfmt-wrapper"
+]
