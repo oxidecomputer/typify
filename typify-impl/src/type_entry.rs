@@ -86,7 +86,7 @@ impl TypeEntry {
         }
     }
 
-    pub(crate) fn type_ident(&self, type_space: &TypeSpace) -> TokenStream {
+    pub fn type_ident(&self, type_space: &TypeSpace) -> TokenStream {
         match &self.details {
             TypeDetails::Option(id) => {
                 let inner_ty = type_space.id_to_entry.get(id).unwrap();

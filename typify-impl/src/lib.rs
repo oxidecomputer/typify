@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 
 use convert_case::Case;
+use proc_macro2::TokenStream;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
@@ -126,6 +127,9 @@ pub(crate) enum TypeName {
 // 2. one for types that we create by necessity; these may not have great
 // names. They're types that are embedded within other types and that Rust
 // requires us to define as their own type.
+// 3. allow for formatting configuration such as the derive macros that are
+// included, and the destination for types e.g. into their own mod with a given
+// name.
 
 #[derive(Debug)]
 pub struct TypeSpace {
@@ -169,7 +173,6 @@ impl TypeSpace {
         self.next_id += self.definitions.len() as u64;
 
         for (index, (ref_name, schema)) in self.definitions.iter().enumerate() {
-            println!("inserting {}", ref_name);
             self.ref_to_id
                 .insert(ref_name.clone(), TypeId(base_id + index as u64));
         }
@@ -199,7 +202,7 @@ impl TypeSpace {
         self.id_to_entry.values()
     }
 
-    pub fn convert_schema<'a>(
+    pub(crate) fn convert_schema<'a>(
         &mut self,
         type_name: Option<&str>,
         schema: &'a Schema,
@@ -560,12 +563,12 @@ impl TypeSpace {
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
-            Some("int32") => TypeEntry {
+            Some("int32" | "int") => TypeEntry {
                 name: Some("i32".to_string()),
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
-            Some("uint32") => TypeEntry {
+            Some("uint32" | "uint") => TypeEntry {
                 name: Some("u32".to_string()),
                 description: None,
                 details: TypeDetails::BuiltIn,
@@ -756,7 +759,7 @@ impl TypeSpace {
         id
     }
 
-    pub(crate) fn id_for_type<'a>(&mut self, ty: TypeEntry) -> TypeId {
+    pub(crate) fn id_for_type(&mut self, ty: TypeEntry) -> TypeId {
         if let TypeDetails::Reference(type_id) = ty.details {
             type_id
         } else {
@@ -776,7 +779,16 @@ impl TypeSpace {
         Ok((type_id, meta))
     }
 
-    pub(crate) fn id_for_option(&mut self, id: TypeId) -> TypeId {
+    pub fn add_schema(&mut self, schema: &Schema) -> Result<TypeId> {
+        self.id_for_schema(None, schema).map(|(id, _)| id)
+    }
+
+    pub fn render_type_name(&mut self, id: &TypeId) -> TokenStream {
+        let type_entry = self.id_to_entry.get(&id).unwrap();
+        type_entry.type_ident(self)
+    }
+
+    pub fn id_for_option(&mut self, id: &TypeId) -> TypeId {
         if let Some(id) = self.id_to_option_id.get(&id) {
             id.clone()
         } else {
@@ -786,7 +798,7 @@ impl TypeSpace {
                 details: TypeDetails::Option(id.clone()),
             };
             let type_id = self.assign();
-            self.id_to_option_id.insert(id, type_id.clone());
+            self.id_to_option_id.insert(id.clone(), type_id.clone());
             self.id_to_entry.insert(type_id.clone(), ty);
 
             type_id
@@ -881,7 +893,7 @@ impl TypeSpace {
 
                 let (mut type_id, _) = self.id_for_schema(type_name.as_deref(), schema)?;
                 if optional {
-                    type_id = self.id_for_option(type_id);
+                    type_id = self.id_for_option(&type_id);
                 }
 
                 // TODO we need a reasonable name that could be derived

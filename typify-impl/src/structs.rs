@@ -35,7 +35,7 @@ pub(crate) fn struct_property(
 ) -> Result<StructProperty> {
     let (mut type_id, metadata) = type_space.id_for_schema(None, schema)?;
     if !validation.required.contains(prop_name) {
-        type_id = type_space.id_for_option(type_id);
+        type_id = type_space.id_for_option(&type_id);
     }
 
     let name = prop_name.to_case(Case::Snake);
@@ -106,18 +106,5 @@ mod tests {
     #[test]
     fn test_less_simple_struct() {
         validate_output::<LessSimpleStruct>();
-    }
-
-    #[allow(dead_code)]
-    #[derive(Serialize, JsonSchema, Schema)]
-    struct FlattenStruct {
-        #[serde(flatten)]
-        a_to_e: SimpleStruct,
-        foxtrot: String,
-    }
-
-    #[test]
-    fn test_flatten_struct() {
-        validate_output::<FlattenStruct>();
     }
 }
