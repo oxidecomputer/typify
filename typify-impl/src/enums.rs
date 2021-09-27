@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
 use convert_case::{Case, Casing};
-use proc_macro2::TokenStream;
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -566,7 +566,7 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
         VariantDetails::Simple => quote! {
             #doc
             #rename
-            #name,
+            pub #name,
         },
 
         VariantDetails::Tuple(tuple) => {
@@ -574,30 +574,71 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
                 .iter()
                 .map(|type_id| {
                     let item_type = type_space.id_to_entry.get(type_id).unwrap();
-                    let type_name = item_type.type_ident(type_space);
+                    let type_name = item_type.type_ident(type_space, false);
                     quote! { #type_name }
                 })
                 .collect::<Vec<_>>();
             quote! {
                 #doc
                 #rename
-                #name(#(#types),*),
+                pub #name(#(#types),*),
             }
         }
 
         VariantDetails::Struct(props) => {
             let properties = props
                 .iter()
-                .map(|prop| output_struct_property(prop, type_space))
+                .map(|prop| output_struct_property(prop, type_space, false))
                 .collect::<Vec<_>>();
             quote! {
                 #doc
                 #rename
-                #name {
+                pub #name {
                     #(#properties)*
                 },
             }
         }
+    }
+}
+
+pub(crate) fn enum_impl(type_name: &Ident, variants: &Vec<Variant>) -> TokenStream {
+    let maybe_simple_variants = variants
+        .iter()
+        .map(|variant| {
+            if let VariantDetails::Simple = variant.details {
+                Some(variant)
+            } else {
+                None
+            }
+        })
+        .collect::<Option<Vec<_>>>();
+
+    match maybe_simple_variants {
+        Some(simple_variants) => {
+            let match_variants = simple_variants.iter().map(|variant| {
+                let variant_name = format_ident!("{}", variant.name);
+                let variant_str = match &variant.rename {
+                    Some(s) => s,
+                    None => &variant.name,
+                };
+                quote! {
+                    #type_name::#variant_name => #variant_str.to_string()
+                }
+            });
+
+            quote! {
+                impl ToString for #type_name {
+                    fn to_string(&self) -> String {
+                        match self {
+                            #(#match_variants),*
+                        }
+                    }
+                }
+            }
+        }
+
+        // Not all of the variants were simple
+        None => quote! {},
     }
 }
 

@@ -165,8 +165,6 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 | (Some(SingleOrVec::Vec(vec)), Some(SingleOrVec::Single(single))) => {
                     !vec.contains(single)
                 }
-
-                (aa, bb) => todo!("{:#?} {:#?}", aa, bb),
             }
         }
     }

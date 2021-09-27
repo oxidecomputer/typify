@@ -57,6 +57,9 @@ pub(crate) enum TypeDetails {
     Tuple(Vec<TypeId>),
     BuiltIn,
 
+    // While these types won't very make their way out to the user, we need
+    // reference types in particular to represent simple type aliases between
+    // types named as reference targets.
     Reference(TypeId),
 }
 
@@ -106,21 +109,6 @@ pub(crate) enum StructPropertySerde {
     Flatten,
 }
 
-#[derive(Debug, PartialEq)]
-pub(crate) enum TypeName {
-    /// We don't have a type name hint so this type must not result in a type
-    /// that requires a name.
-    None,
-    /// The type must have a name and should be referred to by this name. This
-    /// will be the case for types used by reference into the global type
-    /// dictionary.
-    Required(String),
-    /// The type is not required to have a name, but can use one if necessary.
-    /// Built-in types such as Vec, String, or u32 will ignore this whereas
-    /// embedded structs or enums may use it.
-    Suggestion(String),
-}
-
 // TODO we need two String -> Type maps:
 // 1. the one for references. these will almost certainly need to be used by
 // name
@@ -135,12 +123,21 @@ pub(crate) enum TypeName {
 pub struct TypeSpace {
     next_id: u64,
 
+    // TODO we need this in order to inspect the collection of reference types
+    // e.g. to do `all_mutually_exclusive`. In the future, we could obviate the
+    // need this by keeping a single Map of referenced types whose value was an
+    // enum of a "raw" or a "converted" schema.
     definitions: BTreeMap<String, Schema>,
 
-    // TODO
+    // TODO needs an API
     pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
     ref_to_id: BTreeMap<String, TypeId>,
     id_to_option_id: BTreeMap<TypeId, TypeId>,
+
+    uses_chrono: bool,
+    uses_uuid: bool,
+    uses_serde_json: bool,
+    pub(crate) type_mod: Option<String>,
 }
 
 impl Default for TypeSpace {
@@ -151,51 +148,101 @@ impl Default for TypeSpace {
             id_to_entry: BTreeMap::new(),
             ref_to_id: BTreeMap::new(),
             id_to_option_id: BTreeMap::new(),
+            uses_chrono: false,
+            uses_uuid: false,
+            uses_serde_json: false,
+            type_mod: None,
         }
     }
 }
 
 impl TypeSpace {
-    pub fn new(definitions: &BTreeMap<String, Schema>) -> Result<Self> {
-        let mut ts = Self {
-            next_id: 1,
-            definitions: definitions.clone(),
-            id_to_entry: BTreeMap::new(),
-            ref_to_id: BTreeMap::new(),
-            id_to_option_id: BTreeMap::new(),
-        };
-        ts.refs()?;
-        Ok(ts)
-    }
+    // Working on a public interface
 
-    fn refs(&mut self) -> Result<()> {
+    /// Add a collection of types that will be used as references. Regardless
+    /// of how these types are defined--*de novo* or built-in--these types will
+    /// appear in the final output in some form. This method may be called
+    /// multiple times, but collections of references must be self-contained;
+    /// in other words, a type in one invocation may not refer to a type in
+    /// another invocation.
+    // TODO on an error the TypeSpace is in a weird state; we, perhaps, create
+    // a child TypeSpace and then merge it in once all conversions hae
+    // succeeded.
+    pub fn add_ref_types<I, S>(&mut self, type_defs: I) -> Result<()>
+    where
+        I: IntoIterator<Item = (S, Schema)>,
+        S: AsRef<str>,
+    {
+        // Gather up all types to make things a little more convenient.
+        let definitions = type_defs
+            .into_iter()
+            .map(|(name, schema)| (name.as_ref().to_string(), schema))
+            .collect::<Vec<(String, Schema)>>();
+
+        // Assign IDs to reference types before actually converting them. We'll
+        // need these in the case of forward (or circular) references.
         let base_id = self.next_id;
-        self.next_id += self.definitions.len() as u64;
+        self.next_id += definitions.len() as u64;
 
-        for (index, (ref_name, schema)) in self.definitions.iter().enumerate() {
+        for (index, (ref_name, _)) in definitions.iter().enumerate() {
             self.ref_to_id
-                .insert(ref_name.clone(), TypeId(base_id + index as u64));
+                .insert(ref_name.to_string(), TypeId(base_id + index as u64));
         }
 
-        let xxx = self
-            .definitions
-            .clone()
-            .into_iter()
-            .enumerate()
-            .collect::<Vec<_>>();
-
-        for (index, (ref_name, schema)) in xxx {
-            let type_name = match ref_name.rfind("/") {
+        // Convert all types; note that we use the type assigned from the
+        // previous step because each type may create additional types.
+        for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
+            let type_name = match ref_name.rfind('/') {
                 Some(idx) => &ref_name[idx..],
                 None => &ref_name,
             };
 
             let (type_entry, _) = self.convert_schema(Some(type_name), &schema)?;
+            self.definitions.insert(ref_name, schema);
             self.id_to_entry
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
-
         Ok(())
+    }
+
+    /// Add a new type and return a type identifier that may be used in
+    /// function signatures or embedded within other types.
+    pub fn add_type(&mut self, schema: &Schema) -> Result<TokenStream> {
+        let (type_entry, _) = self.convert_schema(None, schema)?;
+
+        if let TypeDetails::Reference(type_id) = &type_entry.details {
+            let ref_entry = self.id_to_entry.get(type_id).unwrap();
+            Ok(ref_entry.type_ident(self, true))
+        } else {
+            let type_id = self.assign();
+            let ret = type_entry.type_ident(self, true);
+            self.id_to_entry.insert(type_id, type_entry);
+            Ok(ret)
+        }
+    }
+
+    pub fn uses_chrono(&self) -> bool {
+        self.uses_chrono
+    }
+
+    pub fn uses_uuid(&self) -> bool {
+        self.uses_uuid
+    }
+
+    pub fn uses_serde_json(&self) -> bool {
+        self.uses_serde_json
+    }
+
+    pub fn set_type_mod<S: AsRef<str>>(&mut self, type_mod: S) {
+        self.type_mod = Some(type_mod.as_ref().to_string());
+    }
+
+    // Private interface?
+
+    pub fn new(definitions: &BTreeMap<String, Schema>) -> Result<Self> {
+        let mut ts = Self::default();
+        ts.add_ref_types(definitions.clone())?;
+        Ok(ts)
     }
 
     pub fn iter_types(&self) -> impl Iterator<Item = &TypeEntry> {
@@ -287,9 +334,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::Boolean => {
-                self.convert_bool(type_name, metadata)
-            }
+            } if single.as_ref() == &InstanceType::Boolean => self.convert_bool(metadata),
 
             // Structs
             SchemaObject {
@@ -341,7 +386,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } => self.convert_permissive(type_name, metadata),
+            } => self.convert_permissive(metadata),
 
             // Null
             SchemaObject {
@@ -449,11 +494,26 @@ impl TypeSpace {
     }
 
     pub(crate) fn convert_string<'a>(
-        &self,
+        &mut self,
         metadata: &'a Option<Box<Metadata>>,
         format: &Option<String>,
-        validation: &Option<Box<schemars::schema::StringValidation>>,
+        _validation: &Option<Box<schemars::schema::StringValidation>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        trait OptionIsNoneOrDefault {
+            fn is_none_or_default(&self) -> bool;
+        }
+
+        impl<T> OptionIsNoneOrDefault for Option<T>
+        where
+            T: Default + PartialEq,
+        {
+            fn is_none_or_default(&self) -> bool {
+                match self {
+                    Some(t) => t == &T::default(),
+                    None => true,
+                }
+            }
+        }
         match format.as_ref().map(String::as_str) {
             None => {
                 // TODO we'll need to deal with strings with lengths and
@@ -470,23 +530,29 @@ impl TypeSpace {
                 ))
             }
 
-            Some("uuid") => Ok((
-                TypeEntry {
-                    name: Some("uuid::Uuid".to_string()),
-                    description: None,
-                    details: TypeDetails::BuiltIn,
-                },
-                metadata,
-            )),
+            Some("uuid") => {
+                self.uses_uuid = true;
+                Ok((
+                    TypeEntry {
+                        name: Some("uuid::Uuid".to_string()),
+                        description: None,
+                        details: TypeDetails::BuiltIn,
+                    },
+                    metadata,
+                ))
+            }
 
-            Some("date-time") => Ok((
-                TypeEntry {
-                    name: Some("chrono::DateTime<Utc>".to_string()),
-                    description: None,
-                    details: TypeDetails::BuiltIn,
-                },
-                metadata,
-            )),
+            Some("date-time") => {
+                self.uses_chrono = true;
+                Ok((
+                    TypeEntry {
+                        name: Some("chrono::DateTime<chrono::offset::Utc>".to_string()),
+                        description: None,
+                        details: TypeDetails::BuiltIn,
+                    },
+                    metadata,
+                ))
+            }
 
             unhandled => todo!("{:#?}", unhandled),
         }
@@ -779,17 +845,8 @@ impl TypeSpace {
         Ok((type_id, meta))
     }
 
-    pub fn add_schema(&mut self, schema: &Schema) -> Result<TypeId> {
-        self.id_for_schema(None, schema).map(|(id, _)| id)
-    }
-
-    pub fn render_type_name(&mut self, id: &TypeId) -> TokenStream {
-        let type_entry = self.id_to_entry.get(&id).unwrap();
-        type_entry.type_ident(self)
-    }
-
-    pub fn id_for_option(&mut self, id: &TypeId) -> TypeId {
-        if let Some(id) = self.id_to_option_id.get(&id) {
+    fn id_for_option(&mut self, id: &TypeId) -> TypeId {
+        if let Some(id) = self.id_to_option_id.get(id) {
             id.clone()
         } else {
             let ty = TypeEntry {
@@ -916,7 +973,6 @@ impl TypeSpace {
 
     pub(crate) fn convert_bool<'a>(
         &self,
-        type_name: Option<&str>,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         Ok((
@@ -930,10 +986,10 @@ impl TypeSpace {
     }
 
     pub(crate) fn convert_permissive<'a>(
-        &self,
-        type_name: Option<&str>,
+        &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        self.uses_serde_json = true;
         Ok((
             TypeEntry {
                 name: Some("serde_json::Value".to_string()),
@@ -1063,22 +1119,6 @@ mod tests {
                 println!("{}", out);
                 panic!();
             }
-        }
-    }
-}
-
-trait OptionIsNoneOrDefault {
-    fn is_none_or_default(&self) -> bool;
-}
-
-impl<T> OptionIsNoneOrDefault for Option<T>
-where
-    T: Default + PartialEq,
-{
-    fn is_none_or_default(&self) -> bool {
-        match self {
-            Some(t) => t == &T::default(),
-            None => true,
         }
     }
 }

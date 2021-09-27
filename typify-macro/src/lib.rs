@@ -1,7 +1,6 @@
 use std::path::Path;
 
 use proc_macro::TokenStream;
-use quote::quote;
 use syn::LitStr;
 use typify_impl::TypeSpace;
 
@@ -22,7 +21,7 @@ pub fn import_types(item: TokenStream) -> TokenStream {
                 Err(e) => {
                     return syn::Error::new(
                         arg.span(),
-                        format!("couldn't read file {}", arg.value()),
+                        format!("couldn't read file {}: {}", arg.value(), e.to_string()),
                     )
                     .to_compile_error()
                     .into();

@@ -53,7 +53,11 @@ pub(crate) fn struct_property(
     })
 }
 
-pub(crate) fn output_struct_property(prop: &StructProperty, type_space: &TypeSpace) -> TokenStream {
+pub(crate) fn output_struct_property(
+    prop: &StructProperty,
+    type_space: &TypeSpace,
+    make_pub: bool,
+) -> TokenStream {
     let name = format_ident!("{}", prop.name);
     let doc = match &prop.description {
         Some(s) => quote! {#[doc = #s]},
@@ -65,18 +69,23 @@ pub(crate) fn output_struct_property(prop: &StructProperty, type_space: &TypeSpa
         StructPropertySerde::Flatten => quote! { #[serde(flatten)] },
     };
     let prop_type = type_space.id_to_entry.get(&prop.type_id).unwrap();
-    let type_name = prop_type.type_ident(type_space);
+    let type_name = prop_type.type_ident(type_space, false);
+    let pub_token = if make_pub {
+        quote! { pub }
+    } else {
+        quote! {}
+    };
     quote! {
         #doc
         #serde
-        #name: #type_name,
+        #pub_token #name: #type_name,
     }
 }
 
 #[cfg(test)]
 mod tests {
     use schema::Schema;
-    use schemars::JsonSchema;
+    use schemars::{schema_for, JsonSchema};
     use serde::Serialize;
 
     use crate::test_util::validate_output;
@@ -106,5 +115,30 @@ mod tests {
     #[test]
     fn test_less_simple_struct() {
         validate_output::<LessSimpleStruct>();
+    }
+
+    #[allow(dead_code)]
+    #[derive(Serialize, JsonSchema, Schema)]
+    struct HaveStruct {
+        a: Option<String>,
+        b: Vec<String>,
+    }
+
+    #[allow(dead_code)]
+    #[derive(Serialize, JsonSchema, Schema)]
+    struct OmitStruct {
+        #[serde(default)]
+        a: Option<String>,
+        #[serde(default)]
+        b: Vec<String>,
+    }
+    #[test]
+    fn test_omit() {
+        let schema = schema_for!(HaveStruct);
+        println!("{:#?}", schema);
+        let schema = schema_for!(OmitStruct);
+        println!("{:#?}", schema);
+
+        //panic!();
     }
 }
