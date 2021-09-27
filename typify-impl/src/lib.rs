@@ -32,7 +32,7 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct TypeEntry {
     name: Option<String>,
     // TODO rename: Option<String>,
@@ -44,7 +44,7 @@ pub struct TypeEntry {
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub struct TypeId(u64);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) enum TypeDetails {
     Enum {
         tag_type: EnumTagType,
@@ -63,7 +63,7 @@ pub(crate) enum TypeDetails {
     Reference(TypeId),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) enum EnumTagType {
     External,
     Internal { tag: String },
@@ -71,7 +71,7 @@ pub(crate) enum EnumTagType {
     Untagged,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) struct Variant {
     name: String,
     rename: Option<String>,
@@ -79,7 +79,7 @@ pub(crate) struct Variant {
     details: VariantDetails,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) enum VariantDetails {
     Simple,
     Tuple(Vec<TypeId>),
@@ -94,7 +94,7 @@ pub(crate) enum VariantDetails {
 // non-required and nullable -> Option<T> and skip or not (doesn't matter)
 // non-required and non-nullable -> Option<T> and skip
 // required and non-nullable -> T
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) struct StructProperty {
     name: String,
     serde_options: StructPropertySerde,
@@ -102,7 +102,7 @@ pub(crate) struct StructProperty {
     type_id: TypeId,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub(crate) enum StructPropertySerde {
     None,
     Rename(String),
@@ -131,6 +131,7 @@ pub struct TypeSpace {
 
     // TODO needs an API
     pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
+    name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<String, TypeId>,
     id_to_option_id: BTreeMap<TypeId, TypeId>,
 
@@ -146,6 +147,7 @@ impl Default for TypeSpace {
             next_id: 1,
             definitions: BTreeMap::new(),
             id_to_entry: BTreeMap::new(),
+            name_to_id: BTreeMap::new(),
             ref_to_id: BTreeMap::new(),
             id_to_option_id: BTreeMap::new(),
             uses_chrono: false,
@@ -210,15 +212,9 @@ impl TypeSpace {
     pub fn add_type(&mut self, schema: &Schema) -> Result<TokenStream> {
         let (type_entry, _) = self.convert_schema(None, schema)?;
 
-        if let TypeDetails::Reference(type_id) = &type_entry.details {
-            let ref_entry = self.id_to_entry.get(type_id).unwrap();
-            Ok(ref_entry.type_ident(self, true))
-        } else {
-            let type_id = self.assign();
-            let ret = type_entry.type_ident(self, true);
-            self.id_to_entry.insert(type_id, type_entry);
-            Ok(ret)
-        }
+        let type_id = self.assign_type(type_entry);
+        let type_entry = self.id_to_entry.get(&type_id).unwrap();
+        Ok(type_entry.type_ident(self, true))
     }
 
     pub fn uses_chrono(&self) -> bool {
@@ -825,9 +821,20 @@ impl TypeSpace {
         id
     }
 
-    pub(crate) fn id_for_type(&mut self, ty: TypeEntry) -> TypeId {
-        if let TypeDetails::Reference(type_id) = ty.details {
-            type_id
+    fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
+        if let TypeDetails::Reference(type_id) = &ty.details {
+            type_id.clone()
+        } else if let Some(name) = ty.name.clone() {
+            if let Some(type_id) = self.name_to_id.get(&name) {
+                let existing_ty = self.id_to_entry.get(type_id).unwrap();
+                assert_eq!(existing_ty, &ty);
+                type_id.clone()
+            } else {
+                let type_id = self.assign();
+                self.id_to_entry.insert(type_id.clone(), ty);
+                self.name_to_id.insert(name.clone(), type_id.clone());
+                type_id
+            }
         } else {
             let type_id = self.assign();
             self.id_to_entry.insert(type_id.clone(), ty);
@@ -841,7 +848,7 @@ impl TypeSpace {
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
         let (ty, meta) = self.convert_schema(type_name, schema)?;
-        let type_id = self.id_for_type(ty);
+        let type_id = self.assign_type(ty);
         Ok((type_id, meta))
     }
 
@@ -863,7 +870,7 @@ impl TypeSpace {
     }
 
     pub(crate) fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
-        let type_id = self.id_for_type(ty);
+        let type_id = self.assign_type(ty);
 
         // TODO: this is bad b/c I'm not recording this option in `id_to_option`
         TypeEntry {

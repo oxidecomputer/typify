@@ -12,6 +12,9 @@ pub enum Error {
     /// Command `rustfmt` could not be found
     #[error("rustfmt is not installed")]
     NoRustfmt,
+    /// Command `rustfmt` produced an error at runtime.
+    #[error("rustfmt runtime error")]
+    Rustfmt(String),
     /// Error with file IO
     #[error(transparent)]
     IO(#[from] std::io::Error),
@@ -28,7 +31,7 @@ pub fn rustfmt<T: ToString>(input: T) -> Result<String, Error> {
     let mut command = Command::new(&rustfmt)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
+        .stderr(Stdio::piped())
         .spawn()
         .unwrap();
 
@@ -40,8 +43,11 @@ pub fn rustfmt<T: ToString>(input: T) -> Result<String, Error> {
     });
 
     let output = command.wait_with_output()?;
-
-    Ok(String::from_utf8(output.stdout)?)
+    if output.status.success() {
+        Ok(String::from_utf8(output.stdout)?)
+    } else {
+        Err(Error::Rustfmt(String::from_utf8(output.stderr)?))
+    }
 }
 
 fn which_rustfmt() -> Option<PathBuf> {
