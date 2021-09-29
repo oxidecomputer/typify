@@ -679,7 +679,7 @@ mod tests {
     fn test_externally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(ExternallyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_externally_tagged_enum(
             Some("ExternallyTaggedEnum"),
@@ -728,7 +728,7 @@ mod tests {
     fn test_adjacently_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(AdjacentlyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_adjacently_tagged_enum(
             Some("AdjacentlyTaggedEnum"),
@@ -770,7 +770,7 @@ mod tests {
     fn test_internally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(InternallyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_internally_tagged_enum(
             Some("InternallyTaggedEnum"),
