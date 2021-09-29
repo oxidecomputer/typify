@@ -298,7 +298,7 @@ impl TypeSpace {
                 self.convert_enum_string(type_name, metadata, enum_values)
             }
 
-            // Numbers
+            // Integers
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
@@ -316,12 +316,30 @@ impl TypeSpace {
                 self.convert_integer(metadata, validation, format)
             }
 
+            // Numbers
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Single(single)),
+                format,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: validation,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            } if single.as_ref() == &InstanceType::Number => {
+                self.convert_number(metadata, validation, format)
+            }
+
             // Boolean
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
                 format: None,
-                enum_values: None,
+                enum_values,
                 const_value: None,
                 subschemas: None,
                 number: None,
@@ -330,7 +348,9 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::Boolean => self.convert_bool(metadata),
+            } if single.as_ref() == &InstanceType::Boolean => {
+                self.convert_bool(metadata, enum_values)
+            }
 
             // Structs
             SchemaObject {
@@ -423,7 +443,7 @@ impl TypeSpace {
 
             // Reference
             SchemaObject {
-                metadata: None,
+                metadata,
                 instance_type: None,
                 format: None,
                 enum_values: None,
@@ -435,12 +455,28 @@ impl TypeSpace {
                 object: None,
                 reference: Some(reference),
                 extensions: _,
-            } => self.convert_reference(reference),
+            } => self.convert_reference(metadata, reference),
+
+            // Enum of unknown type
+            SchemaObject {
+                metadata,
+                instance_type: None,
+                format: None,
+                enum_values: Some(enum_values),
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            } => self.convert_unknown_enum(type_name, metadata, enum_values),
 
             // Subschemas
             SchemaObject {
                 metadata,
-                instance_type: None,
+                instance_type: _,
                 format: None,
                 enum_values: None,
                 const_value: None,
@@ -483,6 +519,28 @@ impl TypeSpace {
                 // Unknown
                 _ => todo!("{:#?}", subschemas),
             },
+
+            // TODO let's not bother with const values at the moment. In the
+            // future we could create types that have a single value with a
+            // newtype wrapper, but it's too much of a mess for too little
+            // value at the moment. Instead, we act as though this const_value
+            // field were None.
+            SchemaObject {
+                metadata,
+                const_value: Some(_),
+                ..
+            } => {
+                let new_schema = SchemaObject {
+                    const_value: None,
+                    ..schema.clone()
+                };
+                self.convert_schema_object(type_name, &new_schema)
+                    .map(|(te, m)| match m {
+                        Some(_) if m == metadata => (te, metadata),
+                        Some(_) => panic!("unexpected metadata value"),
+                        None => (te, &None),
+                    })
+            }
 
             // Unknown
             SchemaObject { .. } => todo!("{:#?}", schema),
@@ -550,35 +608,54 @@ impl TypeSpace {
                 ))
             }
 
+            // TODO random types I'm not sure what to do with
+            Some("uri" | "uri-template" | "email") => Ok((
+                TypeEntry {
+                    name: Some("String".to_string()),
+                    description: None,
+                    details: TypeDetails::BuiltIn,
+                },
+                metadata,
+            )),
+
             unhandled => todo!("{:#?}", unhandled),
         }
     }
 
     pub(crate) fn convert_enum_string<'a>(
-        &self,
+        &mut self,
         type_name: Option<&str>,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // We expect all enum values to be either a string **or** a null. We
+        // gather them all up and then choose to either be an enum of simple
+        // variants, or an Option of an enum of string variants depending on if
+        // a null is absent or present.
+        let mut has_null = false;
+
         let variants = enum_values
             .iter()
-            .map(|value| {
-                let (name, rename) = recase(
-                    value
-                        .as_str()
-                        .ok_or_else(|| Error::BadValue("string".to_string(), value.clone()))?
-                        .to_string(),
-                    Case::Pascal,
-                );
-                Ok(Variant {
-                    name,
-                    rename,
-                    description: None,
-                    details: VariantDetails::Simple,
-                })
+            .flat_map(|value| match value {
+                // It would be odd to have multiple null values, but we don't
+                // need to worry about it.
+                serde_json::Value::Null => {
+                    has_null = true;
+                    None
+                }
+                serde_json::Value::String(value) => {
+                    let (name, rename) = recase(value.clone(), Case::Pascal);
+                    Some(Ok(Variant {
+                        name,
+                        rename,
+                        description: None,
+                        details: VariantDetails::Simple,
+                    }))
+                }
+                _ => Some(Err(Error::BadValue("string".to_string(), value.clone()))),
             })
-            .collect::<Result<_>>()?;
-        let ty = TypeEntry::from_metadata(
+            .collect::<Result<Vec<Variant>>>()?;
+        let mut ty = TypeEntry::from_metadata(
             type_name,
             metadata,
             TypeDetails::Enum {
@@ -586,6 +663,11 @@ impl TypeSpace {
                 variants,
             },
         );
+
+        if has_null {
+            ty = self.type_to_option(ty);
+        }
+
         Ok((ty, metadata))
     }
 
@@ -646,10 +728,43 @@ impl TypeSpace {
                 details: TypeDetails::BuiltIn,
             },
 
+            // TODO is this the right default? Should we be looking at the
+            // validation e.g. for max and min?
+            None => TypeEntry {
+                name: Some("u64".to_string()),
+                description: None,
+                details: TypeDetails::BuiltIn,
+            },
+
             _ => todo!("{:#?} {:#?}", validation, format),
         };
 
         Ok((ty, metadata))
+    }
+
+    // TODO deal with metadata and format
+    pub(crate) fn convert_number<'a>(
+        &self,
+        _metadata: &'a Option<Box<Metadata>>,
+        validation: &Option<Box<schemars::schema::NumberValidation>>,
+        _format: &Option<String>,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if let Some(validation) = validation {
+            assert!(validation.multiple_of.is_none());
+            assert!(validation.maximum.is_none());
+            assert!(validation.exclusive_maximum.is_none());
+            assert!(validation.minimum.is_none());
+            assert!(validation.exclusive_minimum.is_none());
+        }
+
+        Ok((
+            TypeEntry {
+                name: Some("f64".to_string()),
+                description: None,
+                details: TypeDetails::BuiltIn,
+            },
+            &None,
+        ))
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
@@ -669,16 +784,39 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         validation: &ObjectValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let ty = TypeEntry::from_metadata(
-            type_name,
-            metadata,
-            TypeDetails::Struct(struct_members(validation, self)?),
-        );
-        Ok((ty, &None))
+        match validation {
+            // Look for a permissive object.
+            ObjectValidation {
+                max_properties: None,
+                min_properties: None,
+                required,
+                properties,
+                pattern_properties,
+                additional_properties: Some(additional_properties),
+                property_names: None,
+            } if required.is_empty()
+                && properties.is_empty()
+                && pattern_properties.is_empty()
+                && matches!(additional_properties.as_ref(), Schema::Bool(true)) =>
+            {
+                self.convert_permissive(metadata)
+            }
+
+            // The typical case
+            _ => {
+                let ty = TypeEntry::from_metadata(
+                    type_name,
+                    metadata,
+                    TypeDetails::Struct(struct_members(validation, self)?),
+                );
+                Ok((ty, &None))
+            }
+        }
     }
 
     pub(crate) fn convert_reference<'a>(
         &self,
+        metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let key = match ref_name.rfind('/') {
@@ -691,7 +829,7 @@ impl TypeSpace {
             description: None,
             details: TypeDetails::Reference(type_id.clone()),
         };
-        Ok((ty, &None))
+        Ok((ty, metadata))
     }
 
     pub(crate) fn convert_all_of<'a>(
@@ -805,6 +943,10 @@ impl TypeSpace {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
             return Ok((ty, metadata));
         }
+        // TODO we might want to look for situations where we have a one of
+        // where there are exactly two subschemas and one of them is simply
+        // null. Not sure why this would happen, but we'd want to make it look
+        // like an Option. It happens a bunch with github's API
 
         let ty = maybe_externally_tagged_enum(type_name, metadata, subschemas, self)
             .map(Ok)
@@ -891,8 +1033,8 @@ impl TypeSpace {
             ArrayValidation {
                 items: Some(SingleOrVec::Single(item)),
                 additional_items: None,
-                max_items: None,
-                min_items: None,
+                max_items: _, // TODO enforce size limitations
+                min_items: _, // TODO enforce size limitations
                 unique_items: None,
                 contains: None,
             } => {
@@ -978,9 +1120,11 @@ impl TypeSpace {
         Ok((ty, metadata))
     }
 
+    // TODO not sure if I want to deal with enum_values here, but we'll see...
     pub(crate) fn convert_bool<'a>(
         &self,
         metadata: &'a Option<Box<Metadata>>,
+        _enum_values: &Option<Vec<serde_json::Value>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         Ok((
             TypeEntry {
@@ -1006,12 +1150,47 @@ impl TypeSpace {
             metadata,
         ))
     }
+
+    pub(crate) fn convert_unknown_enum<'a>(
+        &mut self,
+        type_name: Option<&str>,
+        metadata: &'a Option<Box<Metadata>>,
+        enum_values: &[serde_json::Value],
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // We're here because the schema didn't have a type; that seems busted,
+        // but we'll do our best to roll with the punches.
+        assert!(!enum_values.is_empty());
+
+        // Let's hope all these values are the same type.
+        let instance_types = enum_values
+            .iter()
+            .map(|v| match v {
+                serde_json::Value::Null => InstanceType::Null,
+                serde_json::Value::Bool(_) => InstanceType::Boolean,
+                serde_json::Value::Number(_) => InstanceType::Number,
+                serde_json::Value::String(_) => InstanceType::String,
+                serde_json::Value::Array(_) => InstanceType::Array,
+                serde_json::Value::Object(_) => InstanceType::Object,
+            })
+            .collect::<Vec<_>>();
+
+        match (instance_types.len(), instance_types.first()) {
+            (1, Some(InstanceType::String)) => {
+                self.convert_enum_string(type_name, metadata, enum_values)
+            }
+            (1, Some(InstanceType::Boolean)) => {
+                self.convert_bool(metadata, &Some(enum_values.into()))
+            }
+            _ => panic!(),
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use schemars::{schema_for, JsonSchema};
     use serde::Serialize;
+    use serde_json::json;
     use std::collections::HashSet;
 
     use crate::{TypeDetails, TypeEntry, TypeSpace, VariantDetails};
@@ -1126,6 +1305,46 @@ mod tests {
                 println!("{}", out);
                 panic!();
             }
+        }
+    }
+
+    #[test]
+    fn test_string_enum_with_null() {
+        let enum_values = vec![
+            json!("Shadrach"),
+            json!("Meshach"),
+            json!("Abednego"),
+            json!(null),
+        ];
+
+        let mut type_space = TypeSpace::default();
+        let (te, _) = type_space
+            .convert_enum_string(None, &None, &enum_values)
+            .unwrap();
+
+        if let TypeDetails::Option(id) = &te.details {
+            let ote = type_space.id_to_entry.get(id).unwrap();
+            if let TypeDetails::Enum { variants, .. } = &ote.details {
+                let variants = variants
+                    .iter()
+                    .map(|v| match v.details {
+                        VariantDetails::Simple => v.name.clone(),
+                        _ => panic!("unexpected variant type"),
+                    })
+                    .collect::<HashSet<_>>();
+
+                assert_eq!(
+                    variants,
+                    enum_values
+                        .iter()
+                        .flat_map(|j| j.as_str().map(ToString::to_string))
+                        .collect::<HashSet<_>>()
+                );
+            } else {
+                panic!("not the sub-type we expected {:#?}", te)
+            }
+        } else {
+            panic!("not the type we expected {:#?}", te)
         }
     }
 }

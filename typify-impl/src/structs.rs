@@ -1,7 +1,7 @@
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use schemars::schema::ObjectValidation;
+use schemars::schema::{ObjectValidation, Schema};
 
 use crate::{util::metadata_description, Result, StructProperty, StructPropertySerde, TypeSpace};
 
@@ -9,11 +9,18 @@ pub(crate) fn struct_members(
     validation: &ObjectValidation,
     type_space: &mut TypeSpace,
 ) -> Result<Vec<StructProperty>> {
+    println!("{:#?}", validation);
     // These are the fields we don't currently handle
     assert!(validation.max_properties.is_none());
     assert!(validation.min_properties.is_none());
     assert!(validation.pattern_properties.is_empty());
-    assert!(validation.additional_properties.is_none());
+    assert!(
+        validation.additional_properties.is_none()
+            || matches!(
+                validation.additional_properties.as_ref().map(Box::as_ref),
+                Some(Schema::Bool(false))
+            )
+    );
     assert!(validation.property_names.is_none());
 
     let mut properties = validation

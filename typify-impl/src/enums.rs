@@ -500,19 +500,13 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
             object: Some(validation),
             reference: None,
             extensions: _,
-        }) if single.as_ref() == &InstanceType::Object => {
+        }) if single.as_ref() == &InstanceType::Object
+            && schema_none_or_false(&validation.additional_properties) =>
+        {
             // These are the fields we don't currently handle
             assert!(validation.max_properties.is_none());
             assert!(validation.min_properties.is_none());
             assert!(validation.pattern_properties.is_empty());
-            // TODO: https://github.com/GREsau/schemars/pull/99
-            // Really this should be Schema::Bool(false), but
-            // additional_properties is used inconsistently... in schemars, but
-            // also generally.
-            assert!(
-                matches!(&validation.additional_properties, Some(schema) if matches!(schema.as_ref(), Schema::Bool(false)))
-                    || validation.additional_properties.is_none()
-            );
             assert!(validation.property_names.is_none());
 
             Some((metadata.as_ref().map(|m| m.as_ref()), validation.as_ref()))
@@ -521,6 +515,16 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
         // None if the schema doesn't match the shape we expect.
         _ => None,
     }
+}
+
+// TODO: https://github.com/GREsau/schemars/pull/99
+// Really this should be Schema::Bool(false), but additional_properties is used
+// inconsistently... in schemars, but also generally.
+fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
+    matches!(
+        additional_properties.as_ref().map(Box::as_ref),
+        None | Some(Schema::Bool(false))
+    )
 }
 
 pub(crate) fn untagged_enum(
