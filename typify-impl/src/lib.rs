@@ -286,7 +286,6 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        println!("{:#?}", schema);
         match schema {
             // Canonicalize const values
             // SchemaObject {
@@ -675,8 +674,6 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        println!("{:#?}", enum_values);
-
         // We expect all enum values to be either a string **or** a null. We
         // gather them all up and then choose to either be an enum of simple
         // variants, or an Option of an enum of string variants depending on if

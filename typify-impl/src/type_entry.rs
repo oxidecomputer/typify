@@ -6,7 +6,7 @@ use schemars::schema::Metadata;
 use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
-    util::{get_type_name, metadata_description, metadata_title, recase},
+    util::{get_type_name, metadata_description},
     Name, TypeDetails, TypeEntry, TypeSpace,
 };
 

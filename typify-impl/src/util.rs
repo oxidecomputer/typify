@@ -333,6 +333,8 @@ fn array_schemas_mutually_exclusive(
     }
 }
 
+/// If this schema represents a constant-value string, return that string,
+/// otherwise return None.
 pub(crate) fn constant_string_value(schema: &Schema) -> Option<String> {
     match schema {
         // Strings must be simple enumerations.
@@ -395,7 +397,6 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
 
 fn sanitize(input: String) -> String {
     let out = input.replace("$", "").replace("'", "");
-    println!("out = '{}'", out);
     match out.as_str() {
         "ref" => "rref".to_string(),
         "type" => "ttype".to_string(),
@@ -405,7 +406,6 @@ fn sanitize(input: String) -> String {
 }
 
 pub(crate) fn recase(input: String, case: Case) -> (String, Option<String>) {
-    println!("input {}", input);
     let new = sanitize(input.clone()).to_case(case);
     let rename = if new == input { None } else { Some(input) };
     assert_ne!(new, "ref");

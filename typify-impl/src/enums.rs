@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use convert_case::{Case, Casing};
 use proc_macro2::{Ident, TokenStream};
@@ -247,8 +247,14 @@ fn external_variant(
                 .is_none()
             && schema_none_or_false(&validation.additional_properties) =>
         {
+            let sub_type_name = match type_name {
+                Name::Required(name) | Name::Suggested(name) => Some(name),
+                Name::Unknown => None,
+            };
             Ok(VariantDetails::Struct(struct_members(
-                None, validation, type_space,
+                sub_type_name,
+                validation,
+                type_space,
             )?))
         }
 
@@ -266,30 +272,49 @@ pub(crate) fn maybe_internally_tagged_enum(
     type_space: &mut TypeSpace,
 ) -> Option<TypeEntry> {
     // All subschemas must be objects and all objects must have a *fixed-value*
-    // required property in common. To detect this, we look at the set of all
-    // such properties for each subschema and compute the aggregate
-    // intersection.
-    let mut constant_value_properties = subschemas
+    // required property in common. To detect this, we look at all such
+    // properties along with the specific values.
+    let constant_value_properties_sets = subschemas
         .iter()
         .map(|schema| match get_object(schema) {
-            Some((_, validation)) => validation
-                .properties
-                .iter()
-                .filter_map(|(prop_name, prop_type)| {
-                    constant_string_value(prop_type).map(|_| prop_name.clone())
-                })
-                .collect(),
-
-            _ => BTreeSet::new(),
+            None => BTreeMap::<String, BTreeSet<String>>::new(),
+            Some((_, validation)) => {
+                validation
+                    .properties
+                    .iter()
+                    .filter_map(|(prop_name, prop_type)| {
+                        constant_string_value(prop_type).map(|value| {
+                            // Tuple with the name and a set with a single value
+                            (prop_name.clone(), [value].iter().cloned().collect())
+                        })
+                    })
+                    .collect()
+            }
         })
-        .reduce(|a, b| a.intersection(&b).cloned().collect())?
-        .iter()
-        .cloned()
-        .collect::<Vec<_>>();
+        // Reduce these sets down to those A. that are common among all
+        // subschemas and B. for which the values for each is unique.
+        .reduce(|a, b| {
+            a.into_iter()
+                .filter_map(|(prop, mut a_values)| match b.get(&prop) {
+                    // If the values are non-disjoint it means that there are
+                    // two subschemas that have constant values for a given
+                    // property but that those values are identical.
+                    Some(b_values) if a_values.is_disjoint(b_values) => {
+                        a_values.extend(b_values.iter().cloned());
+                        Some((prop, a_values))
+                    }
+                    _ => None,
+                })
+                .collect()
+        })?;
 
     // It would be odd to have more than a single common, constant value,
     // but it would be fine. We sort the properties to choose one
     // deterministically.
+    let mut constant_value_properties = constant_value_properties_sets
+        .keys()
+        .cloned()
+        .collect::<Vec<String>>();
     constant_value_properties.sort();
     let tag = constant_value_properties.first()?;
 
@@ -931,8 +956,8 @@ mod tests {
     }
 
     #[test]
-    fn test_xxx() {
-        let xxx = r##"
+    fn test_head_fake_tagged_enum() {
+        let schema_json = r##"
         {
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "pull_request$review_request_removed",
@@ -1001,9 +1026,7 @@ mod tests {
           }
         "##;
 
-        let schema: RootSchema = serde_json::from_str(xxx).unwrap();
-
-        println!("{:#?}", schema);
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
 
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
@@ -1012,19 +1035,15 @@ mod tests {
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
-        let x = type_entry.output(&type_space);
-        println!("{}", x.to_string());
-
-        if let TypeDetails::Enum { variants, .. } = &type_entry.details {
+        if let TypeDetails::Enum { variants, tag_type } = &type_entry.details {
             let variant_names = variants
                 .iter()
                 .map(|variant| variant.name.clone())
                 .collect::<HashSet<_>>();
             assert_eq!(variant_names.len(), variants.len());
+            assert_eq!(tag_type, &EnumTagType::Untagged);
         } else {
             panic!();
         }
-
-        panic!();
     }
 }

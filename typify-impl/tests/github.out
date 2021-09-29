@@ -1974,10 +1974,10 @@ pub struct PullRequestreopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(tag = "action")]
+#[serde(untagged)]
 pub enum PullRequestreviewRequestRemoved {
-    #[serde(rename = "review_request_removed")]
-    ReviewRequestRemoved {
+    Variant0 {
+        action: PullRequestreviewRequestRemovedVariant0Action,
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
         number: u64,
@@ -1987,8 +1987,8 @@ pub enum PullRequestreviewRequestRemoved {
         requested_reviewer: User,
         sender: User,
     },
-    #[serde(rename = "review_request_removed")]
-    ReviewRequestRemoved {
+    Variant1 {
+        action: PullRequestreviewRequestRemovedVariant1Action,
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
         number: u64,
@@ -2000,10 +2000,10 @@ pub enum PullRequestreviewRequestRemoved {
     },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(tag = "action")]
+#[serde(untagged)]
 pub enum PullRequestreviewRequested {
-    #[serde(rename = "review_requested")]
-    ReviewRequested {
+    Variant0 {
+        action: PullRequestreviewRequestedVariant0Action,
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
         number: u64,
@@ -2013,8 +2013,8 @@ pub enum PullRequestreviewRequested {
         requested_reviewer: User,
         sender: User,
     },
-    #[serde(rename = "review_requested")]
-    ReviewRequested {
+    Variant1 {
+        action: PullRequestreviewRequestedVariant1Action,
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
         number: u64,
@@ -9783,6 +9783,62 @@ pub struct PullRequestreopenedPullRequest {
     pub variant_0: PullRequest,
     #[serde(flatten)]
     pub variant_1: PullRequestreopenedPullRequestVariant1,
+}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum PullRequestreviewRequestRemovedVariant0Action {
+    #[serde(rename = "review_request_removed")]
+    ReviewRequestRemoved,
+}
+impl ToString for PullRequestreviewRequestRemovedVariant0Action {
+    fn to_string(&self) -> String {
+        match self {
+            PullRequestreviewRequestRemovedVariant0Action::ReviewRequestRemoved => {
+                "review_request_removed".to_string()
+            }
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum PullRequestreviewRequestRemovedVariant1Action {
+    #[serde(rename = "review_request_removed")]
+    ReviewRequestRemoved,
+}
+impl ToString for PullRequestreviewRequestRemovedVariant1Action {
+    fn to_string(&self) -> String {
+        match self {
+            PullRequestreviewRequestRemovedVariant1Action::ReviewRequestRemoved => {
+                "review_request_removed".to_string()
+            }
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum PullRequestreviewRequestedVariant0Action {
+    #[serde(rename = "review_requested")]
+    ReviewRequested,
+}
+impl ToString for PullRequestreviewRequestedVariant0Action {
+    fn to_string(&self) -> String {
+        match self {
+            PullRequestreviewRequestedVariant0Action::ReviewRequested => {
+                "review_requested".to_string()
+            }
+        }
+    }
+}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum PullRequestreviewRequestedVariant1Action {
+    #[serde(rename = "review_requested")]
+    ReviewRequested,
+}
+impl ToString for PullRequestreviewRequestedVariant1Action {
+    fn to_string(&self) -> String {
+        match self {
+            PullRequestreviewRequestedVariant1Action::ReviewRequested => {
+                "review_requested".to_string()
+            }
+        }
+    }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestsynchronizeAction {
