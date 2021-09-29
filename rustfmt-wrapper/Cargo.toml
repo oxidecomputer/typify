@@ -9,3 +9,4 @@ thiserror = "1.0.25"
 
 [dev-dependencies]
 quote = "1.0.9"
+newline-converter = "0.2.0"
