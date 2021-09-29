@@ -66,12 +66,17 @@ fn which_rustfmt() -> Option<PathBuf> {
 #[cfg(test)]
 mod tests {
     use crate::rustfmt;
+    use newline_converter::dos2unix;
     use quote::quote;
 
     #[test]
     fn test_basics() {
         assert_eq!(
-            rustfmt(quote! { struct Foo { bar: String }}).unwrap(),
+            dos2unix(
+                rustfmt(quote! { struct Foo { bar: String }})
+                    .unwrap()
+                    .as_str()
+            ),
             "struct Foo {\n    bar: String,\n}\n"
         );
     }
