@@ -1,6 +1,6 @@
 use std::{fs::File, io::BufReader, path::Path};
 
-use schemars::schema::{RootSchema, Schema};
+use schemars::schema::RootSchema;
 use typify_impl::TypeSpace;
 
 #[test]
@@ -18,8 +18,12 @@ fn test_github() {
 
     type_space.add_ref_types(schema.definitions).unwrap();
 
+    println!("done");
+
     for type_entry in type_space.iter_types() {
+        println!("entry {:#?}", type_entry);
         let output = type_entry.output(&type_space);
+        println!("{:?}", output);
         let fmt = rustfmt_wrapper::rustfmt(output.to_string()).unwrap();
         println!("{}", fmt);
     }

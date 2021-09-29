@@ -1,3 +1,4 @@
+use convert_case::Case;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
@@ -5,7 +6,7 @@ use schemars::schema::Metadata;
 use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
-    util::{metadata_description, metadata_title},
+    util::{metadata_description, metadata_title, recase},
     TypeDetails, TypeEntry, TypeSpace,
 };
 
@@ -15,8 +16,19 @@ impl TypeEntry {
         metadata: &Option<Box<Metadata>>,
         details: TypeDetails,
     ) -> Self {
+        let (name, rename) = match type_name
+            .map(ToString::to_string)
+            .or_else(|| metadata_title(metadata))
+        {
+            Some(name) => {
+                let (name, rename) = recase(name, Case::Pascal);
+                (Some(name), rename)
+            }
+            None => (None, None),
+        };
         Self {
-            name: metadata_title(metadata).or_else(|| type_name.map(ToString::to_string)),
+            name,
+            rename,
             description: metadata_description(metadata),
             details,
         }

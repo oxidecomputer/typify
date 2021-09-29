@@ -236,7 +236,8 @@ fn external_variant(prop_type: &Schema, type_space: &mut TypeSpace) -> Result<Va
             && metadata
                 .as_ref()
                 .map(|m| m.as_ref().title.as_ref())
-                .is_none() =>
+                .is_none()
+            && schema_none_or_false(&validation.additional_properties) =>
         {
             Ok(VariantDetails::Struct(struct_members(
                 validation, type_space,
@@ -825,6 +826,7 @@ mod tests {
         match ty {
             TypeEntry {
                 name,
+                rename: None,
                 description: None,
                 details:
                     TypeDetails::Enum {
@@ -894,6 +896,7 @@ mod tests {
             ty,
             TypeEntry {
                 name: None,
+                rename: None,
                 description: None,
                 details: TypeDetails::Enum {
                     tag_type: EnumTagType::Untagged,

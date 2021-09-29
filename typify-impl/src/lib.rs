@@ -35,7 +35,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug, PartialEq, Eq)]
 pub struct TypeEntry {
     name: Option<String>,
-    // TODO rename: Option<String>,
+    rename: Option<String>,
     description: Option<String>,
     details: TypeDetails,
     // TODO probably need a bit to say if this is a built-in type
@@ -595,6 +595,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("String".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -607,6 +608,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("uuid::Uuid".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -619,6 +621,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("chrono::DateTime<chrono::offset::Utc>".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -630,6 +633,7 @@ impl TypeSpace {
             Some("uri" | "uri-template" | "email") => Ok((
                 TypeEntry {
                     name: Some("String".to_string()),
+                    rename: None,
                     description: None,
                     details: TypeDetails::BuiltIn,
                 },
@@ -709,41 +713,49 @@ impl TypeSpace {
         let ty = match format.as_ref().map(|s| s.as_str()) {
             Some("int8") => TypeEntry {
                 name: Some("i8".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint8") => TypeEntry {
                 name: Some("u8".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int16") => TypeEntry {
                 name: Some("i16".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint16") => TypeEntry {
                 name: Some("u16".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int32" | "int") => TypeEntry {
                 name: Some("i32".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint32" | "uint") => TypeEntry {
                 name: Some("u32".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int64") => TypeEntry {
                 name: Some("i64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint64") => TypeEntry {
                 name: Some("u64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -752,6 +764,7 @@ impl TypeSpace {
             // validation e.g. for max and min?
             None => TypeEntry {
                 name: Some("u64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -780,6 +793,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("f64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -846,6 +860,7 @@ impl TypeSpace {
         let type_id = self.ref_to_id.get(key).unwrap();
         let ty = TypeEntry {
             name: None,
+            rename: None,
             description: None,
             details: TypeDetails::Reference(type_id.clone()),
         };
@@ -1020,6 +1035,7 @@ impl TypeSpace {
         } else {
             let ty = TypeEntry {
                 name: None,
+                rename: None,
                 description: None,
                 details: TypeDetails::Option(id.clone()),
             };
@@ -1037,6 +1053,7 @@ impl TypeSpace {
         // TODO: this is bad b/c I'm not recording this option in `id_to_option`
         TypeEntry {
             name: None,
+            rename: None,
             description: None,
             details: TypeDetails::Option(type_id),
         }
@@ -1149,6 +1166,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("bool".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -1164,6 +1182,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("serde_json::Value".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
