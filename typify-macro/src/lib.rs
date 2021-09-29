@@ -2,7 +2,7 @@ use std::path::Path;
 
 use proc_macro::TokenStream;
 use syn::LitStr;
-use typify_impl::TypeSpace;
+use typify_impl::{Name, TypeSpace};
 
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
@@ -34,7 +34,7 @@ pub fn import_types(item: TokenStream) -> TokenStream {
 
             let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
             let x = type_space
-                .convert_schema_object(Some("myname"), &schema.schema)
+                .convert_schema_object(Name::Required("myname".to_string()), &schema.schema)
                 .unwrap();
 
             println!("{:#?}", x.0);

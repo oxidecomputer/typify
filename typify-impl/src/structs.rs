@@ -3,9 +3,13 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{ObjectValidation, Schema};
 
-use crate::{util::metadata_description, Result, StructProperty, StructPropertySerde, TypeSpace};
+use crate::{
+    util::{metadata_description, recase},
+    Name, Result, StructProperty, StructPropertySerde, TypeSpace,
+};
 
 pub(crate) fn struct_members(
+    type_name: Option<String>,
     validation: &ObjectValidation,
     type_space: &mut TypeSpace,
 ) -> Result<Vec<StructProperty>> {
@@ -26,7 +30,7 @@ pub(crate) fn struct_members(
     let mut properties = validation
         .properties
         .iter()
-        .map(|(name, ty)| struct_property(validation, name, ty, type_space))
+        .map(|(name, ty)| struct_property(type_name.clone(), validation, name, ty, type_space))
         .collect::<Result<Vec<_>>>()?;
 
     // Sort parameters by name to ensure a deterministic result.
@@ -35,21 +39,25 @@ pub(crate) fn struct_members(
 }
 
 pub(crate) fn struct_property(
+    type_name: Option<String>,
     validation: &ObjectValidation,
     prop_name: &str,
     schema: &schemars::schema::Schema,
     type_space: &mut TypeSpace,
 ) -> Result<StructProperty> {
-    let (mut type_id, metadata) = type_space.id_for_schema(None, schema)?;
+    let sub_type_name = match type_name {
+        Some(name) => Name::Suggested(format!("{}{}", name, prop_name.to_case(Case::Pascal))),
+        None => Name::Unknown,
+    };
+    let (mut type_id, metadata) = type_space.id_for_schema(sub_type_name, schema)?;
     if !validation.required.contains(prop_name) {
         type_id = type_space.id_for_option(&type_id);
     }
 
-    let name = prop_name.to_case(Case::Snake);
-    let serde_options = if name == prop_name {
-        StructPropertySerde::None
-    } else {
-        StructPropertySerde::Rename(prop_name.to_string())
+    let (name, rename) = recase(prop_name.to_string(), Case::Snake);
+    let serde_options = match rename {
+        Some(old_name) => StructPropertySerde::Rename(old_name),
+        None => StructPropertySerde::None,
     };
 
     Ok(StructProperty {

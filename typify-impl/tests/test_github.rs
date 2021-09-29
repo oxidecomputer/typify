@@ -1,5 +1,6 @@
 use std::{fs::File, io::BufReader, path::Path};
 
+use quote::quote;
 use schemars::schema::RootSchema;
 use typify_impl::TypeSpace;
 
@@ -14,19 +15,17 @@ fn test_github() {
     // Read the JSON contents of the file as an instance of `User`.
     let schema: RootSchema = serde_json::from_reader(reader).unwrap();
 
-    println!("{:?}", schema);
-
     type_space.add_ref_types(schema.definitions).unwrap();
 
-    println!("done");
+    let types = type_space
+        .iter_types()
+        .map(|type_entry| type_entry.output(&type_space));
 
-    for type_entry in type_space.iter_types() {
-        println!("entry {:#?}", type_entry);
-        let output = type_entry.output(&type_space);
-        println!("{:?}", output);
-        let fmt = rustfmt_wrapper::rustfmt(output.to_string()).unwrap();
-        println!("{}", fmt);
-    }
+    let file = quote! {
+        #(#types)*
+    };
 
-    todo!();
+    let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
+
+    expectorate::assert_contents("tests/github.out", fmt.as_str());
 }

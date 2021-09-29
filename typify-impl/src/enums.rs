@@ -9,12 +9,12 @@ use schemars::schema::{
 
 use crate::{
     structs::{output_struct_property, struct_members, struct_property},
-    util::{constant_string_value, metadata_description, recase},
-    EnumTagType, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+    util::{constant_string_value, get_type_name, metadata_description, recase},
+    EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
 };
 
 pub(crate) fn maybe_externally_tagged_enum(
-    type_name: Option<&str>,
+    type_name: Name,
     metadata: &Option<Box<schemars::schema::Metadata>>,
     subschemas: &[Schema],
     type_space: &mut TypeSpace,
@@ -121,7 +121,9 @@ pub(crate) fn maybe_externally_tagged_enum(
                                 name,
                                 rename,
                                 description: metadata_description(metadata),
-                                details: external_variant(prop_type, type_space).ok()?,
+                                // TODO type name
+                                details: external_variant(Name::Unknown, prop_type, type_space)
+                                    .ok()?,
                             }])
                         } else {
                             None
@@ -151,7 +153,11 @@ pub(crate) fn maybe_externally_tagged_enum(
     })
 }
 
-fn external_variant(prop_type: &Schema, type_space: &mut TypeSpace) -> Result<VariantDetails> {
+fn external_variant(
+    type_name: Name,
+    prop_type: &Schema,
+    type_space: &mut TypeSpace,
+) -> Result<VariantDetails> {
     // Arrays (tuples) must have a fixed size (max_items == min_items).
     // Per the JSON Schema specification, if the array.items is an array
     // (rather than a single element), then:
@@ -192,7 +198,9 @@ fn external_variant(prop_type: &Schema, type_space: &mut TypeSpace) -> Result<Va
                     return Ok(VariantDetails::Tuple(
                         items
                             .iter()
-                            .map(|item_type| Ok(type_space.id_for_schema(None, item_type)?.0))
+                            .map(|item_type| {
+                                Ok(type_space.id_for_schema(type_name.clone(), item_type)?.0)
+                            })
                             .collect::<Result<Vec<_>>>()?,
                     ));
                 }
@@ -240,19 +248,19 @@ fn external_variant(prop_type: &Schema, type_space: &mut TypeSpace) -> Result<Va
             && schema_none_or_false(&validation.additional_properties) =>
         {
             Ok(VariantDetails::Struct(struct_members(
-                validation, type_space,
+                None, validation, type_space,
             )?))
         }
 
         // Otherwise we create a single-element tuple variant with the given type.
         prop_type => Ok(VariantDetails::Tuple(vec![
-            type_space.id_for_schema(None, prop_type)?.0,
+            type_space.id_for_schema(type_name, prop_type)?.0,
         ])),
     }
 }
 
 pub(crate) fn maybe_internally_tagged_enum(
-    type_name: Option<&str>,
+    type_name: Name,
     metadata: &Option<Box<Metadata>>,
     subschemas: &[Schema],
     type_space: &mut TypeSpace,
@@ -345,7 +353,7 @@ fn internal_variant(
                 // Include all properties except the tag.
                 if prop_name != tag {
                     Some(struct_property(
-                        validation, prop_name, prop_type, type_space,
+                        None, validation, prop_name, prop_type, type_space,
                     ))
                 } else {
                     None
@@ -363,7 +371,7 @@ fn internal_variant(
 }
 
 pub(crate) fn maybe_adjacently_tagged_enum(
-    type_name: Option<&str>,
+    type_name: Name,
     metadata: &Option<Box<schemars::schema::Metadata>>,
     subschemas: &[Schema],
     type_space: &mut TypeSpace,
@@ -478,7 +486,8 @@ fn adjacent_variant(
             name,
             rename,
             description: None,
-            details: external_variant(content_schema, type_space)?,
+            // TODO type name
+            details: external_variant(Name::Unknown, content_schema, type_space)?,
         })
     }
 }
@@ -529,11 +538,12 @@ fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
 }
 
 pub(crate) fn untagged_enum(
-    type_name: Option<&str>,
+    type_name: Name,
     metadata: &Option<Box<schemars::schema::Metadata>>,
     subschemas: &[Schema],
     type_space: &mut TypeSpace,
 ) -> Result<TypeEntry> {
+    let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
     Ok(TypeEntry::from_metadata(
         type_name,
         metadata,
@@ -543,10 +553,14 @@ pub(crate) fn untagged_enum(
             variants: subschemas
                 .iter()
                 .enumerate()
-                .map(|(i, schema)| {
-                    let details = external_variant(schema, type_space)?;
+                .map(|(idx, schema)| {
+                    let sub_type_name = match &tmp_type_name {
+                        Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
+                        None => Name::Unknown,
+                    };
+                    let details = external_variant(sub_type_name, schema, type_space)?;
                     Ok(Variant {
-                        name: format!("Variant{}", i),
+                        name: format!("Variant{}", idx),
                         rename: None,
                         description: None,
                         details,
@@ -606,7 +620,7 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
     }
 }
 
-pub(crate) fn enum_impl(type_name: &Ident, variants: &Vec<Variant>) -> TokenStream {
+pub(crate) fn enum_impl(type_name: &Ident, variants: &[Variant]) -> TokenStream {
     let maybe_simple_variants = variants
         .iter()
         .map(|variant| {
@@ -649,8 +663,10 @@ pub(crate) fn enum_impl(type_name: &Ident, variants: &Vec<Variant>) -> TokenStre
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use schema::Schema;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::{schema::RootSchema, schema_for, JsonSchema};
     use serde::Serialize;
 
     use crate::{
@@ -659,7 +675,7 @@ mod tests {
             maybe_internally_tagged_enum, untagged_enum,
         },
         test_util::{validate_output, validate_output_for_untagged_enm},
-        EnumTagType, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+        EnumTagType, Name, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
     };
 
     #[allow(dead_code)]
@@ -680,24 +696,24 @@ mod tests {
     fn test_externally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(ExternallyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_externally_tagged_enum(
-            Some("ExternallyTaggedEnum"),
+            Name::Required("ExternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
         )
         .is_some());
         assert!(maybe_adjacently_tagged_enum(
-            Some("ExternallyTaggedEnum"),
+            Name::Required("ExternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
         )
         .is_none());
         assert!(maybe_internally_tagged_enum(
-            Some("ExternallyTaggedEnum"),
+            Name::Required("ExternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
@@ -729,17 +745,17 @@ mod tests {
     fn test_adjacently_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(AdjacentlyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_adjacently_tagged_enum(
-            Some("AdjacentlyTaggedEnum"),
+            Name::Required("AdjacentlyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
         )
         .is_some());
         assert!(maybe_externally_tagged_enum(
-            Some("AdjacentlyTaggedEnum"),
+            Name::Required("AdjacentlyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
@@ -771,24 +787,24 @@ mod tests {
     fn test_internally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(InternallyTaggedEnum);
-        let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(maybe_internally_tagged_enum(
-            Some("InternallyTaggedEnum"),
+            Name::Required("InternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
         )
         .is_some());
         assert!(maybe_adjacently_tagged_enum(
-            Some("InternallyTaggedEnum"),
+            Name::Required("InternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
         )
         .is_none());
         assert!(maybe_externally_tagged_enum(
-            Some("InternallyTaggedEnum"),
+            Name::Required("InternallyTaggedEnum".to_string()),
             &None,
             &subschemas,
             &mut type_space
@@ -821,7 +837,13 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(UntaggedEnum);
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
-        let ty = untagged_enum(Some("UntaggedEnum"), &None, &subschemas, &mut type_space).unwrap();
+        let ty = untagged_enum(
+            Name::Required("UntaggedEnum".to_string()),
+            &None,
+            &subschemas,
+            &mut type_space,
+        )
+        .unwrap();
 
         match ty {
             TypeEntry {
@@ -888,7 +910,9 @@ mod tests {
         let schema = schema_for!(UntaggedEnum);
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
 
-        let (ty, _) = type_space.convert_one_of(None, &None, &subschemas).unwrap();
+        let (ty, _) = type_space
+            .convert_one_of(Name::Unknown, &None, &subschemas)
+            .unwrap();
 
         // This confirms in particular that the tag type is untagged and
         // therefore that the other enum tagging regimes did not match.
@@ -904,5 +928,103 @@ mod tests {
                 },
             }
         ));
+    }
+
+    #[test]
+    fn test_xxx() {
+        let xxx = r##"
+        {
+            "$schema": "http://json-schema.org/draft-07/schema",
+            "$id": "pull_request$review_request_removed",
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "action",
+                  "number",
+                  "pull_request",
+                  "requested_reviewer",
+                  "repository",
+                  "sender"
+                ],
+                "properties": {
+                  "action": { "type": "string", "enum": ["review_request_removed"] },
+                  "number": {
+                    "type": "integer",
+                    "description": "The pull request number."
+                  },
+                  "pull_request": { "$ref": "#/definitions/pull-request" },
+                  "requested_reviewer": { "$ref": "#/definitions/user" },
+                  "repository": { "$ref": "#/definitions/repository" },
+                  "installation": { "$ref": "#/definitions/installation-lite" },
+                  "organization": { "$ref": "#/definitions/organization" },
+                  "sender": { "$ref": "#/definitions/user" }
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "action",
+                  "number",
+                  "pull_request",
+                  "requested_team",
+                  "repository",
+                  "sender"
+                ],
+                "properties": {
+                  "action": { "type": "string", "enum": ["review_request_removed"] },
+                  "number": {
+                    "type": "integer",
+                    "description": "The pull request number."
+                  },
+                  "pull_request": { "$ref": "#/definitions/pull-request" },
+                  "requested_team": { "$ref": "#/definitions/team" },
+                  "repository": { "$ref": "#/definitions/repository" },
+                  "installation": { "$ref": "#/definitions/installation-lite" },
+                  "organization": { "$ref": "#/definitions/organization" },
+                  "sender": { "$ref": "#/definitions/user" }
+                },
+                "additionalProperties": false
+              }
+            ],
+            "title": "pull_request review_request_removed event",
+
+            "definitions": {
+                "pull-request": { "type": "string" },
+                "user": { "type": "string" },
+                "team": { "type": "string" },
+                "repository": { "type": "string" },
+                "installation-lite": { "type": "string" },
+                "organization": { "type": "string" }
+            }
+          }
+        "##;
+
+        let schema: RootSchema = serde_json::from_str(xxx).unwrap();
+
+        println!("{:#?}", schema);
+
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
+
+        let (type_entry, _) = type_space
+            .convert_schema_object(Name::Unknown, &schema.schema)
+            .unwrap();
+
+        let x = type_entry.output(&type_space);
+        println!("{}", x.to_string());
+
+        if let TypeDetails::Enum { variants, .. } = &type_entry.details {
+            let variant_names = variants
+                .iter()
+                .map(|variant| variant.name.clone())
+                .collect::<HashSet<_>>();
+            assert_eq!(variant_names.len(), variants.len());
+        } else {
+            panic!();
+        }
+
+        panic!();
     }
 }
