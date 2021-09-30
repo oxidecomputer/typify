@@ -86,7 +86,7 @@ impl TypeEntry {
                 let sub_type_name = sub_type.type_ident(type_space, false);
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
-                    struct #type_name(#sub_type_name);
+                    pub struct #type_name(#sub_type_name);
                 }
             }
 
