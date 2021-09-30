@@ -287,23 +287,6 @@ impl TypeSpace {
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
-            // Canonicalize const values
-            // SchemaObject {
-            //     metadata,
-            //     const_value: Some(const_value),
-            //     ..
-            // } => {
-            //     println!("canon");
-            //     let new_schema = SchemaObject {
-            //         enum_values: Some(vec![const_value.clone()]),
-            //         const_value: None,
-            //         ..schema.clone()
-            //     };
-
-            //     self.convert_schema_object(type_name, &new_schema)
-            //         .map(|(te, m)| (te, if m == metadata { metadata } else { &None }))
-            // }
-
             // Strings
             SchemaObject {
                 metadata,

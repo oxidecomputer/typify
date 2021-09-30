@@ -13,7 +13,6 @@ pub(crate) fn struct_members(
     validation: &ObjectValidation,
     type_space: &mut TypeSpace,
 ) -> Result<Vec<StructProperty>> {
-    println!("{:#?}", validation);
     // These are the fields we don't currently handle
     assert!(validation.max_properties.is_none());
     assert!(validation.min_properties.is_none());
@@ -100,7 +99,7 @@ pub(crate) fn output_struct_property(
 #[cfg(test)]
 mod tests {
     use schema::Schema;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::JsonSchema;
     use serde::Serialize;
 
     use crate::test_util::validate_output;
@@ -130,30 +129,5 @@ mod tests {
     #[test]
     fn test_less_simple_struct() {
         validate_output::<LessSimpleStruct>();
-    }
-
-    #[allow(dead_code)]
-    #[derive(Serialize, JsonSchema, Schema)]
-    struct HaveStruct {
-        a: Option<String>,
-        b: Vec<String>,
-    }
-
-    #[allow(dead_code)]
-    #[derive(Serialize, JsonSchema, Schema)]
-    struct OmitStruct {
-        #[serde(default)]
-        a: Option<String>,
-        #[serde(default)]
-        b: Vec<String>,
-    }
-    #[test]
-    fn test_omit() {
-        let schema = schema_for!(HaveStruct);
-        println!("{:#?}", schema);
-        let schema = schema_for!(OmitStruct);
-        println!("{:#?}", schema);
-
-        //panic!();
     }
 }
