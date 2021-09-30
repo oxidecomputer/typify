@@ -35,7 +35,7 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TypeEntry {
     name: Option<String>,
     rename: Option<String>,
@@ -47,7 +47,7 @@ pub struct TypeEntry {
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub struct TypeId(u64);
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum TypeDetails {
     Enum {
         tag_type: EnumTagType,
@@ -67,7 +67,7 @@ pub(crate) enum TypeDetails {
     Reference(TypeId),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum EnumTagType {
     External,
     Internal { tag: String },
@@ -75,7 +75,7 @@ pub(crate) enum EnumTagType {
     Untagged,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Variant {
     name: String,
     rename: Option<String>,
@@ -83,7 +83,7 @@ pub(crate) struct Variant {
     details: VariantDetails,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum VariantDetails {
     Simple,
     Tuple(Vec<TypeId>),
@@ -98,7 +98,7 @@ pub(crate) enum VariantDetails {
 // non-required and nullable -> Option<T> and skip or not (doesn't matter)
 // non-required and non-nullable -> Option<T> and skip
 // required and non-nullable -> T
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct StructProperty {
     name: String,
     serde_options: StructPropertySerde,
@@ -106,7 +106,7 @@ pub(crate) struct StructProperty {
     type_id: TypeId,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum StructPropertySerde {
     None,
     Rename(String),
@@ -1097,7 +1097,9 @@ impl TypeSpace {
                 };
                 let (type_id, _) = self.id_for_schema(tmp_type_name, item.as_ref())?;
 
-                let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Array(type_id));
+                // We don't need a name for an array
+                let ty =
+                    TypeEntry::from_metadata(Name::Unknown, metadata, TypeDetails::Array(type_id));
 
                 Ok((ty, metadata))
             }

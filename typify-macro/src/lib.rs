@@ -39,9 +39,13 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     type_space
         .add_ref_types(schema.definitions)
         .map_err(|e| into_syn_err(e, arg.span()))?;
-    let _ = type_space
-        .add_type(&Schema::Object(schema.schema))
-        .map_err(|e| into_syn_err(e, arg.span()))?;
+    let base_type = &schema.schema;
+    // Only convert the top-level type if it has a name
+    if (|| base_type.metadata.as_ref()?.title.as_ref())().is_some() {
+        let _ = type_space
+            .add_type(&Schema::Object(schema.schema))
+            .map_err(|e| into_syn_err(e, arg.span()))?;
+    }
 
     let types = type_space.iter_types().map(|t| t.output(&type_space));
 
