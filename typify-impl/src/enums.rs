@@ -610,7 +610,7 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
         VariantDetails::Simple => quote! {
             #doc
             #rename
-            pub #name,
+            #name,
         },
 
         VariantDetails::Tuple(tuple) => {
@@ -625,7 +625,7 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
             quote! {
                 #doc
                 #rename
-                pub #name(#(#types),*),
+                #name(#(#types),*),
             }
         }
 
@@ -637,7 +637,7 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
             quote! {
                 #doc
                 #rename
-                pub #name {
+                #name {
                     #(#properties)*
                 },
             }

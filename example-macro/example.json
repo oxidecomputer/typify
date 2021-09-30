@@ -1,6 +1,7 @@
 {
   "$id": "https://example.com/arrays.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "veggies",
   "description": "A representation of a person, company, organization, or place",
   "type": "object",
   "properties": {
@@ -12,13 +13,18 @@
     },
     "vegetables": {
       "type": "array",
-      "items": { "$ref": "#/$defs/veggie" }
+      "items": {
+        "$ref": "#/$defs/veggie"
+      }
     }
   },
   "$defs": {
     "veggie": {
       "type": "object",
-      "required": [ "veggieName", "veggieLike" ],
+      "required": [
+        "veggieName",
+        "veggieLike"
+      ],
       "properties": {
         "veggieName": {
           "type": "string",

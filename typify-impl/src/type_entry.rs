@@ -86,7 +86,7 @@ impl TypeEntry {
                 let sub_type_name = sub_type.type_ident(type_space, false);
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
-                    struct #type_name(#sub_type_name);
+                    pub struct #type_name(#sub_type_name);
                 }
             }
 
@@ -126,7 +126,10 @@ impl TypeEntry {
             }
 
             TypeDetails::Array(id) => {
-                let inner_ty = type_space.id_to_entry.get(id).unwrap();
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("it shouldn't be possible to have an unresolved id for an item");
                 let stream = inner_ty.type_ident(type_space, external);
 
                 quote! { Vec<#stream> }
@@ -137,7 +140,7 @@ impl TypeEntry {
                     type_space
                         .id_to_entry
                         .get(item)
-                        .unwrap()
+                        .expect("it shouldn't be possible to have an unresolved id for a tuple")
                         .type_ident(type_space, external)
                 });
 

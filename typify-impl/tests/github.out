@@ -376,7 +376,7 @@ pub struct CommitCommentcreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct CommitCommentEvent(CommitCommentcreated);
+pub struct CommitCommentEvent(CommitCommentcreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Committer {
     pub date: Option<chrono::DateTime<chrono::offset::Utc>>,
@@ -395,7 +395,7 @@ pub struct ContentReferencecreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct ContentReferenceEvent(ContentReferencecreated);
+pub struct ContentReferenceEvent(ContentReferencecreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Createevent {
     #[doc = "The repository's current description."]
@@ -464,7 +464,7 @@ pub struct Deploymentcreated {
     pub workflow_run: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct DeploymentEvent(Deploymentcreated);
+pub struct DeploymentEvent(Deploymentcreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatuscreated {
     pub action: DeploymentStatuscreatedAction,
@@ -476,7 +476,7 @@ pub struct DeploymentStatuscreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct DeploymentStatusEvent(DeploymentStatuscreated);
+pub struct DeploymentStatusEvent(DeploymentStatuscreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Discussion {
     pub active_lock_reason: Option<String>,
@@ -717,7 +717,7 @@ pub struct GithubAppAuthorizationrevoked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct GithubAppAuthorizationEvent(GithubAppAuthorizationrevoked);
+pub struct GithubAppAuthorizationEvent(GithubAppAuthorizationrevoked);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Gollumevent {
     pub installation: Option<InstallationLite>,
@@ -1322,7 +1322,7 @@ pub struct Metadeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct MetaEvent(Metadeleted);
+pub struct MetaEvent(Metadeleted);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Milestone {
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
@@ -2558,7 +2558,7 @@ pub struct RepositoryDispatchonDemandTest {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct RepositoryDispatchEvent(RepositoryDispatchonDemandTest);
+pub struct RepositoryDispatchEvent(RepositoryDispatchonDemandTest);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum RepositoryEvent {
@@ -2943,7 +2943,7 @@ pub struct Watchstarted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct WatchEvent(Watchstarted);
+pub struct WatchEvent(Watchstarted);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum WebhookEvents {
