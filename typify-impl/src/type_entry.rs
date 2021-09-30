@@ -1,3 +1,4 @@
+use convert_case::Case;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
@@ -5,18 +6,22 @@ use schemars::schema::Metadata;
 use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
-    util::{metadata_description, metadata_title},
-    TypeDetails, TypeEntry, TypeSpace,
+    util::{get_type_name, metadata_description},
+    Name, TypeDetails, TypeEntry, TypeSpace,
 };
 
 impl TypeEntry {
     pub(crate) fn from_metadata(
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &Option<Box<Metadata>>,
         details: TypeDetails,
     ) -> Self {
+        let name = get_type_name(&type_name, metadata, Case::Pascal);
+
         Self {
-            name: metadata_title(metadata).or_else(|| type_name.map(ToString::to_string)),
+            name,
+            // TODO
+            rename: None,
             description: metadata_description(metadata),
             details,
         }
@@ -74,8 +79,22 @@ impl TypeEntry {
                 }
             }
 
+            TypeDetails::Newtype(type_id) => {
+                let type_name = self.name.as_ref().unwrap();
+                let type_name = format_ident!("{}", type_name);
+                let sub_type = type_space.id_to_entry.get(type_id).unwrap();
+                let sub_type_name = sub_type.type_ident(type_space, false);
+                quote! {
+                    #[derive(Serialize, Deserialize, Debug, Clone)]
+                    struct #type_name(#sub_type_name);
+                }
+            }
+
             // These types require no definition as they're already defined.
-            TypeDetails::BuiltIn | TypeDetails::Option(_) | &TypeDetails::Array(_) => quote! {},
+            TypeDetails::BuiltIn
+            | TypeDetails::Option(_)
+            | TypeDetails::Array(_)
+            | TypeDetails::Unit => quote! {},
 
             // TODO we only expect to end up with a reference type here if
             // there's a type defined in the definitions table (i.e. the
@@ -83,7 +102,6 @@ impl TypeEntry {
             // in the same table.
             TypeDetails::Reference(_) => todo!(),
 
-            TypeDetails::Unit => todo!(),
             TypeDetails::Tuple(_) => todo!(),
 
             // TODO remove this; here for development

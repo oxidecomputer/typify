@@ -5,7 +5,7 @@ use syn::{
     FieldsUnnamed, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::TypeSpace;
+use crate::{Name, TypeSpace};
 
 /// Ingest a type, spit it back out, and make sure it matches where we started.
 #[track_caller]
@@ -23,11 +23,9 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let schema = schema_for!(T);
 
-    println!("{:#?}", schema.schema);
-
     let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
     let (ty, _) = type_space
-        .convert_schema_object(Some(&"TODO".to_string()), &schema.schema)
+        .convert_schema_object(Name::Unknown, &schema.schema)
         .unwrap();
 
     let output = ty.output(&type_space);

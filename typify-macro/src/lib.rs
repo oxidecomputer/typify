@@ -2,7 +2,7 @@ use std::path::Path;
 
 use proc_macro::TokenStream;
 use syn::LitStr;
-use typify_impl::TypeSpace;
+use typify_impl::{Name, TypeSpace};
 
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
@@ -30,16 +30,12 @@ pub fn import_types(item: TokenStream) -> TokenStream {
 
             let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
-            println!("arg {:#?}", schema);
-
             let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
             let x = type_space
-                .convert_schema_object(Some("myname"), &schema.schema)
+                .convert_schema_object(Name::Required("myname".to_string()), &schema.schema)
                 .unwrap();
 
-            println!("{:#?}", x.0);
             let ret = x.0.output(&type_space);
-            println!("{}", ret.to_string());
 
             ret.into()
         }

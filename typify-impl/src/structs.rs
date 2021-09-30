@@ -3,13 +3,16 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{ObjectValidation, Schema};
 
-use crate::{util::metadata_description, Result, StructProperty, StructPropertySerde, TypeSpace};
+use crate::{
+    util::{metadata_description, recase},
+    Name, Result, StructProperty, StructPropertySerde, TypeSpace,
+};
 
 pub(crate) fn struct_members(
+    type_name: Option<String>,
     validation: &ObjectValidation,
     type_space: &mut TypeSpace,
 ) -> Result<Vec<StructProperty>> {
-    println!("{:#?}", validation);
     // These are the fields we don't currently handle
     assert!(validation.max_properties.is_none());
     assert!(validation.min_properties.is_none());
@@ -26,7 +29,7 @@ pub(crate) fn struct_members(
     let mut properties = validation
         .properties
         .iter()
-        .map(|(name, ty)| struct_property(validation, name, ty, type_space))
+        .map(|(name, ty)| struct_property(type_name.clone(), validation, name, ty, type_space))
         .collect::<Result<Vec<_>>>()?;
 
     // Sort parameters by name to ensure a deterministic result.
@@ -35,21 +38,25 @@ pub(crate) fn struct_members(
 }
 
 pub(crate) fn struct_property(
+    type_name: Option<String>,
     validation: &ObjectValidation,
     prop_name: &str,
     schema: &schemars::schema::Schema,
     type_space: &mut TypeSpace,
 ) -> Result<StructProperty> {
-    let (mut type_id, metadata) = type_space.id_for_schema(None, schema)?;
+    let sub_type_name = match type_name {
+        Some(name) => Name::Suggested(format!("{}{}", name, prop_name.to_case(Case::Pascal))),
+        None => Name::Unknown,
+    };
+    let (mut type_id, metadata) = type_space.id_for_schema(sub_type_name, schema)?;
     if !validation.required.contains(prop_name) {
         type_id = type_space.id_for_option(&type_id);
     }
 
-    let name = prop_name.to_case(Case::Snake);
-    let serde_options = if name == prop_name {
-        StructPropertySerde::None
-    } else {
-        StructPropertySerde::Rename(prop_name.to_string())
+    let (name, rename) = recase(prop_name.to_string(), Case::Snake);
+    let serde_options = match rename {
+        Some(old_name) => StructPropertySerde::Rename(old_name),
+        None => StructPropertySerde::None,
     };
 
     Ok(StructProperty {
@@ -92,7 +99,7 @@ pub(crate) fn output_struct_property(
 #[cfg(test)]
 mod tests {
     use schema::Schema;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::JsonSchema;
     use serde::Serialize;
 
     use crate::test_util::validate_output;
@@ -122,30 +129,5 @@ mod tests {
     #[test]
     fn test_less_simple_struct() {
         validate_output::<LessSimpleStruct>();
-    }
-
-    #[allow(dead_code)]
-    #[derive(Serialize, JsonSchema, Schema)]
-    struct HaveStruct {
-        a: Option<String>,
-        b: Vec<String>,
-    }
-
-    #[allow(dead_code)]
-    #[derive(Serialize, JsonSchema, Schema)]
-    struct OmitStruct {
-        #[serde(default)]
-        a: Option<String>,
-        #[serde(default)]
-        b: Vec<String>,
-    }
-    #[test]
-    fn test_omit() {
-        let schema = schema_for!(HaveStruct);
-        println!("{:#?}", schema);
-        let schema = schema_for!(OmitStruct);
-        println!("{:#?}", schema);
-
-        //panic!();
     }
 }

@@ -10,9 +10,12 @@ use structs::struct_members;
 use thiserror::Error;
 use util::{all_mutually_exclusive, recase};
 
-use crate::enums::{
-    maybe_adjacently_tagged_enum, maybe_externally_tagged_enum, maybe_internally_tagged_enum,
-    untagged_enum,
+use crate::{
+    enums::{
+        maybe_adjacently_tagged_enum, maybe_externally_tagged_enum, maybe_internally_tagged_enum,
+        untagged_enum,
+    },
+    util::get_type_name,
 };
 
 mod enums;
@@ -35,7 +38,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug, PartialEq, Eq)]
 pub struct TypeEntry {
     name: Option<String>,
-    // TODO rename: Option<String>,
+    rename: Option<String>,
     description: Option<String>,
     details: TypeDetails,
     // TODO probably need a bit to say if this is a built-in type
@@ -56,6 +59,7 @@ pub(crate) enum TypeDetails {
     Array(TypeId),
     Tuple(Vec<TypeId>),
     BuiltIn,
+    Newtype(TypeId),
 
     // While these types won't very make their way out to the user, we need
     // reference types in particular to represent simple type aliases between
@@ -107,6 +111,13 @@ pub(crate) enum StructPropertySerde {
     None,
     Rename(String),
     Flatten,
+}
+
+#[derive(Debug, Clone)]
+pub enum Name {
+    Required(String),
+    Suggested(String),
+    Unknown,
 }
 
 // TODO we need two String -> Type maps:
@@ -199,7 +210,21 @@ impl TypeSpace {
                 None => &ref_name,
             };
 
-            let (type_entry, _) = self.convert_schema(Some(type_name), &schema)?;
+            let (type_entry, metadata) =
+                self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
+            let type_entry = match type_entry {
+                TypeEntry {
+                    name: None,
+                    rename: None,
+                    description: None,
+                    details: TypeDetails::Reference(type_id),
+                } => TypeEntry::from_metadata(
+                    Name::Required(type_name.to_string()),
+                    metadata,
+                    TypeDetails::Newtype(type_id),
+                ),
+                _ => type_entry,
+            };
             self.definitions.insert(ref_name, schema);
             self.id_to_entry
                 .insert(TypeId(base_id + index as u64), type_entry);
@@ -210,7 +235,7 @@ impl TypeSpace {
     /// Add a new type and return a type identifier that may be used in
     /// function signatures or embedded within other types.
     pub fn add_type(&mut self, schema: &Schema) -> Result<TokenStream> {
-        let (type_entry, _) = self.convert_schema(None, schema)?;
+        let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
 
         let type_id = self.assign_type(type_entry);
         let type_entry = self.id_to_entry.get(&type_id).unwrap();
@@ -247,7 +272,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_schema<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
@@ -258,7 +283,7 @@ impl TypeSpace {
 
     pub fn convert_schema_object<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
@@ -577,6 +602,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("String".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -589,6 +615,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("uuid::Uuid".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -601,6 +628,7 @@ impl TypeSpace {
                 Ok((
                     TypeEntry {
                         name: Some("chrono::DateTime<chrono::offset::Utc>".to_string()),
+                        rename: None,
                         description: None,
                         details: TypeDetails::BuiltIn,
                     },
@@ -612,6 +640,7 @@ impl TypeSpace {
             Some("uri" | "uri-template" | "email") => Ok((
                 TypeEntry {
                     name: Some("String".to_string()),
+                    rename: None,
                     description: None,
                     details: TypeDetails::BuiltIn,
                 },
@@ -624,7 +653,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_enum_string<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -689,41 +718,49 @@ impl TypeSpace {
         let ty = match format.as_ref().map(|s| s.as_str()) {
             Some("int8") => TypeEntry {
                 name: Some("i8".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint8") => TypeEntry {
                 name: Some("u8".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int16") => TypeEntry {
                 name: Some("i16".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint16") => TypeEntry {
                 name: Some("u16".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int32" | "int") => TypeEntry {
                 name: Some("i32".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint32" | "uint") => TypeEntry {
                 name: Some("u32".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("int64") => TypeEntry {
                 name: Some("i64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
             Some("uint64") => TypeEntry {
                 name: Some("u64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -732,6 +769,7 @@ impl TypeSpace {
             // validation e.g. for max and min?
             None => TypeEntry {
                 name: Some("u64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -760,6 +798,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("f64".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -771,7 +810,7 @@ impl TypeSpace {
     /// solitary value so we model that with the unit type.
     pub(crate) fn convert_null<'a>(
         &self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Unit);
@@ -780,7 +819,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_object<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         validation: &ObjectValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -804,10 +843,11 @@ impl TypeSpace {
 
             // The typical case
             _ => {
+                let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
                 let ty = TypeEntry::from_metadata(
                     type_name,
                     metadata,
-                    TypeDetails::Struct(struct_members(validation, self)?),
+                    TypeDetails::Struct(struct_members(tmp_type_name, validation, self)?),
                 );
                 Ok((ty, &None))
             }
@@ -826,6 +866,7 @@ impl TypeSpace {
         let type_id = self.ref_to_id.get(key).unwrap();
         let ty = TypeEntry {
             name: None,
+            rename: None,
             description: None,
             details: TypeDetails::Reference(type_id.clone()),
         };
@@ -834,7 +875,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_all_of<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -856,7 +897,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_any_of<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -935,7 +976,7 @@ impl TypeSpace {
     /// Untagged enums apply to any set of subschemas so must be applied last.
     fn convert_one_of<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -948,10 +989,14 @@ impl TypeSpace {
         // null. Not sure why this would happen, but we'd want to make it look
         // like an Option. It happens a bunch with github's API
 
-        let ty = maybe_externally_tagged_enum(type_name, metadata, subschemas, self)
+        let ty = maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas, self)
             .map(Ok)
-            .or_else(|| maybe_adjacently_tagged_enum(type_name, metadata, subschemas, self).map(Ok))
-            .or_else(|| maybe_internally_tagged_enum(type_name, metadata, subschemas, self).map(Ok))
+            .or_else(|| {
+                maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
+            })
+            .or_else(|| {
+                maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
+            })
             .unwrap_or_else(|| untagged_enum(type_name, metadata, subschemas, self))?;
 
         Ok((ty, &None))
@@ -965,8 +1010,14 @@ impl TypeSpace {
 
     fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
         if let TypeDetails::Reference(type_id) = &ty.details {
+            // The underlying type is already assigned so we just need to
+            // return that type ID.
             type_id.clone()
         } else if let Some(name) = ty.name.clone() {
+            // If there's already a type of this name, we make sure it's
+            // identical.
+            // TODO there are many different choices we might make here that
+            // could differ depending on the texture of the schema.
             if let Some(type_id) = self.name_to_id.get(&name) {
                 let existing_ty = self.id_to_entry.get(type_id).unwrap();
                 assert_eq!(existing_ty, &ty);
@@ -986,7 +1037,7 @@ impl TypeSpace {
 
     pub(crate) fn id_for_schema<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
         let (ty, meta) = self.convert_schema(type_name, schema)?;
@@ -1000,6 +1051,7 @@ impl TypeSpace {
         } else {
             let ty = TypeEntry {
                 name: None,
+                rename: None,
                 description: None,
                 details: TypeDetails::Option(id.clone()),
             };
@@ -1017,6 +1069,7 @@ impl TypeSpace {
         // TODO: this is bad b/c I'm not recording this option in `id_to_option`
         TypeEntry {
             name: None,
+            rename: None,
             description: None,
             details: TypeDetails::Option(type_id),
         }
@@ -1024,7 +1077,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_array<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         validation: &ArrayValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1038,7 +1091,11 @@ impl TypeSpace {
                 unique_items: None,
                 contains: None,
             } => {
-                let (type_id, _) = self.id_for_schema(None, item.as_ref())?;
+                let tmp_type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                    Some(s) => Name::Suggested(format!("{}Item", s)),
+                    None => Name::Unknown,
+                };
+                let (type_id, _) = self.id_for_schema(tmp_type_name, item.as_ref())?;
 
                 let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Array(type_id));
 
@@ -1056,7 +1113,7 @@ impl TypeSpace {
             } if max_items == min_items && *max_items as usize == items.len() => {
                 let types = items
                     .iter()
-                    .map(|schema| Ok(self.id_for_schema(None, schema)?.0))
+                    .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
                     .collect::<Result<Vec<_>>>()?;
 
                 let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Tuple(types));
@@ -1085,7 +1142,7 @@ impl TypeSpace {
     /// has type T_N for each member of the struct, the former has Option<T_N>.
     fn flattened_union_struct<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
         optional: bool,
@@ -1094,10 +1151,12 @@ impl TypeSpace {
             .iter()
             .enumerate()
             .map(|(idx, schema)| {
-                // TODO this should take a name hint of some kind
-                let type_name = type_name.map(|s| format!("{}Variant{}", s, idx));
+                let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                    Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
+                    None => Name::Unknown,
+                };
 
-                let (mut type_id, _) = self.id_for_schema(type_name.as_deref(), schema)?;
+                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
                 if optional {
                     type_id = self.id_for_option(&type_id);
                 }
@@ -1129,6 +1188,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("bool".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -1144,6 +1204,7 @@ impl TypeSpace {
         Ok((
             TypeEntry {
                 name: Some("serde_json::Value".to_string()),
+                rename: None,
                 description: None,
                 details: TypeDetails::BuiltIn,
             },
@@ -1153,7 +1214,7 @@ impl TypeSpace {
 
     pub(crate) fn convert_unknown_enum<'a>(
         &mut self,
-        type_name: Option<&str>,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1193,7 +1254,7 @@ mod tests {
     use serde_json::json;
     use std::collections::HashSet;
 
-    use crate::{TypeDetails, TypeEntry, TypeSpace, VariantDetails};
+    use crate::{Name, TypeDetails, TypeEntry, TypeSpace, VariantDetails};
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema)]
@@ -1246,7 +1307,7 @@ mod tests {
         println!("{:#?}", schema);
         let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(None, &schema.schema)
+            .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
         println!("{:#?}", ty);
@@ -1277,7 +1338,7 @@ mod tests {
 
         let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(None, &schema.schema)
+            .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
         match ty {
@@ -1319,7 +1380,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let (te, _) = type_space
-            .convert_enum_string(None, &None, &enum_values)
+            .convert_enum_string(Name::Unknown, &None, &enum_values)
             .unwrap();
 
         if let TypeDetails::Option(id) = &te.details {

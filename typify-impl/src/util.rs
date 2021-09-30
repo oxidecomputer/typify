@@ -5,6 +5,8 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
 };
 
+use crate::Name;
+
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
         .as_ref()
@@ -331,6 +333,8 @@ fn array_schemas_mutually_exclusive(
     }
 }
 
+/// If this schema represents a constant-value string, return that string,
+/// otherwise return None.
 pub(crate) fn constant_string_value(schema: &Schema) -> Option<String> {
     match schema {
         // Strings must be simple enumerations.
@@ -391,8 +395,35 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
     }
 }
 
+fn sanitize(input: String) -> String {
+    let out = input.replace("$", "").replace("'", "");
+    match out.as_str() {
+        "ref" => "rref".to_string(),
+        "type" => "ttype".to_string(),
+        "self" => "sself".to_string(),
+        _ => out,
+    }
+}
+
 pub(crate) fn recase(input: String, case: Case) -> (String, Option<String>) {
-    let new = input.to_case(case);
+    let new = sanitize(input.clone()).to_case(case);
     let rename = if new == input { None } else { Some(input) };
+    assert_ne!(new, "ref");
     (new, rename)
+}
+
+pub(crate) fn get_type_name(
+    type_name: &Name,
+    metadata: &Option<Box<Metadata>>,
+    case: Case,
+) -> Option<String> {
+    let name = match (type_name, metadata_title(metadata)) {
+        (Name::Required(name), _) => name.clone(),
+        (Name::Suggested(name), None) => name.clone(),
+        (_, Some(name)) => name,
+        (Name::Unknown, None) => None?,
+    };
+
+    let name = sanitize(name);
+    Some(name.to_case(case))
 }
