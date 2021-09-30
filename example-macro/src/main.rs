@@ -2,8 +2,8 @@ use typify::import_types;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-struct veggie(String);
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Veggie(String);
 
 import_types!("./example.json");
 
