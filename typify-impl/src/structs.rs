@@ -1,10 +1,12 @@
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use schemars::schema::{Metadata, ObjectValidation, Schema};
+use schemars::schema::{
+    InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
+};
 
 use crate::{
-    util::{get_type_name, metadata_description, recase},
+    util::{get_type_name, metadata_description, recase, schema_is_named},
     Name, Result, StructProperty, StructPropertySerde, TypeDetails, TypeEntry, TypeSpace,
 };
 
@@ -148,6 +150,70 @@ pub(crate) fn flattened_union_struct<'a>(
     let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Struct(properties));
 
     Ok((ty, metadata))
+}
+
+pub(crate) fn maybe_all_of_subclass(
+    type_name: Name,
+    metadata: &Option<Box<Metadata>>,
+    subschemas: &[Schema],
+    type_space: &mut TypeSpace,
+) -> Option<TypeEntry> {
+    let (named, unnamed): (Vec<_>, Vec<_>) = subschemas
+        .iter()
+        .map(|schema| (schema, schema_is_named(schema)))
+        .partition(|(_, name)| name.is_some());
+
+    if unnamed.len() != 1 {
+        return None;
+    }
+
+    let unnamed_schema = unnamed.first()?.0;
+    let validation = match unnamed_schema {
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: Some(validation),
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::Object => Some(validation),
+        _ => None,
+    }?;
+    let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+    let unnamed_properties = struct_members(tmp_type_name, validation, type_space).ok()?;
+
+    let named_properties = named
+        .iter()
+        .map(|(schema, property_name)| {
+            let (type_id, metadata) = type_space.id_for_schema(type_name.clone(), schema)?;
+            Ok(StructProperty {
+                name: property_name.as_ref().unwrap().to_case(Case::Snake),
+                serde_options: StructPropertySerde::Flatten,
+                description: metadata_description(metadata),
+                type_id,
+            })
+        })
+        .collect::<Result<Vec<_>>>()
+        .ok()?;
+
+    let ty = TypeEntry::from_metadata(
+        type_name,
+        metadata,
+        TypeDetails::Struct(
+            named_properties
+                .into_iter()
+                .chain(unnamed_properties.into_iter())
+                .collect(),
+        ),
+    );
+
+    Some(ty)
 }
 
 #[cfg(test)]

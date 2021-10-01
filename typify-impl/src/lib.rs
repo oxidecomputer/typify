@@ -6,7 +6,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
 };
-use structs::{flattened_union_struct, struct_members};
+use structs::{flattened_union_struct, maybe_all_of_subclass, struct_members};
 use thiserror::Error;
 use util::{all_mutually_exclusive, recase};
 
@@ -895,6 +895,11 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
+        // TODO make this look more like the other maybe clauses
+        if let Some(ty) = maybe_all_of_subclass(type_name.clone(), metadata, subschemas, self) {
+            return Ok((ty, metadata));
+        }
+
         // We'll want to build a struct that looks like this:
         // struct Name {
         //     #[serde(flatten)]
@@ -1005,7 +1010,7 @@ impl TypeSpace {
             .or_else(|| maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self))
             .map_or_else(|| untagged_enum(type_name, metadata, subschemas, self), Ok)?;
 
-        Ok((ty, &None))
+        Ok((ty, metadata))
     }
 
     fn assign(&mut self) -> TypeId {

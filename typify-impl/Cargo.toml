@@ -20,4 +20,4 @@ syn = "1.0.76"
 serde = "1.0.125"
 schema = "0.0.1"
 rustfmt-wrapper = { path = "../rustfmt-wrapper" }
-expectorate = "1.0.3"
+expectorate = "1.0.4"
