@@ -101,16 +101,23 @@ pub(crate) enum VariantDetails {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct StructProperty {
     name: String,
-    serde_options: StructPropertySerde,
+    serde_naming: SerdeNaming,
+    serde_rules: SerdeRules,
     description: Option<String>,
     type_id: TypeId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum StructPropertySerde {
+pub(crate) enum SerdeNaming {
     None,
     Rename(String),
     Flatten,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum SerdeRules {
+    None,
+    Optional,
 }
 
 #[derive(Debug, Clone)]
@@ -1093,6 +1100,25 @@ impl TypeSpace {
         validation: &ArrayValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match validation {
+            // A tuple.
+            ArrayValidation {
+                items: Some(SingleOrVec::Vec(items)),
+                additional_items: None,
+                max_items: Some(max_items),
+                min_items: Some(min_items),
+                unique_items: None,
+                contains: None,
+            } if max_items == min_items && *max_items as usize == items.len() => {
+                let types = items
+                    .iter()
+                    .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
+                    .collect::<Result<Vec<_>>>()?;
+
+                let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Tuple(types));
+
+                Ok((ty, metadata))
+            }
+
             // Normal, vanilla array with no funny business.
             ArrayValidation {
                 items: Some(SingleOrVec::Single(item)),
@@ -1111,25 +1137,6 @@ impl TypeSpace {
                 // We don't need a name for an array
                 let ty =
                     TypeEntry::from_metadata(Name::Unknown, metadata, TypeDetails::Array(type_id));
-
-                Ok((ty, metadata))
-            }
-
-            // A tuple.
-            ArrayValidation {
-                items: Some(SingleOrVec::Vec(items)),
-                additional_items: None,
-                max_items: Some(max_items),
-                min_items: Some(min_items),
-                unique_items: None,
-                contains: None,
-            } if max_items == min_items && *max_items as usize == items.len() => {
-                let types = items
-                    .iter()
-                    .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
-                    .collect::<Result<Vec<_>>>()?;
-
-                let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Tuple(types));
 
                 Ok((ty, metadata))
             }

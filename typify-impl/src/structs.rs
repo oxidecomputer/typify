@@ -7,7 +7,7 @@ use schemars::schema::{
 
 use crate::{
     util::{get_type_name, metadata_description, recase, schema_is_named},
-    Name, Result, StructProperty, StructPropertySerde, TypeDetails, TypeEntry, TypeSpace,
+    Name, Result, SerdeNaming, SerdeRules, StructProperty, TypeDetails, TypeEntry, TypeSpace,
 };
 
 pub(crate) fn struct_members(
@@ -31,7 +31,15 @@ pub(crate) fn struct_members(
     let mut properties = validation
         .properties
         .iter()
-        .map(|(name, ty)| struct_property(type_name.clone(), validation, name, ty, type_space))
+        .map(|(name, ty)| {
+            struct_property(
+                type_name.clone(),
+                &validation.required,
+                name,
+                ty,
+                type_space,
+            )
+        })
         .collect::<Result<Vec<_>>>()?;
 
     // Sort parameters by name to ensure a deterministic result.
@@ -41,7 +49,7 @@ pub(crate) fn struct_members(
 
 pub(crate) fn struct_property(
     type_name: Option<String>,
-    validation: &ObjectValidation,
+    required: &schemars::Set<String>,
     prop_name: &str,
     schema: &schemars::schema::Schema,
     type_space: &mut TypeSpace,
@@ -51,19 +59,37 @@ pub(crate) fn struct_property(
         None => Name::Unknown,
     };
     let (mut type_id, metadata) = type_space.id_for_schema(sub_type_name, schema)?;
-    if !validation.required.contains(prop_name) {
-        type_id = type_space.id_for_option(&type_id);
-    }
+
+    let serde_rules = if required.contains(prop_name) {
+        SerdeRules::None
+    } else {
+        // See if this type is an option or array; note that the type id lookup
+        // will fail only for references (and only during initial reference
+        // processing).
+        let is_option_or_array = type_space.id_to_entry.get(&type_id).map_or_else(
+            || false,
+            |ty| matches!(&ty.details, TypeDetails::Option(_) | TypeDetails::Array(_)),
+        );
+
+        // We can use serde's `skip_serializing_of` construction for options
+        // and arrays; otherwise we need to turn this into an option in order
+        // to represent the field as non-required.
+        if !is_option_or_array {
+            type_id = type_space.id_for_option(&type_id);
+        }
+        SerdeRules::Optional
+    };
 
     let (name, rename) = recase(prop_name.to_string(), Case::Snake);
-    let serde_options = match rename {
-        Some(old_name) => StructPropertySerde::Rename(old_name),
-        None => StructPropertySerde::None,
+    let serde_naming = match rename {
+        Some(old_name) => SerdeNaming::Rename(old_name),
+        None => SerdeNaming::None,
     };
 
     Ok(StructProperty {
         name,
-        serde_options,
+        serde_naming,
+        serde_rules,
         description: metadata_description(metadata),
         type_id,
     })
@@ -79,11 +105,7 @@ pub(crate) fn output_struct_property(
         Some(s) => quote! {#[doc = #s]},
         None => quote! {},
     };
-    let serde = match &prop.serde_options {
-        StructPropertySerde::Rename(s) => quote! { #[serde(rename = #s)] },
-        StructPropertySerde::None => quote! {},
-        StructPropertySerde::Flatten => quote! { #[serde(flatten)] },
-    };
+
     let prop_type = type_space.id_to_entry.get(&prop.type_id).unwrap();
     let type_name = prop_type.type_ident(type_space, false);
     let pub_token = if make_pub {
@@ -91,10 +113,45 @@ pub(crate) fn output_struct_property(
     } else {
         quote! {}
     };
+    let serde = generate_serde_attr(&prop.serde_naming, &prop.serde_rules, prop_type);
     quote! {
         #doc
         #serde
         #pub_token #name: #type_name,
+    }
+}
+
+fn generate_serde_attr(
+    serde_naming: &SerdeNaming,
+    serde_rules: &SerdeRules,
+    prop_type: &TypeEntry,
+) -> TokenStream {
+    let mut serde_options = Vec::new();
+    match serde_naming {
+        SerdeNaming::Rename(s) => serde_options.push(quote! { rename = #s }),
+        SerdeNaming::Flatten => serde_options.push(quote! { flatten }),
+        SerdeNaming::None => (),
+    }
+
+    match (serde_rules, &prop_type.details) {
+        (SerdeRules::Optional, TypeDetails::Option(_)) => {
+            serde_options.push(quote! { default });
+            serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
+        }
+        (SerdeRules::Optional, TypeDetails::Array(_)) => {
+            serde_options.push(quote! { default });
+            serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
+        }
+        (SerdeRules::Optional, _) => unreachable!(),
+        (SerdeRules::None, _) => (),
+    }
+
+    if serde_options.is_empty() {
+        quote! {}
+    } else {
+        quote! {
+            #[serde( #(#serde_options),*)]
+        }
     }
 }
 
@@ -140,7 +197,12 @@ pub(crate) fn flattened_union_struct<'a>(
 
             Ok(StructProperty {
                 name,
-                serde_options: StructPropertySerde::Flatten,
+                serde_naming: SerdeNaming::Flatten,
+                serde_rules: if optional {
+                    SerdeRules::Optional
+                } else {
+                    SerdeRules::None
+                },
                 description: None,
                 type_id,
             })
@@ -152,21 +214,53 @@ pub(crate) fn flattened_union_struct<'a>(
     Ok((ty, metadata))
 }
 
+/// This handles the case where an anyOf is used to effect inheritance: the
+/// subschemas consist of one or more "super classes" that have names with a
+/// final, anonymous object.
+///
+/// ```text
+/// "allOf": [
+///     { "$ref": "#/definitions/SuperClass" },
+///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
+/// ]
+/// ```
+///
+/// This turns into a struct of this form:
+/// ```compile_fail
+/// struct MyType {
+///     #[serde(flatten)]
+///     super_class: SuperClass,
+///     prop_a: (),
+///     prop_b: (),
+/// }
+/// ```
+///
+/// Note that the super class member names are derived from the type and are
+/// flattened into the struct; the subclass properties are simply included
+/// alongside.
 pub(crate) fn maybe_all_of_subclass(
     type_name: Name,
     metadata: &Option<Box<Metadata>>,
     subschemas: &[Schema],
     type_space: &mut TypeSpace,
 ) -> Option<TypeEntry> {
+    assert!(subschemas.len() > 1);
+
+    // Split the subschemas into named (superclass) and unnamed (subclass)
+    // schemas.
     let (named, unnamed): (Vec<_>, Vec<_>) = subschemas
         .iter()
         .map(|schema| (schema, schema_is_named(schema)))
         .partition(|(_, name)| name.is_some());
 
+    // We required exactly one unnamed subschema for this special case. Note
+    // that zero unnamed subschemas would be trivial to handle, but the generic
+    // case already does so albeit slightly differently.
     if unnamed.len() != 1 {
         return None;
     }
 
+    // Get the object validation (or fail to match this special case).
     let unnamed_schema = unnamed.first()?.0;
     let validation = match unnamed_schema {
         Schema::Object(SchemaObject {
@@ -194,7 +288,8 @@ pub(crate) fn maybe_all_of_subclass(
             let (type_id, metadata) = type_space.id_for_schema(type_name.clone(), schema)?;
             Ok(StructProperty {
                 name: property_name.as_ref().unwrap().to_case(Case::Snake),
-                serde_options: StructPropertySerde::Flatten,
+                serde_naming: SerdeNaming::Flatten,
+                serde_rules: SerdeRules::None,
                 description: metadata_description(metadata),
                 type_id,
             })
