@@ -13,6 +13,8 @@ use crate::{
     EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
 };
 
+// TODO these maybe_* functions need to not create new types until we're past
+// that point at which they might return None.
 pub(crate) fn maybe_externally_tagged_enum(
     type_name: Name,
     metadata: &Option<Box<schemars::schema::Metadata>>,
@@ -562,6 +564,35 @@ fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
     )
 }
 
+/// Produce an enum with each subschema as a variant. There isn't an explicit
+/// name for each variant so we default to `VariantNN`.
+///
+/// ```compile_fail
+/// enum MyEnum {
+///     Variant1(ThingsOfYours),
+///     Variant2(ThingsOfMine),
+/// }
+/// ```
+///
+/// We can, however, in some cases infer better names: if each variant is a
+/// tuple of cardinality 1 with a named type, we case use those names instead
+/// for the variants. For example:
+///
+/// ```compile_fail
+/// enum MyEnum {
+///     ThingsOfYours(ThingsOfYours),
+///     ThingsOfMine(ThingsOfMine),
+/// }
+/// ```
+///
+/// We even do a step better by eliminating common prefixes:
+///
+/// ```compile_fail
+/// enum MyEnum {
+///     Yours(ThingsOfYours),
+///     Mine(ThingsOfMine),
+/// }
+/// ```
 pub(crate) fn untagged_enum(
     type_name: Name,
     metadata: &Option<Box<schemars::schema::Metadata>>,
@@ -569,31 +600,104 @@ pub(crate) fn untagged_enum(
     type_space: &mut TypeSpace,
 ) -> Result<TypeEntry> {
     let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+
+    let mut names_from_variants = true;
+    let mut common_prefix = None;
+
+    // Gather the variant details along with an Option of its "good" name.
+    let variant_details = subschemas
+        .iter()
+        .enumerate()
+        .map(|(idx, schema)| {
+            let sub_type_name = match &tmp_type_name {
+                Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
+                None => Name::Unknown,
+            };
+            let details = external_variant(sub_type_name.clone(), schema, type_space)?;
+            let good_name = variant_provides_name(type_space, &details, &sub_type_name);
+            match (&good_name, common_prefix.as_ref()) {
+                (None, _) => {
+                    names_from_variants = false;
+                }
+                (Some(name), None) => {
+                    common_prefix = Some(name.clone());
+                }
+                (Some(name), Some(prefix)) => {
+                    common_prefix = Some(get_common_prefix(name, prefix));
+                }
+            }
+
+            Ok((details, good_name))
+        })
+        .collect::<Result<Vec<_>>>()?;
+
+    let common_prefix_index = match &common_prefix {
+        Some(prefix) => prefix.len(),
+        None => 0,
+    };
+
+    let variants = variant_details
+        .into_iter()
+        .enumerate()
+        .map(|(idx, (details, good_name))| {
+            let name = if names_from_variants {
+                (&good_name.unwrap()[common_prefix_index..]).to_string()
+            } else {
+                format!("Variant{}", idx)
+            };
+            Variant {
+                name,
+                rename: None,
+                description: None,
+                details,
+            }
+        })
+        .collect();
+
     Ok(TypeEntry::from_metadata(
         type_name,
         metadata,
         TypeDetails::Enum {
             tag_type: EnumTagType::Untagged,
-            // TODO: we should sort the variants
-            variants: subschemas
-                .iter()
-                .enumerate()
-                .map(|(idx, schema)| {
-                    let sub_type_name = match &tmp_type_name {
-                        Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
-                        None => Name::Unknown,
-                    };
-                    let details = external_variant(sub_type_name, schema, type_space)?;
-                    Ok(Variant {
-                        name: format!("Variant{}", idx),
-                        rename: None,
-                        description: None,
-                        details,
-                    })
-                })
-                .collect::<Result<Vec<_>>>()?,
+            variants,
         },
     ))
+}
+
+/// Get the string that represents the common prefix, considering only
+/// case-relevant boundaries.
+fn get_common_prefix(name: &str, prefix: &str) -> String {
+    name.to_case(Case::Kebab)
+        .split('-')
+        .zip(prefix.to_case(Case::Kebab).split('-'))
+        .take_while(|(a, b)| a == b)
+        .map(|(a, _)| a)
+        .collect::<Vec<&str>>()
+        .join("-")
+        .to_case(Case::Pascal)
+}
+
+fn variant_provides_name(
+    type_space: &TypeSpace,
+    details: &VariantDetails,
+    sub_type_name: &Name,
+) -> Option<String> {
+    let item_id = match details {
+        VariantDetails::Tuple(items) if items.len() == 1 => items.first(),
+        _ => None,
+    }?;
+
+    let item = type_space.id_to_entry.get(item_id)?;
+    match item.details {
+        TypeDetails::Enum { .. } | TypeDetails::Struct(_) | TypeDetails::Newtype(_) => Some(()),
+        _ => None,
+    }?;
+    let name = item.name.as_ref()?;
+
+    match sub_type_name {
+        Name::Required(s) | Name::Suggested(s) if s != name => Some(name.clone()),
+        _ => None,
+    }
 }
 
 pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> TokenStream {
