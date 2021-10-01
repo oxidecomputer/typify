@@ -1,11 +1,11 @@
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use schemars::schema::{ObjectValidation, Schema};
+use schemars::schema::{Metadata, ObjectValidation, Schema};
 
 use crate::{
-    util::{metadata_description, recase},
-    Name, Result, StructProperty, StructPropertySerde, TypeSpace,
+    util::{get_type_name, metadata_description, recase},
+    Name, Result, StructProperty, StructPropertySerde, TypeDetails, TypeEntry, TypeSpace,
 };
 
 pub(crate) fn struct_members(
@@ -94,6 +94,60 @@ pub(crate) fn output_struct_property(
         #serde
         #pub_token #name: #type_name,
     }
+}
+
+/// This is used by both any-of and all-of subschema processing. This
+/// produces a struct type whose members are the subschemas (flattened).
+///
+/// ```ignore
+/// struct Name {
+///     #[serde(flatten)]
+///     schema1: Schema1Type,
+///     #[serde(flatten)]
+///     schema2: Schema2Type
+///     ...
+/// }
+/// ```
+///
+/// The only difference between any-of and all-of is that where the latter
+/// has type T_N for each member of the struct, the former has Option<T_N>.
+pub(crate) fn flattened_union_struct<'a>(
+    type_name: Name,
+    metadata: &'a Option<Box<Metadata>>,
+    subschemas: &[Schema],
+    optional: bool,
+    type_space: &mut TypeSpace,
+) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+    let properties = subschemas
+        .iter()
+        .enumerate()
+        .map(|(idx, schema)| {
+            let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
+                None => Name::Unknown,
+            };
+
+            let (mut type_id, _) = type_space.id_for_schema(type_name, schema)?;
+            if optional {
+                type_id = type_space.id_for_option(&type_id);
+            }
+
+            // TODO we need a reasonable name that could be derived
+            // from the name of the type
+            let name = format!("subtype_{}", idx);
+
+            Ok(StructProperty {
+                name,
+                serde_options: StructPropertySerde::Flatten,
+                description: None,
+                type_id,
+            })
+        })
+        .collect::<Result<Vec<_>>>()?;
+
+    let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Struct(properties));
+
+    Ok((ty, metadata))
 }
 
 #[cfg(test)]

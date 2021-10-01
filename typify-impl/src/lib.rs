@@ -6,7 +6,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
 };
-use structs::struct_members;
+use structs::{flattened_union_struct, struct_members};
 use thiserror::Error;
 use util::{all_mutually_exclusive, recase};
 
@@ -903,7 +903,7 @@ impl TypeSpace {
         //     schema2: Schema2Type,
         //     ...
         // }
-        self.flattened_union_struct(type_name, metadata, subschemas, false)
+        flattened_union_struct(type_name, metadata, subschemas, false, self)
     }
 
     pub(crate) fn convert_any_of<'a>(
@@ -932,7 +932,7 @@ impl TypeSpace {
             //     ...
             // }
 
-            self.flattened_union_struct(type_name, metadata, subschemas, true)
+            flattened_union_struct(type_name, metadata, subschemas, true, self)
         }
     }
 
@@ -1131,60 +1131,6 @@ impl TypeSpace {
 
             _ => todo!("{:#?}", validation),
         }
-    }
-
-    /// This is used by both any-of and all-of subschema processing. This
-    /// produces a struct type whose members are the subschemas (flattened).
-    ///
-    /// ```ignore
-    /// struct Name {
-    ///     #[serde(flatten)]
-    ///     schema1: Schema1Type,
-    ///     #[serde(flatten)]
-    ///     schema2: Schema2Type
-    ///     ...
-    /// }
-    /// ```
-    ///
-    /// The only difference between any-of and all-of is that where the latter
-    /// has type T_N for each member of the struct, the former has Option<T_N>.
-    fn flattened_union_struct<'a>(
-        &mut self,
-        type_name: Name,
-        metadata: &'a Option<Box<Metadata>>,
-        subschemas: &[Schema],
-        optional: bool,
-    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let properties = subschemas
-            .iter()
-            .enumerate()
-            .map(|(idx, schema)| {
-                let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
-                    Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
-                    None => Name::Unknown,
-                };
-
-                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
-                if optional {
-                    type_id = self.id_for_option(&type_id);
-                }
-
-                // TODO we need a reasonable name that could be derived
-                // from the name of the type
-                let name = format!("variant_{}", idx);
-
-                Ok(StructProperty {
-                    name,
-                    serde_options: StructPropertySerde::Flatten,
-                    description: None,
-                    type_id,
-                })
-            })
-            .collect::<Result<Vec<_>>>()?;
-
-        let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Struct(properties));
-
-        Ok((ty, metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...
