@@ -287,6 +287,36 @@ impl TypeSpace {
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
+            // If we have a schema that has an instance type array that's
+            // exactly two elements and one of them is Null, we have the
+            // equivalent of an Option<T> where T is the type defined by the
+            // rest of the schema.
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Vec(multiple)),
+                enum_values,
+                ..
+            } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
+                let other_type = multiple.iter().find(|t| t != &&InstanceType::Null).unwrap();
+                let enum_values = enum_values.clone().map(|values| {
+                    values
+                        .iter()
+                        .cloned()
+                        .filter(|value| !value.is_null())
+                        .collect()
+                });
+                let ss = SchemaObject {
+                    instance_type: Some(SingleOrVec::from(*other_type)),
+                    enum_values,
+                    ..schema.clone()
+                };
+
+                let (ty, _) = self.convert_schema_object(type_name, &ss)?;
+                let ty = self.type_to_option(ty);
+
+                Ok((ty, metadata))
+            }
+
             // Strings
             SchemaObject {
                 metadata,
@@ -444,27 +474,6 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Null => self.convert_null(type_name, metadata),
-
-            // If we have a schema that has an instance type array that's
-            // exactly two elements and one of them is Null, we have the
-            // equivalent of an Option<T> where T is the type defined by the
-            // rest of the schema.
-            SchemaObject {
-                metadata,
-                instance_type: Some(SingleOrVec::Vec(multiple)),
-                ..
-            } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
-                let other_type = multiple.iter().find(|t| t != &&InstanceType::Null).unwrap();
-                let ss = SchemaObject {
-                    instance_type: Some(SingleOrVec::from(*other_type)),
-                    ..schema.clone()
-                };
-
-                let (ty, _) = self.convert_schema_object(type_name, &ss)?;
-                let ty = self.type_to_option(ty);
-
-                Ok((ty, metadata))
-            }
 
             // Reference
             SchemaObject {
@@ -660,7 +669,13 @@ impl TypeSpace {
         // We expect all enum values to be either a string **or** a null. We
         // gather them all up and then choose to either be an enum of simple
         // variants, or an Option of an enum of string variants depending on if
-        // a null is absent or present.
+        // a null is absent or present. Note that it's actually invalid JSON
+        // Schema if we do see a null here. In this code path the instance
+        // types should exclusively be "string" making null invalid. We
+        // intentionally handle instance types of ["string", "null"] prior to
+        // this case and strip out the null in both enum values and instance
+        // type. Nevertheless, we do our best to interpret even somewhat janky
+        // JSON schema.
         let mut has_null = false;
 
         let variants = enum_values
