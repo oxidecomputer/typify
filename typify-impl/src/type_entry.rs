@@ -94,31 +94,26 @@ impl TypeEntry {
             TypeDetails::BuiltIn
             | TypeDetails::Option(_)
             | TypeDetails::Array(_)
-            | TypeDetails::Unit => quote! {},
+            | TypeDetails::Unit
+            | TypeDetails::Tuple(_) => quote! {},
 
-            // TODO we only expect to end up with a reference type here if
-            // there's a type defined in the definitions table (i.e. the
-            // reference targets) that's a simple alias to another type named
-            // in the same table.
-            TypeDetails::Reference(_) => todo!(),
-
-            TypeDetails::Tuple(_) => todo!(),
-
-            // TODO remove this; here for development
-            #[allow(unreachable_patterns)]
-            _ => todo!(),
+            // We should never get here as reference types should only be used
+            // in-flight, but never recorded into the type space.
+            TypeDetails::Reference(_) => unreachable!(),
         }
     }
 
     pub fn type_ident(&self, type_space: &TypeSpace, external: bool) -> TokenStream {
         match &self.details {
             TypeDetails::Option(id) => {
-                let inner_ty = type_space.id_to_entry.get(id).unwrap();
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("unresolved type id for option");
                 let stream = inner_ty.type_ident(type_space, external);
 
-                // Flatten nested Option types. This happens commonly because
-                // we treat both Null-type alternatives as well as non-required
-                // object properties by wrapping them in this optional type.
+                // Flatten nested Option types. This would should happen if the
+                // schema encoded it, and it's an odd construction.
                 match inner_ty.details {
                     TypeDetails::Option(_) => stream,
                     _ => quote! { Option<#stream> },
@@ -129,7 +124,7 @@ impl TypeEntry {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
-                    .expect("it shouldn't be possible to have an unresolved id for an item");
+                    .expect("unresolved type id for array");
                 let stream = inner_ty.type_ident(type_space, external);
 
                 quote! { Vec<#stream> }
@@ -140,30 +135,33 @@ impl TypeEntry {
                     type_space
                         .id_to_entry
                         .get(item)
-                        .expect("it shouldn't be possible to have an unresolved id for a tuple")
+                        .expect("unresolved type id for tuple")
                         .type_ident(type_space, external)
                 });
 
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeDetails::Unit => quote! {()},
+            TypeDetails::Unit => quote! { () },
 
-            _ if self.name.is_none() => todo!("{:#?}", self),
+            _ if self.name.is_none() => panic!("unnamed type {:#?}", self),
+
+            // Simple built-in types for which the name is the identifier.
             TypeDetails::BuiltIn => {
                 let name = self.name.as_ref().unwrap();
                 let tok = syn::parse_str::<syn::TypePath>(name).unwrap();
                 tok.to_token_stream()
             }
+
             _ => match &type_space.type_mod {
                 Some(type_mod) if external => {
-                    let tmod = format_ident!("{}", type_mod);
-                    let tname = format_ident!("{}", self.name.as_ref().unwrap());
-                    quote! { #tmod :: #tname }
+                    let type_mod = format_ident!("{}", type_mod);
+                    let type_name = format_ident!("{}", self.name.as_ref().unwrap());
+                    quote! { #type_mod :: #type_name }
                 }
                 _ => {
-                    let tname = format_ident!("{}", self.name.as_ref().unwrap());
-                    quote! { #tname }
+                    let type_name = format_ident!("{}", self.name.as_ref().unwrap());
+                    quote! { #type_name }
                 }
             },
         }

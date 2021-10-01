@@ -414,7 +414,11 @@ fn internal_variant(
                 // Include all properties except the tag.
                 if prop_name != tag {
                     Some(struct_property(
-                        None, validation, prop_name, prop_type, type_space,
+                        None,
+                        &validation.required,
+                        prop_name,
+                        prop_type,
+                        type_space,
                     ))
                 } else {
                     None
