@@ -13,7 +13,7 @@ use util::{all_mutually_exclusive, recase};
 use crate::{
     enums::{
         maybe_adjacently_tagged_enum, maybe_externally_tagged_enum, maybe_internally_tagged_enum,
-        untagged_enum,
+        maybe_option_as_enum, untagged_enum,
     },
     util::get_type_name,
 };
@@ -305,16 +305,12 @@ impl TypeSpace {
                         .filter(|value| !value.is_null())
                         .collect()
                 });
-                let ss = SchemaObject {
+                let ss = Schema::Object(SchemaObject {
                     instance_type: Some(SingleOrVec::from(*other_type)),
                     enum_values,
                     ..schema.clone()
-                };
-
-                let (ty, _) = self.convert_schema_object(type_name, &ss)?;
-                let ty = self.type_to_option(ty);
-
-                Ok((ty, metadata))
+                });
+                self.convert_option(type_name, metadata, &ss)
             }
 
             // Strings
@@ -943,6 +939,10 @@ impl TypeSpace {
     /// A "one of" may reasonably be converted into a Rust enum, but there are
     /// several cases to consider:
     ///
+    /// Options expressed as enums are uncommon since { "type": [ "null",
+    /// "xxx"], ... } is a much simpler construction. Nevertheless, an option
+    /// may be expressed as a one of with two subschemas where one is null.
+    ///
     /// Externally tagged enums are comprised of either an enumerated set of
     /// string values or objects that have a single required member. The
     /// variant is either the enumerated value with no data or the required
@@ -999,20 +999,11 @@ impl TypeSpace {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
             return Ok((ty, metadata));
         }
-        // TODO we might want to look for situations where we have a one of
-        // where there are exactly two subschemas and one of them is simply
-        // null. Not sure why this would happen, but we'd want to make it look
-        // like an Option. It happens a bunch with github's API
-
-        let ty = maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas, self)
-            .map(Ok)
-            .or_else(|| {
-                maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
-            })
-            .or_else(|| {
-                maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
-            })
-            .unwrap_or_else(|| untagged_enum(type_name, metadata, subschemas, self))?;
+        let ty = maybe_option_as_enum(type_name.clone(), metadata, subschemas, self)
+            .or_else(|| maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .or_else(|| maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .or_else(|| maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .map_or_else(|| untagged_enum(type_name, metadata, subschemas, self), Ok)?;
 
         Ok((ty, &None))
     }
@@ -1261,6 +1252,18 @@ impl TypeSpace {
             }
             _ => panic!(),
         }
+    }
+
+    pub(crate) fn convert_option<'a, 'b>(
+        &mut self,
+        type_name: Name,
+        metadata: &'a Option<Box<Metadata>>,
+        schema: &'b Schema,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let (ty, _) = self.convert_schema(type_name, schema)?;
+        let ty = self.type_to_option(ty);
+
+        Ok((ty, metadata))
     }
 }
 

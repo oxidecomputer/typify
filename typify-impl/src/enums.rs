@@ -13,6 +13,40 @@ use crate::{
     EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
 };
 
+pub(crate) fn maybe_option_as_enum(
+    type_name: Name,
+    metadata: &Option<Box<schemars::schema::Metadata>>,
+    subschemas: &[Schema],
+    type_space: &mut TypeSpace,
+) -> Option<TypeEntry> {
+    if subschemas.len() == 1 {
+        return None;
+    }
+    // Let's be as general as possible and consider the possibility that more
+    // than one subschema is the simple null.
+    let non_nulls = subschemas
+        .iter()
+        .filter(|schema| {
+            !matches!(schema, Schema::Object(SchemaObject {
+                instance_type: Some(SingleOrVec::Single(single)),
+                ..
+            }) if single.as_ref() == &InstanceType::Null)
+        })
+        .collect::<Vec<_>>();
+
+    if non_nulls.len() != 1 {
+        return None;
+    }
+
+    let non_null = non_nulls.into_iter().next()?;
+
+    let (type_entry, _) = type_space
+        .convert_option(type_name, metadata, non_null)
+        .ok()?;
+
+    Some(type_entry)
+}
+
 // TODO these maybe_* functions need to not create new types until we're past
 // that point at which they might return None.
 pub(crate) fn maybe_externally_tagged_enum(
@@ -795,16 +829,19 @@ mod tests {
     use std::collections::HashSet;
 
     use schema::Schema;
-    use schemars::{schema::RootSchema, schema_for, JsonSchema};
+    use schemars::{
+        schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
+        schema_for, JsonSchema,
+    };
     use serde::Serialize;
 
     use crate::{
         enums::{
             maybe_adjacently_tagged_enum, maybe_externally_tagged_enum,
-            maybe_internally_tagged_enum, untagged_enum,
+            maybe_internally_tagged_enum, maybe_option_as_enum, untagged_enum,
         },
         test_util::{validate_output, validate_output_for_untagged_enm},
-        EnumTagType, Name, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+        EnumTagType, Name, TypeDetails, TypeEntry, TypeId, TypeSpace, Variant, VariantDetails,
     };
 
     #[allow(dead_code)]
@@ -1149,5 +1186,35 @@ mod tests {
         } else {
             panic!();
         }
+    }
+
+    #[test]
+    fn test_maybe_option_as_enum() {
+        let subschemas = vec![
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
+                ..Default::default()
+            }
+            .into(),
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Null))),
+                ..Default::default()
+            }
+            .into(),
+        ];
+
+        let mut type_space = TypeSpace::default();
+        let type_entry =
+            maybe_option_as_enum(Name::Unknown, &None, &subschemas, &mut type_space).unwrap();
+
+        assert_eq!(
+            type_entry,
+            TypeEntry {
+                name: None,
+                rename: None,
+                description: None,
+                details: TypeDetails::Option(TypeId(1))
+            }
+        )
     }
 }
