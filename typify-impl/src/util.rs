@@ -3,6 +3,7 @@ use std::collections::BTreeSet;
 use convert_case::{Case, Casing};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
+    SubschemaValidation,
 };
 
 use crate::Name;
@@ -393,6 +394,82 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
         // TODO Not sure what this would mean...
         _ => todo!(),
     }
+}
+
+pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
+    let raw_name = match schema {
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: Some(reference),
+            extensions: _,
+        }) => {
+            let idx = reference.rfind('/')?;
+            Some((&reference[idx + 1..]).to_string())
+        }
+        Schema::Object(SchemaObject {
+            metadata: Some(metadata),
+            ..
+        }) if metadata.as_ref().title.is_some() => Some(metadata.as_ref().title.as_ref()?.clone()),
+        Schema::Object(SchemaObject {
+            metadata: Some(metadata),
+            ..
+        }) if metadata.as_ref().title.is_some() => Some(metadata.as_ref().title.as_ref()?.clone()),
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: _,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: Some(subschemas),
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => match subschemas.as_ref() {
+            SubschemaValidation {
+                all_of: Some(subschemas),
+                any_of: None,
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            }
+            | SubschemaValidation {
+                all_of: None,
+                any_of: Some(subschemas),
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            }
+            | SubschemaValidation {
+                all_of: None,
+                any_of: None,
+                one_of: Some(subschemas),
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } if subschemas.len() == 1 => schema_is_named(subschemas.first()?),
+            _ => None,
+        },
+        _ => None,
+    }?;
+
+    Some(sanitize(raw_name).to_case(Case::Pascal))
 }
 
 fn sanitize(input: String) -> String {

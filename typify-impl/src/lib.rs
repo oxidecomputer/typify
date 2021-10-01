@@ -6,14 +6,14 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
 };
-use structs::struct_members;
+use structs::{flattened_union_struct, maybe_all_of_subclass, struct_members};
 use thiserror::Error;
 use util::{all_mutually_exclusive, recase};
 
 use crate::{
     enums::{
         maybe_adjacently_tagged_enum, maybe_externally_tagged_enum, maybe_internally_tagged_enum,
-        untagged_enum,
+        maybe_option_as_enum, untagged_enum,
     },
     util::get_type_name,
 };
@@ -287,6 +287,32 @@ impl TypeSpace {
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
+            // If we have a schema that has an instance type array that's
+            // exactly two elements and one of them is Null, we have the
+            // equivalent of an Option<T> where T is the type defined by the
+            // rest of the schema.
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Vec(multiple)),
+                enum_values,
+                ..
+            } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
+                let other_type = multiple.iter().find(|t| t != &&InstanceType::Null).unwrap();
+                let enum_values = enum_values.clone().map(|values| {
+                    values
+                        .iter()
+                        .cloned()
+                        .filter(|value| !value.is_null())
+                        .collect()
+                });
+                let ss = Schema::Object(SchemaObject {
+                    instance_type: Some(SingleOrVec::from(*other_type)),
+                    enum_values,
+                    ..schema.clone()
+                });
+                self.convert_option(type_name, metadata, &ss)
+            }
+
             // Strings
             SchemaObject {
                 metadata,
@@ -444,27 +470,6 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Null => self.convert_null(type_name, metadata),
-
-            // If we have a schema that has an instance type array that's
-            // exactly two elements and one of them is Null, we have the
-            // equivalent of an Option<T> where T is the type defined by the
-            // rest of the schema.
-            SchemaObject {
-                metadata,
-                instance_type: Some(SingleOrVec::Vec(multiple)),
-                ..
-            } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
-                let other_type = multiple.iter().find(|t| t != &&InstanceType::Null).unwrap();
-                let ss = SchemaObject {
-                    instance_type: Some(SingleOrVec::from(*other_type)),
-                    ..schema.clone()
-                };
-
-                let (ty, _) = self.convert_schema_object(type_name, &ss)?;
-                let ty = self.type_to_option(ty);
-
-                Ok((ty, metadata))
-            }
 
             // Reference
             SchemaObject {
@@ -660,7 +665,13 @@ impl TypeSpace {
         // We expect all enum values to be either a string **or** a null. We
         // gather them all up and then choose to either be an enum of simple
         // variants, or an Option of an enum of string variants depending on if
-        // a null is absent or present.
+        // a null is absent or present. Note that it's actually invalid JSON
+        // Schema if we do see a null here. In this code path the instance
+        // types should exclusively be "string" making null invalid. We
+        // intentionally handle instance types of ["string", "null"] prior to
+        // this case and strip out the null in both enum values and instance
+        // type. Nevertheless, we do our best to interpret even somewhat janky
+        // JSON schema.
         let mut has_null = false;
 
         let variants = enum_values
@@ -884,6 +895,11 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
+        // TODO make this look more like the other maybe clauses
+        if let Some(ty) = maybe_all_of_subclass(type_name.clone(), metadata, subschemas, self) {
+            return Ok((ty, metadata));
+        }
+
         // We'll want to build a struct that looks like this:
         // struct Name {
         //     #[serde(flatten)]
@@ -892,7 +908,7 @@ impl TypeSpace {
         //     schema2: Schema2Type,
         //     ...
         // }
-        self.flattened_union_struct(type_name, metadata, subschemas, false)
+        flattened_union_struct(type_name, metadata, subschemas, false, self)
     }
 
     pub(crate) fn convert_any_of<'a>(
@@ -921,12 +937,16 @@ impl TypeSpace {
             //     ...
             // }
 
-            self.flattened_union_struct(type_name, metadata, subschemas, true)
+            flattened_union_struct(type_name, metadata, subschemas, true, self)
         }
     }
 
     /// A "one of" may reasonably be converted into a Rust enum, but there are
     /// several cases to consider:
+    ///
+    /// Options expressed as enums are uncommon since { "type": [ "null",
+    /// "xxx"], ... } is a much simpler construction. Nevertheless, an option
+    /// may be expressed as a one of with two subschemas where one is null.
     ///
     /// Externally tagged enums are comprised of either an enumerated set of
     /// string values or objects that have a single required member. The
@@ -984,22 +1004,13 @@ impl TypeSpace {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
             return Ok((ty, metadata));
         }
-        // TODO we might want to look for situations where we have a one of
-        // where there are exactly two subschemas and one of them is simply
-        // null. Not sure why this would happen, but we'd want to make it look
-        // like an Option. It happens a bunch with github's API
+        let ty = maybe_option_as_enum(type_name.clone(), metadata, subschemas, self)
+            .or_else(|| maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .or_else(|| maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .or_else(|| maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self))
+            .map_or_else(|| untagged_enum(type_name, metadata, subschemas, self), Ok)?;
 
-        let ty = maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas, self)
-            .map(Ok)
-            .or_else(|| {
-                maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
-            })
-            .or_else(|| {
-                maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas, self).map(Ok)
-            })
-            .unwrap_or_else(|| untagged_enum(type_name, metadata, subschemas, self))?;
-
-        Ok((ty, &None))
+        Ok((ty, metadata))
     }
 
     fn assign(&mut self) -> TypeId {
@@ -1127,60 +1138,6 @@ impl TypeSpace {
         }
     }
 
-    /// This is used by both any-of and all-of subschema processing. This
-    /// produces a struct type whose members are the subschemas (flattened).
-    ///
-    /// ```ignore
-    /// struct Name {
-    ///     #[serde(flatten)]
-    ///     schema1: Schema1Type,
-    ///     #[serde(flatten)]
-    ///     schema2: Schema2Type
-    ///     ...
-    /// }
-    /// ```
-    ///
-    /// The only difference between any-of and all-of is that where the latter
-    /// has type T_N for each member of the struct, the former has Option<T_N>.
-    fn flattened_union_struct<'a>(
-        &mut self,
-        type_name: Name,
-        metadata: &'a Option<Box<Metadata>>,
-        subschemas: &[Schema],
-        optional: bool,
-    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let properties = subschemas
-            .iter()
-            .enumerate()
-            .map(|(idx, schema)| {
-                let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
-                    Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
-                    None => Name::Unknown,
-                };
-
-                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
-                if optional {
-                    type_id = self.id_for_option(&type_id);
-                }
-
-                // TODO we need a reasonable name that could be derived
-                // from the name of the type
-                let name = format!("variant_{}", idx);
-
-                Ok(StructProperty {
-                    name,
-                    serde_options: StructPropertySerde::Flatten,
-                    description: None,
-                    type_id,
-                })
-            })
-            .collect::<Result<Vec<_>>>()?;
-
-        let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Struct(properties));
-
-        Ok((ty, metadata))
-    }
-
     // TODO not sure if I want to deal with enum_values here, but we'll see...
     pub(crate) fn convert_bool<'a>(
         &self,
@@ -1246,6 +1203,18 @@ impl TypeSpace {
             }
             _ => panic!(),
         }
+    }
+
+    pub(crate) fn convert_option<'a, 'b>(
+        &mut self,
+        type_name: Name,
+        metadata: &'a Option<Box<Metadata>>,
+        schema: &'b Schema,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let (ty, _) = self.convert_schema(type_name, schema)?;
+        let ty = self.type_to_option(ty);
+
+        Ok((ty, metadata))
     }
 }
 

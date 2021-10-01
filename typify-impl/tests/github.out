@@ -380,7 +380,8 @@ pub struct CommitCommentEvent(CommitCommentCreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Committer {
     pub date: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub email: CommitterEmail,
+    #[doc = "The git author's email address."]
+    pub email: Option<String>,
     #[doc = "The git author's name."]
     pub name: String,
     pub username: Option<String>,
@@ -481,7 +482,7 @@ pub struct DeploymentStatusEvent(DeploymentStatusCreated);
 pub struct Discussion {
     pub active_lock_reason: Option<String>,
     pub answer_chosen_at: Option<String>,
-    pub answer_chosen_by: DiscussionAnswerChosenBy,
+    pub answer_chosen_by: Option<User>,
     pub answer_html_url: Option<String>,
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -746,7 +747,7 @@ pub struct Installation {
     pub single_file_name: Option<String>,
     pub single_file_paths: Option<Vec<String>>,
     pub suspended_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub suspended_by: InstallationSuspendedBy,
+    pub suspended_by: Option<User>,
     #[doc = "The ID of the user or organization this token is being scoped to."]
     pub target_id: u64,
     pub target_type: InstallationTargetType,
@@ -822,7 +823,7 @@ pub struct InstallationRepositoriesAdded {
     pub repositories_removed: Vec<InstallationRepositoriesAddedRepositoriesRemovedItem>,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationRepositoriesAddedRepositorySelection,
-    pub requester: InstallationRepositoriesAddedRequester,
+    pub requester: Option<User>,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -835,7 +836,7 @@ pub struct InstallationRepositoriesRemoved {
     pub repositories_removed: Vec<InstallationRepositoriesRemovedRepositoriesRemovedItem>,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationRepositoriesRemovedRepositorySelection,
-    pub requester: InstallationRepositoriesRemovedRequester,
+    pub requester: Option<User>,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -847,7 +848,7 @@ pub enum InstallationRepositoriesEvent {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Issue {
     pub active_lock_reason: Option<IssueActiveLockReason>,
-    pub assignee: Option<IssueAssignee>,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
@@ -862,10 +863,10 @@ pub struct Issue {
     pub labels: Option<Vec<Label>>,
     pub labels_url: String,
     pub locked: Option<bool>,
-    pub milestone: IssueMilestone,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     pub number: u64,
-    pub performed_via_github_app: Option<IssuePerformedViaGithubApp>,
+    pub performed_via_github_app: Option<App>,
     pub pull_request: Option<IssuePullRequest>,
     pub repository_url: String,
     #[doc = "State of the issue; either 'open' or 'closed'"]
@@ -888,7 +889,7 @@ pub struct IssueComment {
     pub id: u64,
     pub issue_url: String,
     pub node_id: String,
-    pub performed_via_github_app: IssueCommentPerformedViaGithubApp,
+    pub performed_via_github_app: Option<App>,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     #[doc = "URL for the issue comment"]
     pub url: String,
@@ -939,7 +940,8 @@ pub enum IssueCommentEvent {
 pub struct IssuesAssigned {
     #[doc = "The action that was performed."]
     pub action: IssuesAssignedAction,
-    pub assignee: Option<IssuesAssignedAssignee>,
+    #[doc = "The optional user who was assigned or unassigned from the issue."]
+    pub assignee: Option<User>,
     pub installation: Option<InstallationLite>,
     pub issue: Issue,
     pub organization: Option<Organization>,
@@ -1059,7 +1061,8 @@ pub struct IssuesTransferred {
 pub struct IssuesUnassigned {
     #[doc = "The action that was performed."]
     pub action: IssuesUnassignedAction,
-    pub assignee: Option<IssuesUnassignedAssignee>,
+    #[doc = "The optional user who was assigned or unassigned from the issue."]
+    pub assignee: Option<User>,
     pub installation: Option<InstallationLite>,
     pub issue: Issue,
     pub organization: Option<Organization>,
@@ -1304,6 +1307,7 @@ pub struct MembershipRemoved {
     #[doc = "The scope of the membership. Currently, can only be `team`."]
     pub scope: MembershipRemovedScope,
     pub sender: User,
+    #[doc = "The [team](https://docs.github.com/en/rest/reference/teams) for the membership."]
     pub team: MembershipRemovedTeam,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1749,7 +1753,7 @@ pub struct PublicEvent {
 pub struct PullRequest {
     pub active_lock_reason: Option<PullRequestActiveLockReason>,
     pub additions: u64,
-    pub assignee: PullRequestAssignee,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: (),
@@ -1781,8 +1785,8 @@ pub struct PullRequest {
     pub mergeable_state: String,
     pub merged: Option<bool>,
     pub merged_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub merged_by: PullRequestMergedBy,
-    pub milestone: PullRequestMilestone,
+    pub merged_by: Option<User>,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: u64,
@@ -2183,7 +2187,7 @@ pub struct PushEvent {
     pub created: bool,
     pub deleted: bool,
     pub forced: bool,
-    pub head_commit: PushEventHeadCommit,
+    pub head_commit: Option<Commit>,
     pub installation: Option<InstallationLite>,
     pub organization: Option<Organization>,
     pub pusher: Committer,
@@ -2383,7 +2387,7 @@ pub struct Repository {
     pub labels_url: String,
     pub language: Option<String>,
     pub languages_url: String,
-    pub license: RepositoryLicense,
+    pub license: Option<License>,
     pub master_branch: Option<String>,
     pub merges_url: String,
     pub milestones_url: String,
@@ -2675,7 +2679,7 @@ pub enum SecurityAdvisoryEvent {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SimplePullRequest {
     pub active_lock_reason: Option<SimplePullRequestActiveLockReason>,
-    pub assignee: SimplePullRequestAssignee,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: (),
@@ -2697,7 +2701,7 @@ pub struct SimplePullRequest {
     pub locked: bool,
     pub merge_commit_sha: Option<String>,
     pub merged_at: Option<String>,
-    pub milestone: SimplePullRequestMilestone,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     pub number: u64,
     pub patch_url: String,
@@ -3014,8 +3018,8 @@ pub struct WorkflowRun {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum WorkflowStep {
-    Variant0(WorkflowStepInProgress),
-    Variant1(WorkflowStepCompleted),
+    InProgress(WorkflowStepInProgress),
+    Completed(WorkflowStepCompleted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkflowStepCompleted {
@@ -3037,7 +3041,7 @@ pub struct WorkflowStepInProgress {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkflowDispatchEvent {
-    pub inputs: WorkflowDispatchEventInputs,
+    pub inputs: Option<serde_json::Value>,
     pub installation: Option<InstallationLite>,
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -5042,12 +5046,6 @@ impl ToString for CodeScanningAlertAppearedInBranchAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum CodeScanningAlertAppearedInBranchAlertDismissedBy {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertAppearedInBranchAlertDismissedReason {
     #[serde(rename = "false positive")]
     FalsePositive,
@@ -5132,7 +5130,7 @@ pub struct CodeScanningAlertAppearedInBranchAlert {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub dismissed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub dismissed_by: CodeScanningAlertAppearedInBranchAlertDismissedBy,
+    pub dismissed_by: Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
     pub dismissed_reason: Option<CodeScanningAlertAppearedInBranchAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
@@ -5182,29 +5180,24 @@ impl ToString for CodeScanningAlertClosedByUserAlertDismissedReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CodeScanningAlertClosedByUserAlertInstancesItemVariant1State {
+pub enum CodeScanningAlertClosedByUserAlertInstancesItemState {
     #[serde(rename = "dismissed")]
     Dismissed,
 }
-impl ToString for CodeScanningAlertClosedByUserAlertInstancesItemVariant1State {
+impl ToString for CodeScanningAlertClosedByUserAlertInstancesItemState {
     fn to_string(&self) -> String {
         match self {
-            CodeScanningAlertClosedByUserAlertInstancesItemVariant1State::Dismissed => {
+            CodeScanningAlertClosedByUserAlertInstancesItemState::Dismissed => {
                 "dismissed".to_string()
             }
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertClosedByUserAlertInstancesItemVariant1 {
-    pub state: CodeScanningAlertClosedByUserAlertInstancesItemVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
     #[serde(flatten)]
-    pub variant_0: AlertInstance,
-    #[serde(flatten)]
-    pub variant_1: CodeScanningAlertClosedByUserAlertInstancesItemVariant1,
+    pub alert_instance: AlertInstance,
+    pub state: CodeScanningAlertClosedByUserAlertInstancesItemState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
@@ -5294,32 +5287,25 @@ impl ToString for CodeScanningAlertCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CodeScanningAlertCreatedAlertInstancesItemVariant1State {
+pub enum CodeScanningAlertCreatedAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
     #[serde(rename = "dismissed")]
     Dismissed,
 }
-impl ToString for CodeScanningAlertCreatedAlertInstancesItemVariant1State {
+impl ToString for CodeScanningAlertCreatedAlertInstancesItemState {
     fn to_string(&self) -> String {
         match self {
-            CodeScanningAlertCreatedAlertInstancesItemVariant1State::Open => "open".to_string(),
-            CodeScanningAlertCreatedAlertInstancesItemVariant1State::Dismissed => {
-                "dismissed".to_string()
-            }
+            CodeScanningAlertCreatedAlertInstancesItemState::Open => "open".to_string(),
+            CodeScanningAlertCreatedAlertInstancesItemState::Dismissed => "dismissed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertCreatedAlertInstancesItemVariant1 {
-    pub state: CodeScanningAlertCreatedAlertInstancesItemVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodeScanningAlertCreatedAlertInstancesItem {
     #[serde(flatten)]
-    pub variant_0: AlertInstance,
-    #[serde(flatten)]
-    pub variant_1: CodeScanningAlertCreatedAlertInstancesItemVariant1,
+    pub alert_instance: AlertInstance,
+    pub state: CodeScanningAlertCreatedAlertInstancesItemState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertCreatedAlertRuleSeverity {
@@ -5412,12 +5398,6 @@ impl ToString for CodeScanningAlertFixedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum CodeScanningAlertFixedAlertDismissedBy {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertDismissedReason {
     #[serde(rename = "false positive")]
     FalsePositive,
@@ -5438,27 +5418,22 @@ impl ToString for CodeScanningAlertFixedAlertDismissedReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CodeScanningAlertFixedAlertInstancesItemVariant1State {
+pub enum CodeScanningAlertFixedAlertInstancesItemState {
     #[serde(rename = "fixed")]
     Fixed,
 }
-impl ToString for CodeScanningAlertFixedAlertInstancesItemVariant1State {
+impl ToString for CodeScanningAlertFixedAlertInstancesItemState {
     fn to_string(&self) -> String {
         match self {
-            CodeScanningAlertFixedAlertInstancesItemVariant1State::Fixed => "fixed".to_string(),
+            CodeScanningAlertFixedAlertInstancesItemState::Fixed => "fixed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertFixedAlertInstancesItemVariant1 {
-    pub state: CodeScanningAlertFixedAlertInstancesItemVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodeScanningAlertFixedAlertInstancesItem {
     #[serde(flatten)]
-    pub variant_0: AlertInstance,
-    #[serde(flatten)]
-    pub variant_1: CodeScanningAlertFixedAlertInstancesItemVariant1,
+    pub alert_instance: AlertInstance,
+    pub state: CodeScanningAlertFixedAlertInstancesItemState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertRuleSeverity {
@@ -5520,7 +5495,7 @@ pub struct CodeScanningAlertFixedAlert {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub dismissed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub dismissed_by: CodeScanningAlertFixedAlertDismissedBy,
+    pub dismissed_by: Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
     pub dismissed_reason: Option<CodeScanningAlertFixedAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
@@ -5549,27 +5524,22 @@ impl ToString for CodeScanningAlertReopenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CodeScanningAlertReopenedAlertInstancesItemVariant1State {
+pub enum CodeScanningAlertReopenedAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for CodeScanningAlertReopenedAlertInstancesItemVariant1State {
+impl ToString for CodeScanningAlertReopenedAlertInstancesItemState {
     fn to_string(&self) -> String {
         match self {
-            CodeScanningAlertReopenedAlertInstancesItemVariant1State::Open => "open".to_string(),
+            CodeScanningAlertReopenedAlertInstancesItemState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertReopenedAlertInstancesItemVariant1 {
-    pub state: CodeScanningAlertReopenedAlertInstancesItemVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodeScanningAlertReopenedAlertInstancesItem {
     #[serde(flatten)]
-    pub variant_0: AlertInstance,
-    #[serde(flatten)]
-    pub variant_1: CodeScanningAlertReopenedAlertInstancesItemVariant1,
+    pub alert_instance: AlertInstance,
+    pub state: CodeScanningAlertReopenedAlertInstancesItemState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedAlertRuleSeverity {
@@ -5665,29 +5635,22 @@ impl ToString for CodeScanningAlertReopenedByUserAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum CodeScanningAlertReopenedByUserAlertInstancesItemVariant1State {
+pub enum CodeScanningAlertReopenedByUserAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for CodeScanningAlertReopenedByUserAlertInstancesItemVariant1State {
+impl ToString for CodeScanningAlertReopenedByUserAlertInstancesItemState {
     fn to_string(&self) -> String {
         match self {
-            CodeScanningAlertReopenedByUserAlertInstancesItemVariant1State::Open => {
-                "open".to_string()
-            }
+            CodeScanningAlertReopenedByUserAlertInstancesItemState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertReopenedByUserAlertInstancesItemVariant1 {
-    pub state: CodeScanningAlertReopenedByUserAlertInstancesItemVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
     #[serde(flatten)]
-    pub variant_0: AlertInstance,
-    #[serde(flatten)]
-    pub variant_1: CodeScanningAlertReopenedByUserAlertInstancesItemVariant1,
+    pub alert_instance: AlertInstance,
+    pub state: CodeScanningAlertReopenedByUserAlertInstancesItemState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
@@ -5793,12 +5756,6 @@ pub struct CommitCommentCreatedComment {
     pub updated_at: String,
     pub url: String,
     pub user: User,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum CommitterEmail {
-    Variant0(String),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ContentReferenceCreatedAction {
@@ -5907,12 +5864,6 @@ impl ToString for DeploymentCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentCreatedDeploymentPayload {}
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum DeploymentCreatedDeploymentPerformedViaGithubApp {
-    Variant0(App),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentCreatedDeployment {
     pub created_at: String,
     pub creator: User,
@@ -5922,7 +5873,7 @@ pub struct DeploymentCreatedDeployment {
     pub node_id: String,
     pub original_environment: String,
     pub payload: DeploymentCreatedDeploymentPayload,
-    pub performed_via_github_app: Option<DeploymentCreatedDeploymentPerformedViaGithubApp>,
+    pub performed_via_github_app: Option<App>,
     pub repository_url: String,
     #[serde(rename = "ref")]
     pub rref: String,
@@ -5947,12 +5898,6 @@ impl ToString for DeploymentStatusCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatusCreatedDeploymentPayload {}
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum DeploymentStatusCreatedDeploymentPerformedViaGithubApp {
-    Variant0(App),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatusCreatedDeployment {
     pub created_at: String,
     pub creator: User,
@@ -5962,7 +5907,7 @@ pub struct DeploymentStatusCreatedDeployment {
     pub node_id: String,
     pub original_environment: String,
     pub payload: DeploymentStatusCreatedDeploymentPayload,
-    pub performed_via_github_app: DeploymentStatusCreatedDeploymentPerformedViaGithubApp,
+    pub performed_via_github_app: Option<App>,
     pub repository_url: String,
     #[serde(rename = "ref")]
     pub rref: String,
@@ -5971,12 +5916,6 @@ pub struct DeploymentStatusCreatedDeployment {
     pub task: String,
     pub updated_at: String,
     pub url: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum DeploymentStatusCreatedDeploymentStatusPerformedViaGithubApp {
-    Variant0(App),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatusCreatedDeploymentStatus {
@@ -5988,8 +5927,7 @@ pub struct DeploymentStatusCreatedDeploymentStatus {
     pub environment: String,
     pub id: u64,
     pub node_id: String,
-    pub performed_via_github_app:
-        Option<DeploymentStatusCreatedDeploymentStatusPerformedViaGithubApp>,
+    pub performed_via_github_app: Option<App>,
     pub repository_url: String,
     #[doc = "The new state. Can be `pending`, `success`, `failure`, or `error`."]
     pub state: String,
@@ -5997,12 +5935,6 @@ pub struct DeploymentStatusCreatedDeploymentStatus {
     pub target_url: String,
     pub updated_at: String,
     pub url: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum DiscussionAnswerChosenBy {
-    Variant0(User),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionCategory {
@@ -6062,22 +5994,17 @@ pub struct DiscussionAnsweredAnswer {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionAnsweredDiscussionVariant1Category {
+pub struct DiscussionAnsweredDiscussionCategory {
     pub is_answerable: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionAnsweredDiscussionVariant1 {
-    pub answer_chosen_at: chrono::DateTime<chrono::offset::Utc>,
-    pub answer_chosen_by: User,
-    pub answer_html_url: String,
-    pub category: DiscussionAnsweredDiscussionVariant1Category,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionAnsweredDiscussion {
     #[serde(flatten)]
-    pub variant_0: Discussion,
-    #[serde(flatten)]
-    pub variant_1: DiscussionAnsweredDiscussionVariant1,
+    pub discussion: Discussion,
+    pub answer_chosen_at: chrono::DateTime<chrono::offset::Utc>,
+    pub answer_chosen_by: User,
+    pub answer_html_url: String,
+    pub category: DiscussionAnsweredDiscussionCategory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionCategoryChangedAction {
@@ -6124,34 +6051,29 @@ impl ToString for DiscussionCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum DiscussionCreatedDiscussionVariant1State {
+pub enum DiscussionCreatedDiscussionState {
     #[serde(rename = "open")]
     Open,
     #[serde(rename = "converting")]
     Converting,
 }
-impl ToString for DiscussionCreatedDiscussionVariant1State {
+impl ToString for DiscussionCreatedDiscussionState {
     fn to_string(&self) -> String {
         match self {
-            DiscussionCreatedDiscussionVariant1State::Open => "open".to_string(),
-            DiscussionCreatedDiscussionVariant1State::Converting => "converting".to_string(),
+            DiscussionCreatedDiscussionState::Open => "open".to_string(),
+            DiscussionCreatedDiscussionState::Converting => "converting".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionCreatedDiscussionVariant1 {
+pub struct DiscussionCreatedDiscussion {
+    #[serde(flatten)]
+    pub discussion: Discussion,
     pub answer_chosen_at: (),
     pub answer_chosen_by: (),
     pub answer_html_url: (),
     pub locked: bool,
-    pub state: DiscussionCreatedDiscussionVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionCreatedDiscussion {
-    #[serde(flatten)]
-    pub variant_0: Discussion,
-    #[serde(flatten)]
-    pub variant_1: DiscussionCreatedDiscussionVariant1,
+    pub state: DiscussionCreatedDiscussionState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionDeletedAction {
@@ -6215,28 +6137,23 @@ impl ToString for DiscussionLockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum DiscussionLockedDiscussionVariant1State {
+pub enum DiscussionLockedDiscussionState {
     #[serde(rename = "locked")]
     Locked,
 }
-impl ToString for DiscussionLockedDiscussionVariant1State {
+impl ToString for DiscussionLockedDiscussionState {
     fn to_string(&self) -> String {
         match self {
-            DiscussionLockedDiscussionVariant1State::Locked => "locked".to_string(),
+            DiscussionLockedDiscussionState::Locked => "locked".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionLockedDiscussionVariant1 {
-    pub locked: bool,
-    pub state: DiscussionLockedDiscussionVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionLockedDiscussion {
     #[serde(flatten)]
-    pub variant_0: Discussion,
-    #[serde(flatten)]
-    pub variant_1: DiscussionLockedDiscussionVariant1,
+    pub discussion: Discussion,
+    pub locked: bool,
+    pub state: DiscussionLockedDiscussionState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionPinnedAction {
@@ -6280,22 +6197,17 @@ impl ToString for DiscussionUnansweredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnansweredDiscussionVariant1Category {
+pub struct DiscussionUnansweredDiscussionCategory {
     pub is_answerable: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnansweredDiscussionVariant1 {
-    pub answer_chosen_at: (),
-    pub answer_chosen_by: (),
-    pub answer_html_url: (),
-    pub category: DiscussionUnansweredDiscussionVariant1Category,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnansweredDiscussion {
     #[serde(flatten)]
-    pub variant_0: Discussion,
-    #[serde(flatten)]
-    pub variant_1: DiscussionUnansweredDiscussionVariant1,
+    pub discussion: Discussion,
+    pub answer_chosen_at: (),
+    pub answer_chosen_by: (),
+    pub answer_html_url: (),
+    pub category: DiscussionUnansweredDiscussionCategory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnansweredOldAnswer {
@@ -6337,28 +6249,23 @@ impl ToString for DiscussionUnlockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum DiscussionUnlockedDiscussionVariant1State {
+pub enum DiscussionUnlockedDiscussionState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for DiscussionUnlockedDiscussionVariant1State {
+impl ToString for DiscussionUnlockedDiscussionState {
     fn to_string(&self) -> String {
         match self {
-            DiscussionUnlockedDiscussionVariant1State::Open => "open".to_string(),
+            DiscussionUnlockedDiscussionState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnlockedDiscussionVariant1 {
-    pub locked: bool,
-    pub state: DiscussionUnlockedDiscussionVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnlockedDiscussion {
     #[serde(flatten)]
-    pub variant_0: Discussion,
-    #[serde(flatten)]
-    pub variant_1: DiscussionUnlockedDiscussionVariant1,
+    pub discussion: Discussion,
+    pub locked: bool,
+    pub state: DiscussionUnlockedDiscussionState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionUnpinnedAction {
@@ -6462,15 +6369,10 @@ pub struct DiscussionCommentEditedComment {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ForkEventForkeeVariant1 {
-    pub fork: Option<bool>,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ForkEventForkee {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: ForkEventForkeeVariant1,
+    pub repository: Repository,
+    pub fork: Option<bool>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum GithubAppAuthorizationRevokedAction {
@@ -7245,12 +7147,6 @@ impl ToString for InstallationRepositorySelection {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum InstallationSuspendedBy {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationTargetType {
     User,
     Organization,
@@ -7353,16 +7249,11 @@ impl ToString for InstallationSuspendAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct InstallationSuspendInstallationVariant1 {
-    pub suspended_at: chrono::DateTime<chrono::offset::Utc>,
-    pub suspended_by: User,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationSuspendInstallation {
     #[serde(flatten)]
-    pub variant_0: Installation,
-    #[serde(flatten)]
-    pub variant_1: InstallationSuspendInstallationVariant1,
+    pub installation: Installation,
+    pub suspended_at: chrono::DateTime<chrono::offset::Utc>,
+    pub suspended_by: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationSuspendRepositoriesItem {
@@ -7388,16 +7279,11 @@ impl ToString for InstallationUnsuspendAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct InstallationUnsuspendInstallationVariant1 {
-    pub suspended_at: (),
-    pub suspended_by: (),
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationUnsuspendInstallation {
     #[serde(flatten)]
-    pub variant_0: Installation,
-    #[serde(flatten)]
-    pub variant_1: InstallationUnsuspendInstallationVariant1,
+    pub installation: Installation,
+    pub suspended_at: (),
+    pub suspended_by: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationUnsuspendRepositoriesItem {
@@ -7460,12 +7346,6 @@ impl ToString for InstallationRepositoriesAddedRepositorySelection {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum InstallationRepositoriesAddedRequester {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationRepositoriesRemovedAction {
     #[serde(rename = "removed")]
     Removed,
@@ -7515,12 +7395,6 @@ impl ToString for InstallationRepositoriesRemovedRepositorySelection {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum InstallationRepositoriesRemovedRequester {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -7540,24 +7414,6 @@ impl ToString for IssueActiveLockReason {
             IssueActiveLockReason::Spam => "spam".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssuePerformedViaGithubApp {
-    Variant0(App),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuePullRequest {
@@ -7582,12 +7438,6 @@ impl ToString for IssueState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueCommentPerformedViaGithubApp {
-    Variant0(App),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -7600,48 +7450,37 @@ impl ToString for IssueCommentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueCommentCreatedIssueVariant1Assignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentCreatedIssueVariant1PullRequest {
+pub struct IssueCommentCreatedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
     pub patch_url: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssueCommentCreatedIssueVariant1State {
+pub enum IssueCommentCreatedIssueState {
     #[serde(rename = "open")]
     Open,
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for IssueCommentCreatedIssueVariant1State {
+impl ToString for IssueCommentCreatedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssueCommentCreatedIssueVariant1State::Open => "open".to_string(),
-            IssueCommentCreatedIssueVariant1State::Closed => "closed".to_string(),
+            IssueCommentCreatedIssueState::Open => "open".to_string(),
+            IssueCommentCreatedIssueState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentCreatedIssueVariant1 {
-    pub assignee: IssueCommentCreatedIssueVariant1Assignee,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    pub pull_request: Option<IssueCommentCreatedIssueVariant1PullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentCreatedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentCreatedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssueCommentCreatedIssueVariant1,
+    pub issue: Issue,
+    pub assignee: Option<User>,
+    pub labels: Vec<Label>,
+    pub locked: bool,
+    pub pull_request: Option<IssueCommentCreatedIssuePullRequest>,
+    #[doc = "State of the issue; either 'open' or 'closed'"]
+    pub state: IssueCommentCreatedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentDeletedAction {
@@ -7656,48 +7495,37 @@ impl ToString for IssueCommentDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueCommentDeletedIssueVariant1Assignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentDeletedIssueVariant1PullRequest {
+pub struct IssueCommentDeletedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
     pub patch_url: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssueCommentDeletedIssueVariant1State {
+pub enum IssueCommentDeletedIssueState {
     #[serde(rename = "open")]
     Open,
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for IssueCommentDeletedIssueVariant1State {
+impl ToString for IssueCommentDeletedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssueCommentDeletedIssueVariant1State::Open => "open".to_string(),
-            IssueCommentDeletedIssueVariant1State::Closed => "closed".to_string(),
+            IssueCommentDeletedIssueState::Open => "open".to_string(),
+            IssueCommentDeletedIssueState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentDeletedIssueVariant1 {
-    pub assignee: IssueCommentDeletedIssueVariant1Assignee,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    pub pull_request: Option<IssueCommentDeletedIssueVariant1PullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentDeletedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentDeletedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssueCommentDeletedIssueVariant1,
+    pub issue: Issue,
+    pub assignee: Option<User>,
+    pub labels: Vec<Label>,
+    pub locked: bool,
+    pub pull_request: Option<IssueCommentDeletedIssuePullRequest>,
+    #[doc = "State of the issue; either 'open' or 'closed'"]
+    pub state: IssueCommentDeletedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentEditedAction {
@@ -7721,48 +7549,37 @@ pub struct IssueCommentEditedChanges {
     pub body: Option<IssueCommentEditedChangesBody>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssueCommentEditedIssueVariant1Assignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentEditedIssueVariant1PullRequest {
+pub struct IssueCommentEditedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
     pub patch_url: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssueCommentEditedIssueVariant1State {
+pub enum IssueCommentEditedIssueState {
     #[serde(rename = "open")]
     Open,
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for IssueCommentEditedIssueVariant1State {
+impl ToString for IssueCommentEditedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssueCommentEditedIssueVariant1State::Open => "open".to_string(),
-            IssueCommentEditedIssueVariant1State::Closed => "closed".to_string(),
+            IssueCommentEditedIssueState::Open => "open".to_string(),
+            IssueCommentEditedIssueState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentEditedIssueVariant1 {
-    pub assignee: IssueCommentEditedIssueVariant1Assignee,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    pub pull_request: Option<IssueCommentEditedIssueVariant1PullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentEditedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentEditedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssueCommentEditedIssueVariant1,
+    pub issue: Issue,
+    pub assignee: Option<User>,
+    pub labels: Vec<Label>,
+    pub locked: bool,
+    pub pull_request: Option<IssueCommentEditedIssuePullRequest>,
+    #[doc = "State of the issue; either 'open' or 'closed'"]
+    pub state: IssueCommentEditedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesAssignedAction {
@@ -7777,12 +7594,6 @@ impl ToString for IssuesAssignedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssuesAssignedAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesClosedAction {
     #[serde(rename = "closed")]
     Closed,
@@ -7795,28 +7606,23 @@ impl ToString for IssuesClosedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssuesClosedIssueVariant1State {
+pub enum IssuesClosedIssueState {
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for IssuesClosedIssueVariant1State {
+impl ToString for IssuesClosedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssuesClosedIssueVariant1State::Closed => "closed".to_string(),
+            IssuesClosedIssueState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesClosedIssueVariant1 {
-    pub closed_at: String,
-    pub state: IssuesClosedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesClosedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesClosedIssueVariant1,
+    pub issue: Issue,
+    pub closed_at: String,
+    pub state: IssuesClosedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesDeletedAction {
@@ -7843,15 +7649,10 @@ impl ToString for IssuesDemilestonedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesDemilestonedIssueVariant1 {
-    pub milestone: (),
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesDemilestonedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesDemilestonedIssueVariant1,
+    pub issue: Issue,
+    pub milestone: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesEditedAction {
@@ -7905,7 +7706,7 @@ impl ToString for IssuesLockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssuesLockedIssueVariant1ActiveLockReason {
+pub enum IssuesLockedIssueActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
     #[serde(rename = "off-topic")]
@@ -7915,27 +7716,22 @@ pub enum IssuesLockedIssueVariant1ActiveLockReason {
     #[serde(rename = "spam")]
     Spam,
 }
-impl ToString for IssuesLockedIssueVariant1ActiveLockReason {
+impl ToString for IssuesLockedIssueActiveLockReason {
     fn to_string(&self) -> String {
         match self {
-            IssuesLockedIssueVariant1ActiveLockReason::Resolved => "resolved".to_string(),
-            IssuesLockedIssueVariant1ActiveLockReason::OffTopic => "off-topic".to_string(),
-            IssuesLockedIssueVariant1ActiveLockReason::TooHeated => "too heated".to_string(),
-            IssuesLockedIssueVariant1ActiveLockReason::Spam => "spam".to_string(),
+            IssuesLockedIssueActiveLockReason::Resolved => "resolved".to_string(),
+            IssuesLockedIssueActiveLockReason::OffTopic => "off-topic".to_string(),
+            IssuesLockedIssueActiveLockReason::TooHeated => "too heated".to_string(),
+            IssuesLockedIssueActiveLockReason::Spam => "spam".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesLockedIssueVariant1 {
-    pub active_lock_reason: Option<IssuesLockedIssueVariant1ActiveLockReason>,
-    pub locked: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesLockedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesLockedIssueVariant1,
+    pub issue: Issue,
+    pub active_lock_reason: Option<IssuesLockedIssueActiveLockReason>,
+    pub locked: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesMilestonedAction {
@@ -7950,15 +7746,10 @@ impl ToString for IssuesMilestonedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesMilestonedIssueVariant1 {
-    pub milestone: Milestone,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesMilestonedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesMilestonedIssueVariant1,
+    pub issue: Issue,
+    pub milestone: Milestone,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesOpenedAction {
@@ -7978,28 +7769,23 @@ pub struct IssuesOpenedChanges {
     pub old_repository: Repository,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssuesOpenedIssueVariant1State {
+pub enum IssuesOpenedIssueState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for IssuesOpenedIssueVariant1State {
+impl ToString for IssuesOpenedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssuesOpenedIssueVariant1State::Open => "open".to_string(),
+            IssuesOpenedIssueState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesOpenedIssueVariant1 {
-    pub closed_at: (),
-    pub state: IssuesOpenedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesOpenedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesOpenedIssueVariant1,
+    pub issue: Issue,
+    pub closed_at: (),
+    pub state: IssuesOpenedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesPinnedAction {
@@ -8026,27 +7812,22 @@ impl ToString for IssuesReopenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum IssuesReopenedIssueVariant1State {
+pub enum IssuesReopenedIssueState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for IssuesReopenedIssueVariant1State {
+impl ToString for IssuesReopenedIssueState {
     fn to_string(&self) -> String {
         match self {
-            IssuesReopenedIssueVariant1State::Open => "open".to_string(),
+            IssuesReopenedIssueState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesReopenedIssueVariant1 {
-    pub state: IssuesReopenedIssueVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesReopenedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesReopenedIssueVariant1,
+    pub issue: Issue,
+    pub state: IssuesReopenedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesTransferredAction {
@@ -8078,12 +7859,6 @@ impl ToString for IssuesUnassignedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum IssuesUnassignedAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesUnlabeledAction {
     #[serde(rename = "unlabeled")]
     Unlabeled,
@@ -8108,16 +7883,11 @@ impl ToString for IssuesUnlockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesUnlockedIssueVariant1 {
-    pub active_lock_reason: (),
-    pub locked: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesUnlockedIssue {
     #[serde(flatten)]
-    pub variant_0: Issue,
-    #[serde(flatten)]
-    pub variant_1: IssuesUnlockedIssueVariant1,
+    pub issue: Issue,
+    pub active_lock_reason: (),
+    pub locked: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesUnpinnedAction {
@@ -8222,15 +7992,10 @@ impl ToString for MarketplacePurchaseCancelledAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchaseCancelledMarketplacePurchaseVariant1 {
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseCancelledMarketplacePurchase {
     #[serde(flatten)]
-    pub variant_0: MarketplacePurchase,
-    #[serde(flatten)]
-    pub variant_1: MarketplacePurchaseCancelledMarketplacePurchaseVariant1,
+    pub marketplace_purchase: MarketplacePurchase,
+    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseCancelledSender {
@@ -8267,15 +8032,10 @@ impl ToString for MarketplacePurchaseChangedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchaseChangedMarketplacePurchaseVariant1 {
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseChangedMarketplacePurchase {
     #[serde(flatten)]
-    pub variant_0: MarketplacePurchase,
-    #[serde(flatten)]
-    pub variant_1: MarketplacePurchaseChangedMarketplacePurchaseVariant1,
+    pub marketplace_purchase: MarketplacePurchase,
+    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseChangedSender {
@@ -8312,15 +8072,10 @@ impl ToString for MarketplacePurchasePendingChangeAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePendingChangeMarketplacePurchaseVariant1 {
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeMarketplacePurchase {
     #[serde(flatten)]
-    pub variant_0: MarketplacePurchase,
-    #[serde(flatten)]
-    pub variant_1: MarketplacePurchasePendingChangeMarketplacePurchaseVariant1,
+    pub marketplace_purchase: MarketplacePurchase,
+    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeSender {
@@ -8359,15 +8114,10 @@ impl ToString for MarketplacePurchasePendingChangeCancelledAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchaseVariant1 {
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchase {
     #[serde(flatten)]
-    pub variant_0: MarketplacePurchase,
-    #[serde(flatten)]
-    pub variant_1: MarketplacePurchasePendingChangeCancelledMarketplacePurchaseVariant1,
+    pub marketplace_purchase: MarketplacePurchase,
+    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeCancelledSender {
@@ -8404,15 +8154,10 @@ impl ToString for MarketplacePurchasePurchasedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePurchasedMarketplacePurchaseVariant1 {
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePurchasedMarketplacePurchase {
     #[serde(flatten)]
-    pub variant_0: MarketplacePurchase,
-    #[serde(flatten)]
-    pub variant_1: MarketplacePurchasePurchasedMarketplacePurchaseVariant1,
+    pub marketplace_purchase: MarketplacePurchase,
+    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePurchasedSender {
@@ -8638,28 +8383,23 @@ impl ToString for MilestoneClosedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum MilestoneClosedMilestoneVariant1State {
+pub enum MilestoneClosedMilestoneState {
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for MilestoneClosedMilestoneVariant1State {
+impl ToString for MilestoneClosedMilestoneState {
     fn to_string(&self) -> String {
         match self {
-            MilestoneClosedMilestoneVariant1State::Closed => "closed".to_string(),
+            MilestoneClosedMilestoneState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneClosedMilestoneVariant1 {
-    pub closed_at: String,
-    pub state: MilestoneClosedMilestoneVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MilestoneClosedMilestone {
     #[serde(flatten)]
-    pub variant_0: Milestone,
-    #[serde(flatten)]
-    pub variant_1: MilestoneClosedMilestoneVariant1,
+    pub milestone: Milestone,
+    pub closed_at: String,
+    pub state: MilestoneClosedMilestoneState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MilestoneCreatedAction {
@@ -8674,28 +8414,23 @@ impl ToString for MilestoneCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum MilestoneCreatedMilestoneVariant1State {
+pub enum MilestoneCreatedMilestoneState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for MilestoneCreatedMilestoneVariant1State {
+impl ToString for MilestoneCreatedMilestoneState {
     fn to_string(&self) -> String {
         match self {
-            MilestoneCreatedMilestoneVariant1State::Open => "open".to_string(),
+            MilestoneCreatedMilestoneState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneCreatedMilestoneVariant1 {
-    pub closed_at: (),
-    pub state: MilestoneCreatedMilestoneVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MilestoneCreatedMilestone {
     #[serde(flatten)]
-    pub variant_0: Milestone,
-    #[serde(flatten)]
-    pub variant_1: MilestoneCreatedMilestoneVariant1,
+    pub milestone: Milestone,
+    pub closed_at: (),
+    pub state: MilestoneCreatedMilestoneState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MilestoneDeletedAction {
@@ -8755,28 +8490,23 @@ impl ToString for MilestoneOpenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum MilestoneOpenedMilestoneVariant1State {
+pub enum MilestoneOpenedMilestoneState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for MilestoneOpenedMilestoneVariant1State {
+impl ToString for MilestoneOpenedMilestoneState {
     fn to_string(&self) -> String {
         match self {
-            MilestoneOpenedMilestoneVariant1State::Open => "open".to_string(),
+            MilestoneOpenedMilestoneState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneOpenedMilestoneVariant1 {
-    pub closed_at: (),
-    pub state: MilestoneOpenedMilestoneVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MilestoneOpenedMilestone {
     #[serde(flatten)]
-    pub variant_0: Milestone,
-    #[serde(flatten)]
-    pub variant_1: MilestoneOpenedMilestoneVariant1,
+    pub milestone: Milestone,
+    pub closed_at: (),
+    pub state: MilestoneOpenedMilestoneState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OrgBlockBlockedAction {
@@ -8839,16 +8569,10 @@ impl ToString for OrganizationMemberInvitedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum OrganizationMemberInvitedInvitationFailedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OrganizationMemberInvitedInvitation {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub email: Option<String>,
-    pub failed_at: OrganizationMemberInvitedInvitationFailedAt,
+    pub failed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub failed_reason: Option<String>,
     pub id: f64,
     pub invitation_teams_url: String,
@@ -9304,15 +9028,10 @@ pub struct ProjectCardMovedChanges {
     pub column_id: ProjectCardMovedChangesColumnId,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjectCardMovedProjectCardVariant1 {
-    pub after_id: Option<f64>,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProjectCardMovedProjectCard {
     #[serde(flatten)]
-    pub variant_0: ProjectCard,
-    #[serde(flatten)]
-    pub variant_1: ProjectCardMovedProjectCardVariant1,
+    pub project_card: ProjectCard,
+    pub after_id: Option<f64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ProjectColumnCreatedAction {
@@ -9371,15 +9090,10 @@ impl ToString for ProjectColumnMovedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PublicEventRepositoryVariant1 {
-    pub private: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PublicEventRepository {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: PublicEventRepositoryVariant1,
+    pub repository: Repository,
+    pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestLinks {
@@ -9415,12 +9129,6 @@ impl ToString for PullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PullRequestAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -9440,21 +9148,9 @@ pub struct PullRequestHead {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
-pub enum PullRequestMergedBy {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PullRequestMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
 pub enum PullRequestRequestedReviewersItem {
-    Variant0(User),
-    Variant1(Team),
+    User(User),
+    Team(Team),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestState {
@@ -9559,30 +9255,25 @@ impl ToString for PullRequestClosedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum PullRequestClosedPullRequestVariant1State {
+pub enum PullRequestClosedPullRequestState {
     #[serde(rename = "closed")]
     Closed,
 }
-impl ToString for PullRequestClosedPullRequestVariant1State {
+impl ToString for PullRequestClosedPullRequestState {
     fn to_string(&self) -> String {
         match self {
-            PullRequestClosedPullRequestVariant1State::Closed => "closed".to_string(),
+            PullRequestClosedPullRequestState::Closed => "closed".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestClosedPullRequestVariant1 {
+pub struct PullRequestClosedPullRequest {
+    #[serde(flatten)]
+    pub pull_request: PullRequest,
     pub closed_at: chrono::DateTime<chrono::offset::Utc>,
     pub merged: bool,
     #[doc = "State of this Pull Request. Either `open` or `closed`."]
-    pub state: PullRequestClosedPullRequestVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestClosedPullRequest {
-    #[serde(flatten)]
-    pub variant_0: PullRequest,
-    #[serde(flatten)]
-    pub variant_1: PullRequestClosedPullRequestVariant1,
+    pub state: PullRequestClosedPullRequestState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestConvertedToDraftAction {
@@ -9597,20 +9288,15 @@ impl ToString for PullRequestConvertedToDraftAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestConvertedToDraftPullRequestVariant1 {
+pub struct PullRequestConvertedToDraftPullRequest {
+    #[serde(flatten)]
+    pub pull_request: PullRequest,
     pub closed_at: (),
     #[doc = "Indicates whether or not the pull request is a draft."]
     pub draft: bool,
     pub merged: bool,
     pub merged_at: (),
     pub merged_by: (),
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestConvertedToDraftPullRequest {
-    #[serde(flatten)]
-    pub variant_0: PullRequest,
-    #[serde(flatten)]
-    pub variant_1: PullRequestConvertedToDraftPullRequestVariant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestEditedAction {
@@ -9676,32 +9362,27 @@ impl ToString for PullRequestOpenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum PullRequestOpenedPullRequestVariant1State {
+pub enum PullRequestOpenedPullRequestState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for PullRequestOpenedPullRequestVariant1State {
+impl ToString for PullRequestOpenedPullRequestState {
     fn to_string(&self) -> String {
         match self {
-            PullRequestOpenedPullRequestVariant1State::Open => "open".to_string(),
+            PullRequestOpenedPullRequestState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestOpenedPullRequestVariant1 {
+pub struct PullRequestOpenedPullRequest {
+    #[serde(flatten)]
+    pub pull_request: PullRequest,
     pub active_lock_reason: (),
     pub closed_at: (),
     pub merge_commit_sha: (),
     pub merged_at: (),
     pub merged_by: (),
-    pub state: PullRequestOpenedPullRequestVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestOpenedPullRequest {
-    #[serde(flatten)]
-    pub variant_0: PullRequest,
-    #[serde(flatten)]
-    pub variant_1: PullRequestOpenedPullRequestVariant1,
+    pub state: PullRequestOpenedPullRequestState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReadyForReviewAction {
@@ -9716,33 +9397,28 @@ impl ToString for PullRequestReadyForReviewAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum PullRequestReadyForReviewPullRequestVariant1State {
+pub enum PullRequestReadyForReviewPullRequestState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for PullRequestReadyForReviewPullRequestVariant1State {
+impl ToString for PullRequestReadyForReviewPullRequestState {
     fn to_string(&self) -> String {
         match self {
-            PullRequestReadyForReviewPullRequestVariant1State::Open => "open".to_string(),
+            PullRequestReadyForReviewPullRequestState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReadyForReviewPullRequestVariant1 {
+pub struct PullRequestReadyForReviewPullRequest {
+    #[serde(flatten)]
+    pub pull_request: PullRequest,
     pub closed_at: (),
     #[doc = "Indicates whether or not the pull request is a draft."]
     pub draft: bool,
     pub merged: bool,
     pub merged_at: (),
     pub merged_by: (),
-    pub state: PullRequestReadyForReviewPullRequestVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReadyForReviewPullRequest {
-    #[serde(flatten)]
-    pub variant_0: PullRequest,
-    #[serde(flatten)]
-    pub variant_1: PullRequestReadyForReviewPullRequestVariant1,
+    pub state: PullRequestReadyForReviewPullRequestState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReopenedAction {
@@ -9757,32 +9433,27 @@ impl ToString for PullRequestReopenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum PullRequestReopenedPullRequestVariant1State {
+pub enum PullRequestReopenedPullRequestState {
     #[serde(rename = "open")]
     Open,
 }
-impl ToString for PullRequestReopenedPullRequestVariant1State {
+impl ToString for PullRequestReopenedPullRequestState {
     fn to_string(&self) -> String {
         match self {
-            PullRequestReopenedPullRequestVariant1State::Open => "open".to_string(),
+            PullRequestReopenedPullRequestState::Open => "open".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReopenedPullRequestVariant1 {
+pub struct PullRequestReopenedPullRequest {
+    #[serde(flatten)]
+    pub pull_request: PullRequest,
     pub closed_at: (),
     pub merge_commit_sha: (),
     pub merged: bool,
     pub merged_at: (),
     pub merged_by: (),
-    pub state: PullRequestReopenedPullRequestVariant1State,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReopenedPullRequest {
-    #[serde(flatten)]
-    pub variant_0: PullRequest,
-    #[serde(flatten)]
-    pub variant_1: PullRequestReopenedPullRequestVariant1,
+    pub state: PullRequestReopenedPullRequestState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewRequestRemovedVariant0Action {
@@ -10066,12 +9737,6 @@ impl ToString for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PullRequestReviewCommentCreatedPullRequestAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentCreatedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10091,15 +9756,9 @@ pub struct PullRequestReviewCommentCreatedPullRequestHead {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
-pub enum PullRequestReviewCommentCreatedPullRequestMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
 pub enum PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem {
-    Variant0(User),
-    Variant1(Team),
+    User(User),
+    Team(Team),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentCreatedPullRequestState {
@@ -10119,7 +9778,7 @@ impl ToString for PullRequestReviewCommentCreatedPullRequestState {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentCreatedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentCreatedPullRequestActiveLockReason>,
-    pub assignee: PullRequestReviewCommentCreatedPullRequestAssignee,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: Option<()>,
@@ -10141,7 +9800,7 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub locked: bool,
     pub merge_commit_sha: Option<String>,
     pub merged_at: Option<String>,
-    pub milestone: PullRequestReviewCommentCreatedPullRequestMilestone,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     pub number: u64,
     pub patch_url: String,
@@ -10208,12 +9867,6 @@ impl ToString for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PullRequestReviewCommentDeletedPullRequestAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentDeletedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10233,15 +9886,9 @@ pub struct PullRequestReviewCommentDeletedPullRequestHead {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
-pub enum PullRequestReviewCommentDeletedPullRequestMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
 pub enum PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem {
-    Variant0(User),
-    Variant1(Team),
+    User(User),
+    Team(Team),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentDeletedPullRequestState {
@@ -10261,7 +9908,7 @@ impl ToString for PullRequestReviewCommentDeletedPullRequestState {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentDeletedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentDeletedPullRequestActiveLockReason>,
-    pub assignee: PullRequestReviewCommentDeletedPullRequestAssignee,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: Option<()>,
@@ -10283,7 +9930,7 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub locked: bool,
     pub merge_commit_sha: Option<String>,
     pub merged_at: Option<String>,
-    pub milestone: PullRequestReviewCommentDeletedPullRequestMilestone,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     pub number: u64,
     pub patch_url: String,
@@ -10359,12 +10006,6 @@ impl ToString for PullRequestReviewCommentEditedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PullRequestReviewCommentEditedPullRequestAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentEditedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10384,15 +10025,9 @@ pub struct PullRequestReviewCommentEditedPullRequestHead {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
-pub enum PullRequestReviewCommentEditedPullRequestMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
 pub enum PullRequestReviewCommentEditedPullRequestRequestedReviewersItem {
-    Variant0(User),
-    Variant1(Team),
+    User(User),
+    Team(Team),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentEditedPullRequestState {
@@ -10412,7 +10047,7 @@ impl ToString for PullRequestReviewCommentEditedPullRequestState {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestReviewCommentEditedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentEditedPullRequestActiveLockReason>,
-    pub assignee: PullRequestReviewCommentEditedPullRequestAssignee,
+    pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: Option<()>,
@@ -10434,7 +10069,7 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub locked: bool,
     pub merge_commit_sha: Option<String>,
     pub merged_at: Option<String>,
-    pub milestone: PullRequestReviewCommentEditedPullRequestMilestone,
+    pub milestone: Option<Milestone>,
     pub node_id: String,
     pub number: u64,
     pub patch_url: String,
@@ -10448,12 +10083,6 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub updated_at: String,
     pub url: String,
     pub user: User,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum PushEventHeadCommit {
-    Variant0(Commit),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseCreatedAction {
@@ -10519,16 +10148,11 @@ impl ToString for ReleasePrereleasedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleasePrereleasedReleaseVariant1 {
-    #[doc = "Whether the release is identified as a prerelease or a full release."]
-    pub prerelease: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReleasePrereleasedRelease {
     #[serde(flatten)]
-    pub variant_0: Release,
-    #[serde(flatten)]
-    pub variant_1: ReleasePrereleasedReleaseVariant1,
+    pub release: Release,
+    #[doc = "Whether the release is identified as a prerelease or a full release."]
+    pub prerelease: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleasePublishedAction {
@@ -10543,15 +10167,10 @@ impl ToString for ReleasePublishedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleasePublishedReleaseVariant1 {
-    pub published_at: chrono::DateTime<chrono::offset::Utc>,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReleasePublishedRelease {
     #[serde(flatten)]
-    pub variant_0: Release,
-    #[serde(flatten)]
-    pub variant_1: ReleasePublishedReleaseVariant1,
+    pub release: Release,
+    pub published_at: chrono::DateTime<chrono::offset::Utc>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseReleasedAction {
@@ -10578,15 +10197,10 @@ impl ToString for ReleaseUnpublishedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleaseUnpublishedReleaseVariant1 {
-    pub published_at: (),
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReleaseUnpublishedRelease {
     #[serde(flatten)]
-    pub variant_0: Release,
-    #[serde(flatten)]
-    pub variant_1: ReleaseUnpublishedReleaseVariant1,
+    pub release: Release,
+    pub published_at: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseAssetState {
@@ -10605,12 +10219,6 @@ impl ToString for ReleaseAssetState {
 pub enum RepositoryCreatedAt {
     Variant0(u64),
     Variant1(chrono::DateTime<chrono::offset::Utc>),
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum RepositoryLicense {
-    Variant0(License),
-    Variant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryPermissions {
@@ -10640,16 +10248,11 @@ impl ToString for RepositoryArchivedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryArchivedRepositoryVariant1 {
-    #[doc = "Whether the repository is archived."]
-    pub archived: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryArchivedRepository {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: RepositoryArchivedRepositoryVariant1,
+    pub repository: Repository,
+    #[doc = "Whether the repository is archived."]
+    pub archived: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryCreatedAction {
@@ -10718,16 +10321,11 @@ impl ToString for RepositoryPrivatizedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryPrivatizedRepositoryVariant1 {
-    #[doc = "Whether the repository is private or public."]
-    pub private: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryPrivatizedRepository {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: RepositoryPrivatizedRepositoryVariant1,
+    pub repository: Repository,
+    #[doc = "Whether the repository is private or public."]
+    pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryPublicizedAction {
@@ -10742,16 +10340,11 @@ impl ToString for RepositoryPublicizedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryPublicizedRepositoryVariant1 {
-    #[doc = "Whether the repository is private or public."]
-    pub private: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryPublicizedRepository {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: RepositoryPublicizedRepositoryVariant1,
+    pub repository: Repository,
+    #[doc = "Whether the repository is private or public."]
+    pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryRenamedAction {
@@ -10814,16 +10407,11 @@ impl ToString for RepositoryUnarchivedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryUnarchivedRepositoryVariant1 {
-    #[doc = "Whether the repository is archived."]
-    pub archived: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryUnarchivedRepository {
     #[serde(flatten)]
-    pub variant_0: Repository,
-    #[serde(flatten)]
-    pub variant_1: RepositoryUnarchivedRepositoryVariant1,
+    pub repository: Repository,
+    #[doc = "Whether the repository is archived."]
+    pub archived: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryDispatchOnDemandTestAction {
@@ -11309,12 +10897,6 @@ impl ToString for SimplePullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum SimplePullRequestAssignee {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SimplePullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -11334,15 +10916,9 @@ pub struct SimplePullRequestHead {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
-pub enum SimplePullRequestMilestone {
-    Variant0(Milestone),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
 pub enum SimplePullRequestRequestedReviewersItem {
-    Variant0(User),
-    Variant1(Team),
+    User(User),
+    Team(Team),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum SimplePullRequestState {
@@ -11550,32 +11126,16 @@ pub struct StatusEventBranchesItem {
     pub protected: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum StatusEventCommitAuthor {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct StatusEventCommitCommitAuthorVariant1 {
-    pub date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitCommitAuthor {
     #[serde(flatten)]
-    pub variant_0: Committer,
-    #[serde(flatten)]
-    pub variant_1: StatusEventCommitCommitAuthorVariant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct StatusEventCommitCommitCommitterVariant1 {
+    pub committer: Committer,
     pub date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitCommitCommitter {
     #[serde(flatten)]
-    pub variant_0: Committer,
-    #[serde(flatten)]
-    pub variant_1: StatusEventCommitCommitCommitterVariant1,
+    pub committer: Committer,
+    pub date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitCommitTree {
@@ -11660,12 +11220,6 @@ pub struct StatusEventCommitCommit {
     pub verification: StatusEventCommitCommitVerification,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum StatusEventCommitCommitter {
-    Variant0(User),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitParentsItem {
     pub html_url: String,
     pub sha: String,
@@ -11673,10 +11227,10 @@ pub struct StatusEventCommitParentsItem {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommit {
-    pub author: StatusEventCommitAuthor,
+    pub author: Option<User>,
     pub comments_url: String,
     pub commit: StatusEventCommitCommit,
-    pub committer: StatusEventCommitCommitter,
+    pub committer: Option<User>,
     pub html_url: String,
     pub node_id: String,
     pub parents: Vec<StatusEventCommitParentsItem>,
@@ -12190,12 +11744,6 @@ impl ToString for WorkflowStepInProgressStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-pub enum WorkflowDispatchEventInputs {
-    Variant0(serde_json::Value),
-    Variant1,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowJobCompletedAction {
     #[serde(rename = "completed")]
     Completed,
@@ -12208,30 +11756,25 @@ impl ToString for WorkflowJobCompletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum WorkflowJobCompletedWorkflowJobVariant1Conclusion {
+pub enum WorkflowJobCompletedWorkflowJobConclusion {
     #[serde(rename = "success")]
     Success,
     #[serde(rename = "failure")]
     Failure,
 }
-impl ToString for WorkflowJobCompletedWorkflowJobVariant1Conclusion {
+impl ToString for WorkflowJobCompletedWorkflowJobConclusion {
     fn to_string(&self) -> String {
         match self {
-            WorkflowJobCompletedWorkflowJobVariant1Conclusion::Success => "success".to_string(),
-            WorkflowJobCompletedWorkflowJobVariant1Conclusion::Failure => "failure".to_string(),
+            WorkflowJobCompletedWorkflowJobConclusion::Success => "success".to_string(),
+            WorkflowJobCompletedWorkflowJobConclusion::Failure => "failure".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowJobCompletedWorkflowJobVariant1 {
-    pub conclusion: WorkflowJobCompletedWorkflowJobVariant1Conclusion,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkflowJobCompletedWorkflowJob {
     #[serde(flatten)]
-    pub variant_0: WorkflowJob,
-    #[serde(flatten)]
-    pub variant_1: WorkflowJobCompletedWorkflowJobVariant1,
+    pub workflow_job: WorkflowJob,
+    pub conclusion: WorkflowJobCompletedWorkflowJobConclusion,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowJobQueuedAction {
@@ -12288,17 +11831,12 @@ impl ToString for WorkflowJobStartedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowJobStartedWorkflowJobVariant1 {
+pub struct WorkflowJobStartedWorkflowJob {
+    #[serde(flatten)]
+    pub workflow_job: WorkflowJob,
     pub completed_at: (),
     pub conclusion: (),
     pub steps: Vec<WorkflowStepInProgress>,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowJobStartedWorkflowJob {
-    #[serde(flatten)]
-    pub variant_0: WorkflowJob,
-    #[serde(flatten)]
-    pub variant_1: WorkflowJobStartedWorkflowJobVariant1,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowRunCompletedAction {
@@ -12313,7 +11851,7 @@ impl ToString for WorkflowRunCompletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum WorkflowRunCompletedWorkflowRunVariant1Conclusion {
+pub enum WorkflowRunCompletedWorkflowRunConclusion {
     #[serde(rename = "success")]
     Success,
     #[serde(rename = "failure")]
@@ -12329,31 +11867,26 @@ pub enum WorkflowRunCompletedWorkflowRunVariant1Conclusion {
     #[serde(rename = "stale")]
     Stale,
 }
-impl ToString for WorkflowRunCompletedWorkflowRunVariant1Conclusion {
+impl ToString for WorkflowRunCompletedWorkflowRunConclusion {
     fn to_string(&self) -> String {
         match self {
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::Success => "success".to_string(),
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::Failure => "failure".to_string(),
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::Neutral => "neutral".to_string(),
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::Cancelled => "cancelled".to_string(),
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::TimedOut => "timed_out".to_string(),
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::ActionRequired => {
+            WorkflowRunCompletedWorkflowRunConclusion::Success => "success".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::Failure => "failure".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::Neutral => "neutral".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::Cancelled => "cancelled".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::TimedOut => "timed_out".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::ActionRequired => {
                 "action_required".to_string()
             }
-            WorkflowRunCompletedWorkflowRunVariant1Conclusion::Stale => "stale".to_string(),
+            WorkflowRunCompletedWorkflowRunConclusion::Stale => "stale".to_string(),
         }
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowRunCompletedWorkflowRunVariant1 {
-    pub conclusion: WorkflowRunCompletedWorkflowRunVariant1Conclusion,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkflowRunCompletedWorkflowRun {
     #[serde(flatten)]
-    pub variant_0: WorkflowRun,
-    #[serde(flatten)]
-    pub variant_1: WorkflowRunCompletedWorkflowRunVariant1,
+    pub workflow_run: WorkflowRun,
+    pub conclusion: WorkflowRunCompletedWorkflowRunConclusion,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowRunRequestedAction {

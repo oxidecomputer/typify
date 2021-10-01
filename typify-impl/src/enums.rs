@@ -9,9 +9,43 @@ use schemars::schema::{
 
 use crate::{
     structs::{output_struct_property, struct_members, struct_property},
-    util::{constant_string_value, get_type_name, metadata_description, recase},
+    util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
     EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
 };
+
+pub(crate) fn maybe_option_as_enum(
+    type_name: Name,
+    metadata: &Option<Box<schemars::schema::Metadata>>,
+    subschemas: &[Schema],
+    type_space: &mut TypeSpace,
+) -> Option<TypeEntry> {
+    if subschemas.len() == 1 {
+        return None;
+    }
+    // Let's be as general as possible and consider the possibility that more
+    // than one subschema is the simple null.
+    let non_nulls = subschemas
+        .iter()
+        .filter(|schema| {
+            !matches!(schema, Schema::Object(SchemaObject {
+                instance_type: Some(SingleOrVec::Single(single)),
+                ..
+            }) if single.as_ref() == &InstanceType::Null)
+        })
+        .collect::<Vec<_>>();
+
+    if non_nulls.len() != 1 {
+        return None;
+    }
+
+    let non_null = non_nulls.into_iter().next()?;
+
+    let (type_entry, _) = type_space
+        .convert_option(type_name, metadata, non_null)
+        .ok()?;
+
+    Some(type_entry)
+}
 
 // TODO these maybe_* functions need to not create new types until we're past
 // that point at which they might return None.
@@ -613,8 +647,8 @@ pub(crate) fn untagged_enum(
                 Some(name) => Name::Suggested(format!("{}Variant{}", name, idx)),
                 None => Name::Unknown,
             };
-            let details = external_variant(sub_type_name.clone(), schema, type_space)?;
-            let good_name = variant_provides_name(type_space, &details, &sub_type_name);
+            let details = external_variant(sub_type_name, schema, type_space)?;
+            let good_name = schema_is_named(schema);
             match (&good_name, common_prefix.as_ref()) {
                 (None, _) => {
                     names_from_variants = false;
@@ -675,29 +709,6 @@ fn get_common_prefix(name: &str, prefix: &str) -> String {
         .collect::<Vec<&str>>()
         .join("-")
         .to_case(Case::Pascal)
-}
-
-fn variant_provides_name(
-    type_space: &TypeSpace,
-    details: &VariantDetails,
-    sub_type_name: &Name,
-) -> Option<String> {
-    let item_id = match details {
-        VariantDetails::Tuple(items) if items.len() == 1 => items.first(),
-        _ => None,
-    }?;
-
-    let item = type_space.id_to_entry.get(item_id)?;
-    match item.details {
-        TypeDetails::Enum { .. } | TypeDetails::Struct(_) | TypeDetails::Newtype(_) => Some(()),
-        _ => None,
-    }?;
-    let name = item.name.as_ref()?;
-
-    match sub_type_name {
-        Name::Required(s) | Name::Suggested(s) if s != name => Some(name.clone()),
-        _ => None,
-    }
 }
 
 pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> TokenStream {
@@ -795,16 +806,19 @@ mod tests {
     use std::collections::HashSet;
 
     use schema::Schema;
-    use schemars::{schema::RootSchema, schema_for, JsonSchema};
+    use schemars::{
+        schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
+        schema_for, JsonSchema,
+    };
     use serde::Serialize;
 
     use crate::{
         enums::{
             maybe_adjacently_tagged_enum, maybe_externally_tagged_enum,
-            maybe_internally_tagged_enum, untagged_enum,
+            maybe_internally_tagged_enum, maybe_option_as_enum, untagged_enum,
         },
         test_util::{validate_output, validate_output_for_untagged_enm},
-        EnumTagType, Name, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+        EnumTagType, Name, TypeDetails, TypeEntry, TypeId, TypeSpace, Variant, VariantDetails,
     };
 
     #[allow(dead_code)]
@@ -1148,6 +1162,129 @@ mod tests {
             assert_eq!(tag_type, &EnumTagType::Untagged);
         } else {
             panic!();
+        }
+    }
+
+    #[test]
+    fn test_maybe_option_as_enum() {
+        let subschemas = vec![
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
+                ..Default::default()
+            }
+            .into(),
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Null))),
+                ..Default::default()
+            }
+            .into(),
+        ];
+
+        let mut type_space = TypeSpace::default();
+        let type_entry =
+            maybe_option_as_enum(Name::Unknown, &None, &subschemas, &mut type_space).unwrap();
+
+        assert_eq!(
+            type_entry,
+            TypeEntry {
+                name: None,
+                rename: None,
+                description: None,
+                details: TypeDetails::Option(TypeId(1))
+            }
+        )
+    }
+
+    #[test]
+    fn test_simple_untagged_enum() {
+        let schema_json = r##"
+        {
+            "definitions": {
+                "workflow-step-completed": {
+                "$schema": "http://json-schema.org/draft-07/schema",
+                "required": [
+                    "name",
+                    "status",
+                    "conclusion",
+                    "number",
+                    "started_at",
+                    "completed_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "status": { "type": "string", "enum": ["completed"] },
+                    "conclusion": {
+                    "type": "string",
+                    "enum": ["failure", "skipped", "success"]
+                    },
+                    "number": { "type": "integer" },
+                    "started_at": { "type": "string" },
+                    "completed_at": { "type": "string" }
+                },
+                "additionalProperties": false,
+                "title": "Workflow Step (Completed)"
+                },
+                "workflow-step-in_progress": {
+                "$schema": "http://json-schema.org/draft-07/schema",
+                "required": [
+                    "name",
+                    "status",
+                    "conclusion",
+                    "number",
+                    "started_at",
+                    "completed_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "status": { "type": "string", "enum": ["in_progress"] },
+                    "conclusion": { "type": "null" },
+                    "number": { "type": "integer" },
+                    "started_at": { "type": "string" },
+                    "completed_at": { "type": "null" }
+                },
+                "additionalProperties": false,
+                "title": "Workflow Step (In Progress)"
+                },
+                "workflow-step": {
+                "$schema": "http://json-schema.org/draft-07/schema",
+                "type": "object",
+                "oneOf": [
+                    { "$ref": "#/definitions/workflow-step-in_progress" },
+                    { "$ref": "#/definitions/workflow-step-completed" }
+                ],
+                "title": "Workflow Step"
+                }
+            }
+        }
+        "##;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
+
+        let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
+        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+
+        println!("{:#?}", type_entry);
+
+        match &type_entry.details {
+            TypeDetails::Enum { tag_type, variants } => {
+                assert_eq!(tag_type, &EnumTagType::Untagged);
+                for variant in variants {
+                    match &variant.details {
+                        VariantDetails::Tuple(items) if items.len() == 1 => {
+                            let variant_type =
+                                type_space.id_to_entry.get(items.first().unwrap()).unwrap();
+                            assert!(variant_type.name.as_ref().unwrap().ends_with(&variant.name));
+                        }
+                        _ => panic!("{:#?}", type_entry),
+                    }
+                }
+            }
+            _ => panic!("{:#?}", type_entry),
         }
     }
 }
