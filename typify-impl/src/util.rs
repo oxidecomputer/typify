@@ -396,7 +396,7 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
 }
 
 fn sanitize(input: String) -> String {
-    let out = input.replace("$", "").replace("'", "");
+    let out = input.replace("$", "-").replace("'", "");
     match out.as_str() {
         "ref" => "rref".to_string(),
         "type" => "ttype".to_string(),
