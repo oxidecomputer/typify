@@ -280,8 +280,7 @@ fn external_variant(
             && metadata
                 .as_ref()
                 .map(|m| m.as_ref().title.as_ref())
-                .is_none()
-            && schema_none_or_false(&validation.additional_properties) =>
+                .is_none() =>
         {
             let sub_type_name = match type_name {
                 Name::Required(name) | Name::Suggested(name) => Some(name),
@@ -827,6 +826,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
+    #[serde(deny_unknown_fields)]
     enum ExternallyTaggedEnum {
         Alpha,
         #[serde(rename_all = "camelCase")]
@@ -875,7 +875,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(tag = "tag", content = "content")]
+    #[serde(tag = "tag", content = "content", deny_unknown_fields)]
     enum AdjacentlyTaggedEnum {
         Alpha,
         #[serde(rename_all = "camelCase")]
@@ -916,7 +916,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(tag = "tag")]
+    #[serde(tag = "tag", deny_unknown_fields)]
     enum InternallyTaggedEnum {
         Alpha,
         #[serde(rename_all = "camelCase")]
@@ -966,7 +966,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(untagged)]
+    #[serde(untagged, deny_unknown_fields)]
     enum UntaggedEnum {
         Alpha,
         #[serde(rename_all = "camelCase")]

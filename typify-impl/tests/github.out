@@ -2887,7 +2887,7 @@ pub struct RepositoryLite {
 pub struct RepositoryDispatchOnDemandTest {
     pub action: RepositoryDispatchOnDemandTestAction,
     pub branch: String,
-    pub client_payload: serde_json::Value,
+    pub client_payload: std::collections::BTreeMap<String, serde_json::Value>,
     pub installation: InstallationLite,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
@@ -3410,7 +3410,7 @@ pub struct WorkflowStepInProgress {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WorkflowDispatchEvent {
-    pub inputs: Option<serde_json::Value>,
+    pub inputs: Option<std::collections::BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5646,6 +5646,8 @@ pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
     #[serde(flatten)]
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertClosedByUserAlertInstancesItemState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
@@ -5760,6 +5762,8 @@ pub struct CodeScanningAlertCreatedAlertInstancesItem {
     #[serde(flatten)]
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertCreatedAlertInstancesItemState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertCreatedAlertRuleSeverity {
@@ -5894,6 +5898,8 @@ pub struct CodeScanningAlertFixedAlertInstancesItem {
     #[serde(flatten)]
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertFixedAlertInstancesItemState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertRuleSeverity {
@@ -6007,6 +6013,8 @@ pub struct CodeScanningAlertReopenedAlertInstancesItem {
     #[serde(flatten)]
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertReopenedAlertInstancesItemState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedAlertRuleSeverity {
@@ -6124,6 +6132,8 @@ pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
     #[serde(flatten)]
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertReopenedByUserAlertInstancesItemState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
@@ -6472,6 +6482,8 @@ pub struct DiscussionAnsweredAnswer {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionAnsweredDiscussionCategory {
     pub is_answerable: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionAnsweredDiscussion {
@@ -6481,6 +6493,8 @@ pub struct DiscussionAnsweredDiscussion {
     pub answer_chosen_by: User,
     pub answer_html_url: String,
     pub category: DiscussionAnsweredDiscussionCategory,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionCategoryChangedAction {
@@ -6550,6 +6564,8 @@ pub struct DiscussionCreatedDiscussion {
     pub answer_html_url: (),
     pub locked: bool,
     pub state: DiscussionCreatedDiscussionState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionDeletedAction {
@@ -6632,6 +6648,8 @@ pub struct DiscussionLockedDiscussion {
     pub discussion: Discussion,
     pub locked: bool,
     pub state: DiscussionLockedDiscussionState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionPinnedAction {
@@ -6677,6 +6695,8 @@ impl ToString for DiscussionUnansweredAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnansweredDiscussionCategory {
     pub is_answerable: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnansweredDiscussion {
@@ -6686,6 +6706,8 @@ pub struct DiscussionUnansweredDiscussion {
     pub answer_chosen_by: (),
     pub answer_html_url: (),
     pub category: DiscussionUnansweredDiscussionCategory,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DiscussionUnansweredOldAnswer {
@@ -6744,6 +6766,8 @@ pub struct DiscussionUnlockedDiscussion {
     pub discussion: Discussion,
     pub locked: bool,
     pub state: DiscussionUnlockedDiscussionState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DiscussionUnpinnedAction {
@@ -6852,6 +6876,8 @@ pub struct ForkEventForkee {
     pub repository: Repository,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fork: Option<bool>,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum GithubAppAuthorizationRevokedAction {
@@ -7768,6 +7794,8 @@ pub struct InstallationSuspendInstallation {
     pub installation: Installation,
     pub suspended_at: chrono::DateTime<chrono::offset::Utc>,
     pub suspended_by: User,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationSuspendRepositoriesItem {
@@ -7798,6 +7826,8 @@ pub struct InstallationUnsuspendInstallation {
     pub installation: Installation,
     pub suspended_at: (),
     pub suspended_by: (),
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct InstallationUnsuspendRepositoriesItem {
@@ -8005,6 +8035,8 @@ pub struct IssueCommentCreatedIssue {
     pub pull_request: Option<IssueCommentCreatedIssuePullRequest>,
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentCreatedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentDeletedAction {
@@ -8051,6 +8083,8 @@ pub struct IssueCommentDeletedIssue {
     pub pull_request: Option<IssueCommentDeletedIssuePullRequest>,
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentDeletedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentEditedAction {
@@ -8107,6 +8141,8 @@ pub struct IssueCommentEditedIssue {
     pub pull_request: Option<IssueCommentEditedIssuePullRequest>,
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentEditedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesAssignedAction {
@@ -8150,6 +8186,8 @@ pub struct IssuesClosedIssue {
     pub issue: Issue,
     pub closed_at: String,
     pub state: IssuesClosedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesDeletedAction {
@@ -8180,6 +8218,8 @@ pub struct IssuesDemilestonedIssue {
     #[serde(flatten)]
     pub issue: Issue,
     pub milestone: (),
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesEditedAction {
@@ -8261,6 +8301,8 @@ pub struct IssuesLockedIssue {
     pub issue: Issue,
     pub active_lock_reason: Option<IssuesLockedIssueActiveLockReason>,
     pub locked: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesMilestonedAction {
@@ -8279,6 +8321,8 @@ pub struct IssuesMilestonedIssue {
     #[serde(flatten)]
     pub issue: Issue,
     pub milestone: Milestone,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesOpenedAction {
@@ -8315,6 +8359,8 @@ pub struct IssuesOpenedIssue {
     pub issue: Issue,
     pub closed_at: (),
     pub state: IssuesOpenedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesPinnedAction {
@@ -8357,6 +8403,8 @@ pub struct IssuesReopenedIssue {
     #[serde(flatten)]
     pub issue: Issue,
     pub state: IssuesReopenedIssueState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesTransferredAction {
@@ -8417,6 +8465,8 @@ pub struct IssuesUnlockedIssue {
     pub issue: Issue,
     pub active_lock_reason: (),
     pub locked: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesUnpinnedAction {
@@ -8528,6 +8578,8 @@ pub struct MarketplacePurchaseCancelledMarketplacePurchase {
     #[serde(flatten)]
     pub marketplace_purchase: MarketplacePurchase,
     pub next_billing_date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseCancelledSender {
@@ -8568,6 +8620,8 @@ pub struct MarketplacePurchaseChangedMarketplacePurchase {
     #[serde(flatten)]
     pub marketplace_purchase: MarketplacePurchase,
     pub next_billing_date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchaseChangedSender {
@@ -8608,6 +8662,8 @@ pub struct MarketplacePurchasePendingChangeMarketplacePurchase {
     #[serde(flatten)]
     pub marketplace_purchase: MarketplacePurchase,
     pub next_billing_date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeSender {
@@ -8650,6 +8706,8 @@ pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchase {
     #[serde(flatten)]
     pub marketplace_purchase: MarketplacePurchase,
     pub next_billing_date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePendingChangeCancelledSender {
@@ -8690,6 +8748,8 @@ pub struct MarketplacePurchasePurchasedMarketplacePurchase {
     #[serde(flatten)]
     pub marketplace_purchase: MarketplacePurchase,
     pub next_billing_date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MarketplacePurchasePurchasedSender {
@@ -8934,6 +8994,8 @@ pub struct MilestoneClosedMilestone {
     pub milestone: Milestone,
     pub closed_at: String,
     pub state: MilestoneClosedMilestoneState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MilestoneCreatedAction {
@@ -8965,6 +9027,8 @@ pub struct MilestoneCreatedMilestone {
     pub milestone: Milestone,
     pub closed_at: (),
     pub state: MilestoneCreatedMilestoneState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MilestoneDeletedAction {
@@ -9044,6 +9108,8 @@ pub struct MilestoneOpenedMilestone {
     pub milestone: Milestone,
     pub closed_at: (),
     pub state: MilestoneOpenedMilestoneState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OrgBlockBlockedAction {
@@ -9575,6 +9641,8 @@ pub struct ProjectCardMovedProjectCard {
     #[serde(flatten)]
     pub project_card: ProjectCard,
     pub after_id: Option<f64>,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ProjectColumnCreatedAction {
@@ -9638,6 +9706,8 @@ pub struct PublicEventRepository {
     #[serde(flatten)]
     pub repository: Repository,
     pub private: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PullRequestLinks {
@@ -9818,6 +9888,8 @@ pub struct PullRequestClosedPullRequest {
     pub merged: bool,
     #[doc = "State of this Pull Request. Either `open` or `closed`."]
     pub state: PullRequestClosedPullRequestState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestConvertedToDraftAction {
@@ -9841,6 +9913,8 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub merged: bool,
     pub merged_at: (),
     pub merged_by: (),
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestEditedAction {
@@ -9929,6 +10003,8 @@ pub struct PullRequestOpenedPullRequest {
     pub merged_at: (),
     pub merged_by: (),
     pub state: PullRequestOpenedPullRequestState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReadyForReviewAction {
@@ -9965,6 +10041,8 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub merged_at: (),
     pub merged_by: (),
     pub state: PullRequestReadyForReviewPullRequestState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReopenedAction {
@@ -10000,6 +10078,8 @@ pub struct PullRequestReopenedPullRequest {
     pub merged_at: (),
     pub merged_by: (),
     pub state: PullRequestReopenedPullRequestState,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewRequestRemovedVariant0Action {
@@ -10709,6 +10789,8 @@ pub struct ReleasePrereleasedRelease {
     pub release: Release,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleasePublishedAction {
@@ -10727,6 +10809,8 @@ pub struct ReleasePublishedRelease {
     #[serde(flatten)]
     pub release: Release,
     pub published_at: chrono::DateTime<chrono::offset::Utc>,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseReleasedAction {
@@ -10757,6 +10841,8 @@ pub struct ReleaseUnpublishedRelease {
     #[serde(flatten)]
     pub release: Release,
     pub published_at: (),
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseAssetState {
@@ -10811,6 +10897,8 @@ pub struct RepositoryArchivedRepository {
     pub repository: Repository,
     #[doc = "Whether the repository is archived."]
     pub archived: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryCreatedAction {
@@ -10887,6 +10975,8 @@ pub struct RepositoryPrivatizedRepository {
     pub repository: Repository,
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryPublicizedAction {
@@ -10906,6 +10996,8 @@ pub struct RepositoryPublicizedRepository {
     pub repository: Repository,
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryRenamedAction {
@@ -10974,6 +11066,8 @@ pub struct RepositoryUnarchivedRepository {
     pub repository: Repository,
     #[doc = "Whether the repository is archived."]
     pub archived: bool,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum RepositoryDispatchOnDemandTestAction {
@@ -11708,12 +11802,16 @@ pub struct StatusEventCommitCommitAuthor {
     #[serde(flatten)]
     pub committer: Committer,
     pub date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitCommitCommitter {
     #[serde(flatten)]
     pub committer: Committer,
     pub date: String,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StatusEventCommitCommitTree {
@@ -12360,6 +12458,8 @@ pub struct WorkflowJobCompletedWorkflowJob {
     #[serde(flatten)]
     pub workflow_job: WorkflowJob,
     pub conclusion: WorkflowJobCompletedWorkflowJobConclusion,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowJobQueuedAction {
@@ -12422,6 +12522,8 @@ pub struct WorkflowJobStartedWorkflowJob {
     pub completed_at: (),
     pub conclusion: (),
     pub steps: Vec<WorkflowStepInProgress>,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowRunCompletedAction {
@@ -12472,6 +12574,8 @@ pub struct WorkflowRunCompletedWorkflowRun {
     #[serde(flatten)]
     pub workflow_run: WorkflowRun,
     pub conclusion: WorkflowRunCompletedWorkflowRunConclusion,
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum WorkflowRunRequestedAction {

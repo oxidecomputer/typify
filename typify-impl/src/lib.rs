@@ -15,6 +15,7 @@ use crate::{
         maybe_adjacently_tagged_enum, maybe_externally_tagged_enum, maybe_internally_tagged_enum,
         maybe_option_as_enum, untagged_enum,
     },
+    structs::make_map,
     util::get_type_name,
 };
 
@@ -57,6 +58,7 @@ pub(crate) enum TypeDetails {
     Unit,
     Option(TypeId),
     Array(TypeId),
+    Map(TypeId, TypeId),
     Tuple(Vec<TypeId>),
     BuiltIn,
     Newtype(TypeId),
@@ -283,8 +285,11 @@ impl TypeSpace {
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
-            Schema::Bool(_) => todo!(),
+            Schema::Bool(true) => self.convert_permissive(&None),
             Schema::Object(obj) => self.convert_schema_object(type_name, obj),
+
+            // TODO Not sure what to do here... need to return something toxic?
+            Schema::Bool(false) => todo!(),
         }
     }
 
@@ -842,21 +847,23 @@ impl TypeSpace {
         validation: &ObjectValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match validation {
-            // Look for a permissive object.
+            // Maps have an empty properties set, and a non-null schema for the
+            // additional_properties field.
             ObjectValidation {
                 max_properties: None,
                 min_properties: None,
                 required,
                 properties,
                 pattern_properties,
-                additional_properties: Some(additional_properties),
+                additional_properties,
                 property_names: None,
             } if required.is_empty()
                 && properties.is_empty()
                 && pattern_properties.is_empty()
-                && matches!(additional_properties.as_ref(), Schema::Bool(true)) =>
+                && additional_properties.as_ref().map(AsRef::as_ref)
+                    != Some(&Schema::Bool(false)) =>
             {
-                self.convert_permissive(metadata)
+                make_map(None, additional_properties, self)
             }
 
             // The typical case
@@ -906,6 +913,14 @@ impl TypeSpace {
         if let Some(ty) = maybe_all_of_subclass(type_name.clone(), metadata, subschemas, self) {
             return Ok((ty, metadata));
         }
+
+        // TODO JSON schema is annoying. In particular, "allOf" means that all
+        // schemas must validate. So for us to construct the schema below, each
+        // type must actually be "open" i.e. it must permit arbitrary
+        // properties. If it does not, the schemas would not validate i.e. a
+        // value (object) could not satisfy both Schema1 and Schema2. To do
+        // this as accurately as possible, we would need to validate that each
+        // subschema was "open", pull out the "extra" item from each one, etc.
 
         // We'll want to build a struct that looks like this:
         // struct Name {

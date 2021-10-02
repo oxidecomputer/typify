@@ -1,3 +1,4 @@
+use rustfmt_wrapper::rustfmt;
 use schema::Schema;
 use schemars::{schema_for, JsonSchema};
 use syn::{
@@ -20,6 +21,7 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
     validate_output_impl::<T>(true)
 }
 
+#[track_caller]
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let schema = schema_for!(T);
 
@@ -31,9 +33,14 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let output = ty.output(&type_space);
 
     let expected = T::schema();
-    let actual = parse2::<DeriveInput>(output).unwrap();
+    let actual = parse2::<DeriveInput>(output.clone()).unwrap();
 
-    expected.syn_cmp(&actual, ignore_variant_names).unwrap()
+    // Make sure they match.
+    if let Err(err) = expected.syn_cmp(&actual, ignore_variant_names) {
+        println!("{:#?}", schema);
+        println!("{}", rustfmt(output.to_string()).unwrap());
+        panic!("{}", err);
+    }
 }
 
 pub(crate) trait SynCompare {
@@ -86,6 +93,13 @@ where
     T: SynCompare,
 {
     fn syn_cmp(&self, other: &Self, ignore_variant_names: bool) -> Result<(), String> {
+        if self.len() != other.len() {
+            return Err(format!(
+                "lengths don't match: {:?} != {:?}",
+                self.len(),
+                other.len()
+            ));
+        }
         self.iter()
             .zip(other.iter())
             .try_for_each(|(a, b)| a.syn_cmp(b, ignore_variant_names))

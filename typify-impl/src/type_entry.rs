@@ -94,6 +94,7 @@ impl TypeEntry {
             TypeDetails::BuiltIn
             | TypeDetails::Option(_)
             | TypeDetails::Array(_)
+            | TypeDetails::Map(_, _)
             | TypeDetails::Unit
             | TypeDetails::Tuple(_) => quote! {},
 
@@ -132,6 +133,21 @@ impl TypeEntry {
                 let stream = inner_ty.type_ident(type_space, external);
 
                 quote! { Vec<#stream> }
+            }
+
+            TypeDetails::Map(key_id, value_id) => {
+                let key_ty = type_space
+                    .id_to_entry
+                    .get(key_id)
+                    .expect("unresolved type id for array")
+                    .type_ident(type_space, external);
+                let value_ty = type_space
+                    .id_to_entry
+                    .get(value_id)
+                    .expect("unresolved type id for array")
+                    .type_ident(type_space, external);
+
+                quote! { std::collections::BTreeMap<#key_ty, #value_ty> }
             }
 
             TypeDetails::Tuple(items) => {
