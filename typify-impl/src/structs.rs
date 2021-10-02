@@ -15,7 +15,7 @@ pub(crate) fn struct_members(
     type_name: Option<String>,
     validation: &ObjectValidation,
     type_space: &mut TypeSpace,
-) -> Result<Vec<StructProperty>> {
+) -> Result<(Vec<StructProperty>, bool)> {
     // These are the fields we don't currently handle
     assert!(validation.max_properties.is_none());
     assert!(validation.min_properties.is_none());
@@ -41,11 +41,39 @@ pub(crate) fn struct_members(
     // Note that a `None` value for additional_properties is equivalent to the
     // permissive schema (Schema::Bool(true)) for reasons best known to the
     // JSON Schema authors.
-    match &validation.additional_properties {
-        // No additional properties allowed
-        Some(a) if a.as_ref() == &Schema::Bool(false) => {}
+    let open = match &validation.additional_properties {
+        // No additional properties allowed; we'll tag the struct with
+        // #[serde(deny_unknown_fields)]
+        Some(a) if a.as_ref() == &Schema::Bool(false) => false,
 
-        additional_properties => {
+        // We have a permissive schema so all additional properties are
+        // allowed (None is equivalent to the permissive schema).
+        Some(a)
+            if matches!(
+                a.as_ref(),
+                Schema::Bool(true)
+                    | Schema::Object(SchemaObject {
+                        metadata: _,
+                        instance_type: None,
+                        format: None,
+                        enum_values: None,
+                        const_value: None,
+                        subschemas: None,
+                        number: None,
+                        string: None,
+                        array: None,
+                        object: None,
+                        reference: None,
+                        extensions: _,
+                    })
+            ) =>
+        {
+            true
+        }
+        None => true,
+
+        // Only particular additional properties are allowed.
+        additional_properties @ Some(_) => {
             let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
             let (map_type, _) = make_map(sub_type_name, additional_properties, type_space)?;
             let map_type_id = type_space.assign_type(map_type);
@@ -58,10 +86,11 @@ pub(crate) fn struct_members(
             };
 
             properties.push(extra_prop);
+            false
         }
-    }
+    };
 
-    Ok(properties)
+    Ok((properties, open))
 }
 
 pub(crate) fn struct_property(
@@ -273,7 +302,14 @@ pub(crate) fn flattened_union_struct<'a>(
         })
         .collect::<Result<Vec<_>>>()?;
 
-    let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Struct(properties));
+    let ty = TypeEntry::from_metadata(
+        type_name,
+        metadata,
+        TypeDetails::Struct {
+            properties,
+            open: true,
+        },
+    );
 
     Ok((ty, metadata))
 }
@@ -344,7 +380,7 @@ pub(crate) fn maybe_all_of_subclass(
         _ => None,
     }?;
     let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
-    let unnamed_properties = struct_members(tmp_type_name, validation, type_space).ok()?;
+    let (unnamed_properties, open) = struct_members(tmp_type_name, validation, type_space).ok()?;
 
     let named_properties = named
         .iter()
@@ -364,12 +400,13 @@ pub(crate) fn maybe_all_of_subclass(
     let ty = TypeEntry::from_metadata(
         type_name,
         metadata,
-        TypeDetails::Struct(
-            named_properties
+        TypeDetails::Struct {
+            open,
+            properties: named_properties
                 .into_iter()
                 .chain(unnamed_properties.into_iter())
                 .collect(),
-        ),
+        },
     );
 
     Some(ty)
@@ -401,7 +438,6 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(deny_unknown_fields)]
     struct LessSimpleStruct {
         thing: SimpleStruct,
         things: Vec<SimpleStruct>,
@@ -414,7 +450,6 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(deny_unknown_fields)]
     struct SomeMaps {
         strings: std::collections::BTreeMap<String, String>,
         things: std::collections::BTreeMap<String, serde_json::Value>,

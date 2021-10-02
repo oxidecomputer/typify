@@ -286,11 +286,8 @@ fn external_variant(
                 Name::Required(name) | Name::Suggested(name) => Some(name),
                 Name::Unknown => None,
             };
-            Ok(VariantDetails::Struct(struct_members(
-                sub_type_name,
-                validation,
-                type_space,
-            )?))
+            let (properties, _open) = struct_members(sub_type_name, validation, type_space)?;
+            Ok(VariantDetails::Struct(properties))
         }
 
         // Otherwise we create a single-element tuple variant with the given type.

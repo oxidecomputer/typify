@@ -53,8 +53,12 @@ pub(crate) enum TypeDetails {
     Enum {
         tag_type: EnumTagType,
         variants: Vec<Variant>,
+        // TODO serde(allow_additional_properties)
     },
-    Struct(Vec<StructProperty>),
+    Struct {
+        properties: Vec<StructProperty>,
+        open: bool,
+    },
     Unit,
     Option(TypeId),
     Array(TypeId),
@@ -869,10 +873,11 @@ impl TypeSpace {
             // The typical case
             _ => {
                 let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+                let (properties, open) = struct_members(tmp_type_name, validation, self)?;
                 let ty = TypeEntry::from_metadata(
                     type_name,
                     metadata,
-                    TypeDetails::Struct(struct_members(tmp_type_name, validation, self)?),
+                    TypeDetails::Struct { properties, open },
                 );
                 Ok((ty, &None))
             }

@@ -64,15 +64,21 @@ impl TypeEntry {
                 }
             }
 
-            TypeDetails::Struct(props) => {
+            TypeDetails::Struct { properties, open } => {
                 let type_name = self.name.as_ref().unwrap();
                 let type_name = format_ident!("{}", type_name);
-                let properties = props
+                let properties = properties
                     .iter()
                     .map(|prop| output_struct_property(prop, type_space, true))
                     .collect::<Vec<_>>();
+                let serde = if *open {
+                    quote! {}
+                } else {
+                    quote! { #[serde(deny_unknown_fields)]}
+                };
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #serde
                     pub struct #type_name {
                         #(#properties)*
                     }
@@ -194,7 +200,7 @@ impl TypeEntry {
             .unwrap_or_else(|| "<anonymous>".to_string());
         match &self.details {
             TypeDetails::Enum { .. } => format!("enum {}", name),
-            TypeDetails::Struct(_) => format!("struct {}", name),
+            TypeDetails::Struct { .. } => format!("struct {}", name),
             TypeDetails::Unit => "()".to_string(),
             TypeDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeDetails::Array(type_id) => format!("array {}", type_id.0),
