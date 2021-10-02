@@ -103,6 +103,10 @@ impl TypeEntry {
         }
     }
 
+    pub fn type_name(&self, type_space: &TypeSpace) -> String {
+        self.type_ident(type_space, false).to_string()
+    }
+
     pub fn type_ident(&self, type_space: &TypeSpace, external: bool) -> TokenStream {
         match &self.details {
             TypeDetails::Option(id) => {
@@ -164,6 +168,24 @@ impl TypeEntry {
                     quote! { #type_name }
                 }
             },
+        }
+    }
+
+    pub fn describe(&self) -> String {
+        let name = self
+            .name
+            .clone()
+            .unwrap_or_else(|| "<anonymous>".to_string());
+        match &self.details {
+            TypeDetails::Enum { .. } => format!("enum {}", name),
+            TypeDetails::Struct(_) => format!("struct {}", name),
+            TypeDetails::Unit => "()".to_string(),
+            TypeDetails::Option(type_id) => format!("option {}", type_id.0),
+            TypeDetails::Array(type_id) => format!("array {}", type_id.0),
+            TypeDetails::Tuple(_) => "tuple".to_string(),
+            TypeDetails::BuiltIn => name,
+            TypeDetails::Newtype(type_id) => format!("newtype {} {}", name, type_id.0),
+            TypeDetails::Reference(_) => unreachable!(),
         }
     }
 }

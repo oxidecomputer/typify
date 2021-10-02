@@ -26,9 +26,18 @@ pub enum Error {
 pub fn rustfmt<T: ToString>(input: T) -> Result<String, Error> {
     let input = input.to_string();
 
+    let mut builder = tempfile::Builder::new();
+    builder.prefix("rustfmt-wrapper");
+    let outdir = builder.tempdir().expect("failed to create tmp file");
+
+    let rustfmt_config_path = outdir.as_ref().join("rustfmt.toml");
+    std::fs::write(rustfmt_config_path, "")?;
+
     let rustfmt = which_rustfmt().ok_or(Error::NoRustfmt)?;
 
     let mut command = Command::new(&rustfmt)
+        .arg("--edition=2018")
+        .arg(format!("--config-path={}", outdir.path().to_str().unwrap()))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
