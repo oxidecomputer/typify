@@ -198,6 +198,7 @@ impl TypeEntry {
             TypeDetails::Unit => "()".to_string(),
             TypeDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeDetails::Array(type_id) => format!("array {}", type_id.0),
+            TypeDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
             TypeDetails::Tuple(_) => "tuple".to_string(),
             TypeDetails::BuiltIn => name,
             TypeDetails::Newtype(type_id) => format!("newtype {} {}", name, type_id.0),
