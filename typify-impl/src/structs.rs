@@ -86,7 +86,7 @@ pub(crate) fn struct_members(
             };
 
             properties.push(extra_prop);
-            true
+            false
         }
     };
 
@@ -458,5 +458,18 @@ mod tests {
     #[test]
     fn test_some_maps() {
         validate_output::<SomeMaps>();
+    }
+
+    #[allow(dead_code)]
+    #[derive(Serialize, JsonSchema, Schema)]
+    struct FlattenStuff {
+        number: i32,
+        #[serde(flatten)]
+        extra: std::collections::BTreeMap<String, String>,
+    }
+
+    #[test]
+    fn test_flatten_stuff() {
+        validate_output::<FlattenStuff>();
     }
 }

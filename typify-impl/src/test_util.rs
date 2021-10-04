@@ -99,7 +99,7 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
                             .into_iter()
                             .collect::<Vec<_>>()
                             // Split into comma-delimited groups.
-                            .split(|token| matches!(token, proc_macro2::TokenTree::Punct(_)))
+                            .split(|token| matches!(token, proc_macro2::TokenTree::Punct(punct) if punct.as_char() == ','))
                             // Join the tokens into a string.
                             .map(|tokens| {
                                 tokens.iter().cloned().collect::<TokenStream>().to_string()

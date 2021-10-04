@@ -8,7 +8,7 @@ use schemars::schema::{
 };
 
 use crate::{
-    structs::{output_struct_property, struct_members, struct_property},
+    structs::{output_struct_property, struct_members},
     util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
     EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
 };
@@ -437,27 +437,12 @@ fn internal_variant(
         let variant_name = constant_string_value(tag_schema).unwrap();
         let (name, rename) = recase(variant_name, Case::Pascal);
 
-        let properties = validation
-            .properties
-            .iter()
-            .filter_map(|(prop_name, prop_type)| {
-                // Include all properties except the tag.
-                if prop_name != tag {
-                    Some(struct_property(
-                        None,
-                        &validation.required,
-                        prop_name,
-                        prop_type,
-                        type_space,
-                    ))
-                } else {
-                    None
-                }
-            })
-            .collect::<Result<Vec<_>>>()?;
+        // Make a new object validation that omits the tag.
+        let mut new_validation = validation.clone();
+        new_validation.properties.remove(tag);
+        new_validation.required.remove(tag);
 
-        // TODO we need to look at the validation's additional_properties to
-        // determine if this struct is open or not
+        let (properties, deny) = struct_members(None, &new_validation, type_space)?;
 
         let variant = Variant {
             name,
@@ -465,7 +450,7 @@ fn internal_variant(
             description: None,
             details: VariantDetails::Struct(properties),
         };
-        Ok((variant, true))
+        Ok((variant, deny))
     }
 }
 
@@ -965,7 +950,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    #[serde(tag = "tag", deny_unknown_fields)]
+    #[serde(tag = "tag")]
     enum InternallyTaggedEnum {
         Alpha,
         #[serde(rename_all = "camelCase")]
