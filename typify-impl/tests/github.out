@@ -2386,7 +2386,7 @@ pub struct PullRequestReopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum PullRequestReviewRequestRemoved {
     Variant0 {
         action: PullRequestReviewRequestRemovedVariant0Action,
@@ -2416,7 +2416,7 @@ pub enum PullRequestReviewRequestRemoved {
     },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum PullRequestReviewRequested {
     Variant0 {
         action: PullRequestReviewRequestedVariant0Action,
@@ -9166,7 +9166,7 @@ impl ToString for MembershipRemovedScope {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum MembershipRemovedTeam {
     Variant0(Team),
     Variant1 {

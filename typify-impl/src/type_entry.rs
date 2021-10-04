@@ -29,22 +29,31 @@ impl TypeEntry {
 
     pub fn output(&self, type_space: &TypeSpace) -> TokenStream {
         match &self.details {
-            TypeDetails::Enum { tag_type, variants } => {
+            TypeDetails::Enum {
+                tag_type,
+                variants,
+                deny_unknown_fields,
+            } => {
                 let type_name = self.name.as_ref().unwrap();
                 let type_name = format_ident!("{}", type_name);
 
-                let tag = match tag_type {
-                    crate::EnumTagType::External => quote! {},
+                let mut serde_options = Vec::new();
+                match tag_type {
+                    crate::EnumTagType::External => {}
                     crate::EnumTagType::Internal { tag } => {
-                        quote! {#[serde(tag = #tag)]}
+                        serde_options.push(quote! { tag = #tag });
                     }
                     crate::EnumTagType::Adjacent { tag, content } => {
-                        quote! {#[serde(tag = #tag, content = #content)]}
+                        serde_options.push(quote! { tag = #tag });
+                        serde_options.push(quote! { content = #content });
                     }
                     crate::EnumTagType::Untagged => {
-                        quote! {#[serde(untagged)]}
+                        serde_options.push(quote! { untagged });
                     }
-                };
+                }
+                if *deny_unknown_fields {
+                    serde_options.push(quote! { deny_unknown_fields });
+                }
 
                 let enum_impl = enum_impl(&type_name, variants);
 
@@ -53,9 +62,15 @@ impl TypeEntry {
                     .map(|variant| output_variant(variant, type_space))
                     .collect::<Vec<_>>();
 
+                let serde = if serde_options.is_empty() {
+                    quote! {}
+                } else {
+                    quote! { #[serde( #( #serde_options ),* )] }
+                };
+
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
-                    #tag
+                    #serde
                     pub enum #type_name {
                         #(#variants)*
                     }
@@ -64,17 +79,20 @@ impl TypeEntry {
                 }
             }
 
-            TypeDetails::Struct { properties, open } => {
+            TypeDetails::Struct {
+                properties,
+                deny_unknown_fields,
+            } => {
                 let type_name = self.name.as_ref().unwrap();
                 let type_name = format_ident!("{}", type_name);
                 let properties = properties
                     .iter()
                     .map(|prop| output_struct_property(prop, type_space, true))
                     .collect::<Vec<_>>();
-                let serde = if *open {
-                    quote! {}
-                } else {
+                let serde = if *deny_unknown_fields {
                     quote! { #[serde(deny_unknown_fields)]}
+                } else {
+                    quote! {}
                 };
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]

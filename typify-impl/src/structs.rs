@@ -41,10 +41,10 @@ pub(crate) fn struct_members(
     // Note that a `None` value for additional_properties is equivalent to the
     // permissive schema (Schema::Bool(true)) for reasons best known to the
     // JSON Schema authors.
-    let open = match &validation.additional_properties {
+    let deny_unknown_fields = match &validation.additional_properties {
         // No additional properties allowed; we'll tag the struct with
         // #[serde(deny_unknown_fields)]
-        Some(a) if a.as_ref() == &Schema::Bool(false) => false,
+        Some(a) if a.as_ref() == &Schema::Bool(false) => true,
 
         // We have a permissive schema so all additional properties are
         // allowed (None is equivalent to the permissive schema).
@@ -68,9 +68,9 @@ pub(crate) fn struct_members(
                     })
             ) =>
         {
-            true
+            false
         }
-        None => true,
+        None => false,
 
         // Only particular additional properties are allowed.
         additional_properties @ Some(_) => {
@@ -86,11 +86,11 @@ pub(crate) fn struct_members(
             };
 
             properties.push(extra_prop);
-            false
+            true
         }
     };
 
-    Ok((properties, open))
+    Ok((properties, deny_unknown_fields))
 }
 
 pub(crate) fn struct_property(
@@ -307,7 +307,7 @@ pub(crate) fn flattened_union_struct<'a>(
         metadata,
         TypeDetails::Struct {
             properties,
-            open: true,
+            deny_unknown_fields: false,
         },
     );
 
@@ -380,7 +380,7 @@ pub(crate) fn maybe_all_of_subclass(
         _ => None,
     }?;
     let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
-    let (unnamed_properties, open) = struct_members(tmp_type_name, validation, type_space).ok()?;
+    let (unnamed_properties, deny) = struct_members(tmp_type_name, validation, type_space).ok()?;
 
     let named_properties = named
         .iter()
@@ -401,11 +401,11 @@ pub(crate) fn maybe_all_of_subclass(
         type_name,
         metadata,
         TypeDetails::Struct {
-            open,
             properties: named_properties
                 .into_iter()
                 .chain(unnamed_properties.into_iter())
                 .collect(),
+            deny_unknown_fields: deny,
         },
     );
 

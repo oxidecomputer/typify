@@ -53,11 +53,11 @@ pub(crate) enum TypeDetails {
     Enum {
         tag_type: EnumTagType,
         variants: Vec<Variant>,
-        // TODO serde(allow_additional_properties)
+        deny_unknown_fields: bool,
     },
     Struct {
         properties: Vec<StructProperty>,
-        open: bool,
+        deny_unknown_fields: bool,
     },
     Unit,
     Option(TypeId),
@@ -717,6 +717,7 @@ impl TypeSpace {
             TypeDetails::Enum {
                 tag_type: EnumTagType::External,
                 variants,
+                deny_unknown_fields: false,
             },
         );
 
@@ -873,11 +874,15 @@ impl TypeSpace {
             // The typical case
             _ => {
                 let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
-                let (properties, open) = struct_members(tmp_type_name, validation, self)?;
+                let (properties, deny_unknown_fields) =
+                    struct_members(tmp_type_name, validation, self)?;
                 let ty = TypeEntry::from_metadata(
                     type_name,
                     metadata,
-                    TypeDetails::Struct { properties, open },
+                    TypeDetails::Struct {
+                        properties,
+                        deny_unknown_fields,
+                    },
                 );
                 Ok((ty, &None))
             }

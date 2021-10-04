@@ -1,9 +1,12 @@
+use std::collections::HashSet;
+
+use proc_macro2::TokenStream;
 use rustfmt_wrapper::rustfmt;
 use schema::Schema;
 use schemars::{schema_for, JsonSchema};
 use syn::{
-    parse2, punctuated::Punctuated, DataEnum, DataStruct, DeriveInput, Field, Fields, FieldsNamed,
-    FieldsUnnamed, Type, TypePath, TypeTuple, Variant,
+    parse2, punctuated::Punctuated, Attribute, DataEnum, DataStruct, DeriveInput, Field, Fields,
+    FieldsNamed, FieldsUnnamed, Type, TypePath, TypeTuple, Variant,
 };
 
 use crate::{Name, TypeSpace};
@@ -51,6 +54,9 @@ impl SynCompare for DeriveInput {
     fn syn_cmp(&self, other: &Self, ignore_variant_names: bool) -> Result<(), String> {
         self.ident.syn_cmp(&other.ident, false)?;
 
+        // Just compare the attributes we're interested in
+        compare_attributes(&self.attrs, &other.attrs)?;
+
         match (&self.data, &other.data) {
             (syn::Data::Struct(a), syn::Data::Struct(b)) => a.syn_cmp(b, ignore_variant_names),
             (syn::Data::Enum(a), syn::Data::Enum(b)) => a.syn_cmp(b, ignore_variant_names),
@@ -60,6 +66,55 @@ impl SynCompare for DeriveInput {
             _ => Err("mismatched data".to_string()),
         }
     }
+}
+
+fn compare_attributes(attrs_a: &[Attribute], attrs_b: &[Attribute]) -> Result<(), String> {
+    let serde_options_a = get_serde(attrs_a);
+    let serde_options_b = get_serde(attrs_b);
+
+    if serde_options_a == serde_options_b {
+        Ok(())
+    } else {
+        Err(format!(
+            "different serde options: {:?} {:?}",
+            serde_options_a, serde_options_b
+        ))
+    }
+}
+
+fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
+    attrs
+        .iter()
+        .filter_map(|attr| {
+            let name = attr.path.segments.first()?.ident.to_string();
+            if name == "serde" {
+                let mut iter = attr.tokens.clone().into_iter();
+                if let Some(proc_macro2::TokenTree::Group(group)) = iter.next() {
+                    // Serde options have a single item.
+                    assert!(iter.next().is_none());
+                    // Return the list of discrete serde options
+                    return Some(
+                        group
+                            .stream()
+                            .into_iter()
+                            .collect::<Vec<_>>()
+                            // Split into comma-delimited groups.
+                            .split(|token| matches!(token, proc_macro2::TokenTree::Punct(_)))
+                            // Join the tokens into a string.
+                            .map(|tokens| {
+                                tokens.iter().cloned().collect::<TokenStream>().to_string()
+                            })
+                            // Remove rename statements because there are many
+                            // ways to get to the same place.
+                            .filter(|s| !s.starts_with("rename"))
+                            .collect::<Vec<_>>(),
+                    );
+                }
+            }
+            None
+        })
+        .flatten()
+        .collect()
 }
 
 impl SynCompare for syn::Ident {
