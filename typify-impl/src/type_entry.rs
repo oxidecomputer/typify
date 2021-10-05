@@ -29,22 +29,31 @@ impl TypeEntry {
 
     pub fn output(&self, type_space: &TypeSpace) -> TokenStream {
         match &self.details {
-            TypeDetails::Enum { tag_type, variants } => {
+            TypeDetails::Enum {
+                tag_type,
+                variants,
+                deny_unknown_fields,
+            } => {
                 let type_name = self.name.as_ref().unwrap();
                 let type_name = format_ident!("{}", type_name);
 
-                let tag = match tag_type {
-                    crate::EnumTagType::External => quote! {},
+                let mut serde_options = Vec::new();
+                match tag_type {
+                    crate::EnumTagType::External => {}
                     crate::EnumTagType::Internal { tag } => {
-                        quote! {#[serde(tag = #tag)]}
+                        serde_options.push(quote! { tag = #tag });
                     }
                     crate::EnumTagType::Adjacent { tag, content } => {
-                        quote! {#[serde(tag = #tag, content = #content)]}
+                        serde_options.push(quote! { tag = #tag });
+                        serde_options.push(quote! { content = #content });
                     }
                     crate::EnumTagType::Untagged => {
-                        quote! {#[serde(untagged)]}
+                        serde_options.push(quote! { untagged });
                     }
-                };
+                }
+                if *deny_unknown_fields {
+                    serde_options.push(quote! { deny_unknown_fields });
+                }
 
                 let enum_impl = enum_impl(&type_name, variants);
 
@@ -53,9 +62,15 @@ impl TypeEntry {
                     .map(|variant| output_variant(variant, type_space))
                     .collect::<Vec<_>>();
 
+                let serde = if serde_options.is_empty() {
+                    quote! {}
+                } else {
+                    quote! { #[serde( #( #serde_options ),* )] }
+                };
+
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
-                    #tag
+                    #serde
                     pub enum #type_name {
                         #(#variants)*
                     }
@@ -64,15 +79,24 @@ impl TypeEntry {
                 }
             }
 
-            TypeDetails::Struct(props) => {
+            TypeDetails::Struct {
+                properties,
+                deny_unknown_fields,
+            } => {
                 let type_name = self.name.as_ref().unwrap();
                 let type_name = format_ident!("{}", type_name);
-                let properties = props
+                let properties = properties
                     .iter()
                     .map(|prop| output_struct_property(prop, type_space, true))
                     .collect::<Vec<_>>();
+                let serde = if *deny_unknown_fields {
+                    quote! { #[serde(deny_unknown_fields)]}
+                } else {
+                    quote! {}
+                };
                 quote! {
                     #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #serde
                     pub struct #type_name {
                         #(#properties)*
                     }
@@ -94,6 +118,7 @@ impl TypeEntry {
             TypeDetails::BuiltIn
             | TypeDetails::Option(_)
             | TypeDetails::Array(_)
+            | TypeDetails::Map(_, _)
             | TypeDetails::Unit
             | TypeDetails::Tuple(_) => quote! {},
 
@@ -132,6 +157,21 @@ impl TypeEntry {
                 let stream = inner_ty.type_ident(type_space, external);
 
                 quote! { Vec<#stream> }
+            }
+
+            TypeDetails::Map(key_id, value_id) => {
+                let key_ty = type_space
+                    .id_to_entry
+                    .get(key_id)
+                    .expect("unresolved type id for array")
+                    .type_ident(type_space, external);
+                let value_ty = type_space
+                    .id_to_entry
+                    .get(value_id)
+                    .expect("unresolved type id for array")
+                    .type_ident(type_space, external);
+
+                quote! { std::collections::BTreeMap<#key_ty, #value_ty> }
             }
 
             TypeDetails::Tuple(items) => {
@@ -178,10 +218,11 @@ impl TypeEntry {
             .unwrap_or_else(|| "<anonymous>".to_string());
         match &self.details {
             TypeDetails::Enum { .. } => format!("enum {}", name),
-            TypeDetails::Struct(_) => format!("struct {}", name),
+            TypeDetails::Struct { .. } => format!("struct {}", name),
             TypeDetails::Unit => "()".to_string(),
             TypeDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeDetails::Array(type_id) => format!("array {}", type_id.0),
+            TypeDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
             TypeDetails::Tuple(_) => "tuple".to_string(),
             TypeDetails::BuiltIn => name,
             TypeDetails::Newtype(type_id) => format!("newtype {} {}", name, type_id.0),

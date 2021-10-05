@@ -1,4 +1,5 @@
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct AlertInstance {
     #[doc = "Identifies the configuration under which the analysis was executed. For example, in GitHub Actions this includes the workflow filename and job name."]
     pub analysis_key: String,
@@ -19,6 +20,7 @@ pub struct AlertInstance {
     pub state: AlertInstanceState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct App {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: Option<String>,
@@ -74,6 +76,7 @@ impl ToString for AuthorAssociation {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRule {
     pub admin_enforced: bool,
     pub allow_deletions_enforcement_level: BranchProtectionRuleAllowDeletionsEnforcementLevel,
@@ -107,6 +110,7 @@ pub struct BranchProtectionRule {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleCreated {
     pub action: BranchProtectionRuleCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -118,6 +122,7 @@ pub struct BranchProtectionRuleCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleDeleted {
     pub action: BranchProtectionRuleDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -129,6 +134,7 @@ pub struct BranchProtectionRuleDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEdited {
     pub action: BranchProtectionRuleEditedAction,
     pub changes: BranchProtectionRuleEditedChanges,
@@ -148,6 +154,7 @@ pub enum BranchProtectionRuleEvent {
     Edited(BranchProtectionRuleEdited),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunDeployment {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: Option<String>,
@@ -162,6 +169,7 @@ pub struct CheckRunDeployment {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunPullRequest {
     pub base: CheckRunPullRequestBase,
     pub head: CheckRunPullRequestHead,
@@ -170,6 +178,7 @@ pub struct CheckRunPullRequest {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCompleted {
     pub action: CheckRunCompletedAction,
     pub check_run: CheckRunCompletedCheckRun,
@@ -184,6 +193,7 @@ pub struct CheckRunCompleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCreated {
     pub action: CheckRunCreatedAction,
     pub check_run: CheckRunCreatedCheckRun,
@@ -198,6 +208,7 @@ pub struct CheckRunCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedAction {
     pub action: CheckRunRequestedActionAction,
     pub check_run: CheckRunRequestedActionCheckRun,
@@ -210,6 +221,7 @@ pub struct CheckRunRequestedAction {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRerequested {
     pub action: CheckRunRerequestedAction,
     pub check_run: CheckRunRerequestedCheckRun,
@@ -232,6 +244,7 @@ pub enum CheckRunEvent {
     Rerequested(CheckRunRerequested),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteCompleted {
     pub action: CheckSuiteCompletedAction,
     pub check_suite: CheckSuiteCompletedCheckSuite,
@@ -243,6 +256,7 @@ pub struct CheckSuiteCompleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteRequested {
     pub action: CheckSuiteRequestedAction,
     pub check_suite: CheckSuiteRequestedCheckSuite,
@@ -254,6 +268,7 @@ pub struct CheckSuiteRequested {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteRerequested {
     pub action: CheckSuiteRerequestedAction,
     pub check_suite: CheckSuiteRerequestedCheckSuite,
@@ -272,6 +287,7 @@ pub enum CheckSuiteEvent {
     Rerequested(CheckSuiteRerequested),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranch {
     pub action: CodeScanningAlertAppearedInBranchAction,
     pub alert: CodeScanningAlertAppearedInBranchAlert,
@@ -288,6 +304,7 @@ pub struct CodeScanningAlertAppearedInBranch {
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUser {
     pub action: CodeScanningAlertClosedByUserAction,
     pub alert: CodeScanningAlertClosedByUserAlert,
@@ -304,6 +321,7 @@ pub struct CodeScanningAlertClosedByUser {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreated {
     pub action: CodeScanningAlertCreatedAction,
     pub alert: CodeScanningAlertCreatedAlert,
@@ -320,6 +338,7 @@ pub struct CodeScanningAlertCreated {
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixed {
     pub action: CodeScanningAlertFixedAction,
     pub alert: CodeScanningAlertFixedAlert,
@@ -336,6 +355,7 @@ pub struct CodeScanningAlertFixed {
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopened {
     pub action: CodeScanningAlertReopenedAction,
     pub alert: CodeScanningAlertReopenedAlert,
@@ -352,6 +372,7 @@ pub struct CodeScanningAlertReopened {
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUser {
     pub action: CodeScanningAlertReopenedByUserAction,
     pub alert: CodeScanningAlertReopenedByUserAlert,
@@ -378,6 +399,7 @@ pub enum CodeScanningAlertEvent {
     ReopenedByUser(CodeScanningAlertReopenedByUser),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Commit {
     #[doc = "An array of files added in the commit."]
     pub added: Vec<String>,
@@ -399,6 +421,7 @@ pub struct Commit {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CommitSimple {
     pub author: Committer,
     pub committer: Committer,
@@ -408,6 +431,7 @@ pub struct CommitSimple {
     pub tree_id: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CommitCommentCreated {
     #[doc = "The action performed. Can be `created`."]
     pub action: CommitCommentCreatedAction,
@@ -422,6 +446,7 @@ pub struct CommitCommentCreated {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CommitCommentEvent(CommitCommentCreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Committer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub date: Option<chrono::DateTime<chrono::offset::Utc>>,
@@ -433,6 +458,7 @@ pub struct Committer {
     pub username: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ContentReferenceCreated {
     pub action: ContentReferenceCreatedAction,
     pub content_reference: ContentReferenceCreatedContentReference,
@@ -445,6 +471,7 @@ pub struct ContentReferenceCreated {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ContentReferenceEvent(ContentReferenceCreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CreateEvent {
     #[doc = "The repository's current description."]
     pub description: Option<String>,
@@ -465,6 +492,7 @@ pub struct CreateEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeleteEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
@@ -481,6 +509,7 @@ pub struct DeleteEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeployKeyCreated {
     pub action: DeployKeyCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -492,6 +521,7 @@ pub struct DeployKeyCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeployKeyDeleted {
     pub action: DeployKeyDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -509,6 +539,7 @@ pub enum DeployKeyEvent {
     Deleted(DeployKeyDeleted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentCreated {
     pub action: DeploymentCreatedAction,
     pub deployment: DeploymentCreatedDeployment,
@@ -524,6 +555,7 @@ pub struct DeploymentCreated {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentEvent(DeploymentCreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreated {
     pub action: DeploymentStatusCreatedAction,
     pub deployment: DeploymentStatusCreatedDeployment,
@@ -538,6 +570,7 @@ pub struct DeploymentStatusCreated {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatusEvent(DeploymentStatusCreated);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Discussion {
     pub active_lock_reason: Option<String>,
     pub answer_chosen_at: Option<String>,
@@ -560,6 +593,7 @@ pub struct Discussion {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionAnswered {
     pub action: DiscussionAnsweredAction,
     pub answer: DiscussionAnsweredAnswer,
@@ -572,6 +606,7 @@ pub struct DiscussionAnswered {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChanged {
     pub action: DiscussionCategoryChangedAction,
     pub changes: DiscussionCategoryChangedChanges,
@@ -584,6 +619,7 @@ pub struct DiscussionCategoryChanged {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCreated {
     pub action: DiscussionCreatedAction,
     pub discussion: DiscussionCreatedDiscussion,
@@ -595,6 +631,7 @@ pub struct DiscussionCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionDeleted {
     pub action: DiscussionDeletedAction,
     pub discussion: Discussion,
@@ -606,6 +643,7 @@ pub struct DiscussionDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionEdited {
     pub action: DiscussionEditedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -619,6 +657,7 @@ pub struct DiscussionEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionLabeled {
     pub action: DiscussionLabeledAction,
     pub discussion: Discussion,
@@ -631,6 +670,7 @@ pub struct DiscussionLabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionLocked {
     pub action: DiscussionLockedAction,
     pub discussion: DiscussionLockedDiscussion,
@@ -642,6 +682,7 @@ pub struct DiscussionLocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionPinned {
     pub action: DiscussionPinnedAction,
     pub discussion: Discussion,
@@ -653,6 +694,7 @@ pub struct DiscussionPinned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionTransferred {
     pub action: DiscussionTransferredAction,
     pub changes: DiscussionTransferredChanges,
@@ -665,6 +707,7 @@ pub struct DiscussionTransferred {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionUnanswered {
     pub action: DiscussionUnansweredAction,
     pub discussion: DiscussionUnansweredDiscussion,
@@ -677,6 +720,7 @@ pub struct DiscussionUnanswered {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionUnlabeled {
     pub action: DiscussionUnlabeledAction,
     pub discussion: Discussion,
@@ -689,6 +733,7 @@ pub struct DiscussionUnlabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionUnlocked {
     pub action: DiscussionUnlockedAction,
     pub discussion: DiscussionUnlockedDiscussion,
@@ -700,6 +745,7 @@ pub struct DiscussionUnlocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionUnpinned {
     pub action: DiscussionUnpinnedAction,
     pub discussion: Discussion,
@@ -711,6 +757,7 @@ pub struct DiscussionUnpinned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentCreated {
     pub action: DiscussionCommentCreatedAction,
     pub comment: DiscussionCommentCreatedComment,
@@ -722,6 +769,7 @@ pub struct DiscussionCommentCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentDeleted {
     pub action: DiscussionCommentDeletedAction,
     pub comment: DiscussionCommentDeletedComment,
@@ -733,6 +781,7 @@ pub struct DiscussionCommentDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentEdited {
     pub action: DiscussionCommentEditedAction,
     pub changes: DiscussionCommentEditedChanges,
@@ -769,6 +818,7 @@ pub enum DiscussionEvent {
     Unpinned(DiscussionUnpinned),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ForkEvent {
     #[doc = "The created [`repository`](https://docs.github.com/en/rest/reference/repos#get-a-repository) resource."]
     pub forkee: ForkEventForkee,
@@ -780,6 +830,7 @@ pub struct ForkEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct GithubOrg {
     pub avatar_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -806,6 +857,7 @@ pub struct GithubOrg {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct GithubAppAuthorizationRevoked {
     pub action: GithubAppAuthorizationRevokedAction,
     pub sender: User,
@@ -813,6 +865,7 @@ pub struct GithubAppAuthorizationRevoked {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GithubAppAuthorizationEvent(GithubAppAuthorizationRevoked);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct GollumEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
@@ -824,6 +877,7 @@ pub struct GollumEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Installation {
     pub access_tokens_url: String,
     pub account: User,
@@ -852,6 +906,7 @@ pub struct Installation {
     pub updated_at: InstallationUpdatedAt,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationCreated {
     pub action: InstallationCreatedAction,
     pub installation: Installation,
@@ -863,6 +918,7 @@ pub struct InstallationCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationDeleted {
     pub action: InstallationDeletedAction,
     pub installation: Installation,
@@ -874,6 +930,7 @@ pub struct InstallationDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationNewPermissionsAccepted {
     pub action: InstallationNewPermissionsAcceptedAction,
     pub installation: Installation,
@@ -885,6 +942,7 @@ pub struct InstallationNewPermissionsAccepted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationSuspend {
     pub action: InstallationSuspendAction,
     pub installation: InstallationSuspendInstallation,
@@ -896,6 +954,7 @@ pub struct InstallationSuspend {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationUnsuspend {
     pub action: InstallationUnsuspendAction,
     pub installation: InstallationUnsuspendInstallation,
@@ -907,6 +966,7 @@ pub struct InstallationUnsuspend {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationLite {
     #[doc = "The ID of the installation."]
     pub id: u64,
@@ -922,6 +982,7 @@ pub enum InstallationEvent {
     Unsuspend(InstallationUnsuspend),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesAdded {
     pub action: InstallationRepositoriesAddedAction,
     pub installation: Installation,
@@ -935,6 +996,7 @@ pub struct InstallationRepositoriesAdded {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesRemoved {
     pub action: InstallationRepositoriesRemovedAction,
     pub installation: Installation,
@@ -954,6 +1016,7 @@ pub enum InstallationRepositoriesEvent {
     Removed(InstallationRepositoriesRemoved),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Issue {
     pub active_lock_reason: Option<IssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -993,6 +1056,7 @@ pub struct Issue {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueComment {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue comment"]
@@ -1010,6 +1074,7 @@ pub struct IssueComment {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentCreated {
     pub action: IssueCommentCreatedAction,
     pub comment: IssueComment,
@@ -1023,6 +1088,7 @@ pub struct IssueCommentCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentDeleted {
     pub action: IssueCommentDeletedAction,
     pub comment: IssueComment,
@@ -1036,6 +1102,7 @@ pub struct IssueCommentDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentEdited {
     pub action: IssueCommentEditedAction,
     pub changes: IssueCommentEditedChanges,
@@ -1057,6 +1124,7 @@ pub enum IssueCommentEvent {
     Edited(IssueCommentEdited),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesAssigned {
     #[doc = "The action that was performed."]
     pub action: IssuesAssignedAction,
@@ -1072,6 +1140,7 @@ pub struct IssuesAssigned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesClosed {
     #[doc = "The action that was performed."]
     pub action: IssuesClosedAction,
@@ -1085,6 +1154,7 @@ pub struct IssuesClosed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesDeleted {
     pub action: IssuesDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1096,6 +1166,7 @@ pub struct IssuesDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesDemilestoned {
     pub action: IssuesDemilestonedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1108,6 +1179,7 @@ pub struct IssuesDemilestoned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesEdited {
     pub action: IssuesEditedAction,
     pub changes: IssuesEditedChanges,
@@ -1122,6 +1194,7 @@ pub struct IssuesEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesLabeled {
     pub action: IssuesLabeledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1136,6 +1209,7 @@ pub struct IssuesLabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesLocked {
     pub action: IssuesLockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1147,6 +1221,7 @@ pub struct IssuesLocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesMilestoned {
     pub action: IssuesMilestonedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1159,6 +1234,7 @@ pub struct IssuesMilestoned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesOpened {
     pub action: IssuesOpenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1172,6 +1248,7 @@ pub struct IssuesOpened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesPinned {
     pub action: IssuesPinnedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1183,6 +1260,7 @@ pub struct IssuesPinned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesReopened {
     pub action: IssuesReopenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1194,6 +1272,7 @@ pub struct IssuesReopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesTransferred {
     pub action: IssuesTransferredAction,
     pub changes: IssuesTransferredChanges,
@@ -1206,6 +1285,7 @@ pub struct IssuesTransferred {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesUnassigned {
     #[doc = "The action that was performed."]
     pub action: IssuesUnassignedAction,
@@ -1221,6 +1301,7 @@ pub struct IssuesUnassigned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesUnlabeled {
     pub action: IssuesUnlabeledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1235,6 +1316,7 @@ pub struct IssuesUnlabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesUnlocked {
     pub action: IssuesUnlockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1246,6 +1328,7 @@ pub struct IssuesUnlocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesUnpinned {
     pub action: IssuesUnpinnedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1277,6 +1360,7 @@ pub enum IssuesEvent {
     Unpinned(IssuesUnpinned),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Label {
     #[doc = "6-character hex code, without the leading #, identifying the color"]
     pub color: String,
@@ -1290,6 +1374,7 @@ pub struct Label {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelCreated {
     pub action: LabelCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1302,6 +1387,7 @@ pub struct LabelCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelDeleted {
     pub action: LabelDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1314,6 +1400,7 @@ pub struct LabelDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelEdited {
     pub action: LabelEditedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1335,6 +1422,7 @@ pub enum LabelEvent {
     Edited(LabelEdited),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct License {
     pub key: String,
     pub name: String,
@@ -1343,10 +1431,12 @@ pub struct License {
     pub url: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Link {
     pub href: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchase {
     pub account: MarketplacePurchaseAccount,
     pub billing_cycle: String,
@@ -1358,6 +1448,7 @@ pub struct MarketplacePurchase {
     pub unit_count: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseCancelled {
     pub action: MarketplacePurchaseCancelledAction,
     pub effective_date: String,
@@ -1367,6 +1458,7 @@ pub struct MarketplacePurchaseCancelled {
     pub sender: MarketplacePurchaseCancelledSender,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseChanged {
     pub action: MarketplacePurchaseChangedAction,
     pub effective_date: String,
@@ -1376,6 +1468,7 @@ pub struct MarketplacePurchaseChanged {
     pub sender: MarketplacePurchaseChangedSender,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChange {
     pub action: MarketplacePurchasePendingChangeAction,
     pub effective_date: String,
@@ -1385,6 +1478,7 @@ pub struct MarketplacePurchasePendingChange {
     pub sender: MarketplacePurchasePendingChangeSender,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeCancelled {
     pub action: MarketplacePurchasePendingChangeCancelledAction,
     pub effective_date: String,
@@ -1394,6 +1488,7 @@ pub struct MarketplacePurchasePendingChangeCancelled {
     pub sender: MarketplacePurchasePendingChangeCancelledSender,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePurchased {
     pub action: MarketplacePurchasePurchasedAction,
     pub effective_date: String,
@@ -1412,6 +1507,7 @@ pub enum MarketplacePurchaseEvent {
     Purchased(MarketplacePurchasePurchased),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberAdded {
     pub action: MemberAddedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1424,6 +1520,7 @@ pub struct MemberAdded {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberEdited {
     pub action: MemberEditedAction,
     pub changes: MemberEditedChanges,
@@ -1435,6 +1532,7 @@ pub struct MemberEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberRemoved {
     pub action: MemberRemovedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1452,6 +1550,7 @@ pub enum MemberEvent {
     Removed(MemberRemoved),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Membership {
     pub organization_url: String,
     pub role: String,
@@ -1460,6 +1559,7 @@ pub struct Membership {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MembershipAdded {
     pub action: MembershipAddedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1474,6 +1574,7 @@ pub struct MembershipAdded {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MembershipRemoved {
     pub action: MembershipRemovedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1494,6 +1595,7 @@ pub enum MembershipEvent {
     Removed(MembershipRemoved),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MetaDeleted {
     pub action: MetaDeletedAction,
     pub hook: MetaDeletedHook,
@@ -1505,6 +1607,7 @@ pub struct MetaDeleted {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MetaEvent(MetaDeleted);
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Milestone {
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub closed_issues: u64,
@@ -1527,6 +1630,7 @@ pub struct Milestone {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneClosed {
     pub action: MilestoneClosedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1538,6 +1642,7 @@ pub struct MilestoneClosed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneCreated {
     pub action: MilestoneCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1549,6 +1654,7 @@ pub struct MilestoneCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneDeleted {
     pub action: MilestoneDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1560,6 +1666,7 @@ pub struct MilestoneDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneEdited {
     pub action: MilestoneEditedAction,
     pub changes: MilestoneEditedChanges,
@@ -1572,6 +1679,7 @@ pub struct MilestoneEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneOpened {
     pub action: MilestoneOpenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1592,6 +1700,7 @@ pub enum MilestoneEvent {
     Opened(MilestoneOpened),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrgBlockBlocked {
     pub action: OrgBlockBlockedAction,
     #[doc = "Information about the user that was blocked or unblocked."]
@@ -1602,6 +1711,7 @@ pub struct OrgBlockBlocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrgBlockUnblocked {
     pub action: OrgBlockUnblockedAction,
     #[doc = "Information about the user that was blocked or unblocked."]
@@ -1618,6 +1728,7 @@ pub enum OrgBlockEvent {
     Unblocked(OrgBlockUnblocked),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Organization {
     pub avatar_url: String,
     pub description: Option<String>,
@@ -1635,6 +1746,7 @@ pub struct Organization {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationDeleted {
     pub action: OrganizationDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1644,6 +1756,7 @@ pub struct OrganizationDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationMemberAdded {
     pub action: OrganizationMemberAddedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1653,6 +1766,7 @@ pub struct OrganizationMemberAdded {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvited {
     pub action: OrganizationMemberInvitedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1663,6 +1777,7 @@ pub struct OrganizationMemberInvited {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationMemberRemoved {
     pub action: OrganizationMemberRemovedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1672,6 +1787,7 @@ pub struct OrganizationMemberRemoved {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationRenamed {
     pub action: OrganizationRenamedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1690,6 +1806,7 @@ pub enum OrganizationEvent {
     Renamed(OrganizationRenamed),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublished {
     pub action: PackagePublishedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1699,6 +1816,7 @@ pub struct PackagePublished {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdated {
     pub action: PackageUpdatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1714,6 +1832,7 @@ pub enum PackageEvent {
     Updated(PackageUpdated),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PageBuildEvent {
     pub build: PageBuildEventBuild,
     pub id: u64,
@@ -1725,6 +1844,7 @@ pub struct PageBuildEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingEvent {
     pub hook: PingEventHook,
     #[doc = "The ID of the webhook that triggered the ping."]
@@ -1738,6 +1858,7 @@ pub struct PingEvent {
     pub zen: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Project {
     #[doc = "Body of the project"]
     pub body: Option<String>,
@@ -1757,6 +1878,7 @@ pub struct Project {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectClosed {
     pub action: ProjectClosedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1768,6 +1890,7 @@ pub struct ProjectClosed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCreated {
     pub action: ProjectCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1779,6 +1902,7 @@ pub struct ProjectCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectDeleted {
     pub action: ProjectDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1790,6 +1914,7 @@ pub struct ProjectDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectEdited {
     pub action: ProjectEditedAction,
     pub changes: ProjectEditedChanges,
@@ -1802,6 +1927,7 @@ pub struct ProjectEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectReopened {
     pub action: ProjectReopenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1813,6 +1939,7 @@ pub struct ProjectReopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCard {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub after_id: Option<()>,
@@ -1833,6 +1960,7 @@ pub struct ProjectCard {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumn {
     pub cards_url: String,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -1846,6 +1974,7 @@ pub struct ProjectColumn {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardConverted {
     pub action: ProjectCardConvertedAction,
     pub changes: ProjectCardConvertedChanges,
@@ -1858,6 +1987,7 @@ pub struct ProjectCardConverted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardCreated {
     pub action: ProjectCardCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1869,6 +1999,7 @@ pub struct ProjectCardCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardDeleted {
     pub action: ProjectCardDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1880,6 +2011,7 @@ pub struct ProjectCardDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardEdited {
     pub action: ProjectCardEditedAction,
     pub changes: ProjectCardEditedChanges,
@@ -1892,6 +2024,7 @@ pub struct ProjectCardEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardMoved {
     pub action: ProjectCardMovedAction,
     pub changes: ProjectCardMovedChanges,
@@ -1913,6 +2046,7 @@ pub enum ProjectCardEvent {
     Moved(ProjectCardMoved),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnCreated {
     pub action: ProjectColumnCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1924,6 +2058,7 @@ pub struct ProjectColumnCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnDeleted {
     pub action: ProjectColumnDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1935,6 +2070,7 @@ pub struct ProjectColumnDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnEdited {
     pub action: ProjectColumnEditedAction,
     pub changes: ProjectColumnEditedChanges,
@@ -1947,6 +2083,7 @@ pub struct ProjectColumnEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnMoved {
     pub action: ProjectColumnMovedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1975,6 +2112,7 @@ pub enum ProjectEvent {
     Reopened(ProjectReopened),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PublicEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
@@ -1984,6 +2122,7 @@ pub struct PublicEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequest {
     pub active_lock_reason: Option<PullRequestActiveLockReason>,
     pub additions: u64,
@@ -2041,6 +2180,7 @@ pub struct PullRequest {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewComment {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the comment."]
@@ -2091,6 +2231,7 @@ pub struct PullRequestReviewComment {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestAssigned {
     pub action: PullRequestAssignedAction,
     pub assignee: User,
@@ -2105,6 +2246,7 @@ pub struct PullRequestAssigned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestAutoMergeDisabled {
     pub action: PullRequestAutoMergeDisabledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2117,6 +2259,7 @@ pub struct PullRequestAutoMergeDisabled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestAutoMergeEnabled {
     pub action: PullRequestAutoMergeEnabledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2129,6 +2272,7 @@ pub struct PullRequestAutoMergeEnabled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestClosed {
     pub action: PullRequestClosedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2142,6 +2286,7 @@ pub struct PullRequestClosed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestConvertedToDraft {
     pub action: PullRequestConvertedToDraftAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2155,6 +2300,7 @@ pub struct PullRequestConvertedToDraft {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestEdited {
     pub action: PullRequestEditedAction,
     pub changes: PullRequestEditedChanges,
@@ -2169,6 +2315,7 @@ pub struct PullRequestEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestLabeled {
     pub action: PullRequestLabeledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2183,6 +2330,7 @@ pub struct PullRequestLabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestLocked {
     pub action: PullRequestLockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2196,6 +2344,7 @@ pub struct PullRequestLocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestOpened {
     pub action: PullRequestOpenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2209,6 +2358,7 @@ pub struct PullRequestOpened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReadyForReview {
     pub action: PullRequestReadyForReviewAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2222,6 +2372,7 @@ pub struct PullRequestReadyForReview {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReopened {
     pub action: PullRequestReopenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2235,7 +2386,7 @@ pub struct PullRequestReopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum PullRequestReviewRequestRemoved {
     Variant0 {
         action: PullRequestReviewRequestRemovedVariant0Action,
@@ -2265,7 +2416,7 @@ pub enum PullRequestReviewRequestRemoved {
     },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum PullRequestReviewRequested {
     Variant0 {
         action: PullRequestReviewRequestedVariant0Action,
@@ -2295,6 +2446,7 @@ pub enum PullRequestReviewRequested {
     },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestSynchronize {
     pub action: PullRequestSynchronizeAction,
     pub after: String,
@@ -2310,6 +2462,7 @@ pub struct PullRequestSynchronize {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestUnassigned {
     pub action: PullRequestUnassignedAction,
     pub assignee: User,
@@ -2324,6 +2477,7 @@ pub struct PullRequestUnassigned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestUnlabeled {
     pub action: PullRequestUnlabeledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2338,6 +2492,7 @@ pub struct PullRequestUnlabeled {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestUnlocked {
     pub action: PullRequestUnlockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2372,6 +2527,7 @@ pub enum PullRequestEvent {
     Unlocked(PullRequestUnlocked),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewDismissed {
     pub action: PullRequestReviewDismissedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2384,6 +2540,7 @@ pub struct PullRequestReviewDismissed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEdited {
     pub action: PullRequestReviewEditedAction,
     pub changes: PullRequestReviewEditedChanges,
@@ -2397,6 +2554,7 @@ pub struct PullRequestReviewEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewSubmitted {
     pub action: PullRequestReviewSubmittedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2409,6 +2567,7 @@ pub struct PullRequestReviewSubmitted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreated {
     pub action: PullRequestReviewCommentCreatedAction,
     pub comment: PullRequestReviewComment,
@@ -2421,6 +2580,7 @@ pub struct PullRequestReviewCommentCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeleted {
     pub action: PullRequestReviewCommentDeletedAction,
     pub comment: PullRequestReviewComment,
@@ -2433,6 +2593,7 @@ pub struct PullRequestReviewCommentDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEdited {
     pub action: PullRequestReviewCommentEditedAction,
     pub changes: PullRequestReviewCommentEditedChanges,
@@ -2460,6 +2621,7 @@ pub enum PullRequestReviewEvent {
     Submitted(PullRequestReviewSubmitted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PushEvent {
     #[doc = "The SHA of the most recent commit on `ref` after the push."]
     pub after: String,
@@ -2485,6 +2647,7 @@ pub struct PushEvent {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Release {
     pub assets: Vec<ReleaseAsset>,
     pub assets_url: String,
@@ -2510,6 +2673,7 @@ pub struct Release {
     pub zipball_url: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseCreated {
     pub action: ReleaseCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2521,6 +2685,7 @@ pub struct ReleaseCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseDeleted {
     pub action: ReleaseDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2532,6 +2697,7 @@ pub struct ReleaseDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseEdited {
     pub action: ReleaseEditedAction,
     pub changes: ReleaseEditedChanges,
@@ -2544,6 +2710,7 @@ pub struct ReleaseEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleasePrereleased {
     pub action: ReleasePrereleasedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2555,6 +2722,7 @@ pub struct ReleasePrereleased {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleasePublished {
     pub action: ReleasePublishedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2566,6 +2734,7 @@ pub struct ReleasePublished {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseReleased {
     pub action: ReleaseReleasedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2577,6 +2746,7 @@ pub struct ReleaseReleased {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseUnpublished {
     pub action: ReleaseUnpublishedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2588,6 +2758,7 @@ pub struct ReleaseUnpublished {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseAsset {
     pub browser_download_url: String,
     pub content_type: String,
@@ -2618,12 +2789,14 @@ pub enum ReleaseEvent {
     Unpublished(ReleaseUnpublished),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepoRef {
     pub id: u64,
     pub name: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Repository {
     #[doc = "Whether to allow auto-merge for pull requests."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2739,6 +2912,7 @@ pub struct Repository {
     pub watchers_count: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryArchived {
     pub action: RepositoryArchivedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2749,6 +2923,7 @@ pub struct RepositoryArchived {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryCreated {
     pub action: RepositoryCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2759,6 +2934,7 @@ pub struct RepositoryCreated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryDeleted {
     pub action: RepositoryDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2769,6 +2945,7 @@ pub struct RepositoryDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryEdited {
     pub action: RepositoryEditedAction,
     pub changes: RepositoryEditedChanges,
@@ -2780,6 +2957,7 @@ pub struct RepositoryEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryPrivatized {
     pub action: RepositoryPrivatizedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2790,6 +2968,7 @@ pub struct RepositoryPrivatized {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryPublicized {
     pub action: RepositoryPublicizedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2800,6 +2979,7 @@ pub struct RepositoryPublicized {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryRenamed {
     pub action: RepositoryRenamedAction,
     pub changes: RepositoryRenamedChanges,
@@ -2811,6 +2991,7 @@ pub struct RepositoryRenamed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryTransferred {
     pub action: RepositoryTransferredAction,
     pub changes: RepositoryTransferredChanges,
@@ -2822,6 +3003,7 @@ pub struct RepositoryTransferred {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryUnarchived {
     pub action: RepositoryUnarchivedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2832,6 +3014,7 @@ pub struct RepositoryUnarchived {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryLite {
     pub archive_url: String,
     pub assignees_url: String,
@@ -2884,10 +3067,11 @@ pub struct RepositoryLite {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryDispatchOnDemandTest {
     pub action: RepositoryDispatchOnDemandTestAction,
     pub branch: String,
-    pub client_payload: serde_json::Value,
+    pub client_payload: std::collections::BTreeMap<String, serde_json::Value>,
     pub installation: InstallationLite,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
@@ -2910,6 +3094,7 @@ pub enum RepositoryEvent {
     Unarchived(RepositoryUnarchived),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryImportEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
@@ -2920,6 +3105,7 @@ pub struct RepositoryImportEvent {
     pub status: RepositoryImportEventStatus,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertCreate {
     pub action: RepositoryVulnerabilityAlertCreateAction,
     pub alert: RepositoryVulnerabilityAlertCreateAlert,
@@ -2929,6 +3115,7 @@ pub struct RepositoryVulnerabilityAlertCreate {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertDismiss {
     pub action: RepositoryVulnerabilityAlertDismissAction,
     pub alert: RepositoryVulnerabilityAlertDismissAlert,
@@ -2938,6 +3125,7 @@ pub struct RepositoryVulnerabilityAlertDismiss {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertResolve {
     pub action: RepositoryVulnerabilityAlertResolveAction,
     pub alert: RepositoryVulnerabilityAlertResolveAlert,
@@ -2954,6 +3142,7 @@ pub enum RepositoryVulnerabilityAlertEvent {
     Resolve(RepositoryVulnerabilityAlertResolve),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertCreated {
     pub action: SecretScanningAlertCreatedAction,
     pub alert: SecretScanningAlertCreatedAlert,
@@ -2964,6 +3153,7 @@ pub struct SecretScanningAlertCreated {
     pub repository: Repository,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertReopened {
     pub action: SecretScanningAlertReopenedAction,
     pub alert: SecretScanningAlertReopenedAlert,
@@ -2975,6 +3165,7 @@ pub struct SecretScanningAlertReopened {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertResolved {
     pub action: SecretScanningAlertResolvedAction,
     pub alert: SecretScanningAlertResolvedAlert,
@@ -2993,21 +3184,25 @@ pub enum SecretScanningAlertEvent {
     Resolved(SecretScanningAlertResolved),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformed {
     pub action: SecurityAdvisoryPerformedAction,
     pub security_advisory: SecurityAdvisoryPerformedSecurityAdvisory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublished {
     pub action: SecurityAdvisoryPublishedAction,
     pub security_advisory: SecurityAdvisoryPublishedSecurityAdvisory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdated {
     pub action: SecurityAdvisoryUpdatedAction,
     pub security_advisory: SecurityAdvisoryUpdatedSecurityAdvisory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawn {
     pub action: SecurityAdvisoryWithdrawnAction,
     pub security_advisory: SecurityAdvisoryWithdrawnSecurityAdvisory,
@@ -3021,6 +3216,7 @@ pub enum SecurityAdvisoryEvent {
     Withdrawn(SecurityAdvisoryWithdrawn),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SimplePullRequest {
     pub active_lock_reason: Option<SimplePullRequestActiveLockReason>,
     pub assignee: Option<User>,
@@ -3061,18 +3257,21 @@ pub struct SimplePullRequest {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipCancelled {
     pub action: SponsorshipCancelledAction,
     pub sender: User,
     pub sponsorship: SponsorshipCancelledSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipCreated {
     pub action: SponsorshipCreatedAction,
     pub sender: User,
     pub sponsorship: SponsorshipCreatedSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipEdited {
     pub action: SponsorshipEditedAction,
     pub changes: SponsorshipEditedChanges,
@@ -3080,6 +3279,7 @@ pub struct SponsorshipEdited {
     pub sponsorship: SponsorshipEditedSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingCancellation {
     pub action: SponsorshipPendingCancellationAction,
     #[doc = "The `pending_cancellation` and `pending_tier_change` event types will include the date the cancellation or tier change will take effect."]
@@ -3089,6 +3289,7 @@ pub struct SponsorshipPendingCancellation {
     pub sponsorship: SponsorshipPendingCancellationSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingTierChange {
     pub action: SponsorshipPendingTierChangeAction,
     pub changes: SponsorshipPendingTierChangeChanges,
@@ -3099,6 +3300,7 @@ pub struct SponsorshipPendingTierChange {
     pub sponsorship: SponsorshipPendingTierChangeSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipTierChanged {
     pub action: SponsorshipTierChangedAction,
     pub changes: SponsorshipTierChangedChanges,
@@ -3106,6 +3308,7 @@ pub struct SponsorshipTierChanged {
     pub sponsorship: SponsorshipTierChangedSponsorship,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipTier {
     pub created_at: String,
     pub description: String,
@@ -3127,6 +3330,7 @@ pub enum SponsorshipEvent {
     TierChanged(SponsorshipTierChanged),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StarCreated {
     pub action: StarCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3139,6 +3343,7 @@ pub struct StarCreated {
     pub starred_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StarDeleted {
     pub action: StarDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3157,6 +3362,7 @@ pub enum StarEvent {
     Deleted(StarDeleted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -3185,6 +3391,7 @@ pub struct StatusEvent {
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Team {
     #[doc = "Description of the team"]
     pub description: Option<String>,
@@ -3206,6 +3413,7 @@ pub struct Team {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamAddedToRepository {
     pub action: TeamAddedToRepositoryAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3217,6 +3425,7 @@ pub struct TeamAddedToRepository {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamCreated {
     pub action: TeamCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3228,6 +3437,7 @@ pub struct TeamCreated {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamDeleted {
     pub action: TeamDeletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3239,6 +3449,7 @@ pub struct TeamDeleted {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEdited {
     pub action: TeamEditedAction,
     pub changes: TeamEditedChanges,
@@ -3251,6 +3462,7 @@ pub struct TeamEdited {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamRemovedFromRepository {
     pub action: TeamRemovedFromRepositoryAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3262,6 +3474,7 @@ pub struct TeamRemovedFromRepository {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamAddEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
@@ -3280,6 +3493,7 @@ pub enum TeamEvent {
     RemovedFromRepository(TeamRemovedFromRepository),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct User {
     pub avatar_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3306,6 +3520,7 @@ pub struct User {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WatchStarted {
     pub action: WatchStartedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3324,6 +3539,7 @@ pub enum WebhookEvents {
     Variant1(Vec<String>),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct Workflow {
     pub badge_url: String,
     pub created_at: String,
@@ -3337,6 +3553,7 @@ pub struct Workflow {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJob {
     pub check_run_url: String,
     pub completed_at: Option<String>,
@@ -3355,6 +3572,7 @@ pub struct WorkflowJob {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRun {
     pub artifacts_url: String,
     pub cancel_url: String,
@@ -3391,6 +3609,7 @@ pub enum WorkflowStep {
     Completed(WorkflowStepCompleted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowStepCompleted {
     pub completed_at: String,
     pub conclusion: WorkflowStepCompletedConclusion,
@@ -3400,6 +3619,7 @@ pub struct WorkflowStepCompleted {
     pub status: WorkflowStepCompletedStatus,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowStepInProgress {
     pub completed_at: (),
     pub conclusion: (),
@@ -3409,8 +3629,9 @@ pub struct WorkflowStepInProgress {
     pub status: WorkflowStepInProgressStatus,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowDispatchEvent {
-    pub inputs: Option<serde_json::Value>,
+    pub inputs: Option<std::collections::BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3422,6 +3643,7 @@ pub struct WorkflowDispatchEvent {
     pub workflow: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJobCompleted {
     pub action: WorkflowJobCompletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3433,6 +3655,7 @@ pub struct WorkflowJobCompleted {
     pub workflow_job: WorkflowJobCompletedWorkflowJob,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJobQueued {
     pub action: WorkflowJobQueuedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3444,6 +3667,7 @@ pub struct WorkflowJobQueued {
     pub workflow_job: WorkflowJobQueuedWorkflowJob,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJobStarted {
     pub action: WorkflowJobStartedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3462,6 +3686,7 @@ pub enum WorkflowJobEvent {
     Started(WorkflowJobStarted),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRunCompleted {
     pub action: WorkflowRunCompletedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3474,6 +3699,7 @@ pub struct WorkflowRunCompleted {
     pub workflow_run: WorkflowRunCompletedWorkflowRun,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRunRequested {
     pub action: WorkflowRunRequestedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3492,6 +3718,7 @@ pub enum WorkflowRunEvent {
     Requested(WorkflowRunRequested),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct AlertInstanceLocation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end_column: Option<u64>,
@@ -3505,6 +3732,7 @@ pub struct AlertInstanceLocation {
     pub start_line: Option<u64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct AlertInstanceMessage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
@@ -4179,6 +4407,7 @@ impl ToString for AppPermissionsWorkflows {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct AppPermissions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<AppPermissionsActions>,
@@ -4478,14 +4707,17 @@ impl ToString for BranchProtectionRuleEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChangesAuthorizedActorNames {
     pub from: Vec<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChangesAuthorizedActorsOnly {
     pub from: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorized_actor_names: Option<BranchProtectionRuleEditedChangesAuthorizedActorNames>,
@@ -4493,6 +4725,7 @@ pub struct BranchProtectionRuleEditedChanges {
     pub authorized_actors_only: Option<BranchProtectionRuleEditedChangesAuthorizedActorsOnly>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunPullRequestBase {
     pub repo: RepoRef,
     #[serde(rename = "ref")]
@@ -4500,6 +4733,7 @@ pub struct CheckRunPullRequestBase {
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunPullRequestHead {
     pub repo: RepoRef,
     #[serde(rename = "ref")]
@@ -4569,6 +4803,7 @@ impl ToString for CheckRunCompletedCheckRunCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRunCheckSuite {
     pub after: Option<String>,
     pub app: App,
@@ -4624,6 +4859,7 @@ impl ToString for CheckRunCompletedCheckRunConclusion {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRunOutput {
     pub annotations_count: u64,
     pub annotations_url: String,
@@ -4645,6 +4881,7 @@ impl ToString for CheckRunCompletedCheckRunStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRun {
     pub app: App,
     pub check_suite: CheckRunCompletedCheckRunCheckSuite,
@@ -4673,6 +4910,7 @@ pub struct CheckRunCompletedCheckRun {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4741,6 +4979,7 @@ impl ToString for CheckRunCreatedCheckRunCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRunCheckSuite {
     pub after: Option<String>,
     pub app: App,
@@ -4796,6 +5035,7 @@ impl ToString for CheckRunCreatedCheckRunConclusion {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRunOutput {
     pub annotations_count: u64,
     pub annotations_url: String,
@@ -4823,6 +5063,7 @@ impl ToString for CheckRunCreatedCheckRunStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRun {
     pub app: App,
     pub check_suite: CheckRunCreatedCheckRunCheckSuite,
@@ -4851,6 +5092,7 @@ pub struct CheckRunCreatedCheckRun {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4925,6 +5167,7 @@ impl ToString for CheckRunRequestedActionCheckRunCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRunCheckSuite {
     pub after: Option<String>,
     pub app: App,
@@ -4982,6 +5225,7 @@ impl ToString for CheckRunRequestedActionCheckRunConclusion {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRunOutput {
     pub annotations_count: u64,
     pub annotations_url: String,
@@ -5009,6 +5253,7 @@ impl ToString for CheckRunRequestedActionCheckRunStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRun {
     pub app: App,
     pub check_suite: CheckRunRequestedActionCheckRunCheckSuite,
@@ -5037,6 +5282,7 @@ pub struct CheckRunRequestedActionCheckRun {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5099,6 +5345,7 @@ impl ToString for CheckRunRerequestedCheckRunCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRunCheckSuite {
     pub after: Option<String>,
     pub app: App,
@@ -5154,6 +5401,7 @@ impl ToString for CheckRunRerequestedCheckRunConclusion {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRunOutput {
     pub annotations_count: u64,
     pub annotations_url: String,
@@ -5175,6 +5423,7 @@ impl ToString for CheckRunRerequestedCheckRunStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRun {
     pub app: App,
     pub check_suite: CheckRunRerequestedCheckRunCheckSuite,
@@ -5203,6 +5452,7 @@ pub struct CheckRunRerequestedCheckRun {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5274,6 +5524,7 @@ impl ToString for CheckSuiteCompletedCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteCompletedCheckSuite {
     pub after: String,
     pub app: App,
@@ -5364,6 +5615,7 @@ impl ToString for CheckSuiteRequestedCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteRequestedCheckSuite {
     pub after: String,
     pub app: App,
@@ -5454,6 +5706,7 @@ impl ToString for CheckSuiteRerequestedCheckSuiteStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CheckSuiteRerequestedCheckSuite {
     pub after: String,
     pub app: App,
@@ -5538,6 +5791,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -5565,6 +5819,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: String,
@@ -5572,6 +5827,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -5669,6 +5925,7 @@ impl ToString for CodeScanningAlertClosedByUserAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -5698,6 +5955,7 @@ impl ToString for CodeScanningAlertClosedByUserAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlertTool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,
@@ -5707,6 +5965,7 @@ pub struct CodeScanningAlertClosedByUserAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -5783,6 +6042,7 @@ impl ToString for CodeScanningAlertCreatedAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -5815,6 +6075,7 @@ impl ToString for CodeScanningAlertCreatedAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlertTool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,
@@ -5824,6 +6085,7 @@ pub struct CodeScanningAlertCreatedAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -5917,6 +6179,7 @@ impl ToString for CodeScanningAlertFixedAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -5946,6 +6209,7 @@ impl ToString for CodeScanningAlertFixedAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlertTool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,
@@ -5955,6 +6219,7 @@ pub struct CodeScanningAlertFixedAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -6030,6 +6295,7 @@ impl ToString for CodeScanningAlertReopenedAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -6065,6 +6331,7 @@ impl ToString for CodeScanningAlertReopenedAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlertTool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,
@@ -6074,6 +6341,7 @@ pub struct CodeScanningAlertReopenedAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -6147,6 +6415,7 @@ impl ToString for CodeScanningAlertReopenedByUserAlertRuleSeverity {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlertRule {
     #[doc = "A short description of the rule used to detect the alert."]
     pub description: String,
@@ -6168,6 +6437,7 @@ impl ToString for CodeScanningAlertReopenedByUserAlertState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: String,
@@ -6175,6 +6445,7 @@ pub struct CodeScanningAlertReopenedByUserAlertTool {
     pub version: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
@@ -6209,6 +6480,7 @@ impl ToString for CommitCommentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct CommitCommentCreatedComment {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the comment."]
@@ -6244,6 +6516,7 @@ impl ToString for ContentReferenceCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ContentReferenceCreatedContentReference {
     pub id: u64,
     pub node_id: String,
@@ -6292,6 +6565,7 @@ impl ToString for DeployKeyCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeployKeyCreatedKey {
     pub created_at: String,
     pub id: u64,
@@ -6314,6 +6588,7 @@ impl ToString for DeployKeyDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeployKeyDeletedKey {
     pub created_at: String,
     pub id: u64,
@@ -6336,8 +6611,10 @@ impl ToString for DeploymentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentCreatedDeploymentPayload {}
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentCreatedDeployment {
     pub created_at: String,
     pub creator: User,
@@ -6371,8 +6648,10 @@ impl ToString for DeploymentStatusCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeploymentPayload {}
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeployment {
     pub created_at: String,
     pub creator: User,
@@ -6393,6 +6672,7 @@ pub struct DeploymentStatusCreatedDeployment {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeploymentStatus {
     pub created_at: String,
     pub creator: User,
@@ -6413,6 +6693,7 @@ pub struct DeploymentStatusCreatedDeploymentStatus {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCategory {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: String,
@@ -6455,6 +6736,7 @@ impl ToString for DiscussionAnsweredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredAnswer {
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -6495,6 +6777,7 @@ impl ToString for DiscussionCategoryChangedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChangedChangesCategoryFrom {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: String,
@@ -6507,10 +6790,12 @@ pub struct DiscussionCategoryChangedChangesCategoryFrom {
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChangedChangesCategory {
     pub from: DiscussionCategoryChangedChangesCategoryFrom,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChangedChanges {
     pub category: DiscussionCategoryChangedChangesCategory,
 }
@@ -6576,14 +6861,17 @@ impl ToString for DiscussionEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionEditedChangesBody {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionEditedChangesTitle {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<DiscussionEditedChangesBody>,
@@ -6658,6 +6946,7 @@ impl ToString for DiscussionTransferredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionTransferredChanges {
     pub new_discussion: Discussion,
     pub new_repository: Repository,
@@ -6688,6 +6977,7 @@ pub struct DiscussionUnansweredDiscussion {
     pub category: DiscussionUnansweredDiscussionCategory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionUnansweredOldAnswer {
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -6770,6 +7060,7 @@ impl ToString for DiscussionCommentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentCreatedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -6797,6 +7088,7 @@ impl ToString for DiscussionCommentDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentDeletedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -6824,14 +7116,17 @@ impl ToString for DiscussionCommentEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentEditedChangesBody {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentEditedChanges {
     pub body: DiscussionCommentEditedChangesBody,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionCommentEditedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
@@ -6881,6 +7176,7 @@ impl ToString for GollumEventPagesItemAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct GollumEventPagesItem {
     #[doc = "The action that was performed on the page. Can be `created` or `edited`."]
     pub action: GollumEventPagesItemAction,
@@ -7572,6 +7868,7 @@ impl ToString for InstallationPermissionsWorkflows {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationPermissions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<InstallationPermissionsActions>,
@@ -7692,6 +7989,7 @@ impl ToString for InstallationCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationCreatedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7715,6 +8013,7 @@ impl ToString for InstallationDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationDeletedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7740,6 +8039,7 @@ impl ToString for InstallationNewPermissionsAcceptedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationNewPermissionsAcceptedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7770,6 +8070,7 @@ pub struct InstallationSuspendInstallation {
     pub suspended_by: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationSuspendRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7800,6 +8101,7 @@ pub struct InstallationUnsuspendInstallation {
     pub suspended_by: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationUnsuspendRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7823,6 +8125,7 @@ impl ToString for InstallationRepositoriesAddedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesAddedRepositoriesAddedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7834,6 +8137,7 @@ pub struct InstallationRepositoriesAddedRepositoriesAddedItem {
     pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub full_name: Option<String>,
@@ -7877,6 +8181,7 @@ impl ToString for InstallationRepositoriesRemovedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesRemovedRepositoriesAddedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7888,6 +8193,7 @@ pub struct InstallationRepositoriesRemovedRepositoriesAddedItem {
     pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesRemovedRepositoriesRemovedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
@@ -7935,6 +8241,7 @@ impl ToString for IssueActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuePullRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub diff_url: Option<String>,
@@ -7973,6 +8280,7 @@ impl ToString for IssueCommentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentCreatedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -8019,6 +8327,7 @@ impl ToString for IssueCommentDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentDeletedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -8065,16 +8374,19 @@ impl ToString for IssueCommentEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedChangesBody {
     #[doc = "The previous version of the body."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<IssueCommentEditedChangesBody>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -8194,16 +8506,19 @@ impl ToString for IssuesEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesEditedChangesBody {
     #[doc = "The previous version of the body."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesEditedChangesTitle {
     #[doc = "The previous version of the title."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<IssuesEditedChangesBody>,
@@ -8293,6 +8608,7 @@ impl ToString for IssuesOpenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesOpenedChanges {
     pub old_issue: Issue,
     pub old_repository: Repository,
@@ -8371,6 +8687,7 @@ impl ToString for IssuesTransferredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesTransferredChanges {
     pub new_issue: Issue,
     pub new_repository: Repository,
@@ -8467,21 +8784,25 @@ impl ToString for LabelEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelEditedChangesColor {
     #[doc = "The previous version of the color if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelEditedChangesDescription {
     #[doc = "The previous version of the description if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelEditedChangesName {
     #[doc = "The previous version of the name if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct LabelEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<LabelEditedChangesColor>,
@@ -8491,6 +8812,7 @@ pub struct LabelEditedChanges {
     pub name: Option<LabelEditedChangesName>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseAccount {
     pub id: u64,
     pub login: String,
@@ -8500,6 +8822,7 @@ pub struct MarketplacePurchaseAccount {
     pub ttype: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePlan {
     pub bullets: Vec<String>,
     pub description: String,
@@ -8530,6 +8853,7 @@ pub struct MarketplacePurchaseCancelledMarketplacePurchase {
     pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseCancelledSender {
     pub avatar_url: String,
     pub email: String,
@@ -8570,6 +8894,7 @@ pub struct MarketplacePurchaseChangedMarketplacePurchase {
     pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseChangedSender {
     pub avatar_url: String,
     pub email: String,
@@ -8610,6 +8935,7 @@ pub struct MarketplacePurchasePendingChangeMarketplacePurchase {
     pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeSender {
     pub avatar_url: String,
     pub email: String,
@@ -8652,6 +8978,7 @@ pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchase {
     pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeCancelledSender {
     pub avatar_url: String,
     pub email: String,
@@ -8692,6 +9019,7 @@ pub struct MarketplacePurchasePurchasedMarketplacePurchase {
     pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePurchasedSender {
     pub avatar_url: String,
     pub email: String,
@@ -8741,10 +9069,12 @@ impl ToString for MemberAddedChangesPermissionTo {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberAddedChangesPermission {
     pub to: MemberAddedChangesPermissionTo,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberAddedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permission: Option<MemberAddedChangesPermission>,
@@ -8762,11 +9092,13 @@ impl ToString for MemberEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberEditedChangesOldPermission {
     #[doc = "The previous permissions of the collaborator if the action was edited."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MemberEditedChanges {
     pub old_permission: MemberEditedChangesOldPermission,
 }
@@ -8834,7 +9166,7 @@ impl ToString for MembershipRemovedScope {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum MembershipRemovedTeam {
     Variant0(Team),
     Variant1 {
@@ -8872,12 +9204,14 @@ impl ToString for MetaDeletedHookConfigContentType {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MetaDeletedHookConfig {
     pub content_type: MetaDeletedHookConfigContentType,
     pub insecure_ssl: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MetaDeletedHook {
     pub active: bool,
     pub config: MetaDeletedHookConfig,
@@ -8991,21 +9325,25 @@ impl ToString for MilestoneEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChangesDescription {
     #[doc = "The previous version of the description if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChangesDueOn {
     #[doc = "The previous version of the due date if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChangesTitle {
     #[doc = "The previous version of the title if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<MilestoneEditedChangesDescription>,
@@ -9106,6 +9444,7 @@ impl ToString for OrganizationMemberInvitedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvitedInvitation {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub email: Option<String>,
@@ -9156,6 +9495,7 @@ impl ToString for PackagePublishedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackagePackageVersionPackageFilesItem {
     pub content_type: String,
     pub created_at: String,
@@ -9173,6 +9513,7 @@ pub struct PackagePublishedPackagePackageVersionPackageFilesItem {
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackagePackageVersionRelease {
     pub author: User,
     pub created_at: String,
@@ -9187,6 +9528,7 @@ pub struct PackagePublishedPackagePackageVersionRelease {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackagePackageVersion {
     pub author: User,
     pub body: String,
@@ -9213,6 +9555,7 @@ pub struct PackagePublishedPackagePackageVersion {
     pub version: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackageRegistry {
     pub about_url: String,
     pub name: String,
@@ -9222,6 +9565,7 @@ pub struct PackagePublishedPackageRegistry {
     pub vendor: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackage {
     pub created_at: String,
     pub description: Option<String>,
@@ -9249,6 +9593,7 @@ impl ToString for PackageUpdatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackagePackageVersionPackageFilesItem {
     pub content_type: String,
     pub created_at: String,
@@ -9266,6 +9611,7 @@ pub struct PackageUpdatedPackagePackageVersionPackageFilesItem {
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackagePackageVersionRelease {
     pub author: User,
     pub created_at: String,
@@ -9280,6 +9626,7 @@ pub struct PackageUpdatedPackagePackageVersionRelease {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackagePackageVersion {
     pub author: User,
     pub body: String,
@@ -9306,6 +9653,7 @@ pub struct PackageUpdatedPackagePackageVersion {
     pub version: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackageRegistry {
     pub about_url: String,
     pub name: String,
@@ -9315,6 +9663,7 @@ pub struct PackageUpdatedPackageRegistry {
     pub vendor: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackage {
     pub created_at: String,
     pub description: Option<String>,
@@ -9330,10 +9679,12 @@ pub struct PackageUpdatedPackage {
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PageBuildEventBuildError {
     pub message: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PageBuildEventBuild {
     pub commit: String,
     pub created_at: String,
@@ -9360,6 +9711,7 @@ impl ToString for PingEventHookConfigContentType {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingEventHookConfig {
     pub content_type: PingEventHookConfigContentType,
     pub insecure_ssl: String,
@@ -9368,12 +9720,14 @@ pub struct PingEventHookConfig {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingEventHookLastResponse {
     pub code: (),
     pub message: (),
     pub status: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingEventHook {
     pub active: bool,
     #[doc = "When you register a new GitHub App, GitHub sends a ping event to the **webhook URL** you specified during registration. The event contains the `app_id`, which is required for [authenticating](https://docs.github.com/en/apps/building-integrations/setting-up-and-registering-github-apps/about-authentication-options-for-github-apps) an app."]
@@ -9458,16 +9812,19 @@ impl ToString for ProjectEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectEditedChangesBody {
     #[doc = "The previous version of the body if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectEditedChangesName {
     #[doc = "The changes to the project if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<ProjectEditedChangesBody>,
@@ -9499,10 +9856,12 @@ impl ToString for ProjectCardConvertedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardConvertedChangesNote {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardConvertedChanges {
     pub note: ProjectCardConvertedChangesNote,
 }
@@ -9543,10 +9902,12 @@ impl ToString for ProjectCardEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardEditedChangesNote {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardEditedChanges {
     pub note: ProjectCardEditedChangesNote,
 }
@@ -9563,10 +9924,12 @@ impl ToString for ProjectCardMovedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardMovedChangesColumnId {
     pub from: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectCardMovedChanges {
     pub column_id: ProjectCardMovedChangesColumnId,
 }
@@ -9613,10 +9976,12 @@ impl ToString for ProjectColumnEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnEditedChangesName {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ProjectColumnEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<ProjectColumnEditedChangesName>,
@@ -9640,6 +10005,7 @@ pub struct PublicEventRepository {
     pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestLinks {
     pub comments: Link,
     pub commits: Link,
@@ -9673,6 +10039,7 @@ impl ToString for PullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -9682,6 +10049,7 @@ pub struct PullRequestBase {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestHead {
     pub label: String,
     pub repo: Repository,
@@ -9712,6 +10080,7 @@ impl ToString for PullRequestState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentLinks {
     pub html: Link,
     pub pull_request: Link,
@@ -9855,16 +10224,19 @@ impl ToString for PullRequestEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestEditedChangesBody {
     #[doc = "The previous version of the body if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestEditedChangesTitle {
     #[doc = "The previous version of the title if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<PullRequestEditedChangesBody>,
@@ -10118,6 +10490,7 @@ impl ToString for PullRequestReviewDismissedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewDismissedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
@@ -10135,6 +10508,7 @@ impl ToString for PullRequestReviewDismissedReviewState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewDismissedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
@@ -10165,21 +10539,25 @@ impl ToString for PullRequestReviewEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedChangesBody {
     #[doc = "The previous version of the body if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<PullRequestReviewEditedChangesBody>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
@@ -10210,11 +10588,13 @@ impl ToString for PullRequestReviewSubmittedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewSubmittedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewSubmittedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
@@ -10245,6 +10625,7 @@ impl ToString for PullRequestReviewCommentCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestLinks {
     pub comments: Link,
     pub commits: Link,
@@ -10284,6 +10665,7 @@ impl ToString for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10293,6 +10675,7 @@ pub struct PullRequestReviewCommentCreatedPullRequestBase {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestHead {
     pub label: String,
     pub repo: Repository,
@@ -10323,6 +10706,7 @@ impl ToString for PullRequestReviewCommentCreatedPullRequestState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentCreatedPullRequestActiveLockReason>,
     pub assignee: Option<User>,
@@ -10377,6 +10761,7 @@ impl ToString for PullRequestReviewCommentDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestLinks {
     pub comments: Link,
     pub commits: Link,
@@ -10416,6 +10801,7 @@ impl ToString for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10425,6 +10811,7 @@ pub struct PullRequestReviewCommentDeletedPullRequestBase {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestHead {
     pub label: String,
     pub repo: Repository,
@@ -10455,6 +10842,7 @@ impl ToString for PullRequestReviewCommentDeletedPullRequestState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentDeletedPullRequestActiveLockReason>,
     pub assignee: Option<User>,
@@ -10509,16 +10897,19 @@ impl ToString for PullRequestReviewCommentEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedChangesBody {
     #[doc = "The previous version of the body."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<PullRequestReviewCommentEditedChangesBody>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestLinks {
     pub comments: Link,
     pub commits: Link,
@@ -10558,6 +10949,7 @@ impl ToString for PullRequestReviewCommentEditedPullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -10567,6 +10959,7 @@ pub struct PullRequestReviewCommentEditedPullRequestBase {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestHead {
     pub label: String,
     pub repo: Repository,
@@ -10597,6 +10990,7 @@ impl ToString for PullRequestReviewCommentEditedPullRequestState {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequest {
     pub active_lock_reason: Option<PullRequestReviewCommentEditedPullRequestActiveLockReason>,
     pub assignee: Option<User>,
@@ -10675,16 +11069,19 @@ impl ToString for ReleaseEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseEditedChangesBody {
     #[doc = "The previous version of the body if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseEditedChangesName {
     #[doc = "The previous version of the name if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct ReleaseEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<ReleaseEditedChangesBody>,
@@ -10777,6 +11174,7 @@ pub enum RepositoryCreatedAt {
     Variant1(chrono::DateTime<chrono::offset::Utc>),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryPermissions {
     pub admin: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10849,18 +11247,22 @@ impl ToString for RepositoryEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChangesDefaultBranch {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChangesDescription {
     pub from: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChangesHomepage {
     pub from: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_branch: Option<RepositoryEditedChangesDefaultBranch>,
@@ -10920,14 +11322,17 @@ impl ToString for RepositoryRenamedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryRenamedChangesRepositoryName {
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryRenamedChangesRepository {
     pub name: RepositoryRenamedChangesRepositoryName,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryRenamedChanges {
     pub repository: RepositoryRenamedChangesRepository,
 }
@@ -10944,15 +11349,18 @@ impl ToString for RepositoryTransferredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryTransferredChangesOwnerFrom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<User>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryTransferredChangesOwner {
     pub from: RepositoryTransferredChangesOwnerFrom,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryTransferredChanges {
     pub owner: RepositoryTransferredChangesOwner,
 }
@@ -11018,6 +11426,7 @@ impl ToString for RepositoryVulnerabilityAlertCreateAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertCreateAlert {
     pub affected_package_name: String,
     pub affected_range: String,
@@ -11051,6 +11460,7 @@ impl ToString for RepositoryVulnerabilityAlertDismissAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertDismissAlert {
     pub affected_package_name: String,
     pub affected_range: String,
@@ -11081,6 +11491,7 @@ impl ToString for RepositoryVulnerabilityAlertResolveAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertResolveAlert {
     pub affected_package_name: String,
     pub affected_range: String,
@@ -11114,6 +11525,7 @@ impl ToString for SecretScanningAlertCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertCreatedAlert {
     pub number: u64,
     pub resolution: (),
@@ -11134,6 +11546,7 @@ impl ToString for SecretScanningAlertReopenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertReopenedAlert {
     pub number: u64,
     pub resolution: (),
@@ -11177,6 +11590,7 @@ impl ToString for SecretScanningAlertResolvedAlertResolution {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertResolvedAlert {
     pub number: u64,
     pub resolution: SecretScanningAlertResolvedAlertResolution,
@@ -11197,35 +11611,42 @@ impl ToString for SecurityAdvisoryPerformedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryCvss {
     pub score: f64,
     pub vector_string: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryCwesItem {
     pub cwe_id: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
     pub ttype: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryReferencesItem {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion {
     pub identifier: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItemPackage {
     pub ecosystem: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem {
     pub first_patched_version:
         Option<SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion>,
@@ -11234,6 +11655,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem {
     pub vulnerable_version_range: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisory {
     pub cvss: SecurityAdvisoryPerformedSecurityAdvisoryCvss,
     pub cwes: Vec<SecurityAdvisoryPerformedSecurityAdvisoryCwesItem>,
@@ -11261,35 +11683,42 @@ impl ToString for SecurityAdvisoryPublishedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryCvss {
     pub score: f64,
     pub vector_string: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryCwesItem {
     pub cwe_id: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
     pub ttype: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryReferencesItem {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion {
     pub identifier: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItemPackage {
     pub ecosystem: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem {
     pub first_patched_version:
         Option<SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion>,
@@ -11298,6 +11727,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem {
     pub vulnerable_version_range: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisory {
     pub cvss: SecurityAdvisoryPublishedSecurityAdvisoryCvss,
     pub cwes: Vec<SecurityAdvisoryPublishedSecurityAdvisoryCwesItem>,
@@ -11325,35 +11755,42 @@ impl ToString for SecurityAdvisoryUpdatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryCvss {
     pub score: f64,
     pub vector_string: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryCwesItem {
     pub cwe_id: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
     pub ttype: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryReferencesItem {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion {
     pub identifier: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItemPackage {
     pub ecosystem: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem {
     pub first_patched_version:
         Option<SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion>,
@@ -11362,6 +11799,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem {
     pub vulnerable_version_range: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisory {
     pub cvss: SecurityAdvisoryUpdatedSecurityAdvisoryCvss,
     pub cwes: Vec<SecurityAdvisoryUpdatedSecurityAdvisoryCwesItem>,
@@ -11389,35 +11827,42 @@ impl ToString for SecurityAdvisoryWithdrawnAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryCvss {
     pub score: f64,
     pub vector_string: Option<String>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryCwesItem {
     pub cwe_id: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
     pub ttype: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryReferencesItem {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion {
     pub identifier: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemPackage {
     pub ecosystem: String,
     pub name: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItem {
     pub first_patched_version:
         Option<SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion>,
@@ -11426,6 +11871,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItem {
     pub vulnerable_version_range: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisory {
     pub cvss: SecurityAdvisoryWithdrawnSecurityAdvisoryCvss,
     pub cwes: Vec<SecurityAdvisoryWithdrawnSecurityAdvisoryCwesItem>,
@@ -11441,6 +11887,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisory {
     pub withdrawn_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SimplePullRequestLinks {
     pub comments: Link,
     pub commits: Link,
@@ -11474,6 +11921,7 @@ impl ToString for SimplePullRequestActiveLockReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SimplePullRequestBase {
     pub label: String,
     pub repo: Repository,
@@ -11483,6 +11931,7 @@ pub struct SimplePullRequestBase {
     pub user: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SimplePullRequestHead {
     pub label: String,
     pub repo: Repository,
@@ -11525,6 +11974,7 @@ impl ToString for SponsorshipCancelledAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipCancelledSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11546,6 +11996,7 @@ impl ToString for SponsorshipCreatedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipCreatedSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11567,16 +12018,19 @@ impl ToString for SponsorshipEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipEditedChangesPrivacyLevel {
     #[doc = "The `edited` event types include the details about the change when someone edits a sponsorship to change the privacy."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privacy_level: Option<SponsorshipEditedChangesPrivacyLevel>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipEditedSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11600,6 +12054,7 @@ impl ToString for SponsorshipPendingCancellationAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingCancellationSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11623,14 +12078,17 @@ impl ToString for SponsorshipPendingTierChangeAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingTierChangeChangesTier {
     pub from: SponsorshipTier,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingTierChangeChanges {
     pub tier: SponsorshipPendingTierChangeChangesTier,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingTierChangeSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11652,14 +12110,17 @@ impl ToString for SponsorshipTierChangedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipTierChangedChangesTier {
     pub from: SponsorshipTier,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipTierChangedChanges {
     pub tier: SponsorshipTierChangedChangesTier,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct SponsorshipTierChangedSponsorship {
     pub created_at: String,
     pub node_id: String,
@@ -11693,11 +12154,13 @@ impl ToString for StarDeletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventBranchesItemCommit {
     pub sha: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventBranchesItem {
     pub commit: StatusEventBranchesItemCommit,
     pub name: String,
@@ -11716,6 +12179,7 @@ pub struct StatusEventCommitCommitCommitter {
     pub date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitTree {
     pub sha: String,
     pub url: String,
@@ -11781,6 +12245,7 @@ impl ToString for StatusEventCommitCommitVerificationReason {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitVerification {
     pub payload: Option<String>,
     pub reason: StatusEventCommitCommitVerificationReason,
@@ -11788,6 +12253,7 @@ pub struct StatusEventCommitCommitVerification {
     pub verified: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommit {
     pub author: StatusEventCommitCommitAuthor,
     pub comment_count: u64,
@@ -11798,12 +12264,14 @@ pub struct StatusEventCommitCommit {
     pub verification: StatusEventCommitCommitVerification,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventCommitParentsItem {
     pub html_url: String,
     pub sha: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct StatusEventCommit {
     pub author: Option<User>,
     pub comments_url: String,
@@ -11855,6 +12323,7 @@ impl ToString for TeamParentPrivacy {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamParent {
     #[doc = "Description of the team"]
     pub description: Option<String>,
@@ -11940,21 +12409,25 @@ impl ToString for TeamEditedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesDescription {
     #[doc = "The previous version of the description if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesName {
     #[doc = "The previous version of the name if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesPrivacy {
     #[doc = "The previous version of the team's privacy if the action was `edited`."]
     pub from: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesRepositoryPermissionsFrom {
     #[doc = "The previous version of the team member's `admin` permission on a repository, if the action was `edited`."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11967,14 +12440,17 @@ pub struct TeamEditedChangesRepositoryPermissionsFrom {
     pub push: Option<bool>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesRepositoryPermissions {
     pub from: TeamEditedChangesRepositoryPermissionsFrom,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesRepository {
     pub permissions: TeamEditedChangesRepositoryPermissions,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct TeamEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<TeamEditedChangesDescription>,
@@ -12244,6 +12720,7 @@ impl ToString for WorkflowRunConclusion {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRunPullRequestsItemBase {
     pub repo: RepoRef,
     #[serde(rename = "ref")]
@@ -12251,6 +12728,7 @@ pub struct WorkflowRunPullRequestsItemBase {
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRunPullRequestsItemHead {
     pub repo: RepoRef,
     #[serde(rename = "ref")]
@@ -12258,6 +12736,7 @@ pub struct WorkflowRunPullRequestsItemHead {
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowRunPullRequestsItem {
     pub base: WorkflowRunPullRequestsItemBase,
     pub head: WorkflowRunPullRequestsItemHead,
@@ -12386,6 +12865,7 @@ impl ToString for WorkflowJobQueuedWorkflowJobStatus {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJobQueuedWorkflowJob {
     pub check_run_url: String,
     pub completed_at: (),
