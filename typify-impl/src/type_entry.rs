@@ -7,7 +7,7 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    Name, TypeDetails, TypeEntry, TypeEntryIdentifier, TypeSpace,
+    Name, TypeDetails, TypeEntry, TypeEntryIdentifier, TypeSpace, VariantDetails,
 };
 
 impl TypeEntry {
@@ -170,6 +170,19 @@ impl TypeEntry {
                 ident: stream,
                 parameter: quote! { &str },
             },
+
+            // We special-case enums for which all variants are simple to let
+            // them be passed as values rather than as references.
+            TypeDetails::Enum { variants, .. }
+                if variants
+                    .iter()
+                    .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
+            {
+                TypeEntryIdentifier {
+                    parameter: stream.clone(),
+                    ident: stream,
+                }
+            }
 
             // In the general case, parameters are just a ref to the type name.
             _ => TypeEntryIdentifier {

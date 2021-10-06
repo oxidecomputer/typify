@@ -1,0 +1,8 @@
+pub fn do_stuff(
+    body: &CompoundType,
+    string: &str,
+    opt_int: Option<u32>,
+    strenum: StringEnum,
+) -> CompoundType {
+    todo!()
+}
