@@ -36,13 +36,18 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+#[derive(Debug, Clone)]
+pub struct TypeEntryIdentifier {
+    pub ident: TokenStream,
+    pub parameter: TokenStream,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TypeEntry {
     name: Option<String>,
     rename: Option<String>,
     description: Option<String>,
     details: TypeDetails,
-    // TODO probably need a bit to say if this is a built-in type
 }
 
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
@@ -59,13 +64,18 @@ pub(crate) enum TypeDetails {
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
     },
-    Unit,
     Option(TypeId),
     Array(TypeId),
     Map(TypeId, TypeId),
     Tuple(Vec<TypeId>),
-    BuiltIn,
     Newtype(TypeId),
+    Unit,
+    // Built-in complex types such as a HashMap.
+    BuiltIn,
+    // Primitive types such as integer and floating-point flavors.
+    Primitive,
+    // Strings.
+    String,
 
     // While these types won't very make their way out to the user, we need
     // reference types in particular to represent simple type aliases between
@@ -96,14 +106,6 @@ pub(crate) enum VariantDetails {
     Struct(Vec<StructProperty>),
 }
 
-// TODO there's actually a subtle difference between properties that are
-// required and those that have a nullable type. We're representing both of
-// them as an Option<T>, but in some cases we may also want to have a
-// `#[serde(skip_serializing_if = "Option::is_none")]`
-// required and nullable -> Option<T>
-// non-required and nullable -> Option<T> and skip or not (doesn't matter)
-// non-required and non-nullable -> Option<T> and skip
-// required and non-nullable -> T
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct StructProperty {
     name: String,
@@ -255,6 +257,16 @@ impl TypeSpace {
         Ok(type_entry.type_ident(self, true))
     }
 
+    /// Add a new type and return a the components necessary to use the type
+    /// for various components of a function signature.
+    pub fn add_type_details(&mut self, schema: &Schema) -> Result<TypeEntryIdentifier> {
+        let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
+
+        let type_id = self.assign_type(type_entry);
+        let type_entry = self.id_to_entry.get(&type_id).unwrap();
+        Ok(type_entry.type_ident_details(self))
+    }
+
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
     }
@@ -272,12 +284,6 @@ impl TypeSpace {
     }
 
     // Private interface?
-
-    pub fn new(definitions: &BTreeMap<String, Schema>) -> Result<Self> {
-        let mut ts = Self::default();
-        ts.add_ref_types(definitions.clone())?;
-        Ok(ts)
-    }
 
     pub fn iter_types(&self) -> impl Iterator<Item = &TypeEntry> {
         self.id_to_entry.values()
@@ -625,7 +631,7 @@ impl TypeSpace {
                         name: Some("String".to_string()),
                         rename: None,
                         description: None,
-                        details: TypeDetails::BuiltIn,
+                        details: TypeDetails::String,
                     },
                     metadata,
                 ))
@@ -663,7 +669,7 @@ impl TypeSpace {
                     name: Some("String".to_string()),
                     rename: None,
                     description: None,
-                    details: TypeDetails::BuiltIn,
+                    details: TypeDetails::String,
                 },
                 metadata,
             )),
@@ -748,49 +754,49 @@ impl TypeSpace {
                 name: Some("i8".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("uint8") => TypeEntry {
                 name: Some("u8".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("int16") => TypeEntry {
                 name: Some("i16".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("uint16") => TypeEntry {
                 name: Some("u16".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("int32" | "int") => TypeEntry {
                 name: Some("i32".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("uint32" | "uint") => TypeEntry {
                 name: Some("u32".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("int64") => TypeEntry {
                 name: Some("i64".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             Some("uint64") => TypeEntry {
                 name: Some("u64".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
 
             // TODO is this the right default? Should we be looking at the
@@ -799,7 +805,7 @@ impl TypeSpace {
                 name: Some("u64".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
 
             _ => todo!("{:#?} {:#?}", validation, format),
@@ -828,7 +834,7 @@ impl TypeSpace {
                 name: Some("f64".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             &None,
         ))
@@ -1181,7 +1187,7 @@ impl TypeSpace {
                 name: Some("bool".to_string()),
                 rename: None,
                 description: None,
-                details: TypeDetails::BuiltIn,
+                details: TypeDetails::Primitive,
             },
             metadata,
         ))
@@ -1308,7 +1314,8 @@ mod tests {
     fn test_simple() {
         let schema = schema_for!(Foo);
         println!("{:#?}", schema);
-        let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
@@ -1339,7 +1346,8 @@ mod tests {
         let schema = schema_for!(SimpleEnum);
         println!("{:#?}", schema);
 
-        let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();

@@ -11,23 +11,20 @@ in your program
 API bindings.
 
 
-## WIP!
+## WIP
 
-This is very much a work in progress. Here are some clear TODOs:
+This is a work in progress. Here are some clear TODOs:
 
-- The API needs some serious consideration; the pieces are there, but thought
-needs to be given regarding what's exposed and how
-
-- There's some half-baked thoughts regarding the handling of built-in types,
-type-aliases, and "newtypes". This should be driven by the needs of progenitor
+- The API needs some consideration; the pieces are there, but it could stand
+being refined.
 
 - Strings with patterns and max/min lengths aren't carefully considering ATM
 
 Just to not be overwhelmed, but what's not done: there's a lot that's neat!
 
-- schemars has a behavior (bug?) whereby it spits out `enum`s as `anyOf` rather
-than `oneOf`; we detect when all subschemas are mutually incompatible so that
-we can treat these as `enum`s.
+- Versions of schemars has a behavior (bug?) whereby it spits out `enum`s as
+`anyOf` rather than `oneOf`; we detect when all subschemas are mutually
+incompatible so that we can treat these as `enum`s.
 
 - All serde enum tagging types are supported.
 
