@@ -1,12 +1,13 @@
 use std::collections::HashSet;
 
 use proc_macro2::TokenStream;
+use quote::ToTokens;
 use rustfmt_wrapper::rustfmt;
 use schema::Schema;
 use schemars::{schema_for, JsonSchema};
 use syn::{
     parse2, punctuated::Punctuated, Attribute, DataEnum, DataStruct, DeriveInput, Field, Fields,
-    FieldsNamed, FieldsUnnamed, Type, TypePath, TypeTuple, Variant,
+    FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
 use crate::{Name, TypeSpace};
@@ -39,7 +40,14 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let output = ty.output(&type_space);
 
     let expected = T::schema();
-    let actual = parse2::<DeriveInput>(output.clone()).unwrap();
+    // We may generate more than one item for a given schema. For example, we
+    // may generate `impl`s with convenient functions. We do the somewhat
+    // arcane dance here of parsing the full output, extracting the first item,
+    // converting it **back** to tokens, and then parsing it again as
+    // DeriveInput.
+    let file = parse2::<File>(output.clone()).unwrap();
+    assert!(!file.items.is_empty());
+    let actual = parse2::<DeriveInput>(file.items.first().unwrap().to_token_stream()).unwrap();
 
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, ignore_variant_names) {

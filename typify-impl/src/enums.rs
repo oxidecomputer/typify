@@ -390,9 +390,14 @@ pub(crate) fn maybe_internally_tagged_enum(
                 ..
             }) = schema
             {
-                let (variant, deny) = internal_variant(validation, tag, type_space)?;
-                deny_unknown_fields |= deny;
-                Ok(variant)
+                match validation.additional_properties.as_ref().map(Box::as_ref) {
+                    Some(Schema::Bool(false)) => {
+                        deny_unknown_fields = true;
+                    }
+                    None => {}
+                    _ => unreachable!(),
+                }
+                Ok(internal_variant(validation, tag, type_space)?)
             } else {
                 unreachable!();
             }
@@ -415,7 +420,7 @@ fn internal_variant(
     validation: &ObjectValidation,
     tag: &str,
     type_space: &mut TypeSpace,
-) -> Result<(Variant, bool)> {
+) -> Result<Variant> {
     if validation.properties.len() == 1 {
         let (tag_name, schema) = validation.properties.iter().next().unwrap();
         let variant_name = constant_string_value(schema).unwrap();
@@ -431,7 +436,7 @@ fn internal_variant(
             description: None,
             details: VariantDetails::Simple,
         };
-        Ok((variant, false))
+        Ok(variant)
     } else {
         let tag_schema = validation.properties.get(tag).unwrap();
         let variant_name = constant_string_value(tag_schema).unwrap();
@@ -442,15 +447,14 @@ fn internal_variant(
         new_validation.properties.remove(tag);
         new_validation.required.remove(tag);
 
-        let (properties, deny) = struct_members(None, &new_validation, type_space)?;
-
+        let (properties, _) = struct_members(None, &new_validation, type_space)?;
         let variant = Variant {
             name,
             rename,
             description: None,
             details: VariantDetails::Struct(properties),
         };
-        Ok((variant, deny))
+        Ok(variant)
     }
 }
 
@@ -1334,5 +1338,20 @@ mod tests {
             }
             _ => panic!("{:#?}", type_entry),
         }
+    }
+
+    #[allow(dead_code)]
+    #[derive(Serialize, JsonSchema, Schema)]
+    // TODO change this to deny_unknown_fields, but there's a bug in schemars
+    #[serde(tag = "tag")]
+    enum InternalSimple {
+        Shadrach,
+        Meshach,
+        Abednego,
+    }
+
+    #[test]
+    fn test_internal_deny_simple() {
+        validate_output::<InternalSimple>();
     }
 }
