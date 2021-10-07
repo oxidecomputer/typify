@@ -28,7 +28,10 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let schema = schema_for!(T);
 
-    let mut type_space = TypeSpace::new(&schema.definitions).unwrap();
+    let mut type_space = TypeSpace::default();
+    type_space
+        .add_ref_types(schema.definitions.clone())
+        .unwrap();
     let (ty, _) = type_space
         .convert_schema_object(Name::Unknown, &schema.schema)
         .unwrap();

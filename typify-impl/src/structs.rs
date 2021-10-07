@@ -181,7 +181,7 @@ pub(crate) fn make_map<'a>(
         name: Some("String".to_string()),
         rename: None,
         description: None,
-        details: TypeDetails::BuiltIn,
+        details: TypeDetails::String,
     });
 
     Ok((
@@ -218,7 +218,7 @@ fn generate_serde_attr(
         (SerdeRules::Optional, TypeDetails::Map(_, _)) => {
             serde_options.push(quote! { default });
             serde_options
-                .push(quote! { skip_serializing_if = "std::collections::BTreeMap::is_empty" });
+                .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
         }
         (SerdeRules::Optional, _) => unreachable!(),
         (SerdeRules::None, _) => (),
@@ -451,8 +451,8 @@ mod tests {
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
     struct SomeMaps {
-        strings: std::collections::BTreeMap<String, String>,
-        things: std::collections::BTreeMap<String, serde_json::Value>,
+        strings: std::collections::HashMap<String, String>,
+        things: std::collections::HashMap<String, serde_json::Value>,
     }
 
     #[test]
@@ -465,7 +465,7 @@ mod tests {
     struct FlattenStuff {
         number: i32,
         #[serde(flatten)]
-        extra: std::collections::BTreeMap<String, String>,
+        extra: std::collections::HashMap<String, String>,
     }
 
     #[test]
