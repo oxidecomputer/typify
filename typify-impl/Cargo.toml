@@ -14,7 +14,7 @@ serde_json = "1.0.64"
 convert_case = "0.4.0"
 thiserror = "1.0.29"
 # This should just be a dev-dependency, but I got lazy for parsing idents
-syn = { version = "1.0.76", features = ["extra-traits", "printing"] }
+syn = { version = "1.0.76", features = ["full"] }
 
 [dev-dependencies]
 serde = "1.0.125"
