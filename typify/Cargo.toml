@@ -9,4 +9,3 @@ description = "JSON schema to rust type code generator"
 [dependencies]
 typify-macro = { path = "../typify-macro" }
 typify-impl = { path = "../typify-impl" }
-rustfmt-wrapper = { path = "../rustfmt-wrapper" }
