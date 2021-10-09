@@ -3,13 +3,11 @@ members = [
 	"example-macro",
 	"typify",
 	"typify-macro",
-	"typify-impl",
-	"rustfmt-wrapper"
+	"typify-impl"
 ]
 
 default-members = [
 	"typify",
 	"typify-macro",
-	"typify-impl",
-	"rustfmt-wrapper"
+	"typify-impl"
 ]
