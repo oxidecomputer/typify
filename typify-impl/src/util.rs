@@ -382,11 +382,11 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
             reference: Some(reference),
             extensions: _,
         }) => {
-            const PREFIX: &str = "#/definitions/";
-            assert!(reference.starts_with(PREFIX));
-            let type_name = &reference[PREFIX.len()..];
-
-            definitions.get(type_name).unwrap()
+            let key = match reference.rfind('/') {
+                Some(idx) => &reference[idx + 1..],
+                None => reference,
+            };
+            definitions.get(key).unwrap()
         }
         Schema::Object(SchemaObject {
             reference: None, ..

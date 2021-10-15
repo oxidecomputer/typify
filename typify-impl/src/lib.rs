@@ -461,6 +461,22 @@ impl TypeSpace {
                 self.convert_array(type_name, metadata, validation)
             }
 
+            // Arrays of anything
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Single(single)),
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            } if single.as_ref() == &InstanceType::Array => self.convert_array_of_any(metadata),
+
             // The permissive schema
             SchemaObject {
                 metadata,
@@ -1174,6 +1190,21 @@ impl TypeSpace {
 
             _ => todo!("{:#?}", validation),
         }
+    }
+    pub(crate) fn convert_array_of_any<'a>(
+        &mut self,
+        metadata: &'a Option<Box<Metadata>>,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let any = TypeEntry {
+            name: Some("serde_json::Value".to_string()),
+            rename: None,
+            description: None,
+            details: TypeDetails::BuiltIn,
+        };
+        let type_id = self.assign_type(any);
+        let ty = TypeEntry::from_metadata(Name::Unknown, metadata, TypeDetails::Array(type_id));
+
+        Ok((ty, metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...

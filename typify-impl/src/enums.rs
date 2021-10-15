@@ -686,7 +686,6 @@ pub(crate) fn untagged_enum(
             };
             let (details, deny) =
                 external_variant(sub_type_name, &variant_name, schema, type_space)?;
-            println!("{} {}", variant_name, deny);
             deny_unknown_fields |= deny;
             let good_name = schema_is_named(schema);
             match (&good_name, common_prefix.as_ref()) {
