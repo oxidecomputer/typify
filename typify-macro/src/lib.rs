@@ -23,15 +23,12 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
     let path = dir.join(arg.value());
 
-    let content = match std::fs::read_to_string(path) {
-        Ok(s) => s,
-        Err(e) => {
-            return Err(syn::Error::new(
-                arg.span(),
-                format!("couldn't read file {}: {}", arg.value(), e.to_string()),
-            ));
-        }
-    };
+    let content = std::fs::read_to_string(path).map_err(|e| {
+        syn::Error::new(
+            arg.span(),
+            format!("couldn't read file {}: {}", arg.value(), e.to_string()),
+        )
+    })?;
 
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
