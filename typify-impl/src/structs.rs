@@ -418,7 +418,7 @@ mod tests {
     use schemars::JsonSchema;
     use serde::Serialize;
 
-    use crate::test_util::validate_output;
+    use crate::{test_util::validate_output, Name, TypeSpace};
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
@@ -471,5 +471,21 @@ mod tests {
     #[test]
     fn test_flatten_stuff() {
         validate_output::<FlattenStuff>();
+    }
+
+    #[test]
+    fn test_object_no_validation() {
+        let schema = schemars::schema::Schema::Object(schemars::schema::SchemaObject {
+            instance_type: Some(schemars::schema::InstanceType::Object.into()),
+            ..Default::default()
+        });
+
+        let mut type_space = TypeSpace::default();
+        let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
+        let output = ty.type_name(&type_space).replace(" ", "");
+        assert_eq!(
+            output,
+            "std::collections::HashMap<String,serde_json::Value>"
+        );
     }
 }
