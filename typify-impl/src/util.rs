@@ -469,21 +469,22 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
         _ => None,
     }?;
 
-    Some(sanitize(raw_name).to_case(Case::Pascal))
+    Some(sanitize(raw_name, Case::Pascal))
 }
 
-fn sanitize(input: String) -> String {
-    let out = input.replace("$", "-").replace("'", "");
-    match out.as_str() {
-        "ref" => "rref".to_string(),
-        "type" => "ttype".to_string(),
-        "self" => "sself".to_string(),
-        _ => out,
+fn sanitize(input: String, case: Case) -> String {
+    let out = input.replace("$", "-").replace("'", "").to_case(case);
+
+    // Make sure the string is a valid Rust identifier.
+    if syn::parse_str::<syn::Ident>(&out).is_ok() {
+        out
+    } else {
+        format!("{}_", out)
     }
 }
 
 pub(crate) fn recase(input: String, case: Case) -> (String, Option<String>) {
-    let new = sanitize(input.clone()).to_case(case);
+    let new = sanitize(input.clone(), case);
     let rename = if new == input { None } else { Some(input) };
     assert_ne!(new, "ref");
     (new, rename)
@@ -501,6 +502,5 @@ pub(crate) fn get_type_name(
         (Name::Unknown, None) => None?,
     };
 
-    let name = sanitize(name);
-    Some(name.to_case(case))
+    Some(sanitize(name, case))
 }

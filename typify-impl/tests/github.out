@@ -15,7 +15,7 @@ pub struct AlertInstance {
     pub message: Option<AlertInstanceMessage>,
     #[doc = "The full Git reference, formatted as `refs/heads/<branch name>`."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
     #[doc = "State of a code scanning alert."]
     pub state: AlertInstanceState,
 }
@@ -30,7 +30,7 @@ pub struct App {
     pub external_url: String,
     pub html_url: String,
     #[doc = "Unique identifier of the GitHub app"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the GitHub app"]
     pub name: String,
     pub node_id: String,
@@ -86,7 +86,7 @@ pub struct BranchProtectionRule {
     pub authorized_dismissal_actors_only: bool,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub dismiss_stale_reviews_on_push: bool,
-    pub id: u64,
+    pub id: i64,
     pub ignore_approvals_from_contributors: bool,
     pub linear_history_requirement_enforcement_level:
         BranchProtectionRuleLinearHistoryRequirementEnforcementLevel,
@@ -94,9 +94,9 @@ pub struct BranchProtectionRule {
     pub name: String,
     pub pull_request_reviews_enforcement_level:
         BranchProtectionRulePullRequestReviewsEnforcementLevel,
-    pub repository_id: u64,
+    pub repository_id: i64,
     pub require_code_owner_review: bool,
-    pub required_approving_review_count: u64,
+    pub required_approving_review_count: i64,
     pub required_conversation_resolution_level:
         BranchProtectionRuleRequiredConversationResolutionLevel,
     pub required_deployments_enforcement_level:
@@ -159,7 +159,7 @@ pub struct CheckRunDeployment {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: Option<String>,
     pub environment: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub original_environment: String,
     pub repository_url: String,
@@ -173,8 +173,8 @@ pub struct CheckRunDeployment {
 pub struct CheckRunPullRequest {
     pub base: CheckRunPullRequestBase,
     pub head: CheckRunPullRequestHead,
-    pub id: u64,
-    pub number: u64,
+    pub id: i64,
+    pub number: i64,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -297,10 +297,10 @@ pub struct CodeScanningAlertAppearedInBranch {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -314,10 +314,10 @@ pub struct CodeScanningAlertClosedByUser {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -331,10 +331,10 @@ pub struct CodeScanningAlertCreated {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -348,10 +348,10 @@ pub struct CodeScanningAlertFixed {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -365,10 +365,10 @@ pub struct CodeScanningAlertReopened {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: GithubOrg,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -382,10 +382,10 @@ pub struct CodeScanningAlertReopenedByUser {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -483,12 +483,12 @@ pub struct CreateEvent {
     pub organization: Option<Organization>,
     #[doc = "The pusher type for the event. Can be either `user` or a deploy key."]
     pub pusher_type: String,
+    #[doc = "The [`git ref`](https://docs.github.com/en/rest/reference/git#get-a-reference) resource."]
+    #[serde(rename = "ref")]
+    pub ref_: String,
     #[doc = "The type of Git ref object created in the repository. Can be either `branch` or `tag`."]
     pub ref_type: CreateEventRefType,
     pub repository: Repository,
-    #[doc = "The [`git ref`](https://docs.github.com/en/rest/reference/git#get-a-reference) resource."]
-    #[serde(rename = "ref")]
-    pub rref: String,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -500,12 +500,12 @@ pub struct DeleteEvent {
     pub organization: Option<Organization>,
     #[doc = "The pusher type for the event. Can be either `user` or a deploy key."]
     pub pusher_type: String,
+    #[doc = "The [`git ref`](https://docs.github.com/en/rest/reference/git#get-a-reference) resource."]
+    #[serde(rename = "ref")]
+    pub ref_: String,
     #[doc = "The type of Git ref object deleted in the repository. Can be either `branch` or `tag`."]
     pub ref_type: DeleteEventRefType,
     pub repository: Repository,
-    #[doc = "The [`git ref`](https://docs.github.com/en/rest/reference/git#get-a-reference) resource."]
-    #[serde(rename = "ref")]
-    pub rref: String,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -579,13 +579,13 @@ pub struct Discussion {
     pub author_association: AuthorAssociation,
     pub body: String,
     pub category: DiscussionCategory,
-    pub comments: u64,
+    pub comments: i64,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub locked: bool,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub repository_url: String,
     pub state: DiscussionState,
     pub title: String,
@@ -841,7 +841,7 @@ pub struct GithubOrg {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -853,7 +853,7 @@ pub struct GithubOrg {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -881,7 +881,7 @@ pub struct GollumEvent {
 pub struct Installation {
     pub access_tokens_url: String,
     pub account: User,
-    pub app_id: u64,
+    pub app_id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub app_slug: Option<String>,
     pub created_at: InstallationCreatedAt,
@@ -890,7 +890,7 @@ pub struct Installation {
     pub has_multiple_single_files: Option<bool>,
     pub html_url: String,
     #[doc = "The ID of the installation."]
-    pub id: u64,
+    pub id: i64,
     pub permissions: InstallationPermissions,
     pub repositories_url: String,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
@@ -901,7 +901,7 @@ pub struct Installation {
     pub suspended_at: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub suspended_by: Option<User>,
     #[doc = "The ID of the user or organization this token is being scoped to."]
-    pub target_id: u64,
+    pub target_id: i64,
     pub target_type: InstallationTargetType,
     pub updated_at: InstallationUpdatedAt,
 }
@@ -969,7 +969,7 @@ pub struct InstallationUnsuspend {
 #[serde(deny_unknown_fields)]
 pub struct InstallationLite {
     #[doc = "The ID of the installation."]
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1026,12 +1026,12 @@ pub struct Issue {
     #[doc = "Contents of the issue"]
     pub body: Option<String>,
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub comments: u64,
+    pub comments: i64,
     pub comments_url: String,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub events_url: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub labels: Vec<Label>,
     pub labels_url: String,
@@ -1039,7 +1039,7 @@ pub struct Issue {
     pub locked: Option<bool>,
     pub milestone: Option<Milestone>,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub performed_via_github_app: Option<App>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1064,7 +1064,7 @@ pub struct IssueComment {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub html_url: String,
     #[doc = "Unique identifier of the issue comment"]
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub node_id: String,
     pub performed_via_github_app: Option<App>,
@@ -1366,7 +1366,7 @@ pub struct Label {
     pub color: String,
     pub default: bool,
     pub description: Option<String>,
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the label."]
     pub name: String,
     pub node_id: String,
@@ -1445,7 +1445,7 @@ pub struct MarketplacePurchase {
     pub next_billing_date: Option<String>,
     pub on_free_trial: bool,
     pub plan: MarketplacePurchasePlan,
-    pub unit_count: u64,
+    pub unit_count: i64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1600,7 +1600,7 @@ pub struct MetaDeleted {
     pub action: MetaDeletedAction,
     pub hook: MetaDeletedHook,
     #[doc = "The id of the modified webhook."]
-    pub hook_id: u64,
+    pub hook_id: i64,
     pub repository: Repository,
     pub sender: User,
 }
@@ -1610,18 +1610,18 @@ pub struct MetaEvent(MetaDeleted);
 #[serde(deny_unknown_fields)]
 pub struct Milestone {
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub closed_issues: u64,
+    pub closed_issues: i64,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub creator: User,
     pub description: Option<String>,
     pub due_on: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub labels_url: String,
     pub node_id: String,
     #[doc = "The number of the milestone."]
-    pub number: u64,
-    pub open_issues: u64,
+    pub number: i64,
+    pub open_issues: i64,
     #[doc = "The state of the milestone."]
     pub state: MilestoneState,
     #[doc = "The title of the milestone."]
@@ -1736,7 +1736,7 @@ pub struct Organization {
     pub hooks_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html_url: Option<String>,
-    pub id: u64,
+    pub id: i64,
     pub issues_url: String,
     pub login: String,
     pub members_url: String,
@@ -1835,7 +1835,7 @@ pub enum PackageEvent {
 #[serde(deny_unknown_fields)]
 pub struct PageBuildEvent {
     pub build: PageBuildEventBuild,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1848,7 +1848,7 @@ pub struct PageBuildEvent {
 pub struct PingEvent {
     pub hook: PingEventHook,
     #[doc = "The ID of the webhook that triggered the ping."]
-    pub hook_id: u64,
+    pub hook_id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1866,11 +1866,11 @@ pub struct Project {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub creator: User,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     #[doc = "Name of the project"]
     pub name: String,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub owner_url: String,
     #[doc = "State of the project; either 'open' or 'closed'"]
     pub state: ProjectState,
@@ -1945,14 +1945,14 @@ pub struct ProjectCard {
     pub after_id: Option<()>,
     #[doc = "Whether or not the card is archived"]
     pub archived: bool,
-    pub column_id: u64,
+    pub column_id: i64,
     pub column_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_url: Option<String>,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub creator: User,
     #[doc = "The project card's ID"]
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub note: Option<String>,
     pub project_url: String,
@@ -1965,7 +1965,7 @@ pub struct ProjectColumn {
     pub cards_url: String,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     #[doc = "The unique identifier of the project column"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "Name of the project column"]
     pub name: String,
     pub node_id: String,
@@ -2125,27 +2125,27 @@ pub struct PublicEvent {
 #[serde(deny_unknown_fields)]
 pub struct PullRequest {
     pub active_lock_reason: Option<PullRequestActiveLockReason>,
-    pub additions: u64,
+    pub additions: i64,
     pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
     pub auto_merge: (),
     pub base: PullRequestBase,
     pub body: Option<String>,
-    pub changed_files: u64,
+    pub changed_files: i64,
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
-    pub comments: u64,
+    pub comments: i64,
     pub comments_url: String,
-    pub commits: u64,
+    pub commits: i64,
     pub commits_url: String,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
-    pub deletions: u64,
+    pub deletions: i64,
     pub diff_url: String,
     #[doc = "Indicates whether or not the pull request is a draft."]
     pub draft: bool,
     pub head: PullRequestHead,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub labels: Vec<Label>,
     #[serde(rename = "_links")]
@@ -2162,13 +2162,13 @@ pub struct PullRequest {
     pub milestone: Option<Milestone>,
     pub node_id: String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
-    pub number: u64,
+    pub number: i64,
     pub patch_url: String,
     pub rebaseable: Option<bool>,
     pub requested_reviewers: Vec<PullRequestRequestedReviewersItem>,
     pub requested_teams: Vec<Team>,
     pub review_comment_url: String,
-    pub review_comments: u64,
+    pub review_comments: i64,
     pub review_comments_url: String,
     #[doc = "State of this Pull Request. Either `open` or `closed`."]
     pub state: PullRequestState,
@@ -2193,12 +2193,12 @@ pub struct PullRequestReviewComment {
     #[doc = "HTML URL for the pull request review comment."]
     pub html_url: String,
     #[doc = "The ID of the pull request review comment."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The comment ID to reply to."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub in_reply_to_id: Option<u64>,
+    pub in_reply_to_id: Option<i64>,
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
-    pub line: Option<u64>,
+    pub line: Option<i64>,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewCommentLinks,
     #[doc = "The node ID of the pull request review comment."]
@@ -2206,23 +2206,23 @@ pub struct PullRequestReviewComment {
     #[doc = "The SHA of the original commit to which the comment applies."]
     pub original_commit_id: String,
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
-    pub original_line: u64,
+    pub original_line: i64,
     #[doc = "The index of the original line in the diff to which the comment applies."]
-    pub original_position: u64,
+    pub original_position: i64,
     #[doc = "The first line of the range for a multi-line comment."]
-    pub original_start_line: Option<u64>,
+    pub original_start_line: Option<i64>,
     #[doc = "The relative path of the file to which the comment applies."]
     pub path: String,
     #[doc = "The line index in the diff to which the comment applies."]
-    pub position: Option<u64>,
+    pub position: Option<i64>,
     #[doc = "The ID of the pull request review to which the comment belongs."]
-    pub pull_request_review_id: u64,
+    pub pull_request_review_id: i64,
     #[doc = "URL for the pull request that the review comment belongs to."]
     pub pull_request_url: String,
     #[doc = "The side of the first line of the range for a multi-line comment."]
     pub side: PullRequestReviewCommentSide,
     #[doc = "The first line of the range for a multi-line comment."]
-    pub start_line: Option<u64>,
+    pub start_line: Option<i64>,
     #[doc = "The side of the first line of the range for a multi-line comment."]
     pub start_side: Option<PullRequestReviewCommentStartSide>,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
@@ -2238,7 +2238,7 @@ pub struct PullRequestAssigned {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2251,7 +2251,7 @@ pub struct PullRequestAutoMergeDisabled {
     pub action: PullRequestAutoMergeDisabledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2264,7 +2264,7 @@ pub struct PullRequestAutoMergeEnabled {
     pub action: PullRequestAutoMergeEnabledAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2278,7 +2278,7 @@ pub struct PullRequestClosed {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequestClosedPullRequest,
@@ -2292,7 +2292,7 @@ pub struct PullRequestConvertedToDraft {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequestConvertedToDraftPullRequest,
@@ -2307,7 +2307,7 @@ pub struct PullRequestEdited {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2322,7 +2322,7 @@ pub struct PullRequestLabeled {
     pub installation: Option<InstallationLite>,
     pub label: Label,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2336,7 +2336,7 @@ pub struct PullRequestLocked {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2350,7 +2350,7 @@ pub struct PullRequestOpened {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequestOpenedPullRequest,
@@ -2364,7 +2364,7 @@ pub struct PullRequestReadyForReview {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequestReadyForReviewPullRequest,
@@ -2378,7 +2378,7 @@ pub struct PullRequestReopened {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequestReopenedPullRequest,
@@ -2393,7 +2393,7 @@ pub enum PullRequestReviewRequestRemoved {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
-        number: u64,
+        number: i64,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         organization: Option<Organization>,
         pull_request: PullRequest,
@@ -2406,7 +2406,7 @@ pub enum PullRequestReviewRequestRemoved {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
-        number: u64,
+        number: i64,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         organization: Option<Organization>,
         pull_request: PullRequest,
@@ -2423,7 +2423,7 @@ pub enum PullRequestReviewRequested {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
-        number: u64,
+        number: i64,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         organization: Option<Organization>,
         pull_request: PullRequest,
@@ -2436,7 +2436,7 @@ pub enum PullRequestReviewRequested {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         installation: Option<InstallationLite>,
         #[doc = "The pull request number."]
-        number: u64,
+        number: i64,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         organization: Option<Organization>,
         pull_request: PullRequest,
@@ -2454,7 +2454,7 @@ pub struct PullRequestSynchronize {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2469,7 +2469,7 @@ pub struct PullRequestUnassigned {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2484,7 +2484,7 @@ pub struct PullRequestUnlabeled {
     pub installation: Option<InstallationLite>,
     pub label: Label,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2498,7 +2498,7 @@ pub struct PullRequestUnlocked {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The pull request number."]
-    pub number: u64,
+    pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pull_request: PullRequest,
@@ -2640,10 +2640,10 @@ pub struct PushEvent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub pusher: Committer,
-    pub repository: Repository,
     #[doc = "The full git ref that was pushed. Example: `refs/heads/main`."]
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -2657,7 +2657,7 @@ pub struct Release {
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub node_id: String,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
@@ -2763,13 +2763,13 @@ pub struct ReleaseAsset {
     pub browser_download_url: String,
     pub content_type: String,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
-    pub download_count: u64,
-    pub id: u64,
+    pub download_count: i64,
+    pub id: i64,
     pub label: Option<String>,
     #[doc = "The file name of the asset."]
     pub name: String,
     pub node_id: String,
-    pub size: u64,
+    pub size: i64,
     #[doc = "State of the release asset."]
     pub state: ReleaseAssetState,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
@@ -2791,7 +2791,7 @@ pub enum ReleaseEvent {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RepoRef {
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub url: String,
 }
@@ -2840,8 +2840,8 @@ pub struct Repository {
     pub downloads_url: String,
     pub events_url: String,
     pub fork: bool,
-    pub forks: u64,
-    pub forks_count: u64,
+    pub forks: i64,
+    pub forks_count: i64,
     pub forks_url: String,
     pub full_name: String,
     pub git_commits_url: String,
@@ -2861,7 +2861,7 @@ pub struct Repository {
     pub hooks_url: String,
     pub html_url: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     pub issue_comment_url: String,
     pub issue_events_url: String,
     pub issues_url: String,
@@ -2879,8 +2879,8 @@ pub struct Repository {
     pub name: String,
     pub node_id: String,
     pub notifications_url: String,
-    pub open_issues: u64,
-    pub open_issues_count: u64,
+    pub open_issues: i64,
+    pub open_issues_count: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<String>,
     pub owner: User,
@@ -2893,11 +2893,11 @@ pub struct Repository {
     pub pulls_url: String,
     pub pushed_at: RepositoryPushedAt,
     pub releases_url: String,
-    pub size: u64,
+    pub size: i64,
     pub ssh_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stargazers: Option<u64>,
-    pub stargazers_count: u64,
+    pub stargazers: Option<i64>,
+    pub stargazers_count: i64,
     pub stargazers_url: String,
     pub statuses_url: String,
     pub subscribers_url: String,
@@ -2908,8 +2908,8 @@ pub struct Repository {
     pub trees_url: String,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
-    pub watchers: u64,
-    pub watchers_count: u64,
+    pub watchers: i64,
+    pub watchers_count: i64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3039,7 +3039,7 @@ pub struct RepositoryLite {
     pub hooks_url: String,
     pub html_url: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     pub issue_comment_url: String,
     pub issue_events_url: String,
     pub issues_url: String,
@@ -3233,7 +3233,7 @@ pub struct SimplePullRequest {
     pub draft: bool,
     pub head: SimplePullRequestHead,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub labels: Vec<Label>,
     #[serde(rename = "_links")]
@@ -3243,7 +3243,7 @@ pub struct SimplePullRequest {
     pub merged_at: Option<String>,
     pub milestone: Option<Milestone>,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub patch_url: String,
     pub requested_reviewers: Vec<SimplePullRequestRequestedReviewersItem>,
     pub requested_teams: Vec<Team>,
@@ -3314,8 +3314,8 @@ pub struct SponsorshipTier {
     pub description: String,
     pub is_custom_ammount: bool,
     pub is_one_time: bool,
-    pub monthly_price_in_cents: u64,
-    pub monthly_price_in_dollars: u64,
+    pub monthly_price_in_cents: i64,
+    pub monthly_price_in_dollars: i64,
     pub name: String,
     pub node_id: String,
 }
@@ -3374,7 +3374,7 @@ pub struct StatusEvent {
     #[doc = "The optional human-readable description added to the status."]
     pub description: Option<String>,
     #[doc = "The unique identifier of the status."]
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     pub name: String,
@@ -3397,7 +3397,7 @@ pub struct Team {
     pub description: Option<String>,
     pub html_url: String,
     #[doc = "Unique identifier of the team"]
-    pub id: u64,
+    pub id: i64,
     pub members_url: String,
     #[doc = "Name of the team"]
     pub name: String,
@@ -3504,7 +3504,7 @@ pub struct User {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3516,7 +3516,7 @@ pub struct User {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: UserType,
+    pub type_: UserType,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3544,7 +3544,7 @@ pub struct Workflow {
     pub badge_url: String,
     pub created_at: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub node_id: String,
     pub path: String,
@@ -3560,7 +3560,7 @@ pub struct WorkflowJob {
     pub conclusion: Option<WorkflowJobConclusion>,
     pub head_sha: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub labels: Vec<String>,
     pub name: String,
     pub node_id: String,
@@ -3576,7 +3576,7 @@ pub struct WorkflowJob {
 pub struct WorkflowRun {
     pub artifacts_url: String,
     pub cancel_url: String,
-    pub check_suite_id: u64,
+    pub check_suite_id: i64,
     pub check_suite_node_id: String,
     pub check_suite_url: String,
     pub conclusion: Option<WorkflowRunConclusion>,
@@ -3587,7 +3587,7 @@ pub struct WorkflowRun {
     pub head_repository: RepositoryLite,
     pub head_sha: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub jobs_url: String,
     pub logs_url: String,
     pub name: String,
@@ -3595,11 +3595,11 @@ pub struct WorkflowRun {
     pub pull_requests: Vec<WorkflowRunPullRequestsItem>,
     pub repository: RepositoryLite,
     pub rerun_url: String,
-    pub run_number: u64,
+    pub run_number: i64,
     pub status: WorkflowRunStatus,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
-    pub workflow_id: u64,
+    pub workflow_id: i64,
     pub workflow_url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3614,7 +3614,7 @@ pub struct WorkflowStepCompleted {
     pub completed_at: String,
     pub conclusion: WorkflowStepCompletedConclusion,
     pub name: String,
-    pub number: u64,
+    pub number: i64,
     pub started_at: String,
     pub status: WorkflowStepCompletedStatus,
 }
@@ -3624,7 +3624,7 @@ pub struct WorkflowStepInProgress {
     pub completed_at: (),
     pub conclusion: (),
     pub name: String,
-    pub number: u64,
+    pub number: i64,
     pub started_at: String,
     pub status: WorkflowStepInProgressStatus,
 }
@@ -3636,9 +3636,9 @@ pub struct WorkflowDispatchEvent {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository: Repository,
     pub sender: User,
     pub workflow: String,
 }
@@ -3721,15 +3721,15 @@ pub enum WorkflowRunEvent {
 #[serde(deny_unknown_fields)]
 pub struct AlertInstanceLocation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub end_column: Option<u64>,
+    pub end_column: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub end_line: Option<u64>,
+    pub end_line: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub start_column: Option<u64>,
+    pub start_column: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub start_line: Option<u64>,
+    pub start_line: Option<i64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -4727,17 +4727,17 @@ pub struct BranchProtectionRuleEditedChanges {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunPullRequestBase {
-    pub repo: RepoRef,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: RepoRef,
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunPullRequestHead {
-    pub repo: RepoRef,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: RepoRef,
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -4816,7 +4816,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
     #[doc = "The id of the check suite that this check run is part of."]
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
@@ -4861,7 +4861,7 @@ impl ToString for CheckRunCompletedCheckRunConclusion {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRunOutput {
-    pub annotations_count: u64,
+    pub annotations_count: i64,
     pub annotations_url: String,
     pub summary: Option<String>,
     pub text: Option<String>,
@@ -4896,7 +4896,7 @@ pub struct CheckRunCompletedCheckRun {
     pub head_sha: String,
     pub html_url: String,
     #[doc = "The id of the check."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the check run."]
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4992,7 +4992,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
     #[doc = "The id of the check suite that this check run is part of."]
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
@@ -5037,7 +5037,7 @@ impl ToString for CheckRunCreatedCheckRunConclusion {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRunOutput {
-    pub annotations_count: u64,
+    pub annotations_count: i64,
     pub annotations_url: String,
     pub summary: Option<String>,
     pub text: Option<String>,
@@ -5078,7 +5078,7 @@ pub struct CheckRunCreatedCheckRun {
     pub head_sha: String,
     pub html_url: String,
     #[doc = "The id of the check."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the check run."]
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5180,7 +5180,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
     #[doc = "The id of the check suite that this check run is part of."]
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
@@ -5227,7 +5227,7 @@ impl ToString for CheckRunRequestedActionCheckRunConclusion {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRunOutput {
-    pub annotations_count: u64,
+    pub annotations_count: i64,
     pub annotations_url: String,
     pub summary: Option<String>,
     pub text: Option<String>,
@@ -5268,7 +5268,7 @@ pub struct CheckRunRequestedActionCheckRun {
     pub head_sha: String,
     pub html_url: String,
     #[doc = "The id of the check."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the check run."]
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5358,7 +5358,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
     #[doc = "The id of the check suite that this check run is part of."]
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_id: Option<String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
@@ -5403,7 +5403,7 @@ impl ToString for CheckRunRerequestedCheckRunConclusion {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRunOutput {
-    pub annotations_count: u64,
+    pub annotations_count: i64,
     pub annotations_url: String,
     pub summary: Option<String>,
     pub text: Option<String>,
@@ -5438,7 +5438,7 @@ pub struct CheckRunRerequestedCheckRun {
     pub head_sha: String,
     pub html_url: String,
     #[doc = "The id of the check."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the check."]
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5538,8 +5538,8 @@ pub struct CheckSuiteCompletedCheckSuite {
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
-    pub id: u64,
-    pub latest_check_runs_count: u64,
+    pub id: i64,
+    pub latest_check_runs_count: i64,
     pub node_id: String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: Vec<CheckRunPullRequest>,
@@ -5629,8 +5629,8 @@ pub struct CheckSuiteRequestedCheckSuite {
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
-    pub id: u64,
-    pub latest_check_runs_count: u64,
+    pub id: i64,
+    pub latest_check_runs_count: i64,
     pub node_id: String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: Vec<CheckRunPullRequest>,
@@ -5720,8 +5720,8 @@ pub struct CheckSuiteRerequestedCheckSuite {
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: String,
-    pub id: u64,
-    pub latest_check_runs_count: u64,
+    pub id: i64,
+    pub latest_check_runs_count: i64,
     pub node_id: String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: Vec<CheckRunPullRequest>,
@@ -5842,7 +5842,7 @@ pub struct CodeScanningAlertAppearedInBranchAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertAppearedInBranchAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertAppearedInBranchAlertState,
@@ -5980,7 +5980,7 @@ pub struct CodeScanningAlertClosedByUserAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertClosedByUserAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertClosedByUserAlertState,
@@ -6100,7 +6100,7 @@ pub struct CodeScanningAlertCreatedAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertCreatedAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertCreatedAlertState,
@@ -6236,7 +6236,7 @@ pub struct CodeScanningAlertFixedAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertFixedAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertFixedAlertState,
@@ -6356,7 +6356,7 @@ pub struct CodeScanningAlertReopenedAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertReopenedAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertReopenedAlertState,
@@ -6460,7 +6460,7 @@ pub struct CodeScanningAlertReopenedByUserAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
-    pub number: u64,
+    pub number: i64,
     pub rule: CodeScanningAlertReopenedByUserAlertRule,
     #[doc = "State of a code scanning alert."]
     pub state: CodeScanningAlertReopenedByUserAlertState,
@@ -6490,15 +6490,15 @@ pub struct CommitCommentCreatedComment {
     pub created_at: String,
     pub html_url: String,
     #[doc = "The ID of the commit comment."]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
-    pub line: Option<u64>,
+    pub line: Option<i64>,
     #[doc = "The node ID of the commit comment."]
     pub node_id: String,
     #[doc = "The relative path of the file to which the comment applies."]
     pub path: Option<String>,
     #[doc = "The line index in the diff to which the comment applies."]
-    pub position: Option<u64>,
+    pub position: Option<i64>,
     pub updated_at: String,
     pub url: String,
     pub user: User,
@@ -6518,7 +6518,7 @@ impl ToString for ContentReferenceCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ContentReferenceCreatedContentReference {
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub reference: String,
 }
@@ -6568,7 +6568,7 @@ impl ToString for DeployKeyCreatedAction {
 #[serde(deny_unknown_fields)]
 pub struct DeployKeyCreatedKey {
     pub created_at: String,
-    pub id: u64,
+    pub id: i64,
     pub key: String,
     pub read_only: bool,
     pub title: String,
@@ -6591,7 +6591,7 @@ impl ToString for DeployKeyDeletedAction {
 #[serde(deny_unknown_fields)]
 pub struct DeployKeyDeletedKey {
     pub created_at: String,
-    pub id: u64,
+    pub id: i64,
     pub key: String,
     pub read_only: bool,
     pub title: String,
@@ -6620,15 +6620,15 @@ pub struct DeploymentCreatedDeployment {
     pub creator: User,
     pub description: (),
     pub environment: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub original_environment: String,
     pub payload: DeploymentCreatedDeploymentPayload,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub performed_via_github_app: Option<App>,
-    pub repository_url: String,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository_url: String,
     pub sha: String,
     pub statuses_url: String,
     pub task: String,
@@ -6657,14 +6657,14 @@ pub struct DeploymentStatusCreatedDeployment {
     pub creator: User,
     pub description: (),
     pub environment: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub original_environment: String,
     pub payload: DeploymentStatusCreatedDeploymentPayload,
     pub performed_via_github_app: Option<App>,
-    pub repository_url: String,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repository_url: String,
     pub sha: String,
     pub statuses_url: String,
     pub task: String,
@@ -6680,7 +6680,7 @@ pub struct DeploymentStatusCreatedDeploymentStatus {
     #[doc = "The optional human-readable description added to the status."]
     pub description: String,
     pub environment: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub performed_via_github_app: Option<App>,
@@ -6698,10 +6698,10 @@ pub struct DiscussionCategory {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: String,
     pub emoji: String,
-    pub id: u64,
+    pub id: i64,
     pub is_answerable: bool,
     pub name: String,
-    pub repository_id: u64,
+    pub repository_id: i64,
     pub slug: String,
     pub updated_at: String,
 }
@@ -6740,11 +6740,11 @@ impl ToString for DiscussionAnsweredAction {
 pub struct DiscussionAnsweredAnswer {
     pub author_association: AuthorAssociation,
     pub body: String,
-    pub child_comment_count: u64,
+    pub child_comment_count: i64,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
-    pub discussion_id: u64,
+    pub discussion_id: i64,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub parent_id: (),
     pub repository_url: String,
@@ -6782,10 +6782,10 @@ pub struct DiscussionCategoryChangedChangesCategoryFrom {
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
     pub description: String,
     pub emoji: String,
-    pub id: u64,
+    pub id: i64,
     pub is_answerable: bool,
     pub name: String,
-    pub repository_id: u64,
+    pub repository_id: i64,
     pub slug: String,
     pub updated_at: String,
 }
@@ -6981,11 +6981,11 @@ pub struct DiscussionUnansweredDiscussion {
 pub struct DiscussionUnansweredOldAnswer {
     pub author_association: AuthorAssociation,
     pub body: String,
-    pub child_comment_count: u64,
+    pub child_comment_count: i64,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
-    pub discussion_id: u64,
+    pub discussion_id: i64,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
     pub parent_id: (),
     pub repository_url: String,
@@ -7064,13 +7064,13 @@ impl ToString for DiscussionCommentCreatedAction {
 pub struct DiscussionCommentCreatedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
-    pub child_comment_count: u64,
+    pub child_comment_count: i64,
     pub created_at: String,
-    pub discussion_id: u64,
+    pub discussion_id: i64,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
-    pub parent_id: Option<u64>,
+    pub parent_id: Option<i64>,
     pub repository_url: String,
     pub updated_at: String,
     pub user: User,
@@ -7092,13 +7092,13 @@ impl ToString for DiscussionCommentDeletedAction {
 pub struct DiscussionCommentDeletedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
-    pub child_comment_count: u64,
+    pub child_comment_count: i64,
     pub created_at: String,
-    pub discussion_id: u64,
+    pub discussion_id: i64,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
-    pub parent_id: Option<u64>,
+    pub parent_id: Option<i64>,
     pub repository_url: String,
     pub updated_at: String,
     pub user: User,
@@ -7130,13 +7130,13 @@ pub struct DiscussionCommentEditedChanges {
 pub struct DiscussionCommentEditedComment {
     pub author_association: AuthorAssociation,
     pub body: String,
-    pub child_comment_count: u64,
+    pub child_comment_count: i64,
     pub created_at: String,
-    pub discussion_id: u64,
+    pub discussion_id: i64,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub node_id: String,
-    pub parent_id: Option<u64>,
+    pub parent_id: Option<i64>,
     pub repository_url: String,
     pub updated_at: String,
     pub user: User,
@@ -7194,7 +7194,7 @@ pub struct GollumEventPagesItem {
 #[serde(untagged)]
 pub enum InstallationCreatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
-    Variant1(u64),
+    Variant1(i64),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationEventsItem {
@@ -7974,7 +7974,7 @@ impl ToString for InstallationTargetType {
 #[serde(untagged)]
 pub enum InstallationUpdatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
-    Variant1(u64),
+    Variant1(i64),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationCreatedAction {
@@ -7993,7 +7993,7 @@ impl ToString for InstallationCreatedAction {
 pub struct InstallationCreatedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8017,7 +8017,7 @@ impl ToString for InstallationDeletedAction {
 pub struct InstallationDeletedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8043,7 +8043,7 @@ impl ToString for InstallationNewPermissionsAcceptedAction {
 pub struct InstallationNewPermissionsAcceptedRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8074,7 +8074,7 @@ pub struct InstallationSuspendInstallation {
 pub struct InstallationSuspendRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8105,7 +8105,7 @@ pub struct InstallationUnsuspendInstallation {
 pub struct InstallationUnsuspendRepositoriesItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8129,7 +8129,7 @@ impl ToString for InstallationRepositoriesAddedAction {
 pub struct InstallationRepositoriesAddedRepositoriesAddedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8143,7 +8143,7 @@ pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     pub full_name: Option<String>,
     #[doc = "Unique identifier of the repository"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<u64>,
+    pub id: Option<i64>,
     #[doc = "The name of the repository."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -8185,7 +8185,7 @@ impl ToString for InstallationRepositoriesRemovedAction {
 pub struct InstallationRepositoriesRemovedRepositoriesAddedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8197,7 +8197,7 @@ pub struct InstallationRepositoriesRemovedRepositoriesAddedItem {
 pub struct InstallationRepositoriesRemovedRepositoriesRemovedItem {
     pub full_name: String,
     #[doc = "Unique identifier of the repository"]
-    pub id: u64,
+    pub id: i64,
     #[doc = "The name of the repository."]
     pub name: String,
     pub node_id: String,
@@ -8814,12 +8814,12 @@ pub struct LabelEditedChanges {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseAccount {
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub node_id: String,
     pub organization_billing_email: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -8827,12 +8827,12 @@ pub struct MarketplacePurchasePlan {
     pub bullets: Vec<String>,
     pub description: String,
     pub has_free_trial: bool,
-    pub id: u64,
-    pub monthly_price_in_cents: u64,
+    pub id: i64,
+    pub monthly_price_in_cents: i64,
     pub name: String,
     pub price_model: String,
     pub unit_name: Option<String>,
-    pub yearly_price_in_cents: u64,
+    pub yearly_price_in_cents: i64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MarketplacePurchaseCancelledAction {
@@ -8863,7 +8863,7 @@ pub struct MarketplacePurchaseCancelledSender {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub organizations_url: String,
     pub received_events_url: String,
@@ -8872,7 +8872,7 @@ pub struct MarketplacePurchaseCancelledSender {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -8904,7 +8904,7 @@ pub struct MarketplacePurchaseChangedSender {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub organizations_url: String,
     pub received_events_url: String,
@@ -8913,7 +8913,7 @@ pub struct MarketplacePurchaseChangedSender {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -8945,7 +8945,7 @@ pub struct MarketplacePurchasePendingChangeSender {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub organizations_url: String,
     pub received_events_url: String,
@@ -8954,7 +8954,7 @@ pub struct MarketplacePurchasePendingChangeSender {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -8988,7 +8988,7 @@ pub struct MarketplacePurchasePendingChangeCancelledSender {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub organizations_url: String,
     pub received_events_url: String,
@@ -8997,7 +8997,7 @@ pub struct MarketplacePurchasePendingChangeCancelledSender {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -9029,7 +9029,7 @@ pub struct MarketplacePurchasePurchasedSender {
     pub gists_url: String,
     pub gravatar_id: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub login: String,
     pub organizations_url: String,
     pub received_events_url: String,
@@ -9038,7 +9038,7 @@ pub struct MarketplacePurchasePurchasedSender {
     pub starred_url: String,
     pub subscriptions_url: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -9172,7 +9172,7 @@ pub enum MembershipRemovedTeam {
     Variant1 {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         deleted: Option<bool>,
-        id: u64,
+        id: i64,
         name: String,
     },
 }
@@ -9217,10 +9217,10 @@ pub struct MetaDeletedHook {
     pub config: MetaDeletedHookConfig,
     pub created_at: String,
     pub events: WebhookEvents,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub updated_at: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -9500,7 +9500,7 @@ pub struct PackagePublishedPackagePackageVersionPackageFilesItem {
     pub content_type: String,
     pub created_at: String,
     pub download_url: String,
-    pub id: u64,
+    pub id: i64,
     #[serde(rename = "md5")]
     pub md_5: String,
     pub name: String,
@@ -9508,7 +9508,7 @@ pub struct PackagePublishedPackagePackageVersionPackageFilesItem {
     pub sha_1: String,
     #[serde(rename = "sha256")]
     pub sha_256: String,
-    pub size: u64,
+    pub size: i64,
     pub state: String,
     pub updated_at: String,
 }
@@ -9519,7 +9519,7 @@ pub struct PackagePublishedPackagePackageVersionRelease {
     pub created_at: String,
     pub draft: bool,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub prerelease: bool,
     pub published_at: String,
@@ -9538,7 +9538,7 @@ pub struct PackagePublishedPackagePackageVersion {
     pub docker_metadata: Vec<serde_json::Value>,
     pub draft: bool,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub installation_command: String,
     pub manifest: String,
     pub metadata: Vec<serde_json::Value>,
@@ -9560,7 +9560,7 @@ pub struct PackagePublishedPackageRegistry {
     pub about_url: String,
     pub name: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
     pub vendor: String,
 }
@@ -9571,7 +9571,7 @@ pub struct PackagePublishedPackage {
     pub description: Option<String>,
     pub ecosystem: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub namespace: String,
     pub owner: User,
@@ -9598,7 +9598,7 @@ pub struct PackageUpdatedPackagePackageVersionPackageFilesItem {
     pub content_type: String,
     pub created_at: String,
     pub download_url: String,
-    pub id: u64,
+    pub id: i64,
     #[serde(rename = "md5")]
     pub md_5: String,
     pub name: String,
@@ -9606,7 +9606,7 @@ pub struct PackageUpdatedPackagePackageVersionPackageFilesItem {
     pub sha_1: String,
     #[serde(rename = "sha256")]
     pub sha_256: String,
-    pub size: u64,
+    pub size: i64,
     pub state: String,
     pub updated_at: String,
 }
@@ -9617,7 +9617,7 @@ pub struct PackageUpdatedPackagePackageVersionRelease {
     pub created_at: String,
     pub draft: bool,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub prerelease: bool,
     pub published_at: String,
@@ -9636,7 +9636,7 @@ pub struct PackageUpdatedPackagePackageVersion {
     pub docker_metadata: Vec<serde_json::Value>,
     pub draft: bool,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub installation_command: String,
     pub manifest: String,
     pub metadata: Vec<serde_json::Value>,
@@ -9658,7 +9658,7 @@ pub struct PackageUpdatedPackageRegistry {
     pub about_url: String,
     pub name: String,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub url: String,
     pub vendor: String,
 }
@@ -9669,7 +9669,7 @@ pub struct PackageUpdatedPackage {
     pub description: Option<String>,
     pub ecosystem: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub name: String,
     pub namespace: String,
     pub owner: User,
@@ -9688,7 +9688,7 @@ pub struct PageBuildEventBuildError {
 pub struct PageBuildEventBuild {
     pub commit: String,
     pub created_at: String,
-    pub duration: u64,
+    pub duration: i64,
     pub error: PageBuildEventBuildError,
     pub pusher: User,
     pub status: String,
@@ -9732,11 +9732,11 @@ pub struct PingEventHook {
     pub active: bool,
     #[doc = "When you register a new GitHub App, GitHub sends a ping event to the **webhook URL** you specified during registration. The event contains the `app_id`, which is required for [authenticating](https://docs.github.com/en/apps/building-integrations/setting-up-and-registering-github-apps/about-authentication-options-for-github-apps) an app."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub app_id: Option<u64>,
+    pub app_id: Option<i64>,
     pub config: PingEventHookConfig,
     pub created_at: String,
     pub events: WebhookEvents,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub last_response: Option<PingEventHookLastResponse>,
     pub name: String,
@@ -9744,7 +9744,7 @@ pub struct PingEventHook {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub test_url: Option<String>,
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub updated_at: String,
     pub url: String,
 }
@@ -9926,7 +9926,7 @@ impl ToString for ProjectCardMovedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCardMovedChangesColumnId {
-    pub from: u64,
+    pub from: i64,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -10014,7 +10014,7 @@ pub struct PullRequestLinks {
     pub review_comment: Link,
     pub review_comments: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
     pub statuses: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -10042,9 +10042,9 @@ impl ToString for PullRequestActiveLockReason {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestBase {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10052,9 +10052,9 @@ pub struct PullRequestBase {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestHead {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10085,7 +10085,7 @@ pub struct PullRequestReviewCommentLinks {
     pub html: Link,
     pub pull_request: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentSide {
@@ -10517,7 +10517,7 @@ pub struct PullRequestReviewDismissedReview {
     pub commit_id: String,
     pub html_url: String,
     #[doc = "Unique identifier of the review"]
-    pub id: u64,
+    pub id: i64,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewDismissedReviewLinks,
     pub node_id: String,
@@ -10566,7 +10566,7 @@ pub struct PullRequestReviewEditedReview {
     pub commit_id: String,
     pub html_url: String,
     #[doc = "Unique identifier of the review"]
-    pub id: u64,
+    pub id: i64,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewEditedReviewLinks,
     pub node_id: String,
@@ -10603,7 +10603,7 @@ pub struct PullRequestReviewSubmittedReview {
     pub commit_id: String,
     pub html_url: String,
     #[doc = "Unique identifier of the review"]
-    pub id: u64,
+    pub id: i64,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewSubmittedReviewLinks,
     pub node_id: String,
@@ -10634,7 +10634,7 @@ pub struct PullRequestReviewCommentCreatedPullRequestLinks {
     pub review_comment: Link,
     pub review_comments: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
     pub statuses: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -10668,9 +10668,9 @@ impl ToString for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestBase {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10678,9 +10678,9 @@ pub struct PullRequestReviewCommentCreatedPullRequestBase {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestHead {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10725,7 +10725,7 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub draft: Option<bool>,
     pub head: PullRequestReviewCommentCreatedPullRequestHead,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub labels: Vec<Label>,
     #[serde(rename = "_links")]
@@ -10735,7 +10735,7 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub merged_at: Option<String>,
     pub milestone: Option<Milestone>,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub patch_url: String,
     pub requested_reviewers: Vec<PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>,
     pub requested_teams: Vec<Team>,
@@ -10770,7 +10770,7 @@ pub struct PullRequestReviewCommentDeletedPullRequestLinks {
     pub review_comment: Link,
     pub review_comments: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
     pub statuses: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -10804,9 +10804,9 @@ impl ToString for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestBase {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10814,9 +10814,9 @@ pub struct PullRequestReviewCommentDeletedPullRequestBase {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestHead {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10861,7 +10861,7 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub draft: Option<bool>,
     pub head: PullRequestReviewCommentDeletedPullRequestHead,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub labels: Vec<Label>,
     #[serde(rename = "_links")]
@@ -10871,7 +10871,7 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub merged_at: Option<String>,
     pub milestone: Option<Milestone>,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub patch_url: String,
     pub requested_reviewers: Vec<PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem>,
     pub requested_teams: Vec<Team>,
@@ -10918,7 +10918,7 @@ pub struct PullRequestReviewCommentEditedPullRequestLinks {
     pub review_comment: Link,
     pub review_comments: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
     pub statuses: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -10952,9 +10952,9 @@ impl ToString for PullRequestReviewCommentEditedPullRequestActiveLockReason {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestBase {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -10962,9 +10962,9 @@ pub struct PullRequestReviewCommentEditedPullRequestBase {
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestHead {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -11009,7 +11009,7 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub draft: Option<bool>,
     pub head: PullRequestReviewCommentEditedPullRequestHead,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub issue_url: String,
     pub labels: Vec<Label>,
     #[serde(rename = "_links")]
@@ -11019,7 +11019,7 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub merged_at: Option<String>,
     pub milestone: Option<Milestone>,
     pub node_id: String,
-    pub number: u64,
+    pub number: i64,
     pub patch_url: String,
     pub requested_reviewers: Vec<PullRequestReviewCommentEditedPullRequestRequestedReviewersItem>,
     pub requested_teams: Vec<Team>,
@@ -11170,7 +11170,7 @@ impl ToString for ReleaseAssetState {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum RepositoryCreatedAt {
-    Variant0(u64),
+    Variant0(i64),
     Variant1(chrono::DateTime<chrono::offset::Utc>),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11187,7 +11187,7 @@ pub struct RepositoryPermissions {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum RepositoryPushedAt {
-    Variant0(u64),
+    Variant0(i64),
     Variant1(chrono::DateTime<chrono::offset::Utc>),
     Variant2,
 }
@@ -11443,7 +11443,7 @@ pub struct RepositoryVulnerabilityAlertCreateAlert {
     pub fixed_in: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ghsa_id: Option<String>,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
@@ -11474,7 +11474,7 @@ pub struct RepositoryVulnerabilityAlertDismissAlert {
     pub fixed_in: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ghsa_id: Option<String>,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
@@ -11508,7 +11508,7 @@ pub struct RepositoryVulnerabilityAlertResolveAlert {
     pub fixed_in: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ghsa_id: Option<String>,
-    pub id: u64,
+    pub id: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
@@ -11527,7 +11527,7 @@ impl ToString for SecretScanningAlertCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertCreatedAlert {
-    pub number: u64,
+    pub number: i64,
     pub resolution: (),
     pub resolved_at: (),
     pub resolved_by: (),
@@ -11548,7 +11548,7 @@ impl ToString for SecretScanningAlertReopenedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertReopenedAlert {
-    pub number: u64,
+    pub number: i64,
     pub resolution: (),
     pub resolved_at: (),
     pub resolved_by: (),
@@ -11592,7 +11592,7 @@ impl ToString for SecretScanningAlertResolvedAlertResolution {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertResolvedAlert {
-    pub number: u64,
+    pub number: i64,
     pub resolution: SecretScanningAlertResolvedAlertResolution,
     pub resolved_at: String,
     pub resolved_by: User,
@@ -11626,7 +11626,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisoryCwesItem {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11698,7 +11698,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisoryCwesItem {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11770,7 +11770,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisoryCwesItem {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11842,7 +11842,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryCwesItem {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryIdentifiersItem {
     #[serde(rename = "type")]
-    pub ttype: String,
+    pub type_: String,
     pub value: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11896,7 +11896,7 @@ pub struct SimplePullRequestLinks {
     pub review_comment: Link,
     pub review_comments: Link,
     #[serde(rename = "self")]
-    pub sself: Link,
+    pub self_: Link,
     pub statuses: Link,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -11924,9 +11924,9 @@ impl ToString for SimplePullRequestActiveLockReason {
 #[serde(deny_unknown_fields)]
 pub struct SimplePullRequestBase {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -11934,9 +11934,9 @@ pub struct SimplePullRequestBase {
 #[serde(deny_unknown_fields)]
 pub struct SimplePullRequestHead {
     pub label: String,
-    pub repo: Repository,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: Repository,
     pub sha: String,
     pub user: User,
 }
@@ -12256,7 +12256,7 @@ pub struct StatusEventCommitCommitVerification {
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommit {
     pub author: StatusEventCommitCommitAuthor,
-    pub comment_count: u64,
+    pub comment_count: i64,
     pub committer: StatusEventCommitCommitCommitter,
     pub message: String,
     pub tree: StatusEventCommitCommitTree,
@@ -12329,7 +12329,7 @@ pub struct TeamParent {
     pub description: Option<String>,
     pub html_url: String,
     #[doc = "Unique identifier of the team"]
-    pub id: u64,
+    pub id: i64,
     pub members_url: String,
     #[doc = "Name of the team"]
     pub name: String,
@@ -12722,17 +12722,17 @@ impl ToString for WorkflowRunConclusion {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowRunPullRequestsItemBase {
-    pub repo: RepoRef,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: RepoRef,
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowRunPullRequestsItemHead {
-    pub repo: RepoRef,
     #[serde(rename = "ref")]
-    pub rref: String,
+    pub ref_: String,
+    pub repo: RepoRef,
     pub sha: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -12872,7 +12872,7 @@ pub struct WorkflowJobQueuedWorkflowJob {
     pub conclusion: (),
     pub head_sha: String,
     pub html_url: String,
-    pub id: u64,
+    pub id: i64,
     pub labels: Vec<String>,
     pub name: String,
     pub node_id: String,

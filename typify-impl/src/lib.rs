@@ -267,6 +267,24 @@ impl TypeSpace {
         Ok(type_entry.type_ident_details(self))
     }
 
+    /// Add a new type with a name hint and return a the components necessary
+    /// to use the type for various components of a function signature.
+    pub fn add_type_details_with_name(
+        &mut self,
+        schema: &Schema,
+        name_hint: Option<String>,
+    ) -> Result<TypeEntryIdentifier> {
+        let name = match name_hint {
+            Some(s) => Name::Suggested(s),
+            None => Name::Unknown,
+        };
+        let (type_entry, _) = self.convert_schema(name, schema)?;
+
+        let type_id = self.assign_type(type_entry);
+        let type_entry = self.id_to_entry.get(&type_id).unwrap();
+        Ok(type_entry.type_ident_details(self))
+    }
+
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
     }
@@ -436,7 +454,7 @@ impl TypeSpace {
                 number: None,
                 string: None,
                 array: None,
-                object: Some(validation),
+                object: validation,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Object => {
@@ -666,6 +684,19 @@ impl TypeSpace {
                 ))
             }
 
+            Some("date") => {
+                self.uses_chrono = true;
+                Ok((
+                    TypeEntry {
+                        name: Some("chrono::Date<chrono::offset::Utc>".to_string()),
+                        rename: None,
+                        description: None,
+                        details: TypeDetails::BuiltIn,
+                    },
+                    metadata,
+                ))
+            }
+
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
@@ -756,78 +787,117 @@ impl TypeSpace {
         validation: &Option<Box<schemars::schema::NumberValidation>>,
         format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if let Some(validation) = validation {
-            assert!(validation.multiple_of.is_none());
-            assert!(validation.maximum.is_none());
-            assert!(validation.exclusive_maximum.is_none());
-            // TODO
-            //assert!(validation.minimum.is_none());
-            assert!(validation.exclusive_minimum.is_none());
-        }
-
-        let ty = match format.as_ref().map(|s| s.as_str()) {
-            Some("int8") => TypeEntry {
-                name: Some("i8".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("uint8") => TypeEntry {
-                name: Some("u8".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("int16") => TypeEntry {
-                name: Some("i16".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("uint16") => TypeEntry {
-                name: Some("u16".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("int32" | "int") => TypeEntry {
-                name: Some("i32".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("uint32" | "uint") => TypeEntry {
-                name: Some("u32".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("int64") => TypeEntry {
-                name: Some("i64".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            Some("uint64") => TypeEntry {
-                name: Some("u64".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-
-            // TODO is this the right default? Should we be looking at the
-            // validation e.g. for max and min?
-            None => TypeEntry {
-                name: Some("u64".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-
-            _ => todo!("{:#?} {:#?}", validation, format),
+        let (mut min, mut max, multiple) = if let Some(validation) = validation {
+            let min = match (&validation.minimum, &validation.exclusive_minimum) {
+                (None, None) => None,
+                (None, Some(value)) => Some(value + 1.0),
+                (Some(value), None) => Some(*value),
+                (Some(min), Some(emin)) => Some(min.max(emin + 1.0)),
+            };
+            let max = match (&validation.maximum, &validation.exclusive_maximum) {
+                (None, None) => None,
+                (None, Some(value)) => Some(value - 1.0),
+                (Some(value), None) => Some(*value),
+                (Some(max), Some(emax)) => Some(max.min(emax - 1.0)),
+            };
+            (min, max, validation.multiple_of)
+        } else {
+            (None, None, None)
         };
 
-        Ok((ty, metadata))
+        let formats: &[(&str, &str, f64, f64)] = &[
+            ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
+            ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
+            ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
+            ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
+            ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
+            ("int", "i32", i32::MIN as f64, i32::MAX as f64),
+            ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
+            ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
+            ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
+            ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
+        ];
+
+        if let Some(format) = format {
+            if let Some((_, ty, imin, imax)) = formats
+                .iter()
+                .find(|(int_format, _, _, _)| int_format == format)
+            {
+                // If the type matches with other constraints, we're done.
+                if multiple.is_none()
+                    && (min.is_none() || min == Some(*imin))
+                    && (max.is_none() || max == Some(*imax))
+                {
+                    return Ok((
+                        TypeEntry {
+                            name: Some(ty.to_string()),
+                            rename: None,
+                            description: None,
+                            details: TypeDetails::Primitive,
+                        },
+                        metadata,
+                    ));
+                }
+
+                if min.is_none() {
+                    min = Some(*imin);
+                }
+                if max.is_none() {
+                    max = Some(*imax);
+                }
+            }
+        }
+
+        // See if the value bounds fit a known type.
+        let maybe_type = match (min, max) {
+            (None, Some(max)) => formats.iter().find_map(|(_, ty, _, imax)| {
+                if (*imax - max).abs() < f64::EPSILON {
+                    Some(ty.to_string())
+                } else {
+                    None
+                }
+            }),
+            (Some(min), None) => formats.iter().find_map(|(_, ty, imin, _)| {
+                if (*imin - min).abs() < f64::EPSILON {
+                    Some(ty.to_string())
+                } else {
+                    None
+                }
+            }),
+            (Some(min), Some(max)) => formats.iter().find_map(|(_, ty, imin, imax)| {
+                if (*imin - min).abs() < f64::EPSILON && (*imax - max).abs() < f64::EPSILON {
+                    Some(ty.to_string())
+                } else {
+                    None
+                }
+            }),
+            (None, None) => Some("i64".to_string()),
+        };
+
+        // TODO we should do something with `multiple`
+        if let Some(ty) = maybe_type {
+            Ok((
+                TypeEntry {
+                    name: Some(ty),
+                    rename: None,
+                    description: None,
+                    details: TypeDetails::Primitive,
+                },
+                metadata,
+            ))
+        } else {
+            // TODO we could construct a type that itself enforces the various
+            // bounds.
+            Ok((
+                TypeEntry {
+                    name: Some("i64".to_string()),
+                    rename: None,
+                    description: None,
+                    details: TypeDetails::Primitive,
+                },
+                metadata,
+            ))
+        }
     }
 
     // TODO deal with metadata and format
@@ -871,12 +941,12 @@ impl TypeSpace {
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        validation: &ObjectValidation,
+        validation: &Option<Box<ObjectValidation>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        match validation {
+        match validation.as_ref().map(Box::as_ref) {
             // Maps have an empty properties set, and a non-null schema for the
             // additional_properties field.
-            ObjectValidation {
+            Some(ObjectValidation {
                 max_properties: None,
                 min_properties: None,
                 required,
@@ -884,7 +954,7 @@ impl TypeSpace {
                 pattern_properties,
                 additional_properties,
                 property_names: None,
-            } if required.is_empty()
+            }) if required.is_empty()
                 && properties.is_empty()
                 && pattern_properties.is_empty()
                 && additional_properties.as_ref().map(AsRef::as_ref)
@@ -892,9 +962,10 @@ impl TypeSpace {
             {
                 make_map(None, additional_properties, self)
             }
+            None => make_map(None, &None, self),
 
             // The typical case
-            _ => {
+            Some(validation) => {
                 let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
                 let (properties, deny_unknown_fields) =
                     struct_members(tmp_type_name, validation, self)?;
