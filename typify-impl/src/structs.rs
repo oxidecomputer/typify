@@ -11,126 +11,163 @@ use crate::{
     TypeSpace,
 };
 
-pub(crate) fn struct_members(
-    type_name: Option<String>,
-    validation: &ObjectValidation,
-    type_space: &mut TypeSpace,
-) -> Result<(Vec<StructProperty>, bool)> {
-    // These are the fields we don't currently handle
-    assert!(validation.max_properties.is_none());
-    assert!(validation.min_properties.is_none());
-    assert!(validation.pattern_properties.is_empty());
-    assert!(validation.property_names.is_none());
+impl TypeSpace {
+    pub(crate) fn struct_members(
+        &mut self,
+        type_name: Option<String>,
+        validation: &ObjectValidation,
+    ) -> Result<(Vec<StructProperty>, bool)> {
+        // These are the fields we don't currently handle
+        assert!(validation.max_properties.is_none());
+        assert!(validation.min_properties.is_none());
+        assert!(validation.pattern_properties.is_empty());
+        assert!(validation.property_names.is_none());
 
-    let mut properties = validation
-        .properties
-        .iter()
-        .map(|(name, ty)| {
-            let prop_name = name.to_case(Case::Snake);
-            let sub_type_name = type_name
-                .as_ref()
-                .map(|base| format!("{}_{}", base, prop_name));
-            struct_property(sub_type_name, &validation.required, name, ty, type_space)
+        let mut properties = validation
+            .properties
+            .iter()
+            .map(|(name, ty)| {
+                let prop_name = name.to_case(Case::Snake);
+                let sub_type_name = type_name
+                    .as_ref()
+                    .map(|base| format!("{}_{}", base, prop_name));
+                self.struct_property(sub_type_name, &validation.required, name, ty)
+            })
+            .collect::<Result<Vec<_>>>()?;
+
+        // Sort parameters by name to ensure a deterministic result.
+        properties.sort_by(|a, b| a.name.cmp(&b.name));
+
+        // If there are additional properties tack them on, flattened, at the
+        // end. Note that a `None` value for additional_properties is
+        // equivalent to the permissive schema (Schema::Bool(true)) for reasons
+        // best known to the JSON Schema authors.
+        let deny_unknown_fields = match &validation.additional_properties {
+            // No additional properties allowed; we'll tag the struct with
+            // #[serde(deny_unknown_fields)]
+            Some(a) if a.as_ref() == &Schema::Bool(false) => true,
+
+            // We have a permissive schema so all additional properties are
+            // allowed (None is equivalent to the permissive schema).
+            Some(a)
+                if matches!(
+                    a.as_ref(),
+                    Schema::Bool(true)
+                        | Schema::Object(SchemaObject {
+                            metadata: _,
+                            instance_type: None,
+                            format: None,
+                            enum_values: None,
+                            const_value: None,
+                            subschemas: None,
+                            number: None,
+                            string: None,
+                            array: None,
+                            object: None,
+                            reference: None,
+                            extensions: _,
+                        })
+                ) =>
+            {
+                false
+            }
+            None => false,
+
+            // Only particular additional properties are allowed.
+            additional_properties @ Some(_) => {
+                let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
+                let (map_type, _) = self.make_map(sub_type_name, additional_properties)?;
+                let map_type_id = self.assign_type(map_type);
+                let extra_prop = StructProperty {
+                    name: "extra".to_string(),
+                    serde_naming: SerdeNaming::Flatten,
+                    serde_rules: SerdeRules::None,
+                    description: None,
+                    type_id: map_type_id,
+                };
+
+                properties.push(extra_prop);
+                false
+            }
+        };
+
+        Ok((properties, deny_unknown_fields))
+    }
+
+    pub(crate) fn struct_property(
+        &mut self,
+        type_name: Option<String>,
+        required: &schemars::Set<String>,
+        prop_name: &str,
+        schema: &schemars::schema::Schema,
+    ) -> Result<StructProperty> {
+        let sub_type_name = match type_name {
+            Some(name) => Name::Suggested(name),
+            None => Name::Unknown,
+        };
+        let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
+
+        let serde_rules = if required.contains(prop_name) {
+            SerdeRules::None
+        } else {
+            // We can use serde's `skip_serializing_of` construction for options
+            // and arrays; otherwise we need to turn this into an option in order
+            // to represent the field as non-required.
+            if !is_skippable(self, &type_id) {
+                type_id = self.id_for_option(&type_id);
+            }
+            SerdeRules::Optional
+        };
+
+        let (name, rename) = recase(prop_name.to_string(), Case::Snake);
+        let serde_naming = match rename {
+            Some(old_name) => SerdeNaming::Rename(old_name),
+            None => SerdeNaming::None,
+        };
+
+        Ok(StructProperty {
+            name,
+            serde_naming,
+            serde_rules,
+            description: metadata_description(metadata),
+            type_id,
         })
-        .collect::<Result<Vec<_>>>()?;
+    }
 
-    // Sort parameters by name to ensure a deterministic result.
-    properties.sort_by(|a, b| a.name.cmp(&b.name));
+    pub(crate) fn make_map<'a>(
+        &mut self,
+        type_name: Option<String>,
+        additional_properties: &Option<Box<Schema>>,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let (value_type_id, _) = match additional_properties {
+            Some(schema) => {
+                let sub_type_name = match type_name {
+                    Some(name) => Name::Suggested(format!("{}Extra", name)),
+                    None => Name::Unknown,
+                };
+                self.id_for_schema(sub_type_name, schema)?
+            }
 
-    // If there are additional properties tack them on, flattened, at the end.
-    // Note that a `None` value for additional_properties is equivalent to the
-    // permissive schema (Schema::Bool(true)) for reasons best known to the
-    // JSON Schema authors.
-    let deny_unknown_fields = match &validation.additional_properties {
-        // No additional properties allowed; we'll tag the struct with
-        // #[serde(deny_unknown_fields)]
-        Some(a) if a.as_ref() == &Schema::Bool(false) => true,
+            None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
+        };
 
-        // We have a permissive schema so all additional properties are
-        // allowed (None is equivalent to the permissive schema).
-        Some(a)
-            if matches!(
-                a.as_ref(),
-                Schema::Bool(true)
-                    | Schema::Object(SchemaObject {
-                        metadata: _,
-                        instance_type: None,
-                        format: None,
-                        enum_values: None,
-                        const_value: None,
-                        subschemas: None,
-                        number: None,
-                        string: None,
-                        array: None,
-                        object: None,
-                        reference: None,
-                        extensions: _,
-                    })
-            ) =>
-        {
-            false
-        }
-        None => false,
+        // TODO this is jank; we should be looking up the String type
+        let string_type_id = self.assign_type(TypeEntry {
+            name: Some("String".to_string()),
+            rename: None,
+            description: None,
+            details: TypeDetails::String,
+        });
 
-        // Only particular additional properties are allowed.
-        additional_properties @ Some(_) => {
-            let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
-            let (map_type, _) = make_map(sub_type_name, additional_properties, type_space)?;
-            let map_type_id = type_space.assign_type(map_type);
-            let extra_prop = StructProperty {
-                name: "extra".to_string(),
-                serde_naming: SerdeNaming::Flatten,
-                serde_rules: SerdeRules::None,
-                description: None,
-                type_id: map_type_id,
-            };
-
-            properties.push(extra_prop);
-            false
-        }
-    };
-
-    Ok((properties, deny_unknown_fields))
-}
-
-pub(crate) fn struct_property(
-    type_name: Option<String>,
-    required: &schemars::Set<String>,
-    prop_name: &str,
-    schema: &schemars::schema::Schema,
-    type_space: &mut TypeSpace,
-) -> Result<StructProperty> {
-    let sub_type_name = match type_name {
-        Some(name) => Name::Suggested(name),
-        None => Name::Unknown,
-    };
-    let (mut type_id, metadata) = type_space.id_for_schema(sub_type_name, schema)?;
-
-    let serde_rules = if required.contains(prop_name) {
-        SerdeRules::None
-    } else {
-        // We can use serde's `skip_serializing_of` construction for options
-        // and arrays; otherwise we need to turn this into an option in order
-        // to represent the field as non-required.
-        if !is_skippable(type_space, &type_id) {
-            type_id = type_space.id_for_option(&type_id);
-        }
-        SerdeRules::Optional
-    };
-
-    let (name, rename) = recase(prop_name.to_string(), Case::Snake);
-    let serde_naming = match rename {
-        Some(old_name) => SerdeNaming::Rename(old_name),
-        None => SerdeNaming::None,
-    };
-
-    Ok(StructProperty {
-        name,
-        serde_naming,
-        serde_rules,
-        description: metadata_description(metadata),
-        type_id,
-    })
+        Ok((
+            TypeEntry::from_metadata(
+                Name::Unknown,
+                &None,
+                TypeDetails::Map(string_type_id, value_type_id),
+            ),
+            &None,
+        ))
+    }
 }
 
 pub(crate) fn output_struct_property(
@@ -157,41 +194,6 @@ pub(crate) fn output_struct_property(
         #serde
         #pub_token #name: #type_name,
     }
-}
-
-pub(crate) fn make_map<'a>(
-    type_name: Option<String>,
-    additional_properties: &Option<Box<Schema>>,
-    type_space: &mut TypeSpace,
-) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-    let (value_type_id, _) = match additional_properties {
-        Some(schema) => {
-            let sub_type_name = match type_name {
-                Some(name) => Name::Suggested(format!("{}Extra", name)),
-                None => Name::Unknown,
-            };
-            type_space.id_for_schema(sub_type_name, schema)?
-        }
-
-        None => type_space.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
-    };
-
-    // TODO this is jank; we should be looking up the String type
-    let string_type_id = type_space.assign_type(TypeEntry {
-        name: Some("String".to_string()),
-        rename: None,
-        description: None,
-        details: TypeDetails::String,
-    });
-
-    Ok((
-        TypeEntry::from_metadata(
-            Name::Unknown,
-            &None,
-            TypeDetails::Map(string_type_id, value_type_id),
-        ),
-        &None,
-    ))
 }
 
 fn generate_serde_attr(
@@ -348,10 +350,14 @@ pub(crate) fn maybe_all_of_subclass(
 
     // Split the subschemas into named (superclass) and unnamed (subclass)
     // schemas.
-    let (named, unnamed): (Vec<_>, Vec<_>) = subschemas
-        .iter()
-        .map(|schema| (schema, schema_is_named(schema)))
-        .partition(|(_, name)| name.is_some());
+    let mut named = Vec::new();
+    let mut unnamed = Vec::new();
+    for schema in subschemas {
+        match schema_is_named(schema) {
+            Some(name) => named.push((schema, name)),
+            None => unnamed.push(schema),
+        }
+    }
 
     // We required exactly one unnamed subschema for this special case. Note
     // that zero unnamed subschemas would be trivial to handle, but the generic
@@ -361,7 +367,7 @@ pub(crate) fn maybe_all_of_subclass(
     }
 
     // Get the object validation (or fail to match this special case).
-    let unnamed_schema = unnamed.first()?.0;
+    let unnamed_schema = unnamed.first()?;
     let validation = match unnamed_schema {
         Schema::Object(SchemaObject {
             metadata: _,
@@ -380,14 +386,14 @@ pub(crate) fn maybe_all_of_subclass(
         _ => None,
     }?;
     let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
-    let (unnamed_properties, deny) = struct_members(tmp_type_name, validation, type_space).ok()?;
+    let (unnamed_properties, deny) = type_space.struct_members(tmp_type_name, validation).ok()?;
 
     let named_properties = named
         .iter()
         .map(|(schema, property_name)| {
             let (type_id, metadata) = type_space.id_for_schema(type_name.clone(), schema)?;
             Ok(StructProperty {
-                name: property_name.as_ref().unwrap().to_case(Case::Snake),
+                name: property_name.to_case(Case::Snake),
                 serde_naming: SerdeNaming::Flatten,
                 serde_rules: SerdeRules::None,
                 description: metadata_description(metadata),
