@@ -7,7 +7,7 @@ use schemars::schema::{
 
 use crate::{
     util::{get_type_name, metadata_description, recase, schema_is_named},
-    Name, Result, SerdeNaming, SerdeRules, StructProperty, TypeDetails, TypeEntry, TypeId,
+    Name, Result, SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct, TypeId,
     TypeSpace,
 };
 
@@ -114,7 +114,7 @@ impl TypeSpace {
             // and arrays; otherwise we need to turn this into an option in order
             // to represent the field as non-required.
             if !is_skippable(self, &type_id) {
-                type_id = self.id_for_option(&type_id);
+                type_id = self.id_to_option(&type_id);
             }
             SerdeRules::Optional
         };
@@ -152,21 +152,168 @@ impl TypeSpace {
         };
 
         // TODO this is jank; we should be looking up the String type
-        let string_type_id = self.assign_type(TypeEntry {
-            name: Some("String".to_string()),
-            rename: None,
-            description: None,
-            details: TypeDetails::String,
-        });
+        let string_type_id = self.assign_type(TypeEntry::String);
 
-        Ok((
-            TypeEntry::from_metadata(
-                Name::Unknown,
-                &None,
-                TypeDetails::Map(string_type_id, value_type_id),
-            ),
-            &None,
-        ))
+        Ok((TypeEntry::Map(string_type_id, value_type_id), &None))
+    }
+
+    /// This is used by both any-of and all-of subschema processing. This
+    /// produces a struct type whose members are the subschemas (flattened).
+    ///
+    /// ```ignore
+    /// struct Name {
+    ///     #[serde(flatten)]
+    ///     schema1: Schema1Type,
+    ///     #[serde(flatten)]
+    ///     schema2: Schema2Type
+    ///     ...
+    /// }
+    /// ```
+    ///
+    /// The only difference between any-of and all-of is that where the latter
+    /// has type T_N for each member of the struct, the former has Option<T_N>.
+    pub(crate) fn flattened_union_struct<'a>(
+        &mut self,
+        type_name: Name,
+        metadata: &'a Option<Box<Metadata>>,
+        subschemas: &[Schema],
+        optional: bool,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let properties = subschemas
+            .iter()
+            .enumerate()
+            .map(|(idx, schema)| {
+                let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                    Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
+                    None => Name::Unknown,
+                };
+
+                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
+                if optional {
+                    type_id = self.id_to_option(&type_id);
+                }
+
+                // TODO we need a reasonable name that could be derived
+                // from the name of the type
+                let name = format!("subtype_{}", idx);
+
+                Ok(StructProperty {
+                    name,
+                    serde_naming: SerdeNaming::Flatten,
+                    serde_rules: if optional {
+                        SerdeRules::Optional
+                    } else {
+                        SerdeRules::None
+                    },
+                    description: None,
+                    type_id,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+
+        let ty = TypeEntryStruct::from_metadata(type_name, metadata, properties, false);
+
+        Ok((ty, metadata))
+    }
+
+    /// This handles the case where an anyOf is used to effect inheritance: the
+    /// subschemas consist of one or more "super classes" that have names with a
+    /// final, anonymous object.
+    ///
+    /// ```text
+    /// "allOf": [
+    ///     { "$ref": "#/definitions/SuperClass" },
+    ///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
+    /// ]
+    /// ```
+    ///
+    /// This turns into a struct of this form:
+    /// ```compile_fail
+    /// struct MyType {
+    ///     #[serde(flatten)]
+    ///     super_class: SuperClass,
+    ///     prop_a: (),
+    ///     prop_b: (),
+    /// }
+    /// ```
+    ///
+    /// Note that the super class member names are derived from the type and are
+    /// flattened into the struct; the subclass properties are simply included
+    /// alongside.
+    pub(crate) fn maybe_all_of_subclass(
+        &mut self,
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        subschemas: &[Schema],
+    ) -> Option<TypeEntry> {
+        assert!(subschemas.len() > 1);
+
+        // Split the subschemas into named (superclass) and unnamed (subclass)
+        // schemas.
+        let mut named = Vec::new();
+        let mut unnamed = Vec::new();
+        for schema in subschemas {
+            match schema_is_named(schema) {
+                Some(name) => named.push((schema, name)),
+                None => unnamed.push(schema),
+            }
+        }
+
+        // We required exactly one unnamed subschema for this special case. Note
+        // that zero unnamed subschemas would be trivial to handle, but the generic
+        // case already does so albeit slightly differently.
+        if unnamed.len() != 1 {
+            return None;
+        }
+
+        // Get the object validation (or fail to match this special case).
+        let unnamed_schema = unnamed.first()?;
+        let validation = match unnamed_schema {
+            Schema::Object(SchemaObject {
+                metadata: _,
+                instance_type: Some(SingleOrVec::Single(single)),
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: Some(validation),
+                reference: None,
+                extensions: _,
+            }) if single.as_ref() == &InstanceType::Object => Some(validation),
+            _ => None,
+        }?;
+        let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+        let (unnamed_properties, deny) = self.struct_members(tmp_type_name, validation).ok()?;
+
+        let named_properties = named
+            .iter()
+            .map(|(schema, property_name)| {
+                let (type_id, metadata) = self.id_for_schema(type_name.clone(), schema)?;
+                Ok(StructProperty {
+                    name: property_name.to_case(Case::Snake),
+                    serde_naming: SerdeNaming::Flatten,
+                    serde_rules: SerdeRules::None,
+                    description: metadata_description(metadata),
+                    type_id,
+                })
+            })
+            .collect::<Result<Vec<_>>>()
+            .ok()?;
+
+        let ty = TypeEntryStruct::from_metadata(
+            type_name,
+            metadata,
+            named_properties
+                .into_iter()
+                .chain(unnamed_properties.into_iter())
+                .collect(),
+            deny,
+        );
+
+        Some(ty)
     }
 }
 
@@ -208,16 +355,16 @@ fn generate_serde_attr(
         SerdeNaming::None => (),
     }
 
-    match (serde_rules, &prop_type.details) {
-        (SerdeRules::Optional, TypeDetails::Option(_)) => {
+    match (serde_rules, &prop_type) {
+        (SerdeRules::Optional, TypeEntry::Option(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
         }
-        (SerdeRules::Optional, TypeDetails::Array(_)) => {
+        (SerdeRules::Optional, TypeEntry::Array(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
         }
-        (SerdeRules::Optional, TypeDetails::Map(_, _)) => {
+        (SerdeRules::Optional, TypeEntry::Map(_, _)) => {
             serde_options.push(quote! { default });
             serde_options
                 .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
@@ -243,179 +390,11 @@ fn is_skippable(type_space: &TypeSpace, type_id: &TypeId) -> bool {
         || false,
         |ty| {
             matches!(
-                &ty.details,
-                TypeDetails::Option(_) | TypeDetails::Array(_) | TypeDetails::Map(_, _)
+                &ty,
+                TypeEntry::Option(_) | TypeEntry::Array(_) | TypeEntry::Map(_, _)
             )
         },
     )
-}
-
-/// This is used by both any-of and all-of subschema processing. This
-/// produces a struct type whose members are the subschemas (flattened).
-///
-/// ```ignore
-/// struct Name {
-///     #[serde(flatten)]
-///     schema1: Schema1Type,
-///     #[serde(flatten)]
-///     schema2: Schema2Type
-///     ...
-/// }
-/// ```
-///
-/// The only difference between any-of and all-of is that where the latter
-/// has type T_N for each member of the struct, the former has Option<T_N>.
-pub(crate) fn flattened_union_struct<'a>(
-    type_name: Name,
-    metadata: &'a Option<Box<Metadata>>,
-    subschemas: &[Schema],
-    optional: bool,
-    type_space: &mut TypeSpace,
-) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-    let properties = subschemas
-        .iter()
-        .enumerate()
-        .map(|(idx, schema)| {
-            let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
-                Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
-                None => Name::Unknown,
-            };
-
-            let (mut type_id, _) = type_space.id_for_schema(type_name, schema)?;
-            if optional {
-                type_id = type_space.id_for_option(&type_id);
-            }
-
-            // TODO we need a reasonable name that could be derived
-            // from the name of the type
-            let name = format!("subtype_{}", idx);
-
-            Ok(StructProperty {
-                name,
-                serde_naming: SerdeNaming::Flatten,
-                serde_rules: if optional {
-                    SerdeRules::Optional
-                } else {
-                    SerdeRules::None
-                },
-                description: None,
-                type_id,
-            })
-        })
-        .collect::<Result<Vec<_>>>()?;
-
-    let ty = TypeEntry::from_metadata(
-        type_name,
-        metadata,
-        TypeDetails::Struct {
-            properties,
-            deny_unknown_fields: false,
-        },
-    );
-
-    Ok((ty, metadata))
-}
-
-/// This handles the case where an anyOf is used to effect inheritance: the
-/// subschemas consist of one or more "super classes" that have names with a
-/// final, anonymous object.
-///
-/// ```text
-/// "allOf": [
-///     { "$ref": "#/definitions/SuperClass" },
-///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
-/// ]
-/// ```
-///
-/// This turns into a struct of this form:
-/// ```compile_fail
-/// struct MyType {
-///     #[serde(flatten)]
-///     super_class: SuperClass,
-///     prop_a: (),
-///     prop_b: (),
-/// }
-/// ```
-///
-/// Note that the super class member names are derived from the type and are
-/// flattened into the struct; the subclass properties are simply included
-/// alongside.
-pub(crate) fn maybe_all_of_subclass(
-    type_name: Name,
-    metadata: &Option<Box<Metadata>>,
-    subschemas: &[Schema],
-    type_space: &mut TypeSpace,
-) -> Option<TypeEntry> {
-    assert!(subschemas.len() > 1);
-
-    // Split the subschemas into named (superclass) and unnamed (subclass)
-    // schemas.
-    let mut named = Vec::new();
-    let mut unnamed = Vec::new();
-    for schema in subschemas {
-        match schema_is_named(schema) {
-            Some(name) => named.push((schema, name)),
-            None => unnamed.push(schema),
-        }
-    }
-
-    // We required exactly one unnamed subschema for this special case. Note
-    // that zero unnamed subschemas would be trivial to handle, but the generic
-    // case already does so albeit slightly differently.
-    if unnamed.len() != 1 {
-        return None;
-    }
-
-    // Get the object validation (or fail to match this special case).
-    let unnamed_schema = unnamed.first()?;
-    let validation = match unnamed_schema {
-        Schema::Object(SchemaObject {
-            metadata: _,
-            instance_type: Some(SingleOrVec::Single(single)),
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: None,
-            object: Some(validation),
-            reference: None,
-            extensions: _,
-        }) if single.as_ref() == &InstanceType::Object => Some(validation),
-        _ => None,
-    }?;
-    let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
-    let (unnamed_properties, deny) = type_space.struct_members(tmp_type_name, validation).ok()?;
-
-    let named_properties = named
-        .iter()
-        .map(|(schema, property_name)| {
-            let (type_id, metadata) = type_space.id_for_schema(type_name.clone(), schema)?;
-            Ok(StructProperty {
-                name: property_name.to_case(Case::Snake),
-                serde_naming: SerdeNaming::Flatten,
-                serde_rules: SerdeRules::None,
-                description: metadata_description(metadata),
-                type_id,
-            })
-        })
-        .collect::<Result<Vec<_>>>()
-        .ok()?;
-
-    let ty = TypeEntry::from_metadata(
-        type_name,
-        metadata,
-        TypeDetails::Struct {
-            properties: named_properties
-                .into_iter()
-                .chain(unnamed_properties.into_iter())
-                .collect(),
-            deny_unknown_fields: deny,
-        },
-    );
-
-    Some(ty)
 }
 
 #[cfg(test)]

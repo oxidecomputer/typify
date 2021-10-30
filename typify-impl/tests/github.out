@@ -19,6 +19,7 @@ pub struct AlertInstance {
     #[doc = "State of a code scanning alert."]
     pub state: AlertInstanceState,
 }
+#[doc = "GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct App {
@@ -42,6 +43,7 @@ pub struct App {
     pub slug: Option<String>,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
 }
+#[doc = "How the author is associated with the repository."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum AuthorAssociation {
     #[serde(rename = "COLLABORATOR")]
@@ -75,6 +77,7 @@ impl ToString for AuthorAssociation {
         }
     }
 }
+#[doc = "The branch protection rule. Includes a `name` and all the [branch protection settings](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-settings) applied to branches that match the name. Binary settings are boolean. Multi-level configurations are one of `off`, `non_admins`, or `everyone`. Actor and build lists are arrays of strings."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRule {
@@ -109,6 +112,7 @@ pub struct BranchProtectionRule {
     pub strict_required_status_checks_policy: bool,
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
 }
+#[doc = "Activity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleCreated {
@@ -121,6 +125,7 @@ pub struct BranchProtectionRuleCreated {
     pub rule: BranchProtectionRule,
     pub sender: User,
 }
+#[doc = "Activity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleDeleted {
@@ -133,6 +138,7 @@ pub struct BranchProtectionRuleDeleted {
     pub rule: BranchProtectionRule,
     pub sender: User,
 }
+#[doc = "Activity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEdited {
@@ -153,6 +159,7 @@ pub enum BranchProtectionRuleEvent {
     Deleted(BranchProtectionRuleDeleted),
     Edited(BranchProtectionRuleEdited),
 }
+#[doc = "A deployment to a repository environment. This will only be populated if the check run was created by a GitHub Actions workflow job that references an environment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunDeployment {
@@ -430,6 +437,7 @@ pub struct CommitSimple {
     pub timestamp: String,
     pub tree_id: String,
 }
+#[doc = "A commit comment is created. The type of activity is specified in the `action` property. "]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CommitCommentCreated {
@@ -445,6 +453,7 @@ pub struct CommitCommentCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CommitCommentEvent(CommitCommentCreated);
+#[doc = "Metaproperties for Git author/committer information."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Committer {
@@ -470,6 +479,7 @@ pub struct ContentReferenceCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ContentReferenceEvent(ContentReferenceCreated);
+#[doc = "A Git branch or tag is created."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CreateEvent {
@@ -491,6 +501,7 @@ pub struct CreateEvent {
     pub repository: Repository,
     pub sender: User,
 }
+#[doc = "A Git branch or tag is deleted."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeleteEvent {
@@ -817,6 +828,7 @@ pub enum DiscussionEvent {
     Unlocked(DiscussionUnlocked),
     Unpinned(DiscussionUnpinned),
 }
+#[doc = "A user forks a repository."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ForkEvent {
@@ -864,6 +876,7 @@ pub struct GithubAppAuthorizationRevoked {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GithubAppAuthorizationEvent(GithubAppAuthorizationRevoked);
+#[doc = "A wiki page is created or updated."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct GollumEvent {
@@ -876,6 +889,7 @@ pub struct GollumEvent {
     pub repository: Repository,
     pub sender: User,
 }
+#[doc = "The GitHub App installation."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Installation {
@@ -965,6 +979,7 @@ pub struct InstallationUnsuspend {
     pub requester: Option<()>,
     pub sender: User,
 }
+#[doc = "Installation"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationLite {
@@ -1015,6 +1030,7 @@ pub enum InstallationRepositoriesEvent {
     Added(InstallationRepositoriesAdded),
     Removed(InstallationRepositoriesRemoved),
 }
+#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Issue {
@@ -1055,6 +1071,7 @@ pub struct Issue {
     pub url: String,
     pub user: User,
 }
+#[doc = "The [comment](https://docs.github.com/en/rest/reference/issues#comments) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct IssueComment {
@@ -1123,6 +1140,7 @@ pub enum IssueCommentEvent {
     Deleted(IssueCommentDeleted),
     Edited(IssueCommentEdited),
 }
+#[doc = "Activity related to an issue. The type of activity is specified in the action property."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesAssigned {
@@ -1506,6 +1524,7 @@ pub enum MarketplacePurchaseEvent {
     PendingChangeCancelled(MarketplacePurchasePendingChangeCancelled),
     Purchased(MarketplacePurchasePurchased),
 }
+#[doc = "Activity related to repository collaborators. The type of activity is specified in the action property."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MemberAdded {
@@ -1549,6 +1568,7 @@ pub enum MemberEvent {
     Edited(MemberEdited),
     Removed(MemberRemoved),
 }
+#[doc = "The membership between the user and the organization. Not present when the action is `member_invited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Membership {
@@ -1606,6 +1626,7 @@ pub struct MetaDeleted {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MetaEvent(MetaDeleted);
+#[doc = "A collection of related issues and pull requests."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Milestone {
@@ -1831,6 +1852,7 @@ pub enum PackageEvent {
     Published(PackagePublished),
     Updated(PackageUpdated),
 }
+#[doc = "Page Build"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PageBuildEvent {
@@ -2111,6 +2133,7 @@ pub enum ProjectEvent {
     Edited(ProjectEdited),
     Reopened(ProjectReopened),
 }
+#[doc = "When a private repository is made public."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PublicEvent {
@@ -2179,6 +2202,7 @@ pub struct PullRequest {
     pub url: String,
     pub user: User,
 }
+#[doc = "The [comment](https://docs.github.com/en/rest/reference/pulls#comments) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewComment {
@@ -2646,6 +2670,7 @@ pub struct PushEvent {
     pub repository: Repository,
     pub sender: User,
 }
+#[doc = "The [release](https://docs.github.com/en/rest/reference/repos/#get-a-release) object."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Release {
@@ -2757,6 +2782,7 @@ pub struct ReleaseUnpublished {
     pub repository: Repository,
     pub sender: User,
 }
+#[doc = "Data related to a release."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseAsset {
@@ -2795,6 +2821,7 @@ pub struct RepoRef {
     pub name: String,
     pub url: String,
 }
+#[doc = "A git repository"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Repository {
@@ -3307,6 +3334,7 @@ pub struct SponsorshipTierChanged {
     pub sender: User,
     pub sponsorship: SponsorshipTierChangedSponsorship,
 }
+#[doc = "The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipTier {
@@ -3390,6 +3418,7 @@ pub struct StatusEvent {
     pub target_url: Option<String>,
     pub updated_at: String,
 }
+#[doc = "Groups of organization members that gives permissions on specified repositories."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Team {
@@ -3737,6 +3766,7 @@ pub struct AlertInstanceMessage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum AlertInstanceState {
     #[serde(rename = "open")]
@@ -4406,6 +4436,7 @@ impl ToString for AppPermissionsWorkflows {
         }
     }
 }
+#[doc = "The set of permissions for the GitHub app"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct AppPermissions {
@@ -4716,6 +4747,7 @@ pub struct BranchProtectionRuleEditedChangesAuthorizedActorNames {
 pub struct BranchProtectionRuleEditedChangesAuthorizedActorsOnly {
     pub from: bool,
 }
+#[doc = "If the action was `edited`, the changes to the rule."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChanges {
@@ -4825,6 +4857,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
 }
+#[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunCompletedCheckRunConclusion {
     #[serde(rename = "success")]
@@ -4868,6 +4901,7 @@ pub struct CheckRunCompletedCheckRunOutput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
+#[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunCompletedCheckRunStatus {
     #[serde(rename = "completed")]
@@ -4880,6 +4914,7 @@ impl ToString for CheckRunCompletedCheckRunStatus {
         }
     }
 }
+#[doc = "The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRun {
@@ -4909,6 +4944,7 @@ pub struct CheckRunCompletedCheckRun {
     pub status: CheckRunCompletedCheckRunStatus,
     pub url: String,
 }
+#[doc = "The action requested by the user."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedRequestedAction {
@@ -5001,6 +5037,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
 }
+#[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunCreatedCheckRunConclusion {
     #[serde(rename = "success")]
@@ -5044,6 +5081,7 @@ pub struct CheckRunCreatedCheckRunOutput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
+#[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunCreatedCheckRunStatus {
     #[serde(rename = "queued")]
@@ -5062,6 +5100,7 @@ impl ToString for CheckRunCreatedCheckRunStatus {
         }
     }
 }
+#[doc = "The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRun {
@@ -5091,6 +5130,7 @@ pub struct CheckRunCreatedCheckRun {
     pub status: CheckRunCreatedCheckRunStatus,
     pub url: String,
 }
+#[doc = "The action requested by the user."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedRequestedAction {
@@ -5189,6 +5229,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
 }
+#[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunRequestedActionCheckRunConclusion {
     #[serde(rename = "success")]
@@ -5234,6 +5275,7 @@ pub struct CheckRunRequestedActionCheckRunOutput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
+#[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunRequestedActionCheckRunStatus {
     #[serde(rename = "queued")]
@@ -5252,6 +5294,7 @@ impl ToString for CheckRunRequestedActionCheckRunStatus {
         }
     }
 }
+#[doc = "The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRun {
@@ -5281,6 +5324,7 @@ pub struct CheckRunRequestedActionCheckRun {
     pub status: CheckRunRequestedActionCheckRunStatus,
     pub url: String,
 }
+#[doc = "The action requested by the user."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionRequestedAction {
@@ -5367,6 +5411,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub url: String,
 }
+#[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunRerequestedCheckRunConclusion {
     #[serde(rename = "success")]
@@ -5410,6 +5455,7 @@ pub struct CheckRunRerequestedCheckRunOutput {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
+#[doc = "The phase of the lifecycle that the check is currently in."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckRunRerequestedCheckRunStatus {
     #[serde(rename = "completed")]
@@ -5422,6 +5468,7 @@ impl ToString for CheckRunRerequestedCheckRunStatus {
         }
     }
 }
+#[doc = "The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRun {
@@ -5451,6 +5498,7 @@ pub struct CheckRunRerequestedCheckRun {
     pub status: CheckRunRerequestedCheckRunStatus,
     pub url: String,
 }
+#[doc = "The action requested by the user."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedRequestedAction {
@@ -5470,6 +5518,7 @@ impl ToString for CheckSuiteCompletedAction {
         }
     }
 }
+#[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteCompletedCheckSuiteConclusion {
     #[serde(rename = "success")]
@@ -5502,6 +5551,7 @@ impl ToString for CheckSuiteCompletedCheckSuiteConclusion {
         }
     }
 }
+#[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteCompletedCheckSuiteStatus {
     #[serde(rename = "requested")]
@@ -5523,6 +5573,7 @@ impl ToString for CheckSuiteCompletedCheckSuiteStatus {
         }
     }
 }
+#[doc = "The [check_suite](https://docs.github.com/en/rest/reference/checks#suites)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckSuiteCompletedCheckSuite {
@@ -5561,6 +5612,7 @@ impl ToString for CheckSuiteRequestedAction {
         }
     }
 }
+#[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteRequestedCheckSuiteConclusion {
     #[serde(rename = "success")]
@@ -5593,6 +5645,7 @@ impl ToString for CheckSuiteRequestedCheckSuiteConclusion {
         }
     }
 }
+#[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteRequestedCheckSuiteStatus {
     #[serde(rename = "requested")]
@@ -5614,6 +5667,7 @@ impl ToString for CheckSuiteRequestedCheckSuiteStatus {
         }
     }
 }
+#[doc = "The [check_suite](https://docs.github.com/en/rest/reference/checks#suites)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckSuiteRequestedCheckSuite {
@@ -5652,6 +5706,7 @@ impl ToString for CheckSuiteRerequestedAction {
         }
     }
 }
+#[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteRerequestedCheckSuiteConclusion {
     #[serde(rename = "success")]
@@ -5684,6 +5739,7 @@ impl ToString for CheckSuiteRerequestedCheckSuiteConclusion {
         }
     }
 }
+#[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CheckSuiteRerequestedCheckSuiteStatus {
     #[serde(rename = "requested")]
@@ -5705,6 +5761,7 @@ impl ToString for CheckSuiteRerequestedCheckSuiteStatus {
         }
     }
 }
+#[doc = "The [check_suite](https://docs.github.com/en/rest/reference/checks#suites)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CheckSuiteRerequestedCheckSuite {
@@ -5745,6 +5802,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAction {
         }
     }
 }
+#[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertAppearedInBranchAlertDismissedReason {
     #[serde(rename = "false positive")]
@@ -5769,6 +5827,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAlertDismissedReason {
         }
     }
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertAppearedInBranchAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -5800,6 +5859,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertRule {
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertAppearedInBranchAlertRuleSeverity>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertAppearedInBranchAlertState {
     #[serde(rename = "open")]
@@ -5826,6 +5886,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlert {
@@ -5861,6 +5922,7 @@ impl ToString for CodeScanningAlertClosedByUserAction {
         }
     }
 }
+#[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertClosedByUserAlertDismissedReason {
     #[serde(rename = "false positive")]
@@ -5903,6 +5965,7 @@ pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertClosedByUserAlertInstancesItemState,
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -5942,6 +6005,7 @@ pub struct CodeScanningAlertClosedByUserAlertRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<()>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertClosedByUserAlertState {
     #[serde(rename = "dismissed")]
@@ -5964,6 +6028,7 @@ pub struct CodeScanningAlertClosedByUserAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlert {
@@ -6020,6 +6085,7 @@ pub struct CodeScanningAlertCreatedAlertInstancesItem {
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertCreatedAlertInstancesItemState,
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertCreatedAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -6059,6 +6125,7 @@ pub struct CodeScanningAlertCreatedAlertRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<()>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertCreatedAlertState {
     #[serde(rename = "open")]
@@ -6084,6 +6151,7 @@ pub struct CodeScanningAlertCreatedAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlert {
@@ -6119,6 +6187,7 @@ impl ToString for CodeScanningAlertFixedAction {
         }
     }
 }
+#[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertDismissedReason {
     #[serde(rename = "false positive")]
@@ -6157,6 +6226,7 @@ pub struct CodeScanningAlertFixedAlertInstancesItem {
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertFixedAlertInstancesItemState,
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -6196,6 +6266,7 @@ pub struct CodeScanningAlertFixedAlertRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<()>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertFixedAlertState {
     #[serde(rename = "fixed")]
@@ -6218,6 +6289,7 @@ pub struct CodeScanningAlertFixedAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlert {
@@ -6273,6 +6345,7 @@ pub struct CodeScanningAlertReopenedAlertInstancesItem {
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertReopenedAlertInstancesItemState,
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -6312,6 +6385,7 @@ pub struct CodeScanningAlertReopenedAlertRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<()>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedAlertState {
     #[serde(rename = "open")]
@@ -6340,6 +6414,7 @@ pub struct CodeScanningAlertReopenedAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlert {
@@ -6393,6 +6468,7 @@ pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
     pub alert_instance: AlertInstance,
     pub state: CodeScanningAlertReopenedByUserAlertInstancesItemState,
 }
+#[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
     #[serde(rename = "none")]
@@ -6424,6 +6500,7 @@ pub struct CodeScanningAlertReopenedByUserAlertRule {
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertReopenedByUserAlertRuleSeverity>,
 }
+#[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CodeScanningAlertReopenedByUserAlertState {
     #[serde(rename = "open")]
@@ -6444,6 +6521,7 @@ pub struct CodeScanningAlertReopenedByUserAlertTool {
     #[doc = "The version of the tool used to detect the alert."]
     pub version: Option<String>,
 }
+#[doc = "The code scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlert {
@@ -6467,6 +6545,7 @@ pub struct CodeScanningAlertReopenedByUserAlert {
     pub tool: CodeScanningAlertReopenedByUserAlertTool,
     pub url: String,
 }
+#[doc = "The action performed. Can be `created`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CommitCommentCreatedAction {
     #[serde(rename = "created")]
@@ -6479,6 +6558,7 @@ impl ToString for CommitCommentCreatedAction {
         }
     }
 }
+#[doc = "The [commit comment](https://docs.github.com/en/rest/reference/repos#get-a-commit-comment) resource."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct CommitCommentCreatedComment {
@@ -6522,6 +6602,7 @@ pub struct ContentReferenceCreatedContentReference {
     pub node_id: String,
     pub reference: String,
 }
+#[doc = "The type of Git ref object created in the repository. Can be either `branch` or `tag`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum CreateEventRefType {
     #[serde(rename = "tag")]
@@ -6537,6 +6618,7 @@ impl ToString for CreateEventRefType {
         }
     }
 }
+#[doc = "The type of Git ref object deleted in the repository. Can be either `branch` or `tag`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum DeleteEventRefType {
     #[serde(rename = "tag")]
@@ -6564,6 +6646,7 @@ impl ToString for DeployKeyCreatedAction {
         }
     }
 }
+#[doc = "The [`deploy key`](https://docs.github.com/en/rest/reference/repos#get-a-deploy-key) resource."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeployKeyCreatedKey {
@@ -6587,6 +6670,7 @@ impl ToString for DeployKeyDeletedAction {
         }
     }
 }
+#[doc = "The [`deploy key`](https://docs.github.com/en/rest/reference/repos#get-a-deploy-key) resource."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeployKeyDeletedKey {
@@ -6613,6 +6697,7 @@ impl ToString for DeploymentCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentCreatedDeploymentPayload {}
+#[doc = "The [deployment](https://docs.github.com/en/rest/reference/repos#list-deployments)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentCreatedDeployment {
@@ -6650,6 +6735,7 @@ impl ToString for DeploymentStatusCreatedAction {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeploymentPayload {}
+#[doc = "The [deployment](https://docs.github.com/en/rest/reference/repos#list-deployments) that this status is associated with."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeployment {
@@ -6671,6 +6757,7 @@ pub struct DeploymentStatusCreatedDeployment {
     pub updated_at: String,
     pub url: String,
 }
+#[doc = "The [deployment status](https://docs.github.com/en/rest/reference/repos#list-deployment-statuses)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeploymentStatus {
@@ -7141,6 +7228,7 @@ pub struct DiscussionCommentEditedComment {
     pub updated_at: String,
     pub user: User,
 }
+#[doc = "The created [`repository`](https://docs.github.com/en/rest/reference/repos#get-a-repository) resource."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ForkEventForkee {
     #[serde(flatten)]
@@ -7160,6 +7248,7 @@ impl ToString for GithubAppAuthorizationRevokedAction {
         }
     }
 }
+#[doc = "The action that was performed on the page. Can be `created` or `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum GollumEventPagesItemAction {
     #[serde(rename = "created")]
@@ -7942,6 +8031,7 @@ pub struct InstallationPermissions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workflows: Option<InstallationPermissionsWorkflows>,
 }
+#[doc = "Describe whether all repositories have been selected or there's a selection involved"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationRepositorySelection {
     #[serde(rename = "all")]
@@ -8153,6 +8243,7 @@ pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub private: Option<bool>,
 }
+#[doc = "Describe whether all repositories have been selected or there's a selection involved"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationRepositoriesAddedRepositorySelection {
     #[serde(rename = "all")]
@@ -8204,6 +8295,7 @@ pub struct InstallationRepositoriesRemovedRepositoriesRemovedItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
+#[doc = "Describe whether all repositories have been selected or there's a selection involved"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum InstallationRepositoriesRemovedRepositorySelection {
     #[serde(rename = "all")]
@@ -8252,6 +8344,7 @@ pub struct IssuePullRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
+#[doc = "State of the issue; either 'open' or 'closed'"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueState {
     #[serde(rename = "open")]
@@ -8287,6 +8380,7 @@ pub struct IssueCommentCreatedIssuePullRequest {
     pub patch_url: String,
     pub url: String,
 }
+#[doc = "State of the issue; either 'open' or 'closed'"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentCreatedIssueState {
     #[serde(rename = "open")]
@@ -8302,6 +8396,7 @@ impl ToString for IssueCommentCreatedIssueState {
         }
     }
 }
+#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentCreatedIssue {
     #[serde(flatten)]
@@ -8334,6 +8429,7 @@ pub struct IssueCommentDeletedIssuePullRequest {
     pub patch_url: String,
     pub url: String,
 }
+#[doc = "State of the issue; either 'open' or 'closed'"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentDeletedIssueState {
     #[serde(rename = "open")]
@@ -8349,6 +8445,7 @@ impl ToString for IssueCommentDeletedIssueState {
         }
     }
 }
+#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentDeletedIssue {
     #[serde(flatten)]
@@ -8379,6 +8476,7 @@ pub struct IssueCommentEditedChangesBody {
     #[doc = "The previous version of the body."]
     pub from: String,
 }
+#[doc = "The changes to the comment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedChanges {
@@ -8393,6 +8491,7 @@ pub struct IssueCommentEditedIssuePullRequest {
     pub patch_url: String,
     pub url: String,
 }
+#[doc = "State of the issue; either 'open' or 'closed'"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssueCommentEditedIssueState {
     #[serde(rename = "open")]
@@ -8408,6 +8507,7 @@ impl ToString for IssueCommentEditedIssueState {
         }
     }
 }
+#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssueCommentEditedIssue {
     #[serde(flatten)]
@@ -8420,6 +8520,7 @@ pub struct IssueCommentEditedIssue {
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentEditedIssueState,
 }
+#[doc = "The action that was performed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesAssignedAction {
     #[serde(rename = "assigned")]
@@ -8432,6 +8533,7 @@ impl ToString for IssuesAssignedAction {
         }
     }
 }
+#[doc = "The action that was performed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesClosedAction {
     #[serde(rename = "closed")]
@@ -8456,6 +8558,7 @@ impl ToString for IssuesClosedIssueState {
         }
     }
 }
+#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IssuesClosedIssue {
     #[serde(flatten)]
@@ -8517,6 +8620,7 @@ pub struct IssuesEditedChangesTitle {
     #[doc = "The previous version of the title."]
     pub from: String,
 }
+#[doc = "The changes to the issue."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesEditedChanges {
@@ -8692,6 +8796,7 @@ pub struct IssuesTransferredChanges {
     pub new_issue: Issue,
     pub new_repository: Repository,
 }
+#[doc = "The action that was performed."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum IssuesUnassignedAction {
     #[serde(rename = "unassigned")]
@@ -8801,6 +8906,7 @@ pub struct LabelEditedChangesName {
     #[doc = "The previous version of the name if the action was `edited`."]
     pub from: String,
 }
+#[doc = "The changes to the label if the action was `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct LabelEditedChanges {
@@ -9097,6 +9203,7 @@ pub struct MemberEditedChangesOldPermission {
     #[doc = "The previous permissions of the collaborator if the action was edited."]
     pub from: String,
 }
+#[doc = "The changes to the collaborator permissions"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MemberEditedChanges {
@@ -9126,6 +9233,7 @@ impl ToString for MembershipAddedAction {
         }
     }
 }
+#[doc = "The scope of the membership. Currently, can only be `team`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MembershipAddedScope {
     #[serde(rename = "team")]
@@ -9150,6 +9258,7 @@ impl ToString for MembershipRemovedAction {
         }
     }
 }
+#[doc = "The scope of the membership. Currently, can only be `team`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MembershipRemovedScope {
     #[serde(rename = "team")]
@@ -9165,6 +9274,7 @@ impl ToString for MembershipRemovedScope {
         }
     }
 }
+#[doc = "The [team](https://docs.github.com/en/rest/reference/teams) for the membership."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum MembershipRemovedTeam {
@@ -9210,6 +9320,7 @@ pub struct MetaDeletedHookConfig {
     pub insecure_ssl: String,
     pub url: String,
 }
+#[doc = "The modified webhook. This will contain different keys based on the type of webhook it is: repository, organization, business, app, or GitHub Marketplace."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MetaDeletedHook {
@@ -9223,6 +9334,7 @@ pub struct MetaDeletedHook {
     pub type_: String,
     pub updated_at: String,
 }
+#[doc = "The state of the milestone."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum MilestoneState {
     #[serde(rename = "open")]
@@ -9342,6 +9454,7 @@ pub struct MilestoneEditedChangesTitle {
     #[doc = "The previous version of the title if the action was `edited`."]
     pub from: String,
 }
+#[doc = "The changes to the milestone if the action was `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChanges {
@@ -9443,6 +9556,7 @@ impl ToString for OrganizationMemberInvitedAction {
         }
     }
 }
+#[doc = "The invitation for the user or email if the action is `member_invited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvitedInvitation {
@@ -9564,6 +9678,7 @@ pub struct PackagePublishedPackageRegistry {
     pub url: String,
     pub vendor: String,
 }
+#[doc = "Information about the package."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackage {
@@ -9662,6 +9777,7 @@ pub struct PackageUpdatedPackageRegistry {
     pub url: String,
     pub vendor: String,
 }
+#[doc = "Information about the package."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackage {
@@ -9683,6 +9799,7 @@ pub struct PackageUpdatedPackage {
 pub struct PageBuildEventBuildError {
     pub message: Option<String>,
 }
+#[doc = "The [List GitHub Pages builds](https://docs.github.com/en/rest/reference/repos#list-github-pages-builds) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PageBuildEventBuild {
@@ -9726,6 +9843,7 @@ pub struct PingEventHookLastResponse {
     pub message: (),
     pub status: String,
 }
+#[doc = "The [webhook configuration](https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook)."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PingEventHook {
@@ -9748,6 +9866,7 @@ pub struct PingEventHook {
     pub updated_at: String,
     pub url: String,
 }
+#[doc = "State of the project; either 'open' or 'closed'"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ProjectState {
     #[serde(rename = "open")]
@@ -9823,6 +9942,7 @@ pub struct ProjectEditedChangesName {
     #[doc = "The changes to the project if the action was `edited`."]
     pub from: String,
 }
+#[doc = "The changes to the project if the action was `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectEditedChanges {
@@ -10064,6 +10184,7 @@ pub enum PullRequestRequestedReviewersItem {
     User(User),
     Team(Team),
 }
+#[doc = "State of this Pull Request. Either `open` or `closed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestState {
     #[serde(rename = "open")]
@@ -10087,6 +10208,7 @@ pub struct PullRequestReviewCommentLinks {
     #[serde(rename = "self")]
     pub self_: Link,
 }
+#[doc = "The side of the first line of the range for a multi-line comment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentSide {
     #[serde(rename = "LEFT")]
@@ -10102,6 +10224,7 @@ impl ToString for PullRequestReviewCommentSide {
         }
     }
 }
+#[doc = "The side of the first line of the range for a multi-line comment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestReviewCommentStartSide {
     #[serde(rename = "LEFT")]
@@ -10167,6 +10290,7 @@ impl ToString for PullRequestClosedAction {
         }
     }
 }
+#[doc = "State of this Pull Request. Either `open` or `closed`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum PullRequestClosedPullRequestState {
     #[serde(rename = "closed")]
@@ -10235,6 +10359,7 @@ pub struct PullRequestEditedChangesTitle {
     #[doc = "The previous version of the title if the action was `edited`."]
     pub from: String,
 }
+#[doc = "The changes to the comment if the action was `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestEditedChanges {
@@ -10507,6 +10632,7 @@ impl ToString for PullRequestReviewDismissedReviewState {
         }
     }
 }
+#[doc = "The review that was affected."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewDismissedReview {
@@ -10556,6 +10682,7 @@ pub struct PullRequestReviewEditedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
 }
+#[doc = "The review that was affected."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedReview {
@@ -10593,6 +10720,7 @@ pub struct PullRequestReviewSubmittedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
 }
+#[doc = "The review that was affected."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewSubmittedReview {
@@ -10902,6 +11030,7 @@ pub struct PullRequestReviewCommentEditedChangesBody {
     #[doc = "The previous version of the body."]
     pub from: String,
 }
+#[doc = "The changes to the comment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedChanges {
@@ -11155,6 +11284,7 @@ pub struct ReleaseUnpublishedRelease {
     pub release: Release,
     pub published_at: (),
 }
+#[doc = "State of the release asset."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ReleaseAssetState {
     #[serde(rename = "uploaded")]
@@ -11425,6 +11555,7 @@ impl ToString for RepositoryVulnerabilityAlertCreateAction {
         }
     }
 }
+#[doc = "The security alert of the vulnerable dependency."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertCreateAlert {
@@ -11459,6 +11590,7 @@ impl ToString for RepositoryVulnerabilityAlertDismissAction {
         }
     }
 }
+#[doc = "The security alert of the vulnerable dependency."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertDismissAlert {
@@ -11490,6 +11622,7 @@ impl ToString for RepositoryVulnerabilityAlertResolveAction {
         }
     }
 }
+#[doc = "The security alert of the vulnerable dependency."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertResolveAlert {
@@ -11524,6 +11657,7 @@ impl ToString for SecretScanningAlertCreatedAction {
         }
     }
 }
+#[doc = "The secret scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertCreatedAlert {
@@ -11545,6 +11679,7 @@ impl ToString for SecretScanningAlertReopenedAction {
         }
     }
 }
+#[doc = "The secret scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertReopenedAlert {
@@ -11589,6 +11724,7 @@ impl ToString for SecretScanningAlertResolvedAlertResolution {
         }
     }
 }
+#[doc = "The secret scanning alert involved in the event."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertResolvedAlert {
@@ -11654,6 +11790,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem {
     pub severity: String,
     pub vulnerable_version_range: String,
 }
+#[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisory {
@@ -11726,6 +11863,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem {
     pub severity: String,
     pub vulnerable_version_range: String,
 }
+#[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisory {
@@ -11798,6 +11936,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem {
     pub severity: String,
     pub vulnerable_version_range: String,
 }
+#[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisory {
@@ -11870,6 +12009,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItem {
     pub severity: String,
     pub vulnerable_version_range: String,
 }
+#[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisory {
@@ -12283,6 +12423,7 @@ pub struct StatusEventCommit {
     pub sha: String,
     pub url: String,
 }
+#[doc = "The new state. Can be `pending`, `success`, `failure`, or `error`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum StatusEventState {
     #[serde(rename = "pending")]
@@ -12449,6 +12590,7 @@ pub struct TeamEditedChangesRepositoryPermissions {
 pub struct TeamEditedChangesRepository {
     pub permissions: TeamEditedChangesRepositoryPermissions,
 }
+#[doc = "The changes to the team if the action was `edited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct TeamEditedChanges {

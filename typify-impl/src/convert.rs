@@ -1,4 +1,3 @@
-use crate::structs::{flattened_union_struct, maybe_all_of_subclass};
 use crate::util::{all_mutually_exclusive, recase};
 use convert_case::Case;
 use schemars::schema::{
@@ -9,7 +8,8 @@ use schemars::schema::{
 use crate::util::get_type_name;
 
 use crate::{
-    EnumTagType, Error, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+    EnumTagType, Error, Name, Result, TypeEntry, TypeEntryEnum, TypeEntryStruct, TypeSpace,
+    Variant, VariantDetails,
 };
 
 impl TypeSpace {
@@ -246,7 +246,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::Null => self.convert_null(type_name, metadata),
+            } if single.as_ref() == &InstanceType::Null => self.convert_null(metadata),
 
             // Reference
             SchemaObject {
@@ -381,39 +381,18 @@ impl TypeSpace {
                 // patterns, but it seems like a pain in the neck so I'm
                 // punting for now.
                 // assert!(validation.is_none_or_default(), "{:#?}", validation);
-                Ok((
-                    TypeEntry {
-                        name: Some("String".to_string()),
-                        rename: None,
-                        description: None,
-                        details: TypeDetails::String,
-                    },
-                    metadata,
-                ))
+                Ok((TypeEntry::String, metadata))
             }
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((
-                    TypeEntry {
-                        name: Some("uuid::Uuid".to_string()),
-                        rename: None,
-                        description: None,
-                        details: TypeDetails::BuiltIn,
-                    },
-                    metadata,
-                ))
+                Ok((TypeEntry::new_builtin("uuid::Uuid"), metadata))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry {
-                        name: Some("chrono::Date<chrono::offset::Utc>".to_string()),
-                        rename: None,
-                        description: None,
-                        details: TypeDetails::BuiltIn,
-                    },
+                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>"),
                     metadata,
                 ))
             }
@@ -421,26 +400,13 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry {
-                        name: Some("chrono::DateTime<chrono::offset::Utc>".to_string()),
-                        rename: None,
-                        description: None,
-                        details: TypeDetails::BuiltIn,
-                    },
+                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>"),
                     metadata,
                 ))
             }
 
             // TODO random types I'm not sure what to do with
-            Some("uri" | "uri-template" | "email") => Ok((
-                TypeEntry {
-                    name: Some("String".to_string()),
-                    rename: None,
-                    description: None,
-                    details: TypeDetails::String,
-                },
-                metadata,
-            )),
+            Some("uri" | "uri-template" | "email") => Ok((TypeEntry::String, metadata)),
 
             unhandled => todo!("{:#?}", unhandled),
         }
@@ -485,14 +451,12 @@ impl TypeSpace {
                 _ => Some(Err(Error::BadValue("string".to_string(), value.clone()))),
             })
             .collect::<Result<Vec<Variant>>>()?;
-        let mut ty = TypeEntry::from_metadata(
+        let mut ty = TypeEntryEnum::from_metadata(
             type_name,
             metadata,
-            TypeDetails::Enum {
-                tag_type: EnumTagType::External,
-                variants,
-                deny_unknown_fields: false,
-            },
+            EnumTagType::External,
+            variants,
+            false,
         );
 
         if has_null {
@@ -554,15 +518,7 @@ impl TypeSpace {
                     && (min.is_none() || min == Some(*imin))
                     && (max.is_none() || max == Some(*imax))
                 {
-                    return Ok((
-                        TypeEntry {
-                            name: Some(ty.to_string()),
-                            rename: None,
-                            description: None,
-                            details: TypeDetails::Primitive,
-                        },
-                        metadata,
-                    ));
+                    return Ok((TypeEntry::new_primitive(ty), metadata));
                 }
 
                 if min.is_none() {
@@ -573,8 +529,6 @@ impl TypeSpace {
                 }
             }
         }
-
-        println!("{:?} {:?}", min, max);
 
         // See if the value bounds fit within a known type.
         let maybe_type = match (min, max) {
@@ -604,29 +558,13 @@ impl TypeSpace {
 
         // TODO we should do something with `multiple`
         if let Some(ty) = maybe_type {
-            Ok((
-                TypeEntry {
-                    name: Some(ty),
-                    rename: None,
-                    description: None,
-                    details: TypeDetails::Primitive,
-                },
-                metadata,
-            ))
+            Ok((TypeEntry::new_primitive(ty), metadata))
         } else {
             // TODO we could construct a type that itself enforces the various
             // bounds.
             // TODO failing that we should find the type that most tightly
             // matches these bounds.
-            Ok((
-                TypeEntry {
-                    name: Some("i64".to_string()),
-                    rename: None,
-                    description: None,
-                    details: TypeDetails::Primitive,
-                },
-                metadata,
-            ))
+            Ok((TypeEntry::new_primitive("i64"), metadata))
         }
     }
 
@@ -645,26 +583,16 @@ impl TypeSpace {
             assert!(validation.exclusive_minimum.is_none());
         }
 
-        Ok((
-            TypeEntry {
-                name: Some("f64".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            &None,
-        ))
+        Ok((TypeEntry::new_primitive("f64"), &None))
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
     /// solitary value so we model that with the unit type.
     fn convert_null<'a>(
         &self,
-        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Unit);
-        Ok((ty, metadata))
+        Ok((TypeEntry::Unit, metadata))
     }
 
     fn convert_object<'a>(
@@ -699,13 +627,11 @@ impl TypeSpace {
                 let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
                 let (properties, deny_unknown_fields) =
                     self.struct_members(tmp_type_name, validation)?;
-                let ty = TypeEntry::from_metadata(
+                let ty = TypeEntryStruct::from_metadata(
                     type_name,
                     metadata,
-                    TypeDetails::Struct {
-                        properties,
-                        deny_unknown_fields,
-                    },
+                    properties,
+                    deny_unknown_fields,
                 );
                 Ok((ty, &None))
             }
@@ -722,12 +648,7 @@ impl TypeSpace {
             None => ref_name,
         };
         let type_id = self.ref_to_id.get(key).unwrap();
-        let ty = TypeEntry {
-            name: None,
-            rename: None,
-            description: None,
-            details: TypeDetails::Reference(type_id.clone()),
-        };
+        let ty = TypeEntry::Reference(type_id.clone());
         Ok((ty, metadata))
     }
 
@@ -743,7 +664,7 @@ impl TypeSpace {
         }
 
         // TODO make this look more like the other maybe clauses
-        if let Some(ty) = maybe_all_of_subclass(type_name.clone(), metadata, subschemas, self) {
+        if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
             return Ok((ty, metadata));
         }
 
@@ -763,7 +684,7 @@ impl TypeSpace {
         //     schema2: Schema2Type,
         //     ...
         // }
-        flattened_union_struct(type_name, metadata, subschemas, false, self)
+        self.flattened_union_struct(type_name, metadata, subschemas, false)
     }
 
     fn convert_any_of<'a>(
@@ -792,7 +713,7 @@ impl TypeSpace {
             //     ...
             // }
 
-            flattened_union_struct(type_name, metadata, subschemas, true, self)
+            self.flattened_union_struct(type_name, metadata, subschemas, true)
         }
     }
 
@@ -890,9 +811,7 @@ impl TypeSpace {
                     .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
                     .collect::<Result<Vec<_>>>()?;
 
-                let ty = TypeEntry::from_metadata(type_name, metadata, TypeDetails::Tuple(types));
-
-                Ok((ty, metadata))
+                Ok((TypeEntry::Tuple(types), metadata))
             }
 
             // Normal, vanilla array with no funny business.
@@ -910,11 +829,7 @@ impl TypeSpace {
                 };
                 let (type_id, _) = self.id_for_schema(tmp_type_name, item.as_ref())?;
 
-                // We don't need a name for an array
-                let ty =
-                    TypeEntry::from_metadata(Name::Unknown, metadata, TypeDetails::Array(type_id));
-
-                Ok((ty, metadata))
+                Ok((TypeEntry::Array(type_id), metadata))
             }
 
             _ => todo!("{:#?}", validation),
@@ -924,14 +839,9 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let any = TypeEntry {
-            name: Some("serde_json::Value".to_string()),
-            rename: None,
-            description: None,
-            details: TypeDetails::BuiltIn,
-        };
+        let any = TypeEntry::new_builtin("serde_json::Value");
         let type_id = self.assign_type(any);
-        let ty = TypeEntry::from_metadata(Name::Unknown, metadata, TypeDetails::Array(type_id));
+        let ty = TypeEntry::Array(type_id);
 
         Ok((ty, metadata))
     }
@@ -942,15 +852,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         _enum_values: &Option<Vec<serde_json::Value>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        Ok((
-            TypeEntry {
-                name: Some("bool".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::Primitive,
-            },
-            metadata,
-        ))
+        Ok((TypeEntry::new_primitive("bool"), metadata))
     }
 
     fn convert_permissive<'a>(
@@ -958,15 +860,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((
-            TypeEntry {
-                name: Some("serde_json::Value".to_string()),
-                rename: None,
-                description: None,
-                details: TypeDetails::BuiltIn,
-            },
-            metadata,
-        ))
+        Ok((TypeEntry::new_builtin("serde_json::Value"), metadata))
     }
 
     fn convert_unknown_enum<'a>(
@@ -1020,12 +914,12 @@ impl TypeSpace {
 mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
-    use schemars::schema_for;
+    use schemars::{schema_for, JsonSchema};
 
     use crate::{Name, TypeSpace};
     use paste::paste;
 
-    fn int_helper<T: schemars::JsonSchema>() {
+    fn int_helper<T: JsonSchema>() {
         let schema = schema_for!(T);
 
         let mut type_space = TypeSpace::default();
@@ -1070,4 +964,35 @@ mod tests {
     int_test!(NonZeroU16);
     int_test!(NonZeroU32);
     int_test!(NonZeroU64);
+
+    #[test]
+    fn test_redundant_types() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        struct Alphabet {
+            a: u32,
+            b: u32,
+            c: u32,
+            d: Option<u32>,
+            e: Option<u32>,
+            f: (u32, u32, u32, Option<u32>),
+        }
+
+        let schema = schema_for!(Alphabet);
+
+        let mut type_space = TypeSpace::default();
+        type_space
+            .add_ref_types(schema.definitions.clone())
+            .unwrap();
+        let _ = type_space
+            .add_type_details_with_name(&schema.schema.into(), Some("Alphabet".to_string()))
+            .unwrap();
+
+        // We expect a total of 4 types:
+        // 1. u32
+        // 2. option -> 1
+        // 3. tuple -> 1, 1, 1, 2
+        // 4. struct -> 1, 1, 1, 2, 2, 3
+        assert_eq!(type_space.iter_types().count(), 4);
+    }
 }

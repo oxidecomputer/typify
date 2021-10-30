@@ -10,7 +10,7 @@ use schemars::schema::{
 use crate::{
     structs::output_struct_property,
     util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
-    EnumTagType, Name, Result, TypeDetails, TypeEntry, TypeSpace, Variant, VariantDetails,
+    EnumTagType, Name, Result, TypeEntry, TypeEntryEnum, TypeSpace, Variant, VariantDetails,
 };
 
 impl TypeSpace {
@@ -183,14 +183,12 @@ impl TypeSpace {
             .collect::<Option<Vec<_>>>();
 
         variants.map(|variants| {
-            TypeEntry::from_metadata(
+            TypeEntryEnum::from_metadata(
                 type_name,
                 metadata,
-                TypeDetails::Enum {
-                    variants,
-                    tag_type: EnumTagType::External,
-                    deny_unknown_fields,
-                },
+                EnumTagType::External,
+                variants,
+                deny_unknown_fields,
             )
         })
     }
@@ -308,6 +306,7 @@ impl TypeSpace {
 
             // Otherwise we create a single-element tuple variant with the given type.
             prop_type => {
+                //assert!(prop_type_name != Name::Unknown);
                 let (type_id, _) = self.id_for_schema(prop_type_name, prop_type)?;
                 // TODO We'd ideally look at the type itself to determine if they
                 // represent a "closed" struct in which case we'd return "true".
@@ -399,14 +398,12 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntry::from_metadata(
+        Some(TypeEntryEnum::from_metadata(
             type_name,
             metadata,
-            TypeDetails::Enum {
-                variants,
-                tag_type: EnumTagType::Internal { tag: tag.clone() },
-                deny_unknown_fields,
-            },
+            EnumTagType::Internal { tag: tag.clone() },
+            variants,
+            deny_unknown_fields,
         ))
     }
 
@@ -528,14 +525,12 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntry::from_metadata(
+        Some(TypeEntryEnum::from_metadata(
             type_name,
             metadata,
-            TypeDetails::Enum {
-                variants,
-                tag_type: EnumTagType::Adjacent { tag, content },
-                deny_unknown_fields,
-            },
+            EnumTagType::Adjacent { tag, content },
+            variants,
+            deny_unknown_fields,
         ))
     }
 
@@ -674,14 +669,12 @@ impl TypeSpace {
             })
             .collect();
 
-        Ok(TypeEntry::from_metadata(
+        Ok(TypeEntryEnum::from_metadata(
             type_name,
             metadata,
-            TypeDetails::Enum {
-                tag_type: EnumTagType::Untagged,
-                variants,
-                deny_unknown_fields,
-            },
+            EnumTagType::Untagged,
+            variants,
+            deny_unknown_fields,
         ))
     }
 }
@@ -847,7 +840,7 @@ mod tests {
 
     use crate::{
         test_util::{validate_output, validate_output_for_untagged_enm},
-        EnumTagType, Name, TypeDetails, TypeEntry, TypeId, TypeSpace, Variant, VariantDetails,
+        EnumTagType, Name, TypeEntry, TypeEntryEnum, TypeId, TypeSpace, Variant, VariantDetails,
     };
 
     #[allow(dead_code)]
@@ -1019,18 +1012,15 @@ mod tests {
             .unwrap();
 
         match ty {
-            TypeEntry {
+            TypeEntry::Enum(TypeEntryEnum {
                 name,
                 rename: None,
                 description: None,
-                details:
-                    TypeDetails::Enum {
-                        tag_type: EnumTagType::Untagged,
-                        variants,
-                        deny_unknown_fields: _,
-                    },
-            } => {
-                assert_eq!(name, Some("UntaggedEnum".to_string()));
+                tag_type: EnumTagType::Untagged,
+                variants,
+                deny_unknown_fields: _,
+            }) => {
+                assert_eq!(name, "UntaggedEnum");
                 assert_eq!(variants.len(), 5);
 
                 assert!(matches!(
@@ -1085,22 +1075,19 @@ mod tests {
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
 
         let (ty, _) = type_space
-            .convert_one_of(Name::Unknown, &None, &subschemas)
+            .convert_one_of(Name::Required("Xyz".to_string()), &None, &subschemas)
             .unwrap();
 
         // This confirms in particular that the tag type is untagged and
         // therefore that the other enum tagging regimes did not match.
         assert!(matches!(
             ty,
-            TypeEntry {
-                name: None,
+            TypeEntry::Enum(TypeEntryEnum {
                 rename: None,
                 description: None,
-                details: TypeDetails::Enum {
-                    tag_type: EnumTagType::Untagged,
-                    ..
-                },
-            }
+                tag_type: EnumTagType::Untagged,
+                ..
+            })
         ));
     }
 
@@ -1184,11 +1171,12 @@ mod tests {
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
-        if let TypeDetails::Enum {
+        if let TypeEntry::Enum(TypeEntryEnum {
             variants,
             tag_type,
             deny_unknown_fields,
-        } = &type_entry.details
+            ..
+        }) = &type_entry
         {
             let variant_names = variants
                 .iter()
@@ -1222,15 +1210,7 @@ mod tests {
             .maybe_option_as_enum(Name::Unknown, &None, &subschemas)
             .unwrap();
 
-        assert_eq!(
-            type_entry,
-            TypeEntry {
-                name: None,
-                rename: None,
-                description: None,
-                details: TypeDetails::Option(TypeId(1))
-            }
-        )
+        assert_eq!(type_entry, TypeEntry::Option(TypeId(1)))
     }
 
     #[test]
@@ -1239,60 +1219,60 @@ mod tests {
         {
             "definitions": {
                 "workflow-step-completed": {
-                "$schema": "http://json-schema.org/draft-07/schema",
-                "required": [
-                    "name",
-                    "status",
-                    "conclusion",
-                    "number",
-                    "started_at",
-                    "completed_at"
-                ],
-                "type": "object",
-                "properties": {
-                    "name": { "type": "string" },
-                    "status": { "type": "string", "enum": ["completed"] },
-                    "conclusion": {
-                    "type": "string",
-                    "enum": ["failure", "skipped", "success"]
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "required": [
+                        "name",
+                        "status",
+                        "conclusion",
+                        "number",
+                        "started_at",
+                        "completed_at"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "status": { "type": "string", "enum": ["completed"] },
+                        "conclusion": {
+                            "type": "string",
+                            "enum": ["failure", "skipped", "success"]
+                        },
+                        "number": { "type": "integer" },
+                        "started_at": { "type": "string" },
+                        "completed_at": { "type": "string" }
                     },
-                    "number": { "type": "integer" },
-                    "started_at": { "type": "string" },
-                    "completed_at": { "type": "string" }
-                },
-                "additionalProperties": false,
-                "title": "Workflow Step (Completed)"
+                    "additionalProperties": false,
+                    "title": "Workflow Step (Completed)"
                 },
                 "workflow-step-in_progress": {
-                "$schema": "http://json-schema.org/draft-07/schema",
-                "required": [
-                    "name",
-                    "status",
-                    "conclusion",
-                    "number",
-                    "started_at",
-                    "completed_at"
-                ],
-                "type": "object",
-                "properties": {
-                    "name": { "type": "string" },
-                    "status": { "type": "string", "enum": ["in_progress"] },
-                    "conclusion": { "type": "null" },
-                    "number": { "type": "integer" },
-                    "started_at": { "type": "string" },
-                    "completed_at": { "type": "null" }
-                },
-                "additionalProperties": false,
-                "title": "Workflow Step (In Progress)"
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "required": [
+                        "name",
+                        "status",
+                        "conclusion",
+                        "number",
+                        "started_at",
+                        "completed_at"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "status": { "type": "string", "enum": ["in_progress"] },
+                        "conclusion": { "type": "null" },
+                        "number": { "type": "integer" },
+                        "started_at": { "type": "string" },
+                        "completed_at": { "type": "null" }
+                    },
+                    "additionalProperties": false,
+                    "title": "Workflow Step (In Progress)"
                 },
                 "workflow-step": {
-                "$schema": "http://json-schema.org/draft-07/schema",
-                "type": "object",
-                "oneOf": [
-                    { "$ref": "#/definitions/workflow-step-in_progress" },
-                    { "$ref": "#/definitions/workflow-step-completed" }
-                ],
-                "title": "Workflow Step"
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "type": "object",
+                    "oneOf": [
+                        { "$ref": "#/definitions/workflow-step-in_progress" },
+                        { "$ref": "#/definitions/workflow-step-completed" }
+                    ],
+                    "title": "Workflow Step"
                 }
             }
         }
@@ -1306,12 +1286,13 @@ mod tests {
         let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
-        match &type_entry.details {
-            TypeDetails::Enum {
+        match &type_entry {
+            TypeEntry::Enum(TypeEntryEnum {
                 tag_type,
                 variants,
                 deny_unknown_fields: _,
-            } => {
+                ..
+            }) => {
                 assert_eq!(tag_type, &EnumTagType::Untagged);
                 //assert_eq!(deny_unknown_fields, &true);
                 for variant in variants {
@@ -1319,7 +1300,7 @@ mod tests {
                         VariantDetails::Tuple(items) if items.len() == 1 => {
                             let variant_type =
                                 type_space.id_to_entry.get(items.first().unwrap()).unwrap();
-                            assert!(variant_type.name.as_ref().unwrap().ends_with(&variant.name));
+                            assert!(variant_type.name().unwrap().ends_with(&variant.name));
                         }
                         _ => panic!("{:#?}", type_entry),
                     }
