@@ -28,50 +28,61 @@ pub struct TypeEntryIdentifier {
     pub parameter: TokenStream,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TypeEntry {
-    // TODO all these properties only apply to types we define: enum, struct,
-    // newtype. Perhaps we can move these into there.
-    name: Option<String>,
-    rename: Option<String>,
-    description: Option<String>,
-    details: TypeDetails,
-}
-
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 pub struct TypeId(u64);
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum TypeDetails {
-    Enum {
-        tag_type: EnumTagType,
-        variants: Vec<Variant>,
-        deny_unknown_fields: bool,
-    },
-    Struct {
-        properties: Vec<StructProperty>,
-        deny_unknown_fields: bool,
-    },
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TypeEntryEnum {
+    name: String,
+    rename: Option<String>,
+    description: Option<String>,
+    tag_type: EnumTagType,
+    variants: Vec<Variant>,
+    deny_unknown_fields: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TypeEntryStruct {
+    name: String,
+    rename: Option<String>,
+    description: Option<String>,
+    properties: Vec<StructProperty>,
+    deny_unknown_fields: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct TypeEntryNewtype {
+    name: String,
+    rename: Option<String>,
+    description: Option<String>,
+    type_id: TypeId,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TypeEntry {
+    Enum(TypeEntryEnum),
+    Struct(TypeEntryStruct),
+    Newtype(TypeEntryNewtype),
+
     Option(TypeId),
     Array(TypeId),
     Map(TypeId, TypeId),
     Tuple(Vec<TypeId>),
-    Newtype(TypeId),
     Unit,
-    // Built-in complex types with no type generics such as Uuid
-    BuiltIn,
-    // Primitive types such as integer and floating-point flavors.
-    Primitive,
-    // Strings... which we handle a little specially.
+    /// Built-in complex types with no type generics such as Uuid
+    BuiltIn(String),
+    /// Primitive types such as integer and floating-point flavors.
+    Primitive(String),
+    /// Strings... which we handle a little specially.
     String,
 
-    // While these types won't very make their way out to the user, we need
-    // reference types in particular to represent simple type aliases between
-    // types named as reference targets.
+    /// While these types won't very make their way out to the user, we need
+    /// reference types in particular to represent simple type aliases between
+    /// types named as reference targets.
     Reference(TypeId),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum EnumTagType {
     External,
     Internal { tag: String },
@@ -79,7 +90,7 @@ pub(crate) enum EnumTagType {
     Untagged,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct Variant {
     name: String,
     rename: Option<String>,
@@ -87,14 +98,14 @@ pub(crate) struct Variant {
     details: VariantDetails,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum VariantDetails {
     Simple,
     Tuple(Vec<TypeId>),
     Struct(Vec<StructProperty>),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct StructProperty {
     name: String,
     serde_naming: SerdeNaming,
@@ -103,20 +114,20 @@ pub(crate) struct StructProperty {
     type_id: TypeId,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum SerdeNaming {
     None,
     Rename(String),
     Flatten,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum SerdeRules {
     None,
     Optional,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Name {
     Required(String),
     Suggested(String),
@@ -145,9 +156,10 @@ pub struct TypeSpace {
 
     // TODO needs an API
     pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
+    type_to_id: BTreeMap<TypeEntry, TypeId>,
+
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<String, TypeId>,
-    id_to_option_id: BTreeMap<TypeId, TypeId>,
 
     uses_chrono: bool,
     uses_uuid: bool,
@@ -163,7 +175,7 @@ impl Default for TypeSpace {
             id_to_entry: BTreeMap::new(),
             name_to_id: BTreeMap::new(),
             ref_to_id: BTreeMap::new(),
-            id_to_option_id: BTreeMap::new(),
+            type_to_id: BTreeMap::new(),
             uses_chrono: false,
             uses_uuid: false,
             uses_serde_json: false,
@@ -217,38 +229,22 @@ impl TypeSpace {
                 // This is effectively a forward declaration so we can discard
                 // the TypeEntry without assigning it. We'd see this if there
                 // were a cycle in the type graph.
-                TypeEntry {
-                    name: None,
-                    rename: None,
-                    description: None,
-                    details: TypeDetails::Reference(type_id),
-                } => TypeEntry::from_metadata(
+                TypeEntry::Reference(type_id) => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
-                    TypeDetails::Newtype(type_id),
+                    type_id,
                 ),
 
                 // The types that are already named are good to go.
-                TypeEntry {
-                    details: TypeDetails::Struct { .. },
-                    ..
-                }
-                | TypeEntry {
-                    details: TypeDetails::Enum { .. },
-                    ..
-                }
-                | TypeEntry {
-                    details: TypeDetails::Newtype(_),
-                    ..
-                } => type_entry,
+                TypeEntry::Enum(_) | TypeEntry::Struct(_) | TypeEntry::Newtype(_) => type_entry,
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype (though we could probably
                 // handle it as a type alias).
-                _ => TypeEntry::from_metadata(
+                _ => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
-                    TypeDetails::Newtype(self.assign_type(type_entry)),
+                    self.assign_type(type_entry),
                 ),
             };
             self.definitions.insert(ref_name, schema);
@@ -316,8 +312,6 @@ impl TypeSpace {
         self.id_to_entry.values()
     }
 
-    // Private interface?
-
     fn assign(&mut self) -> TypeId {
         let id = TypeId(self.next_id);
         self.next_id += 1;
@@ -325,31 +319,33 @@ impl TypeSpace {
     }
 
     fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
-        if let TypeDetails::Reference(type_id) = &ty.details {
-            // The underlying type is already assigned so we just need to
-            // return that type ID.
-            type_id.clone()
-        } else if let Some(name) = ty.name.clone() {
+        if let TypeEntry::Reference(type_id) = ty {
+            type_id
+        } else if let Some(name) = ty.name() {
             // If there's already a type of this name, we make sure it's
             // identical.
-            // TODO there are many different choices we might make here that
-            // could differ depending on the texture of the schema. For
-            // example, a schema might use the string "Response" in a bunch of
-            // places and if that were the case we might expect them to be
-            // different and resolve that by renaming or scoping them in some
-            // way.
-            if let Some(type_id) = self.name_to_id.get(&name) {
+
+            // TODO there are many different choices we might make here
+            // that could differ depending on the texture of the schema.
+            // For example, a schema might use the string "Response" in a
+            // bunch of places and if that were the case we might expect
+            // them to be different and resolve that by renaming or scoping
+            // them in some way.
+            if let Some(type_id) = self.name_to_id.get(name) {
                 let existing_ty = self.id_to_entry.get(type_id).unwrap();
                 assert_eq!(existing_ty, &ty);
                 type_id.clone()
             } else {
                 let type_id = self.assign();
-                self.id_to_entry.insert(type_id.clone(), ty);
                 self.name_to_id.insert(name.clone(), type_id.clone());
+                self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
             }
+        } else if let Some(type_id) = self.type_to_id.get(&ty) {
+            type_id.clone()
         } else {
             let type_id = self.assign();
+            self.type_to_id.insert(ty.clone(), type_id.clone());
             self.id_to_entry.insert(type_id.clone(), ty);
             type_id
         }
@@ -365,34 +361,16 @@ impl TypeSpace {
         Ok((type_id, meta))
     }
 
-    fn id_for_option(&mut self, id: &TypeId) -> TypeId {
-        if let Some(id) = self.id_to_option_id.get(id) {
-            id.clone()
-        } else {
-            let ty = TypeEntry {
-                name: None,
-                rename: None,
-                description: None,
-                details: TypeDetails::Option(id.clone()),
-            };
-            let type_id = self.assign();
-            self.id_to_option_id.insert(id.clone(), type_id.clone());
-            self.id_to_entry.insert(type_id.clone(), ty);
-
-            type_id
-        }
+    fn id_to_option(&mut self, id: &TypeId) -> TypeId {
+        let ty = TypeEntry::Option(id.clone());
+        self.assign_type(ty)
     }
 
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
         let type_id = self.assign_type(ty);
 
         // TODO: this is bad b/c I'm not recording this option in `id_to_option`
-        TypeEntry {
-            name: None,
-            rename: None,
-            description: None,
-            details: TypeDetails::Option(type_id),
-        }
+        TypeEntry::Option(type_id)
     }
 }
 
@@ -405,7 +383,7 @@ mod tests {
     use std::collections::HashSet;
 
     use crate::{
-        test_util::validate_output, Name, TypeDetails, TypeEntry, TypeSpace, VariantDetails,
+        test_util::validate_output, Name, TypeEntry, TypeEntryEnum, TypeSpace, VariantDetails,
     };
 
     #[allow(dead_code)]
@@ -496,10 +474,7 @@ mod tests {
             .unwrap();
 
         match ty {
-            TypeEntry {
-                details: TypeDetails::Enum { variants, .. },
-                ..
-            } => {
+            TypeEntry::Enum(TypeEntryEnum { variants, .. }) => {
                 for variant in &variants {
                     assert_eq!(variant.details, VariantDetails::Simple);
                 }
@@ -534,12 +509,12 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let (te, _) = type_space
-            .convert_enum_string(Name::Unknown, &None, &enum_values)
+            .convert_enum_string(Name::Required("OnTheGo".to_string()), &None, &enum_values)
             .unwrap();
 
-        if let TypeDetails::Option(id) = &te.details {
+        if let TypeEntry::Option(id) = &te {
             let ote = type_space.id_to_entry.get(id).unwrap();
-            if let TypeDetails::Enum { variants, .. } = &ote.details {
+            if let TypeEntry::Enum(TypeEntryEnum { variants, .. }) = &ote {
                 let variants = variants
                     .iter()
                     .map(|v| match v.details {

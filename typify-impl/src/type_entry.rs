@@ -7,37 +7,107 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    Name, TypeDetails, TypeEntry, TypeEntryIdentifier, TypeSpace, VariantDetails,
+    EnumTagType, Name, StructProperty, TypeEntry, TypeEntryEnum, TypeEntryIdentifier,
+    TypeEntryNewtype, TypeEntryStruct, TypeId, TypeSpace, Variant, VariantDetails,
 };
 
-impl TypeEntry {
+impl TypeEntryEnum {
     pub(crate) fn from_metadata(
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
-        details: TypeDetails,
-    ) -> Self {
-        let name = get_type_name(&type_name, metadata, Case::Pascal);
+        tag_type: EnumTagType,
+        variants: Vec<Variant>,
+        deny_unknown_fields: bool,
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
 
-        Self {
+        TypeEntry::Enum(Self {
             name,
-            // TODO
-            rename: None,
-            description: metadata_description(metadata),
-            details,
+            rename,
+            description,
+            tag_type,
+            variants,
+            deny_unknown_fields,
+        })
+    }
+}
+
+impl TypeEntryStruct {
+    pub(crate) fn from_metadata(
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        properties: Vec<StructProperty>,
+        deny_unknown_fields: bool,
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        TypeEntry::Struct(Self {
+            name,
+            rename,
+            description,
+            properties,
+            deny_unknown_fields,
+        })
+    }
+}
+
+impl TypeEntryNewtype {
+    pub(crate) fn from_metadata(
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        TypeEntry::Newtype(Self {
+            name,
+            rename,
+            description,
+            type_id,
+        })
+    }
+}
+
+impl TypeEntry {
+    pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
+        TypeEntry::BuiltIn(type_name.to_string())
+    }
+    pub(crate) fn new_primitive<S: ToString>(type_name: S) -> Self {
+        TypeEntry::Primitive(type_name.to_string())
+    }
+
+    pub(crate) fn name(&self) -> Option<&String> {
+        match self {
+            TypeEntry::Enum(TypeEntryEnum { name, .. })
+            | TypeEntry::Struct(TypeEntryStruct { name, .. })
+            | TypeEntry::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
+
+            _ => None,
         }
     }
 
     pub fn output(&self, type_space: &TypeSpace) -> TokenStream {
-        match &self.details {
-            TypeDetails::Enum {
+        match self {
+            TypeEntry::Enum(TypeEntryEnum {
+                name,
+                rename,
+                description,
                 tag_type,
                 variants,
                 deny_unknown_fields,
-            } => {
-                let type_name = self.name.as_ref().unwrap();
-                let type_name = format_ident!("{}", type_name);
+            }) => {
+                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
                 let mut serde_options = Vec::new();
+                if let Some(old_name) = rename {
+                    serde_options.push(quote! { rename = #old_name });
+                }
                 match tag_type {
                     crate::EnumTagType::External => {}
                     crate::EnumTagType::Internal { tag } => {
@@ -54,47 +124,63 @@ impl TypeEntry {
                 if *deny_unknown_fields {
                     serde_options.push(quote! { deny_unknown_fields });
                 }
-
-                let enum_impl = enum_impl(&type_name, variants);
-
-                let variants = variants
-                    .iter()
-                    .map(|variant| output_variant(variant, type_space))
-                    .collect::<Vec<_>>();
-
                 let serde = if serde_options.is_empty() {
                     quote! {}
                 } else {
                     quote! { #[serde( #( #serde_options ),* )] }
                 };
 
+                let type_name = format_ident!("{}", name);
+
+                let variants_decl = variants
+                    .iter()
+                    .map(|variant| output_variant(variant, type_space))
+                    .collect::<Vec<_>>();
+
+                let enum_impl = enum_impl(&type_name, variants);
+
                 quote! {
+                    #doc
                     #[derive(Serialize, Deserialize, Debug, Clone)]
                     #serde
                     pub enum #type_name {
-                        #(#variants)*
+                        #(#variants_decl)*
                     }
 
                     #enum_impl
                 }
             }
 
-            TypeDetails::Struct {
+            TypeEntry::Struct(TypeEntryStruct {
+                name,
+                rename,
+                description,
                 properties,
                 deny_unknown_fields,
-            } => {
-                let type_name = self.name.as_ref().unwrap();
-                let type_name = format_ident!("{}", type_name);
+            }) => {
+                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+                let mut serde_options = Vec::new();
+                if let Some(old_name) = rename {
+                    serde_options.push(quote! { rename = #old_name });
+                }
+                if *deny_unknown_fields {
+                    serde_options.push(quote! { deny_unknown_fields });
+                }
+                let serde = if serde_options.is_empty() {
+                    quote! {}
+                } else {
+                    quote! { #[serde( #( #serde_options ),* )] }
+                };
+
+                let type_name = format_ident!("{}", name);
                 let properties = properties
                     .iter()
                     .map(|prop| output_struct_property(prop, type_space, true))
                     .collect::<Vec<_>>();
-                let serde = if *deny_unknown_fields {
-                    quote! { #[serde(deny_unknown_fields)]}
-                } else {
-                    quote! {}
-                };
+
                 quote! {
+                    #doc
                     #[derive(Serialize, Deserialize, Debug, Clone)]
                     #serde
                     pub struct #type_name {
@@ -103,30 +189,45 @@ impl TypeEntry {
                 }
             }
 
-            TypeDetails::Newtype(type_id) => {
-                let type_name = self.name.as_ref().unwrap();
-                let type_name = format_ident!("{}", type_name);
+            TypeEntry::Newtype(TypeEntryNewtype {
+                name,
+                rename,
+                description,
+                type_id,
+            }) => {
+                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+                let serde = rename.as_ref().map(|old_name| {
+                    quote! {
+                        #[serde(rename = #old_name)]
+                    }
+                });
+
+                let type_name = format_ident!("{}", name);
                 let sub_type = type_space.id_to_entry.get(type_id).unwrap();
                 let sub_type_name = sub_type.type_ident(type_space, false);
+
                 quote! {
+                    #doc
                     #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #serde
                     pub struct #type_name(#sub_type_name);
                 }
             }
 
             // These types require no definition as they're already defined.
-            TypeDetails::BuiltIn
-            | TypeDetails::Primitive
-            | TypeDetails::String
-            | TypeDetails::Option(_)
-            | TypeDetails::Array(_)
-            | TypeDetails::Map(_, _)
-            | TypeDetails::Unit
-            | TypeDetails::Tuple(_) => quote! {},
+            TypeEntry::BuiltIn(_)
+            | TypeEntry::Primitive(_)
+            | TypeEntry::String
+            | TypeEntry::Option(_)
+            | TypeEntry::Array(_)
+            | TypeEntry::Map(_, _)
+            | TypeEntry::Unit
+            | TypeEntry::Tuple(_) => quote! {},
 
             // We should never get here as reference types should only be used
             // in-flight, but never recorded into the type space.
-            TypeDetails::Reference(_) => unreachable!(),
+            TypeEntry::Reference(_) => unreachable!(),
         }
     }
 
@@ -136,8 +237,8 @@ impl TypeEntry {
 
     pub fn type_ident_details(&self, type_space: &TypeSpace) -> TypeEntryIdentifier {
         let stream = self.type_ident(type_space, true);
-        match &self.details {
-            TypeDetails::Option(id) => {
+        match self {
+            TypeEntry::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -146,8 +247,8 @@ impl TypeEntry {
 
                 // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
-                match inner_ty.details {
-                    TypeDetails::Option(_) => ident,
+                match inner_ty{
+                    TypeEntry::Option(_) => ident,
                     _ => {
                         let TypeEntryIdentifier { ident, parameter } = ident;
                         TypeEntryIdentifier {
@@ -158,7 +259,7 @@ impl TypeEntry {
                 }
             }
 
-            TypeDetails::Unit | TypeDetails::BuiltIn | TypeDetails::Primitive => {
+            TypeEntry::Unit | TypeEntry::BuiltIn(_) | TypeEntry::Primitive(_) => {
                 TypeEntryIdentifier {
                     ident: stream.clone(),
                     parameter: stream,
@@ -166,14 +267,14 @@ impl TypeEntry {
             }
 
             // TODO someday perhaps this should be an AsRef<str>
-            TypeDetails::String => TypeEntryIdentifier {
+            TypeEntry::String => TypeEntryIdentifier {
                 ident: stream,
                 parameter: quote! { &str },
             },
 
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
-            TypeDetails::Enum { variants, .. }
+            TypeEntry::Enum(TypeEntryEnum{ variants, .. })
                 // TODO we should probably cache this rather than iterating
                 // every time. We'll know it when the enum is constructed.
                 if variants
@@ -195,33 +296,48 @@ impl TypeEntry {
     }
 
     pub fn type_ident(&self, type_space: &TypeSpace, external: bool) -> TokenStream {
-        match &self.details {
-            TypeDetails::Option(id) => {
+        match self {
+            // Named types.
+            TypeEntry::Enum(TypeEntryEnum { name, .. })
+            | TypeEntry::Struct(TypeEntryStruct { name, .. })
+            | TypeEntry::Newtype(TypeEntryNewtype { name, .. }) => match &type_space.type_mod {
+                Some(type_mod) if external => {
+                    let type_mod = format_ident!("{}", type_mod);
+                    let type_name = format_ident!("{}", name);
+                    quote! { #type_mod :: #type_name }
+                }
+                _ => {
+                    let type_name = format_ident!("{}", name);
+                    quote! { #type_name }
+                }
+            },
+
+            TypeEntry::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for option");
-                let stream = inner_ty.type_ident(type_space, external);
+                let inner_ident = inner_ty.type_ident(type_space, external);
 
                 // Flatten nested Option types. This would should happen if the
                 // schema encoded it; it's an odd construction.
-                match inner_ty.details {
-                    TypeDetails::Option(_) => stream,
-                    _ => quote! { Option<#stream> },
+                match inner_ty {
+                    TypeEntry::Option(_) => inner_ident,
+                    _ => quote! { Option<#inner_ident> },
                 }
             }
 
-            TypeDetails::Array(id) => {
+            TypeEntry::Array(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for array");
-                let stream = inner_ty.type_ident(type_space, external);
+                let item = inner_ty.type_ident(type_space, external);
 
-                quote! { Vec<#stream> }
+                quote! { Vec<#item> }
             }
 
-            TypeDetails::Map(key_id, value_id) => {
+            TypeEntry::Map(key_id, value_id) => {
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -236,7 +352,7 @@ impl TypeEntry {
                 quote! { std::collections::HashMap<#key_ty, #value_ty> }
             }
 
-            TypeDetails::Tuple(items) => {
+            TypeEntry::Tuple(items) => {
                 let type_streams = items.iter().map(|item| {
                     type_space
                         .id_to_entry
@@ -248,101 +364,78 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeDetails::Unit => quote! { () },
-
-            _ if self.name.is_none() => panic!("unnamed type {:#?}", self),
-
-            // Simple built-in types for which the name is the identifier.
-            TypeDetails::BuiltIn | TypeDetails::String | TypeDetails::Primitive => {
-                let name = self.name.as_ref().unwrap();
-                let tok = syn::parse_str::<syn::TypePath>(name).unwrap();
-                tok.to_token_stream()
+            TypeEntry::Unit => quote! { () },
+            TypeEntry::String => quote! { String },
+            TypeEntry::BuiltIn(name) | TypeEntry::Primitive(name) => {
+                syn::parse_str::<syn::TypePath>(name)
+                    .unwrap()
+                    .to_token_stream()
             }
 
-            _ => match &type_space.type_mod {
-                Some(type_mod) if external => {
-                    let type_mod = format_ident!("{}", type_mod);
-                    let type_name = format_ident!("{}", self.name.as_ref().unwrap());
-                    quote! { #type_mod :: #type_name }
-                }
-                _ => {
-                    let type_name = format_ident!("{}", self.name.as_ref().unwrap());
-                    quote! { #type_name }
-                }
-            },
+            TypeEntry::Reference(_) => panic!("references should be resolved by now"),
         }
     }
 
     pub fn describe(&self) -> String {
-        let name = self
-            .name
-            .clone()
-            .unwrap_or_else(|| "<anonymous>".to_string());
-        match &self.details {
-            TypeDetails::Enum { .. } => format!("enum {}", name),
-            TypeDetails::Struct { .. } => format!("struct {}", name),
-            TypeDetails::Unit => "()".to_string(),
-            TypeDetails::Option(type_id) => format!("option {}", type_id.0),
-            TypeDetails::Array(type_id) => format!("array {}", type_id.0),
-            TypeDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
-            TypeDetails::Tuple(_) => "tuple".to_string(),
-            TypeDetails::BuiltIn | TypeDetails::Primitive | TypeDetails::String => name,
-            TypeDetails::Newtype(type_id) => format!("newtype {} {}", name, type_id.0),
-            TypeDetails::Reference(_) => unreachable!(),
+        match self {
+            TypeEntry::Enum(TypeEntryEnum { name, .. }) => format!("enum {}", name),
+            TypeEntry::Struct(TypeEntryStruct { name, .. }) => format!("struct {}", name),
+            TypeEntry::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
+                format!("newtype {} {}", name, type_id.0)
+            }
+
+            TypeEntry::Unit => "()".to_string(),
+            TypeEntry::Option(type_id) => format!("option {}", type_id.0),
+            TypeEntry::Array(type_id) => format!("array {}", type_id.0),
+            TypeEntry::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
+            TypeEntry::Tuple(type_ids) => {
+                format!(
+                    "tuple ({})",
+                    type_ids
+                        .iter()
+                        .map(|type_id| type_id.0.to_string())
+                        .collect::<Vec<String>>()
+                        .join(", ")
+                )
+            }
+            TypeEntry::BuiltIn(name) | TypeEntry::Primitive(name) => name.clone(),
+            TypeEntry::String => "string".to_string(),
+
+            TypeEntry::Reference(_) => unreachable!(),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{TypeDetails, TypeEntry, TypeSpace};
+    use crate::{TypeEntry, TypeEntryStruct, TypeSpace};
 
     #[test]
     fn test_ident() {
         let ts = TypeSpace::default();
 
-        let t = TypeEntry {
-            name: Some("u32".to_string()),
-            rename: None,
-            description: None,
-            details: TypeDetails::Primitive,
-        };
-
+        let t = TypeEntry::new_primitive("u32");
         let ident = t.type_ident_details(&ts);
         assert_eq!(ident.ident.to_string(), "u32");
         assert_eq!(ident.parameter.to_string(), "u32");
 
-        let t = TypeEntry {
-            name: Some("String".to_string()),
-            rename: None,
-            description: None,
-            details: TypeDetails::String,
-        };
-
+        let t = TypeEntry::String;
         let ident = t.type_ident_details(&ts);
         assert_eq!(ident.ident.to_string(), "String");
         assert_eq!(ident.parameter.to_string(), "& str");
 
-        let t = TypeEntry {
-            name: None,
-            rename: None,
-            description: None,
-            details: TypeDetails::Unit,
-        };
-
+        let t = TypeEntry::Unit;
         let ident = t.type_ident_details(&ts);
         assert_eq!(ident.ident.to_string(), "()");
         assert_eq!(ident.parameter.to_string(), "()");
 
-        let t = TypeEntry {
-            name: Some("SomeType".to_string()),
+        let t = TypeEntry::Struct(TypeEntryStruct {
+            name: "SomeType".to_string(),
             rename: None,
             description: None,
-            details: TypeDetails::Struct {
-                properties: vec![],
-                deny_unknown_fields: false,
-            },
-        };
+            properties: vec![],
+            deny_unknown_fields: false,
+        });
 
         let ident = t.type_ident_details(&ts);
         assert_eq!(ident.ident.to_string(), "SomeType");

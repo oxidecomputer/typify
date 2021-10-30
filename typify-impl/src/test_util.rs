@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{any::type_name, collections::HashSet};
 
 use proc_macro2::TokenStream;
 use quote::ToTokens;
@@ -29,12 +29,14 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let schema = schema_for!(T);
 
+    let name = type_name::<T>().rsplit_once("::").unwrap().1.to_string();
+
     let mut type_space = TypeSpace::default();
     type_space
         .add_ref_types(schema.definitions.clone())
         .unwrap();
     let (ty, _) = type_space
-        .convert_schema_object(Name::Unknown, &schema.schema)
+        .convert_schema_object(Name::Required(name), &schema.schema)
         .unwrap();
 
     let output = ty.output(&type_space);
