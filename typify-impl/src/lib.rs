@@ -214,6 +214,9 @@ impl TypeSpace {
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
             let type_entry = match type_entry {
+                // This is effectively a forward declaration so we can discard
+                // the TypeEntry without assigning it. We'd see this if there
+                // were a cycle in the type graph.
                 TypeEntry {
                     name: None,
                     rename: None,
@@ -224,7 +227,29 @@ impl TypeSpace {
                     metadata,
                     TypeDetails::Newtype(type_id),
                 ),
-                _ => type_entry,
+
+                // The types that are already named are good to go.
+                TypeEntry {
+                    details: TypeDetails::Struct { .. },
+                    ..
+                }
+                | TypeEntry {
+                    details: TypeDetails::Enum { .. },
+                    ..
+                }
+                | TypeEntry {
+                    details: TypeDetails::Newtype(_),
+                    ..
+                } => type_entry,
+
+                // For types that don't have names, this is effectively a type
+                // alias which we treat as a newtype (though we could probably
+                // handle it as a type alias).
+                _ => TypeEntry::from_metadata(
+                    Name::Required(type_name.to_string()),
+                    metadata,
+                    TypeDetails::Newtype(self.assign_type(type_entry)),
+                ),
             };
             self.definitions.insert(ref_name, schema);
             self.id_to_entry
@@ -308,7 +333,11 @@ impl TypeSpace {
             // If there's already a type of this name, we make sure it's
             // identical.
             // TODO there are many different choices we might make here that
-            // could differ depending on the texture of the schema.
+            // could differ depending on the texture of the schema. For
+            // example, a schema might use the string "Response" in a bunch of
+            // places and if that were the case we might expect them to be
+            // different and resolve that by renaming or scoping them in some
+            // way.
             if let Some(type_id) = self.name_to_id.get(&name) {
                 let existing_ty = self.id_to_entry.get(type_id).unwrap();
                 assert_eq!(existing_ty, &ty);
@@ -369,12 +398,15 @@ impl TypeSpace {
 
 #[cfg(test)]
 mod tests {
+    use schema::Schema;
     use schemars::{schema_for, JsonSchema};
     use serde::Serialize;
     use serde_json::json;
     use std::collections::HashSet;
 
-    use crate::{Name, TypeDetails, TypeEntry, TypeSpace, VariantDetails};
+    use crate::{
+        test_util::validate_output, Name, TypeDetails, TypeEntry, TypeSpace, VariantDetails,
+    };
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema)]
@@ -529,5 +561,20 @@ mod tests {
         } else {
             panic!("not the type we expected {:#?}", te)
         }
+    }
+
+    #[test]
+    fn test_alias() {
+        #[derive(JsonSchema, Schema)]
+        struct Stuff(Vec<String>);
+
+        #[allow(dead_code)]
+        #[derive(JsonSchema, Schema)]
+        struct Things {
+            a: String,
+            b: Stuff,
+        }
+
+        validate_output::<Things>();
     }
 }

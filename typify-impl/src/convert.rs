@@ -526,17 +526,22 @@ impl TypeSpace {
             (None, None, None)
         };
 
+        // Ordered from most- to least-restrictive.
         let formats: &[(&str, &str, f64, f64)] = &[
-            ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
-            ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
-            ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
-            ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
-            ("int", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
-            ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
-            ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
             ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
+            ("", "std::num::NonZeroU8", 1.0, u8::MAX as f64),
+            ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
+            ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
+            ("", "std::num::NonZeroU16", 1.0, u16::MAX as f64),
+            ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
+            ("int", "i32", i32::MIN as f64, i32::MAX as f64),
+            ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
+            ("", "std::num::NonZeroU32", 1.0, u32::MAX as f64),
+            ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
+            ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
+            ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
+            ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
+            ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
         ];
 
         if let Some(format) = format {
@@ -569,30 +574,32 @@ impl TypeSpace {
             }
         }
 
-        // See if the value bounds fit a known type.
+        println!("{:?} {:?}", min, max);
+
+        // See if the value bounds fit within a known type.
         let maybe_type = match (min, max) {
             (None, Some(max)) => formats.iter().find_map(|(_, ty, _, imax)| {
-                if (*imax - max).abs() < f64::EPSILON {
+                if imax + f64::EPSILON >= max {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
             (Some(min), None) => formats.iter().find_map(|(_, ty, imin, _)| {
-                if (*imin - min).abs() < f64::EPSILON {
+                if imin - f64::EPSILON <= min {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
             (Some(min), Some(max)) => formats.iter().find_map(|(_, ty, imin, imax)| {
-                if (*imin - min).abs() < f64::EPSILON && (*imax - max).abs() < f64::EPSILON {
+                if imax + f64::EPSILON >= max && imin - f64::EPSILON <= min {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
-            (None, None) => Some("i64".to_string()),
+            (None, None) => None,
         };
 
         // TODO we should do something with `multiple`
@@ -609,6 +616,8 @@ impl TypeSpace {
         } else {
             // TODO we could construct a type that itself enforces the various
             // bounds.
+            // TODO failing that we should find the type that most tightly
+            // matches these bounds.
             Ok((
                 TypeEntry {
                     name: Some("i64".to_string()),
@@ -1005,4 +1014,60 @@ impl TypeSpace {
 
         Ok((ty, metadata))
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
+
+    use schemars::schema_for;
+
+    use crate::{Name, TypeSpace};
+    use paste::paste;
+
+    fn int_helper<T: schemars::JsonSchema>() {
+        let schema = schema_for!(T);
+
+        let mut type_space = TypeSpace::default();
+        type_space
+            .add_ref_types(schema.definitions.clone())
+            .unwrap();
+        let (ty, _) = type_space
+            .convert_schema_object(Name::Unknown, &schema.schema)
+            .unwrap();
+        let output = ty.type_name(&type_space);
+        let actual = output
+            .rsplit_once("::")
+            .map(|(_, x)| x.trim())
+            .unwrap_or(&output);
+        let expected = std::any::type_name::<T>()
+            .rsplit_once("::")
+            .map(|(_, x)| x.trim())
+            .unwrap_or(&output);
+        assert_eq!(actual, expected);
+    }
+
+    macro_rules! int_test {
+        ($t:ty) => {
+            paste! {
+                #[test]
+                fn [<test_int_ $t:lower>]() {
+                    int_helper::<$t>()
+                }
+            }
+        };
+    }
+
+    int_test!(u8);
+    int_test!(u16);
+    int_test!(u32);
+    int_test!(u64);
+    int_test!(i8);
+    int_test!(i16);
+    int_test!(i32);
+    int_test!(i64);
+    int_test!(NonZeroU8);
+    int_test!(NonZeroU16);
+    int_test!(NonZeroU32);
+    int_test!(NonZeroU64);
 }
