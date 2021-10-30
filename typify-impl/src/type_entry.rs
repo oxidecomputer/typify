@@ -144,7 +144,7 @@ impl TypeEntry {
                     .expect("unresolved type id for option");
                 let ident = inner_ty.type_ident_details(type_space);
 
-                // Flatten nested Option types. This would should happen if the
+                // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
                 match inner_ty.details {
                     TypeDetails::Option(_) => ident,
@@ -174,6 +174,8 @@ impl TypeEntry {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
             TypeDetails::Enum { variants, .. }
+                // TODO we should probably cache this rather than iterating
+                // every time. We'll know it when the enum is constructed.
                 if variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
