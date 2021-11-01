@@ -1,6 +1,6 @@
 [package]
 name = "typify-macro"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
 edition = "2018"
 license = "Apache-2.0"

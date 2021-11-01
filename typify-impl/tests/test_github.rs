@@ -19,9 +19,7 @@ fn test_github() {
     type_space.add_ref_types(schema.definitions).unwrap();
     type_space.add_type(&Schema::Object(schema.schema)).unwrap();
 
-    let types = type_space
-        .iter_types()
-        .map(|type_entry| type_entry.output(&type_space));
+    let types = type_space.iter_types().map(|t| t.definition());
 
     let file = quote! {
         #(#types)*

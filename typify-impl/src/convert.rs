@@ -1,3 +1,6 @@
+use crate::type_entry::{
+    EnumTagType, TypeEntry, TypeEntryEnum, TypeEntryStruct, Variant, VariantDetails,
+};
 use crate::util::{all_mutually_exclusive, recase};
 use convert_case::Case;
 use schemars::schema::{
@@ -7,10 +10,7 @@ use schemars::schema::{
 
 use crate::util::get_type_name;
 
-use crate::{
-    EnumTagType, Error, Name, Result, TypeEntry, TypeEntryEnum, TypeEntryStruct, TypeSpace,
-    Variant, VariantDetails,
-};
+use crate::{Error, Name, Result, TypeSpace};
 
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
@@ -985,7 +985,7 @@ mod tests {
             .add_ref_types(schema.definitions.clone())
             .unwrap();
         let _ = type_space
-            .add_type_details_with_name(&schema.schema.into(), Some("Alphabet".to_string()))
+            .add_type_with_name(&schema.schema.into(), Some("Alphabet".to_string()))
             .unwrap();
 
         // We expect a total of 4 types:

@@ -6,9 +6,9 @@ use schemars::schema::{
 };
 
 use crate::{
+    type_entry::{SerdeNaming, SerdeRules, StructProperty, TypeEntryStruct},
     util::{get_type_name, metadata_description, recase, schema_is_named},
-    Name, Result, SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct, TypeId,
-    TypeSpace,
+    Name, Result, TypeEntry, TypeId, TypeSpace,
 };
 
 impl TypeSpace {
