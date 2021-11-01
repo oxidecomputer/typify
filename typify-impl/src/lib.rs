@@ -37,6 +37,7 @@ pub enum Name {
     Unknown,
 }
 
+/// A collection of types.
 #[derive(Debug)]
 pub struct TypeSpace {
     next_id: u64,
@@ -187,10 +188,13 @@ impl TypeSpace {
         self.uses_serde_json
     }
 
+    /// Set the name of the path prefix for types defined in this [TypeSpace].
     pub fn set_type_mod<S: AsRef<str>>(&mut self, type_mod: S) {
         self.type_mod = Some(type_mod.as_ref().to_string());
     }
 
+    /// Iterate over all types including those defined in this [TypeSpace] and
+    /// those referred to by those types.
     pub fn iter_types(&self) -> impl Iterator<Item = Type> {
         self.id_to_entry
             .values()
@@ -266,26 +270,35 @@ impl TypeSpace {
 }
 
 impl<'a> Type<'a> {
+    /// The name of the type as a String.
     pub fn name(&self) -> String {
         let Type(type_space, type_entry) = self;
         type_entry.type_name(type_space)
     }
 
+    /// The identifier for the type as might be used for a function return or
+    /// defining the type of a member of a struct..
     pub fn ident(&self) -> TokenStream {
         let Type(type_space, type_entry) = self;
         type_entry.type_ident(type_space, true)
     }
 
+    /// The identifier for the type as might be used for a parameter in a
+    /// function signature. In general: simple types are the same as
+    /// [Type::ident] and complex types prepend a `&`.
     pub fn parameter_ident(&self) -> TokenStream {
         let Type(type_space, type_entry) = self;
         type_entry.type_parameter_ident(type_space)
     }
 
+    /// The definition for this type. This will be empty for types that are
+    /// already defined such as `u32` or `uuid::Uuid`.
     pub fn definition(&self) -> TokenStream {
         let Type(type_space, type_entry) = self;
         type_entry.output(type_space)
     }
 
+    /// A textual description of the type appropriate for debug output.
     pub fn describe(&self) -> String {
         self.1.describe()
     }
