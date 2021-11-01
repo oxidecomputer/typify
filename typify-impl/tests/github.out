@@ -453,6 +453,12 @@ pub struct CommitCommentCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CommitCommentEvent(CommitCommentCreated);
+impl std::ops::Deref for CommitCommentEvent {
+    type Target = CommitCommentCreated;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "Metaproperties for Git author/committer information."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -479,6 +485,12 @@ pub struct ContentReferenceCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ContentReferenceEvent(ContentReferenceCreated);
+impl std::ops::Deref for ContentReferenceEvent {
+    type Target = ContentReferenceCreated;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "A Git branch or tag is created."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -565,6 +577,12 @@ pub struct DeploymentCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentEvent(DeploymentCreated);
+impl std::ops::Deref for DeploymentEvent {
+    type Target = DeploymentCreated;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreated {
@@ -580,6 +598,12 @@ pub struct DeploymentStatusCreated {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DeploymentStatusEvent(DeploymentStatusCreated);
+impl std::ops::Deref for DeploymentStatusEvent {
+    type Target = DeploymentStatusCreated;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Discussion {
@@ -876,6 +900,12 @@ pub struct GithubAppAuthorizationRevoked {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GithubAppAuthorizationEvent(GithubAppAuthorizationRevoked);
+impl std::ops::Deref for GithubAppAuthorizationEvent {
+    type Target = GithubAppAuthorizationRevoked;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "A wiki page is created or updated."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1626,6 +1656,12 @@ pub struct MetaDeleted {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MetaEvent(MetaDeleted);
+impl std::ops::Deref for MetaEvent {
+    type Target = MetaDeleted;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[doc = "A collection of related issues and pull requests."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3107,6 +3143,12 @@ pub struct RepositoryDispatchOnDemandTest {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RepositoryDispatchEvent(RepositoryDispatchOnDemandTest);
+impl std::ops::Deref for RepositoryDispatchEvent {
+    type Target = RepositoryDispatchOnDemandTest;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum RepositoryEvent {
@@ -3561,6 +3603,12 @@ pub struct WatchStarted {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WatchEvent(WatchStarted);
+impl std::ops::Deref for WatchEvent {
+    type Target = WatchStarted;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub enum WebhookEvents {

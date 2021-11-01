@@ -9,8 +9,9 @@ use schemars::schema::{
 
 use crate::{
     structs::output_struct_property,
+    type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
     util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
-    EnumTagType, Name, Result, TypeEntry, TypeEntryEnum, TypeSpace, Variant, VariantDetails,
+    Name, Result, TypeEntry, TypeSpace,
 };
 
 impl TypeSpace {
@@ -840,7 +841,8 @@ mod tests {
 
     use crate::{
         test_util::{validate_output, validate_output_for_untagged_enm},
-        EnumTagType, Name, TypeEntry, TypeEntryEnum, TypeId, TypeSpace, Variant, VariantDetails,
+        type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
+        Name, TypeEntry, TypeId, TypeSpace,
     };
 
     #[allow(dead_code)]

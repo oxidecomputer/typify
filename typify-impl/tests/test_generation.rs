@@ -1,6 +1,6 @@
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
-use typify_impl::{TypeEntryIdentifier, TypeSpace};
+use typify_impl::TypeSpace;
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -37,22 +37,22 @@ fn test_generation() {
         .add_ref_types(generator.take_definitions())
         .unwrap();
 
-    let TypeEntryIdentifier {
-        ident: ret,
-        parameter: body,
-    } = type_space.add_type_details(&body_schema).unwrap();
+    let t = type_space.add_type(&body_schema).unwrap();
+    let ret = t.ident();
+    let body = t.parameter_ident();
+
     let string = type_space
-        .add_type_details(&string_schema)
+        .add_type(&string_schema)
         .unwrap()
-        .parameter;
+        .parameter_ident();
     let opt_int = type_space
-        .add_type_details(&opt_int_schema)
+        .add_type(&opt_int_schema)
         .unwrap()
-        .parameter;
+        .parameter_ident();
     let strenum = type_space
-        .add_type_details(&strenum_schema)
+        .add_type(&strenum_schema)
         .unwrap()
-        .parameter;
+        .parameter_ident();
 
     let file = quote! {
         pub fn do_stuff(

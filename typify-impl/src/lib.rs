@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use proc_macro2::TokenStream;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
+use type_entry::{TypeEntry, TypeEntryNewtype};
 
 mod convert;
 mod enums;
@@ -22,110 +23,12 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Representation of a type which may have a definition or may be built-in.
 #[derive(Debug, Clone)]
-pub struct TypeEntryIdentifier {
-    pub ident: TokenStream,
-    pub parameter: TokenStream,
-}
+pub struct Type<'a>(&'a TypeSpace, &'a TypeEntry);
 
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-pub struct TypeId(u64);
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct TypeEntryEnum {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    tag_type: EnumTagType,
-    variants: Vec<Variant>,
-    deny_unknown_fields: bool,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct TypeEntryStruct {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    properties: Vec<StructProperty>,
-    deny_unknown_fields: bool,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct TypeEntryNewtype {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    type_id: TypeId,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub enum TypeEntry {
-    Enum(TypeEntryEnum),
-    Struct(TypeEntryStruct),
-    Newtype(TypeEntryNewtype),
-
-    Option(TypeId),
-    Array(TypeId),
-    Map(TypeId, TypeId),
-    Tuple(Vec<TypeId>),
-    Unit,
-    /// Built-in complex types with no type generics such as Uuid
-    BuiltIn(String),
-    /// Primitive types such as integer and floating-point flavors.
-    Primitive(String),
-    /// Strings... which we handle a little specially.
-    String,
-
-    /// While these types won't very make their way out to the user, we need
-    /// reference types in particular to represent simple type aliases between
-    /// types named as reference targets.
-    Reference(TypeId),
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum EnumTagType {
-    External,
-    Internal { tag: String },
-    Adjacent { tag: String, content: String },
-    Untagged,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) struct Variant {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    details: VariantDetails,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum VariantDetails {
-    Simple,
-    Tuple(Vec<TypeId>),
-    Struct(Vec<StructProperty>),
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) struct StructProperty {
-    name: String,
-    serde_naming: SerdeNaming,
-    serde_rules: SerdeRules,
-    description: Option<String>,
-    type_id: TypeId,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum SerdeNaming {
-    None,
-    Rename(String),
-    Flatten,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum SerdeRules {
-    None,
-    Optional,
-}
+struct TypeId(u64);
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Name {
@@ -133,16 +36,6 @@ pub enum Name {
     Suggested(String),
     Unknown,
 }
-
-// TODO we need two String -> Type maps:
-// 1. the one for references. these will almost certainly need to be used by
-// name
-// 2. one for types that we create by necessity; these may not have great
-// names. They're types that are embedded within other types and that Rust
-// requires us to define as their own type.
-// 3. allow for formatting configuration such as the derive macros that are
-// included, and the destination for types e.g. into their own mod with a given
-// name.
 
 #[derive(Debug)]
 pub struct TypeSpace {
@@ -256,31 +149,21 @@ impl TypeSpace {
 
     /// Add a new type and return a type identifier that may be used in
     /// function signatures or embedded within other types.
-    pub fn add_type(&mut self, schema: &Schema) -> Result<TokenStream> {
+    pub fn add_type(&mut self, schema: &Schema) -> Result<Type> {
         let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
 
         let type_id = self.assign_type(type_entry);
         let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(type_entry.type_ident(self, true))
-    }
-
-    /// Add a new type and return a the components necessary to use the type
-    /// for various components of a function signature.
-    pub fn add_type_details(&mut self, schema: &Schema) -> Result<TypeEntryIdentifier> {
-        let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
-
-        let type_id = self.assign_type(type_entry);
-        let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(type_entry.type_ident_details(self))
+        Ok(Type(self, type_entry))
     }
 
     /// Add a new type with a name hint and return a the components necessary
     /// to use the type for various components of a function signature.
-    pub fn add_type_details_with_name(
+    pub fn add_type_with_name(
         &mut self,
         schema: &Schema,
         name_hint: Option<String>,
-    ) -> Result<TypeEntryIdentifier> {
+    ) -> Result<Type> {
         let name = match name_hint {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
@@ -289,7 +172,7 @@ impl TypeSpace {
 
         let type_id = self.assign_type(type_entry);
         let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(type_entry.type_ident_details(self))
+        Ok(Type(self, type_entry))
     }
 
     pub fn uses_chrono(&self) -> bool {
@@ -308,16 +191,25 @@ impl TypeSpace {
         self.type_mod = Some(type_mod.as_ref().to_string());
     }
 
-    pub fn iter_types(&self) -> impl Iterator<Item = &TypeEntry> {
-        self.id_to_entry.values()
+    pub fn iter_types(&self) -> impl Iterator<Item = Type> {
+        self.id_to_entry
+            .values()
+            .map(|type_entry| Type(self, type_entry))
+            .collect::<Vec<_>>()
+            .into_iter()
     }
 
+    /// Allocated the next TypeId.
     fn assign(&mut self) -> TypeId {
         let id = TypeId(self.next_id);
         self.next_id += 1;
         id
     }
 
+    /// Assign a TypeId for a TypeEntry. This handles resolving references,
+    /// checking for duplicate type definitions (e.g. to make sure there aren't
+    /// two conflicting types of the same name), and deduplicates various
+    /// flavors of built-in types.
     fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
         if let TypeEntry::Reference(type_id) = ty {
             type_id
@@ -351,6 +243,7 @@ impl TypeSpace {
         }
     }
 
+    /// Convert a schema to a TypeEntry and assign it a TypeId.
     fn id_for_schema<'a>(
         &mut self,
         type_name: Name,
@@ -361,16 +254,40 @@ impl TypeSpace {
         Ok((type_id, meta))
     }
 
+    /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
-        let ty = TypeEntry::Option(id.clone());
-        self.assign_type(ty)
+        self.assign_type(TypeEntry::Option(id.clone()))
     }
 
+    // Create an Option<T> from a TypeEntry by assigning it type.
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
-        let type_id = self.assign_type(ty);
+        TypeEntry::Option(self.assign_type(ty))
+    }
+}
 
-        // TODO: this is bad b/c I'm not recording this option in `id_to_option`
-        TypeEntry::Option(type_id)
+impl<'a> Type<'a> {
+    pub fn name(&self) -> String {
+        let Type(type_space, type_entry) = self;
+        type_entry.type_name(type_space)
+    }
+
+    pub fn ident(&self) -> TokenStream {
+        let Type(type_space, type_entry) = self;
+        type_entry.type_ident(type_space, true)
+    }
+
+    pub fn parameter_ident(&self) -> TokenStream {
+        let Type(type_space, type_entry) = self;
+        type_entry.type_parameter_ident(type_space)
+    }
+
+    pub fn definition(&self) -> TokenStream {
+        let Type(type_space, type_entry) = self;
+        type_entry.output(type_space)
+    }
+
+    pub fn describe(&self) -> String {
+        self.1.describe()
     }
 }
 
@@ -383,7 +300,9 @@ mod tests {
     use std::collections::HashSet;
 
     use crate::{
-        test_util::validate_output, Name, TypeEntry, TypeEntryEnum, TypeSpace, VariantDetails,
+        test_util::validate_output,
+        type_entry::{TypeEntryEnum, VariantDetails},
+        Name, TypeEntry, TypeSpace,
     };
 
     #[allow(dead_code)]

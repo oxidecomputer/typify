@@ -44,10 +44,10 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             .map_err(|e| into_syn_err(e, arg.span()))?;
     }
 
-    let types = type_space.iter_types().map(|t| t.output(&type_space));
+    let type_defs = type_space.iter_types().map(|t| t.definition());
 
     let file = quote! {
-        #(#types)*
+        #(#type_defs)*
     };
     Ok(file.into())
 }
