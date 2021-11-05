@@ -59,6 +59,39 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     }
 }
 
+#[macro_export]
+macro_rules! validate_builtin {
+    ($t:ty) => {
+        crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
+    };
+}
+
+#[track_caller]
+pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
+    let schema = schema_for!(T);
+
+    let mut type_space = TypeSpace::default();
+    type_space
+        .add_ref_types(schema.definitions.clone())
+        .unwrap();
+    let (ty, _) = type_space
+        .convert_schema_object(Name::Unknown, &schema.schema)
+        .unwrap();
+
+    let output = ty.type_ident(&type_space, false);
+
+    let actual = syn::parse2::<syn::Type>(output.clone()).unwrap();
+    let expected = syn::parse_str::<syn::Type>(name).unwrap();
+
+    // Make sure they match.
+    if let Err(err) = expected.syn_cmp(&actual, false) {
+        println!("{:#?}", schema);
+        println!("actual: {}", output.to_string());
+        println!("expected: {}", name);
+        panic!("{}", err);
+    }
+}
+
 pub(crate) trait SynCompare {
     fn syn_cmp(&self, other: &Self, ignore_variant_names: bool) -> Result<(), String>;
 }
