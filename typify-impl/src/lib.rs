@@ -5,11 +5,12 @@ use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{TypeEntry, TypeEntryNewtype};
 
+#[cfg(test)]
+mod test_util;
+
 mod convert;
 mod enums;
 mod structs;
-#[cfg(test)]
-mod test_util;
 mod type_entry;
 mod util;
 

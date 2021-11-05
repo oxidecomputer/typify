@@ -406,7 +406,7 @@ impl TypeSpace {
             }
 
             // TODO random types I'm not sure what to do with
-            Some("uri" | "uri-template" | "email") => Ok((TypeEntry::String, metadata)),
+            Some("uri" | "uri-template" | "email" | "ip") => Ok((TypeEntry::String, metadata)),
 
             unhandled => todo!("{:#?}", unhandled),
         }
@@ -518,7 +518,7 @@ impl TypeSpace {
                     && (min.is_none() || min == Some(*imin))
                     && (max.is_none() || max == Some(*imax))
                 {
-                    return Ok((TypeEntry::new_primitive(ty), metadata));
+                    return Ok((TypeEntry::new_integer(ty), metadata));
                 }
 
                 if min.is_none() {
@@ -558,13 +558,13 @@ impl TypeSpace {
 
         // TODO we should do something with `multiple`
         if let Some(ty) = maybe_type {
-            Ok((TypeEntry::new_primitive(ty), metadata))
+            Ok((TypeEntry::new_integer(ty), metadata))
         } else {
             // TODO we could construct a type that itself enforces the various
             // bounds.
             // TODO failing that we should find the type that most tightly
             // matches these bounds.
-            Ok((TypeEntry::new_primitive("i64"), metadata))
+            Ok((TypeEntry::new_integer("i64"), metadata))
         }
     }
 
@@ -583,7 +583,7 @@ impl TypeSpace {
             assert!(validation.exclusive_minimum.is_none());
         }
 
-        Ok((TypeEntry::new_primitive("f64"), &None))
+        Ok((TypeEntry::new_float("f64"), &None))
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
@@ -814,13 +814,13 @@ impl TypeSpace {
                 Ok((TypeEntry::Tuple(types), metadata))
             }
 
-            // Normal, vanilla array with no funny business.
+            // Arrays and sets.
             ArrayValidation {
                 items: Some(SingleOrVec::Single(item)),
                 additional_items: None,
                 max_items: _, // TODO enforce size limitations
                 min_items: _, // TODO enforce size limitations
-                unique_items: None,
+                unique_items,
                 contains: None,
             } => {
                 let tmp_type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
@@ -829,10 +829,14 @@ impl TypeSpace {
                 };
                 let (type_id, _) = self.id_for_schema(tmp_type_name, item.as_ref())?;
 
-                Ok((TypeEntry::Array(type_id), metadata))
+                // If items are unique, this is a Set; otherwise it's an Array.
+                match unique_items {
+                    Some(true) => Ok((TypeEntry::Set(type_id), metadata)),
+                    _ => Ok((TypeEntry::Array(type_id), metadata)),
+                }
             }
 
-            _ => todo!("{:#?}", validation),
+            _ => todo!("unhandled array validation {:#?}", validation),
         }
     }
     fn convert_array_of_any<'a>(
@@ -852,7 +856,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         _enum_values: &Option<Vec<serde_json::Value>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        Ok((TypeEntry::new_primitive("bool"), metadata))
+        Ok((TypeEntry::new_integer("bool"), metadata))
     }
 
     fn convert_permissive<'a>(
@@ -916,7 +920,7 @@ mod tests {
 
     use schemars::{schema_for, JsonSchema};
 
-    use crate::{Name, TypeSpace};
+    use crate::{validate_builtin, Name, TypeSpace};
     use paste::paste;
 
     fn int_helper<T: JsonSchema>() {
@@ -994,5 +998,12 @@ mod tests {
         // 3. tuple -> 1, 1, 1, 2
         // 4. struct -> 1, 1, 1, 2, 2, 3
         assert_eq!(type_space.iter_types().count(), 4);
+    }
+
+    // TODO we can turn this on once we generate proper sets.
+    #[ignore]
+    #[test]
+    fn test_set() {
+        validate_builtin!(std::collections::BTreeSet<u32>);
     }
 }

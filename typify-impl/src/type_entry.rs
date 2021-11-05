@@ -21,20 +21,20 @@ pub(crate) struct TypeEntryEnum {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct TypeEntryStruct {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    properties: Vec<StructProperty>,
-    deny_unknown_fields: bool,
+pub(crate) struct TypeEntryStruct {
+    pub name: String,
+    pub rename: Option<String>,
+    pub description: Option<String>,
+    pub properties: Vec<StructProperty>,
+    pub deny_unknown_fields: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct TypeEntryNewtype {
-    name: String,
-    rename: Option<String>,
-    description: Option<String>,
-    type_id: TypeId,
+pub(crate) struct TypeEntryNewtype {
+    pub name: String,
+    pub rename: Option<String>,
+    pub description: Option<String>,
+    pub type_id: TypeId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -46,12 +46,15 @@ pub(crate) enum TypeEntry {
     Option(TypeId),
     Array(TypeId),
     Map(TypeId, TypeId),
+    Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
     /// Built-in complex types with no type generics such as Uuid
     BuiltIn(String),
-    /// Primitive types such as integer and floating-point flavors.
-    Primitive(String),
+    /// Integers and booleans
+    Integral(String),
+    /// Floating point numbers; critical values that cannot be Eq
+    Float(String),
     /// Strings... which we handle a little specially.
     String,
 
@@ -173,8 +176,11 @@ impl TypeEntry {
     pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
         TypeEntry::BuiltIn(type_name.to_string())
     }
-    pub(crate) fn new_primitive<S: ToString>(type_name: S) -> Self {
-        TypeEntry::Primitive(type_name.to_string())
+    pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
+        TypeEntry::Integral(type_name.to_string())
+    }
+    pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
+        TypeEntry::Float(type_name.to_string())
     }
 
     pub(crate) fn name(&self) -> Option<&String> {
@@ -188,6 +194,13 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
+        let mut derives = vec![
+            quote! {Serialize},
+            quote! {Deserialize},
+            quote! {Debug},
+            quote! {Clone},
+        ];
+
         match self {
             TypeEntry::Enum(TypeEntryEnum {
                 name,
@@ -198,6 +211,23 @@ impl TypeEntry {
                 deny_unknown_fields,
             }) => {
                 let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+                // TODO this is a one-off for Eq
+                if variants
+                    .iter()
+                    .all(|variant| matches!(variant.details, VariantDetails::Simple))
+                {
+                    derives.extend(
+                        vec![
+                            quote! { PartialOrd },
+                            quote! { Ord },
+                            quote! { PartialEq },
+                            quote! { Eq },
+                            quote! { Hash },
+                        ]
+                        .into_iter(),
+                    );
+                }
 
                 let mut serde_options = Vec::new();
                 if let Some(old_name) = rename {
@@ -236,7 +266,7 @@ impl TypeEntry {
 
                 quote! {
                     #doc
-                    #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #[derive(#(#derives),*)]
                     #serde
                     pub enum #type_name {
                         #(#variants_decl)*
@@ -276,7 +306,7 @@ impl TypeEntry {
 
                 quote! {
                     #doc
-                    #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #[derive(#(#derives),*)]
                     #serde
                     pub struct #type_name {
                         #(#properties)*
@@ -304,9 +334,9 @@ impl TypeEntry {
 
                 quote! {
                     #doc
-                    #[derive(Serialize, Deserialize, Debug, Clone)]
+                    #[derive(#(#derives),*)]
                     #serde
-                    pub struct #type_name(#sub_type_name);
+                    pub struct #type_name(pub #sub_type_name);
 
                     impl std::ops::Deref for #type_name {
                         type Target = #sub_type_name;
@@ -319,11 +349,13 @@ impl TypeEntry {
 
             // These types require no definition as they're already defined.
             TypeEntry::BuiltIn(_)
-            | TypeEntry::Primitive(_)
+            | TypeEntry::Integral(_)
+            | TypeEntry::Float(_)
             | TypeEntry::String
             | TypeEntry::Option(_)
             | TypeEntry::Array(_)
             | TypeEntry::Map(_, _)
+            | TypeEntry::Set(_)
             | TypeEntry::Unit
             | TypeEntry::Tuple(_) => quote! {},
 
@@ -383,15 +415,26 @@ impl TypeEntry {
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
-                    .expect("unresolved type id for array")
+                    .expect("unresolved type id for map")
                     .type_ident(type_space, external);
                 let value_ty = type_space
                     .id_to_entry
                     .get(value_id)
-                    .expect("unresolved type id for array")
+                    .expect("unresolved type id for map")
                     .type_ident(type_space, external);
 
                 quote! { std::collections::HashMap<#key_ty, #value_ty> }
+            }
+
+            TypeEntry::Set(id) => {
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("unresolved type id for set");
+                let item = inner_ty.type_ident(type_space, external);
+                // TODO we'll want this to be a Set of some kind, but we need to get the derives right first.
+                // quote! { std::collections::BTreeSet<#item> }
+                quote! { Vec<#item> }
             }
 
             TypeEntry::Tuple(items) => {
@@ -408,7 +451,7 @@ impl TypeEntry {
 
             TypeEntry::Unit => quote! { () },
             TypeEntry::String => quote! { String },
-            TypeEntry::BuiltIn(name) | TypeEntry::Primitive(name) => {
+            TypeEntry::BuiltIn(name) | TypeEntry::Integral(name) | TypeEntry::Float(name) => {
                 syn::parse_str::<syn::TypePath>(name)
                     .unwrap()
                     .to_token_stream()
@@ -436,7 +479,9 @@ impl TypeEntry {
             | TypeEntry::Struct(_)
             | TypeEntry::Newtype(_)
             | TypeEntry::Array(_)
-            | TypeEntry::Map(_, _) => {
+            | TypeEntry::Map(_, _)
+            | TypeEntry::Set(_)
+            | TypeEntry::BuiltIn(_) => {
                 let ident = self.type_ident(type_space, true);
                 quote! {
                     &#ident
@@ -469,7 +514,7 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeEntry::Unit | TypeEntry::BuiltIn(_) | TypeEntry::Primitive(_) => {
+            TypeEntry::Unit | TypeEntry::Integral(_) | TypeEntry::Float(_) => {
                 self.type_ident(type_space, true)
             }
             TypeEntry::String => quote! { &str },
@@ -490,6 +535,7 @@ impl TypeEntry {
             TypeEntry::Option(type_id) => format!("option {}", type_id.0),
             TypeEntry::Array(type_id) => format!("array {}", type_id.0),
             TypeEntry::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
+            TypeEntry::Set(type_id) => format!("set {}", type_id.0),
             TypeEntry::Tuple(type_ids) => {
                 format!(
                     "tuple ({})",
@@ -500,7 +546,9 @@ impl TypeEntry {
                         .join(", ")
                 )
             }
-            TypeEntry::BuiltIn(name) | TypeEntry::Primitive(name) => name.clone(),
+            TypeEntry::BuiltIn(name) | TypeEntry::Integral(name) | TypeEntry::Float(name) => {
+                name.clone()
+            }
             TypeEntry::String => "string".to_string(),
 
             TypeEntry::Reference(_) => unreachable!(),
@@ -516,7 +564,7 @@ mod tests {
     fn test_ident() {
         let ts = TypeSpace::default();
 
-        let t = TypeEntry::new_primitive("u32");
+        let t = TypeEntry::new_integer("u32");
         let ident = t.type_ident(&ts, true);
         let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "u32");
