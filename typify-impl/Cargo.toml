@@ -1,10 +1,12 @@
 [package]
 name = "typify-impl"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
 edition = "2018"
 license = "Apache-2.0"
 description = "typify backend implementation"
+repository = "https://github.com/oxidecomputer/typify"
+readme = "../README.md"
 
 [dependencies]
 convert_case = "0.4"
