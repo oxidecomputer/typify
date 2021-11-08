@@ -5,31 +5,63 @@ Compile JSON Schema documents into Rust types. This can be used ...
 - via the macro `import_types!("types.json")` to generate Rust types directly
 in your program
 
-- via the builder functions to generate Rust types in `build.rs`
+- via a builder interface to generate Rust types in `build.rs`
 
 - or via the builder functions to generate persistent files e.g. when building
 API bindings.
 
+## JSON Schema → Rust types
+
+We can divide types in JSON Schema into a few classes:
+
+### Simple types
+
+Integers, floating-point numbers, strings, etc. Those all have straightforward
+translations. The only significant nuance is how to select the appropriate
+built-in type.
+
+### Arrays
+
+JSON Schema arrays can turn into three Rust types `Vec<T>`, `HashSet<T>`, and
+tuples. Arrays may have a fixed length that matches a fixed list of item types;
+this matches well with Rust tuples. The distintion between `Vec<T>` and `HashSet<T>` is only if the `uniqueItems` field is `true`.
+
+### Objects
+
+In general Objects turn in to Rust structs, but if there are no properties
+defined Typify models this as a `HashMap<String, T>` if the
+`additionalProperties` schema specifies `T` or a `HashMap<String,
+serde_json::Value>` otherwise. Properties that are not in the `required` set and represented as an `Option<T>`.
+
+### OneOf
+
+The `OneOf` construct maps to a Rust enum. Typify maps this to the various [serde enum types](https://serde.rs/enum-representations.html).
+
+### AnyOf / AllOf
+
+The `anyOf` and `allOf` constructs are a little trickier to handle, but (in
+general) Typify models these as structs where each member is decorated with the
+`#[serde(flatten)]` attribute.
 
 ## WIP
 
-This is a work in progress. Here are some clear TODOs:
+Typify is a work in progress. Changes that affect output will likely be
+breaking changes. We will continue to update the crate version number with each
+change; be cognizant when updating to a new version.
 
-- The API needs some consideration; the pieces are there, but it could stand
-being refined.
+Bounded numbers aren't very well handled. Consider, for example, the schema:
 
-- Strings with patterns and max/min lengths aren't carefully considering ATM
+```json
+{
+    "type": "integer",
+    "minimum": 1,
+    "maximum": 6
+}
+```
 
-Just to not be overwhelmed, but what's not done: there's a lot that's neat!
+The resulting types won't enforce those value constraints.
 
-- Versions of schemars has a behavior (bug?) whereby it spits out `enum`s as
-`anyOf` rather than `oneOf`; we detect when all subschemas are mutually
-incompatible so that we can treat these as `enum`s.
+Similarly, patterns and lengths for strings are not enforced.
 
-- All serde enum tagging types are supported.
-
-- Complex tuples are properly handled.
-
-- The test harness is pretty robust, validating that the generated
-`TokenStream` *roughly* matches the `TokenStream` of the original item
-(enum/struct/type).
+In general, if you have a JSON Schema that causes Typify to fail or if the
+generated type isn't what you expect, please file an issue.

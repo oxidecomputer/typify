@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
 use typify_impl::TypeSpace;

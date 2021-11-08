@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use std::{fs::File, io::BufReader, path::Path};
 
 use quote::quote;

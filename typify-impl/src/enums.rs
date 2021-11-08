@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use std::collections::{BTreeMap, BTreeSet};
 
 use convert_case::{Case, Casing};

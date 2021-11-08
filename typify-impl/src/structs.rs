@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};

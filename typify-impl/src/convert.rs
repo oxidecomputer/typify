@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryEnum, TypeEntryStruct, Variant, VariantDetails,
 };

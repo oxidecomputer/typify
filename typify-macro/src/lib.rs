@@ -1,7 +1,8 @@
+// Copyright 2021 Oxide Computer Company
+
 use std::path::Path;
 
 use proc_macro::TokenStream;
-use quote::quote;
 use schemars::schema::Schema;
 use syn::LitStr;
 use typify_impl::TypeSpace;
@@ -44,12 +45,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             .map_err(|e| into_syn_err(e, arg.span()))?;
     }
 
-    let type_defs = type_space.iter_types().map(|t| t.definition());
-
-    let file = quote! {
-        #(#type_defs)*
-    };
-    Ok(file.into())
+    Ok(type_space.to_stream().into())
 }
 
 fn into_syn_err(e: typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
