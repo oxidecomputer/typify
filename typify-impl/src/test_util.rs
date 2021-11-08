@@ -1,3 +1,5 @@
+// Copyright 2021 Oxide Computer Company
+
 use std::{any::type_name, collections::HashSet};
 
 use proc_macro2::TokenStream;

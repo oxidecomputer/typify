@@ -1,10 +1,7 @@
 // Copyright 2021 Oxide Computer Company
 
-use typify::import_types;
-
-use serde::{Deserialize, Serialize};
-
-import_types!("../example.json");
+// Include the generated code.
+include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 fn main() {
     let veg = Veggie {

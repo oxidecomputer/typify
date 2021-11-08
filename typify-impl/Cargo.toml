@@ -1,24 +1,25 @@
 [package]
 name = "typify-impl"
-version = "0.0.2"
+version = "0.0.4"
 authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
 edition = "2018"
 license = "Apache-2.0"
 description = "typify backend implementation"
+repository = "https://github.com/oxidecomputer/typify"
+readme = "../README.md"
 
 [dependencies]
-schemars = "0.8.3"
-proc-macro2 = "1.0.27"
-quote = "1.0.9"
-serde_json = "1.0.64"
-convert_case = "0.4.0"
-thiserror = "1.0.29"
-# This should just be a dev-dependency, but I got lazy for parsing idents
-syn = { version = "1.0.76", features = ["full"] }
+convert_case = "0.4"
+proc-macro2 = "1.0"
+quote = "1.0"
+rustfmt-wrapper = "0.1"
+schemars = "0.8"
+serde_json = "1.0"
+syn = { version = "1.0", features = ["full"] }
+thiserror = "1.0"
 
 [dev-dependencies]
-serde = "1.0.125"
+expectorate = "1.0"
+paste = "1.0"
 schema = "0.0.1"
-rustfmt-wrapper = "0.1.0"
-expectorate = "1.0.4"
-paste = "1.0.5"
+serde = "1.0"

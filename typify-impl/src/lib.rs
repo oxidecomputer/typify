@@ -1,6 +1,10 @@
+// Copyright 2021 Oxide Computer Company
+
 use std::collections::BTreeMap;
 
 use proc_macro2::TokenStream;
+use quote::quote;
+use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{TypeEntry, TypeEntryNewtype};
@@ -26,7 +30,10 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 /// Representation of a type which may have a definition or may be built-in.
 #[derive(Debug, Clone)]
-pub struct Type<'a>(&'a TypeSpace, &'a TypeEntry);
+pub struct Type<'a> {
+    type_space: &'a TypeSpace,
+    type_entry: &'a TypeEntry,
+}
 
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
 struct TypeId(u64);
@@ -156,7 +163,10 @@ impl TypeSpace {
 
         let type_id = self.assign_type(type_entry);
         let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(Type(self, type_entry))
+        Ok(Type {
+            type_space: self,
+            type_entry,
+        })
     }
 
     /// Add a new type with a name hint and return a the components necessary
@@ -174,7 +184,10 @@ impl TypeSpace {
 
         let type_id = self.assign_type(type_entry);
         let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(Type(self, type_entry))
+        Ok(Type {
+            type_space: self,
+            type_entry,
+        })
     }
 
     pub fn uses_chrono(&self) -> bool {
@@ -197,11 +210,18 @@ impl TypeSpace {
     /// Iterate over all types including those defined in this [TypeSpace] and
     /// those referred to by those types.
     pub fn iter_types(&self) -> impl Iterator<Item = Type> {
-        self.id_to_entry
-            .values()
-            .map(|type_entry| Type(self, type_entry))
-            .collect::<Vec<_>>()
-            .into_iter()
+        self.id_to_entry.values().map(move |type_entry| Type {
+            type_space: self,
+            type_entry,
+        })
+    }
+
+    pub fn to_stream(&self) -> TokenStream {
+        let type_defs = self.iter_types().map(|t| t.definition());
+
+        quote! {
+            #(#type_defs)*
+        }
     }
 
     /// Allocated the next TypeId.
@@ -270,17 +290,29 @@ impl TypeSpace {
     }
 }
 
+impl ToString for TypeSpace {
+    fn to_string(&self) -> String {
+        rustfmt(self.to_stream().to_string()).unwrap()
+    }
+}
+
 impl<'a> Type<'a> {
     /// The name of the type as a String.
     pub fn name(&self) -> String {
-        let Type(type_space, type_entry) = self;
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
         type_entry.type_name(type_space)
     }
 
     /// The identifier for the type as might be used for a function return or
     /// defining the type of a member of a struct..
     pub fn ident(&self) -> TokenStream {
-        let Type(type_space, type_entry) = self;
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
         type_entry.type_ident(type_space, true)
     }
 
@@ -288,20 +320,26 @@ impl<'a> Type<'a> {
     /// function signature. In general: simple types are the same as
     /// [Type::ident] and complex types prepend a `&`.
     pub fn parameter_ident(&self) -> TokenStream {
-        let Type(type_space, type_entry) = self;
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
         type_entry.type_parameter_ident(type_space)
     }
 
     /// The definition for this type. This will be empty for types that are
     /// already defined such as `u32` or `uuid::Uuid`.
     pub fn definition(&self) -> TokenStream {
-        let Type(type_space, type_entry) = self;
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
         type_entry.output(type_space)
     }
 
     /// A textual description of the type appropriate for debug output.
     pub fn describe(&self) -> String {
-        self.1.describe()
+        self.type_entry.describe()
     }
 }
 
