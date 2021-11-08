@@ -6,7 +6,7 @@ edition = "2018"
 license = "Apache-2.0"
 description = "JSON schema to rust type code generator"
 repository = "https://github.com/oxidecomputer/serde_tokenstream"
-readme = "README.md"
+readme = "../README.md"
 keywords = ["json", "schema", "proc_macro"]
 categories = ["api-bindings", "compilers"]
 
