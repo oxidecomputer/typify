@@ -135,14 +135,14 @@ impl TypeSpace {
                             required,
                             properties,
                             pattern_properties,
-                            additional_properties: Some(additional_properties),
+                            additional_properties,
                             property_names: None,
                         } = validation.as_ref()
                         {
                             if required.len() == 1
                                 && properties.len() == 1
                                 && pattern_properties.is_empty()
-                                && additional_properties.as_ref() == &Schema::Bool(false)
+                                && schema_none_or_false(additional_properties)
                             {
                                 let (prop_name, prop_type) = properties.iter().next().unwrap();
 
@@ -702,14 +702,12 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
             reference: None,
             extensions: _,
         }) if single.as_ref() == &InstanceType::Object
-            && schema_none_or_false(&validation.additional_properties) =>
+            && schema_none_or_false(&validation.additional_properties)
+            && validation.max_properties.is_none()
+            && validation.min_properties.is_none()
+            && validation.pattern_properties.is_empty()
+            && validation.property_names.is_none() =>
         {
-            // These are the fields we don't currently handle
-            assert!(validation.max_properties.is_none());
-            assert!(validation.min_properties.is_none());
-            assert!(validation.pattern_properties.is_empty());
-            assert!(validation.property_names.is_none());
-
             Some((metadata.as_ref().map(|m| m.as_ref()), validation.as_ref()))
         }
 
@@ -835,6 +833,7 @@ pub(crate) fn enum_impl(type_name: &Ident, variants: &[Variant]) -> TokenStream 
 mod tests {
     use std::collections::HashSet;
 
+    use quote::quote;
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
@@ -1328,5 +1327,24 @@ mod tests {
     #[test]
     fn test_internal_deny_simple() {
         validate_output::<InternalSimple>();
+    }
+
+    #[test]
+    fn test_result() {
+        let mut type_space = TypeSpace::default();
+        let schema = schema_for!(Result<u32, String>);
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
+        let type_entry = type_space
+            .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
+            .unwrap();
+        let actual = type_entry.output(&type_space);
+        let expected = quote! {
+            #[derive(Serialize, Deserialize, Debug, Clone)]
+            pub enum ResultX {
+                Ok(u32),
+                Err(String),
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
