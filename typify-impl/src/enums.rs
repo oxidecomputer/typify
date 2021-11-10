@@ -88,6 +88,9 @@ impl TypeSpace {
                         reference: None,
                         extensions: _,
                     }) if single.as_ref() == &InstanceType::String => {
+                        // TODO we should probably ignore duplicate values
+                        // within this enum_values array.
+
                         // Confirm that all values are, in fact, simple strings.
                         // Simple strings become simple variants. If any is not
                         // a string, we'll end up returning None
@@ -185,6 +188,8 @@ impl TypeSpace {
                 None => vec![None],
             })
             .collect::<Option<Vec<_>>>();
+
+        // TODO verify that all variants have unique names.
 
         variants.map(|variants| {
             TypeEntryEnum::from_metadata(
