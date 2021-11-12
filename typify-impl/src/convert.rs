@@ -620,9 +620,9 @@ impl TypeSpace {
                 && additional_properties.as_ref().map(AsRef::as_ref)
                     != Some(&Schema::Bool(false)) =>
             {
-                self.make_map(None, additional_properties)
+                self.make_map(type_name.into_option(), additional_properties)
             }
-            None => self.make_map(None, &None),
+            None => self.make_map(type_name.into_option(), &None),
 
             // The typical case
             Some(validation) => {

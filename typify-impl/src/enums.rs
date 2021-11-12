@@ -26,8 +26,8 @@ impl TypeSpace {
         if subschemas.len() == 1 {
             return None;
         }
-        // Let's be as general as possible and consider the possibility that more
-        // than one subschema is the simple null.
+        // Let's be as general as possible and consider the possibility that
+        // more than one subschema is the simple null.
         let non_nulls = subschemas
             .iter()
             .filter(|schema| {
@@ -49,8 +49,8 @@ impl TypeSpace {
         Some(type_entry)
     }
 
-    // TODO these maybe_* functions need to not create new types until we're past
-    // that point at which they might return None.
+    // TODO these maybe_* functions need to not create new types until we're
+    // past that point at which they might return None.
     pub(crate) fn maybe_externally_tagged_enum(
         &mut self,
         type_name: Name,
@@ -65,13 +65,13 @@ impl TypeSpace {
             .iter()
             .map(|schema| -> Option<Vec<Variant>> {
                 match schema {
-                    // It shouldn't be possible to encounter the "match anything"
-                    // schema here.
+                    // It shouldn't be possible to encounter the "match
+                    // anything" schema here.
                     Schema::Bool(true) => unreachable!(),
-                    // TODO It would be odd to see the "match nothing" schema here.
-                    // Let's abort for now, but we could implement this as a variant
-                    // that we'd never use... I guess.
-                    Schema::Bool(false) => unreachable!(),
+                    // TODO It would be odd to see the "match nothing" schema
+                    // here. Let's abort for now, but we could implement this
+                    // as a variant that we'd never use... I guess.
+                    Schema::Bool(false) => todo!(),
 
                     // Strings must be simple enumerations.
                     Schema::Object(SchemaObject {
@@ -112,8 +112,9 @@ impl TypeSpace {
                             .collect()
                     }
 
-                    // Objects must have a single required member. The type of that
-                    // lone member determines the type associated with the variant.
+                    // Objects must have a single required member. The type of
+                    // that lone member determines the type associated with the
+                    // variant.
                     Schema::Object(SchemaObject {
                         metadata,
                         instance_type: Some(SingleOrVec::Single(single)),
@@ -128,7 +129,6 @@ impl TypeSpace {
                         reference: None,
                         extensions: _,
                     }) if single.as_ref() == &InstanceType::Object => {
-                        let validation = validation.as_ref();
                         if let ObjectValidation {
                             max_properties: None,
                             min_properties: None,
@@ -137,7 +137,7 @@ impl TypeSpace {
                             pattern_properties,
                             additional_properties: Some(additional_properties),
                             property_names: None,
-                        } = validation
+                        } = validation.as_ref()
                         {
                             if required.len() == 1
                                 && properties.len() == 1
@@ -157,7 +157,8 @@ impl TypeSpace {
                                 // then this must be true for a well-constructed
                                 // schema.
                                 assert!(required.contains(prop_name));
-                                // TODO should I be doing something different with the error below?
+                                // TODO should I be doing something different
+                                // with the error below?
                                 let (details, deny) = self
                                     .external_variant(type_name.clone(), prop_name, prop_type)
                                     .ok()?;

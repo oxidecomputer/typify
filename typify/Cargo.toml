@@ -1,6 +1,6 @@
 [package]
 name = "typify"
-version = "0.0.4"
+version = "0.0.5-dev"
 authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
 edition = "2018"
 license = "Apache-2.0"
@@ -11,8 +11,8 @@ keywords = ["json", "schema", "proc_macro"]
 categories = ["api-bindings", "compilers"]
 
 [dependencies]
-typify-macro = { version = "0.0.4", path = "../typify-macro" }
-typify-impl = { version = "0.0.4", path = "../typify-impl" }
+typify-macro = { version = "0.0.5-dev", path = "../typify-macro" }
+typify-impl = { version = "0.0.5-dev", path = "../typify-impl" }
 
 [dev-dependencies]
 serde = "1.0"

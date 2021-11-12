@@ -39,10 +39,19 @@ pub struct Type<'a> {
 struct TypeId(u64);
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum Name {
+pub(crate) enum Name {
     Required(String),
     Suggested(String),
     Unknown,
+}
+
+impl Name {
+    pub(crate) fn into_option(self) -> Option<String> {
+        match self {
+            Name::Required(s) | Name::Suggested(s) => Some(s),
+            Name::Unknown => None,
+        }
+    }
 }
 
 /// A collection of types.
