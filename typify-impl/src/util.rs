@@ -1,6 +1,6 @@
 // Copyright 2021 Oxide Computer Company
 
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 use convert_case::{Case, Casing};
 use schemars::schema::{
@@ -175,91 +175,59 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
     }
 }
 
+// See if there are unique, required properties of each that cannot be present
+// in the other. In other words, see if there are properties that would
+// uniquely identify an objects as validating exclusively with one or the other
+// (but not with both).
 fn object_schemas_mutually_exclusive(
     a_validation: &ObjectValidation,
     b_validation: &ObjectValidation,
 ) -> bool {
-    match (a_validation, b_validation) {
-        (
-            ObjectValidation {
-                required: a_required,
-                additional_properties: Some(a_additional),
-                ..
-            },
-            ObjectValidation {
-                required: b_required,
-                additional_properties: Some(b_additional),
-                ..
-            },
-            // Both objects must disallow additional fields
-            // (this is stricter than absolutely necessary,
-            // but is a reasonable simplification)
-        ) if a_additional.as_ref() == &Schema::Bool(false)
-            && b_additional.as_ref() == &Schema::Bool(false) =>
-        {
-            // TODO seems odd that this matches
+    let ObjectValidation {
+        required: a_required,
+        properties: a_properties,
+        ..
+    } = a_validation;
+    let ObjectValidation {
+        required: b_required,
+        properties: b_properties,
+        ..
+    } = b_validation;
 
-            // Neither set of required properties must be a
-            // subset of the other i.e. both must have
-            // unique, required properties.
-            !a_required.is_subset(b_required) && !b_required.is_subset(a_required)
-        }
-        (
-            ObjectValidation {
-                properties: a_properties,
-                required: a_required,
-                // TODO I believe this should actually be
-                // Bool(false) as above
-                additional_properties: None,
-                ..
-            },
-            ObjectValidation {
-                properties: b_properties,
-                required: b_required,
-                additional_properties: None,
-                ..
-            },
-        ) => {
-            // The object schemas are mutually exclusive if
-            // each has one or more unique, required
-            // properties.
-            if !a_required.is_subset(b_required) && !b_required.is_subset(a_required) {
-                true
-            } else {
-                // Even if one of the sets of required
-                // properties is a subset of the other (or
-                // if they are identical), each may have
-                // properties that have fixed values that
-                // differ. This can happen in particular
-                // for internally or adjacently tagged
-                // enums where the properties may be
-                // identical but the value of the tag
-                // property will be unique.
+    // Either set of required properties must not be a subset of the other's
+    // properties i.e. if there's a property that *must* be in one of the two
+    // objects, and *cannot* be in the other, a property whose presence or
+    // absence determines which of the two objects is relevant.
+    if !a_required.is_subset(&b_properties.keys().cloned().collect())
+        || !b_required.is_subset(&a_properties.keys().cloned().collect())
+    {
+        true
+    } else {
+        // Even if all required properties of each is a permitted property of
+        // the other, each may have required properties that have fixed values
+        // that differ. This can happen in particular for internally or
+        // adjacently tagged enums where the properties may be identical but
+        // the value of the tag property will be unique.
 
-                // Compute the set that consists of
-                // fixed-value properties--a tuple of
-                // the property name and the value.
-                let aa = a_required
-                    .iter()
-                    .filter_map(|name| {
-                        let t = a_properties.get(name).unwrap();
-                        constant_string_value(t).map(|s| (name.clone(), s))
-                    })
-                    .collect::<BTreeSet<_>>();
-                let bb = b_required
-                    .iter()
-                    .filter_map(|name| {
-                        let t = b_properties.get(name).unwrap();
-                        constant_string_value(t).map(|s| (name.clone(), s))
-                    })
-                    .collect::<BTreeSet<_>>();
+        // Compute the set that consists of fixed-value properties--a
+        // tuple of the property name and the value.
+        let aa = a_required
+            .iter()
+            .filter_map(|name| {
+                let t = a_properties.get(name).unwrap();
+                constant_string_value(t).map(|s| (name.clone(), s))
+            })
+            .collect::<HashSet<_>>();
+        let bb = b_required
+            .iter()
+            .filter_map(|name| {
+                let t = b_properties.get(name).unwrap();
+                constant_string_value(t).map(|s| (name.clone(), s))
+            })
+            .collect::<HashSet<_>>();
 
-                // True if neither is a subset of the other.
-                !aa.is_subset(&bb) && !bb.is_subset(&aa)
-            }
-        }
-
-        _ => todo!(),
+        // True if neither is a subset of the other.
+        !aa.is_subset(&bb) && !bb.is_subset(&aa)
     }
 }
 
@@ -505,4 +473,104 @@ pub(crate) fn get_type_name(
     };
 
     Some(sanitize(name, case))
+}
+
+#[cfg(test)]
+mod tests {
+    use schemars::{schema_for, JsonSchema};
+
+    use crate::util::schemas_mutually_exclusive;
+
+    #[test]
+    fn test_non_exclusive_structs() {
+        #![allow(dead_code)]
+
+        #[derive(JsonSchema)]
+        struct A {
+            a: Option<()>,
+            b: (),
+        }
+
+        #[derive(JsonSchema)]
+        struct B {
+            a: (),
+            b: Option<()>,
+        }
+
+        let a = schema_for!(A).schema.into();
+        let b = schema_for!(B).schema.into();
+
+        assert!(!schemas_mutually_exclusive(&a, &b));
+        assert!(!schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_unique_prop_structs() {
+        #![allow(dead_code)]
+
+        #[derive(JsonSchema)]
+        struct A {
+            a: Option<()>,
+            b: (),
+        }
+
+        #[derive(JsonSchema)]
+        struct B {
+            a: (),
+            b: Option<()>,
+            c: (),
+        }
+
+        let a = schema_for!(A).schema.into();
+        let b = schema_for!(B).schema.into();
+
+        assert!(schemas_mutually_exclusive(&a, &b));
+        assert!(schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_exclusive_structs() {
+        #![allow(dead_code)]
+
+        #[derive(JsonSchema)]
+        struct A {
+            a: Option<()>,
+            b: (),
+            aa: (),
+        }
+
+        #[derive(JsonSchema)]
+        struct B {
+            a: (),
+            b: Option<()>,
+            bb: (),
+        }
+
+        let a = schema_for!(A).schema.into();
+        let b = schema_for!(B).schema.into();
+
+        assert!(schemas_mutually_exclusive(&a, &b));
+        assert!(schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_exclusive_one_empty_struct() {
+        #![allow(dead_code)]
+
+        #[derive(JsonSchema)]
+        struct A {}
+
+        #[derive(JsonSchema)]
+        struct B {
+            a: (),
+            b: Option<()>,
+            bb: (),
+        }
+
+        let a = schema_for!(A).schema.into();
+        let b = schema_for!(B).schema.into();
+
+        assert!(schemas_mutually_exclusive(&a, &b));
+        assert!(schemas_mutually_exclusive(&b, &a));
+    }
 }
