@@ -1,6 +1,6 @@
 // Copyright 2021 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use convert_case::{Case, Casing};
 use proc_macro2::{Ident, TokenStream};
@@ -49,28 +49,36 @@ impl TypeSpace {
         Some(type_entry)
     }
 
-    // TODO these maybe_* functions need to not create new types until we're
-    // past that point at which they might return None.
     pub(crate) fn maybe_externally_tagged_enum(
         &mut self,
         type_name: Name,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
-        let mut deny_unknown_fields = false;
+        enum ProtoVariant<'a> {
+            Simple {
+                name: &'a str,
+                description: Option<String>,
+            },
+            Typed {
+                name: &'a str,
+                schema: &'a Schema,
+                description: Option<String>,
+            },
+        }
 
-        // TODO this should be done in two passes--the first to verify that the
-        // shape of the enum looks good; the second to actually produce the type.
-        let variants = subschemas
+        // Verify that this matches the shape of an externally tagged enum
+        // before we do any type conversion.
+        let proto_variants = subschemas
             .iter()
-            .map(|schema| -> Option<Vec<Variant>> {
+            .map(|schema| -> Option<Vec<ProtoVariant<'_>>> {
                 match schema {
                     // It shouldn't be possible to encounter the "match
                     // anything" schema here.
                     Schema::Bool(true) => unreachable!(),
-                    // TODO It would be odd to see the "match nothing" schema
-                    // here. Let's abort for now, but we could implement this
-                    // as a variant that we'd never use... I guess.
+                    // It would be odd to see the "match nothing" schema here.
+                    // Let's abort for now, but we could implement this as a
+                    // variant that we'd never use... I guess.
                     Schema::Bool(false) => todo!(),
 
                     // Strings must be simple enumerations.
@@ -94,19 +102,9 @@ impl TypeSpace {
                         values
                             .iter()
                             .map(|value| {
-                                value.as_str().map(|variant_name| {
-                                    let name = variant_name.to_case(Case::Pascal);
-                                    let rename = if variant_name == name {
-                                        None
-                                    } else {
-                                        Some(variant_name.to_string())
-                                    };
-                                    Variant {
-                                        name,
-                                        rename,
-                                        description: metadata_description(metadata),
-                                        details: VariantDetails::Simple,
-                                    }
+                                value.as_str().map(|variant_name| ProtoVariant::Simple {
+                                    name: variant_name,
+                                    description: metadata_description(metadata),
                                 })
                             })
                             .collect()
@@ -135,40 +133,24 @@ impl TypeSpace {
                             required,
                             properties,
                             pattern_properties,
-                            additional_properties: Some(additional_properties),
+                            additional_properties: _,
                             property_names: None,
                         } = validation.as_ref()
                         {
                             if required.len() == 1
                                 && properties.len() == 1
                                 && pattern_properties.is_empty()
-                                && additional_properties.as_ref() == &Schema::Bool(false)
                             {
                                 let (prop_name, prop_type) = properties.iter().next().unwrap();
-
-                                let name = prop_name.to_case(Case::Pascal);
-                                let rename = if *prop_name == name {
-                                    None
-                                } else {
-                                    Some(prop_name.clone())
-                                };
-
                                 // If required and properties both have length 1
                                 // then this must be true for a well-constructed
                                 // schema.
                                 assert!(required.contains(prop_name));
-                                // TODO should I be doing something different
-                                // with the error below?
-                                let (details, deny) = self
-                                    .external_variant(type_name.clone(), prop_name, prop_type)
-                                    .ok()?;
-                                deny_unknown_fields |= deny;
 
-                                Some(vec![Variant {
-                                    name,
-                                    rename,
+                                Some(vec![ProtoVariant::Typed {
+                                    name: prop_name,
+                                    schema: prop_type,
                                     description: metadata_description(metadata),
-                                    details,
                                 }])
                             } else {
                                 None
@@ -184,17 +166,76 @@ impl TypeSpace {
                 Some(v) => v.into_iter().map(Some).collect::<Vec<_>>(),
                 None => vec![None],
             })
-            .collect::<Option<Vec<_>>>();
+            .collect::<Option<Vec<_>>>()?;
 
-        variants.map(|variants| {
-            TypeEntryEnum::from_metadata(
-                type_name,
-                metadata,
-                EnumTagType::External,
-                variants,
-                deny_unknown_fields,
-            )
-        })
+        let variant_names = proto_variants
+            .iter()
+            .map(|proto| match proto {
+                ProtoVariant::Simple { name, .. } | ProtoVariant::Typed { name, .. } => name,
+            })
+            .collect::<HashSet<_>>();
+
+        // We can't have duplicate names in an enum.
+        if variant_names.len() != proto_variants.len() {
+            return None;
+        }
+
+        let mut deny_unknown_fields = false;
+        let variants = proto_variants
+            .into_iter()
+            .map(|proto| match proto {
+                ProtoVariant::Simple {
+                    name: variant_name,
+                    description,
+                } => {
+                    let name = variant_name.to_case(Case::Pascal);
+                    let rename = if variant_name == name {
+                        None
+                    } else {
+                        Some(variant_name.to_string())
+                    };
+                    Some(Variant {
+                        name,
+                        rename,
+                        description,
+                        details: VariantDetails::Simple,
+                    })
+                }
+
+                ProtoVariant::Typed {
+                    name: variant_name,
+                    schema,
+                    description,
+                } => {
+                    let name = variant_name.to_case(Case::Pascal);
+                    let rename = if variant_name == name {
+                        None
+                    } else {
+                        Some(variant_name.to_string())
+                    };
+
+                    let (details, deny) = self
+                        .external_variant(type_name.clone(), variant_name, schema)
+                        .ok()?;
+                    deny_unknown_fields |= deny;
+
+                    Some(Variant {
+                        name,
+                        rename,
+                        description,
+                        details,
+                    })
+                }
+            })
+            .collect::<Option<Vec<_>>>()?;
+
+        Some(TypeEntryEnum::from_metadata(
+            type_name,
+            metadata,
+            EnumTagType::External,
+            variants,
+            deny_unknown_fields,
+        ))
     }
 
     fn external_variant(
@@ -702,14 +743,12 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
             reference: None,
             extensions: _,
         }) if single.as_ref() == &InstanceType::Object
-            && schema_none_or_false(&validation.additional_properties) =>
+            && schema_none_or_false(&validation.additional_properties)
+            && validation.max_properties.is_none()
+            && validation.min_properties.is_none()
+            && validation.pattern_properties.is_empty()
+            && validation.property_names.is_none() =>
         {
-            // These are the fields we don't currently handle
-            assert!(validation.max_properties.is_none());
-            assert!(validation.min_properties.is_none());
-            assert!(validation.pattern_properties.is_empty());
-            assert!(validation.property_names.is_none());
-
             Some((metadata.as_ref().map(|m| m.as_ref()), validation.as_ref()))
         }
 
@@ -718,9 +757,8 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
     }
 }
 
-// TODO: https://github.com/GREsau/schemars/pull/99
-// Really this should be Schema::Bool(false), but additional_properties is used
-// inconsistently... in schemars, but also generally.
+// We infer from a Some(Schema::Bool(false)) or None value that either nothing
+// or nothing of importance is in the additional properties.
 fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
     matches!(
         additional_properties.as_ref().map(Box::as_ref),
@@ -835,6 +873,7 @@ pub(crate) fn enum_impl(type_name: &Ident, variants: &[Variant]) -> TokenStream 
 mod tests {
     use std::collections::HashSet;
 
+    use quote::quote;
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
@@ -1317,7 +1356,8 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    // TODO change this to deny_unknown_fields, but there's a bug in schemars
+    // TODO change this to deny_unknown_fields, but there's a bug in schemars;
+    // see https://github.com/GREsau/schemars/pull/113
     #[serde(tag = "tag")]
     enum InternalSimple {
         Shadrach,
@@ -1328,5 +1368,24 @@ mod tests {
     #[test]
     fn test_internal_deny_simple() {
         validate_output::<InternalSimple>();
+    }
+
+    #[test]
+    fn test_result() {
+        let mut type_space = TypeSpace::default();
+        let schema = schema_for!(Result<u32, String>);
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
+        let type_entry = type_space
+            .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
+            .unwrap();
+        let actual = type_entry.output(&type_space);
+        let expected = quote! {
+            #[derive(Serialize, Deserialize, Debug, Clone)]
+            pub enum ResultX {
+                Ok(u32),
+                Err(String),
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
