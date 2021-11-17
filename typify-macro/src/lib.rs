@@ -3,10 +3,13 @@
 use std::path::Path;
 
 use proc_macro::TokenStream;
+use quote::quote;
 use schemars::schema::Schema;
 use syn::LitStr;
 use typify_impl::TypeSpace;
 
+/// Import types by providing a pathname for a JSON Schema file. The path must
+/// be relative to `$CARGO_MANIFEST_DIR`.
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
     match do_import_types(item) {
@@ -24,14 +27,14 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
     let path = dir.join(arg.value());
 
-    let content = std::fs::read_to_string(path).map_err(|e| {
-        syn::Error::new(
-            arg.span(),
-            format!("couldn't read file {}: {}", arg.value(), e.to_string()),
-        )
-    })?;
-
-    let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
+    let schema: schemars::schema::RootSchema =
+        serde_json::from_reader(std::fs::File::open(&path).map_err(|e| {
+            syn::Error::new(
+                arg.span(),
+                format!("couldn't read file {}: {}", arg.value(), e.to_string()),
+            )
+        })?)
+        .unwrap();
 
     let mut type_space = TypeSpace::default();
     type_space
@@ -45,7 +48,16 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             .map_err(|e| into_syn_err(e, arg.span()))?;
     }
 
-    Ok(type_space.to_stream().into())
+    let types = type_space.to_stream();
+    let path_str = path.to_string_lossy();
+    let output = quote! {
+        #types
+
+        // Force a rebuild when the given file is modified.
+        const _: &str = include_str!(#path_str);
+    };
+
+    Ok(output.into())
 }
 
 fn into_syn_err(e: typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
