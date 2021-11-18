@@ -20,10 +20,10 @@ impl TypeSpace {
         validation: &ObjectValidation,
     ) -> Result<(Vec<StructProperty>, bool)> {
         // These are the fields we don't currently handle
-        assert!(validation.max_properties.is_none());
-        assert!(validation.min_properties.is_none());
-        assert!(validation.pattern_properties.is_empty());
-        assert!(validation.property_names.is_none());
+        //assert!(validation.max_properties.is_none());
+        //assert!(validation.min_properties.is_none());
+        //assert!(validation.pattern_properties.is_empty());
+        //assert!(validation.property_names.is_none());
 
         let mut properties = validation
             .properties
