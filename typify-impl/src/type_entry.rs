@@ -1,5 +1,7 @@
 // Copyright 2021 Oxide Computer Company
 
+use std::collections::BTreeSet;
+
 use convert_case::Case;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
@@ -40,7 +42,13 @@ pub(crate) struct TypeEntryNewtype {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum TypeEntry {
+pub(crate) struct TypeEntry {
+    pub details: TypeEntryDetails,
+    pub derives: Option<BTreeSet<&'static str>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum TypeEntryDetails {
     Enum(TypeEntryEnum),
     Struct(TypeEntryStruct),
     Newtype(TypeEntryNewtype),
@@ -55,7 +63,7 @@ pub(crate) enum TypeEntry {
     BuiltIn(String),
     /// Integers and booleans
     Integral(String),
-    /// Floating point numbers; critical values that cannot be Eq
+    /// Floating point numbers; not Eq, Ord, or Hash
     Float(String),
     /// Strings... which we handle a little specially.
     String,
@@ -118,12 +126,12 @@ impl TypeEntryEnum {
         tag_type: EnumTagType,
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
-    ) -> TypeEntry {
+    ) -> TypeEntryDetails {
         let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntry::Enum(Self {
+        TypeEntryDetails::Enum(Self {
             name,
             rename,
             description,
@@ -140,12 +148,12 @@ impl TypeEntryStruct {
         metadata: &Option<Box<Metadata>>,
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
-    ) -> TypeEntry {
+    ) -> TypeEntryDetails {
         let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntry::Struct(Self {
+        TypeEntryDetails::Struct(Self {
             name,
             rename,
             description,
@@ -160,12 +168,12 @@ impl TypeEntryNewtype {
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
-    ) -> TypeEntry {
+    ) -> TypeEntryDetails {
         let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntry::Newtype(Self {
+        TypeEntryDetails::Newtype(Self {
             name,
             rename,
             description,
@@ -174,22 +182,40 @@ impl TypeEntryNewtype {
     }
 }
 
+impl From<TypeEntryDetails> for TypeEntry {
+    fn from(details: TypeEntryDetails) -> Self {
+        Self {
+            details,
+            derives: None,
+        }
+    }
+}
+
 impl TypeEntry {
     pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
-        TypeEntry::BuiltIn(type_name.to_string())
+        TypeEntry {
+            details: TypeEntryDetails::BuiltIn(type_name.to_string()),
+            derives: None,
+        }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
-        TypeEntry::Integral(type_name.to_string())
+        TypeEntry {
+            details: TypeEntryDetails::Integral(type_name.to_string()),
+            derives: None,
+        }
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
-        TypeEntry::Float(type_name.to_string())
+        TypeEntry {
+            details: TypeEntryDetails::Float(type_name.to_string()),
+            derives: None,
+        }
     }
 
     pub(crate) fn name(&self) -> Option<&String> {
-        match self {
-            TypeEntry::Enum(TypeEntryEnum { name, .. })
-            | TypeEntry::Struct(TypeEntryStruct { name, .. })
-            | TypeEntry::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
+        match &self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
+            | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
 
             _ => None,
         }
@@ -203,8 +229,8 @@ impl TypeEntry {
             quote! {Clone},
         ];
 
-        match self {
-            TypeEntry::Enum(TypeEntryEnum {
+        match &self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
                 name,
                 rename,
                 description,
@@ -278,7 +304,7 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntry::Struct(TypeEntryStruct {
+            TypeEntryDetails::Struct(TypeEntryStruct {
                 name,
                 rename,
                 description,
@@ -316,7 +342,7 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntry::Newtype(TypeEntryNewtype {
+            TypeEntryDetails::Newtype(TypeEntryNewtype {
                 name,
                 rename,
                 description,
@@ -350,20 +376,20 @@ impl TypeEntry {
             }
 
             // These types require no definition as they're already defined.
-            TypeEntry::BuiltIn(_)
-            | TypeEntry::Integral(_)
-            | TypeEntry::Float(_)
-            | TypeEntry::String
-            | TypeEntry::Option(_)
-            | TypeEntry::Array(_)
-            | TypeEntry::Map(_, _)
-            | TypeEntry::Set(_)
-            | TypeEntry::Unit
-            | TypeEntry::Tuple(_) => quote! {},
+            TypeEntryDetails::BuiltIn(_)
+            | TypeEntryDetails::Integral(_)
+            | TypeEntryDetails::Float(_)
+            | TypeEntryDetails::String
+            | TypeEntryDetails::Option(_)
+            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Set(_)
+            | TypeEntryDetails::Unit
+            | TypeEntryDetails::Tuple(_) => quote! {},
 
             // We should never get here as reference types should only be used
             // in-flight, but never recorded into the type space.
-            TypeEntry::Reference(_) => unreachable!(),
+            TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
 
@@ -372,23 +398,25 @@ impl TypeEntry {
     }
 
     pub(crate) fn type_ident(&self, type_space: &TypeSpace, external: bool) -> TokenStream {
-        match self {
+        match &self.details {
             // Named types.
-            TypeEntry::Enum(TypeEntryEnum { name, .. })
-            | TypeEntry::Struct(TypeEntryStruct { name, .. })
-            | TypeEntry::Newtype(TypeEntryNewtype { name, .. }) => match &type_space.type_mod {
-                Some(type_mod) if external => {
-                    let type_mod = format_ident!("{}", type_mod);
-                    let type_name = format_ident!("{}", name);
-                    quote! { #type_mod :: #type_name }
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
+            | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => {
+                match &type_space.type_mod {
+                    Some(type_mod) if external => {
+                        let type_mod = format_ident!("{}", type_mod);
+                        let type_name = format_ident!("{}", name);
+                        quote! { #type_mod :: #type_name }
+                    }
+                    _ => {
+                        let type_name = format_ident!("{}", name);
+                        quote! { #type_name }
+                    }
                 }
-                _ => {
-                    let type_name = format_ident!("{}", name);
-                    quote! { #type_name }
-                }
-            },
+            }
 
-            TypeEntry::Option(id) => {
+            TypeEntryDetails::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -397,13 +425,13 @@ impl TypeEntry {
 
                 // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
-                match inner_ty {
-                    TypeEntry::Option(_) => inner_ident,
+                match &inner_ty.details {
+                    TypeEntryDetails::Option(_) => inner_ident,
                     _ => quote! { Option<#inner_ident> },
                 }
             }
 
-            TypeEntry::Array(id) => {
+            TypeEntryDetails::Array(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -413,7 +441,7 @@ impl TypeEntry {
                 quote! { Vec<#item> }
             }
 
-            TypeEntry::Map(key_id, value_id) => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -428,18 +456,17 @@ impl TypeEntry {
                 quote! { std::collections::HashMap<#key_ty, #value_ty> }
             }
 
-            TypeEntry::Set(id) => {
+            TypeEntryDetails::Set(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for set");
                 let item = inner_ty.type_ident(type_space, external);
                 // TODO we'll want this to be a Set of some kind, but we need to get the derives right first.
-                // quote! { std::collections::BTreeSet<#item> }
                 quote! { Vec<#item> }
             }
 
-            TypeEntry::Tuple(items) => {
+            TypeEntryDetails::Tuple(items) => {
                 let type_streams = items.iter().map(|item| {
                     type_space
                         .id_to_entry
@@ -451,23 +478,23 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeEntry::Unit => quote! { () },
-            TypeEntry::String => quote! { String },
-            TypeEntry::BuiltIn(name) | TypeEntry::Integral(name) | TypeEntry::Float(name) => {
-                syn::parse_str::<syn::TypePath>(name)
-                    .unwrap()
-                    .to_token_stream()
-            }
+            TypeEntryDetails::Unit => quote! { () },
+            TypeEntryDetails::String => quote! { String },
+            TypeEntryDetails::BuiltIn(name)
+            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
+                .unwrap()
+                .to_token_stream(),
 
-            TypeEntry::Reference(_) => panic!("references should be resolved by now"),
+            TypeEntryDetails::Reference(_) => panic!("references should be resolved by now"),
         }
     }
 
     pub(crate) fn type_parameter_ident(&self, type_space: &TypeSpace) -> TokenStream {
-        match self {
+        match &self.details {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
-            TypeEntry::Enum(TypeEntryEnum{ variants, .. })
+            TypeEntryDetails::Enum(TypeEntryEnum{ variants, .. })
                 // TODO we should probably cache this rather than iterating
                 // every time. We'll know it when the enum is constructed.
                 if variants
@@ -477,20 +504,20 @@ impl TypeEntry {
                 self.type_ident(type_space, true)
             }
 
-            TypeEntry::Enum(_)
-            | TypeEntry::Struct(_)
-            | TypeEntry::Newtype(_)
-            | TypeEntry::Array(_)
-            | TypeEntry::Map(_, _)
-            | TypeEntry::Set(_)
-            | TypeEntry::BuiltIn(_) => {
+            TypeEntryDetails::Enum(_)
+            | TypeEntryDetails::Struct(_)
+            | TypeEntryDetails::Newtype(_)
+            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Set(_)
+            | TypeEntryDetails::BuiltIn(_) => {
                 let ident = self.type_ident(type_space, true);
                 quote! {
                     &#ident
                 }
             }
 
-            TypeEntry::Option(id) => {
+            TypeEntryDetails::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -499,12 +526,12 @@ impl TypeEntry {
 
                 // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
-                match inner_ty {
-                    TypeEntry::Option(_) => inner_ident,
+                match &inner_ty.details {
+                    TypeEntryDetails::Option(_) => inner_ident,
                     _ => quote! { Option<#inner_ident> },
                 }
             }
-            TypeEntry::Tuple(items) => {
+            TypeEntryDetails::Tuple(items) => {
                 let type_streams = items.iter().map(|item| {
                     type_space
                         .id_to_entry
@@ -516,29 +543,29 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeEntry::Unit | TypeEntry::Integral(_) | TypeEntry::Float(_) => {
+            TypeEntryDetails::Unit | TypeEntryDetails::Integral(_) | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, true)
             }
-            TypeEntry::String => quote! { &str },
+            TypeEntryDetails::String => quote! { &str },
 
-            TypeEntry::Reference(_) => panic!("references should be resolved by now"),
+            TypeEntryDetails::Reference(_) => panic!("references should be resolved by now"),
         }
     }
 
     pub(crate) fn describe(&self) -> String {
-        match self {
-            TypeEntry::Enum(TypeEntryEnum { name, .. }) => format!("enum {}", name),
-            TypeEntry::Struct(TypeEntryStruct { name, .. }) => format!("struct {}", name),
-            TypeEntry::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
+        match &self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. }) => format!("enum {}", name),
+            TypeEntryDetails::Struct(TypeEntryStruct { name, .. }) => format!("struct {}", name),
+            TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
                 format!("newtype {} {}", name, type_id.0)
             }
 
-            TypeEntry::Unit => "()".to_string(),
-            TypeEntry::Option(type_id) => format!("option {}", type_id.0),
-            TypeEntry::Array(type_id) => format!("array {}", type_id.0),
-            TypeEntry::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
-            TypeEntry::Set(type_id) => format!("set {}", type_id.0),
-            TypeEntry::Tuple(type_ids) => {
+            TypeEntryDetails::Unit => "()".to_string(),
+            TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
+            TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
+            TypeEntryDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
+            TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
+            TypeEntryDetails::Tuple(type_ids) => {
                 format!(
                     "tuple ({})",
                     type_ids
@@ -548,19 +575,22 @@ impl TypeEntry {
                         .join(", ")
                 )
             }
-            TypeEntry::BuiltIn(name) | TypeEntry::Integral(name) | TypeEntry::Float(name) => {
-                name.clone()
-            }
-            TypeEntry::String => "string".to_string(),
+            TypeEntryDetails::BuiltIn(name)
+            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Float(name) => name.clone(),
+            TypeEntryDetails::String => "string".to_string(),
 
-            TypeEntry::Reference(_) => unreachable!(),
+            TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{type_entry::TypeEntryStruct, TypeEntry, TypeSpace};
+    use crate::{
+        type_entry::{TypeEntry, TypeEntryStruct},
+        TypeEntryDetails, TypeSpace,
+    };
 
     #[test]
     fn test_ident() {
@@ -572,25 +602,25 @@ mod tests {
         assert_eq!(ident.to_string(), "u32");
         assert_eq!(parameter.to_string(), "u32");
 
-        let t = TypeEntry::String;
+        let t = TypeEntry::from(TypeEntryDetails::String);
         let ident = t.type_ident(&ts, true);
         let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "String");
         assert_eq!(parameter.to_string(), "& str");
 
-        let t = TypeEntry::Unit;
+        let t = TypeEntry::from(TypeEntryDetails::Unit);
         let ident = t.type_ident(&ts, true);
         let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "()");
         assert_eq!(parameter.to_string(), "()");
 
-        let t = TypeEntry::Struct(TypeEntryStruct {
+        let t = TypeEntry::from(TypeEntryDetails::Struct(TypeEntryStruct {
             name: "SomeType".to_string(),
             rename: None,
             description: None,
             properties: vec![],
             deny_unknown_fields: false,
-        });
+        }));
 
         let ident = t.type_ident(&ts, true);
         let parameter = t.type_parameter_ident(&ts);
