@@ -300,6 +300,26 @@ fn array_schemas_mutually_exclusive(
             a_max_items != b_max_items
         }
 
+        // Plain, vanilla arrays.
+        (
+            ArrayValidation {
+                items: Some(SingleOrVec::Single(a_items)),
+                additional_items: None,
+                max_items: None,
+                min_items: None,
+                unique_items: None,
+                contains: None,
+            },
+            ArrayValidation {
+                items: Some(SingleOrVec::Single(b_items)),
+                additional_items: None,
+                max_items: None,
+                min_items: None,
+                unique_items: None,
+                contains: None,
+            },
+        ) => schemas_mutually_exclusive(a_items, b_items),
+
         (aa, bb) => todo!("{:#?} {:#?}", aa, bb),
     }
 }
@@ -439,11 +459,22 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
         _ => None,
     }?;
 
-    Some(sanitize(raw_name, Case::Pascal))
+    Some(sanitize(&raw_name, Case::Pascal))
 }
 
-fn sanitize(input: String, case: Case) -> String {
-    let out = input.replace("$", "-").replace("'", "").to_case(case);
+fn sanitize(input: &str, case: Case) -> String {
+    let out = input
+        .replace("$", "-")
+        .replace("@", "-")
+        .replace("/", "-")
+        .replace("+", "-plus-")
+        .replace("'", "")
+        .to_case(case);
+    let out = match out.chars().next() {
+        None => "x".to_case(case),
+        Some('a'..='z' | 'A'..='Z' | '_') => out,
+        Some(_) => format!("_{}", out),
+    };
 
     // Make sure the string is a valid Rust identifier.
     if syn::parse_str::<syn::Ident>(&out).is_ok() {
@@ -454,9 +485,8 @@ fn sanitize(input: String, case: Case) -> String {
 }
 
 pub(crate) fn recase(input: String, case: Case) -> (String, Option<String>) {
-    let new = sanitize(input.clone(), case);
+    let new = sanitize(&input, case);
     let rename = if new == input { None } else { Some(input) };
-    assert_ne!(new, "ref");
     (new, rename)
 }
 
@@ -472,14 +502,15 @@ pub(crate) fn get_type_name(
         (Name::Unknown, None) => None?,
     };
 
-    Some(sanitize(name, case))
+    Some(sanitize(&name, case))
 }
 
 #[cfg(test)]
 mod tests {
+    use convert_case::Case;
     use schemars::{schema_for, JsonSchema};
 
-    use crate::util::schemas_mutually_exclusive;
+    use crate::util::{sanitize, schemas_mutually_exclusive};
 
     #[test]
     fn test_non_exclusive_structs() {
@@ -572,5 +603,23 @@ mod tests {
 
         assert!(schemas_mutually_exclusive(&a, &b));
         assert!(schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_exclusive_simple_arrays() {
+        let a = schema_for!(Vec<u32>).schema.into();
+        let b = schema_for!(Vec<f32>).schema.into();
+
+        assert!(schemas_mutually_exclusive(&a, &b));
+        assert!(schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_sanitize() {
+        assert_eq!(sanitize("type", Case::Snake), "type_");
+        assert_eq!(sanitize("ref", Case::Snake), "ref_");
+        assert_eq!(sanitize("+1", Case::Snake), "plus_1");
+        assert_eq!(sanitize("-1", Case::Snake), "_1");
+        assert_eq!(sanitize("@timestamp", Case::Pascal), "Timestamp");
     }
 }
