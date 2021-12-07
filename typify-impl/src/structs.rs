@@ -89,7 +89,7 @@ impl TypeSpace {
                 };
 
                 properties.push(extra_prop);
-                false
+                true
             }
         };
 
@@ -449,6 +449,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
+    #[serde(deny_unknown_fields)]
     struct FlattenStuff {
         number: i32,
         #[serde(flatten)]
