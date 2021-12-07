@@ -5,7 +5,10 @@ use typify::TypeSpace;
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
-        panic!("{} need 1 argument", env!("CARGO_PKG_NAME"))
+        panic!(
+            "{} need 1 argument. Usage typify-cli ./example.json",
+            env!("CARGO_PKG_NAME")
+        )
     }
 
     let content = std::fs::read_to_string(&args[1]).unwrap();
