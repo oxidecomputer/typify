@@ -1,7 +1,8 @@
 // Copyright 2021 Oxide Computer Company
 
 use crate::type_entry::{
-    EnumTagType, TypeEntry, TypeEntryEnum, TypeEntryStruct, Variant, VariantDetails,
+    EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryStruct, Variant,
+    VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase};
 use convert_case::Case;
@@ -383,7 +384,7 @@ impl TypeSpace {
                 // patterns, but it seems like a pain in the neck so I'm
                 // punting for now.
                 // assert!(validation.is_none_or_default(), "{:#?}", validation);
-                Ok((TypeEntry::String, metadata))
+                Ok((TypeEntryDetails::String.into(), metadata))
             }
 
             Some("uuid") => {
@@ -408,7 +409,9 @@ impl TypeSpace {
             }
 
             // TODO random types I'm not sure what to do with
-            Some("uri" | "uri-template" | "email" | "ip") => Ok((TypeEntry::String, metadata)),
+            Some("uri" | "uri-template" | "email" | "ip") => {
+                Ok((TypeEntryDetails::String.into(), metadata))
+            }
 
             unhandled => todo!("{:#?}", unhandled),
         }
@@ -459,7 +462,8 @@ impl TypeSpace {
             EnumTagType::External,
             variants,
             false,
-        );
+        )
+        .into();
 
         if has_null {
             ty = self.type_to_option(ty);
@@ -594,7 +598,7 @@ impl TypeSpace {
         &self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        Ok((TypeEntry::Unit, metadata))
+        Ok((TypeEntryDetails::Unit.into(), metadata))
     }
 
     fn convert_object<'a>(
@@ -629,13 +633,17 @@ impl TypeSpace {
                 let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
                 let (properties, deny_unknown_fields) =
                     self.struct_members(tmp_type_name, validation)?;
-                let ty = TypeEntryStruct::from_metadata(
-                    type_name,
-                    metadata,
-                    properties,
-                    deny_unknown_fields,
-                );
-                Ok((ty, &None))
+
+                Ok((
+                    TypeEntryStruct::from_metadata(
+                        type_name,
+                        metadata,
+                        properties,
+                        deny_unknown_fields,
+                    )
+                    .into(),
+                    &None,
+                ))
             }
         }
     }
@@ -650,8 +658,10 @@ impl TypeSpace {
             None => ref_name,
         };
         let type_id = self.ref_to_id.get(key).unwrap();
-        let ty = TypeEntry::Reference(type_id.clone());
-        Ok((ty, metadata))
+        Ok((
+            TypeEntryDetails::Reference(type_id.clone()).into(),
+            metadata,
+        ))
     }
 
     fn convert_all_of<'a>(
@@ -813,7 +823,7 @@ impl TypeSpace {
                     .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
                     .collect::<Result<Vec<_>>>()?;
 
-                Ok((TypeEntry::Tuple(types), metadata))
+                Ok((TypeEntryDetails::Tuple(types).into(), metadata))
             }
 
             // Arrays and sets.
@@ -833,8 +843,8 @@ impl TypeSpace {
 
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
-                    Some(true) => Ok((TypeEntry::Set(type_id), metadata)),
-                    _ => Ok((TypeEntry::Array(type_id), metadata)),
+                    Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Array(type_id).into(), metadata)),
                 }
             }
 
@@ -847,9 +857,7 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let any = TypeEntry::new_builtin("serde_json::Value");
         let type_id = self.assign_type(any);
-        let ty = TypeEntry::Array(type_id);
-
-        Ok((ty, metadata))
+        Ok((TypeEntryDetails::Array(type_id).into(), metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...

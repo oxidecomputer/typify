@@ -7,7 +7,7 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryNewtype};
+use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype};
 
 #[cfg(test)]
 mod test_util;
@@ -29,7 +29,7 @@ pub enum Error {
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Representation of a type which may have a definition or may be built-in.
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Type<'a> {
     type_space: &'a TypeSpace,
     type_entry: &'a TypeEntry,
@@ -67,7 +67,7 @@ pub struct TypeSpace {
 
     // TODO needs an API
     pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
-    type_to_id: BTreeMap<TypeEntry, TypeId>,
+    type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<String, TypeId>,
@@ -97,11 +97,11 @@ impl Default for TypeSpace {
 
 impl TypeSpace {
     /// Add a collection of types that will be used as references. Regardless
-    /// of how these types are defined--*de novo* or built-in--these types will
-    /// appear in the final output in some form. This method may be called
-    /// multiple times, but collections of references must be self-contained;
-    /// in other words, a type in one invocation may not refer to a type in
-    /// another invocation.
+    /// of how these types are defined--*de novo* or built-in--each type will
+    /// appear in the final output as a struct, enum or newtype. This method
+    /// may be called multiple times, but collections of references must be
+    /// self-contained; in other words, a type in one invocation may not refer
+    /// to a type in another invocation.
     // TODO on an error the TypeSpace is in a weird state; we, perhaps, create
     // a child TypeSpace and then merge it in once all conversions hae
     // succeeded.
@@ -126,7 +126,7 @@ impl TypeSpace {
                 .insert(ref_name.to_string(), TypeId(base_id + index as u64));
         }
 
-        // Convert all types; note that we use the type assigned from the
+        // Convert all types; note that we use the type id assigned from the
         // previous step because each type may create additional types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             let type_name = match ref_name.rfind('/') {
@@ -136,18 +136,22 @@ impl TypeSpace {
 
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
-            let type_entry = match type_entry {
-                // This is effectively a forward declaration so we can discard
-                // the TypeEntry without assigning it. We'd see this if there
-                // were a cycle in the type graph.
-                TypeEntry::Reference(type_id) => TypeEntryNewtype::from_metadata(
+            let type_entry = match type_entry.details {
+                // The types that are already named are good to go.
+                TypeEntryDetails::Enum(_)
+                | TypeEntryDetails::Struct(_)
+                | TypeEntryDetails::Newtype(_) => type_entry,
+
+                // If the type entry is a reference, then this definition is a
+                // simple alias to another type in this list of definitions
+                // (which may nor may not have already been converted). We
+                // simply create a newtype with that type ID.
+                TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
                     type_id,
-                ),
-
-                // The types that are already named are good to go.
-                TypeEntry::Enum(_) | TypeEntry::Struct(_) | TypeEntry::Newtype(_) => type_entry,
+                )
+                .into(),
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype (though we could probably
@@ -156,12 +160,19 @@ impl TypeSpace {
                     Name::Required(type_name.to_string()),
                     metadata,
                     self.assign_type(type_entry),
-                ),
+                )
+                .into(),
             };
             self.definitions.insert(ref_name, schema);
             self.id_to_entry
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
+
+        // TODO compute appropriate derives, taking care to account for
+        // dependency cycles
+
+        // TODO Look for containment cycles that we need to break with a Box<T>
+
         Ok(())
     }
 
@@ -245,11 +256,11 @@ impl TypeSpace {
     /// two conflicting types of the same name), and deduplicates various
     /// flavors of built-in types.
     fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
-        if let TypeEntry::Reference(type_id) = ty {
+        if let TypeEntryDetails::Reference(type_id) = ty.details {
             type_id
         } else if let Some(name) = ty.name() {
             // If there's already a type of this name, we make sure it's
-            // identical.
+            // identical. Note that this covers all user-defined types.
 
             // TODO there are many different choices we might make here
             // that could differ depending on the texture of the schema.
@@ -267,11 +278,11 @@ impl TypeSpace {
                 self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
             }
-        } else if let Some(type_id) = self.type_to_id.get(&ty) {
+        } else if let Some(type_id) = self.type_to_id.get(&ty.details) {
             type_id.clone()
         } else {
             let type_id = self.assign();
-            self.type_to_id.insert(ty.clone(), type_id.clone());
+            self.type_to_id.insert(ty.details.clone(), type_id.clone());
             self.id_to_entry.insert(type_id.clone(), ty);
             type_id
         }
@@ -290,12 +301,12 @@ impl TypeSpace {
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
-        self.assign_type(TypeEntry::Option(id.clone()))
+        self.assign_type(TypeEntryDetails::Option(id.clone()).into())
     }
 
     // Create an Option<T> from a TypeEntry by assigning it type.
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
-        TypeEntry::Option(self.assign_type(ty))
+        TypeEntryDetails::Option(self.assign_type(ty)).into()
     }
 }
 
@@ -363,7 +374,7 @@ mod tests {
     use crate::{
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
-        Name, TypeEntry, TypeSpace,
+        Name, TypeEntryDetails, TypeSpace,
     };
 
     #[allow(dead_code)]
@@ -453,8 +464,8 @@ mod tests {
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
-        match ty {
-            TypeEntry::Enum(TypeEntryEnum { variants, .. }) => {
+        match ty.details {
+            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) => {
                 for variant in &variants {
                     assert_eq!(variant.details, VariantDetails::Simple);
                 }
@@ -492,9 +503,9 @@ mod tests {
             .convert_enum_string(Name::Required("OnTheGo".to_string()), &None, &enum_values)
             .unwrap();
 
-        if let TypeEntry::Option(id) = &te {
+        if let TypeEntryDetails::Option(id) = &te.details {
             let ote = type_space.id_to_entry.get(id).unwrap();
-            if let TypeEntry::Enum(TypeEntryEnum { variants, .. }) = &ote {
+            if let TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) = &ote.details {
                 let variants = variants
                     .iter()
                     .map(|v| match v.details {

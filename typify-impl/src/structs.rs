@@ -8,9 +8,9 @@ use schemars::schema::{
 };
 
 use crate::{
-    type_entry::{SerdeNaming, SerdeRules, StructProperty, TypeEntryStruct},
+    type_entry::{SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct},
     util::{get_type_name, metadata_description, recase, schema_is_named},
-    Name, Result, TypeEntry, TypeId, TypeSpace,
+    Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
 impl TypeSpace {
@@ -154,9 +154,12 @@ impl TypeSpace {
         };
 
         // TODO this is jank; we should be looking up the String type
-        let string_type_id = self.assign_type(TypeEntry::String);
+        let string_type_id = self.assign_type(TypeEntryDetails::String.into());
 
-        Ok((TypeEntry::Map(string_type_id, value_type_id), &None))
+        Ok((
+            TypeEntryDetails::Map(string_type_id, value_type_id).into(),
+            &None,
+        ))
     }
 
     /// This is used by both any-of and all-of subschema processing. This
@@ -213,9 +216,10 @@ impl TypeSpace {
             })
             .collect::<Result<Vec<_>>>()?;
 
-        let ty = TypeEntryStruct::from_metadata(type_name, metadata, properties, false);
-
-        Ok((ty, metadata))
+        Ok((
+            TypeEntryStruct::from_metadata(type_name, metadata, properties, false).into(),
+            metadata,
+        ))
     }
 
     /// This handles the case where an anyOf is used to effect inheritance: the
@@ -305,17 +309,18 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        let ty = TypeEntryStruct::from_metadata(
-            type_name,
-            metadata,
-            named_properties
-                .into_iter()
-                .chain(unnamed_properties.into_iter())
-                .collect(),
-            deny,
-        );
-
-        Some(ty)
+        Some(
+            TypeEntryStruct::from_metadata(
+                type_name,
+                metadata,
+                named_properties
+                    .into_iter()
+                    .chain(unnamed_properties.into_iter())
+                    .collect(),
+                deny,
+            )
+            .into(),
+        )
     }
 }
 
@@ -357,16 +362,16 @@ fn generate_serde_attr(
         SerdeNaming::None => (),
     }
 
-    match (serde_rules, &prop_type) {
-        (SerdeRules::Optional, TypeEntry::Option(_)) => {
+    match (serde_rules, &prop_type.details) {
+        (SerdeRules::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
         }
-        (SerdeRules::Optional, TypeEntry::Array(_)) => {
+        (SerdeRules::Optional, TypeEntryDetails::Array(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
         }
-        (SerdeRules::Optional, TypeEntry::Map(_, _)) => {
+        (SerdeRules::Optional, TypeEntryDetails::Map(_, _)) => {
             serde_options.push(quote! { default });
             serde_options
                 .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
@@ -392,8 +397,10 @@ fn is_skippable(type_space: &TypeSpace, type_id: &TypeId) -> bool {
         || false,
         |ty| {
             matches!(
-                &ty,
-                TypeEntry::Option(_) | TypeEntry::Array(_) | TypeEntry::Map(_, _)
+                &ty.details,
+                TypeEntryDetails::Option(_)
+                    | TypeEntryDetails::Array(_)
+                    | TypeEntryDetails::Map(_, _)
             )
         },
     )

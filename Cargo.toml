@@ -1,14 +1,16 @@
 [workspace]
 members = [
 	"typify",
-	"typify-macro",
 	"typify-impl",
+	"typify-macro",
+	"typify-test",
 	"example-build",
 	"example-macro",
 ]
 
 default-members = [
 	"typify",
-	"typify-macro",
 	"typify-impl",
+	"typify-macro",
+	"typify-test",
 ]

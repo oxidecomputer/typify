@@ -11,9 +11,9 @@ use schemars::schema::{
 
 use crate::{
     structs::output_struct_property,
-    type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
+    type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
     util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
-    Name, Result, TypeEntry, TypeSpace,
+    Name, Result, TypeSpace,
 };
 
 impl TypeSpace {
@@ -229,13 +229,16 @@ impl TypeSpace {
             })
             .collect::<Option<Vec<_>>>()?;
 
-        Some(TypeEntryEnum::from_metadata(
-            type_name,
-            metadata,
-            EnumTagType::External,
-            variants,
-            deny_unknown_fields,
-        ))
+        Some(
+            TypeEntryEnum::from_metadata(
+                type_name,
+                metadata,
+                EnumTagType::External,
+                variants,
+                deny_unknown_fields,
+            )
+            .into(),
+        )
     }
 
     fn external_variant(
@@ -443,13 +446,16 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntryEnum::from_metadata(
-            type_name,
-            metadata,
-            EnumTagType::Internal { tag: tag.clone() },
-            variants,
-            deny_unknown_fields,
-        ))
+        Some(
+            TypeEntryEnum::from_metadata(
+                type_name,
+                metadata,
+                EnumTagType::Internal { tag: tag.clone() },
+                variants,
+                deny_unknown_fields,
+            )
+            .into(),
+        )
     }
 
     fn internal_variant(&mut self, validation: &ObjectValidation, tag: &str) -> Result<Variant> {
@@ -570,13 +576,16 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntryEnum::from_metadata(
-            type_name,
-            metadata,
-            EnumTagType::Adjacent { tag, content },
-            variants,
-            deny_unknown_fields,
-        ))
+        Some(
+            TypeEntryEnum::from_metadata(
+                type_name,
+                metadata,
+                EnumTagType::Adjacent { tag, content },
+                variants,
+                deny_unknown_fields,
+            )
+            .into(),
+        )
     }
 
     fn adjacent_variant(
@@ -720,7 +729,8 @@ impl TypeSpace {
             EnumTagType::Untagged,
             variants,
             deny_unknown_fields,
-        ))
+        )
+        .into())
     }
 }
 
@@ -884,7 +894,7 @@ mod tests {
     use crate::{
         test_util::{validate_output, validate_output_for_untagged_enm},
         type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
-        Name, TypeEntry, TypeId, TypeSpace,
+        Name, TypeEntryDetails, TypeId, TypeSpace,
     };
 
     #[allow(dead_code)]
@@ -1055,8 +1065,8 @@ mod tests {
             )
             .unwrap();
 
-        match ty {
-            TypeEntry::Enum(TypeEntryEnum {
+        match &ty.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
                 name,
                 rename: None,
                 description: None,
@@ -1125,8 +1135,8 @@ mod tests {
         // This confirms in particular that the tag type is untagged and
         // therefore that the other enum tagging regimes did not match.
         assert!(matches!(
-            ty,
-            TypeEntry::Enum(TypeEntryEnum {
+            &ty.details,
+            TypeEntryDetails::Enum(TypeEntryEnum {
                 rename: None,
                 description: None,
                 tag_type: EnumTagType::Untagged,
@@ -1215,12 +1225,12 @@ mod tests {
             .convert_schema_object(Name::Unknown, &schema.schema)
             .unwrap();
 
-        if let TypeEntry::Enum(TypeEntryEnum {
+        if let TypeEntryDetails::Enum(TypeEntryEnum {
             variants,
             tag_type,
             deny_unknown_fields,
             ..
-        }) = &type_entry
+        }) = &type_entry.details
         {
             let variant_names = variants
                 .iter()
@@ -1254,7 +1264,7 @@ mod tests {
             .maybe_option_as_enum(Name::Unknown, &None, &subschemas)
             .unwrap();
 
-        assert_eq!(type_entry, TypeEntry::Option(TypeId(1)))
+        assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)))
     }
 
     #[test]
@@ -1330,8 +1340,8 @@ mod tests {
         let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
-        match &type_entry {
-            TypeEntry::Enum(TypeEntryEnum {
+        match &type_entry.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
                 tag_type,
                 variants,
                 deny_unknown_fields: _,
