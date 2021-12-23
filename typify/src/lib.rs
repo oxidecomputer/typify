@@ -44,5 +44,11 @@
 
 pub use typify_impl::Error;
 pub use typify_impl::Type;
+pub use typify_impl::TypeDetails;
+pub use typify_impl::TypeEnum;
+pub use typify_impl::TypeEnumVariant;
+pub use typify_impl::TypeId;
+pub use typify_impl::TypeNewtype;
 pub use typify_impl::TypeSpace;
+pub use typify_impl::TypeStruct;
 pub use typify_macro::import_types;

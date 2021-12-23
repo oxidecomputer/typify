@@ -39,22 +39,17 @@ fn test_generation() {
         .add_ref_types(generator.take_definitions())
         .unwrap();
 
-    let t = type_space.add_type(&body_schema).unwrap();
+    let tid = type_space.add_type(&body_schema).unwrap();
+    let t = type_space.get_type(&tid).unwrap();
     let ret = t.ident();
     let body = t.parameter_ident();
 
-    let string = type_space
-        .add_type(&string_schema)
-        .unwrap()
-        .parameter_ident();
-    let opt_int = type_space
-        .add_type(&opt_int_schema)
-        .unwrap()
-        .parameter_ident();
-    let strenum = type_space
-        .add_type(&strenum_schema)
-        .unwrap()
-        .parameter_ident();
+    let string_id = type_space.add_type(&string_schema).unwrap();
+    let string = type_space.get_type(&string_id).unwrap().parameter_ident();
+    let opt_int_id = type_space.add_type(&opt_int_schema).unwrap();
+    let opt_int = type_space.get_type(&opt_int_id).unwrap().parameter_ident();
+    let strenum_id = type_space.add_type(&strenum_schema).unwrap();
+    let strenum = type_space.get_type(&strenum_id).unwrap().parameter_ident();
 
     let file = quote! {
         pub fn do_stuff(

@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use log::info;
 use proc_macro2::TokenStream;
 use quote::quote;
 use rustfmt_wrapper::rustfmt;
@@ -22,6 +23,8 @@ mod util;
 pub enum Error {
     #[error("unexpected value type")]
     BadValue(String, serde_json::Value),
+    #[error("invalid TypeId")]
+    InvalidTypeId,
     #[error("unknown")]
     Unknown,
 }
@@ -35,8 +38,46 @@ pub struct Type<'a> {
     type_entry: &'a TypeEntry,
 }
 
+/// Type details returned by Type::details() to inspect a type.
+pub enum TypeDetails<'a> {
+    Enum(TypeEnum<'a>),
+    Struct(TypeStruct<'a>),
+    Newtype(TypeNewtype<'a>),
+
+    Option(TypeId),
+    Array(TypeId),
+    Map(TypeId, TypeId),
+    Set(TypeId),
+    Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
+    Unit,
+    Builtin(&'a str),
+}
+
+/// Enum type details.
+pub struct TypeEnum<'a> {
+    details: &'a type_entry::TypeEntryEnum,
+}
+
+/// Enum variant details.
+pub enum TypeEnumVariant<'a> {
+    Simple,
+    Tuple(Vec<TypeId>),
+    Struct(Vec<(&'a str, TypeId)>),
+}
+
+/// Struct type details.
+pub struct TypeStruct<'a> {
+    details: &'a type_entry::TypeEntryStruct,
+}
+
+/// Newtype details.
+pub struct TypeNewtype<'a> {
+    details: &'a type_entry::TypeEntryNewtype,
+}
+
+/// Type identifier returned from type creation and used to lookup types.
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
-struct TypeId(u64);
+pub struct TypeId(u64);
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Name {
@@ -75,6 +116,7 @@ pub struct TypeSpace {
     uses_chrono: bool,
     uses_uuid: bool,
     uses_serde_json: bool,
+
     pub(crate) type_mod: Option<String>,
 }
 
@@ -134,6 +176,8 @@ impl TypeSpace {
                 None => &ref_name,
             };
 
+            info!("converting type: {}", type_name);
+
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
             let type_entry = match type_entry.details {
@@ -169,7 +213,9 @@ impl TypeSpace {
         }
 
         // TODO compute appropriate derives, taking care to account for
-        // dependency cycles
+        // dependency cycles. Currently we're using a more minimal--safe--set
+        // of derives than we might otherwise. This notably prevents us from
+        // using a HashSet or BTreeSet type where we might like to.
 
         // TODO Look for containment cycles that we need to break with a Box<T>
 
@@ -178,15 +224,9 @@ impl TypeSpace {
 
     /// Add a new type and return a type identifier that may be used in
     /// function signatures or embedded within other types.
-    pub fn add_type(&mut self, schema: &Schema) -> Result<Type> {
+    pub fn add_type(&mut self, schema: &Schema) -> Result<TypeId> {
         let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
-
-        let type_id = self.assign_type(type_entry);
-        let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        Ok(Type {
-            type_space: self,
-            type_entry,
-        })
+        Ok(self.assign_type(type_entry))
     }
 
     /// Add a new type with a name hint and return a the components necessary
@@ -195,15 +235,18 @@ impl TypeSpace {
         &mut self,
         schema: &Schema,
         name_hint: Option<String>,
-    ) -> Result<Type> {
+    ) -> Result<TypeId> {
         let name = match name_hint {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
         let (type_entry, _) = self.convert_schema(name, schema)?;
+        Ok(self.assign_type(type_entry))
+    }
 
-        let type_id = self.assign_type(type_entry);
-        let type_entry = self.id_to_entry.get(&type_id).unwrap();
+    /// Get a type given its ID.
+    pub fn get_type(&self, type_id: &TypeId) -> Result<Type> {
+        let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
         Ok(Type {
             type_space: self,
             type_entry,
@@ -360,6 +403,68 @@ impl<'a> Type<'a> {
     /// A textual description of the type appropriate for debug output.
     pub fn describe(&self) -> String {
         self.type_entry.describe()
+    }
+
+    /// Get details about the type.
+    pub fn details(&self) -> TypeDetails {
+        match &self.type_entry.details {
+            // Named user-defined types
+            TypeEntryDetails::Enum(details) => TypeDetails::Enum(TypeEnum { details }),
+            TypeEntryDetails::Struct(details) => TypeDetails::Struct(TypeStruct { details }),
+            TypeEntryDetails::Newtype(details) => TypeDetails::Newtype(TypeNewtype { details }),
+
+            // Compound types
+            TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
+            TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                TypeDetails::Map(key_id.clone(), value_id.clone())
+            }
+            TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
+            TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
+
+            // Builtin types
+            TypeEntryDetails::Unit => TypeDetails::Unit,
+            TypeEntryDetails::BuiltIn(name)
+            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
+            TypeEntryDetails::String => TypeDetails::Builtin("String"),
+
+            // Only used during processing; shouldn't be visible at this point
+            TypeEntryDetails::Reference(_) => unreachable!(),
+        }
+    }
+}
+
+impl<'a> TypeEnum<'a> {
+    pub fn variants(&'a self) -> impl Iterator<Item = (&'a str, TypeEnumVariant<'a>)> {
+        self.details.variants.iter().map(move |variant| {
+            let v = match &variant.details {
+                type_entry::VariantDetails::Simple => TypeEnumVariant::Simple,
+                type_entry::VariantDetails::Tuple(types) => TypeEnumVariant::Tuple(types.clone()),
+                type_entry::VariantDetails::Struct(properties) => TypeEnumVariant::Struct(
+                    properties
+                        .iter()
+                        .map(|prop| (prop.name.as_str(), prop.type_id.clone()))
+                        .collect(),
+                ),
+            };
+            (variant.name.as_str(), v)
+        })
+    }
+}
+
+impl<'a> TypeStruct<'a> {
+    pub fn properties(&'a self) -> impl Iterator<Item = (&'a str, TypeId)> {
+        self.details
+            .properties
+            .iter()
+            .map(move |prop| (prop.name.as_str(), prop.type_id.clone()))
+    }
+}
+
+impl<'a> TypeNewtype<'a> {
+    pub fn subtype(&self) -> TypeId {
+        self.details.type_id.clone()
     }
 }
 
