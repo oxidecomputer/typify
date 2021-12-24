@@ -387,7 +387,19 @@ impl<'a> Type<'a> {
             type_space,
             type_entry,
         } = self;
-        type_entry.type_parameter_ident(type_space)
+        type_entry.type_parameter_ident(type_space, None)
+    }
+
+    /// The identifier for the type as might be used for a parameter in a
+    /// function signature along with a lifetime parameter. In general: simple
+    /// types are the same as [Type::ident] and complex types prepend a
+    /// `&'<lifetime>`.
+    pub fn parameter_ident_with_lifetime(&self, lifetime: &str) -> TokenStream {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+        type_entry.type_parameter_ident(type_space, Some(lifetime))
     }
 
     /// The definition for this type. This will be empty for types that are

@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 
 use convert_case::Case;
-use proc_macro2::TokenStream;
+use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
 
@@ -490,7 +490,19 @@ impl TypeEntry {
         }
     }
 
-    pub(crate) fn type_parameter_ident(&self, type_space: &TypeSpace) -> TokenStream {
+    pub(crate) fn type_parameter_ident(
+        &self,
+        type_space: &TypeSpace,
+        lifetime_name: Option<&str>,
+    ) -> TokenStream {
+        let lifetime = lifetime_name.map(|s| {
+            vec![
+                TokenTree::from(Punct::new('\'', Spacing::Joint)),
+                TokenTree::from(format_ident!("{}", s)),
+            ]
+            .into_iter()
+            .collect::<TokenStream>()
+        });
         match &self.details {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
@@ -513,7 +525,7 @@ impl TypeEntry {
             | TypeEntryDetails::BuiltIn(_) => {
                 let ident = self.type_ident(type_space, true);
                 quote! {
-                    &#ident
+                    & #lifetime #ident
                 }
             }
 
@@ -522,7 +534,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for option");
-                let inner_ident = inner_ty.type_parameter_ident(type_space);
+                let inner_ident = inner_ty.type_parameter_ident(type_space, lifetime_name);
 
                 // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
@@ -537,7 +549,7 @@ impl TypeEntry {
                         .id_to_entry
                         .get(item)
                         .expect("unresolved type id for tuple")
-                        .type_parameter_ident(type_space)
+                        .type_parameter_ident(type_space, lifetime_name)
                 });
 
                 quote! { ( #(#type_streams),* ) }
@@ -546,7 +558,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit | TypeEntryDetails::Integral(_) | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, true)
             }
-            TypeEntryDetails::String => quote! { &str },
+            TypeEntryDetails::String => quote! { & #lifetime str },
 
             TypeEntryDetails::Reference(_) => panic!("references should be resolved by now"),
         }
@@ -598,20 +610,22 @@ mod tests {
 
         let t = TypeEntry::new_integer("u32");
         let ident = t.type_ident(&ts, true);
-        let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "u32");
+        let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "u32");
 
         let t = TypeEntry::from(TypeEntryDetails::String);
         let ident = t.type_ident(&ts, true);
-        let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "String");
+        let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& str");
+        let parameter = t.type_parameter_ident(&ts, Some("static"));
+        assert_eq!(parameter.to_string(), "& 'static str");
 
         let t = TypeEntry::from(TypeEntryDetails::Unit);
         let ident = t.type_ident(&ts, true);
-        let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "()");
+        let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "()");
 
         let t = TypeEntry::from(TypeEntryDetails::Struct(TypeEntryStruct {
@@ -623,8 +637,10 @@ mod tests {
         }));
 
         let ident = t.type_ident(&ts, true);
-        let parameter = t.type_parameter_ident(&ts);
         assert_eq!(ident.to_string(), "SomeType");
+        let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& SomeType");
+        let parameter = t.type_parameter_ident(&ts, Some("a"));
+        assert_eq!(parameter.to_string(), "& 'a SomeType");
     }
 }
