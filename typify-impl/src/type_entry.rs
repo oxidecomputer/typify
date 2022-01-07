@@ -223,10 +223,11 @@ impl TypeEntry {
 
     pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
         let mut derives = vec![
-            quote! {Serialize},
-            quote! {Deserialize},
-            quote! {Debug},
-            quote! {Clone},
+            quote! { Serialize },
+            quote! { Deserialize },
+            quote! { JsonSchema },
+            quote! { Debug },
+            quote! { Clone },
         ];
 
         match &self.details {

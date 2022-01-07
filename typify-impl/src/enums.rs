@@ -1390,7 +1390,7 @@ mod tests {
             .unwrap();
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            #[derive(Serialize, Deserialize, Debug, Clone)]
+            #[derive(Serialize, Deserialize, JsonSchema, Debug, Clone)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),

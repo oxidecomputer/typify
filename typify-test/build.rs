@@ -24,7 +24,8 @@ fn main() {
     WithSet::add(&mut type_space);
 
     let content = format!(
-        "{}\n{}",
+        "{}\n{}\n{}",
+        "use schemars::JsonSchema;",
         "use serde::{Deserialize, Serialize};",
         type_space.to_string()
     );

@@ -2,6 +2,7 @@
 
 use typify::import_types;
 
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 import_types!("../example.json");
