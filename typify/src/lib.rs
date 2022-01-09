@@ -6,7 +6,6 @@
 //! A typical use looks like this:
 //! ```
 //! # use typify_macro::import_types;
-//! # use schemars::JsonSchema;
 //! # use serde::{Deserialize,Serialize};
 //! import_types!("../example.json");
 //! ```

@@ -118,6 +118,7 @@ pub struct TypeSpace {
     uses_serde_json: bool,
 
     pub(crate) type_mod: Option<String>,
+    pub(crate) extra_derives: Vec<String>,
 }
 
 impl Default for TypeSpace {
@@ -133,6 +134,7 @@ impl Default for TypeSpace {
             uses_uuid: false,
             uses_serde_json: false,
             type_mod: None,
+            extra_derives: Vec::new(),
         }
     }
 }
@@ -268,6 +270,11 @@ impl TypeSpace {
     /// Set the name of the path prefix for types defined in this [TypeSpace].
     pub fn set_type_mod<S: AsRef<str>>(&mut self, type_mod: S) {
         self.type_mod = Some(type_mod.as_ref().to_string());
+    }
+
+    /// Add an additional derive macro to apply to all defined types.
+    pub fn add_derive<S: AsRef<str>>(&mut self, derive: S) {
+        self.extra_derives.push(derive.as_ref().to_string())
     }
 
     /// Iterate over all types including those defined in this [TypeSpace] and

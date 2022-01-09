@@ -6,6 +6,5 @@ edition = "2018"
 
 [dependencies]
 typify = { path = "../typify" }
-schemars = "0.8"
 serde = "1.0"
 serde_json = "1.0"

@@ -1390,7 +1390,30 @@ mod tests {
             .unwrap();
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            #[derive(Serialize, Deserialize, JsonSchema, Debug, Clone)]
+            #[derive(Serialize, Deserialize, Debug, Clone)]
+            pub enum ResultX {
+                Ok(u32),
+                Err(String),
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_result_derives() {
+        let mut type_space = TypeSpace::default();
+        type_space.add_derive("A");
+        type_space.add_derive("B");
+        type_space.add_derive("C");
+        type_space.add_derive("D");
+        let schema = schema_for!(Result<u32, String>);
+        let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
+        let type_entry = type_space
+            .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
+            .unwrap();
+        let actual = type_entry.output(&type_space);
+        let expected = quote! {
+            #[derive(Serialize, Deserialize, Debug, Clone, A, B, C, D)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
