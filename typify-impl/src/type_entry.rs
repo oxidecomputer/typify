@@ -230,7 +230,11 @@ impl TypeEntry {
         ];
 
         type_space.extra_derives.iter().for_each(|derive| {
-            derives.push(format_ident!("{}", derive).into_token_stream());
+            derives.push(
+                syn::parse_str::<syn::Path>(derive)
+                    .unwrap()
+                    .into_token_stream(),
+            );
         });
 
         match &self.details {

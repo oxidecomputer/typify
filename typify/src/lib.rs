@@ -16,6 +16,17 @@
 //! [Serialize](https://docs.rs/serde/latest/serde/trait.Serialize.html), and
 //! [Deserialize](https://docs.rs/serde/latest/serde/trait.Deserialize.html).
 //!
+//! If you want to add additional derives for the generated types, you can
+//! specify them after the path:
+//! ```
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(
+//!     "../example.json",
+//!     schemars::JsonSchema,
+//! );
+//! ```
+//!
 //! #### Macro vs. `build.rs`
 //!
 //! While using the [`import_types!`] macro is quite a bit simpler, you can

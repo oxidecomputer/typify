@@ -3,8 +3,7 @@
 use std::path::Path;
 
 use proc_macro::TokenStream;
-use proc_macro2::Ident;
-use quote::quote;
+use quote::{quote, ToTokens};
 use schemars::schema::Schema;
 use syn::{parse::Parse, LitStr, Token};
 use typify_impl::TypeSpace;
@@ -21,7 +20,7 @@ pub fn import_types(item: TokenStream) -> TokenStream {
 
 struct Settings {
     file: LitStr,
-    derives: Vec<Ident>,
+    derives: Vec<syn::Path>,
 }
 
 impl Parse for Settings {
@@ -66,7 +65,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     let mut type_space = TypeSpace::default();
     derives
         .iter()
-        .for_each(|derive| type_space.add_derive(derive.to_string()));
+        .for_each(|derive| type_space.add_derive(derive.to_token_stream().to_string()));
     type_space
         .add_ref_types(schema.definitions)
         .map_err(|e| into_syn_err(e, file.span()))?;
