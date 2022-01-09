@@ -15,4 +15,5 @@ typify-macro = { version = "0.0.6-dev", path = "../typify-macro" }
 typify-impl = { version = "0.0.6-dev", path = "../typify-impl" }
 
 [dev-dependencies]
+schemars = "0.8"
 serde = "1.0"

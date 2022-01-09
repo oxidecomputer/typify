@@ -223,11 +223,19 @@ impl TypeEntry {
 
     pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
         let mut derives = vec![
-            quote! {Serialize},
-            quote! {Deserialize},
-            quote! {Debug},
-            quote! {Clone},
+            quote! { Serialize },
+            quote! { Deserialize },
+            quote! { Debug },
+            quote! { Clone },
         ];
+
+        type_space.extra_derives.iter().for_each(|derive| {
+            derives.push(
+                syn::parse_str::<syn::Path>(derive)
+                    .unwrap()
+                    .into_token_stream(),
+            );
+        });
 
         match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {

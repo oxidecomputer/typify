@@ -1,8 +1,34 @@
+mod types {
+    #[derive(Serialize, Deserialize, Debug, Clone, JsonSchema)]
+    pub struct CompoundType {
+        #[serde(rename = "value1")]
+        pub value_1: String,
+        #[serde(rename = "value2")]
+        pub value_2: u64,
+    }
+    #[derive(
+        Serialize, Deserialize, Debug, Clone, JsonSchema, PartialOrd, Ord, PartialEq, Eq, Hash,
+    )]
+    pub enum StringEnum {
+        One,
+        Two,
+        BuckleMyShoe,
+    }
+    impl ToString for StringEnum {
+        fn to_string(&self) -> String {
+            match self {
+                StringEnum::One => "One".to_string(),
+                StringEnum::Two => "Two".to_string(),
+                StringEnum::BuckleMyShoe => "BuckleMyShoe".to_string(),
+            }
+        }
+    }
+}
 pub fn do_stuff(
-    body: &CompoundType,
+    body: &types::CompoundType,
     string: &str,
     opt_int: Option<u32>,
-    strenum: StringEnum,
-) -> CompoundType {
+    strenum: types::StringEnum,
+) -> types::CompoundType {
     todo!()
 }

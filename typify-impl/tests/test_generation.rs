@@ -29,6 +29,9 @@ fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
 fn test_generation() {
     let mut type_space = TypeSpace::default();
 
+    type_space.add_derive("JsonSchema");
+    type_space.set_type_mod("types");
+
     let mut generator = SchemaGenerator::default();
     let body_schema = add_type::<CompoundType>(&mut generator);
     let string_schema = add_type::<String>(&mut generator);
@@ -51,7 +54,13 @@ fn test_generation() {
     let strenum_id = type_space.add_type(&strenum_schema).unwrap();
     let strenum = type_space.get_type(&strenum_id).unwrap().parameter_ident();
 
+    let types = type_space.to_stream();
+
     let file = quote! {
+        mod types {
+            #types
+        }
+
         pub fn do_stuff(
             body: #body,
             string: #string,
