@@ -118,7 +118,7 @@ pub struct TypeSpace {
     uses_serde_json: bool,
 
     pub(crate) type_mod: Option<String>,
-    pub(crate) extra_derives: Vec<String>,
+    pub(crate) extra_derives: Vec<TokenStream>,
 }
 
 impl Default for TypeSpace {
@@ -273,8 +273,8 @@ impl TypeSpace {
     }
 
     /// Add an additional derive macro to apply to all defined types.
-    pub fn add_derive<S: AsRef<str>>(&mut self, derive: S) {
-        self.extra_derives.push(derive.as_ref().to_string())
+    pub fn add_derive(&mut self, derive: TokenStream) {
+        self.extra_derives.push(derive);
     }
 
     /// Iterate over all types including those defined in this [TypeSpace] and

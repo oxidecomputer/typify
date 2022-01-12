@@ -1402,10 +1402,10 @@ mod tests {
     #[test]
     fn test_result_derives() {
         let mut type_space = TypeSpace::default();
-        type_space.add_derive("A");
-        type_space.add_derive("B");
-        type_space.add_derive("C");
-        type_space.add_derive("D");
+        type_space.add_derive(quote! { A });
+        type_space.add_derive(quote! { B });
+        type_space.add_derive(quote! { C });
+        type_space.add_derive(quote! { D });
         let schema = schema_for!(Result<u32, String>);
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space

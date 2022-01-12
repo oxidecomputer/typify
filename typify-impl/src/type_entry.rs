@@ -229,13 +229,7 @@ impl TypeEntry {
             quote! { Clone },
         ];
 
-        type_space.extra_derives.iter().for_each(|derive| {
-            derives.push(
-                syn::parse_str::<syn::Path>(derive)
-                    .unwrap()
-                    .into_token_stream(),
-            );
-        });
+        derives.extend(type_space.extra_derives.clone());
 
         match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {

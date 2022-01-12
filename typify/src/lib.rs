@@ -16,14 +16,21 @@
 //! [Serialize](https://docs.rs/serde/latest/serde/trait.Serialize.html), and
 //! [Deserialize](https://docs.rs/serde/latest/serde/trait.Deserialize.html).
 //!
+//! Alternatively, you may use the expanded form:
+//! ```
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(schema = "../example.json");
+//! ```
+//!
 //! If you want to add additional derives for the generated types, you can
-//! specify them after the path:
+//! specify them with the `derives` property of the expanded form:
 //! ```
 //! # use typify_macro::import_types;
 //! # use serde::{Deserialize,Serialize};
 //! import_types!(
-//!     "../example.json",
-//!     schemars::JsonSchema,
+//!     schema = "../example.json",
+//!     derives = [schemars::JsonSchema],
 //! );
 //! ```
 //!
