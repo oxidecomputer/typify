@@ -29,7 +29,7 @@ fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
 fn test_generation() {
     let mut type_space = TypeSpace::default();
 
-    type_space.add_derive("JsonSchema");
+    type_space.add_derive(quote! { JsonSchema });
     type_space.set_type_mod("types");
 
     let mut generator = SchemaGenerator::default();
