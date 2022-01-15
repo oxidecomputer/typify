@@ -1,4 +1,4 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 use std::collections::HashSet;
 
@@ -7,6 +7,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
 };
+use unicode_xid::UnicodeXID;
 
 use crate::Name;
 
@@ -463,16 +464,19 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
 }
 
 fn sanitize(input: &str, case: Case) -> String {
-    let out = input
-        .replace("$", "-")
-        .replace("@", "-")
-        .replace("/", "-")
-        .replace("+", "-plus-")
-        .replace("'", "")
-        .to_case(case);
+    // If every case was special then none of them would be.
+    let out = match input {
+        "+1" => "plus1".to_string(),
+        "-1" => "minus1".to_string(),
+        _ => input
+            .replace("'", "")
+            .replace(|c: char| !c.is_xid_continue(), "-")
+            .to_case(case),
+    };
+
     let out = match out.chars().next() {
         None => "x".to_case(case),
-        Some('a'..='z' | 'A'..='Z' | '_') => out,
+        Some(c) if c.is_xid_start() => out,
         Some(_) => format!("_{}", out),
     };
 
@@ -618,8 +622,16 @@ mod tests {
     fn test_sanitize() {
         assert_eq!(sanitize("type", Case::Snake), "type_");
         assert_eq!(sanitize("ref", Case::Snake), "ref_");
-        assert_eq!(sanitize("+1", Case::Snake), "plus_1");
-        assert_eq!(sanitize("-1", Case::Snake), "_1");
+        assert_eq!(sanitize("+1", Case::Snake), "plus1");
+        assert_eq!(sanitize("-1", Case::Snake), "minus1");
         assert_eq!(sanitize("@timestamp", Case::Pascal), "Timestamp");
+        assert_eq!(sanitize("won't and can't", Case::Pascal), "WontAndCant");
+        assert_eq!(
+            sanitize(
+                "urn:ietf:params:scim:schemas:extension:gluu:2.0:user_",
+                Case::Camel
+            ),
+            "urnIetfParamsScimSchemasExtensionGluu20User"
+        );
     }
 }
