@@ -866,7 +866,7 @@ pub(crate) fn enum_impl(type_name: &Ident, variants: &[Variant]) -> TokenStream 
             quote! {
                 impl ToString for #type_name {
                     fn to_string(&self) -> String {
-                        match self {
+                        match *self {
                             #(#match_variants),*
                         }
                     }
