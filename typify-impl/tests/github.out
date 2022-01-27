@@ -65,7 +65,7 @@ pub enum AuthorAssociation {
 }
 impl ToString for AuthorAssociation {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AuthorAssociation::Collaborator => "COLLABORATOR".to_string(),
             AuthorAssociation::Contributor => "CONTRIBUTOR".to_string(),
             AuthorAssociation::FirstTimer => "FIRST_TIMER".to_string(),
@@ -3826,7 +3826,7 @@ pub enum AlertInstanceState {
 }
 impl ToString for AlertInstanceState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AlertInstanceState::Open => "open".to_string(),
             AlertInstanceState::Dismissed => "dismissed".to_string(),
             AlertInstanceState::Fixed => "fixed".to_string(),
@@ -3926,7 +3926,7 @@ pub enum AppEventsItem {
 }
 impl ToString for AppEventsItem {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppEventsItem::CheckRun => "check_run".to_string(),
             AppEventsItem::CheckSuite => "check_suite".to_string(),
             AppEventsItem::CodeScanningAlert => "code_scanning_alert".to_string(),
@@ -3983,7 +3983,7 @@ pub enum AppPermissionsActions {
 }
 impl ToString for AppPermissionsActions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsActions::Read => "read".to_string(),
             AppPermissionsActions::Write => "write".to_string(),
         }
@@ -3998,7 +3998,7 @@ pub enum AppPermissionsAdministration {
 }
 impl ToString for AppPermissionsAdministration {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsAdministration::Read => "read".to_string(),
             AppPermissionsAdministration::Write => "write".to_string(),
         }
@@ -4013,7 +4013,7 @@ pub enum AppPermissionsChecks {
 }
 impl ToString for AppPermissionsChecks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsChecks::Read => "read".to_string(),
             AppPermissionsChecks::Write => "write".to_string(),
         }
@@ -4028,7 +4028,7 @@ pub enum AppPermissionsContentReferences {
 }
 impl ToString for AppPermissionsContentReferences {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsContentReferences::Read => "read".to_string(),
             AppPermissionsContentReferences::Write => "write".to_string(),
         }
@@ -4043,7 +4043,7 @@ pub enum AppPermissionsContents {
 }
 impl ToString for AppPermissionsContents {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsContents::Read => "read".to_string(),
             AppPermissionsContents::Write => "write".to_string(),
         }
@@ -4058,7 +4058,7 @@ pub enum AppPermissionsDeployments {
 }
 impl ToString for AppPermissionsDeployments {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsDeployments::Read => "read".to_string(),
             AppPermissionsDeployments::Write => "write".to_string(),
         }
@@ -4073,7 +4073,7 @@ pub enum AppPermissionsDiscussions {
 }
 impl ToString for AppPermissionsDiscussions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsDiscussions::Read => "read".to_string(),
             AppPermissionsDiscussions::Write => "write".to_string(),
         }
@@ -4088,7 +4088,7 @@ pub enum AppPermissionsEmails {
 }
 impl ToString for AppPermissionsEmails {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsEmails::Read => "read".to_string(),
             AppPermissionsEmails::Write => "write".to_string(),
         }
@@ -4103,7 +4103,7 @@ pub enum AppPermissionsEnvironments {
 }
 impl ToString for AppPermissionsEnvironments {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsEnvironments::Read => "read".to_string(),
             AppPermissionsEnvironments::Write => "write".to_string(),
         }
@@ -4118,7 +4118,7 @@ pub enum AppPermissionsIssues {
 }
 impl ToString for AppPermissionsIssues {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsIssues::Read => "read".to_string(),
             AppPermissionsIssues::Write => "write".to_string(),
         }
@@ -4133,7 +4133,7 @@ pub enum AppPermissionsMembers {
 }
 impl ToString for AppPermissionsMembers {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsMembers::Read => "read".to_string(),
             AppPermissionsMembers::Write => "write".to_string(),
         }
@@ -4148,7 +4148,7 @@ pub enum AppPermissionsMetadata {
 }
 impl ToString for AppPermissionsMetadata {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsMetadata::Read => "read".to_string(),
             AppPermissionsMetadata::Write => "write".to_string(),
         }
@@ -4163,7 +4163,7 @@ pub enum AppPermissionsOrganizationAdministration {
 }
 impl ToString for AppPermissionsOrganizationAdministration {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationAdministration::Read => "read".to_string(),
             AppPermissionsOrganizationAdministration::Write => "write".to_string(),
         }
@@ -4178,7 +4178,7 @@ pub enum AppPermissionsOrganizationHooks {
 }
 impl ToString for AppPermissionsOrganizationHooks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationHooks::Read => "read".to_string(),
             AppPermissionsOrganizationHooks::Write => "write".to_string(),
         }
@@ -4193,7 +4193,7 @@ pub enum AppPermissionsOrganizationPackages {
 }
 impl ToString for AppPermissionsOrganizationPackages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationPackages::Read => "read".to_string(),
             AppPermissionsOrganizationPackages::Write => "write".to_string(),
         }
@@ -4208,7 +4208,7 @@ pub enum AppPermissionsOrganizationPlan {
 }
 impl ToString for AppPermissionsOrganizationPlan {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationPlan::Read => "read".to_string(),
             AppPermissionsOrganizationPlan::Write => "write".to_string(),
         }
@@ -4223,7 +4223,7 @@ pub enum AppPermissionsOrganizationProjects {
 }
 impl ToString for AppPermissionsOrganizationProjects {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationProjects::Read => "read".to_string(),
             AppPermissionsOrganizationProjects::Write => "write".to_string(),
         }
@@ -4238,7 +4238,7 @@ pub enum AppPermissionsOrganizationSecrets {
 }
 impl ToString for AppPermissionsOrganizationSecrets {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationSecrets::Read => "read".to_string(),
             AppPermissionsOrganizationSecrets::Write => "write".to_string(),
         }
@@ -4253,7 +4253,7 @@ pub enum AppPermissionsOrganizationSelfHostedRunners {
 }
 impl ToString for AppPermissionsOrganizationSelfHostedRunners {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationSelfHostedRunners::Read => "read".to_string(),
             AppPermissionsOrganizationSelfHostedRunners::Write => "write".to_string(),
         }
@@ -4268,7 +4268,7 @@ pub enum AppPermissionsOrganizationUserBlocking {
 }
 impl ToString for AppPermissionsOrganizationUserBlocking {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsOrganizationUserBlocking::Read => "read".to_string(),
             AppPermissionsOrganizationUserBlocking::Write => "write".to_string(),
         }
@@ -4283,7 +4283,7 @@ pub enum AppPermissionsPackages {
 }
 impl ToString for AppPermissionsPackages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsPackages::Read => "read".to_string(),
             AppPermissionsPackages::Write => "write".to_string(),
         }
@@ -4298,7 +4298,7 @@ pub enum AppPermissionsPages {
 }
 impl ToString for AppPermissionsPages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsPages::Read => "read".to_string(),
             AppPermissionsPages::Write => "write".to_string(),
         }
@@ -4313,7 +4313,7 @@ pub enum AppPermissionsPullRequests {
 }
 impl ToString for AppPermissionsPullRequests {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsPullRequests::Read => "read".to_string(),
             AppPermissionsPullRequests::Write => "write".to_string(),
         }
@@ -4328,7 +4328,7 @@ pub enum AppPermissionsRepositoryHooks {
 }
 impl ToString for AppPermissionsRepositoryHooks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsRepositoryHooks::Read => "read".to_string(),
             AppPermissionsRepositoryHooks::Write => "write".to_string(),
         }
@@ -4343,7 +4343,7 @@ pub enum AppPermissionsRepositoryProjects {
 }
 impl ToString for AppPermissionsRepositoryProjects {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsRepositoryProjects::Read => "read".to_string(),
             AppPermissionsRepositoryProjects::Write => "write".to_string(),
         }
@@ -4358,7 +4358,7 @@ pub enum AppPermissionsSecretScanningAlerts {
 }
 impl ToString for AppPermissionsSecretScanningAlerts {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsSecretScanningAlerts::Read => "read".to_string(),
             AppPermissionsSecretScanningAlerts::Write => "write".to_string(),
         }
@@ -4373,7 +4373,7 @@ pub enum AppPermissionsSecrets {
 }
 impl ToString for AppPermissionsSecrets {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsSecrets::Read => "read".to_string(),
             AppPermissionsSecrets::Write => "write".to_string(),
         }
@@ -4388,7 +4388,7 @@ pub enum AppPermissionsSecurityEvents {
 }
 impl ToString for AppPermissionsSecurityEvents {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsSecurityEvents::Read => "read".to_string(),
             AppPermissionsSecurityEvents::Write => "write".to_string(),
         }
@@ -4403,7 +4403,7 @@ pub enum AppPermissionsSecurityScanningAlert {
 }
 impl ToString for AppPermissionsSecurityScanningAlert {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsSecurityScanningAlert::Read => "read".to_string(),
             AppPermissionsSecurityScanningAlert::Write => "write".to_string(),
         }
@@ -4418,7 +4418,7 @@ pub enum AppPermissionsSingleFile {
 }
 impl ToString for AppPermissionsSingleFile {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsSingleFile::Read => "read".to_string(),
             AppPermissionsSingleFile::Write => "write".to_string(),
         }
@@ -4433,7 +4433,7 @@ pub enum AppPermissionsStatuses {
 }
 impl ToString for AppPermissionsStatuses {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsStatuses::Read => "read".to_string(),
             AppPermissionsStatuses::Write => "write".to_string(),
         }
@@ -4448,7 +4448,7 @@ pub enum AppPermissionsTeamDiscussions {
 }
 impl ToString for AppPermissionsTeamDiscussions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsTeamDiscussions::Read => "read".to_string(),
             AppPermissionsTeamDiscussions::Write => "write".to_string(),
         }
@@ -4463,7 +4463,7 @@ pub enum AppPermissionsVulnerabilityAlerts {
 }
 impl ToString for AppPermissionsVulnerabilityAlerts {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsVulnerabilityAlerts::Read => "read".to_string(),
             AppPermissionsVulnerabilityAlerts::Write => "write".to_string(),
         }
@@ -4478,7 +4478,7 @@ pub enum AppPermissionsWorkflows {
 }
 impl ToString for AppPermissionsWorkflows {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             AppPermissionsWorkflows::Read => "read".to_string(),
             AppPermissionsWorkflows::Write => "write".to_string(),
         }
@@ -4568,7 +4568,7 @@ pub enum BranchProtectionRuleAllowDeletionsEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleAllowDeletionsEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleAllowDeletionsEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleAllowDeletionsEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4588,7 +4588,7 @@ pub enum BranchProtectionRuleAllowForcePushesEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleAllowForcePushesEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleAllowForcePushesEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleAllowForcePushesEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4610,7 +4610,7 @@ pub enum BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleLinearHistoryRequirementEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleLinearHistoryRequirementEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4632,7 +4632,7 @@ pub enum BranchProtectionRuleMergeQueueEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleMergeQueueEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleMergeQueueEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleMergeQueueEnforcementLevel::NonAdmins => "non_admins".to_string(),
             BranchProtectionRuleMergeQueueEnforcementLevel::Everyone => "everyone".to_string(),
@@ -4650,7 +4650,7 @@ pub enum BranchProtectionRulePullRequestReviewsEnforcementLevel {
 }
 impl ToString for BranchProtectionRulePullRequestReviewsEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRulePullRequestReviewsEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRulePullRequestReviewsEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4672,7 +4672,7 @@ pub enum BranchProtectionRuleRequiredConversationResolutionLevel {
 }
 impl ToString for BranchProtectionRuleRequiredConversationResolutionLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleRequiredConversationResolutionLevel::Off => "off".to_string(),
             BranchProtectionRuleRequiredConversationResolutionLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4694,7 +4694,7 @@ pub enum BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleRequiredDeploymentsEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleRequiredDeploymentsEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4716,7 +4716,7 @@ pub enum BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleRequiredStatusChecksEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleRequiredStatusChecksEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4738,7 +4738,7 @@ pub enum BranchProtectionRuleSignatureRequirementEnforcementLevel {
 }
 impl ToString for BranchProtectionRuleSignatureRequirementEnforcementLevel {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleSignatureRequirementEnforcementLevel::Off => "off".to_string(),
             BranchProtectionRuleSignatureRequirementEnforcementLevel::NonAdmins => {
                 "non_admins".to_string()
@@ -4756,7 +4756,7 @@ pub enum BranchProtectionRuleCreatedAction {
 }
 impl ToString for BranchProtectionRuleCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleCreatedAction::Created => "created".to_string(),
         }
     }
@@ -4768,7 +4768,7 @@ pub enum BranchProtectionRuleDeletedAction {
 }
 impl ToString for BranchProtectionRuleDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -4780,7 +4780,7 @@ pub enum BranchProtectionRuleEditedAction {
 }
 impl ToString for BranchProtectionRuleEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             BranchProtectionRuleEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -4827,7 +4827,7 @@ pub enum CheckRunCompletedAction {
 }
 impl ToString for CheckRunCompletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCompletedAction::Completed => "completed".to_string(),
         }
     }
@@ -4851,7 +4851,7 @@ pub enum CheckRunCompletedCheckRunCheckSuiteConclusion {
 }
 impl ToString for CheckRunCompletedCheckRunCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCompletedCheckRunCheckSuiteConclusion::Success => "success".to_string(),
             CheckRunCompletedCheckRunCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckRunCompletedCheckRunCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -4875,7 +4875,7 @@ pub enum CheckRunCompletedCheckRunCheckSuiteStatus {
 }
 impl ToString for CheckRunCompletedCheckRunCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCompletedCheckRunCheckSuiteStatus::InProgress => "in_progress".to_string(),
             CheckRunCompletedCheckRunCheckSuiteStatus::Completed => "completed".to_string(),
             CheckRunCompletedCheckRunCheckSuiteStatus::Queued => "queued".to_string(),
@@ -4927,7 +4927,7 @@ pub enum CheckRunCompletedCheckRunConclusion {
 }
 impl ToString for CheckRunCompletedCheckRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCompletedCheckRunConclusion::Success => "success".to_string(),
             CheckRunCompletedCheckRunConclusion::Failure => "failure".to_string(),
             CheckRunCompletedCheckRunConclusion::Neutral => "neutral".to_string(),
@@ -4957,7 +4957,7 @@ pub enum CheckRunCompletedCheckRunStatus {
 }
 impl ToString for CheckRunCompletedCheckRunStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCompletedCheckRunStatus::Completed => "completed".to_string(),
         }
     }
@@ -5007,7 +5007,7 @@ pub enum CheckRunCreatedAction {
 }
 impl ToString for CheckRunCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCreatedAction::Created => "created".to_string(),
         }
     }
@@ -5031,7 +5031,7 @@ pub enum CheckRunCreatedCheckRunCheckSuiteConclusion {
 }
 impl ToString for CheckRunCreatedCheckRunCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCreatedCheckRunCheckSuiteConclusion::Success => "success".to_string(),
             CheckRunCreatedCheckRunCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckRunCreatedCheckRunCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5055,7 +5055,7 @@ pub enum CheckRunCreatedCheckRunCheckSuiteStatus {
 }
 impl ToString for CheckRunCreatedCheckRunCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCreatedCheckRunCheckSuiteStatus::Queued => "queued".to_string(),
             CheckRunCreatedCheckRunCheckSuiteStatus::InProgress => "in_progress".to_string(),
             CheckRunCreatedCheckRunCheckSuiteStatus::Completed => "completed".to_string(),
@@ -5107,7 +5107,7 @@ pub enum CheckRunCreatedCheckRunConclusion {
 }
 impl ToString for CheckRunCreatedCheckRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCreatedCheckRunConclusion::Success => "success".to_string(),
             CheckRunCreatedCheckRunConclusion::Failure => "failure".to_string(),
             CheckRunCreatedCheckRunConclusion::Neutral => "neutral".to_string(),
@@ -5141,7 +5141,7 @@ pub enum CheckRunCreatedCheckRunStatus {
 }
 impl ToString for CheckRunCreatedCheckRunStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunCreatedCheckRunStatus::Queued => "queued".to_string(),
             CheckRunCreatedCheckRunStatus::InProgress => "in_progress".to_string(),
             CheckRunCreatedCheckRunStatus::Completed => "completed".to_string(),
@@ -5193,7 +5193,7 @@ pub enum CheckRunRequestedActionAction {
 }
 impl ToString for CheckRunRequestedActionAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRequestedActionAction::RequestedAction => "requested_action".to_string(),
         }
     }
@@ -5217,7 +5217,7 @@ pub enum CheckRunRequestedActionCheckRunCheckSuiteConclusion {
 }
 impl ToString for CheckRunRequestedActionCheckRunCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRequestedActionCheckRunCheckSuiteConclusion::Success => "success".to_string(),
             CheckRunRequestedActionCheckRunCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckRunRequestedActionCheckRunCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5245,7 +5245,7 @@ pub enum CheckRunRequestedActionCheckRunCheckSuiteStatus {
 }
 impl ToString for CheckRunRequestedActionCheckRunCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRequestedActionCheckRunCheckSuiteStatus::Queued => "queued".to_string(),
             CheckRunRequestedActionCheckRunCheckSuiteStatus::InProgress => {
                 "in_progress".to_string()
@@ -5299,7 +5299,7 @@ pub enum CheckRunRequestedActionCheckRunConclusion {
 }
 impl ToString for CheckRunRequestedActionCheckRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRequestedActionCheckRunConclusion::Success => "success".to_string(),
             CheckRunRequestedActionCheckRunConclusion::Failure => "failure".to_string(),
             CheckRunRequestedActionCheckRunConclusion::Neutral => "neutral".to_string(),
@@ -5335,7 +5335,7 @@ pub enum CheckRunRequestedActionCheckRunStatus {
 }
 impl ToString for CheckRunRequestedActionCheckRunStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRequestedActionCheckRunStatus::Queued => "queued".to_string(),
             CheckRunRequestedActionCheckRunStatus::InProgress => "in_progress".to_string(),
             CheckRunRequestedActionCheckRunStatus::Completed => "completed".to_string(),
@@ -5387,7 +5387,7 @@ pub enum CheckRunRerequestedAction {
 }
 impl ToString for CheckRunRerequestedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRerequestedAction::Rerequested => "rerequested".to_string(),
         }
     }
@@ -5411,7 +5411,7 @@ pub enum CheckRunRerequestedCheckRunCheckSuiteConclusion {
 }
 impl ToString for CheckRunRerequestedCheckRunCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRerequestedCheckRunCheckSuiteConclusion::Success => "success".to_string(),
             CheckRunRerequestedCheckRunCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckRunRerequestedCheckRunCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5431,7 +5431,7 @@ pub enum CheckRunRerequestedCheckRunCheckSuiteStatus {
 }
 impl ToString for CheckRunRerequestedCheckRunCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRerequestedCheckRunCheckSuiteStatus::Completed => "completed".to_string(),
         }
     }
@@ -5481,7 +5481,7 @@ pub enum CheckRunRerequestedCheckRunConclusion {
 }
 impl ToString for CheckRunRerequestedCheckRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRerequestedCheckRunConclusion::Success => "success".to_string(),
             CheckRunRerequestedCheckRunConclusion::Failure => "failure".to_string(),
             CheckRunRerequestedCheckRunConclusion::Neutral => "neutral".to_string(),
@@ -5511,7 +5511,7 @@ pub enum CheckRunRerequestedCheckRunStatus {
 }
 impl ToString for CheckRunRerequestedCheckRunStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckRunRerequestedCheckRunStatus::Completed => "completed".to_string(),
         }
     }
@@ -5561,7 +5561,7 @@ pub enum CheckSuiteCompletedAction {
 }
 impl ToString for CheckSuiteCompletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteCompletedAction::Completed => "completed".to_string(),
         }
     }
@@ -5586,7 +5586,7 @@ pub enum CheckSuiteCompletedCheckSuiteConclusion {
 }
 impl ToString for CheckSuiteCompletedCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteCompletedCheckSuiteConclusion::Success => "success".to_string(),
             CheckSuiteCompletedCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckSuiteCompletedCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5613,7 +5613,7 @@ pub enum CheckSuiteCompletedCheckSuiteStatus {
 }
 impl ToString for CheckSuiteCompletedCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteCompletedCheckSuiteStatus::Requested => "requested".to_string(),
             CheckSuiteCompletedCheckSuiteStatus::InProgress => "in_progress".to_string(),
             CheckSuiteCompletedCheckSuiteStatus::Completed => "completed".to_string(),
@@ -5655,7 +5655,7 @@ pub enum CheckSuiteRequestedAction {
 }
 impl ToString for CheckSuiteRequestedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRequestedAction::Requested => "requested".to_string(),
         }
     }
@@ -5680,7 +5680,7 @@ pub enum CheckSuiteRequestedCheckSuiteConclusion {
 }
 impl ToString for CheckSuiteRequestedCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRequestedCheckSuiteConclusion::Success => "success".to_string(),
             CheckSuiteRequestedCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckSuiteRequestedCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5707,7 +5707,7 @@ pub enum CheckSuiteRequestedCheckSuiteStatus {
 }
 impl ToString for CheckSuiteRequestedCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRequestedCheckSuiteStatus::Requested => "requested".to_string(),
             CheckSuiteRequestedCheckSuiteStatus::InProgress => "in_progress".to_string(),
             CheckSuiteRequestedCheckSuiteStatus::Completed => "completed".to_string(),
@@ -5749,7 +5749,7 @@ pub enum CheckSuiteRerequestedAction {
 }
 impl ToString for CheckSuiteRerequestedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRerequestedAction::Rerequested => "rerequested".to_string(),
         }
     }
@@ -5774,7 +5774,7 @@ pub enum CheckSuiteRerequestedCheckSuiteConclusion {
 }
 impl ToString for CheckSuiteRerequestedCheckSuiteConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRerequestedCheckSuiteConclusion::Success => "success".to_string(),
             CheckSuiteRerequestedCheckSuiteConclusion::Failure => "failure".to_string(),
             CheckSuiteRerequestedCheckSuiteConclusion::Neutral => "neutral".to_string(),
@@ -5801,7 +5801,7 @@ pub enum CheckSuiteRerequestedCheckSuiteStatus {
 }
 impl ToString for CheckSuiteRerequestedCheckSuiteStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CheckSuiteRerequestedCheckSuiteStatus::Requested => "requested".to_string(),
             CheckSuiteRerequestedCheckSuiteStatus::InProgress => "in_progress".to_string(),
             CheckSuiteRerequestedCheckSuiteStatus::Completed => "completed".to_string(),
@@ -5843,7 +5843,7 @@ pub enum CodeScanningAlertAppearedInBranchAction {
 }
 impl ToString for CodeScanningAlertAppearedInBranchAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertAppearedInBranchAction::AppearedInBranch => {
                 "appeared_in_branch".to_string()
             }
@@ -5862,7 +5862,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertDismissedReason {
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertDismissedReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertAppearedInBranchAlertDismissedReason::FalsePositive => {
                 "false positive".to_string()
             }
@@ -5889,7 +5889,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertAppearedInBranchAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertAppearedInBranchAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertAppearedInBranchAlertRuleSeverity::Warning => "warning".to_string(),
@@ -5919,7 +5919,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertState {
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertAppearedInBranchAlertState::Open => "open".to_string(),
             CodeScanningAlertAppearedInBranchAlertState::Dismissed => "dismissed".to_string(),
             CodeScanningAlertAppearedInBranchAlertState::Fixed => "fixed".to_string(),
@@ -5965,7 +5965,7 @@ pub enum CodeScanningAlertClosedByUserAction {
 }
 impl ToString for CodeScanningAlertClosedByUserAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertClosedByUserAction::ClosedByUser => "closed_by_user".to_string(),
         }
     }
@@ -5982,7 +5982,7 @@ pub enum CodeScanningAlertClosedByUserAlertDismissedReason {
 }
 impl ToString for CodeScanningAlertClosedByUserAlertDismissedReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertClosedByUserAlertDismissedReason::FalsePositive => {
                 "false positive".to_string()
             }
@@ -6000,7 +6000,7 @@ pub enum CodeScanningAlertClosedByUserAlertInstancesItemState {
 }
 impl ToString for CodeScanningAlertClosedByUserAlertInstancesItemState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertClosedByUserAlertInstancesItemState::Dismissed => {
                 "dismissed".to_string()
             }
@@ -6027,7 +6027,7 @@ pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertClosedByUserAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertClosedByUserAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertClosedByUserAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertClosedByUserAlertRuleSeverity::Warning => "warning".to_string(),
@@ -6061,7 +6061,7 @@ pub enum CodeScanningAlertClosedByUserAlertState {
 }
 impl ToString for CodeScanningAlertClosedByUserAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertClosedByUserAlertState::Dismissed => "dismissed".to_string(),
         }
     }
@@ -6107,7 +6107,7 @@ pub enum CodeScanningAlertCreatedAction {
 }
 impl ToString for CodeScanningAlertCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6121,7 +6121,7 @@ pub enum CodeScanningAlertCreatedAlertInstancesItemState {
 }
 impl ToString for CodeScanningAlertCreatedAlertInstancesItemState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertCreatedAlertInstancesItemState::Open => "open".to_string(),
             CodeScanningAlertCreatedAlertInstancesItemState::Dismissed => "dismissed".to_string(),
         }
@@ -6147,7 +6147,7 @@ pub enum CodeScanningAlertCreatedAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertCreatedAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertCreatedAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertCreatedAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertCreatedAlertRuleSeverity::Warning => "warning".to_string(),
@@ -6183,7 +6183,7 @@ pub enum CodeScanningAlertCreatedAlertState {
 }
 impl ToString for CodeScanningAlertCreatedAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertCreatedAlertState::Open => "open".to_string(),
             CodeScanningAlertCreatedAlertState::Dismissed => "dismissed".to_string(),
         }
@@ -6230,7 +6230,7 @@ pub enum CodeScanningAlertFixedAction {
 }
 impl ToString for CodeScanningAlertFixedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertFixedAction::Fixed => "fixed".to_string(),
         }
     }
@@ -6247,7 +6247,7 @@ pub enum CodeScanningAlertFixedAlertDismissedReason {
 }
 impl ToString for CodeScanningAlertFixedAlertDismissedReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertFixedAlertDismissedReason::FalsePositive => {
                 "false positive".to_string()
             }
@@ -6263,7 +6263,7 @@ pub enum CodeScanningAlertFixedAlertInstancesItemState {
 }
 impl ToString for CodeScanningAlertFixedAlertInstancesItemState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertFixedAlertInstancesItemState::Fixed => "fixed".to_string(),
         }
     }
@@ -6288,7 +6288,7 @@ pub enum CodeScanningAlertFixedAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertFixedAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertFixedAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertFixedAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertFixedAlertRuleSeverity::Warning => "warning".to_string(),
@@ -6322,7 +6322,7 @@ pub enum CodeScanningAlertFixedAlertState {
 }
 impl ToString for CodeScanningAlertFixedAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertFixedAlertState::Fixed => "fixed".to_string(),
         }
     }
@@ -6370,7 +6370,7 @@ pub enum CodeScanningAlertReopenedAction {
 }
 impl ToString for CodeScanningAlertReopenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedAction::Reopened => "reopened".to_string(),
         }
     }
@@ -6382,7 +6382,7 @@ pub enum CodeScanningAlertReopenedAlertInstancesItemState {
 }
 impl ToString for CodeScanningAlertReopenedAlertInstancesItemState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedAlertInstancesItemState::Open => "open".to_string(),
         }
     }
@@ -6407,7 +6407,7 @@ pub enum CodeScanningAlertReopenedAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertReopenedAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertReopenedAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertReopenedAlertRuleSeverity::Warning => "warning".to_string(),
@@ -6445,7 +6445,7 @@ pub enum CodeScanningAlertReopenedAlertState {
 }
 impl ToString for CodeScanningAlertReopenedAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedAlertState::Open => "open".to_string(),
             CodeScanningAlertReopenedAlertState::Dismissed => "dismissed".to_string(),
             CodeScanningAlertReopenedAlertState::Fixed => "fixed".to_string(),
@@ -6493,7 +6493,7 @@ pub enum CodeScanningAlertReopenedByUserAction {
 }
 impl ToString for CodeScanningAlertReopenedByUserAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedByUserAction::ReopenedByUser => "reopened_by_user".to_string(),
         }
     }
@@ -6505,7 +6505,7 @@ pub enum CodeScanningAlertReopenedByUserAlertInstancesItemState {
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertInstancesItemState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedByUserAlertInstancesItemState::Open => "open".to_string(),
         }
     }
@@ -6530,7 +6530,7 @@ pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertRuleSeverity {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedByUserAlertRuleSeverity::None => "none".to_string(),
             CodeScanningAlertReopenedByUserAlertRuleSeverity::Note => "note".to_string(),
             CodeScanningAlertReopenedByUserAlertRuleSeverity::Warning => "warning".to_string(),
@@ -6556,7 +6556,7 @@ pub enum CodeScanningAlertReopenedByUserAlertState {
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CodeScanningAlertReopenedByUserAlertState::Open => "open".to_string(),
         }
     }
@@ -6601,7 +6601,7 @@ pub enum CommitCommentCreatedAction {
 }
 impl ToString for CommitCommentCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CommitCommentCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6638,7 +6638,7 @@ pub enum ContentReferenceCreatedAction {
 }
 impl ToString for ContentReferenceCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ContentReferenceCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6660,7 +6660,7 @@ pub enum CreateEventRefType {
 }
 impl ToString for CreateEventRefType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             CreateEventRefType::Tag => "tag".to_string(),
             CreateEventRefType::Branch => "branch".to_string(),
         }
@@ -6676,7 +6676,7 @@ pub enum DeleteEventRefType {
 }
 impl ToString for DeleteEventRefType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DeleteEventRefType::Tag => "tag".to_string(),
             DeleteEventRefType::Branch => "branch".to_string(),
         }
@@ -6689,7 +6689,7 @@ pub enum DeployKeyCreatedAction {
 }
 impl ToString for DeployKeyCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DeployKeyCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6713,7 +6713,7 @@ pub enum DeployKeyDeletedAction {
 }
 impl ToString for DeployKeyDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DeployKeyDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -6737,7 +6737,7 @@ pub enum DeploymentCreatedAction {
 }
 impl ToString for DeploymentCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DeploymentCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6775,7 +6775,7 @@ pub enum DeploymentStatusCreatedAction {
 }
 impl ToString for DeploymentStatusCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DeploymentStatusCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6851,7 +6851,7 @@ pub enum DiscussionState {
 }
 impl ToString for DiscussionState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionState::Open => "open".to_string(),
             DiscussionState::Locked => "locked".to_string(),
             DiscussionState::Converting => "converting".to_string(),
@@ -6865,7 +6865,7 @@ pub enum DiscussionAnsweredAction {
 }
 impl ToString for DiscussionAnsweredAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionAnsweredAction::Answered => "answered".to_string(),
         }
     }
@@ -6906,7 +6906,7 @@ pub enum DiscussionCategoryChangedAction {
 }
 impl ToString for DiscussionCategoryChangedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCategoryChangedAction::CategoryChanged => "category_changed".to_string(),
         }
     }
@@ -6941,7 +6941,7 @@ pub enum DiscussionCreatedAction {
 }
 impl ToString for DiscussionCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCreatedAction::Created => "created".to_string(),
         }
     }
@@ -6955,7 +6955,7 @@ pub enum DiscussionCreatedDiscussionState {
 }
 impl ToString for DiscussionCreatedDiscussionState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCreatedDiscussionState::Open => "open".to_string(),
             DiscussionCreatedDiscussionState::Converting => "converting".to_string(),
         }
@@ -6978,7 +6978,7 @@ pub enum DiscussionDeletedAction {
 }
 impl ToString for DiscussionDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -6990,7 +6990,7 @@ pub enum DiscussionEditedAction {
 }
 impl ToString for DiscussionEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -7020,7 +7020,7 @@ pub enum DiscussionLabeledAction {
 }
 impl ToString for DiscussionLabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionLabeledAction::Labeled => "labeled".to_string(),
         }
     }
@@ -7032,7 +7032,7 @@ pub enum DiscussionLockedAction {
 }
 impl ToString for DiscussionLockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionLockedAction::Locked => "locked".to_string(),
         }
     }
@@ -7044,7 +7044,7 @@ pub enum DiscussionLockedDiscussionState {
 }
 impl ToString for DiscussionLockedDiscussionState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionLockedDiscussionState::Locked => "locked".to_string(),
         }
     }
@@ -7063,7 +7063,7 @@ pub enum DiscussionPinnedAction {
 }
 impl ToString for DiscussionPinnedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionPinnedAction::Pinned => "pinned".to_string(),
         }
     }
@@ -7075,7 +7075,7 @@ pub enum DiscussionTransferredAction {
 }
 impl ToString for DiscussionTransferredAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionTransferredAction::Transferred => "transferred".to_string(),
         }
     }
@@ -7093,7 +7093,7 @@ pub enum DiscussionUnansweredAction {
 }
 impl ToString for DiscussionUnansweredAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionUnansweredAction::Unanswered => "unanswered".to_string(),
         }
     }
@@ -7134,7 +7134,7 @@ pub enum DiscussionUnlabeledAction {
 }
 impl ToString for DiscussionUnlabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionUnlabeledAction::Unlabeled => "unlabeled".to_string(),
         }
     }
@@ -7146,7 +7146,7 @@ pub enum DiscussionUnlockedAction {
 }
 impl ToString for DiscussionUnlockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionUnlockedAction::Unlocked => "unlocked".to_string(),
         }
     }
@@ -7158,7 +7158,7 @@ pub enum DiscussionUnlockedDiscussionState {
 }
 impl ToString for DiscussionUnlockedDiscussionState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionUnlockedDiscussionState::Open => "open".to_string(),
         }
     }
@@ -7177,7 +7177,7 @@ pub enum DiscussionUnpinnedAction {
 }
 impl ToString for DiscussionUnpinnedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionUnpinnedAction::Unpinned => "unpinned".to_string(),
         }
     }
@@ -7189,7 +7189,7 @@ pub enum DiscussionCommentCreatedAction {
 }
 impl ToString for DiscussionCommentCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCommentCreatedAction::Created => "created".to_string(),
         }
     }
@@ -7217,7 +7217,7 @@ pub enum DiscussionCommentDeletedAction {
 }
 impl ToString for DiscussionCommentDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCommentDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -7245,7 +7245,7 @@ pub enum DiscussionCommentEditedAction {
 }
 impl ToString for DiscussionCommentEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             DiscussionCommentEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -7291,7 +7291,7 @@ pub enum GithubAppAuthorizationRevokedAction {
 }
 impl ToString for GithubAppAuthorizationRevokedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             GithubAppAuthorizationRevokedAction::Revoked => "revoked".to_string(),
         }
     }
@@ -7306,7 +7306,7 @@ pub enum GollumEventPagesItemAction {
 }
 impl ToString for GollumEventPagesItemAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             GollumEventPagesItemAction::Created => "created".to_string(),
             GollumEventPagesItemAction::Edited => "edited".to_string(),
         }
@@ -7428,7 +7428,7 @@ pub enum InstallationEventsItem {
 }
 impl ToString for InstallationEventsItem {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationEventsItem::CheckRun => "check_run".to_string(),
             InstallationEventsItem::CheckSuite => "check_suite".to_string(),
             InstallationEventsItem::CodeScanningAlert => "code_scanning_alert".to_string(),
@@ -7488,7 +7488,7 @@ pub enum InstallationPermissionsActions {
 }
 impl ToString for InstallationPermissionsActions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsActions::Read => "read".to_string(),
             InstallationPermissionsActions::Write => "write".to_string(),
         }
@@ -7503,7 +7503,7 @@ pub enum InstallationPermissionsAdministration {
 }
 impl ToString for InstallationPermissionsAdministration {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsAdministration::Read => "read".to_string(),
             InstallationPermissionsAdministration::Write => "write".to_string(),
         }
@@ -7518,7 +7518,7 @@ pub enum InstallationPermissionsChecks {
 }
 impl ToString for InstallationPermissionsChecks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsChecks::Read => "read".to_string(),
             InstallationPermissionsChecks::Write => "write".to_string(),
         }
@@ -7533,7 +7533,7 @@ pub enum InstallationPermissionsContentReferences {
 }
 impl ToString for InstallationPermissionsContentReferences {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsContentReferences::Read => "read".to_string(),
             InstallationPermissionsContentReferences::Write => "write".to_string(),
         }
@@ -7548,7 +7548,7 @@ pub enum InstallationPermissionsContents {
 }
 impl ToString for InstallationPermissionsContents {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsContents::Read => "read".to_string(),
             InstallationPermissionsContents::Write => "write".to_string(),
         }
@@ -7563,7 +7563,7 @@ pub enum InstallationPermissionsDeployments {
 }
 impl ToString for InstallationPermissionsDeployments {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsDeployments::Read => "read".to_string(),
             InstallationPermissionsDeployments::Write => "write".to_string(),
         }
@@ -7578,7 +7578,7 @@ pub enum InstallationPermissionsDiscussions {
 }
 impl ToString for InstallationPermissionsDiscussions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsDiscussions::Read => "read".to_string(),
             InstallationPermissionsDiscussions::Write => "write".to_string(),
         }
@@ -7593,7 +7593,7 @@ pub enum InstallationPermissionsEmails {
 }
 impl ToString for InstallationPermissionsEmails {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsEmails::Read => "read".to_string(),
             InstallationPermissionsEmails::Write => "write".to_string(),
         }
@@ -7608,7 +7608,7 @@ pub enum InstallationPermissionsEnvironments {
 }
 impl ToString for InstallationPermissionsEnvironments {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsEnvironments::Read => "read".to_string(),
             InstallationPermissionsEnvironments::Write => "write".to_string(),
         }
@@ -7623,7 +7623,7 @@ pub enum InstallationPermissionsIssues {
 }
 impl ToString for InstallationPermissionsIssues {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsIssues::Read => "read".to_string(),
             InstallationPermissionsIssues::Write => "write".to_string(),
         }
@@ -7638,7 +7638,7 @@ pub enum InstallationPermissionsMembers {
 }
 impl ToString for InstallationPermissionsMembers {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsMembers::Read => "read".to_string(),
             InstallationPermissionsMembers::Write => "write".to_string(),
         }
@@ -7653,7 +7653,7 @@ pub enum InstallationPermissionsMetadata {
 }
 impl ToString for InstallationPermissionsMetadata {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsMetadata::Read => "read".to_string(),
             InstallationPermissionsMetadata::Write => "write".to_string(),
         }
@@ -7668,7 +7668,7 @@ pub enum InstallationPermissionsOrganizationAdministration {
 }
 impl ToString for InstallationPermissionsOrganizationAdministration {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationAdministration::Read => "read".to_string(),
             InstallationPermissionsOrganizationAdministration::Write => "write".to_string(),
         }
@@ -7683,7 +7683,7 @@ pub enum InstallationPermissionsOrganizationEvents {
 }
 impl ToString for InstallationPermissionsOrganizationEvents {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationEvents::Read => "read".to_string(),
             InstallationPermissionsOrganizationEvents::Write => "write".to_string(),
         }
@@ -7698,7 +7698,7 @@ pub enum InstallationPermissionsOrganizationHooks {
 }
 impl ToString for InstallationPermissionsOrganizationHooks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationHooks::Read => "read".to_string(),
             InstallationPermissionsOrganizationHooks::Write => "write".to_string(),
         }
@@ -7713,7 +7713,7 @@ pub enum InstallationPermissionsOrganizationPackages {
 }
 impl ToString for InstallationPermissionsOrganizationPackages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationPackages::Read => "read".to_string(),
             InstallationPermissionsOrganizationPackages::Write => "write".to_string(),
         }
@@ -7728,7 +7728,7 @@ pub enum InstallationPermissionsOrganizationPlan {
 }
 impl ToString for InstallationPermissionsOrganizationPlan {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationPlan::Read => "read".to_string(),
             InstallationPermissionsOrganizationPlan::Write => "write".to_string(),
         }
@@ -7743,7 +7743,7 @@ pub enum InstallationPermissionsOrganizationProjects {
 }
 impl ToString for InstallationPermissionsOrganizationProjects {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationProjects::Read => "read".to_string(),
             InstallationPermissionsOrganizationProjects::Write => "write".to_string(),
         }
@@ -7758,7 +7758,7 @@ pub enum InstallationPermissionsOrganizationSecrets {
 }
 impl ToString for InstallationPermissionsOrganizationSecrets {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationSecrets::Read => "read".to_string(),
             InstallationPermissionsOrganizationSecrets::Write => "write".to_string(),
         }
@@ -7773,7 +7773,7 @@ pub enum InstallationPermissionsOrganizationSelfHostedRunners {
 }
 impl ToString for InstallationPermissionsOrganizationSelfHostedRunners {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationSelfHostedRunners::Read => "read".to_string(),
             InstallationPermissionsOrganizationSelfHostedRunners::Write => "write".to_string(),
         }
@@ -7788,7 +7788,7 @@ pub enum InstallationPermissionsOrganizationUserBlocking {
 }
 impl ToString for InstallationPermissionsOrganizationUserBlocking {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsOrganizationUserBlocking::Read => "read".to_string(),
             InstallationPermissionsOrganizationUserBlocking::Write => "write".to_string(),
         }
@@ -7803,7 +7803,7 @@ pub enum InstallationPermissionsPackages {
 }
 impl ToString for InstallationPermissionsPackages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsPackages::Read => "read".to_string(),
             InstallationPermissionsPackages::Write => "write".to_string(),
         }
@@ -7818,7 +7818,7 @@ pub enum InstallationPermissionsPages {
 }
 impl ToString for InstallationPermissionsPages {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsPages::Read => "read".to_string(),
             InstallationPermissionsPages::Write => "write".to_string(),
         }
@@ -7833,7 +7833,7 @@ pub enum InstallationPermissionsPullRequests {
 }
 impl ToString for InstallationPermissionsPullRequests {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsPullRequests::Read => "read".to_string(),
             InstallationPermissionsPullRequests::Write => "write".to_string(),
         }
@@ -7848,7 +7848,7 @@ pub enum InstallationPermissionsRepositoryHooks {
 }
 impl ToString for InstallationPermissionsRepositoryHooks {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsRepositoryHooks::Read => "read".to_string(),
             InstallationPermissionsRepositoryHooks::Write => "write".to_string(),
         }
@@ -7863,7 +7863,7 @@ pub enum InstallationPermissionsRepositoryProjects {
 }
 impl ToString for InstallationPermissionsRepositoryProjects {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsRepositoryProjects::Read => "read".to_string(),
             InstallationPermissionsRepositoryProjects::Write => "write".to_string(),
         }
@@ -7878,7 +7878,7 @@ pub enum InstallationPermissionsSecretScanningAlerts {
 }
 impl ToString for InstallationPermissionsSecretScanningAlerts {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsSecretScanningAlerts::Read => "read".to_string(),
             InstallationPermissionsSecretScanningAlerts::Write => "write".to_string(),
         }
@@ -7893,7 +7893,7 @@ pub enum InstallationPermissionsSecrets {
 }
 impl ToString for InstallationPermissionsSecrets {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsSecrets::Read => "read".to_string(),
             InstallationPermissionsSecrets::Write => "write".to_string(),
         }
@@ -7908,7 +7908,7 @@ pub enum InstallationPermissionsSecurityEvents {
 }
 impl ToString for InstallationPermissionsSecurityEvents {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsSecurityEvents::Read => "read".to_string(),
             InstallationPermissionsSecurityEvents::Write => "write".to_string(),
         }
@@ -7923,7 +7923,7 @@ pub enum InstallationPermissionsSecurityScanningAlert {
 }
 impl ToString for InstallationPermissionsSecurityScanningAlert {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsSecurityScanningAlert::Read => "read".to_string(),
             InstallationPermissionsSecurityScanningAlert::Write => "write".to_string(),
         }
@@ -7938,7 +7938,7 @@ pub enum InstallationPermissionsSingleFile {
 }
 impl ToString for InstallationPermissionsSingleFile {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsSingleFile::Read => "read".to_string(),
             InstallationPermissionsSingleFile::Write => "write".to_string(),
         }
@@ -7953,7 +7953,7 @@ pub enum InstallationPermissionsStatuses {
 }
 impl ToString for InstallationPermissionsStatuses {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsStatuses::Read => "read".to_string(),
             InstallationPermissionsStatuses::Write => "write".to_string(),
         }
@@ -7968,7 +7968,7 @@ pub enum InstallationPermissionsTeamDiscussions {
 }
 impl ToString for InstallationPermissionsTeamDiscussions {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsTeamDiscussions::Read => "read".to_string(),
             InstallationPermissionsTeamDiscussions::Write => "write".to_string(),
         }
@@ -7983,7 +7983,7 @@ pub enum InstallationPermissionsVulnerabilityAlerts {
 }
 impl ToString for InstallationPermissionsVulnerabilityAlerts {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsVulnerabilityAlerts::Read => "read".to_string(),
             InstallationPermissionsVulnerabilityAlerts::Write => "write".to_string(),
         }
@@ -7998,7 +7998,7 @@ pub enum InstallationPermissionsWorkflows {
 }
 impl ToString for InstallationPermissionsWorkflows {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationPermissionsWorkflows::Read => "read".to_string(),
             InstallationPermissionsWorkflows::Write => "write".to_string(),
         }
@@ -8089,7 +8089,7 @@ pub enum InstallationRepositorySelection {
 }
 impl ToString for InstallationRepositorySelection {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationRepositorySelection::All => "all".to_string(),
             InstallationRepositorySelection::Selected => "selected".to_string(),
         }
@@ -8102,7 +8102,7 @@ pub enum InstallationTargetType {
 }
 impl ToString for InstallationTargetType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationTargetType::User => "User".to_string(),
             InstallationTargetType::Organization => "Organization".to_string(),
         }
@@ -8121,7 +8121,7 @@ pub enum InstallationCreatedAction {
 }
 impl ToString for InstallationCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationCreatedAction::Created => "created".to_string(),
         }
     }
@@ -8145,7 +8145,7 @@ pub enum InstallationDeletedAction {
 }
 impl ToString for InstallationDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -8169,7 +8169,7 @@ pub enum InstallationNewPermissionsAcceptedAction {
 }
 impl ToString for InstallationNewPermissionsAcceptedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationNewPermissionsAcceptedAction::NewPermissionsAccepted => {
                 "new_permissions_accepted".to_string()
             }
@@ -8195,7 +8195,7 @@ pub enum InstallationSuspendAction {
 }
 impl ToString for InstallationSuspendAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationSuspendAction::Suspend => "suspend".to_string(),
         }
     }
@@ -8226,7 +8226,7 @@ pub enum InstallationUnsuspendAction {
 }
 impl ToString for InstallationUnsuspendAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationUnsuspendAction::Unsuspend => "unsuspend".to_string(),
         }
     }
@@ -8257,7 +8257,7 @@ pub enum InstallationRepositoriesAddedAction {
 }
 impl ToString for InstallationRepositoriesAddedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationRepositoriesAddedAction::Added => "added".to_string(),
         }
     }
@@ -8301,7 +8301,7 @@ pub enum InstallationRepositoriesAddedRepositorySelection {
 }
 impl ToString for InstallationRepositoriesAddedRepositorySelection {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationRepositoriesAddedRepositorySelection::All => "all".to_string(),
             InstallationRepositoriesAddedRepositorySelection::Selected => "selected".to_string(),
         }
@@ -8314,7 +8314,7 @@ pub enum InstallationRepositoriesRemovedAction {
 }
 impl ToString for InstallationRepositoriesRemovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationRepositoriesRemovedAction::Removed => "removed".to_string(),
         }
     }
@@ -8353,7 +8353,7 @@ pub enum InstallationRepositoriesRemovedRepositorySelection {
 }
 impl ToString for InstallationRepositoriesRemovedRepositorySelection {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             InstallationRepositoriesRemovedRepositorySelection::All => "all".to_string(),
             InstallationRepositoriesRemovedRepositorySelection::Selected => "selected".to_string(),
         }
@@ -8372,7 +8372,7 @@ pub enum IssueActiveLockReason {
 }
 impl ToString for IssueActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueActiveLockReason::Resolved => "resolved".to_string(),
             IssueActiveLockReason::OffTopic => "off-topic".to_string(),
             IssueActiveLockReason::TooHeated => "too heated".to_string(),
@@ -8402,7 +8402,7 @@ pub enum IssueState {
 }
 impl ToString for IssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueState::Open => "open".to_string(),
             IssueState::Closed => "closed".to_string(),
         }
@@ -8415,7 +8415,7 @@ pub enum IssueCommentCreatedAction {
 }
 impl ToString for IssueCommentCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentCreatedAction::Created => "created".to_string(),
         }
     }
@@ -8438,7 +8438,7 @@ pub enum IssueCommentCreatedIssueState {
 }
 impl ToString for IssueCommentCreatedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentCreatedIssueState::Open => "open".to_string(),
             IssueCommentCreatedIssueState::Closed => "closed".to_string(),
         }
@@ -8464,7 +8464,7 @@ pub enum IssueCommentDeletedAction {
 }
 impl ToString for IssueCommentDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -8487,7 +8487,7 @@ pub enum IssueCommentDeletedIssueState {
 }
 impl ToString for IssueCommentDeletedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentDeletedIssueState::Open => "open".to_string(),
             IssueCommentDeletedIssueState::Closed => "closed".to_string(),
         }
@@ -8513,7 +8513,7 @@ pub enum IssueCommentEditedAction {
 }
 impl ToString for IssueCommentEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -8549,7 +8549,7 @@ pub enum IssueCommentEditedIssueState {
 }
 impl ToString for IssueCommentEditedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssueCommentEditedIssueState::Open => "open".to_string(),
             IssueCommentEditedIssueState::Closed => "closed".to_string(),
         }
@@ -8576,7 +8576,7 @@ pub enum IssuesAssignedAction {
 }
 impl ToString for IssuesAssignedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesAssignedAction::Assigned => "assigned".to_string(),
         }
     }
@@ -8589,7 +8589,7 @@ pub enum IssuesClosedAction {
 }
 impl ToString for IssuesClosedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesClosedAction::Closed => "closed".to_string(),
         }
     }
@@ -8601,7 +8601,7 @@ pub enum IssuesClosedIssueState {
 }
 impl ToString for IssuesClosedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesClosedIssueState::Closed => "closed".to_string(),
         }
     }
@@ -8621,7 +8621,7 @@ pub enum IssuesDeletedAction {
 }
 impl ToString for IssuesDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -8633,7 +8633,7 @@ pub enum IssuesDemilestonedAction {
 }
 impl ToString for IssuesDemilestonedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesDemilestonedAction::Demilestoned => "demilestoned".to_string(),
         }
     }
@@ -8651,7 +8651,7 @@ pub enum IssuesEditedAction {
 }
 impl ToString for IssuesEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -8684,7 +8684,7 @@ pub enum IssuesLabeledAction {
 }
 impl ToString for IssuesLabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesLabeledAction::Labeled => "labeled".to_string(),
         }
     }
@@ -8696,7 +8696,7 @@ pub enum IssuesLockedAction {
 }
 impl ToString for IssuesLockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesLockedAction::Locked => "locked".to_string(),
         }
     }
@@ -8714,7 +8714,7 @@ pub enum IssuesLockedIssueActiveLockReason {
 }
 impl ToString for IssuesLockedIssueActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesLockedIssueActiveLockReason::Resolved => "resolved".to_string(),
             IssuesLockedIssueActiveLockReason::OffTopic => "off-topic".to_string(),
             IssuesLockedIssueActiveLockReason::TooHeated => "too heated".to_string(),
@@ -8736,7 +8736,7 @@ pub enum IssuesMilestonedAction {
 }
 impl ToString for IssuesMilestonedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesMilestonedAction::Milestoned => "milestoned".to_string(),
         }
     }
@@ -8754,7 +8754,7 @@ pub enum IssuesOpenedAction {
 }
 impl ToString for IssuesOpenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesOpenedAction::Opened => "opened".to_string(),
         }
     }
@@ -8772,7 +8772,7 @@ pub enum IssuesOpenedIssueState {
 }
 impl ToString for IssuesOpenedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesOpenedIssueState::Open => "open".to_string(),
         }
     }
@@ -8791,7 +8791,7 @@ pub enum IssuesPinnedAction {
 }
 impl ToString for IssuesPinnedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesPinnedAction::Pinned => "pinned".to_string(),
         }
     }
@@ -8803,7 +8803,7 @@ pub enum IssuesReopenedAction {
 }
 impl ToString for IssuesReopenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesReopenedAction::Reopened => "reopened".to_string(),
         }
     }
@@ -8815,7 +8815,7 @@ pub enum IssuesReopenedIssueState {
 }
 impl ToString for IssuesReopenedIssueState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesReopenedIssueState::Open => "open".to_string(),
         }
     }
@@ -8833,7 +8833,7 @@ pub enum IssuesTransferredAction {
 }
 impl ToString for IssuesTransferredAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesTransferredAction::Transferred => "transferred".to_string(),
         }
     }
@@ -8852,7 +8852,7 @@ pub enum IssuesUnassignedAction {
 }
 impl ToString for IssuesUnassignedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesUnassignedAction::Unassigned => "unassigned".to_string(),
         }
     }
@@ -8864,7 +8864,7 @@ pub enum IssuesUnlabeledAction {
 }
 impl ToString for IssuesUnlabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesUnlabeledAction::Unlabeled => "unlabeled".to_string(),
         }
     }
@@ -8876,7 +8876,7 @@ pub enum IssuesUnlockedAction {
 }
 impl ToString for IssuesUnlockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesUnlockedAction::Unlocked => "unlocked".to_string(),
         }
     }
@@ -8895,7 +8895,7 @@ pub enum IssuesUnpinnedAction {
 }
 impl ToString for IssuesUnpinnedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             IssuesUnpinnedAction::Unpinned => "unpinned".to_string(),
         }
     }
@@ -8907,7 +8907,7 @@ pub enum LabelCreatedAction {
 }
 impl ToString for LabelCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             LabelCreatedAction::Created => "created".to_string(),
         }
     }
@@ -8919,7 +8919,7 @@ pub enum LabelDeletedAction {
 }
 impl ToString for LabelDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             LabelDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -8931,7 +8931,7 @@ pub enum LabelEditedAction {
 }
 impl ToString for LabelEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             LabelEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -8995,7 +8995,7 @@ pub enum MarketplacePurchaseCancelledAction {
 }
 impl ToString for MarketplacePurchaseCancelledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MarketplacePurchaseCancelledAction::Cancelled => "cancelled".to_string(),
         }
     }
@@ -9036,7 +9036,7 @@ pub enum MarketplacePurchaseChangedAction {
 }
 impl ToString for MarketplacePurchaseChangedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MarketplacePurchaseChangedAction::Changed => "changed".to_string(),
         }
     }
@@ -9077,7 +9077,7 @@ pub enum MarketplacePurchasePendingChangeAction {
 }
 impl ToString for MarketplacePurchasePendingChangeAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MarketplacePurchasePendingChangeAction::PendingChange => "pending_change".to_string(),
         }
     }
@@ -9118,7 +9118,7 @@ pub enum MarketplacePurchasePendingChangeCancelledAction {
 }
 impl ToString for MarketplacePurchasePendingChangeCancelledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MarketplacePurchasePendingChangeCancelledAction::PendingChangeCancelled => {
                 "pending_change_cancelled".to_string()
             }
@@ -9161,7 +9161,7 @@ pub enum MarketplacePurchasePurchasedAction {
 }
 impl ToString for MarketplacePurchasePurchasedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MarketplacePurchasePurchasedAction::Purchased => "purchased".to_string(),
         }
     }
@@ -9202,7 +9202,7 @@ pub enum MemberAddedAction {
 }
 impl ToString for MemberAddedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MemberAddedAction::Added => "added".to_string(),
         }
     }
@@ -9216,7 +9216,7 @@ pub enum MemberAddedChangesPermissionTo {
 }
 impl ToString for MemberAddedChangesPermissionTo {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MemberAddedChangesPermissionTo::Write => "write".to_string(),
             MemberAddedChangesPermissionTo::Admin => "admin".to_string(),
         }
@@ -9240,7 +9240,7 @@ pub enum MemberEditedAction {
 }
 impl ToString for MemberEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MemberEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -9264,7 +9264,7 @@ pub enum MemberRemovedAction {
 }
 impl ToString for MemberRemovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MemberRemovedAction::Removed => "removed".to_string(),
         }
     }
@@ -9276,7 +9276,7 @@ pub enum MembershipAddedAction {
 }
 impl ToString for MembershipAddedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MembershipAddedAction::Added => "added".to_string(),
         }
     }
@@ -9289,7 +9289,7 @@ pub enum MembershipAddedScope {
 }
 impl ToString for MembershipAddedScope {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MembershipAddedScope::Team => "team".to_string(),
         }
     }
@@ -9301,7 +9301,7 @@ pub enum MembershipRemovedAction {
 }
 impl ToString for MembershipRemovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MembershipRemovedAction::Removed => "removed".to_string(),
         }
     }
@@ -9316,7 +9316,7 @@ pub enum MembershipRemovedScope {
 }
 impl ToString for MembershipRemovedScope {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MembershipRemovedScope::Team => "team".to_string(),
             MembershipRemovedScope::Organization => "organization".to_string(),
         }
@@ -9341,7 +9341,7 @@ pub enum MetaDeletedAction {
 }
 impl ToString for MetaDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MetaDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -9355,7 +9355,7 @@ pub enum MetaDeletedHookConfigContentType {
 }
 impl ToString for MetaDeletedHookConfigContentType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MetaDeletedHookConfigContentType::Json => "json".to_string(),
             MetaDeletedHookConfigContentType::Form => "form".to_string(),
         }
@@ -9392,7 +9392,7 @@ pub enum MilestoneState {
 }
 impl ToString for MilestoneState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneState::Open => "open".to_string(),
             MilestoneState::Closed => "closed".to_string(),
         }
@@ -9405,7 +9405,7 @@ pub enum MilestoneClosedAction {
 }
 impl ToString for MilestoneClosedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneClosedAction::Closed => "closed".to_string(),
         }
     }
@@ -9417,7 +9417,7 @@ pub enum MilestoneClosedMilestoneState {
 }
 impl ToString for MilestoneClosedMilestoneState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneClosedMilestoneState::Closed => "closed".to_string(),
         }
     }
@@ -9436,7 +9436,7 @@ pub enum MilestoneCreatedAction {
 }
 impl ToString for MilestoneCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneCreatedAction::Created => "created".to_string(),
         }
     }
@@ -9448,7 +9448,7 @@ pub enum MilestoneCreatedMilestoneState {
 }
 impl ToString for MilestoneCreatedMilestoneState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneCreatedMilestoneState::Open => "open".to_string(),
         }
     }
@@ -9467,7 +9467,7 @@ pub enum MilestoneDeletedAction {
 }
 impl ToString for MilestoneDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -9479,7 +9479,7 @@ pub enum MilestoneEditedAction {
 }
 impl ToString for MilestoneEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -9520,7 +9520,7 @@ pub enum MilestoneOpenedAction {
 }
 impl ToString for MilestoneOpenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneOpenedAction::Opened => "opened".to_string(),
         }
     }
@@ -9532,7 +9532,7 @@ pub enum MilestoneOpenedMilestoneState {
 }
 impl ToString for MilestoneOpenedMilestoneState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             MilestoneOpenedMilestoneState::Open => "open".to_string(),
         }
     }
@@ -9551,7 +9551,7 @@ pub enum OrgBlockBlockedAction {
 }
 impl ToString for OrgBlockBlockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrgBlockBlockedAction::Blocked => "blocked".to_string(),
         }
     }
@@ -9563,7 +9563,7 @@ pub enum OrgBlockUnblockedAction {
 }
 impl ToString for OrgBlockUnblockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrgBlockUnblockedAction::Unblocked => "unblocked".to_string(),
         }
     }
@@ -9575,7 +9575,7 @@ pub enum OrganizationDeletedAction {
 }
 impl ToString for OrganizationDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrganizationDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -9587,7 +9587,7 @@ pub enum OrganizationMemberAddedAction {
 }
 impl ToString for OrganizationMemberAddedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrganizationMemberAddedAction::MemberAdded => "member_added".to_string(),
         }
     }
@@ -9599,7 +9599,7 @@ pub enum OrganizationMemberInvitedAction {
 }
 impl ToString for OrganizationMemberInvitedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrganizationMemberInvitedAction::MemberInvited => "member_invited".to_string(),
         }
     }
@@ -9627,7 +9627,7 @@ pub enum OrganizationMemberRemovedAction {
 }
 impl ToString for OrganizationMemberRemovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrganizationMemberRemovedAction::MemberRemoved => "member_removed".to_string(),
         }
     }
@@ -9639,7 +9639,7 @@ pub enum OrganizationRenamedAction {
 }
 impl ToString for OrganizationRenamedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             OrganizationRenamedAction::Renamed => "renamed".to_string(),
         }
     }
@@ -9651,7 +9651,7 @@ pub enum PackagePublishedAction {
 }
 impl ToString for PackagePublishedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PackagePublishedAction::Published => "published".to_string(),
         }
     }
@@ -9750,7 +9750,7 @@ pub enum PackageUpdatedAction {
 }
 impl ToString for PackageUpdatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PackageUpdatedAction::Updated => "updated".to_string(),
         }
     }
@@ -9869,7 +9869,7 @@ pub enum PingEventHookConfigContentType {
 }
 impl ToString for PingEventHookConfigContentType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PingEventHookConfigContentType::Json => "json".to_string(),
             PingEventHookConfigContentType::Form => "form".to_string(),
         }
@@ -9924,7 +9924,7 @@ pub enum ProjectState {
 }
 impl ToString for ProjectState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectState::Open => "open".to_string(),
             ProjectState::Closed => "closed".to_string(),
         }
@@ -9937,7 +9937,7 @@ pub enum ProjectClosedAction {
 }
 impl ToString for ProjectClosedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectClosedAction::Closed => "closed".to_string(),
         }
     }
@@ -9949,7 +9949,7 @@ pub enum ProjectCreatedAction {
 }
 impl ToString for ProjectCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCreatedAction::Created => "created".to_string(),
         }
     }
@@ -9961,7 +9961,7 @@ pub enum ProjectDeletedAction {
 }
 impl ToString for ProjectDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -9973,7 +9973,7 @@ pub enum ProjectEditedAction {
 }
 impl ToString for ProjectEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -10006,7 +10006,7 @@ pub enum ProjectReopenedAction {
 }
 impl ToString for ProjectReopenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectReopenedAction::Reopened => "reopened".to_string(),
         }
     }
@@ -10018,7 +10018,7 @@ pub enum ProjectCardConvertedAction {
 }
 impl ToString for ProjectCardConvertedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCardConvertedAction::Converted => "converted".to_string(),
         }
     }
@@ -10040,7 +10040,7 @@ pub enum ProjectCardCreatedAction {
 }
 impl ToString for ProjectCardCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCardCreatedAction::Created => "created".to_string(),
         }
     }
@@ -10052,7 +10052,7 @@ pub enum ProjectCardDeletedAction {
 }
 impl ToString for ProjectCardDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCardDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -10064,7 +10064,7 @@ pub enum ProjectCardEditedAction {
 }
 impl ToString for ProjectCardEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCardEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -10086,7 +10086,7 @@ pub enum ProjectCardMovedAction {
 }
 impl ToString for ProjectCardMovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectCardMovedAction::Moved => "moved".to_string(),
         }
     }
@@ -10114,7 +10114,7 @@ pub enum ProjectColumnCreatedAction {
 }
 impl ToString for ProjectColumnCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectColumnCreatedAction::Created => "created".to_string(),
         }
     }
@@ -10126,7 +10126,7 @@ pub enum ProjectColumnDeletedAction {
 }
 impl ToString for ProjectColumnDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectColumnDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -10138,7 +10138,7 @@ pub enum ProjectColumnEditedAction {
 }
 impl ToString for ProjectColumnEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectColumnEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -10161,7 +10161,7 @@ pub enum ProjectColumnMovedAction {
 }
 impl ToString for ProjectColumnMovedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ProjectColumnMovedAction::Moved => "moved".to_string(),
         }
     }
@@ -10198,7 +10198,7 @@ pub enum PullRequestActiveLockReason {
 }
 impl ToString for PullRequestActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestActiveLockReason::Resolved => "resolved".to_string(),
             PullRequestActiveLockReason::OffTopic => "off-topic".to_string(),
             PullRequestActiveLockReason::TooHeated => "too heated".to_string(),
@@ -10242,7 +10242,7 @@ pub enum PullRequestState {
 }
 impl ToString for PullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestState::Open => "open".to_string(),
             PullRequestState::Closed => "closed".to_string(),
         }
@@ -10266,7 +10266,7 @@ pub enum PullRequestReviewCommentSide {
 }
 impl ToString for PullRequestReviewCommentSide {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentSide::Left => "LEFT".to_string(),
             PullRequestReviewCommentSide::Right => "RIGHT".to_string(),
         }
@@ -10282,7 +10282,7 @@ pub enum PullRequestReviewCommentStartSide {
 }
 impl ToString for PullRequestReviewCommentStartSide {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentStartSide::Left => "LEFT".to_string(),
             PullRequestReviewCommentStartSide::Right => "RIGHT".to_string(),
         }
@@ -10295,7 +10295,7 @@ pub enum PullRequestAssignedAction {
 }
 impl ToString for PullRequestAssignedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestAssignedAction::Assigned => "assigned".to_string(),
         }
     }
@@ -10307,7 +10307,7 @@ pub enum PullRequestAutoMergeDisabledAction {
 }
 impl ToString for PullRequestAutoMergeDisabledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestAutoMergeDisabledAction::AutoMergeDisabled => {
                 "auto_merge_disabled".to_string()
             }
@@ -10321,7 +10321,7 @@ pub enum PullRequestAutoMergeEnabledAction {
 }
 impl ToString for PullRequestAutoMergeEnabledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestAutoMergeEnabledAction::AutoMergeEnabled => "auto_merge_enabled".to_string(),
         }
     }
@@ -10333,7 +10333,7 @@ pub enum PullRequestClosedAction {
 }
 impl ToString for PullRequestClosedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestClosedAction::Closed => "closed".to_string(),
         }
     }
@@ -10346,7 +10346,7 @@ pub enum PullRequestClosedPullRequestState {
 }
 impl ToString for PullRequestClosedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestClosedPullRequestState::Closed => "closed".to_string(),
         }
     }
@@ -10367,7 +10367,7 @@ pub enum PullRequestConvertedToDraftAction {
 }
 impl ToString for PullRequestConvertedToDraftAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestConvertedToDraftAction::ConvertedToDraft => "converted_to_draft".to_string(),
         }
     }
@@ -10390,7 +10390,7 @@ pub enum PullRequestEditedAction {
 }
 impl ToString for PullRequestEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -10423,7 +10423,7 @@ pub enum PullRequestLabeledAction {
 }
 impl ToString for PullRequestLabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestLabeledAction::Labeled => "labeled".to_string(),
         }
     }
@@ -10435,7 +10435,7 @@ pub enum PullRequestLockedAction {
 }
 impl ToString for PullRequestLockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestLockedAction::Locked => "locked".to_string(),
         }
     }
@@ -10447,7 +10447,7 @@ pub enum PullRequestOpenedAction {
 }
 impl ToString for PullRequestOpenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestOpenedAction::Opened => "opened".to_string(),
         }
     }
@@ -10459,7 +10459,7 @@ pub enum PullRequestOpenedPullRequestState {
 }
 impl ToString for PullRequestOpenedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestOpenedPullRequestState::Open => "open".to_string(),
         }
     }
@@ -10482,7 +10482,7 @@ pub enum PullRequestReadyForReviewAction {
 }
 impl ToString for PullRequestReadyForReviewAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReadyForReviewAction::ReadyForReview => "ready_for_review".to_string(),
         }
     }
@@ -10494,7 +10494,7 @@ pub enum PullRequestReadyForReviewPullRequestState {
 }
 impl ToString for PullRequestReadyForReviewPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReadyForReviewPullRequestState::Open => "open".to_string(),
         }
     }
@@ -10518,7 +10518,7 @@ pub enum PullRequestReopenedAction {
 }
 impl ToString for PullRequestReopenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReopenedAction::Reopened => "reopened".to_string(),
         }
     }
@@ -10530,7 +10530,7 @@ pub enum PullRequestReopenedPullRequestState {
 }
 impl ToString for PullRequestReopenedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReopenedPullRequestState::Open => "open".to_string(),
         }
     }
@@ -10553,7 +10553,7 @@ pub enum PullRequestReviewRequestRemovedVariant0Action {
 }
 impl ToString for PullRequestReviewRequestRemovedVariant0Action {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewRequestRemovedVariant0Action::ReviewRequestRemoved => {
                 "review_request_removed".to_string()
             }
@@ -10567,7 +10567,7 @@ pub enum PullRequestReviewRequestRemovedVariant1Action {
 }
 impl ToString for PullRequestReviewRequestRemovedVariant1Action {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewRequestRemovedVariant1Action::ReviewRequestRemoved => {
                 "review_request_removed".to_string()
             }
@@ -10581,7 +10581,7 @@ pub enum PullRequestReviewRequestedVariant0Action {
 }
 impl ToString for PullRequestReviewRequestedVariant0Action {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewRequestedVariant0Action::ReviewRequested => {
                 "review_requested".to_string()
             }
@@ -10595,7 +10595,7 @@ pub enum PullRequestReviewRequestedVariant1Action {
 }
 impl ToString for PullRequestReviewRequestedVariant1Action {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewRequestedVariant1Action::ReviewRequested => {
                 "review_requested".to_string()
             }
@@ -10609,7 +10609,7 @@ pub enum PullRequestSynchronizeAction {
 }
 impl ToString for PullRequestSynchronizeAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestSynchronizeAction::Synchronize => "synchronize".to_string(),
         }
     }
@@ -10621,7 +10621,7 @@ pub enum PullRequestUnassignedAction {
 }
 impl ToString for PullRequestUnassignedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestUnassignedAction::Unassigned => "unassigned".to_string(),
         }
     }
@@ -10633,7 +10633,7 @@ pub enum PullRequestUnlabeledAction {
 }
 impl ToString for PullRequestUnlabeledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestUnlabeledAction::Unlabeled => "unlabeled".to_string(),
         }
     }
@@ -10645,7 +10645,7 @@ pub enum PullRequestUnlockedAction {
 }
 impl ToString for PullRequestUnlockedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestUnlockedAction::Unlocked => "unlocked".to_string(),
         }
     }
@@ -10657,7 +10657,7 @@ pub enum PullRequestReviewDismissedAction {
 }
 impl ToString for PullRequestReviewDismissedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewDismissedAction::Dismissed => "dismissed".to_string(),
         }
     }
@@ -10675,7 +10675,7 @@ pub enum PullRequestReviewDismissedReviewState {
 }
 impl ToString for PullRequestReviewDismissedReviewState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewDismissedReviewState::Dismissed => "dismissed".to_string(),
         }
     }
@@ -10707,7 +10707,7 @@ pub enum PullRequestReviewEditedAction {
 }
 impl ToString for PullRequestReviewEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -10757,7 +10757,7 @@ pub enum PullRequestReviewSubmittedAction {
 }
 impl ToString for PullRequestReviewSubmittedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewSubmittedAction::Submitted => "submitted".to_string(),
         }
     }
@@ -10795,7 +10795,7 @@ pub enum PullRequestReviewCommentCreatedAction {
 }
 impl ToString for PullRequestReviewCommentCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentCreatedAction::Created => "created".to_string(),
         }
     }
@@ -10826,7 +10826,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestActiveLockReason {
 }
 impl ToString for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentCreatedPullRequestActiveLockReason::Resolved => {
                 "resolved".to_string()
             }
@@ -10875,7 +10875,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestState {
 }
 impl ToString for PullRequestReviewCommentCreatedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentCreatedPullRequestState::Open => "open".to_string(),
             PullRequestReviewCommentCreatedPullRequestState::Closed => "closed".to_string(),
         }
@@ -10931,7 +10931,7 @@ pub enum PullRequestReviewCommentDeletedAction {
 }
 impl ToString for PullRequestReviewCommentDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -10962,7 +10962,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestActiveLockReason {
 }
 impl ToString for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentDeletedPullRequestActiveLockReason::Resolved => {
                 "resolved".to_string()
             }
@@ -11011,7 +11011,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestState {
 }
 impl ToString for PullRequestReviewCommentDeletedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentDeletedPullRequestState::Open => "open".to_string(),
             PullRequestReviewCommentDeletedPullRequestState::Closed => "closed".to_string(),
         }
@@ -11067,7 +11067,7 @@ pub enum PullRequestReviewCommentEditedAction {
 }
 impl ToString for PullRequestReviewCommentEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -11111,7 +11111,7 @@ pub enum PullRequestReviewCommentEditedPullRequestActiveLockReason {
 }
 impl ToString for PullRequestReviewCommentEditedPullRequestActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentEditedPullRequestActiveLockReason::Resolved => {
                 "resolved".to_string()
             }
@@ -11160,7 +11160,7 @@ pub enum PullRequestReviewCommentEditedPullRequestState {
 }
 impl ToString for PullRequestReviewCommentEditedPullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             PullRequestReviewCommentEditedPullRequestState::Open => "open".to_string(),
             PullRequestReviewCommentEditedPullRequestState::Closed => "closed".to_string(),
         }
@@ -11216,7 +11216,7 @@ pub enum ReleaseCreatedAction {
 }
 impl ToString for ReleaseCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseCreatedAction::Created => "created".to_string(),
         }
     }
@@ -11228,7 +11228,7 @@ pub enum ReleaseDeletedAction {
 }
 impl ToString for ReleaseDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -11240,7 +11240,7 @@ pub enum ReleaseEditedAction {
 }
 impl ToString for ReleaseEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -11272,7 +11272,7 @@ pub enum ReleasePrereleasedAction {
 }
 impl ToString for ReleasePrereleasedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleasePrereleasedAction::Prereleased => "prereleased".to_string(),
         }
     }
@@ -11291,7 +11291,7 @@ pub enum ReleasePublishedAction {
 }
 impl ToString for ReleasePublishedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleasePublishedAction::Published => "published".to_string(),
         }
     }
@@ -11309,7 +11309,7 @@ pub enum ReleaseReleasedAction {
 }
 impl ToString for ReleaseReleasedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseReleasedAction::Released => "released".to_string(),
         }
     }
@@ -11321,7 +11321,7 @@ pub enum ReleaseUnpublishedAction {
 }
 impl ToString for ReleaseUnpublishedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseUnpublishedAction::Unpublished => "unpublished".to_string(),
         }
     }
@@ -11340,7 +11340,7 @@ pub enum ReleaseAssetState {
 }
 impl ToString for ReleaseAssetState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             ReleaseAssetState::Uploaded => "uploaded".to_string(),
         }
     }
@@ -11376,7 +11376,7 @@ pub enum RepositoryArchivedAction {
 }
 impl ToString for RepositoryArchivedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryArchivedAction::Archived => "archived".to_string(),
         }
     }
@@ -11395,7 +11395,7 @@ pub enum RepositoryCreatedAction {
 }
 impl ToString for RepositoryCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryCreatedAction::Created => "created".to_string(),
         }
     }
@@ -11407,7 +11407,7 @@ pub enum RepositoryDeletedAction {
 }
 impl ToString for RepositoryDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -11419,7 +11419,7 @@ pub enum RepositoryEditedAction {
 }
 impl ToString for RepositoryEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -11456,7 +11456,7 @@ pub enum RepositoryPrivatizedAction {
 }
 impl ToString for RepositoryPrivatizedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryPrivatizedAction::Privatized => "privatized".to_string(),
         }
     }
@@ -11475,7 +11475,7 @@ pub enum RepositoryPublicizedAction {
 }
 impl ToString for RepositoryPublicizedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryPublicizedAction::Publicized => "publicized".to_string(),
         }
     }
@@ -11494,7 +11494,7 @@ pub enum RepositoryRenamedAction {
 }
 impl ToString for RepositoryRenamedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryRenamedAction::Renamed => "renamed".to_string(),
         }
     }
@@ -11521,7 +11521,7 @@ pub enum RepositoryTransferredAction {
 }
 impl ToString for RepositoryTransferredAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryTransferredAction::Transferred => "transferred".to_string(),
         }
     }
@@ -11549,7 +11549,7 @@ pub enum RepositoryUnarchivedAction {
 }
 impl ToString for RepositoryUnarchivedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryUnarchivedAction::Unarchived => "unarchived".to_string(),
         }
     }
@@ -11568,7 +11568,7 @@ pub enum RepositoryDispatchOnDemandTestAction {
 }
 impl ToString for RepositoryDispatchOnDemandTestAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryDispatchOnDemandTestAction::OnDemandTest => "on-demand-test".to_string(),
         }
     }
@@ -11584,7 +11584,7 @@ pub enum RepositoryImportEventStatus {
 }
 impl ToString for RepositoryImportEventStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryImportEventStatus::Success => "success".to_string(),
             RepositoryImportEventStatus::Cancelled => "cancelled".to_string(),
             RepositoryImportEventStatus::Failure => "failure".to_string(),
@@ -11598,7 +11598,7 @@ pub enum RepositoryVulnerabilityAlertCreateAction {
 }
 impl ToString for RepositoryVulnerabilityAlertCreateAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryVulnerabilityAlertCreateAction::Create => "create".to_string(),
         }
     }
@@ -11633,7 +11633,7 @@ pub enum RepositoryVulnerabilityAlertDismissAction {
 }
 impl ToString for RepositoryVulnerabilityAlertDismissAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryVulnerabilityAlertDismissAction::Dismiss => "dismiss".to_string(),
         }
     }
@@ -11665,7 +11665,7 @@ pub enum RepositoryVulnerabilityAlertResolveAction {
 }
 impl ToString for RepositoryVulnerabilityAlertResolveAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             RepositoryVulnerabilityAlertResolveAction::Resolve => "resolve".to_string(),
         }
     }
@@ -11700,7 +11700,7 @@ pub enum SecretScanningAlertCreatedAction {
 }
 impl ToString for SecretScanningAlertCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecretScanningAlertCreatedAction::Created => "created".to_string(),
         }
     }
@@ -11722,7 +11722,7 @@ pub enum SecretScanningAlertReopenedAction {
 }
 impl ToString for SecretScanningAlertReopenedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecretScanningAlertReopenedAction::Reopened => "reopened".to_string(),
         }
     }
@@ -11744,7 +11744,7 @@ pub enum SecretScanningAlertResolvedAction {
 }
 impl ToString for SecretScanningAlertResolvedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecretScanningAlertResolvedAction::Resolved => "resolved".to_string(),
         }
     }
@@ -11762,7 +11762,7 @@ pub enum SecretScanningAlertResolvedAlertResolution {
 }
 impl ToString for SecretScanningAlertResolvedAlertResolution {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecretScanningAlertResolvedAlertResolution::FalsePositive => {
                 "false_positive".to_string()
             }
@@ -11789,7 +11789,7 @@ pub enum SecurityAdvisoryPerformedAction {
 }
 impl ToString for SecurityAdvisoryPerformedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecurityAdvisoryPerformedAction::Performed => "performed".to_string(),
         }
     }
@@ -11862,7 +11862,7 @@ pub enum SecurityAdvisoryPublishedAction {
 }
 impl ToString for SecurityAdvisoryPublishedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecurityAdvisoryPublishedAction::Published => "published".to_string(),
         }
     }
@@ -11935,7 +11935,7 @@ pub enum SecurityAdvisoryUpdatedAction {
 }
 impl ToString for SecurityAdvisoryUpdatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecurityAdvisoryUpdatedAction::Updated => "updated".to_string(),
         }
     }
@@ -12008,7 +12008,7 @@ pub enum SecurityAdvisoryWithdrawnAction {
 }
 impl ToString for SecurityAdvisoryWithdrawnAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SecurityAdvisoryWithdrawnAction::Withdrawn => "withdrawn".to_string(),
         }
     }
@@ -12100,7 +12100,7 @@ pub enum SimplePullRequestActiveLockReason {
 }
 impl ToString for SimplePullRequestActiveLockReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SimplePullRequestActiveLockReason::Resolved => "resolved".to_string(),
             SimplePullRequestActiveLockReason::OffTopic => "off-topic".to_string(),
             SimplePullRequestActiveLockReason::TooHeated => "too heated".to_string(),
@@ -12143,7 +12143,7 @@ pub enum SimplePullRequestState {
 }
 impl ToString for SimplePullRequestState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SimplePullRequestState::Open => "open".to_string(),
             SimplePullRequestState::Closed => "closed".to_string(),
         }
@@ -12156,7 +12156,7 @@ pub enum SponsorshipCancelledAction {
 }
 impl ToString for SponsorshipCancelledAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipCancelledAction::Cancelled => "cancelled".to_string(),
         }
     }
@@ -12178,7 +12178,7 @@ pub enum SponsorshipCreatedAction {
 }
 impl ToString for SponsorshipCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipCreatedAction::Created => "created".to_string(),
         }
     }
@@ -12200,7 +12200,7 @@ pub enum SponsorshipEditedAction {
 }
 impl ToString for SponsorshipEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -12234,7 +12234,7 @@ pub enum SponsorshipPendingCancellationAction {
 }
 impl ToString for SponsorshipPendingCancellationAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipPendingCancellationAction::PendingCancellation => {
                 "pending_cancellation".to_string()
             }
@@ -12258,7 +12258,7 @@ pub enum SponsorshipPendingTierChangeAction {
 }
 impl ToString for SponsorshipPendingTierChangeAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipPendingTierChangeAction::PendingTierChange => {
                 "pending_tier_change".to_string()
             }
@@ -12292,7 +12292,7 @@ pub enum SponsorshipTierChangedAction {
 }
 impl ToString for SponsorshipTierChangedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             SponsorshipTierChangedAction::TierChanged => "tier_changed".to_string(),
         }
     }
@@ -12324,7 +12324,7 @@ pub enum StarCreatedAction {
 }
 impl ToString for StarCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             StarCreatedAction::Created => "created".to_string(),
         }
     }
@@ -12336,7 +12336,7 @@ pub enum StarDeletedAction {
 }
 impl ToString for StarDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             StarDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -12403,7 +12403,7 @@ pub enum StatusEventCommitCommitVerificationReason {
 }
 impl ToString for StatusEventCommitCommitVerificationReason {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             StatusEventCommitCommitVerificationReason::ExpiredKey => "expired_key".to_string(),
             StatusEventCommitCommitVerificationReason::NotSigningKey => {
                 "not_signing_key".to_string()
@@ -12485,7 +12485,7 @@ pub enum StatusEventState {
 }
 impl ToString for StatusEventState {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             StatusEventState::Pending => "pending".to_string(),
             StatusEventState::Success => "success".to_string(),
             StatusEventState::Failure => "failure".to_string(),
@@ -12504,7 +12504,7 @@ pub enum TeamParentPrivacy {
 }
 impl ToString for TeamParentPrivacy {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamParentPrivacy::Open => "open".to_string(),
             TeamParentPrivacy::Closed => "closed".to_string(),
             TeamParentPrivacy::Secret => "secret".to_string(),
@@ -12542,7 +12542,7 @@ pub enum TeamPrivacy {
 }
 impl ToString for TeamPrivacy {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamPrivacy::Open => "open".to_string(),
             TeamPrivacy::Closed => "closed".to_string(),
             TeamPrivacy::Secret => "secret".to_string(),
@@ -12556,7 +12556,7 @@ pub enum TeamAddedToRepositoryAction {
 }
 impl ToString for TeamAddedToRepositoryAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamAddedToRepositoryAction::AddedToRepository => "added_to_repository".to_string(),
         }
     }
@@ -12568,7 +12568,7 @@ pub enum TeamCreatedAction {
 }
 impl ToString for TeamCreatedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamCreatedAction::Created => "created".to_string(),
         }
     }
@@ -12580,7 +12580,7 @@ pub enum TeamDeletedAction {
 }
 impl ToString for TeamDeletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamDeletedAction::Deleted => "deleted".to_string(),
         }
     }
@@ -12592,7 +12592,7 @@ pub enum TeamEditedAction {
 }
 impl ToString for TeamEditedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamEditedAction::Edited => "edited".to_string(),
         }
     }
@@ -12658,7 +12658,7 @@ pub enum TeamRemovedFromRepositoryAction {
 }
 impl ToString for TeamRemovedFromRepositoryAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             TeamRemovedFromRepositoryAction::RemovedFromRepository => {
                 "removed_from_repository".to_string()
             }
@@ -12673,7 +12673,7 @@ pub enum UserType {
 }
 impl ToString for UserType {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             UserType::Bot => "Bot".to_string(),
             UserType::User => "User".to_string(),
             UserType::Organization => "Organization".to_string(),
@@ -12687,7 +12687,7 @@ pub enum WatchStartedAction {
 }
 impl ToString for WatchStartedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WatchStartedAction::Started => "started".to_string(),
         }
     }
@@ -12791,7 +12791,7 @@ pub enum WebhookEventsVariant0Item {
 }
 impl ToString for WebhookEventsVariant0Item {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WebhookEventsVariant0Item::CheckRun => "check_run".to_string(),
             WebhookEventsVariant0Item::CheckSuite => "check_suite".to_string(),
             WebhookEventsVariant0Item::CodeScanningAlert => "code_scanning_alert".to_string(),
@@ -12855,7 +12855,7 @@ pub enum WorkflowJobConclusion {
 }
 impl ToString for WorkflowJobConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobConclusion::Success => "success".to_string(),
             WorkflowJobConclusion::Failure => "failure".to_string(),
         }
@@ -12872,7 +12872,7 @@ pub enum WorkflowJobStatus {
 }
 impl ToString for WorkflowJobStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobStatus::Queued => "queued".to_string(),
             WorkflowJobStatus::InProgress => "in_progress".to_string(),
             WorkflowJobStatus::Completed => "completed".to_string(),
@@ -12898,7 +12898,7 @@ pub enum WorkflowRunConclusion {
 }
 impl ToString for WorkflowRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowRunConclusion::Success => "success".to_string(),
             WorkflowRunConclusion::Failure => "failure".to_string(),
             WorkflowRunConclusion::Neutral => "neutral".to_string(),
@@ -12947,7 +12947,7 @@ pub enum WorkflowRunStatus {
 }
 impl ToString for WorkflowRunStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowRunStatus::Requested => "requested".to_string(),
             WorkflowRunStatus::InProgress => "in_progress".to_string(),
             WorkflowRunStatus::Completed => "completed".to_string(),
@@ -12966,7 +12966,7 @@ pub enum WorkflowStepCompletedConclusion {
 }
 impl ToString for WorkflowStepCompletedConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowStepCompletedConclusion::Failure => "failure".to_string(),
             WorkflowStepCompletedConclusion::Skipped => "skipped".to_string(),
             WorkflowStepCompletedConclusion::Success => "success".to_string(),
@@ -12980,7 +12980,7 @@ pub enum WorkflowStepCompletedStatus {
 }
 impl ToString for WorkflowStepCompletedStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowStepCompletedStatus::Completed => "completed".to_string(),
         }
     }
@@ -12992,7 +12992,7 @@ pub enum WorkflowStepInProgressStatus {
 }
 impl ToString for WorkflowStepInProgressStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowStepInProgressStatus::InProgress => "in_progress".to_string(),
         }
     }
@@ -13004,7 +13004,7 @@ pub enum WorkflowJobCompletedAction {
 }
 impl ToString for WorkflowJobCompletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobCompletedAction::Completed => "completed".to_string(),
         }
     }
@@ -13018,7 +13018,7 @@ pub enum WorkflowJobCompletedWorkflowJobConclusion {
 }
 impl ToString for WorkflowJobCompletedWorkflowJobConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobCompletedWorkflowJobConclusion::Success => "success".to_string(),
             WorkflowJobCompletedWorkflowJobConclusion::Failure => "failure".to_string(),
         }
@@ -13037,7 +13037,7 @@ pub enum WorkflowJobQueuedAction {
 }
 impl ToString for WorkflowJobQueuedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobQueuedAction::Queued => "queued".to_string(),
         }
     }
@@ -13049,7 +13049,7 @@ pub enum WorkflowJobQueuedWorkflowJobStatus {
 }
 impl ToString for WorkflowJobQueuedWorkflowJobStatus {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobQueuedWorkflowJobStatus::Queued => "queued".to_string(),
         }
     }
@@ -13080,7 +13080,7 @@ pub enum WorkflowJobStartedAction {
 }
 impl ToString for WorkflowJobStartedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowJobStartedAction::Started => "started".to_string(),
         }
     }
@@ -13100,7 +13100,7 @@ pub enum WorkflowRunCompletedAction {
 }
 impl ToString for WorkflowRunCompletedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowRunCompletedAction::Completed => "completed".to_string(),
         }
     }
@@ -13124,7 +13124,7 @@ pub enum WorkflowRunCompletedWorkflowRunConclusion {
 }
 impl ToString for WorkflowRunCompletedWorkflowRunConclusion {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowRunCompletedWorkflowRunConclusion::Success => "success".to_string(),
             WorkflowRunCompletedWorkflowRunConclusion::Failure => "failure".to_string(),
             WorkflowRunCompletedWorkflowRunConclusion::Neutral => "neutral".to_string(),
@@ -13150,7 +13150,7 @@ pub enum WorkflowRunRequestedAction {
 }
 impl ToString for WorkflowRunRequestedAction {
     fn to_string(&self) -> String {
-        match self {
+        match *self {
             WorkflowRunRequestedAction::Requested => "requested".to_string(),
         }
     }

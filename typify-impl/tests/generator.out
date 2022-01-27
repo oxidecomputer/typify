@@ -16,7 +16,7 @@ mod types {
     }
     impl ToString for StringEnum {
         fn to_string(&self) -> String {
-            match self {
+            match *self {
                 StringEnum::One => "One".to_string(),
                 StringEnum::Two => "Two".to_string(),
                 StringEnum::BuckleMyShoe => "BuckleMyShoe".to_string(),
