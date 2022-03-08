@@ -242,13 +242,14 @@ impl TypeEntry {
             }) => {
                 let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
-                // TODO this is a one-off for Eq
+                // TODO this is a one-off for some useful traits
                 if variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple))
                 {
                     derives.extend(
                         vec![
+                            quote! { Copy },
                             quote! { PartialOrd },
                             quote! { Ord },
                             quote! { PartialEq },

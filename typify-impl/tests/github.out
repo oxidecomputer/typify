@@ -44,7 +44,7 @@ pub struct App {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
 }
 #[doc = "How the author is associated with the repository."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AuthorAssociation {
     #[serde(rename = "COLLABORATOR")]
     Collaborator,
@@ -3815,7 +3815,7 @@ pub struct AlertInstanceMessage {
     pub text: Option<String>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AlertInstanceState {
     #[serde(rename = "open")]
     Open,
@@ -3833,7 +3833,7 @@ impl ToString for AlertInstanceState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppEventsItem {
     #[serde(rename = "check_run")]
     CheckRun,
@@ -3974,7 +3974,7 @@ impl ToString for AppEventsItem {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsActions {
     #[serde(rename = "read")]
     Read,
@@ -3989,7 +3989,7 @@ impl ToString for AppPermissionsActions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsAdministration {
     #[serde(rename = "read")]
     Read,
@@ -4004,7 +4004,7 @@ impl ToString for AppPermissionsAdministration {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsChecks {
     #[serde(rename = "read")]
     Read,
@@ -4019,7 +4019,7 @@ impl ToString for AppPermissionsChecks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsContentReferences {
     #[serde(rename = "read")]
     Read,
@@ -4034,7 +4034,7 @@ impl ToString for AppPermissionsContentReferences {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsContents {
     #[serde(rename = "read")]
     Read,
@@ -4049,7 +4049,7 @@ impl ToString for AppPermissionsContents {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsDeployments {
     #[serde(rename = "read")]
     Read,
@@ -4064,7 +4064,7 @@ impl ToString for AppPermissionsDeployments {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsDiscussions {
     #[serde(rename = "read")]
     Read,
@@ -4079,7 +4079,7 @@ impl ToString for AppPermissionsDiscussions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsEmails {
     #[serde(rename = "read")]
     Read,
@@ -4094,7 +4094,7 @@ impl ToString for AppPermissionsEmails {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsEnvironments {
     #[serde(rename = "read")]
     Read,
@@ -4109,7 +4109,7 @@ impl ToString for AppPermissionsEnvironments {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsIssues {
     #[serde(rename = "read")]
     Read,
@@ -4124,7 +4124,7 @@ impl ToString for AppPermissionsIssues {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsMembers {
     #[serde(rename = "read")]
     Read,
@@ -4139,7 +4139,7 @@ impl ToString for AppPermissionsMembers {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsMetadata {
     #[serde(rename = "read")]
     Read,
@@ -4154,7 +4154,7 @@ impl ToString for AppPermissionsMetadata {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationAdministration {
     #[serde(rename = "read")]
     Read,
@@ -4169,7 +4169,7 @@ impl ToString for AppPermissionsOrganizationAdministration {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationHooks {
     #[serde(rename = "read")]
     Read,
@@ -4184,7 +4184,7 @@ impl ToString for AppPermissionsOrganizationHooks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationPackages {
     #[serde(rename = "read")]
     Read,
@@ -4199,7 +4199,7 @@ impl ToString for AppPermissionsOrganizationPackages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationPlan {
     #[serde(rename = "read")]
     Read,
@@ -4214,7 +4214,7 @@ impl ToString for AppPermissionsOrganizationPlan {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationProjects {
     #[serde(rename = "read")]
     Read,
@@ -4229,7 +4229,7 @@ impl ToString for AppPermissionsOrganizationProjects {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationSecrets {
     #[serde(rename = "read")]
     Read,
@@ -4244,7 +4244,7 @@ impl ToString for AppPermissionsOrganizationSecrets {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationSelfHostedRunners {
     #[serde(rename = "read")]
     Read,
@@ -4259,7 +4259,7 @@ impl ToString for AppPermissionsOrganizationSelfHostedRunners {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsOrganizationUserBlocking {
     #[serde(rename = "read")]
     Read,
@@ -4274,7 +4274,7 @@ impl ToString for AppPermissionsOrganizationUserBlocking {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsPackages {
     #[serde(rename = "read")]
     Read,
@@ -4289,7 +4289,7 @@ impl ToString for AppPermissionsPackages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsPages {
     #[serde(rename = "read")]
     Read,
@@ -4304,7 +4304,7 @@ impl ToString for AppPermissionsPages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsPullRequests {
     #[serde(rename = "read")]
     Read,
@@ -4319,7 +4319,7 @@ impl ToString for AppPermissionsPullRequests {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsRepositoryHooks {
     #[serde(rename = "read")]
     Read,
@@ -4334,7 +4334,7 @@ impl ToString for AppPermissionsRepositoryHooks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsRepositoryProjects {
     #[serde(rename = "read")]
     Read,
@@ -4349,7 +4349,7 @@ impl ToString for AppPermissionsRepositoryProjects {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsSecretScanningAlerts {
     #[serde(rename = "read")]
     Read,
@@ -4364,7 +4364,7 @@ impl ToString for AppPermissionsSecretScanningAlerts {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsSecrets {
     #[serde(rename = "read")]
     Read,
@@ -4379,7 +4379,7 @@ impl ToString for AppPermissionsSecrets {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsSecurityEvents {
     #[serde(rename = "read")]
     Read,
@@ -4394,7 +4394,7 @@ impl ToString for AppPermissionsSecurityEvents {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsSecurityScanningAlert {
     #[serde(rename = "read")]
     Read,
@@ -4409,7 +4409,7 @@ impl ToString for AppPermissionsSecurityScanningAlert {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsSingleFile {
     #[serde(rename = "read")]
     Read,
@@ -4424,7 +4424,7 @@ impl ToString for AppPermissionsSingleFile {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsStatuses {
     #[serde(rename = "read")]
     Read,
@@ -4439,7 +4439,7 @@ impl ToString for AppPermissionsStatuses {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsTeamDiscussions {
     #[serde(rename = "read")]
     Read,
@@ -4454,7 +4454,7 @@ impl ToString for AppPermissionsTeamDiscussions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsVulnerabilityAlerts {
     #[serde(rename = "read")]
     Read,
@@ -4469,7 +4469,7 @@ impl ToString for AppPermissionsVulnerabilityAlerts {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum AppPermissionsWorkflows {
     #[serde(rename = "read")]
     Read,
@@ -4557,7 +4557,7 @@ pub struct AppPermissions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workflows: Option<AppPermissionsWorkflows>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleAllowDeletionsEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4577,7 +4577,7 @@ impl ToString for BranchProtectionRuleAllowDeletionsEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleAllowForcePushesEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4599,7 +4599,7 @@ impl ToString for BranchProtectionRuleAllowForcePushesEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4621,7 +4621,7 @@ impl ToString for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleMergeQueueEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4639,7 +4639,7 @@ impl ToString for BranchProtectionRuleMergeQueueEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRulePullRequestReviewsEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4661,7 +4661,7 @@ impl ToString for BranchProtectionRulePullRequestReviewsEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleRequiredConversationResolutionLevel {
     #[serde(rename = "off")]
     Off,
@@ -4683,7 +4683,7 @@ impl ToString for BranchProtectionRuleRequiredConversationResolutionLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4705,7 +4705,7 @@ impl ToString for BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4727,7 +4727,7 @@ impl ToString for BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleSignatureRequirementEnforcementLevel {
     #[serde(rename = "off")]
     Off,
@@ -4749,7 +4749,7 @@ impl ToString for BranchProtectionRuleSignatureRequirementEnforcementLevel {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -4761,7 +4761,7 @@ impl ToString for BranchProtectionRuleCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -4773,7 +4773,7 @@ impl ToString for BranchProtectionRuleDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum BranchProtectionRuleEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -4820,7 +4820,7 @@ pub struct CheckRunPullRequestHead {
     pub repo: RepoRef,
     pub sha: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCompletedAction {
     #[serde(rename = "completed")]
     Completed,
@@ -4832,7 +4832,7 @@ impl ToString for CheckRunCompletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCompletedCheckRunCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -4864,7 +4864,7 @@ impl ToString for CheckRunCompletedCheckRunCheckSuiteConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCompletedCheckRunCheckSuiteStatus {
     #[serde(rename = "in_progress")]
     InProgress,
@@ -4906,7 +4906,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     pub url: String,
 }
 #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCompletedCheckRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -4950,7 +4950,7 @@ pub struct CheckRunCompletedCheckRunOutput {
     pub title: Option<String>,
 }
 #[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCompletedCheckRunStatus {
     #[serde(rename = "completed")]
     Completed,
@@ -5000,7 +5000,7 @@ pub struct CheckRunCompletedRequestedAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -5012,7 +5012,7 @@ impl ToString for CheckRunCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCreatedCheckRunCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5044,7 +5044,7 @@ impl ToString for CheckRunCreatedCheckRunCheckSuiteConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCreatedCheckRunCheckSuiteStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -5086,7 +5086,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     pub url: String,
 }
 #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCreatedCheckRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5130,7 +5130,7 @@ pub struct CheckRunCreatedCheckRunOutput {
     pub title: Option<String>,
 }
 #[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunCreatedCheckRunStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -5186,7 +5186,7 @@ pub struct CheckRunCreatedRequestedAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRequestedActionAction {
     #[serde(rename = "requested_action")]
     RequestedAction,
@@ -5198,7 +5198,7 @@ impl ToString for CheckRunRequestedActionAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRequestedActionCheckRunCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5234,7 +5234,7 @@ impl ToString for CheckRunRequestedActionCheckRunCheckSuiteConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRequestedActionCheckRunCheckSuiteStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -5278,7 +5278,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     pub url: String,
 }
 #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRequestedActionCheckRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5324,7 +5324,7 @@ pub struct CheckRunRequestedActionCheckRunOutput {
     pub title: Option<String>,
 }
 #[doc = "The current status of the check run. Can be `queued`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRequestedActionCheckRunStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -5380,7 +5380,7 @@ pub struct CheckRunRequestedActionRequestedAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRerequestedAction {
     #[serde(rename = "rerequested")]
     Rerequested,
@@ -5392,7 +5392,7 @@ impl ToString for CheckRunRerequestedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRerequestedCheckRunCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5424,7 +5424,7 @@ impl ToString for CheckRunRerequestedCheckRunCheckSuiteConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRerequestedCheckRunCheckSuiteStatus {
     #[serde(rename = "completed")]
     Completed,
@@ -5460,7 +5460,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     pub url: String,
 }
 #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRerequestedCheckRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5504,7 +5504,7 @@ pub struct CheckRunRerequestedCheckRunOutput {
     pub title: Option<String>,
 }
 #[doc = "The phase of the lifecycle that the check is currently in."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckRunRerequestedCheckRunStatus {
     #[serde(rename = "completed")]
     Completed,
@@ -5554,7 +5554,7 @@ pub struct CheckRunRerequestedRequestedAction {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteCompletedAction {
     #[serde(rename = "completed")]
     Completed,
@@ -5567,7 +5567,7 @@ impl ToString for CheckSuiteCompletedAction {
     }
 }
 #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteCompletedCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5600,7 +5600,7 @@ impl ToString for CheckSuiteCompletedCheckSuiteConclusion {
     }
 }
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteCompletedCheckSuiteStatus {
     #[serde(rename = "requested")]
     Requested,
@@ -5648,7 +5648,7 @@ pub struct CheckSuiteCompletedCheckSuite {
     #[doc = "URL that points to the check suite API resource."]
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRequestedAction {
     #[serde(rename = "requested")]
     Requested,
@@ -5661,7 +5661,7 @@ impl ToString for CheckSuiteRequestedAction {
     }
 }
 #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRequestedCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5694,7 +5694,7 @@ impl ToString for CheckSuiteRequestedCheckSuiteConclusion {
     }
 }
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRequestedCheckSuiteStatus {
     #[serde(rename = "requested")]
     Requested,
@@ -5742,7 +5742,7 @@ pub struct CheckSuiteRequestedCheckSuite {
     #[doc = "URL that points to the check suite API resource."]
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRerequestedAction {
     #[serde(rename = "rerequested")]
     Rerequested,
@@ -5755,7 +5755,7 @@ impl ToString for CheckSuiteRerequestedAction {
     }
 }
 #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRerequestedCheckSuiteConclusion {
     #[serde(rename = "success")]
     Success,
@@ -5788,7 +5788,7 @@ impl ToString for CheckSuiteRerequestedCheckSuiteConclusion {
     }
 }
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CheckSuiteRerequestedCheckSuiteStatus {
     #[serde(rename = "requested")]
     Requested,
@@ -5836,7 +5836,7 @@ pub struct CheckSuiteRerequestedCheckSuite {
     #[doc = "URL that points to the check suite API resource."]
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertAppearedInBranchAction {
     #[serde(rename = "appeared_in_branch")]
     AppearedInBranch,
@@ -5851,7 +5851,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAction {
     }
 }
 #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertAppearedInBranchAlertDismissedReason {
     #[serde(rename = "false positive")]
     FalsePositive,
@@ -5876,7 +5876,7 @@ impl ToString for CodeScanningAlertAppearedInBranchAlertDismissedReason {
     }
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertAppearedInBranchAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -5908,7 +5908,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertRule {
     pub severity: Option<CodeScanningAlertAppearedInBranchAlertRuleSeverity>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertAppearedInBranchAlertState {
     #[serde(rename = "open")]
     Open,
@@ -5958,7 +5958,7 @@ pub struct CodeScanningAlertAppearedInBranchAlert {
     pub tool: CodeScanningAlertAppearedInBranchAlertTool,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAction {
     #[serde(rename = "closed_by_user")]
     ClosedByUser,
@@ -5971,7 +5971,7 @@ impl ToString for CodeScanningAlertClosedByUserAction {
     }
 }
 #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAlertDismissedReason {
     #[serde(rename = "false positive")]
     FalsePositive,
@@ -5993,7 +5993,7 @@ impl ToString for CodeScanningAlertClosedByUserAlertDismissedReason {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAlertInstancesItemState {
     #[serde(rename = "dismissed")]
     Dismissed,
@@ -6014,7 +6014,7 @@ pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
     pub state: CodeScanningAlertClosedByUserAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -6054,7 +6054,7 @@ pub struct CodeScanningAlertClosedByUserAlertRule {
     pub tags: Option<()>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAlertState {
     #[serde(rename = "dismissed")]
     Dismissed,
@@ -6100,7 +6100,7 @@ pub struct CodeScanningAlertClosedByUserAlert {
     pub tool: CodeScanningAlertClosedByUserAlertTool,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6112,7 +6112,7 @@ impl ToString for CodeScanningAlertCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertCreatedAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
@@ -6134,7 +6134,7 @@ pub struct CodeScanningAlertCreatedAlertInstancesItem {
     pub state: CodeScanningAlertCreatedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertCreatedAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -6174,7 +6174,7 @@ pub struct CodeScanningAlertCreatedAlertRule {
     pub tags: Option<()>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertCreatedAlertState {
     #[serde(rename = "open")]
     Open,
@@ -6223,7 +6223,7 @@ pub struct CodeScanningAlertCreatedAlert {
     pub tool: CodeScanningAlertCreatedAlertTool,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertFixedAction {
     #[serde(rename = "fixed")]
     Fixed,
@@ -6236,7 +6236,7 @@ impl ToString for CodeScanningAlertFixedAction {
     }
 }
 #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertFixedAlertDismissedReason {
     #[serde(rename = "false positive")]
     FalsePositive,
@@ -6256,7 +6256,7 @@ impl ToString for CodeScanningAlertFixedAlertDismissedReason {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertFixedAlertInstancesItemState {
     #[serde(rename = "fixed")]
     Fixed,
@@ -6275,7 +6275,7 @@ pub struct CodeScanningAlertFixedAlertInstancesItem {
     pub state: CodeScanningAlertFixedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertFixedAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -6315,7 +6315,7 @@ pub struct CodeScanningAlertFixedAlertRule {
     pub tags: Option<()>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertFixedAlertState {
     #[serde(rename = "fixed")]
     Fixed,
@@ -6363,7 +6363,7 @@ pub struct CodeScanningAlertFixedAlert {
     pub tool: CodeScanningAlertFixedAlertTool,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -6375,7 +6375,7 @@ impl ToString for CodeScanningAlertReopenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
@@ -6394,7 +6394,7 @@ pub struct CodeScanningAlertReopenedAlertInstancesItem {
     pub state: CodeScanningAlertReopenedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -6434,7 +6434,7 @@ pub struct CodeScanningAlertReopenedAlertRule {
     pub tags: Option<()>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedAlertState {
     #[serde(rename = "open")]
     Open,
@@ -6486,7 +6486,7 @@ pub struct CodeScanningAlertReopenedAlert {
     pub tool: CodeScanningAlertReopenedAlertTool,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedByUserAction {
     #[serde(rename = "reopened_by_user")]
     ReopenedByUser,
@@ -6498,7 +6498,7 @@ impl ToString for CodeScanningAlertReopenedByUserAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedByUserAlertInstancesItemState {
     #[serde(rename = "open")]
     Open,
@@ -6517,7 +6517,7 @@ pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
     pub state: CodeScanningAlertReopenedByUserAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
     #[serde(rename = "none")]
     None,
@@ -6549,7 +6549,7 @@ pub struct CodeScanningAlertReopenedByUserAlertRule {
     pub severity: Option<CodeScanningAlertReopenedByUserAlertRuleSeverity>,
 }
 #[doc = "State of a code scanning alert."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertReopenedByUserAlertState {
     #[serde(rename = "open")]
     Open,
@@ -6594,7 +6594,7 @@ pub struct CodeScanningAlertReopenedByUserAlert {
     pub url: String,
 }
 #[doc = "The action performed. Can be `created`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CommitCommentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6631,7 +6631,7 @@ pub struct CommitCommentCreatedComment {
     pub url: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ContentReferenceCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6651,7 +6651,7 @@ pub struct ContentReferenceCreatedContentReference {
     pub reference: String,
 }
 #[doc = "The type of Git ref object created in the repository. Can be either `branch` or `tag`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CreateEventRefType {
     #[serde(rename = "tag")]
     Tag,
@@ -6667,7 +6667,7 @@ impl ToString for CreateEventRefType {
     }
 }
 #[doc = "The type of Git ref object deleted in the repository. Can be either `branch` or `tag`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DeleteEventRefType {
     #[serde(rename = "tag")]
     Tag,
@@ -6682,7 +6682,7 @@ impl ToString for DeleteEventRefType {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DeployKeyCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6706,7 +6706,7 @@ pub struct DeployKeyCreatedKey {
     pub url: String,
     pub verified: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DeployKeyDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -6730,7 +6730,7 @@ pub struct DeployKeyDeletedKey {
     pub url: String,
     pub verified: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DeploymentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6768,7 +6768,7 @@ pub struct DeploymentCreatedDeployment {
     pub updated_at: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DeploymentStatusCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6840,7 +6840,7 @@ pub struct DiscussionCategory {
     pub slug: String,
     pub updated_at: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionState {
     #[serde(rename = "open")]
     Open,
@@ -6858,7 +6858,7 @@ impl ToString for DiscussionState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionAnsweredAction {
     #[serde(rename = "answered")]
     Answered,
@@ -6899,7 +6899,7 @@ pub struct DiscussionAnsweredDiscussion {
     pub answer_html_url: String,
     pub category: DiscussionAnsweredDiscussionCategory,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCategoryChangedAction {
     #[serde(rename = "category_changed")]
     CategoryChanged,
@@ -6934,7 +6934,7 @@ pub struct DiscussionCategoryChangedChangesCategory {
 pub struct DiscussionCategoryChangedChanges {
     pub category: DiscussionCategoryChangedChangesCategory,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -6946,7 +6946,7 @@ impl ToString for DiscussionCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCreatedDiscussionState {
     #[serde(rename = "open")]
     Open,
@@ -6971,7 +6971,7 @@ pub struct DiscussionCreatedDiscussion {
     pub locked: bool,
     pub state: DiscussionCreatedDiscussionState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -6983,7 +6983,7 @@ impl ToString for DiscussionDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -7013,7 +7013,7 @@ pub struct DiscussionEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<DiscussionEditedChangesTitle>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionLabeledAction {
     #[serde(rename = "labeled")]
     Labeled,
@@ -7025,7 +7025,7 @@ impl ToString for DiscussionLabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionLockedAction {
     #[serde(rename = "locked")]
     Locked,
@@ -7037,7 +7037,7 @@ impl ToString for DiscussionLockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionLockedDiscussionState {
     #[serde(rename = "locked")]
     Locked,
@@ -7056,7 +7056,7 @@ pub struct DiscussionLockedDiscussion {
     pub locked: bool,
     pub state: DiscussionLockedDiscussionState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionPinnedAction {
     #[serde(rename = "pinned")]
     Pinned,
@@ -7068,7 +7068,7 @@ impl ToString for DiscussionPinnedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionTransferredAction {
     #[serde(rename = "transferred")]
     Transferred,
@@ -7086,7 +7086,7 @@ pub struct DiscussionTransferredChanges {
     pub new_discussion: Discussion,
     pub new_repository: Repository,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnansweredAction {
     #[serde(rename = "unanswered")]
     Unanswered,
@@ -7127,7 +7127,7 @@ pub struct DiscussionUnansweredOldAnswer {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnlabeledAction {
     #[serde(rename = "unlabeled")]
     Unlabeled,
@@ -7139,7 +7139,7 @@ impl ToString for DiscussionUnlabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnlockedAction {
     #[serde(rename = "unlocked")]
     Unlocked,
@@ -7151,7 +7151,7 @@ impl ToString for DiscussionUnlockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnlockedDiscussionState {
     #[serde(rename = "open")]
     Open,
@@ -7170,7 +7170,7 @@ pub struct DiscussionUnlockedDiscussion {
     pub locked: bool,
     pub state: DiscussionUnlockedDiscussionState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnpinnedAction {
     #[serde(rename = "unpinned")]
     Unpinned,
@@ -7182,7 +7182,7 @@ impl ToString for DiscussionUnpinnedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCommentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -7210,7 +7210,7 @@ pub struct DiscussionCommentCreatedComment {
     pub updated_at: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCommentDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -7238,7 +7238,7 @@ pub struct DiscussionCommentDeletedComment {
     pub updated_at: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCommentEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -7284,7 +7284,7 @@ pub struct ForkEventForkee {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fork: Option<bool>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum GithubAppAuthorizationRevokedAction {
     #[serde(rename = "revoked")]
     Revoked,
@@ -7297,7 +7297,7 @@ impl ToString for GithubAppAuthorizationRevokedAction {
     }
 }
 #[doc = "The action that was performed on the page. Can be `created` or `edited`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum GollumEventPagesItemAction {
     #[serde(rename = "created")]
     Created,
@@ -7333,7 +7333,7 @@ pub enum InstallationCreatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
     Variant1(i64),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationEventsItem {
     #[serde(rename = "check_run")]
     CheckRun,
@@ -7479,7 +7479,7 @@ impl ToString for InstallationEventsItem {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsActions {
     #[serde(rename = "read")]
     Read,
@@ -7494,7 +7494,7 @@ impl ToString for InstallationPermissionsActions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsAdministration {
     #[serde(rename = "read")]
     Read,
@@ -7509,7 +7509,7 @@ impl ToString for InstallationPermissionsAdministration {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsChecks {
     #[serde(rename = "read")]
     Read,
@@ -7524,7 +7524,7 @@ impl ToString for InstallationPermissionsChecks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsContentReferences {
     #[serde(rename = "read")]
     Read,
@@ -7539,7 +7539,7 @@ impl ToString for InstallationPermissionsContentReferences {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsContents {
     #[serde(rename = "read")]
     Read,
@@ -7554,7 +7554,7 @@ impl ToString for InstallationPermissionsContents {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsDeployments {
     #[serde(rename = "read")]
     Read,
@@ -7569,7 +7569,7 @@ impl ToString for InstallationPermissionsDeployments {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsDiscussions {
     #[serde(rename = "read")]
     Read,
@@ -7584,7 +7584,7 @@ impl ToString for InstallationPermissionsDiscussions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsEmails {
     #[serde(rename = "read")]
     Read,
@@ -7599,7 +7599,7 @@ impl ToString for InstallationPermissionsEmails {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsEnvironments {
     #[serde(rename = "read")]
     Read,
@@ -7614,7 +7614,7 @@ impl ToString for InstallationPermissionsEnvironments {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsIssues {
     #[serde(rename = "read")]
     Read,
@@ -7629,7 +7629,7 @@ impl ToString for InstallationPermissionsIssues {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsMembers {
     #[serde(rename = "read")]
     Read,
@@ -7644,7 +7644,7 @@ impl ToString for InstallationPermissionsMembers {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsMetadata {
     #[serde(rename = "read")]
     Read,
@@ -7659,7 +7659,7 @@ impl ToString for InstallationPermissionsMetadata {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationAdministration {
     #[serde(rename = "read")]
     Read,
@@ -7674,7 +7674,7 @@ impl ToString for InstallationPermissionsOrganizationAdministration {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationEvents {
     #[serde(rename = "read")]
     Read,
@@ -7689,7 +7689,7 @@ impl ToString for InstallationPermissionsOrganizationEvents {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationHooks {
     #[serde(rename = "read")]
     Read,
@@ -7704,7 +7704,7 @@ impl ToString for InstallationPermissionsOrganizationHooks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationPackages {
     #[serde(rename = "read")]
     Read,
@@ -7719,7 +7719,7 @@ impl ToString for InstallationPermissionsOrganizationPackages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationPlan {
     #[serde(rename = "read")]
     Read,
@@ -7734,7 +7734,7 @@ impl ToString for InstallationPermissionsOrganizationPlan {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationProjects {
     #[serde(rename = "read")]
     Read,
@@ -7749,7 +7749,7 @@ impl ToString for InstallationPermissionsOrganizationProjects {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationSecrets {
     #[serde(rename = "read")]
     Read,
@@ -7764,7 +7764,7 @@ impl ToString for InstallationPermissionsOrganizationSecrets {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationSelfHostedRunners {
     #[serde(rename = "read")]
     Read,
@@ -7779,7 +7779,7 @@ impl ToString for InstallationPermissionsOrganizationSelfHostedRunners {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsOrganizationUserBlocking {
     #[serde(rename = "read")]
     Read,
@@ -7794,7 +7794,7 @@ impl ToString for InstallationPermissionsOrganizationUserBlocking {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsPackages {
     #[serde(rename = "read")]
     Read,
@@ -7809,7 +7809,7 @@ impl ToString for InstallationPermissionsPackages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsPages {
     #[serde(rename = "read")]
     Read,
@@ -7824,7 +7824,7 @@ impl ToString for InstallationPermissionsPages {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsPullRequests {
     #[serde(rename = "read")]
     Read,
@@ -7839,7 +7839,7 @@ impl ToString for InstallationPermissionsPullRequests {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsRepositoryHooks {
     #[serde(rename = "read")]
     Read,
@@ -7854,7 +7854,7 @@ impl ToString for InstallationPermissionsRepositoryHooks {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsRepositoryProjects {
     #[serde(rename = "read")]
     Read,
@@ -7869,7 +7869,7 @@ impl ToString for InstallationPermissionsRepositoryProjects {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsSecretScanningAlerts {
     #[serde(rename = "read")]
     Read,
@@ -7884,7 +7884,7 @@ impl ToString for InstallationPermissionsSecretScanningAlerts {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsSecrets {
     #[serde(rename = "read")]
     Read,
@@ -7899,7 +7899,7 @@ impl ToString for InstallationPermissionsSecrets {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsSecurityEvents {
     #[serde(rename = "read")]
     Read,
@@ -7914,7 +7914,7 @@ impl ToString for InstallationPermissionsSecurityEvents {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsSecurityScanningAlert {
     #[serde(rename = "read")]
     Read,
@@ -7929,7 +7929,7 @@ impl ToString for InstallationPermissionsSecurityScanningAlert {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsSingleFile {
     #[serde(rename = "read")]
     Read,
@@ -7944,7 +7944,7 @@ impl ToString for InstallationPermissionsSingleFile {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsStatuses {
     #[serde(rename = "read")]
     Read,
@@ -7959,7 +7959,7 @@ impl ToString for InstallationPermissionsStatuses {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsTeamDiscussions {
     #[serde(rename = "read")]
     Read,
@@ -7974,7 +7974,7 @@ impl ToString for InstallationPermissionsTeamDiscussions {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsVulnerabilityAlerts {
     #[serde(rename = "read")]
     Read,
@@ -7989,7 +7989,7 @@ impl ToString for InstallationPermissionsVulnerabilityAlerts {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationPermissionsWorkflows {
     #[serde(rename = "read")]
     Read,
@@ -8080,7 +8080,7 @@ pub struct InstallationPermissions {
     pub workflows: Option<InstallationPermissionsWorkflows>,
 }
 #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationRepositorySelection {
     #[serde(rename = "all")]
     All,
@@ -8095,7 +8095,7 @@ impl ToString for InstallationRepositorySelection {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationTargetType {
     User,
     Organization,
@@ -8114,7 +8114,7 @@ pub enum InstallationUpdatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
     Variant1(i64),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -8138,7 +8138,7 @@ pub struct InstallationCreatedRepositoriesItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -8162,7 +8162,7 @@ pub struct InstallationDeletedRepositoriesItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationNewPermissionsAcceptedAction {
     #[serde(rename = "new_permissions_accepted")]
     NewPermissionsAccepted,
@@ -8188,7 +8188,7 @@ pub struct InstallationNewPermissionsAcceptedRepositoriesItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationSuspendAction {
     #[serde(rename = "suspend")]
     Suspend,
@@ -8219,7 +8219,7 @@ pub struct InstallationSuspendRepositoriesItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationUnsuspendAction {
     #[serde(rename = "unsuspend")]
     Unsuspend,
@@ -8250,7 +8250,7 @@ pub struct InstallationUnsuspendRepositoriesItem {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationRepositoriesAddedAction {
     #[serde(rename = "added")]
     Added,
@@ -8292,7 +8292,7 @@ pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     pub private: Option<bool>,
 }
 #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationRepositoriesAddedRepositorySelection {
     #[serde(rename = "all")]
     All,
@@ -8307,7 +8307,7 @@ impl ToString for InstallationRepositoriesAddedRepositorySelection {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationRepositoriesRemovedAction {
     #[serde(rename = "removed")]
     Removed,
@@ -8344,7 +8344,7 @@ pub struct InstallationRepositoriesRemovedRepositoriesRemovedItem {
     pub private: bool,
 }
 #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum InstallationRepositoriesRemovedRepositorySelection {
     #[serde(rename = "all")]
     All,
@@ -8359,7 +8359,7 @@ impl ToString for InstallationRepositoriesRemovedRepositorySelection {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -8393,7 +8393,7 @@ pub struct IssuePullRequest {
     pub url: Option<String>,
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueState {
     #[serde(rename = "open")]
     Open,
@@ -8408,7 +8408,7 @@ impl ToString for IssueState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -8429,7 +8429,7 @@ pub struct IssueCommentCreatedIssuePullRequest {
     pub url: String,
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentCreatedIssueState {
     #[serde(rename = "open")]
     Open,
@@ -8457,7 +8457,7 @@ pub struct IssueCommentCreatedIssue {
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentCreatedIssueState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -8478,7 +8478,7 @@ pub struct IssueCommentDeletedIssuePullRequest {
     pub url: String,
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentDeletedIssueState {
     #[serde(rename = "open")]
     Open,
@@ -8506,7 +8506,7 @@ pub struct IssueCommentDeletedIssue {
     #[doc = "State of the issue; either 'open' or 'closed'"]
     pub state: IssueCommentDeletedIssueState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -8540,7 +8540,7 @@ pub struct IssueCommentEditedIssuePullRequest {
     pub url: String,
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentEditedIssueState {
     #[serde(rename = "open")]
     Open,
@@ -8569,7 +8569,7 @@ pub struct IssueCommentEditedIssue {
     pub state: IssueCommentEditedIssueState,
 }
 #[doc = "The action that was performed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesAssignedAction {
     #[serde(rename = "assigned")]
     Assigned,
@@ -8582,7 +8582,7 @@ impl ToString for IssuesAssignedAction {
     }
 }
 #[doc = "The action that was performed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesClosedAction {
     #[serde(rename = "closed")]
     Closed,
@@ -8594,7 +8594,7 @@ impl ToString for IssuesClosedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesClosedIssueState {
     #[serde(rename = "closed")]
     Closed,
@@ -8614,7 +8614,7 @@ pub struct IssuesClosedIssue {
     pub closed_at: String,
     pub state: IssuesClosedIssueState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -8626,7 +8626,7 @@ impl ToString for IssuesDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesDemilestonedAction {
     #[serde(rename = "demilestoned")]
     Demilestoned,
@@ -8644,7 +8644,7 @@ pub struct IssuesDemilestonedIssue {
     pub issue: Issue,
     pub milestone: (),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -8677,7 +8677,7 @@ pub struct IssuesEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<IssuesEditedChangesTitle>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesLabeledAction {
     #[serde(rename = "labeled")]
     Labeled,
@@ -8689,7 +8689,7 @@ impl ToString for IssuesLabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesLockedAction {
     #[serde(rename = "locked")]
     Locked,
@@ -8701,7 +8701,7 @@ impl ToString for IssuesLockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesLockedIssueActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -8729,7 +8729,7 @@ pub struct IssuesLockedIssue {
     pub active_lock_reason: Option<IssuesLockedIssueActiveLockReason>,
     pub locked: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesMilestonedAction {
     #[serde(rename = "milestoned")]
     Milestoned,
@@ -8747,7 +8747,7 @@ pub struct IssuesMilestonedIssue {
     pub issue: Issue,
     pub milestone: Milestone,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesOpenedAction {
     #[serde(rename = "opened")]
     Opened,
@@ -8765,7 +8765,7 @@ pub struct IssuesOpenedChanges {
     pub old_issue: Issue,
     pub old_repository: Repository,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesOpenedIssueState {
     #[serde(rename = "open")]
     Open,
@@ -8784,7 +8784,7 @@ pub struct IssuesOpenedIssue {
     pub closed_at: (),
     pub state: IssuesOpenedIssueState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesPinnedAction {
     #[serde(rename = "pinned")]
     Pinned,
@@ -8796,7 +8796,7 @@ impl ToString for IssuesPinnedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -8808,7 +8808,7 @@ impl ToString for IssuesReopenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesReopenedIssueState {
     #[serde(rename = "open")]
     Open,
@@ -8826,7 +8826,7 @@ pub struct IssuesReopenedIssue {
     pub issue: Issue,
     pub state: IssuesReopenedIssueState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesTransferredAction {
     #[serde(rename = "transferred")]
     Transferred,
@@ -8845,7 +8845,7 @@ pub struct IssuesTransferredChanges {
     pub new_repository: Repository,
 }
 #[doc = "The action that was performed."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesUnassignedAction {
     #[serde(rename = "unassigned")]
     Unassigned,
@@ -8857,7 +8857,7 @@ impl ToString for IssuesUnassignedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesUnlabeledAction {
     #[serde(rename = "unlabeled")]
     Unlabeled,
@@ -8869,7 +8869,7 @@ impl ToString for IssuesUnlabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesUnlockedAction {
     #[serde(rename = "unlocked")]
     Unlocked,
@@ -8888,7 +8888,7 @@ pub struct IssuesUnlockedIssue {
     pub active_lock_reason: (),
     pub locked: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesUnpinnedAction {
     #[serde(rename = "unpinned")]
     Unpinned,
@@ -8900,7 +8900,7 @@ impl ToString for IssuesUnpinnedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum LabelCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -8912,7 +8912,7 @@ impl ToString for LabelCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum LabelDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -8924,7 +8924,7 @@ impl ToString for LabelDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum LabelEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -8988,7 +8988,7 @@ pub struct MarketplacePurchasePlan {
     pub unit_name: Option<String>,
     pub yearly_price_in_cents: i64,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MarketplacePurchaseCancelledAction {
     #[serde(rename = "cancelled")]
     Cancelled,
@@ -9029,7 +9029,7 @@ pub struct MarketplacePurchaseCancelledSender {
     pub type_: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MarketplacePurchaseChangedAction {
     #[serde(rename = "changed")]
     Changed,
@@ -9070,7 +9070,7 @@ pub struct MarketplacePurchaseChangedSender {
     pub type_: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MarketplacePurchasePendingChangeAction {
     #[serde(rename = "pending_change")]
     PendingChange,
@@ -9111,7 +9111,7 @@ pub struct MarketplacePurchasePendingChangeSender {
     pub type_: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MarketplacePurchasePendingChangeCancelledAction {
     #[serde(rename = "pending_change_cancelled")]
     PendingChangeCancelled,
@@ -9154,7 +9154,7 @@ pub struct MarketplacePurchasePendingChangeCancelledSender {
     pub type_: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MarketplacePurchasePurchasedAction {
     #[serde(rename = "purchased")]
     Purchased,
@@ -9195,7 +9195,7 @@ pub struct MarketplacePurchasePurchasedSender {
     pub type_: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MemberAddedAction {
     #[serde(rename = "added")]
     Added,
@@ -9207,7 +9207,7 @@ impl ToString for MemberAddedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MemberAddedChangesPermissionTo {
     #[serde(rename = "write")]
     Write,
@@ -9233,7 +9233,7 @@ pub struct MemberAddedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permission: Option<MemberAddedChangesPermission>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MemberEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -9257,7 +9257,7 @@ pub struct MemberEditedChangesOldPermission {
 pub struct MemberEditedChanges {
     pub old_permission: MemberEditedChangesOldPermission,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MemberRemovedAction {
     #[serde(rename = "removed")]
     Removed,
@@ -9269,7 +9269,7 @@ impl ToString for MemberRemovedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MembershipAddedAction {
     #[serde(rename = "added")]
     Added,
@@ -9282,7 +9282,7 @@ impl ToString for MembershipAddedAction {
     }
 }
 #[doc = "The scope of the membership. Currently, can only be `team`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MembershipAddedScope {
     #[serde(rename = "team")]
     Team,
@@ -9294,7 +9294,7 @@ impl ToString for MembershipAddedScope {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MembershipRemovedAction {
     #[serde(rename = "removed")]
     Removed,
@@ -9307,7 +9307,7 @@ impl ToString for MembershipRemovedAction {
     }
 }
 #[doc = "The scope of the membership. Currently, can only be `team`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MembershipRemovedScope {
     #[serde(rename = "team")]
     Team,
@@ -9334,7 +9334,7 @@ pub enum MembershipRemovedTeam {
         name: String,
     },
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MetaDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -9346,7 +9346,7 @@ impl ToString for MetaDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MetaDeletedHookConfigContentType {
     #[serde(rename = "json")]
     Json,
@@ -9383,7 +9383,7 @@ pub struct MetaDeletedHook {
     pub updated_at: String,
 }
 #[doc = "The state of the milestone."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneState {
     #[serde(rename = "open")]
     Open,
@@ -9398,7 +9398,7 @@ impl ToString for MilestoneState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneClosedAction {
     #[serde(rename = "closed")]
     Closed,
@@ -9410,7 +9410,7 @@ impl ToString for MilestoneClosedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneClosedMilestoneState {
     #[serde(rename = "closed")]
     Closed,
@@ -9429,7 +9429,7 @@ pub struct MilestoneClosedMilestone {
     pub closed_at: String,
     pub state: MilestoneClosedMilestoneState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -9441,7 +9441,7 @@ impl ToString for MilestoneCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneCreatedMilestoneState {
     #[serde(rename = "open")]
     Open,
@@ -9460,7 +9460,7 @@ pub struct MilestoneCreatedMilestone {
     pub closed_at: (),
     pub state: MilestoneCreatedMilestoneState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -9472,7 +9472,7 @@ impl ToString for MilestoneDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -9513,7 +9513,7 @@ pub struct MilestoneEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<MilestoneEditedChangesTitle>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneOpenedAction {
     #[serde(rename = "opened")]
     Opened,
@@ -9525,7 +9525,7 @@ impl ToString for MilestoneOpenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneOpenedMilestoneState {
     #[serde(rename = "open")]
     Open,
@@ -9544,7 +9544,7 @@ pub struct MilestoneOpenedMilestone {
     pub closed_at: (),
     pub state: MilestoneOpenedMilestoneState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrgBlockBlockedAction {
     #[serde(rename = "blocked")]
     Blocked,
@@ -9556,7 +9556,7 @@ impl ToString for OrgBlockBlockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrgBlockUnblockedAction {
     #[serde(rename = "unblocked")]
     Unblocked,
@@ -9568,7 +9568,7 @@ impl ToString for OrgBlockUnblockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrganizationDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -9580,7 +9580,7 @@ impl ToString for OrganizationDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrganizationMemberAddedAction {
     #[serde(rename = "member_added")]
     MemberAdded,
@@ -9592,7 +9592,7 @@ impl ToString for OrganizationMemberAddedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrganizationMemberInvitedAction {
     #[serde(rename = "member_invited")]
     MemberInvited,
@@ -9620,7 +9620,7 @@ pub struct OrganizationMemberInvitedInvitation {
     pub role: String,
     pub team_count: f64,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrganizationMemberRemovedAction {
     #[serde(rename = "member_removed")]
     MemberRemoved,
@@ -9632,7 +9632,7 @@ impl ToString for OrganizationMemberRemovedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrganizationRenamedAction {
     #[serde(rename = "renamed")]
     Renamed,
@@ -9644,7 +9644,7 @@ impl ToString for OrganizationRenamedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PackagePublishedAction {
     #[serde(rename = "published")]
     Published,
@@ -9743,7 +9743,7 @@ pub struct PackagePublishedPackage {
     pub registry: PackagePublishedPackageRegistry,
     pub updated_at: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PackageUpdatedAction {
     #[serde(rename = "updated")]
     Updated,
@@ -9860,7 +9860,7 @@ pub struct PageBuildEventBuild {
     pub updated_at: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PingEventHookConfigContentType {
     #[serde(rename = "json")]
     Json,
@@ -9915,7 +9915,7 @@ pub struct PingEventHook {
     pub url: String,
 }
 #[doc = "State of the project; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectState {
     #[serde(rename = "open")]
     Open,
@@ -9930,7 +9930,7 @@ impl ToString for ProjectState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectClosedAction {
     #[serde(rename = "closed")]
     Closed,
@@ -9942,7 +9942,7 @@ impl ToString for ProjectClosedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -9954,7 +9954,7 @@ impl ToString for ProjectCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -9966,7 +9966,7 @@ impl ToString for ProjectDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -9999,7 +9999,7 @@ pub struct ProjectEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<ProjectEditedChangesName>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -10011,7 +10011,7 @@ impl ToString for ProjectReopenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCardConvertedAction {
     #[serde(rename = "converted")]
     Converted,
@@ -10033,7 +10033,7 @@ pub struct ProjectCardConvertedChangesNote {
 pub struct ProjectCardConvertedChanges {
     pub note: ProjectCardConvertedChangesNote,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCardCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -10045,7 +10045,7 @@ impl ToString for ProjectCardCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCardDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -10057,7 +10057,7 @@ impl ToString for ProjectCardDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCardEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -10079,7 +10079,7 @@ pub struct ProjectCardEditedChangesNote {
 pub struct ProjectCardEditedChanges {
     pub note: ProjectCardEditedChangesNote,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectCardMovedAction {
     #[serde(rename = "moved")]
     Moved,
@@ -10107,7 +10107,7 @@ pub struct ProjectCardMovedProjectCard {
     pub project_card: ProjectCard,
     pub after_id: Option<f64>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectColumnCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -10119,7 +10119,7 @@ impl ToString for ProjectColumnCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectColumnDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -10131,7 +10131,7 @@ impl ToString for ProjectColumnDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectColumnEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -10154,7 +10154,7 @@ pub struct ProjectColumnEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<ProjectColumnEditedChangesName>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectColumnMovedAction {
     #[serde(rename = "moved")]
     Moved,
@@ -10185,7 +10185,7 @@ pub struct PullRequestLinks {
     pub self_: Link,
     pub statuses: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -10233,7 +10233,7 @@ pub enum PullRequestRequestedReviewersItem {
     Team(Team),
 }
 #[doc = "State of this Pull Request. Either `open` or `closed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -10257,7 +10257,7 @@ pub struct PullRequestReviewCommentLinks {
     pub self_: Link,
 }
 #[doc = "The side of the first line of the range for a multi-line comment."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentSide {
     #[serde(rename = "LEFT")]
     Left,
@@ -10273,7 +10273,7 @@ impl ToString for PullRequestReviewCommentSide {
     }
 }
 #[doc = "The side of the first line of the range for a multi-line comment."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentStartSide {
     #[serde(rename = "LEFT")]
     Left,
@@ -10288,7 +10288,7 @@ impl ToString for PullRequestReviewCommentStartSide {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestAssignedAction {
     #[serde(rename = "assigned")]
     Assigned,
@@ -10300,7 +10300,7 @@ impl ToString for PullRequestAssignedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestAutoMergeDisabledAction {
     #[serde(rename = "auto_merge_disabled")]
     AutoMergeDisabled,
@@ -10314,7 +10314,7 @@ impl ToString for PullRequestAutoMergeDisabledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestAutoMergeEnabledAction {
     #[serde(rename = "auto_merge_enabled")]
     AutoMergeEnabled,
@@ -10326,7 +10326,7 @@ impl ToString for PullRequestAutoMergeEnabledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestClosedAction {
     #[serde(rename = "closed")]
     Closed,
@@ -10339,7 +10339,7 @@ impl ToString for PullRequestClosedAction {
     }
 }
 #[doc = "State of this Pull Request. Either `open` or `closed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestClosedPullRequestState {
     #[serde(rename = "closed")]
     Closed,
@@ -10360,7 +10360,7 @@ pub struct PullRequestClosedPullRequest {
     #[doc = "State of this Pull Request. Either `open` or `closed`."]
     pub state: PullRequestClosedPullRequestState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestConvertedToDraftAction {
     #[serde(rename = "converted_to_draft")]
     ConvertedToDraft,
@@ -10383,7 +10383,7 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub merged_at: (),
     pub merged_by: (),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -10416,7 +10416,7 @@ pub struct PullRequestEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<PullRequestEditedChangesTitle>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestLabeledAction {
     #[serde(rename = "labeled")]
     Labeled,
@@ -10428,7 +10428,7 @@ impl ToString for PullRequestLabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestLockedAction {
     #[serde(rename = "locked")]
     Locked,
@@ -10440,7 +10440,7 @@ impl ToString for PullRequestLockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestOpenedAction {
     #[serde(rename = "opened")]
     Opened,
@@ -10452,7 +10452,7 @@ impl ToString for PullRequestOpenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestOpenedPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -10475,7 +10475,7 @@ pub struct PullRequestOpenedPullRequest {
     pub merged_by: (),
     pub state: PullRequestOpenedPullRequestState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReadyForReviewAction {
     #[serde(rename = "ready_for_review")]
     ReadyForReview,
@@ -10487,7 +10487,7 @@ impl ToString for PullRequestReadyForReviewAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReadyForReviewPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -10511,7 +10511,7 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub merged_by: (),
     pub state: PullRequestReadyForReviewPullRequestState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -10523,7 +10523,7 @@ impl ToString for PullRequestReopenedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReopenedPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -10546,7 +10546,7 @@ pub struct PullRequestReopenedPullRequest {
     pub merged_by: (),
     pub state: PullRequestReopenedPullRequestState,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewRequestRemovedVariant0Action {
     #[serde(rename = "review_request_removed")]
     ReviewRequestRemoved,
@@ -10560,7 +10560,7 @@ impl ToString for PullRequestReviewRequestRemovedVariant0Action {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewRequestRemovedVariant1Action {
     #[serde(rename = "review_request_removed")]
     ReviewRequestRemoved,
@@ -10574,7 +10574,7 @@ impl ToString for PullRequestReviewRequestRemovedVariant1Action {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewRequestedVariant0Action {
     #[serde(rename = "review_requested")]
     ReviewRequested,
@@ -10588,7 +10588,7 @@ impl ToString for PullRequestReviewRequestedVariant0Action {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewRequestedVariant1Action {
     #[serde(rename = "review_requested")]
     ReviewRequested,
@@ -10602,7 +10602,7 @@ impl ToString for PullRequestReviewRequestedVariant1Action {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestSynchronizeAction {
     #[serde(rename = "synchronize")]
     Synchronize,
@@ -10614,7 +10614,7 @@ impl ToString for PullRequestSynchronizeAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestUnassignedAction {
     #[serde(rename = "unassigned")]
     Unassigned,
@@ -10626,7 +10626,7 @@ impl ToString for PullRequestUnassignedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestUnlabeledAction {
     #[serde(rename = "unlabeled")]
     Unlabeled,
@@ -10638,7 +10638,7 @@ impl ToString for PullRequestUnlabeledAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestUnlockedAction {
     #[serde(rename = "unlocked")]
     Unlocked,
@@ -10650,7 +10650,7 @@ impl ToString for PullRequestUnlockedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewDismissedAction {
     #[serde(rename = "dismissed")]
     Dismissed,
@@ -10668,7 +10668,7 @@ pub struct PullRequestReviewDismissedReviewLinks {
     pub html: Link,
     pub pull_request: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewDismissedReviewState {
     #[serde(rename = "dismissed")]
     Dismissed,
@@ -10700,7 +10700,7 @@ pub struct PullRequestReviewDismissedReview {
     pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -10750,7 +10750,7 @@ pub struct PullRequestReviewEditedReview {
     pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewSubmittedAction {
     #[serde(rename = "submitted")]
     Submitted,
@@ -10788,7 +10788,7 @@ pub struct PullRequestReviewSubmittedReview {
     pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -10813,7 +10813,7 @@ pub struct PullRequestReviewCommentCreatedPullRequestLinks {
     pub self_: Link,
     pub statuses: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentCreatedPullRequestActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -10866,7 +10866,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem {
     User(User),
     Team(Team),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentCreatedPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -10924,7 +10924,7 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub url: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -10949,7 +10949,7 @@ pub struct PullRequestReviewCommentDeletedPullRequestLinks {
     pub self_: Link,
     pub statuses: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentDeletedPullRequestActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -11002,7 +11002,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem {
     User(User),
     Team(Team),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentDeletedPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -11060,7 +11060,7 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub url: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -11098,7 +11098,7 @@ pub struct PullRequestReviewCommentEditedPullRequestLinks {
     pub self_: Link,
     pub statuses: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentEditedPullRequestActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -11151,7 +11151,7 @@ pub enum PullRequestReviewCommentEditedPullRequestRequestedReviewersItem {
     User(User),
     Team(Team),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewCommentEditedPullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -11209,7 +11209,7 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub url: String,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -11221,7 +11221,7 @@ impl ToString for ReleaseCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -11233,7 +11233,7 @@ impl ToString for ReleaseDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -11265,7 +11265,7 @@ pub struct ReleaseEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<ReleaseEditedChangesName>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleasePrereleasedAction {
     #[serde(rename = "prereleased")]
     Prereleased,
@@ -11284,7 +11284,7 @@ pub struct ReleasePrereleasedRelease {
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleasePublishedAction {
     #[serde(rename = "published")]
     Published,
@@ -11302,7 +11302,7 @@ pub struct ReleasePublishedRelease {
     pub release: Release,
     pub published_at: chrono::DateTime<chrono::offset::Utc>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseReleasedAction {
     #[serde(rename = "released")]
     Released,
@@ -11314,7 +11314,7 @@ impl ToString for ReleaseReleasedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseUnpublishedAction {
     #[serde(rename = "unpublished")]
     Unpublished,
@@ -11333,7 +11333,7 @@ pub struct ReleaseUnpublishedRelease {
     pub published_at: (),
 }
 #[doc = "State of the release asset."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseAssetState {
     #[serde(rename = "uploaded")]
     Uploaded,
@@ -11369,7 +11369,7 @@ pub enum RepositoryPushedAt {
     Variant1(chrono::DateTime<chrono::offset::Utc>),
     Variant2,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryArchivedAction {
     #[serde(rename = "archived")]
     Archived,
@@ -11388,7 +11388,7 @@ pub struct RepositoryArchivedRepository {
     #[doc = "Whether the repository is archived."]
     pub archived: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -11400,7 +11400,7 @@ impl ToString for RepositoryCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -11412,7 +11412,7 @@ impl ToString for RepositoryDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -11449,7 +11449,7 @@ pub struct RepositoryEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub homepage: Option<RepositoryEditedChangesHomepage>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryPrivatizedAction {
     #[serde(rename = "privatized")]
     Privatized,
@@ -11468,7 +11468,7 @@ pub struct RepositoryPrivatizedRepository {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryPublicizedAction {
     #[serde(rename = "publicized")]
     Publicized,
@@ -11487,7 +11487,7 @@ pub struct RepositoryPublicizedRepository {
     #[doc = "Whether the repository is private or public."]
     pub private: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryRenamedAction {
     #[serde(rename = "renamed")]
     Renamed,
@@ -11514,7 +11514,7 @@ pub struct RepositoryRenamedChangesRepository {
 pub struct RepositoryRenamedChanges {
     pub repository: RepositoryRenamedChangesRepository,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryTransferredAction {
     #[serde(rename = "transferred")]
     Transferred,
@@ -11542,7 +11542,7 @@ pub struct RepositoryTransferredChangesOwner {
 pub struct RepositoryTransferredChanges {
     pub owner: RepositoryTransferredChangesOwner,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryUnarchivedAction {
     #[serde(rename = "unarchived")]
     Unarchived,
@@ -11561,7 +11561,7 @@ pub struct RepositoryUnarchivedRepository {
     #[doc = "Whether the repository is archived."]
     pub archived: bool,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryDispatchOnDemandTestAction {
     #[serde(rename = "on-demand-test")]
     OnDemandTest,
@@ -11573,7 +11573,7 @@ impl ToString for RepositoryDispatchOnDemandTestAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryImportEventStatus {
     #[serde(rename = "success")]
     Success,
@@ -11591,7 +11591,7 @@ impl ToString for RepositoryImportEventStatus {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryVulnerabilityAlertCreateAction {
     #[serde(rename = "create")]
     Create,
@@ -11626,7 +11626,7 @@ pub struct RepositoryVulnerabilityAlertCreateAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryVulnerabilityAlertDismissAction {
     #[serde(rename = "dismiss")]
     Dismiss,
@@ -11658,7 +11658,7 @@ pub struct RepositoryVulnerabilityAlertDismissAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryVulnerabilityAlertResolveAction {
     #[serde(rename = "resolve")]
     Resolve,
@@ -11693,7 +11693,7 @@ pub struct RepositoryVulnerabilityAlertResolveAlert {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecretScanningAlertCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -11715,7 +11715,7 @@ pub struct SecretScanningAlertCreatedAlert {
     pub resolved_by: (),
     pub secret_type: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecretScanningAlertReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -11737,7 +11737,7 @@ pub struct SecretScanningAlertReopenedAlert {
     pub resolved_by: (),
     pub secret_type: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecretScanningAlertResolvedAction {
     #[serde(rename = "resolved")]
     Resolved,
@@ -11749,7 +11749,7 @@ impl ToString for SecretScanningAlertResolvedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecretScanningAlertResolvedAlertResolution {
     #[serde(rename = "false_positive")]
     FalsePositive,
@@ -11782,7 +11782,7 @@ pub struct SecretScanningAlertResolvedAlert {
     pub resolved_by: User,
     pub secret_type: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecurityAdvisoryPerformedAction {
     #[serde(rename = "performed")]
     Performed,
@@ -11855,7 +11855,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisory {
     pub vulnerabilities: Vec<SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem>,
     pub withdrawn_at: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecurityAdvisoryPublishedAction {
     #[serde(rename = "published")]
     Published,
@@ -11928,7 +11928,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisory {
     pub vulnerabilities: Vec<SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem>,
     pub withdrawn_at: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecurityAdvisoryUpdatedAction {
     #[serde(rename = "updated")]
     Updated,
@@ -12001,7 +12001,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisory {
     pub vulnerabilities: Vec<SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem>,
     pub withdrawn_at: Option<String>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SecurityAdvisoryWithdrawnAction {
     #[serde(rename = "withdrawn")]
     Withdrawn,
@@ -12087,7 +12087,7 @@ pub struct SimplePullRequestLinks {
     pub self_: Link,
     pub statuses: Link,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SimplePullRequestActiveLockReason {
     #[serde(rename = "resolved")]
     Resolved,
@@ -12134,7 +12134,7 @@ pub enum SimplePullRequestRequestedReviewersItem {
     User(User),
     Team(Team),
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SimplePullRequestState {
     #[serde(rename = "open")]
     Open,
@@ -12149,7 +12149,7 @@ impl ToString for SimplePullRequestState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipCancelledAction {
     #[serde(rename = "cancelled")]
     Cancelled,
@@ -12171,7 +12171,7 @@ pub struct SponsorshipCancelledSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -12193,7 +12193,7 @@ pub struct SponsorshipCreatedSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -12227,7 +12227,7 @@ pub struct SponsorshipEditedSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipPendingCancellationAction {
     #[serde(rename = "pending_cancellation")]
     PendingCancellation,
@@ -12251,7 +12251,7 @@ pub struct SponsorshipPendingCancellationSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipPendingTierChangeAction {
     #[serde(rename = "pending_tier_change")]
     PendingTierChange,
@@ -12285,7 +12285,7 @@ pub struct SponsorshipPendingTierChangeSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum SponsorshipTierChangedAction {
     #[serde(rename = "tier_changed")]
     TierChanged,
@@ -12317,7 +12317,7 @@ pub struct SponsorshipTierChangedSponsorship {
     pub sponsorable: User,
     pub tier: SponsorshipTier,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum StarCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -12329,7 +12329,7 @@ impl ToString for StarCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum StarDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -12372,7 +12372,7 @@ pub struct StatusEventCommitCommitTree {
     pub sha: String,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum StatusEventCommitCommitVerificationReason {
     #[serde(rename = "expired_key")]
     ExpiredKey,
@@ -12472,7 +12472,7 @@ pub struct StatusEventCommit {
     pub url: String,
 }
 #[doc = "The new state. Can be `pending`, `success`, `failure`, or `error`."]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum StatusEventState {
     #[serde(rename = "pending")]
     Pending,
@@ -12493,7 +12493,7 @@ impl ToString for StatusEventState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamParentPrivacy {
     #[serde(rename = "open")]
     Open,
@@ -12531,7 +12531,7 @@ pub struct TeamParent {
     #[doc = "URL for the team"]
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamPrivacy {
     #[serde(rename = "open")]
     Open,
@@ -12549,7 +12549,7 @@ impl ToString for TeamPrivacy {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamAddedToRepositoryAction {
     #[serde(rename = "added_to_repository")]
     AddedToRepository,
@@ -12561,7 +12561,7 @@ impl ToString for TeamAddedToRepositoryAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -12573,7 +12573,7 @@ impl ToString for TeamCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -12585,7 +12585,7 @@ impl ToString for TeamDeletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamEditedAction {
     #[serde(rename = "edited")]
     Edited,
@@ -12651,7 +12651,7 @@ pub struct TeamEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<TeamEditedChangesRepository>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum TeamRemovedFromRepositoryAction {
     #[serde(rename = "removed_from_repository")]
     RemovedFromRepository,
@@ -12665,7 +12665,7 @@ impl ToString for TeamRemovedFromRepositoryAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum UserType {
     Bot,
     User,
@@ -12680,7 +12680,7 @@ impl ToString for UserType {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WatchStartedAction {
     #[serde(rename = "started")]
     Started,
@@ -12692,7 +12692,7 @@ impl ToString for WatchStartedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WebhookEventsVariant0Item {
     #[serde(rename = "check_run")]
     CheckRun,
@@ -12846,7 +12846,7 @@ impl ToString for WebhookEventsVariant0Item {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobConclusion {
     #[serde(rename = "success")]
     Success,
@@ -12861,7 +12861,7 @@ impl ToString for WorkflowJobConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -12879,7 +12879,7 @@ impl ToString for WorkflowJobStatus {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -12934,7 +12934,7 @@ pub struct WorkflowRunPullRequestsItem {
     pub number: f64,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunStatus {
     #[serde(rename = "requested")]
     Requested,
@@ -12955,7 +12955,7 @@ impl ToString for WorkflowRunStatus {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowStepCompletedConclusion {
     #[serde(rename = "failure")]
     Failure,
@@ -12973,7 +12973,7 @@ impl ToString for WorkflowStepCompletedConclusion {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowStepCompletedStatus {
     #[serde(rename = "completed")]
     Completed,
@@ -12985,7 +12985,7 @@ impl ToString for WorkflowStepCompletedStatus {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowStepInProgressStatus {
     #[serde(rename = "in_progress")]
     InProgress,
@@ -12997,7 +12997,7 @@ impl ToString for WorkflowStepInProgressStatus {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobCompletedAction {
     #[serde(rename = "completed")]
     Completed,
@@ -13009,7 +13009,7 @@ impl ToString for WorkflowJobCompletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobCompletedWorkflowJobConclusion {
     #[serde(rename = "success")]
     Success,
@@ -13030,7 +13030,7 @@ pub struct WorkflowJobCompletedWorkflowJob {
     pub workflow_job: WorkflowJob,
     pub conclusion: WorkflowJobCompletedWorkflowJobConclusion,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobQueuedAction {
     #[serde(rename = "queued")]
     Queued,
@@ -13042,7 +13042,7 @@ impl ToString for WorkflowJobQueuedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobQueuedWorkflowJobStatus {
     #[serde(rename = "queued")]
     Queued,
@@ -13073,7 +13073,7 @@ pub struct WorkflowJobQueuedWorkflowJob {
     pub steps: Vec<WorkflowStep>,
     pub url: String,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobStartedAction {
     #[serde(rename = "started")]
     Started,
@@ -13093,7 +13093,7 @@ pub struct WorkflowJobStartedWorkflowJob {
     pub conclusion: (),
     pub steps: Vec<WorkflowStepInProgress>,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunCompletedAction {
     #[serde(rename = "completed")]
     Completed,
@@ -13105,7 +13105,7 @@ impl ToString for WorkflowRunCompletedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunCompletedWorkflowRunConclusion {
     #[serde(rename = "success")]
     Success,
@@ -13143,7 +13143,7 @@ pub struct WorkflowRunCompletedWorkflowRun {
     pub workflow_run: WorkflowRun,
     pub conclusion: WorkflowRunCompletedWorkflowRunConclusion,
 }
-#[derive(Serialize, Deserialize, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunRequestedAction {
     #[serde(rename = "requested")]
     Requested,
