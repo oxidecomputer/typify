@@ -72,6 +72,8 @@ pub(crate) enum TypeEntryDetails {
     /// reference types in particular to represent simple type aliases between
     /// types named as reference targets.
     Reference(TypeId),
+
+    Box(TypeId),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -388,6 +390,7 @@ impl TypeEntry {
             | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Unit
+            | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Tuple(_) => quote! {},
 
             // We should never get here as reference types should only be used
@@ -481,6 +484,17 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
+            TypeEntryDetails::Box(id) => {
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("unresolved type id for box");
+
+                let item = inner_ty.type_ident(type_space, external);
+
+                quote! { Box<#item> }
+            }
+
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::BuiltIn(name)
@@ -525,6 +539,7 @@ impl TypeEntry {
             | TypeEntryDetails::Array(_)
             | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_)
+            | TypeEntryDetails::Box(_)
             | TypeEntryDetails::BuiltIn(_) => {
                 let ident = self.type_ident(type_space, true);
                 quote! {
@@ -580,6 +595,7 @@ impl TypeEntry {
             TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
             TypeEntryDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
+            TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {
                 format!(
                     "tuple ({})",

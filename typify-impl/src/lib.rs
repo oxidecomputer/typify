@@ -48,6 +48,7 @@ pub enum TypeDetails<'a> {
     Array(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
+    Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
     Unit,
     Builtin(&'a str),
@@ -163,7 +164,8 @@ impl TypeSpace {
         // Assign IDs to reference types before actually converting them. We'll
         // need these in the case of forward (or circular) references.
         let base_id = self.next_id;
-        self.next_id += definitions.len() as u64;
+        let def_len = definitions.len() as u64;
+        self.next_id += def_len;
 
         for (index, (ref_name, _)) in definitions.iter().enumerate() {
             self.ref_to_id
@@ -178,7 +180,8 @@ impl TypeSpace {
                 None => &ref_name,
             };
 
-            info!("converting type: {}", type_name);
+            info!("converting type: {} with schema {}", type_name,
+                serde_json::to_string(&schema).unwrap());
 
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
@@ -220,6 +223,39 @@ impl TypeSpace {
         // using a HashSet or BTreeSet type where we might like to.
 
         // TODO Look for containment cycles that we need to break with a Box<T>
+
+        // While we aren't yet handling the general case of type containment
+        // cycles, it's not that bad to look at trivial cycles (A->A).
+        for index in 0..def_len {
+            let type_id = TypeId(base_id + index);
+            let type_entry = self.id_to_entry.get(&type_id).unwrap();
+
+            let mut trivial_cycle = false;
+            if let TypeEntryDetails::Struct(s) = &type_entry.details {
+                for prop in &s.properties {
+                    if prop.type_id == type_id {
+                        trivial_cycle = true;
+                        break;
+                    }
+                }
+            }
+
+            if trivial_cycle {
+                let box_id = self.id_to_box(&type_id);
+                let type_entry = self.id_to_entry.get_mut(&type_id).unwrap();
+                if let TypeEntryDetails::Struct(ref mut s) = &mut type_entry.details {
+                    for prop in &mut s.properties {
+                        if prop.type_id == type_id {
+                            prop.type_id = box_id.clone();
+                        }
+                    }
+                }
+            }
+        }
+
+        for value in self.id_to_entry.values() {
+            info!("{:?}", value);
+        }
 
         Ok(())
     }
@@ -358,6 +394,11 @@ impl TypeSpace {
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
         TypeEntryDetails::Option(self.assign_type(ty)).into()
     }
+
+    /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.
+    fn id_to_box(&mut self, id: &TypeId) -> TypeId {
+        self.assign_type(TypeEntryDetails::Box(id.clone()).into())
+    }
 }
 
 impl ToString for TypeSpace {
@@ -439,6 +480,7 @@ impl<'a> Type<'a> {
                 TypeDetails::Map(key_id.clone(), value_id.clone())
             }
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
+            TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
 
             // Builtin types

@@ -712,6 +712,12 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
+        // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"} for
+        // Option, so match against that here.
+        if let Some(option_type_entry) = self.maybe_option(type_name.clone(), metadata, subschemas) {
+            return Ok((option_type_entry, metadata));
+        }
+
         // Check if this could be more precisely handled as a "one-of". This
         // occurs if each subschema is mutually exclusive i.e. so that exactly
         // one of them can match.
@@ -795,7 +801,7 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
         let ty = self
-            .maybe_option_as_enum(type_name.clone(), metadata, subschemas)
+            .maybe_option(type_name.clone(), metadata, subschemas)
             .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas))
@@ -930,9 +936,10 @@ impl TypeSpace {
 mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
+    use schema::Schema;
     use schemars::{schema_for, JsonSchema};
 
-    use crate::{validate_builtin, Name, TypeSpace};
+    use crate::{test_util::validate_output, validate_builtin, Name, TypeSpace};
     use paste::paste;
 
     fn int_helper<T: JsonSchema>() {
@@ -1010,6 +1017,79 @@ mod tests {
         // 3. tuple -> 1, 1, 1, 2
         // 4. struct -> 1, 1, 1, 2, 2, 3
         assert_eq!(type_space.iter_types().count(), 4);
+    }
+
+    #[test]
+    fn test_trivial_cycle() {
+        // Currently schemars will actually include the type A twice if this is
+        // made a RootSchema; it should really have a reference that it uses as
+        // the RootSchema. To workaround this, we refer to A from B below.
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Box<A>,
+        }
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct B {
+            a: A,
+        }
+
+        validate_output::<B>();
+    }
+
+    #[test]
+    fn test_optional_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Option<Box<A>>,
+        }
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct B {
+            a: A,
+        }
+
+        validate_output::<B>();
+    }
+
+    #[test]
+    fn test_basic_option() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct C {}
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Option<C>,
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_basic_option_one_deep() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct C {}
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Option<C>,
+        }
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct B {
+            a: A,
+        }
+
+        validate_output::<B>();
     }
 
     // TODO we can turn this on once we generate proper sets.
