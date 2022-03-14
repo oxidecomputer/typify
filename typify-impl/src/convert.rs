@@ -1022,22 +1022,13 @@ mod tests {
 
     #[test]
     fn test_trivial_cycle() {
-        // Currently schemars will actually include the type A twice if this is
-        // made a RootSchema; it should really have a reference that it uses as
-        // the RootSchema. To workaround this, we refer to A from B below.
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]
         struct A {
             a: Box<A>,
         }
 
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct B {
-            a: A,
-        }
-
-        validate_output::<B>();
+        validate_output::<A>();
     }
 
     #[test]
@@ -1048,17 +1039,36 @@ mod tests {
             a: Option<Box<A>>,
         }
 
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct B {
-            a: A,
-        }
-
-        validate_output::<B>();
+        validate_output::<A>();
     }
 
     #[test]
-    fn test_basic_option() {
+    fn test_enum_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[serde(tag = "type")]
+        #[allow(dead_code)]
+        enum A {
+            Varant1 {
+                a: u64,
+                b: Vec<A>,
+                rop: Option<Box<A>>,
+            },
+            Variant2 {
+                a: u64,
+                b: String,
+            },
+            Variant3 {
+                a: u64,
+                b: u64,
+                c: u64,
+            },
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_basic_option_flat() {
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]
         struct C {}
@@ -1073,24 +1083,18 @@ mod tests {
     }
 
     #[test]
-    fn test_basic_option_one_deep() {
+    fn test_unit_option() {
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]
-        struct C {}
+        struct Foo;
 
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]
-        struct A {
-            a: Option<C>,
+        struct Bar {
+            a: Option<Foo>,
         }
 
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct B {
-            a: A,
-        }
-
-        validate_output::<B>();
+        validate_output::<Bar>();
     }
 
     // TODO we can turn this on once we generate proper sets.

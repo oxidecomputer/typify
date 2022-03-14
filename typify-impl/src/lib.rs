@@ -8,7 +8,7 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype};
+use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
 
 #[cfg(test)]
 mod test_util;
@@ -231,33 +231,88 @@ impl TypeSpace {
         // cycles, it's not that bad to look at trivial cycles (A->A).
         for index in 0..def_len {
             let type_id = TypeId(base_id + index);
-            let type_entry = self.id_to_entry.get(&type_id).unwrap();
 
-            let mut trivial_cycle = false;
-            if let TypeEntryDetails::Struct(s) = &type_entry.details {
-                for prop in &s.properties {
+            let mut type_entry: TypeEntry = self.id_to_entry.get(&type_id).unwrap().clone();
+            let mut box_id = None;
+
+            if let TypeEntryDetails::Struct(s) = &mut type_entry.details {
+                for prop in &mut s.properties {
                     if prop.type_id == type_id {
-                        trivial_cycle = true;
-                        break;
+                        info!("boxing property");
+                        let box_id = box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                        prop.type_id = box_id.clone();
+                    } else {
+                        // Chase only options for now. TODO make this better
+                        // comment
+                        let mut prop_type_entry =
+                            self.id_to_entry.get_mut(&prop.type_id).unwrap().clone();
+                        if let TypeEntryDetails::Option(option_type_id) =
+                            &mut prop_type_entry.details
+                        {
+                            if *option_type_id == type_id {
+                                info!("boxing option");
+                                let box_id = box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                                *option_type_id = box_id.clone();
+                            }
+                        }
+                        // TODO this is unconditional
+                        let _ = self
+                            .id_to_entry
+                            .insert(prop.type_id.clone(), prop_type_entry);
                     }
                 }
-            }
+            } else if let TypeEntryDetails::Enum(type_entry_enum) = &mut type_entry.details {
+                for variant in &mut type_entry_enum.variants {
+                    match &mut variant.details {
+                        VariantDetails::Simple => {}
+                        VariantDetails::Tuple(vec_type_id) => {
+                            for tuple_type_id in vec_type_id {
+                                if *tuple_type_id == type_id {
+                                    info!("boxing tuple type");
+                                    let box_id =
+                                        box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                                    *tuple_type_id = box_id.clone();
+                                }
+                            }
+                        }
+                        VariantDetails::Struct(vec_struct_property) => {
+                            for struct_property in vec_struct_property {
+                                let vec_type_id = &mut struct_property.type_id;
+                                if *vec_type_id == type_id {
+                                    info!("boxing variant struct type");
+                                    let box_id =
+                                        box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                                    *vec_type_id = box_id.clone();
+                                } else {
+                                    let mut prop_type_entry =
+                                        self.id_to_entry.get_mut(vec_type_id).unwrap().clone();
 
-            if trivial_cycle {
-                let box_id = self.id_to_box(&type_id);
-                let type_entry = self.id_to_entry.get_mut(&type_id).unwrap();
-                if let TypeEntryDetails::Struct(ref mut s) = &mut type_entry.details {
-                    for prop in &mut s.properties {
-                        if prop.type_id == type_id {
-                            prop.type_id = box_id.clone();
+                                    if let TypeEntryDetails::Option(option_type_id) =
+                                        &mut prop_type_entry.details
+                                    {
+                                        if *option_type_id == type_id {
+                                            info!("boxing option in struct property");
+                                            let box_id = box_id
+                                                .get_or_insert_with(|| self.id_to_box(&type_id));
+                                            *option_type_id = box_id.clone();
+                                        }
+                                    }
+
+                                    // TODO unconditional
+                                    let _ = self
+                                        .id_to_entry
+                                        .insert(vec_type_id.clone(), prop_type_entry);
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
 
-        for value in self.id_to_entry.values() {
-            info!("{:?}", value);
+            if box_id.is_some() {
+                // we modified it
+                let _ = self.id_to_entry.insert(type_id, type_entry);
+            }
         }
 
         Ok(())
