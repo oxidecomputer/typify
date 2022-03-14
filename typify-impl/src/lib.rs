@@ -180,8 +180,11 @@ impl TypeSpace {
                 None => &ref_name,
             };
 
-            info!("converting type: {} with schema {}", type_name,
-                serde_json::to_string(&schema).unwrap());
+            info!(
+                "converting type: {} with schema {}",
+                type_name,
+                serde_json::to_string(&schema).unwrap()
+            );
 
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
