@@ -225,97 +225,124 @@ impl TypeSpace {
         // of derives than we might otherwise. This notably prevents us from
         // using a HashSet or BTreeSet type where we might like to.
 
-        // TODO Look for containment cycles that we need to break with a Box<T>
-
-        // While we aren't yet handling the general case of type containment
-        // cycles, it's not that bad to look at trivial cycles (A->A).
+        // Once all ref types are in, look for containment cycles that we need
+        // to break with a Box<T>.
         for index in 0..def_len {
             let type_id = TypeId(base_id + index);
+            let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
+            self.break_trivial_cyclic_refs(&type_id, &mut type_entry);
+            let _ = self.id_to_entry.insert(type_id, type_entry);
+        }
 
-            let mut type_entry: TypeEntry = self.id_to_entry.get(&type_id).unwrap().clone();
-            let mut box_id = None;
+        Ok(())
+    }
 
-            if let TypeEntryDetails::Struct(s) = &mut type_entry.details {
+    /// If a type refers to itself, this creates a cycle that will eventually be
+    /// emit as a Rust struct that cannot be constructed. Break those cycles
+    /// here.
+    ///
+    /// While we aren't yet handling the general case of type containment
+    /// cycles, it's not that bad to look at trivial cycles such as:
+    ///
+    ///   1) A type refering to itself: A -> A
+    ///   2) A type optionally referring to itself: A -> Option<A>
+    ///   3) An enum variant referring to itself, either optionally or directly.
+    ///
+    /// TODO currently only trivial cycles are broken. A more generic solution
+    /// may be required, but it may also a point to ask oneself why such a
+    /// complicated type is required :) A generic solution is difficult because
+    /// certain cycles introduce a question of *where* to Box to break the
+    /// cycle, and there's no one answer to this.
+    ///
+    fn break_trivial_cyclic_refs(&mut self, type_id: &TypeId, type_entry: &mut TypeEntry) {
+        // TODO note that this function unconditionally calls id_to_box and
+        // does not search for an existing Box(type_id) - should it? That
+        // would add an additional n to runtime complexity.
+        let box_id = self.id_to_box(&type_id);
+
+        match &mut type_entry.details {
+            // Look for the case where a struct property refers to itself
+            TypeEntryDetails::Struct(s) => {
                 for prop in &mut s.properties {
-                    if prop.type_id == type_id {
-                        info!("boxing property");
-                        let box_id = box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                    if prop.type_id == *type_id {
+                        // A struct property directly refers to itself
                         prop.type_id = box_id.clone();
                     } else {
-                        // Chase only options for now. TODO make this better
-                        // comment
-                        let mut prop_type_entry =
-                            self.id_to_entry.get_mut(&prop.type_id).unwrap().clone();
+                        // A struct property optionally refers to itself
+                        let prop_type_entry: &mut TypeEntry =
+                            self.id_to_entry.get_mut(&prop.type_id).unwrap();
+
                         if let TypeEntryDetails::Option(option_type_id) =
                             &mut prop_type_entry.details
                         {
-                            if *option_type_id == type_id {
-                                info!("boxing option");
-                                let box_id = box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                            if *option_type_id == *type_id {
                                 *option_type_id = box_id.clone();
                             }
                         }
-                        // TODO this is unconditional
-                        let _ = self
-                            .id_to_entry
-                            .insert(prop.type_id.clone(), prop_type_entry);
                     }
                 }
-            } else if let TypeEntryDetails::Enum(type_entry_enum) = &mut type_entry.details {
+            }
+            // Look for the cases where an enum variant refers to itself
+            TypeEntryDetails::Enum(type_entry_enum) => {
                 for variant in &mut type_entry_enum.variants {
                     match &mut variant.details {
+                        // Simple variants will not refer to anything
                         VariantDetails::Simple => {}
+                        // Look for a tuple entry that refers to the enum
                         VariantDetails::Tuple(vec_type_id) => {
                             for tuple_type_id in vec_type_id {
-                                if *tuple_type_id == type_id {
-                                    info!("boxing tuple type");
-                                    let box_id =
-                                        box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                                // A tuple entry directly refers to the enum
+                                if *tuple_type_id == *type_id {
                                     *tuple_type_id = box_id.clone();
+                                } else {
+                                    // A tuple entry optionally refers to the
+                                    // enum
+                                    let tuple_type_entry: &mut TypeEntry =
+                                        self.id_to_entry.get_mut(&tuple_type_id).unwrap();
+
+                                    if let TypeEntryDetails::Option(option_type_id) =
+                                        &mut tuple_type_entry.details
+                                    {
+                                        if *option_type_id == *type_id {
+                                            *option_type_id = box_id.clone();
+                                        }
+                                    }
                                 }
                             }
                         }
+                        // Look for a struct property that refers to the enum
                         VariantDetails::Struct(vec_struct_property) => {
                             for struct_property in vec_struct_property {
                                 let vec_type_id = &mut struct_property.type_id;
-                                if *vec_type_id == type_id {
-                                    info!("boxing variant struct type");
-                                    let box_id =
-                                        box_id.get_or_insert_with(|| self.id_to_box(&type_id));
+                                // A struct property refers to the enum
+                                if *vec_type_id == *type_id {
                                     *vec_type_id = box_id.clone();
                                 } else {
+                                    // A struct property optionally refers to
+                                    // the enum
                                     let mut prop_type_entry =
                                         self.id_to_entry.get_mut(vec_type_id).unwrap().clone();
 
                                     if let TypeEntryDetails::Option(option_type_id) =
                                         &mut prop_type_entry.details
                                     {
-                                        if *option_type_id == type_id {
-                                            info!("boxing option in struct property");
-                                            let box_id = box_id
-                                                .get_or_insert_with(|| self.id_to_box(&type_id));
+                                        if *option_type_id == *type_id {
                                             *option_type_id = box_id.clone();
                                         }
                                     }
-
-                                    // TODO unconditional
-                                    let _ = self
-                                        .id_to_entry
-                                        .insert(vec_type_id.clone(), prop_type_entry);
                                 }
                             }
                         }
                     }
                 }
             }
-
-            if box_id.is_some() {
-                // we modified it
-                let _ = self.id_to_entry.insert(type_id, type_entry);
-            }
+            // Containers that can be size 0 are *not* cyclic references for that type
+            TypeEntryDetails::Array(_) => {}
+            TypeEntryDetails::Set(_) => {}
+            TypeEntryDetails::Map(_, _) => {}
+            // Everything else can be ignored
+            _ => {}
         }
-
-        Ok(())
     }
 
     /// Add a new type and return a type identifier that may be used in

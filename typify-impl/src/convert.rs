@@ -1043,25 +1043,21 @@ mod tests {
     }
 
     #[test]
-    fn test_enum_trivial_cycle() {
+    fn test_enum_trivial_cycles() {
         #[derive(JsonSchema, Schema)]
-        #[serde(tag = "type")]
         #[allow(dead_code)]
         enum A {
+            Variant0(u64),
             Varant1 {
                 a: u64,
                 b: Vec<A>,
                 rop: Option<Box<A>>,
             },
             Variant2 {
-                a: u64,
-                b: String,
+                a: Box<A>,
             },
-            Variant3 {
-                a: u64,
-                b: u64,
-                c: u64,
-            },
+            Variant3(u64, Box<A>),
+            Variant4(Option<Box<A>>, String),
         }
 
         validate_output::<A>();
