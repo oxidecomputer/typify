@@ -54,6 +54,7 @@ pub(crate) enum TypeEntryDetails {
     Newtype(TypeEntryNewtype),
 
     Option(TypeId),
+    Box(TypeId),
     Array(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
@@ -72,8 +73,6 @@ pub(crate) enum TypeEntryDetails {
     /// reference types in particular to represent simple type aliases between
     /// types named as reference targets.
     Reference(TypeId),
-
-    Box(TypeId),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -437,6 +436,17 @@ impl TypeEntry {
                 }
             }
 
+            TypeEntryDetails::Box(id) => {
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("unresolved type id for box");
+
+                let item = inner_ty.type_ident(type_space, external);
+
+                quote! { Box<#item> }
+            }
+
             TypeEntryDetails::Array(id) => {
                 let inner_ty = type_space
                     .id_to_entry
@@ -482,17 +492,6 @@ impl TypeEntry {
                 });
 
                 quote! { ( #(#type_streams),* ) }
-            }
-
-            TypeEntryDetails::Box(id) => {
-                let inner_ty = type_space
-                    .id_to_entry
-                    .get(id)
-                    .expect("unresolved type id for box");
-
-                let item = inner_ty.type_ident(type_space, external);
-
-                quote! { Box<#item> }
             }
 
             TypeEntryDetails::Unit => quote! { () },
