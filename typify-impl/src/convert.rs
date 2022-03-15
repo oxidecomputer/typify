@@ -713,7 +713,8 @@ impl TypeSpace {
         }
 
         // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"} for
-        // Option, so match against that here.
+        // Option, so match against that here to short circuit the check for
+        // mutual exclusivity below.
         if let Some(option_type_entry) = self.maybe_option(type_name.clone(), metadata, subschemas)
         {
             return Ok((option_type_entry, metadata));
