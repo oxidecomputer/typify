@@ -229,8 +229,11 @@ impl TypeSpace {
         // to break with a Box<T>.
         for index in 0..def_len {
             let type_id = TypeId(base_id + index);
+
+            let mut box_id = None;
+
             let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
-            self.break_trivial_cyclic_refs(&type_id, &mut type_entry);
+            self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
             let _ = self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -254,82 +257,69 @@ impl TypeSpace {
     /// certain cycles introduce a question of *where* to Box to break the
     /// cycle, and there's no one answer to this.
     ///
-    fn break_trivial_cyclic_refs(&mut self, type_id: &TypeId, type_entry: &mut TypeEntry) {
-        // TODO note that this function unconditionally calls id_to_box and
-        // does not search for an existing Box(type_id) - should it? That
-        // would add an additional n to runtime complexity.
-        let box_id = self.id_to_box(&type_id);
+    fn break_trivial_cyclic_refs(&mut self, type_id: &TypeId, type_entry: &mut TypeEntry, box_id: &mut Option<TypeId>) {
 
         match &mut type_entry.details {
-            // Look for the case where a struct property refers to itself
+            // Look for the case where an option refers to the parent type
+            TypeEntryDetails::Option(option_type_id) => {
+                if *option_type_id == *type_id {
+                    *option_type_id = box_id.get_or_insert_with(|| self.id_to_box(type_id)).clone();
+                }
+            }
+
+            // Look for the case where a struct property refers to the parent
+            // type
             TypeEntryDetails::Struct(s) => {
                 for prop in &mut s.properties {
                     if prop.type_id == *type_id {
-                        // A struct property directly refers to itself
-                        prop.type_id = box_id.clone();
+                        // A struct property directly refers to the parent type
+                        prop.type_id = box_id.get_or_insert_with(|| self.id_to_box(type_id)).clone();
                     } else {
-                        // A struct property optionally refers to itself
-                        let prop_type_entry: &mut TypeEntry =
-                            self.id_to_entry.get_mut(&prop.type_id).unwrap();
-
-                        if let TypeEntryDetails::Option(option_type_id) =
-                            &mut prop_type_entry.details
-                        {
-                            if *option_type_id == *type_id {
-                                *option_type_id = box_id.clone();
-                            }
-                        }
+                        // A struct property optionally refers to the parent type
+                        let mut prop_type_entry =
+                            self.id_to_entry.get_mut(&prop.type_id).unwrap().clone();
+                        self.break_trivial_cyclic_refs(&type_id, &mut prop_type_entry, box_id);
+                        let _ = self.id_to_entry.insert(prop.type_id.clone(), prop_type_entry);
                     }
                 }
             }
-            // Look for the cases where an enum variant refers to itself
+
+            // Look for the cases where an enum variant refers to the parent
+            // type
             TypeEntryDetails::Enum(type_entry_enum) => {
                 for variant in &mut type_entry_enum.variants {
                     match &mut variant.details {
                         // Simple variants will not refer to anything
                         VariantDetails::Simple => {}
-                        // Look for a tuple entry that refers to the enum
+                        // Look for a tuple entry that refers to the parent type
                         VariantDetails::Tuple(vec_type_id) => {
                             for tuple_type_id in vec_type_id {
-                                // A tuple entry directly refers to the enum
+                                // A tuple entry directly refers to the parent type
                                 if *tuple_type_id == *type_id {
-                                    *tuple_type_id = box_id.clone();
+                                    *tuple_type_id = box_id.get_or_insert_with(|| self.id_to_box(type_id)).clone();
                                 } else {
-                                    // A tuple entry optionally refers to the
-                                    // enum
-                                    let tuple_type_entry: &mut TypeEntry =
-                                        self.id_to_entry.get_mut(&tuple_type_id).unwrap();
-
-                                    if let TypeEntryDetails::Option(option_type_id) =
-                                        &mut tuple_type_entry.details
-                                    {
-                                        if *option_type_id == *type_id {
-                                            *option_type_id = box_id.clone();
-                                        }
-                                    }
+                                    // A tuple entry optionally refers to the parent type
+                                    let mut tuple_type_entry =
+                                        self.id_to_entry.get_mut(&tuple_type_id).unwrap().clone();
+                                    self.break_trivial_cyclic_refs(&type_id, &mut tuple_type_entry, box_id);
+                                    let _ = self.id_to_entry.insert(tuple_type_id.clone(), tuple_type_entry);
                                 }
                             }
                         }
-                        // Look for a struct property that refers to the enum
+                        // Look for a struct property that refers to the parent type
                         VariantDetails::Struct(vec_struct_property) => {
                             for struct_property in vec_struct_property {
                                 let vec_type_id = &mut struct_property.type_id;
-                                // A struct property refers to the enum
+                                // A struct property refers to the parent type
                                 if *vec_type_id == *type_id {
-                                    *vec_type_id = box_id.clone();
+                                    *vec_type_id = box_id.get_or_insert_with(|| self.id_to_box(type_id)).clone();
                                 } else {
                                     // A struct property optionally refers to
-                                    // the enum
+                                    // the parent type
                                     let mut prop_type_entry =
                                         self.id_to_entry.get_mut(vec_type_id).unwrap().clone();
-
-                                    if let TypeEntryDetails::Option(option_type_id) =
-                                        &mut prop_type_entry.details
-                                    {
-                                        if *option_type_id == *type_id {
-                                            *option_type_id = box_id.clone();
-                                        }
-                                    }
+                                    self.break_trivial_cyclic_refs(&type_id, &mut prop_type_entry, box_id);
+                                    let _ = self.id_to_entry.insert(vec_type_id.clone(), prop_type_entry);
                                 }
                             }
                         }
