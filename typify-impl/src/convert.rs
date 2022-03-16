@@ -1065,6 +1065,15 @@ mod tests {
     }
 
     #[test]
+    fn test_newtype_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A(Box<A>);
+
+        validate_output::<A>();
+    }
+
+    #[test]
     fn test_basic_option_flat() {
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]

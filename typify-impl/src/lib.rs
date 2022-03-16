@@ -319,10 +319,17 @@ impl TypeSpace {
                     }
                 }
             }
+
+            // Look for cases where a newtype refers to a parent type
+            TypeEntryDetails::Newtype(new_type_entry) => {
+                self.check_for_cyclic_ref(parent_type_id, &mut new_type_entry.type_id, box_id);
+            }
+
             // Containers that can be size 0 are *not* cyclic references for that type
             TypeEntryDetails::Array(_) => {}
             TypeEntryDetails::Set(_) => {}
             TypeEntryDetails::Map(_, _) => {}
+
             // Everything else can be ignored
             _ => {}
         }
