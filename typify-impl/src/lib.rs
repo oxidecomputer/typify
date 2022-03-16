@@ -257,6 +257,25 @@ impl TypeSpace {
     /// certain cycles introduce a question of *where* to Box to break the
     /// cycle, and there's no one answer to this.
     ///
+    fn check_for_cyclic_ref(
+        &mut self,
+        parent_type_id: &TypeId,
+        child_type_id: &mut TypeId,
+        box_id: &mut Option<TypeId>,
+    ) {
+        if *child_type_id == *parent_type_id {
+            *child_type_id = box_id
+                .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                .clone();
+        } else {
+            let mut child_type_entry = self.id_to_entry.get_mut(&child_type_id).unwrap().clone();
+            self.break_trivial_cyclic_refs(&parent_type_id, &mut child_type_entry, box_id);
+            let _ = self
+                .id_to_entry
+                .insert(child_type_id.clone(), child_type_entry);
+        }
+    }
+
     fn break_trivial_cyclic_refs(
         &mut self,
         parent_type_id: &TypeId,
@@ -266,35 +285,14 @@ impl TypeSpace {
         match &mut type_entry.details {
             // Look for the case where an option refers to the parent type
             TypeEntryDetails::Option(option_type_id) => {
-                if *option_type_id == *parent_type_id {
-                    *option_type_id = box_id
-                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                        .clone();
-                }
+                self.check_for_cyclic_ref(parent_type_id, option_type_id, box_id);
             }
 
             // Look for the case where a struct property refers to the parent
             // type
             TypeEntryDetails::Struct(s) => {
                 for prop in &mut s.properties {
-                    if prop.type_id == *parent_type_id {
-                        // A struct property directly refers to the parent type
-                        prop.type_id = box_id
-                            .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                            .clone();
-                    } else {
-                        // A struct property optionally refers to the parent type
-                        let mut prop_type_entry =
-                            self.id_to_entry.get_mut(&prop.type_id).unwrap().clone();
-                        self.break_trivial_cyclic_refs(
-                            &parent_type_id,
-                            &mut prop_type_entry,
-                            box_id,
-                        );
-                        let _ = self
-                            .id_to_entry
-                            .insert(prop.type_id.clone(), prop_type_entry);
-                    }
+                    self.check_for_cyclic_ref(parent_type_id, &mut prop.type_id, box_id);
                 }
             }
 
@@ -308,49 +306,14 @@ impl TypeSpace {
                         // Look for a tuple entry that refers to the parent type
                         VariantDetails::Tuple(vec_type_id) => {
                             for tuple_type_id in vec_type_id {
-                                // A tuple entry directly refers to the parent type
-                                if *tuple_type_id == *parent_type_id {
-                                    *tuple_type_id = box_id
-                                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                                        .clone();
-                                } else {
-                                    // A tuple entry optionally refers to the parent type
-                                    let mut tuple_type_entry =
-                                        self.id_to_entry.get_mut(&tuple_type_id).unwrap().clone();
-                                    self.break_trivial_cyclic_refs(
-                                        &parent_type_id,
-                                        &mut tuple_type_entry,
-                                        box_id,
-                                    );
-                                    let _ = self
-                                        .id_to_entry
-                                        .insert(tuple_type_id.clone(), tuple_type_entry);
-                                }
+                                self.check_for_cyclic_ref(parent_type_id, tuple_type_id, box_id);
                             }
                         }
                         // Look for a struct property that refers to the parent type
                         VariantDetails::Struct(vec_struct_property) => {
                             for struct_property in vec_struct_property {
                                 let vec_type_id = &mut struct_property.type_id;
-                                // A struct property refers to the parent type
-                                if *vec_type_id == *parent_type_id {
-                                    *vec_type_id = box_id
-                                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                                        .clone();
-                                } else {
-                                    // A struct property optionally refers to
-                                    // the parent type
-                                    let mut prop_type_entry =
-                                        self.id_to_entry.get_mut(vec_type_id).unwrap().clone();
-                                    self.break_trivial_cyclic_refs(
-                                        &parent_type_id,
-                                        &mut prop_type_entry,
-                                        box_id,
-                                    );
-                                    let _ = self
-                                        .id_to_entry
-                                        .insert(vec_type_id.clone(), prop_type_entry);
-                                }
+                                self.check_for_cyclic_ref(parent_type_id, vec_type_id, box_id);
                             }
                         }
                     }
