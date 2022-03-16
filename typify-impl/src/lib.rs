@@ -269,7 +269,20 @@ impl TypeSpace {
                 .clone();
         } else {
             let mut child_type_entry = self.id_to_entry.get_mut(&child_type_id).unwrap().clone();
-            self.break_trivial_cyclic_refs(&parent_type_id, &mut child_type_entry, box_id);
+
+            match &mut child_type_entry.details {
+                // Look for the case where an option refers to the parent type
+                TypeEntryDetails::Option(option_type_id) => {
+                    if *option_type_id == *parent_type_id {
+                        *option_type_id = box_id
+                            .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                            .clone();
+                    }
+                }
+
+                _ => {}
+            }
+
             let _ = self
                 .id_to_entry
                 .insert(child_type_id.clone(), child_type_entry);
@@ -283,11 +296,6 @@ impl TypeSpace {
         box_id: &mut Option<TypeId>,
     ) {
         match &mut type_entry.details {
-            // Look for the case where an option refers to the parent type
-            TypeEntryDetails::Option(option_type_id) => {
-                self.check_for_cyclic_ref(parent_type_id, option_type_id, box_id);
-            }
-
             // Look for the case where a struct property refers to the parent
             // type
             TypeEntryDetails::Struct(s) => {
