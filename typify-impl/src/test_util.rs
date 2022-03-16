@@ -34,12 +34,31 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let name = type_name::<T>().rsplit_once("::").unwrap().1.to_string();
 
     let mut type_space = TypeSpace::default();
+
+    // Convert all references
     type_space
         .add_ref_types(schema.definitions.clone())
         .unwrap();
-    let (ty, _) = type_space
-        .convert_schema_object(Name::Required(name), &schema.schema)
-        .unwrap();
+
+    // In some situations, `schema_for!(T)` may actually give us two copies of
+    // the type: one in the definitions and one in the schema. This will occur
+    // in particular for cyclic types i.e. those for which the type itself is a
+    // reference.
+    //
+    // If we have converted the type already, use that, otherwise convert schema
+    // object
+    let ty = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
+        type_space
+            .id_to_entry
+            .get(&already_type_id)
+            .unwrap()
+            .clone()
+    } else {
+        let (ty, _) = type_space
+            .convert_schema_object(Name::Required(name), &schema.schema)
+            .unwrap();
+        ty
+    };
 
     let output = ty.output(&type_space);
 

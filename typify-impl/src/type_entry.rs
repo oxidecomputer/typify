@@ -54,6 +54,7 @@ pub(crate) enum TypeEntryDetails {
     Newtype(TypeEntryNewtype),
 
     Option(TypeId),
+    Box(TypeId),
     Array(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
@@ -388,6 +389,7 @@ impl TypeEntry {
             | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Unit
+            | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Tuple(_) => quote! {},
 
             // We should never get here as reference types should only be used
@@ -432,6 +434,17 @@ impl TypeEntry {
                     TypeEntryDetails::Option(_) => inner_ident,
                     _ => quote! { Option<#inner_ident> },
                 }
+            }
+
+            TypeEntryDetails::Box(id) => {
+                let inner_ty = type_space
+                    .id_to_entry
+                    .get(id)
+                    .expect("unresolved type id for box");
+
+                let item = inner_ty.type_ident(type_space, external);
+
+                quote! { Box<#item> }
             }
 
             TypeEntryDetails::Array(id) => {
@@ -525,6 +538,7 @@ impl TypeEntry {
             | TypeEntryDetails::Array(_)
             | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_)
+            | TypeEntryDetails::Box(_)
             | TypeEntryDetails::BuiltIn(_) => {
                 let ident = self.type_ident(type_space, true);
                 quote! {
@@ -580,6 +594,7 @@ impl TypeEntry {
             TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
             TypeEntryDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
+            TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {
                 format!(
                     "tuple ({})",

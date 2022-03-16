@@ -8,7 +8,7 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype};
+use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
 
 #[cfg(test)]
 mod test_util;
@@ -48,6 +48,7 @@ pub enum TypeDetails<'a> {
     Array(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
+    Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
     Unit,
     Builtin(&'a str),
@@ -163,7 +164,8 @@ impl TypeSpace {
         // Assign IDs to reference types before actually converting them. We'll
         // need these in the case of forward (or circular) references.
         let base_id = self.next_id;
-        self.next_id += definitions.len() as u64;
+        let def_len = definitions.len() as u64;
+        self.next_id += def_len;
 
         for (index, (ref_name, _)) in definitions.iter().enumerate() {
             self.ref_to_id
@@ -178,7 +180,11 @@ impl TypeSpace {
                 None => &ref_name,
             };
 
-            info!("converting type: {}", type_name);
+            info!(
+                "converting type: {} with schema {}",
+                type_name,
+                serde_json::to_string(&schema).unwrap()
+            );
 
             let (type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
@@ -219,9 +225,122 @@ impl TypeSpace {
         // of derives than we might otherwise. This notably prevents us from
         // using a HashSet or BTreeSet type where we might like to.
 
-        // TODO Look for containment cycles that we need to break with a Box<T>
+        // Once all ref types are in, look for containment cycles that we need
+        // to break with a Box<T>.
+        for index in 0..def_len {
+            let type_id = TypeId(base_id + index);
+
+            let mut box_id = None;
+
+            let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
+            self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
+            let _ = self.id_to_entry.insert(type_id, type_entry);
+        }
 
         Ok(())
+    }
+
+    /// If a type refers to itself, this creates a cycle that will eventually be
+    /// emit as a Rust struct that cannot be constructed. Break those cycles
+    /// here.
+    ///
+    /// While we aren't yet handling the general case of type containment
+    /// cycles, it's not that bad to look at trivial cycles such as:
+    ///
+    ///   1) A type refering to itself: A -> A
+    ///   2) A type optionally referring to itself: A -> Option<A>
+    ///   3) An enum variant referring to itself, either optionally or directly.
+    ///
+    /// TODO currently only trivial cycles are broken. A more generic solution
+    /// may be required, but it may also a point to ask oneself why such a
+    /// complicated type is required :) A generic solution is difficult because
+    /// certain cycles introduce a question of *where* to Box to break the
+    /// cycle, and there's no one answer to this.
+    ///
+    fn check_for_cyclic_ref(
+        &mut self,
+        parent_type_id: &TypeId,
+        child_type_id: &mut TypeId,
+        box_id: &mut Option<TypeId>,
+    ) {
+        if *child_type_id == *parent_type_id {
+            *child_type_id = box_id
+                .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                .clone();
+        } else {
+            let mut child_type_entry = self.id_to_entry.get_mut(&child_type_id).unwrap().clone();
+
+            match &mut child_type_entry.details {
+                // Look for the case where an option refers to the parent type
+                TypeEntryDetails::Option(option_type_id) => {
+                    if *option_type_id == *parent_type_id {
+                        *option_type_id = box_id
+                            .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                            .clone();
+                    }
+                }
+
+                _ => {}
+            }
+
+            let _ = self
+                .id_to_entry
+                .insert(child_type_id.clone(), child_type_entry);
+        }
+    }
+
+    fn break_trivial_cyclic_refs(
+        &mut self,
+        parent_type_id: &TypeId,
+        type_entry: &mut TypeEntry,
+        box_id: &mut Option<TypeId>,
+    ) {
+        match &mut type_entry.details {
+            // Look for the case where a struct property refers to the parent
+            // type
+            TypeEntryDetails::Struct(s) => {
+                for prop in &mut s.properties {
+                    self.check_for_cyclic_ref(parent_type_id, &mut prop.type_id, box_id);
+                }
+            }
+
+            // Look for the cases where an enum variant refers to the parent
+            // type
+            TypeEntryDetails::Enum(type_entry_enum) => {
+                for variant in &mut type_entry_enum.variants {
+                    match &mut variant.details {
+                        // Simple variants will not refer to anything
+                        VariantDetails::Simple => {}
+                        // Look for a tuple entry that refers to the parent type
+                        VariantDetails::Tuple(vec_type_id) => {
+                            for tuple_type_id in vec_type_id {
+                                self.check_for_cyclic_ref(parent_type_id, tuple_type_id, box_id);
+                            }
+                        }
+                        // Look for a struct property that refers to the parent type
+                        VariantDetails::Struct(vec_struct_property) => {
+                            for struct_property in vec_struct_property {
+                                let vec_type_id = &mut struct_property.type_id;
+                                self.check_for_cyclic_ref(parent_type_id, vec_type_id, box_id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Look for cases where a newtype refers to a parent type
+            TypeEntryDetails::Newtype(new_type_entry) => {
+                self.check_for_cyclic_ref(parent_type_id, &mut new_type_entry.type_id, box_id);
+            }
+
+            // Containers that can be size 0 are *not* cyclic references for that type
+            TypeEntryDetails::Array(_) => {}
+            TypeEntryDetails::Set(_) => {}
+            TypeEntryDetails::Map(_, _) => {}
+
+            // Everything else can be ignored
+            _ => {}
+        }
     }
 
     /// Add a new type and return a type identifier that may be used in
@@ -358,6 +477,11 @@ impl TypeSpace {
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
         TypeEntryDetails::Option(self.assign_type(ty)).into()
     }
+
+    /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.
+    fn id_to_box(&mut self, id: &TypeId) -> TypeId {
+        self.assign_type(TypeEntryDetails::Box(id.clone()).into())
+    }
 }
 
 impl ToString for TypeSpace {
@@ -439,6 +563,7 @@ impl<'a> Type<'a> {
                 TypeDetails::Map(key_id.clone(), value_id.clone())
             }
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
+            TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
 
             // Builtin types

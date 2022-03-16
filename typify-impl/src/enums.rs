@@ -17,7 +17,7 @@ use crate::{
 };
 
 impl TypeSpace {
-    pub(crate) fn maybe_option_as_enum(
+    pub(crate) fn maybe_option(
         &mut self,
         type_name: Name,
         metadata: &Option<Box<schemars::schema::Metadata>>,
@@ -1245,7 +1245,7 @@ mod tests {
     }
 
     #[test]
-    fn test_maybe_option_as_enum() {
+    fn test_maybe_option() {
         let subschemas = vec![
             SchemaObject {
                 instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
@@ -1261,7 +1261,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let type_entry = type_space
-            .maybe_option_as_enum(Name::Unknown, &None, &subschemas)
+            .maybe_option(Name::Unknown, &None, &subschemas)
             .unwrap();
 
         assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)))

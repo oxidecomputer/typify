@@ -712,6 +712,14 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
+        // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"} for
+        // Option, so match against that here to short circuit the check for
+        // mutual exclusivity below.
+        if let Some(option_type_entry) = self.maybe_option(type_name.clone(), metadata, subschemas)
+        {
+            return Ok((option_type_entry, metadata));
+        }
+
         // Check if this could be more precisely handled as a "one-of". This
         // occurs if each subschema is mutually exclusive i.e. so that exactly
         // one of them can match.
@@ -795,7 +803,7 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
         let ty = self
-            .maybe_option_as_enum(type_name.clone(), metadata, subschemas)
+            .maybe_option(type_name.clone(), metadata, subschemas)
             .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas))
@@ -930,9 +938,10 @@ impl TypeSpace {
 mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
+    use schema::Schema;
     use schemars::{schema_for, JsonSchema};
 
-    use crate::{validate_builtin, Name, TypeSpace};
+    use crate::{test_util::validate_output, validate_builtin, Name, TypeSpace};
     use paste::paste;
 
     fn int_helper<T: JsonSchema>() {
@@ -1010,6 +1019,88 @@ mod tests {
         // 3. tuple -> 1, 1, 1, 2
         // 4. struct -> 1, 1, 1, 2, 2, 3
         assert_eq!(type_space.iter_types().count(), 4);
+    }
+
+    #[test]
+    fn test_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Box<A>,
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_optional_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Option<Box<A>>,
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_enum_trivial_cycles() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        enum A {
+            Variant0(u64),
+            Varant1 {
+                a: u64,
+                b: Vec<A>,
+                rop: Option<Box<A>>,
+            },
+            Variant2 {
+                a: Box<A>,
+            },
+            Variant3(u64, Box<A>),
+            Variant4(Option<Box<A>>, String),
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_newtype_trivial_cycle() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A(Box<A>);
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_basic_option_flat() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct C {}
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct A {
+            a: Option<C>,
+        }
+
+        validate_output::<A>();
+    }
+
+    #[test]
+    fn test_unit_option() {
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct Foo;
+
+        #[derive(JsonSchema, Schema)]
+        #[allow(dead_code)]
+        struct Bar {
+            a: Option<Foo>,
+        }
+
+        validate_output::<Bar>();
     }
 
     // TODO we can turn this on once we generate proper sets.
