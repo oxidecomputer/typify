@@ -112,13 +112,33 @@ impl TypeSpace {
         let serde_rules = if required.contains(prop_name) {
             SerdeRules::None
         } else {
-            // We can use serde's `skip_serializing_of` construction for options
-            // and arrays; otherwise we need to turn this into an option in order
-            // to represent the field as non-required.
-            if !is_skippable(self, &type_id) {
-                type_id = self.id_to_option(&type_id);
+            // We can use serde's `default` and `skip_serializing_if`
+            // construction for options, arrays, and maps. Properties the have
+            // a default value can have the `default` property applied (we
+            // could also skip serializing them if they had the same value as
+            // the default but that hardly seems worth checking). Otherwise we
+            // need to turn this property into an option type in order to
+            // represent the field as non-required.
+            //
+            // Note that arrays, maps, and even options may have default values
+            // that differ from the ... er ... default default values. That is
+            // they may have defaults other than `[]`, `{}`, and `null`
+            // respectively. This affects the eventual generated code, but not
+            // the internal representation produced here.
+            //
+            // TODO I think we should skip this, tag the prop as optional, not
+            // create an option type, and deal with it later.
+            match has_default(
+                self,
+                &type_id,
+                metadata.as_ref().and_then(|m| m.default.as_ref()),
+            )? {
+                SerdeRules::None => {
+                    type_id = self.id_to_option(&type_id);
+                    SerdeRules::ImplicitDefault
+                }
+                other => other,
             }
-            SerdeRules::Optional
         };
 
         let (name, rename) = recase(prop_name.to_string(), Case::Snake);
@@ -141,7 +161,7 @@ impl TypeSpace {
         type_name: Option<String>,
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let (value_type_id, _) = match additional_properties {
+        let (type_id, _) = match additional_properties {
             Some(schema) => {
                 let sub_type_name = match type_name {
                     Some(name) => Name::Suggested(format!("{}Extra", name)),
@@ -153,13 +173,7 @@ impl TypeSpace {
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        // TODO this is jank; we should be looking up the String type
-        let string_type_id = self.assign_type(TypeEntryDetails::String.into());
-
-        Ok((
-            TypeEntryDetails::Map(string_type_id, value_type_id).into(),
-            &None,
-        ))
+        Ok((TypeEntryDetails::Map(type_id).into(), &None))
     }
 
     /// This is used by both any-of and all-of subschema processing. This
@@ -206,7 +220,7 @@ impl TypeSpace {
                     name,
                     serde_naming: SerdeNaming::Flatten,
                     serde_rules: if optional {
-                        SerdeRules::Optional
+                        SerdeRules::ImplicitDefault
                     } else {
                         SerdeRules::None
                     },
@@ -342,7 +356,7 @@ pub(crate) fn output_struct_property(
     } else {
         quote! {}
     };
-    let serde = generate_serde_attr(&prop.serde_naming, &prop.serde_rules, prop_type);
+    let (serde, default_fn) = generate_serde_attr(&prop.serde_naming, &prop.serde_rules, prop_type);
     quote! {
         #doc
         #serde
@@ -354,7 +368,7 @@ fn generate_serde_attr(
     serde_naming: &SerdeNaming,
     serde_rules: &SerdeRules,
     prop_type: &TypeEntry,
-) -> TokenStream {
+) -> (TokenStream, Option<TokenStream>) {
     let mut serde_options = Vec::new();
     match serde_naming {
         SerdeNaming::Rename(s) => serde_options.push(quote! { rename = #s }),
@@ -362,48 +376,89 @@ fn generate_serde_attr(
         SerdeNaming::None => (),
     }
 
-    match (serde_rules, &prop_type.details) {
-        (SerdeRules::Optional, TypeEntryDetails::Option(_)) => {
+    let default_fn = match (serde_rules, &prop_type.details) {
+        (SerdeRules::ImplicitDefault, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
+            None
         }
-        (SerdeRules::Optional, TypeEntryDetails::Array(_)) => {
+        (SerdeRules::ImplicitDefault, TypeEntryDetails::Array(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
+            None
         }
-        (SerdeRules::Optional, TypeEntryDetails::Map(_, _)) => {
+        (SerdeRules::ImplicitDefault, TypeEntryDetails::Map(_)) => {
             serde_options.push(quote! { default });
             serde_options
                 .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
+            None
         }
-        (SerdeRules::Optional, _) => unreachable!(),
-        (SerdeRules::None, _) => (),
-    }
+        (SerdeRules::ImplicitDefault, _) => {
+            serde_options.push(quote! { default });
+            None
+        }
+        (SerdeRules::None, _) => None,
+        (SerdeRules::ExplicitDefault(value), _) => {
+            serde_options.push(quote! { default = "foo" });
+            Some(quote! {})
+        }
+        x => panic!("{:#?}", x),
+    };
 
-    if serde_options.is_empty() {
+    let serde = if serde_options.is_empty() {
         quote! {}
     } else {
         quote! {
             #[serde( #(#serde_options),*)]
         }
-    }
+    };
+
+    (serde, default_fn)
 }
+
+/// See if this type is one
 
 /// See if this type is a type that we can omit with a serde directive; note
 /// that the type id lookup will fail only for references (and only during
 /// initial reference processing).
-fn is_skippable(type_space: &TypeSpace, type_id: &TypeId) -> bool {
-    type_space.id_to_entry.get(type_id).map_or_else(
-        || false,
-        |ty| {
-            matches!(
-                &ty.details,
-                TypeEntryDetails::Option(_)
-                    | TypeEntryDetails::Array(_)
-                    | TypeEntryDetails::Map(_, _)
-            )
-        },
-    )
+// TODO this requires updating to deal with defaults
+fn has_default(
+    type_space: &TypeSpace,
+    type_id: &TypeId,
+    default: Option<&serde_json::Value>,
+) -> Result<SerdeRules> {
+    // TODO This lookup can fail in the scenario where a struct (or struct
+    // variant) member is optional and the type of that optional member is a
+    // reference to a type that has not yet been converted. This means that
+    // types that match that description may not properly have default member
+    // values translated properly.
+    //
+    // The proper way to handle this is merely to tag a member as optional,
+    // include the default value, and validate the default values after all
+    // references have been properly resolved. This is pretty painful, because
+    // we'd need to modify members to insert Option<T> types if T turns out
+    // to make this not a member we can tag with #[serde(default)]
+    let type_entry = if let Some(type_entry) = type_space.id_to_entry.get(type_id) {
+        type_entry
+    } else {
+        return Ok(SerdeRules::None);
+    };
+
+    if let Some(default) = default {
+        if type_entry.validate_default(default, type_space)? {
+            Ok(SerdeRules::ImplicitDefault)
+        } else {
+            Ok(SerdeRules::ExplicitDefault(default.clone()))
+        }
+    } else {
+        match &type_entry.details {
+            TypeEntryDetails::Option(_) | TypeEntryDetails::Array(_) | TypeEntryDetails::Map(_) => {
+                Ok(SerdeRules::ImplicitDefault)
+            }
+
+            _ => Ok(SerdeRules::None),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -466,6 +521,19 @@ mod tests {
     #[test]
     fn test_flatten_stuff() {
         validate_output::<FlattenStuff>();
+    }
+
+    #[test]
+    fn test_default_field() {
+        #[allow(dead_code)]
+        #[derive(Serialize, JsonSchema, Schema)]
+        #[serde(deny_unknown_fields)]
+        struct DefaultField {
+            #[serde(default)]
+            number: i32,
+        }
+
+        validate_output::<DefaultField>();
     }
 
     #[test]

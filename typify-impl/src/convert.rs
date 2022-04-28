@@ -21,13 +21,21 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        match schema {
+        let (mut ty, metadata) = match schema {
             Schema::Bool(true) => self.convert_permissive(&None),
             Schema::Object(obj) => self.convert_schema_object(type_name, obj),
 
             // TODO Not sure what to do here... need to return something toxic?
             Schema::Bool(false) => todo!(),
+        }?;
+
+        // TODO I don't think I really want this here. I think I want it in
+        // struct props and in our named types (enum, struct, newtype).
+        if let Some(metadata) = metadata {
+            ty.default = metadata.default.clone();
         }
+
+        Ok((ty, metadata))
     }
 
     pub(crate) fn convert_schema_object<'a>(

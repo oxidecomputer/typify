@@ -11,7 +11,7 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    Name, TypeId, TypeSpace,
+    Error, Name, Result, TypeId, TypeNewtype, TypeSpace,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -41,9 +41,10 @@ pub(crate) struct TypeEntryNewtype {
     pub type_id: TypeId,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
+    pub default: Option<serde_json::Value>,
     pub derives: Option<BTreeSet<&'static str>>,
 }
 
@@ -56,7 +57,7 @@ pub(crate) enum TypeEntryDetails {
     Option(TypeId),
     Box(TypeId),
     Array(TypeId),
-    Map(TypeId, TypeId),
+    Map(TypeId),
     Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
@@ -114,10 +115,38 @@ pub(crate) enum SerdeNaming {
     Flatten,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum SerdeRules {
     None,
-    Optional,
+    ImplicitDefault,
+    ExplicitDefault(serde_json::Value),
+}
+
+impl Ord for SerdeRules {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        match (self, other) {
+            (SerdeRules::None, SerdeRules::None) => std::cmp::Ordering::Equal,
+            (SerdeRules::None, SerdeRules::ImplicitDefault) => std::cmp::Ordering::Less,
+            (SerdeRules::None, SerdeRules::ExplicitDefault(_)) => std::cmp::Ordering::Less,
+            (SerdeRules::ImplicitDefault, SerdeRules::None) => std::cmp::Ordering::Greater,
+            (SerdeRules::ImplicitDefault, SerdeRules::ImplicitDefault) => std::cmp::Ordering::Equal,
+            (SerdeRules::ImplicitDefault, SerdeRules::ExplicitDefault(_)) => {
+                std::cmp::Ordering::Less
+            }
+            (SerdeRules::ExplicitDefault(_), SerdeRules::None) => std::cmp::Ordering::Greater,
+            (SerdeRules::ExplicitDefault(_), SerdeRules::ImplicitDefault) => {
+                std::cmp::Ordering::Greater
+            }
+            (SerdeRules::ExplicitDefault(_), SerdeRules::ExplicitDefault(_)) => {
+                std::cmp::Ordering::Equal
+            }
+        }
+    }
+}
+impl PartialOrd for SerdeRules {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl TypeEntryEnum {
@@ -187,6 +216,7 @@ impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         Self {
             details,
+            default: None,
             derives: None,
         }
     }
@@ -196,18 +226,21 @@ impl TypeEntry {
     pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::BuiltIn(type_name.to_string()),
+            default: None,
             derives: None,
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Integral(type_name.to_string()),
+            default: None,
             derives: None,
         }
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
+            default: None,
             derives: None,
         }
     }
@@ -219,6 +252,156 @@ impl TypeEntry {
             | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
 
             _ => None,
+        }
+    }
+
+    pub(crate) fn validate_default(
+        &self,
+        default: &serde_json::Value,
+        type_space: &TypeSpace,
+    ) -> Result<bool> {
+        match &self.details {
+            TypeEntryDetails::Enum(t) => todo!(),
+            TypeEntryDetails::Struct(t) => todo!(),
+
+            TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => type_space
+                .id_to_entry
+                .get(type_id)
+                .unwrap()
+                .validate_default(default, type_space),
+            TypeEntryDetails::Option(type_id) => {
+                if let serde_json::Value::Null = default {
+                    Ok(true)
+                } else {
+                    let ty = type_space.id_to_entry.get(type_id).unwrap();
+                    // Make sure the default is valid for the sub-type.
+                    let _ = ty.validate_default(default, type_space)?;
+                    Ok(false)
+                }
+            }
+            TypeEntryDetails::Box(type_id) => type_space
+                .id_to_entry
+                .get(type_id)
+                .unwrap()
+                .validate_default(default, type_space),
+
+            TypeEntryDetails::Array(type_id) => {
+                if let serde_json::Value::Array(v) = default {
+                    if v.is_empty() {
+                        Ok(true)
+                    } else {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        for value in v {
+                            let _ = type_entry.validate_default(value, type_space)?;
+                        }
+                        Ok(false)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Map(type_id) => {
+                if let serde_json::Value::Object(m) = default {
+                    if m.is_empty() {
+                        Ok(true)
+                    } else {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        for (_, value) in m {
+                            let _ = type_entry.validate_default(value, type_space)?;
+                        }
+                        Ok(false)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Set(type_id) => {
+                if let serde_json::Value::Array(v) = default {
+                    if v.is_empty() {
+                        Ok(true)
+                    } else {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        for (i, value) in v.iter().enumerate() {
+                            // Sets can't contain duplicates; also Value isn't
+                            // Ord so O(n^2) it is!
+                            for other in &v[(i + 1)..] {
+                                if value == other {
+                                    return Err(Error::InvalidDefaultValue);
+                                }
+                            }
+                            let _ = type_entry.validate_default(value, type_space)?;
+                        }
+                        Ok(false)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Tuple(ids) => {
+                if let serde_json::Value::Array(v) = default {
+                    if ids.len() == v.len() {
+                        // All tuple components must have the intrinsic default
+                        // value in order for the full tuple to have the
+                        // intrinsic default value.
+                        ids.iter()
+                            .zip(v.iter())
+                            .try_fold(true, |acc, (type_id, value)| {
+                                type_space
+                                    .id_to_entry
+                                    .get(type_id)
+                                    .unwrap()
+                                    .validate_default(value, type_space)
+                                    .map(|b| acc && b)
+                            })
+                    } else {
+                        Err(Error::InvalidDefaultValue)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Unit => {
+                if let serde_json::Value::Null = default {
+                    Ok(true)
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::BuiltIn(_) => {
+                // TODO Not sure what could be done here...
+                Err(Error::InvalidDefaultValue)
+            }
+            TypeEntryDetails::Integral(v) if v == "bool" => match default {
+                serde_json::Value::Bool(false) => Ok(true),
+                serde_json::Value::Bool(true) => Ok(false),
+                _ => Err(Error::InvalidDefaultValue),
+            },
+            TypeEntryDetails::Integral(v) if v == "u64" => {
+                if let serde_json::Value::Number(number) = default {
+                    if let Some(value) = number.as_u64() {
+                        Ok(value == 0)
+                    } else {
+                        Err(Error::InvalidDefaultValue)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Integral(_) => {
+                if let serde_json::Value::Number(number) = default {
+                    if let Some(value) = number.as_i64() {
+                        // TODO: check bounds
+                        Ok(value == 0)
+                    } else {
+                        Err(Error::InvalidDefaultValue)
+                    }
+                } else {
+                    Err(Error::InvalidDefaultValue)
+                }
+            }
+            TypeEntryDetails::Float(_) => todo!(),
+            TypeEntryDetails::String => todo!(),
+            TypeEntryDetails::Reference(_) => todo!(),
         }
     }
 
@@ -386,7 +569,7 @@ impl TypeEntry {
             | TypeEntryDetails::String
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Unit
             | TypeEntryDetails::Box(_)
@@ -457,19 +640,14 @@ impl TypeEntry {
                 quote! { Vec<#item> }
             }
 
-            TypeEntryDetails::Map(key_id, value_id) => {
-                let key_ty = type_space
+            TypeEntryDetails::Map(type_id) => {
+                let inner_ty = type_space
                     .id_to_entry
-                    .get(key_id)
-                    .expect("unresolved type id for map")
-                    .type_ident(type_space, external);
-                let value_ty = type_space
-                    .id_to_entry
-                    .get(value_id)
+                    .get(type_id)
                     .expect("unresolved type id for map")
                     .type_ident(type_space, external);
 
-                quote! { std::collections::HashMap<#key_ty, #value_ty> }
+                quote! { std::collections::HashMap<String, #inner_ty> }
             }
 
             TypeEntryDetails::Set(id) => {
@@ -536,7 +714,7 @@ impl TypeEntry {
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::BuiltIn(_) => {
@@ -592,7 +770,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
-            TypeEntryDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
+            TypeEntryDetails::Map(type_id) => format!("map {}", type_id.0),
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
             TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {

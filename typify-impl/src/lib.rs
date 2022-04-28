@@ -25,8 +25,8 @@ pub enum Error {
     BadValue(String, serde_json::Value),
     #[error("invalid TypeId")]
     InvalidTypeId,
-    #[error("unknown")]
-    Unknown,
+    #[error("default value does not conform to the given schema")]
+    InvalidDefaultValue,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -46,7 +46,7 @@ pub enum TypeDetails<'a> {
 
     Option(TypeId),
     Array(TypeId),
-    Map(TypeId, TypeId),
+    Map(TypeId),
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
@@ -268,19 +268,14 @@ impl TypeSpace {
                 .get_or_insert_with(|| self.id_to_box(parent_type_id))
                 .clone();
         } else {
-            let mut child_type_entry = self.id_to_entry.get_mut(&child_type_id).unwrap().clone();
+            let mut child_type_entry = self.id_to_entry.get_mut(child_type_id).unwrap().clone();
 
-            match &mut child_type_entry.details {
-                // Look for the case where an option refers to the parent type
-                TypeEntryDetails::Option(option_type_id) => {
-                    if *option_type_id == *parent_type_id {
-                        *option_type_id = box_id
-                            .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                            .clone();
-                    }
+            if let TypeEntryDetails::Option(option_type_id) = &mut child_type_entry.details {
+                if *option_type_id == *parent_type_id {
+                    *option_type_id = box_id
+                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                        .clone();
                 }
-
-                _ => {}
             }
 
             let _ = self
@@ -336,7 +331,7 @@ impl TypeSpace {
             // Containers that can be size 0 are *not* cyclic references for that type
             TypeEntryDetails::Array(_) => {}
             TypeEntryDetails::Set(_) => {}
-            TypeEntryDetails::Map(_, _) => {}
+            TypeEntryDetails::Map(_) => {}
 
             // Everything else can be ignored
             _ => {}
@@ -559,9 +554,7 @@ impl<'a> Type<'a> {
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
             TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
-            TypeEntryDetails::Map(key_id, value_id) => {
-                TypeDetails::Map(key_id.clone(), value_id.clone())
-            }
+            TypeEntryDetails::Map(type_id) => TypeDetails::Map(type_id.clone()),
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
