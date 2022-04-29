@@ -2,7 +2,6 @@
 
 use std::{fs::File, io::BufReader, path::Path};
 
-use quote::quote;
 use schemars::schema::{RootSchema, Schema};
 use typify_impl::TypeSpace;
 
@@ -21,11 +20,7 @@ fn test_github() {
     type_space.add_ref_types(schema.definitions).unwrap();
     type_space.add_type(&Schema::Object(schema.schema)).unwrap();
 
-    let types = type_space.iter_types().map(|t| t.definition());
-
-    let file = quote! {
-        #(#types)*
-    };
+    let file = type_space.to_stream();
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 

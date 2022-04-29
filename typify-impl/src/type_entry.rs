@@ -11,7 +11,7 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    Error, Name, Result, TypeId, TypeNewtype, TypeSpace,
+    DefaultFns, Name, TypeId, TypeSpace,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -120,6 +120,13 @@ pub(crate) enum SerdeRules {
     None,
     ImplicitDefault,
     ExplicitDefault(serde_json::Value),
+}
+
+#[derive(Debug)]
+pub(crate) enum ValidDefault {
+    Intrinsic,
+    Specific,
+    Generic(DefaultFns),
 }
 
 impl Ord for SerdeRules {
@@ -255,156 +262,6 @@ impl TypeEntry {
         }
     }
 
-    pub(crate) fn validate_default(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> Result<bool> {
-        match &self.details {
-            TypeEntryDetails::Enum(t) => todo!(),
-            TypeEntryDetails::Struct(t) => todo!(),
-
-            TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .validate_default(default, type_space),
-            TypeEntryDetails::Option(type_id) => {
-                if let serde_json::Value::Null = default {
-                    Ok(true)
-                } else {
-                    let ty = type_space.id_to_entry.get(type_id).unwrap();
-                    // Make sure the default is valid for the sub-type.
-                    let _ = ty.validate_default(default, type_space)?;
-                    Ok(false)
-                }
-            }
-            TypeEntryDetails::Box(type_id) => type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .validate_default(default, type_space),
-
-            TypeEntryDetails::Array(type_id) => {
-                if let serde_json::Value::Array(v) = default {
-                    if v.is_empty() {
-                        Ok(true)
-                    } else {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        for value in v {
-                            let _ = type_entry.validate_default(value, type_space)?;
-                        }
-                        Ok(false)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Map(type_id) => {
-                if let serde_json::Value::Object(m) = default {
-                    if m.is_empty() {
-                        Ok(true)
-                    } else {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        for (_, value) in m {
-                            let _ = type_entry.validate_default(value, type_space)?;
-                        }
-                        Ok(false)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Set(type_id) => {
-                if let serde_json::Value::Array(v) = default {
-                    if v.is_empty() {
-                        Ok(true)
-                    } else {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        for (i, value) in v.iter().enumerate() {
-                            // Sets can't contain duplicates; also Value isn't
-                            // Ord so O(n^2) it is!
-                            for other in &v[(i + 1)..] {
-                                if value == other {
-                                    return Err(Error::InvalidDefaultValue);
-                                }
-                            }
-                            let _ = type_entry.validate_default(value, type_space)?;
-                        }
-                        Ok(false)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Tuple(ids) => {
-                if let serde_json::Value::Array(v) = default {
-                    if ids.len() == v.len() {
-                        // All tuple components must have the intrinsic default
-                        // value in order for the full tuple to have the
-                        // intrinsic default value.
-                        ids.iter()
-                            .zip(v.iter())
-                            .try_fold(true, |acc, (type_id, value)| {
-                                type_space
-                                    .id_to_entry
-                                    .get(type_id)
-                                    .unwrap()
-                                    .validate_default(value, type_space)
-                                    .map(|b| acc && b)
-                            })
-                    } else {
-                        Err(Error::InvalidDefaultValue)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Unit => {
-                if let serde_json::Value::Null = default {
-                    Ok(true)
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::BuiltIn(_) => {
-                // TODO Not sure what could be done here...
-                Err(Error::InvalidDefaultValue)
-            }
-            TypeEntryDetails::Integral(v) if v == "bool" => match default {
-                serde_json::Value::Bool(false) => Ok(true),
-                serde_json::Value::Bool(true) => Ok(false),
-                _ => Err(Error::InvalidDefaultValue),
-            },
-            TypeEntryDetails::Integral(v) if v == "u64" => {
-                if let serde_json::Value::Number(number) = default {
-                    if let Some(value) = number.as_u64() {
-                        Ok(value == 0)
-                    } else {
-                        Err(Error::InvalidDefaultValue)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Integral(_) => {
-                if let serde_json::Value::Number(number) = default {
-                    if let Some(value) = number.as_i64() {
-                        // TODO: check bounds
-                        Ok(value == 0)
-                    } else {
-                        Err(Error::InvalidDefaultValue)
-                    }
-                } else {
-                    Err(Error::InvalidDefaultValue)
-                }
-            }
-            TypeEntryDetails::Float(_) => todo!(),
-            TypeEntryDetails::String => todo!(),
-            TypeEntryDetails::Reference(_) => todo!(),
-        }
-    }
-
     pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
         let mut derives = vec![
             quote! { Serialize },
@@ -526,6 +383,8 @@ impl TypeEntry {
                     pub struct #type_name {
                         #(#properties)*
                     }
+
+                    // TODO add any support (e.g. serde default) functions here.
                 }
             }
 

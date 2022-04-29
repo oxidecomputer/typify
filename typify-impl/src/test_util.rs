@@ -48,11 +48,7 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     // If we have converted the type already, use that, otherwise convert schema
     // object
     let ty = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
-        type_space
-            .id_to_entry
-            .get(&already_type_id)
-            .unwrap()
-            .clone()
+        type_space.id_to_entry.get(already_type_id).unwrap().clone()
     } else {
         let (ty, _) = type_space
             .convert_schema_object(Name::Required(name), &schema.schema)
@@ -187,11 +183,7 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
 impl SynCompare for syn::Ident {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         if self != other {
-            Err(format!(
-                "idents differ: {} {}",
-                self.to_string(),
-                other.to_string()
-            ))
+            Err(format!("idents differ: {} {}", self, other))
         } else {
             Ok(())
         }

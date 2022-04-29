@@ -21,21 +21,13 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let (mut ty, metadata) = match schema {
+        match schema {
             Schema::Bool(true) => self.convert_permissive(&None),
             Schema::Object(obj) => self.convert_schema_object(type_name, obj),
 
             // TODO Not sure what to do here... need to return something toxic?
             Schema::Bool(false) => todo!(),
-        }?;
-
-        // TODO I don't think I really want this here. I think I want it in
-        // struct props and in our named types (enum, struct, newtype).
-        if let Some(metadata) = metadata {
-            ty.default = metadata.default.clone();
         }
-
-        Ok((ty, metadata))
     }
 
     pub(crate) fn convert_schema_object<'a>(
@@ -519,6 +511,8 @@ impl TypeSpace {
             ("", "std::num::NonZeroU32", 1.0, u32::MAX as f64),
             ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
             ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
+            // TODO all these are wrong as casting to an f64 loses precision.
+            // However, schemars stores everything as an f64 so... meh for now.
             ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
             ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
             ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
@@ -534,6 +528,18 @@ impl TypeSpace {
                     && (min.is_none() || min == Some(*imin))
                     && (max.is_none() || max == Some(*imax))
                 {
+                    // If there's a default value and it's either not a number
+                    // or outside of the range for this format, return an
+                    // error.
+                    if let Some(default) = metadata
+                        .as_ref()
+                        .and_then(|m| m.default.as_ref())
+                        .and_then(|v| v.as_f64())
+                    {
+                        if default < *imin || default > *imax {
+                            return Err(Error::InvalidDefaultValue);
+                        }
+                    }
                     return Ok((TypeEntry::new_integer(ty), metadata));
                 }
 
@@ -544,6 +550,23 @@ impl TypeSpace {
                     max = Some(*imax);
                 }
             }
+        }
+
+        // We check the default value here since we have the min and max
+        // close at hand.
+        if let Some(default) = metadata.as_ref().and_then(|m| m.default.as_ref()) {
+            // TODO it's imprecise (in every sense of the word) to use an
+            // f64 here, but we're already constrained by the schemars
+            // representation so ... it's probably the best we can do at
+            // the moment.
+            match (default.as_f64(), min, max) {
+                (Some(_), None, None) => Some(()),
+                (Some(value), None, Some(fmax)) if value <= fmax => Some(()),
+                (Some(value), Some(fmin), None) if value >= fmin => Some(()),
+                (Some(value), Some(fmin), Some(fmax)) if value >= fmin && value <= fmax => Some(()),
+                _ => None,
+            }
+            .ok_or(Error::InvalidDefaultValue)?;
         }
 
         // See if the value bounds fit within a known type.
@@ -578,7 +601,7 @@ impl TypeSpace {
         } else {
             // TODO we could construct a type that itself enforces the various
             // bounds.
-            // TODO failing that we should find the type that most tightly
+            // TODO failing that, we should find the type that most tightly
             // matches these bounds.
             Ok((TypeEntry::new_integer("i64"), metadata))
         }
@@ -685,7 +708,6 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
-        // TODO make this look more like the other maybe clauses
         if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
             return Ok((ty, metadata));
         }
@@ -720,9 +742,9 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
-        // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"} for
-        // Option, so match against that here to short circuit the check for
-        // mutual exclusivity below.
+        // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"}
+        // for Option, so match against that here to short circuit the check
+        // for mutual exclusivity below.
         if let Some(option_type_entry) = self.maybe_option(type_name.clone(), metadata, subschemas)
         {
             return Ok((option_type_entry, metadata));
@@ -947,13 +969,20 @@ mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
     use schema::Schema;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::{
+        schema::{InstanceType, Metadata, NumberValidation, SchemaObject},
+        schema_for, JsonSchema,
+    };
+    use serde_json::json;
 
-    use crate::{test_util::validate_output, validate_builtin, Name, TypeSpace};
+    use crate::{test_util::validate_output, validate_builtin, Error, Name, TypeSpace};
     use paste::paste;
 
+    #[track_caller]
     fn int_helper<T: JsonSchema>() {
         let schema = schema_for!(T);
+
+        println!("{:#?}", schema);
 
         let mut type_space = TypeSpace::default();
         type_space
@@ -1116,5 +1145,56 @@ mod tests {
     #[test]
     fn test_set() {
         validate_builtin!(std::collections::BTreeSet<u32>);
+    }
+
+    #[test]
+    fn test_low_default() {
+        let schema = SchemaObject {
+            instance_type: Some(InstanceType::Integer.into()),
+            format: Some("uint".to_string()),
+            metadata: Some(
+                Metadata {
+                    default: Some(json!(-1i32)),
+                    ..Default::default()
+                }
+                .into(),
+            ),
+            number: Some(NumberValidation::default().into()),
+            ..Default::default()
+        };
+
+        let mut type_space = TypeSpace::default();
+        match type_space.convert_schema_object(Name::Unknown, &schema) {
+            Err(Error::InvalidDefaultValue) => (),
+            _ => panic!("unexpected result"),
+        }
+    }
+
+    #[test]
+    fn test_high_default() {
+        let schema = SchemaObject {
+            instance_type: Some(InstanceType::Integer.into()),
+            metadata: Some(
+                Metadata {
+                    default: Some(json!(867_5309_u32)),
+                    ..Default::default()
+                }
+                .into(),
+            ),
+            number: Some(
+                NumberValidation {
+                    maximum: Some(256.0),
+                    ..Default::default()
+                }
+                .into(),
+            ),
+            ..Default::default()
+        };
+
+        let mut type_space = TypeSpace::default();
+        match type_space.convert_schema_object(Name::Unknown, &schema) {
+            Err(Error::InvalidDefaultValue) => (),
+            _ => panic!("unexpected result"),
+        }
     }
 }

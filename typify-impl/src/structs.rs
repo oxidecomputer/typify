@@ -8,7 +8,9 @@ use schemars::schema::{
 };
 
 use crate::{
-    type_entry::{SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct},
+    type_entry::{
+        SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct, ValidDefault,
+    },
     util::{get_type_name, metadata_description, recase, schema_is_named},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
@@ -128,6 +130,9 @@ impl TypeSpace {
             //
             // TODO I think we should skip this, tag the prop as optional, not
             // create an option type, and deal with it later.
+            // TODO we can check that there **is** a default at this point, but
+            // **not** that's it's valid because references may not yet have
+            // been resolved.
             match has_default(
                 self,
                 &type_id,
@@ -236,9 +241,9 @@ impl TypeSpace {
         ))
     }
 
-    /// This handles the case where an anyOf is used to effect inheritance: the
-    /// subschemas consist of one or more "super classes" that have names with a
-    /// final, anonymous object.
+    /// This handles the case where an allOf is used to effect inheritance: the
+    /// subschemas consist of one or more "super classes" that have names with
+    /// a final, anonymous object.
     ///
     /// ```text
     /// "allOf": [
@@ -257,9 +262,9 @@ impl TypeSpace {
     /// }
     /// ```
     ///
-    /// Note that the super class member names are derived from the type and are
-    /// flattened into the struct; the subclass properties are simply included
-    /// alongside.
+    /// Note that the super class member names are derived from the type and
+    /// are flattened into the struct; the subclass properties are simply
+    /// included alongside.
     pub(crate) fn maybe_all_of_subclass(
         &mut self,
         type_name: Name,
@@ -279,9 +284,9 @@ impl TypeSpace {
             }
         }
 
-        // We required exactly one unnamed subschema for this special case. Note
-        // that zero unnamed subschemas would be trivial to handle, but the generic
-        // case already does so albeit slightly differently.
+        // We required exactly one unnamed subschema for this special case.
+        // Note that zero unnamed subschemas would be trivial to handle, but
+        // the generic case already does so albeit slightly differently.
         if unnamed.len() != 1 {
             return None;
         }
@@ -356,7 +361,10 @@ pub(crate) fn output_struct_property(
     } else {
         quote! {}
     };
-    let (serde, default_fn) = generate_serde_attr(&prop.serde_naming, &prop.serde_rules, prop_type);
+
+    // TODO add the default_fn to the type_space... somehow
+    let (serde, default_fn) =
+        generate_serde_attr(&prop.serde_naming, &prop.serde_rules, prop_type, type_space);
     quote! {
         #doc
         #serde
@@ -368,6 +376,7 @@ fn generate_serde_attr(
     serde_naming: &SerdeNaming,
     serde_rules: &SerdeRules,
     prop_type: &TypeEntry,
+    type_space: &TypeSpace,
 ) -> (TokenStream, Option<TokenStream>) {
     let mut serde_options = Vec::new();
     match serde_naming {
@@ -399,10 +408,10 @@ fn generate_serde_attr(
         }
         (SerdeRules::None, _) => None,
         (SerdeRules::ExplicitDefault(value), _) => {
-            serde_options.push(quote! { default = "foo" });
-            Some(quote! {})
+            let (fn_name, default_fn) = prop_type.default_fn(value, type_space);
+            serde_options.push(quote! { default = #fn_name });
+            default_fn
         }
-        x => panic!("{:#?}", x),
     };
 
     let serde = if serde_options.is_empty() {
@@ -423,7 +432,7 @@ fn generate_serde_attr(
 /// initial reference processing).
 // TODO this requires updating to deal with defaults
 fn has_default(
-    type_space: &TypeSpace,
+    type_space: &mut TypeSpace,
     type_id: &TypeId,
     default: Option<&serde_json::Value>,
 ) -> Result<SerdeRules> {
@@ -445,10 +454,14 @@ fn has_default(
     };
 
     if let Some(default) = default {
-        if type_entry.validate_default(default, type_space)? {
-            Ok(SerdeRules::ImplicitDefault)
-        } else {
-            Ok(SerdeRules::ExplicitDefault(default.clone()))
+        let x = type_entry.validate_default(default, type_space)?;
+        match x {
+            ValidDefault::Intrinsic => Ok(SerdeRules::ImplicitDefault),
+            ValidDefault::Specific => Ok(SerdeRules::ExplicitDefault(default.clone())),
+            ValidDefault::Generic(g) => {
+                type_space.defaults.insert(g);
+                Ok(SerdeRules::ExplicitDefault(default.clone()))
+            }
         }
     } else {
         match &type_entry.details {

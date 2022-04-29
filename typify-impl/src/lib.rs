@@ -1,6 +1,6 @@
 // Copyright 2021 Oxide Computer Company
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use log::info;
 use proc_macro2::TokenStream;
@@ -14,6 +14,7 @@ use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
 mod test_util;
 
 mod convert;
+mod defaults;
 mod enums;
 mod structs;
 mod type_entry;
@@ -120,6 +121,15 @@ pub struct TypeSpace {
 
     pub(crate) type_mod: Option<String>,
     pub(crate) extra_derives: Vec<TokenStream>,
+
+    defaults: BTreeSet<DefaultFns>,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum DefaultFns {
+    Boolean,
+    I64,
+    U64,
 }
 
 impl Default for TypeSpace {
@@ -136,6 +146,7 @@ impl Default for TypeSpace {
             uses_serde_json: false,
             type_mod: None,
             extra_derives: Vec::new(),
+            defaults: BTreeSet::new(),
         }
     }
 }
@@ -207,7 +218,7 @@ impl TypeSpace {
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype (though we could probably
-                // handle it as a type alias).
+                // handle it as a actual ).unwrap();type alias).
                 _ => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
@@ -226,15 +237,19 @@ impl TypeSpace {
         // using a HashSet or BTreeSet type where we might like to.
 
         // Once all ref types are in, look for containment cycles that we need
-        // to break with a Box<T>.
+        // to break with a Box<T>. Note that we unconditionally replace the
+        // type entry at the given ID regardless of whether the type changes.
         for index in 0..def_len {
             let type_id = TypeId(base_id + index);
-
-            let mut box_id = None;
-
             let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
+
+            // TODO: we've declared box_id here to avoid allocating it in the
+            // ID space twice, but the dedup logic in assign_type() should
+            // already address this. There's room to simplify here...
+            let mut box_id = None;
             self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
-            let _ = self.id_to_entry.insert(type_id, type_entry);
+
+            self.id_to_entry.insert(type_id, type_entry);
         }
 
         Ok(())
@@ -403,7 +418,20 @@ impl TypeSpace {
     pub fn to_stream(&self) -> TokenStream {
         let type_defs = self.iter_types().map(|t| t.definition());
 
+        let defaults = if self.defaults.is_empty() {
+            quote! {}
+        } else {
+            let fns = self.defaults.iter().map(TokenStream::from);
+            quote! {
+                mod defaults {
+                    #(#fns)*
+                }
+            }
+        };
+
         quote! {
+            #defaults
+
             #(#type_defs)*
         }
     }
