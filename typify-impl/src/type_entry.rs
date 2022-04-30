@@ -19,6 +19,7 @@ pub(crate) struct TypeEntryEnum {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
@@ -29,6 +30,7 @@ pub(crate) struct TypeEntryStruct {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
 }
@@ -38,13 +40,32 @@ pub(crate) struct TypeEntryNewtype {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub type_id: TypeId,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct DefaultValue(pub serde_json::Value);
+impl DefaultValue {
+    pub(crate) fn new(value: serde_json::Value) -> Self {
+        Self(value)
+    }
+}
+
+impl Ord for DefaultValue {
+    fn cmp(&self, _: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
+impl PartialOrd for DefaultValue {
+    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
+        Some(std::cmp::Ordering::Equal)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
-    pub default: Option<serde_json::Value>,
     pub derives: Option<BTreeSet<&'static str>>,
 }
 
@@ -117,11 +138,11 @@ pub(crate) enum StructPropertyRename {
     Flatten,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum StructPropertyState {
     Required,
     Optional,
-    Default(serde_json::Value),
+    Default(DefaultValue),
 }
 
 #[derive(Debug)]
@@ -129,27 +150,6 @@ pub(crate) enum ValidDefault {
     Intrinsic,
     Specific,
     Generic(DefaultFns),
-}
-
-impl Ord for StructPropertyState {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        match (self, other) {
-            (Self::Required, Self::Required) => std::cmp::Ordering::Equal,
-            (Self::Required, Self::Optional) => std::cmp::Ordering::Less,
-            (Self::Required, Self::Default(_)) => std::cmp::Ordering::Less,
-            (Self::Optional, Self::Required) => std::cmp::Ordering::Greater,
-            (Self::Optional, Self::Optional) => std::cmp::Ordering::Equal,
-            (Self::Optional, Self::Default(_)) => std::cmp::Ordering::Less,
-            (Self::Default(_), Self::Required) => std::cmp::Ordering::Greater,
-            (Self::Default(_), Self::Optional) => std::cmp::Ordering::Greater,
-            (Self::Default(_), Self::Default(_)) => std::cmp::Ordering::Equal,
-        }
-    }
-}
-impl PartialOrd for StructPropertyState {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
 }
 
 impl TypeEntryEnum {
@@ -168,6 +168,7 @@ impl TypeEntryEnum {
             name,
             rename,
             description,
+            default: None,
             tag_type,
             variants,
             deny_unknown_fields,
@@ -185,11 +186,17 @@ impl TypeEntryStruct {
         let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
+        let default = metadata
+            .as_ref()
+            .and_then(|m| m.default.as_ref())
+            .cloned()
+            .map(DefaultValue::new);
 
         TypeEntryDetails::Struct(Self {
             name,
             rename,
             description,
+            default,
             properties,
             deny_unknown_fields,
         })
@@ -197,7 +204,7 @@ impl TypeEntryStruct {
 }
 
 impl TypeEntryNewtype {
-    pub(crate) fn from_metadata(
+    pub(crate) fn from_metadata_with_default(
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
@@ -210,6 +217,7 @@ impl TypeEntryNewtype {
             name,
             rename,
             description,
+            default: None,
             type_id,
         })
     }
@@ -219,7 +227,6 @@ impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         Self {
             details,
-            default: None,
             derives: None,
         }
     }
@@ -229,28 +236,24 @@ impl TypeEntry {
     pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::BuiltIn(type_name.to_string()),
-            default: None,
             derives: None,
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
-            default: None,
             derives: None,
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Integer(type_name.to_string()),
-            default: None,
             derives: None,
         }
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
-            default: None,
             derives: None,
         }
     }
@@ -280,6 +283,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 tag_type,
                 variants,
                 deny_unknown_fields,
@@ -355,6 +359,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 properties,
                 deny_unknown_fields,
             }) => {
@@ -395,6 +400,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 type_id,
             }) => {
                 let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
@@ -693,6 +699,7 @@ mod tests {
             name: "SomeType".to_string(),
             rename: None,
             description: None,
+            default: None,
             properties: vec![],
             deny_unknown_fields: false,
         }));

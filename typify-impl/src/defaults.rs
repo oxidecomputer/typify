@@ -5,8 +5,9 @@ use quote::quote;
 
 use crate::{
     type_entry::{
-        EnumTagType, StructProperty, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype,
-        TypeEntryStruct, ValidDefault, VariantDetails,
+        DefaultValue, EnumTagType, StructProperty, StructPropertyState, TypeEntry,
+        TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, ValidDefault,
+        VariantDetails,
     },
     DefaultFns, Error, Result, TypeId, TypeSpace,
 };
@@ -42,6 +43,66 @@ impl From<&DefaultFns> for TokenStream {
 }
 
 impl TypeEntry {
+    pub(crate) fn check_defaults(&self, type_space: &mut TypeSpace) -> Result<()> {
+        match &self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
+                default: Some(DefaultValue(default)),
+                ..
+            }) => {
+                if let ValidDefault::Generic(default_fn) =
+                    self.validate_default(default, type_space)?
+                {
+                    type_space.defaults.insert(default_fn);
+                }
+            }
+
+            TypeEntryDetails::Struct(TypeEntryStruct {
+                default,
+                properties,
+                ..
+            }) => {
+                properties.iter().try_for_each(|prop| {
+                    if let StructProperty {
+                        state: StructPropertyState::Default(DefaultValue(prop_default)),
+                        type_id,
+                        ..
+                    } = prop
+                    {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        if let ValidDefault::Generic(default_fn) =
+                            type_entry.validate_default(prop_default, type_space)?
+                        {
+                            type_space.defaults.insert(default_fn);
+                        }
+                    }
+                    Ok(())
+                })?;
+                if let Some(DefaultValue(default)) = default {
+                    if let ValidDefault::Generic(default_fn) =
+                        self.validate_default(default, type_space)?
+                    {
+                        type_space.defaults.insert(default_fn);
+                    }
+                }
+            }
+
+            TypeEntryDetails::Newtype(TypeEntryNewtype {
+                default: Some(DefaultValue(default)),
+                ..
+            }) => {
+                if let ValidDefault::Generic(default_fn) =
+                    self.validate_default(default, type_space)?
+                {
+                    type_space.defaults.insert(default_fn);
+                }
+            }
+
+            _ => (),
+        };
+
+        Ok(())
+    }
+
     pub(crate) fn validate_default(
         &self,
         default: &serde_json::Value,

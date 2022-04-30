@@ -1070,6 +1070,7 @@ mod tests {
                 name,
                 rename: None,
                 description: None,
+                default: None,
                 tag_type: EnumTagType::Untagged,
                 variants,
                 deny_unknown_fields: _,

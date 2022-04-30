@@ -8,7 +8,7 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
+use type_entry::{DefaultValue, TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
 
 #[cfg(test)]
 mod test_util;
@@ -184,7 +184,8 @@ impl TypeSpace {
 
         // Convert all types; note that we use the type id assigned from the
         // previous step because each type may create additional types. This
-        // effectively is doing the word of `add_type` but in batches.
+        // effectively is doing the word of `add_type_with_name` but in
+        // bulk operations.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             let type_name = match ref_name.rfind('/') {
                 Some(idx) => &ref_name[idx..],
@@ -199,29 +200,42 @@ impl TypeSpace {
 
             let (mut type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
-            if let Some(metadata) = metadata {
-                type_entry.default = metadata.default.clone();
-            }
-            let type_entry = match type_entry.details {
+            let default = metadata
+                .as_ref()
+                .and_then(|m| m.default.as_ref())
+                .cloned()
+                .map(DefaultValue::new);
+            let type_entry = match &mut type_entry.details {
                 // The types that are already named are good to go.
-                TypeEntryDetails::Enum(_)
-                | TypeEntryDetails::Struct(_)
-                | TypeEntryDetails::Newtype(_) => type_entry,
+                TypeEntryDetails::Enum(details) => {
+                    details.default = default;
+                    type_entry
+                }
+                TypeEntryDetails::Struct(details) => {
+                    details.default = default;
+                    type_entry
+                }
+                TypeEntryDetails::Newtype(details) => {
+                    details.default = default;
+                    type_entry
+                }
 
                 // If the type entry is a reference, then this definition is a
                 // simple alias to another type in this list of definitions
                 // (which may nor may not have already been converted). We
                 // simply create a newtype with that type ID.
-                TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
-                    Name::Required(type_name.to_string()),
-                    metadata,
-                    type_id,
-                )
-                .into(),
+                TypeEntryDetails::Reference(type_id) => {
+                    TypeEntryNewtype::from_metadata_with_default(
+                        Name::Required(type_name.to_string()),
+                        metadata,
+                        type_id.clone(),
+                    )
+                    .into()
+                }
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype.
-                _ => TypeEntryNewtype::from_metadata(
+                _ => TypeEntryNewtype::from_metadata_with_default(
                     Name::Required(type_name.to_string()),
                     metadata,
                     self.assign_type(type_entry),
@@ -233,23 +247,24 @@ impl TypeSpace {
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
 
-        // Validate defaults.
+        // Now that all references have been processed, we can do some
+        // additional validation and processing.
         for index in 0..def_len {
+            // This is slightly inefficient, but we make a copy of the type in
+            // order to manipulate it without holding a reference on self.
             let type_id = TypeId(base_id + index);
-            let type_entry = self.id_to_entry.get(&type_id).unwrap();
-        }
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
 
-        // TODO compute appropriate derives, taking care to account for
-        // dependency cycles. Currently we're using a more minimal--safe--set
-        // of derives than we might otherwise. This notably prevents us from
-        // using a HashSet or BTreeSet type where we might like to.
+            type_entry.check_defaults(self)?;
 
-        // Once all ref types are in, look for containment cycles that we need
-        // to break with a Box<T>. Note that we unconditionally replace the
-        // type entry at the given ID regardless of whether the type changes.
-        for index in 0..def_len {
-            let type_id = TypeId(base_id + index);
-            let mut type_entry = self.id_to_entry.remove(&type_id).unwrap();
+            // TODO compute appropriate derives, taking care to account for
+            // dependency cycles. Currently we're using a more minimal--safe--set
+            // of derives than we might otherwise. This notably prevents us from
+            // using a HashSet or BTreeSet type where we might like to.
+
+            // Once all ref types are in, look for containment cycles that we need
+            // to break with a Box<T>. Note that we unconditionally replace the
+            // type entry at the given ID regardless of whether the type changes.
 
             // TODO: we've declared box_id here to avoid allocating it in the
             // ID space twice, but the dedup logic in assign_type() should
@@ -257,6 +272,7 @@ impl TypeSpace {
             let mut box_id = None;
             self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
 
+            // Overwrite the entry regardless of whether we modified it.
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -380,8 +396,19 @@ impl TypeSpace {
         };
         let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
         if let Some(metadata) = metadata {
-            // TODO validate default
-            type_entry.default = metadata.default.clone();
+            match &mut type_entry.details {
+                TypeEntryDetails::Enum(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                TypeEntryDetails::Struct(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                TypeEntryDetails::Newtype(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                _ => (),
+            }
+            type_entry.check_defaults(self)?;
         }
 
         Ok(self.assign_type(type_entry))

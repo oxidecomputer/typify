@@ -9,8 +9,8 @@ use schemars::schema::{
 
 use crate::{
     type_entry::{
-        StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
-        ValidDefault,
+        DefaultValue, StructProperty, StructPropertyRename, StructPropertyState, TypeEntry,
+        TypeEntryStruct, ValidDefault,
     },
     util::{get_type_name, metadata_description, recase, schema_is_named},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
@@ -407,7 +407,7 @@ fn generate_serde_attr(
             None
         }
         (StructPropertyState::Required, _) => None,
-        (StructPropertyState::Default(value), _) => {
+        (StructPropertyState::Default(DefaultValue(value)), _) => {
             let (fn_name, default_fn) = prop_type.default_fn(value, type_space);
             serde_options.push(quote! { default = #fn_name });
             default_fn
@@ -481,10 +481,10 @@ fn has_default(
         }
 
         // This is a reference that will resolve to this type id later.
-        (None, Some(default)) => StructPropertyState::Default(default.clone()),
+        (None, Some(default)) => StructPropertyState::Default(DefaultValue(default.clone())),
         // All other types as well as types with intrinsic defaults that have
         // been explicitly overridden.
-        (Some(_), Some(default)) => StructPropertyState::Default(default.clone()),
+        (Some(_), Some(default)) => StructPropertyState::Default(DefaultValue(default.clone())),
     }
 }
 
