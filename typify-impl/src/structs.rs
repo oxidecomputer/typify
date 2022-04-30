@@ -1,4 +1,4 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
@@ -10,7 +10,7 @@ use schemars::schema::{
 use crate::{
     type_entry::{
         DefaultValue, StructProperty, StructPropertyRename, StructPropertyState, TypeEntry,
-        TypeEntryStruct, ValidDefault,
+        TypeEntryStruct,
     },
     util::{get_type_name, metadata_description, recase, schema_is_named},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
@@ -348,7 +348,7 @@ pub(crate) fn output_struct_property(
     prop: &StructProperty,
     type_space: &TypeSpace,
     make_pub: bool,
-) -> TokenStream {
+) -> (TokenStream, Option<TokenStream>) {
     let name = format_ident!("{}", prop.name);
     let doc = match &prop.description {
         Some(s) => quote! {#[doc = #s]},
@@ -365,11 +365,12 @@ pub(crate) fn output_struct_property(
 
     // TODO add the default_fn to the type_space... somehow
     let (serde, default_fn) = generate_serde_attr(&prop.rename, &prop.state, prop_type, type_space);
-    quote! {
+    let prop_stream = quote! {
         #doc
         #serde
         #pub_token #name: #type_name,
-    }
+    };
+    (prop_stream, default_fn)
 }
 
 fn generate_serde_attr(
@@ -477,6 +478,10 @@ fn has_default(
         (Some(TypeEntryDetails::Integer(_)), Some(serde_json::Value::Number(n)))
             if n.as_f64() == Some(0.0) =>
         {
+            StructPropertyState::Optional
+        }
+        // Default specified is the same as the implicit default: ""
+        (Some(TypeEntryDetails::String), Some(serde_json::Value::String(s))) if s.is_empty() => {
             StructPropertyState::Optional
         }
 

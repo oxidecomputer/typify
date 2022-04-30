@@ -3,6 +3,7 @@ use std::{env, fs, path::Path};
 
 use schemars::schema::Schema;
 use schemars::JsonSchema;
+use serde::Serialize;
 use typify::TypeSpace;
 
 #[allow(dead_code)]
@@ -14,6 +15,8 @@ struct TestStruct {
     c: bool,
     #[schemars(default = "answer")]
     d: i32,
+    #[schemars(default = "things")]
+    e: Things,
 }
 
 fn nope() -> bool {
@@ -22,6 +25,19 @@ fn nope() -> bool {
 
 fn answer() -> i32 {
     42
+}
+#[allow(dead_code)]
+#[derive(JsonSchema, Serialize)]
+struct Things {
+    aa: u32,
+    bb: String,
+}
+
+fn things() -> Things {
+    Things {
+        aa: 42,
+        bb: "forty-two".to_string(),
+    }
 }
 
 #[allow(dead_code)]

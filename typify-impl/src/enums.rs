@@ -823,15 +823,15 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
         }
 
         VariantDetails::Struct(props) => {
-            let properties = props
+            let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = props
                 .iter()
                 .map(|prop| output_struct_property(prop, type_space, false))
-                .collect::<Vec<_>>();
+                .unzip();
             quote! {
                 #doc
                 #rename
                 #name {
-                    #(#properties)*
+                    #(#prop_streams)*
                 },
             }
         }

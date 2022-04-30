@@ -1,13 +1,15 @@
 // Copyright 2022 Oxide Computer Company
 
+use std::collections::BTreeMap;
+
 use proc_macro2::TokenStream;
 use quote::quote;
 
 use crate::{
     type_entry::{
-        DefaultValue, EnumTagType, StructProperty, StructPropertyState, TypeEntry,
-        TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, ValidDefault,
-        VariantDetails,
+        DefaultValue, EnumTagType, StructProperty, StructPropertyRename, StructPropertyState,
+        TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
+        ValidDefault, VariantDetails,
     },
     DefaultFns, Error, Result, TypeId, TypeSpace,
 };
@@ -48,45 +50,12 @@ impl TypeEntry {
             TypeEntryDetails::Enum(TypeEntryEnum {
                 default: Some(DefaultValue(default)),
                 ..
-            }) => {
-                if let ValidDefault::Generic(default_fn) =
-                    self.validate_default(default, type_space)?
-                {
-                    type_space.defaults.insert(default_fn);
-                }
-            }
-
-            TypeEntryDetails::Struct(TypeEntryStruct {
-                default,
-                properties,
+            })
+            | TypeEntryDetails::Struct(TypeEntryStruct {
+                default: Some(DefaultValue(default)),
                 ..
-            }) => {
-                properties.iter().try_for_each(|prop| {
-                    if let StructProperty {
-                        state: StructPropertyState::Default(DefaultValue(prop_default)),
-                        type_id,
-                        ..
-                    } = prop
-                    {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        if let ValidDefault::Generic(default_fn) =
-                            type_entry.validate_default(prop_default, type_space)?
-                        {
-                            type_space.defaults.insert(default_fn);
-                        }
-                    }
-                    Ok(())
-                })?;
-                if let Some(DefaultValue(default)) = default {
-                    if let ValidDefault::Generic(default_fn) =
-                        self.validate_default(default, type_space)?
-                    {
-                        type_space.defaults.insert(default_fn);
-                    }
-                }
-            }
-
-            TypeEntryDetails::Newtype(TypeEntryNewtype {
+            })
+            | TypeEntryDetails::Newtype(TypeEntryNewtype {
                 default: Some(DefaultValue(default)),
                 ..
             }) => {
@@ -98,8 +67,50 @@ impl TypeEntry {
             }
 
             _ => (),
+        }
+
+        match &self.details {
+            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
+                properties
+                    .iter()
+                    .try_for_each(|prop| Self::check_property_defaults(prop, type_space))?;
+            }
+
+            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) => {
+                variants.iter().try_for_each(|variant| {
+                    if let VariantDetails::Struct(properties) = &variant.details {
+                        properties
+                            .iter()
+                            .try_for_each(|prop| Self::check_property_defaults(prop, type_space))
+                    } else {
+                        Ok(())
+                    }
+                })?;
+            }
+
+            _ => (),
         };
 
+        Ok(())
+    }
+
+    fn check_property_defaults(
+        property: &StructProperty,
+        type_space: &mut TypeSpace,
+    ) -> Result<()> {
+        if let StructProperty {
+            state: StructPropertyState::Default(DefaultValue(prop_default)),
+            type_id,
+            ..
+        } = property
+        {
+            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+            if let ValidDefault::Generic(default_fn) =
+                type_entry.validate_default(prop_default, type_space)?
+            {
+                type_space.defaults.insert(default_fn);
+            }
+        }
         Ok(())
     }
 
@@ -209,19 +220,22 @@ impl TypeEntry {
                 _ => Err(Error::InvalidDefaultValue),
             },
             TypeEntryDetails::Integer(_) if default.is_u64() => {
-                if let Some(value) = default.as_u64() {
-                    if value == 0 {
-                        Ok(ValidDefault::Intrinsic)
-                    } else {
-                        Ok(ValidDefault::Generic(DefaultFns::U64))
-                    }
+                if let Some(0) = default.as_u64() {
+                    Ok(ValidDefault::Intrinsic)
                 } else {
-                    Err(Error::InvalidDefaultValue)
+                    Ok(ValidDefault::Generic(DefaultFns::U64))
                 }
             }
             TypeEntryDetails::Integer(_) => {
-                if let Some(value) = default.as_i64() {
-                    if value == 0 {
+                if let Some(0) = default.as_i64() {
+                    Ok(ValidDefault::Intrinsic)
+                } else {
+                    Ok(ValidDefault::Generic(DefaultFns::I64))
+                }
+            }
+            TypeEntryDetails::Float(_) => {
+                if let Some(value) = default.as_f64() {
+                    if value == 0.0 {
                         Ok(ValidDefault::Intrinsic)
                     } else {
                         Ok(ValidDefault::Generic(DefaultFns::I64))
@@ -230,8 +244,13 @@ impl TypeEntry {
                     Err(Error::InvalidDefaultValue)
                 }
             }
-            TypeEntryDetails::Float(_) => todo!(),
-            TypeEntryDetails::String => todo!(),
+            TypeEntryDetails::String => {
+                if let Some("") = default.as_str() {
+                    Ok(ValidDefault::Intrinsic)
+                } else {
+                    Ok(ValidDefault::Generic(DefaultFns::I64))
+                }
+            }
 
             TypeEntryDetails::Reference(_) => todo!(),
         }
@@ -436,6 +455,8 @@ impl TypeEntryStruct {
     ) -> Option<ValidDefault> {
         validate_default_struct_props(&self.properties, type_space, default)
     }
+
+    // TODO generated a function that produces the default value.
 }
 
 fn validate_default_tuple(
@@ -465,5 +486,73 @@ fn validate_default_struct_props(
     type_space: &TypeSpace,
     default: &serde_json::Value,
 ) -> Option<ValidDefault> {
-    todo!()
+    let map = default.as_object()?;
+
+    // Gather up all properties including those of flattened struct properties;
+    // a tuple of (name: String, type_id: TypeId, required: bool). Then put
+    // them into a map of name -> (type_id, required).
+    let flat_properties = properties
+        .iter()
+        .flat_map(|property| all_props(property, type_space))
+        .map(|(name, type_id, required)| (name, (type_id, required)))
+        .collect::<BTreeMap<_, _>>();
+
+    // Make sure that every value in the map validates properly.
+    map.iter().try_for_each(|(name, default_value)| {
+        let (type_id, _) = flat_properties.get(name)?;
+        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+        type_entry
+            .validate_default(default_value, type_space)
+            .ok()
+            .map(|_| ())
+    })?;
+
+    // Make sure that every requires field is present in the map.
+    flat_properties
+        .iter()
+        .filter(|(_, (_, required))| *required)
+        .try_for_each(|(name, _)| map.get(*name).map(|_| ()))?;
+
+    Some(ValidDefault::Specific)
+}
+
+fn all_props<'a>(
+    property: &'a StructProperty,
+    type_space: &'a TypeSpace,
+) -> Vec<(&'a String, &'a TypeId, bool)> {
+    let name = match &property.rename {
+        StructPropertyRename::None => &property.name,
+        StructPropertyRename::Rename(rename) => rename,
+
+        StructPropertyRename::Flatten => {
+            let type_entry = type_space.id_to_entry.get(&property.type_id).unwrap();
+
+            // This can only be a struct
+            let properties = match &type_entry.details {
+                TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => properties,
+                _ => unreachable!(),
+            };
+
+            let ret = properties
+                .iter()
+                .flat_map(|property| all_props(property, type_space));
+
+            match &property.state {
+                StructPropertyState::Required => return ret.collect(),
+                StructPropertyState::Optional => {
+                    return ret
+                        .map(|(name, type_id, _)| (name, type_id, false))
+                        .collect()
+                }
+                StructPropertyState::Default(_) => unreachable!(),
+            }
+        }
+    };
+
+    let required = match &property.state {
+        StructPropertyState::Required => true,
+        StructPropertyState::Optional | StructPropertyState::Default(_) => false,
+    };
+
+    vec![(name, &property.type_id, required)]
 }

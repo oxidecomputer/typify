@@ -379,20 +379,20 @@ impl TypeEntry {
                 };
 
                 let type_name = format_ident!("{}", name);
-                let properties = properties
+                let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
                     .iter()
                     .map(|prop| output_struct_property(prop, type_space, true))
-                    .collect::<Vec<_>>();
+                    .unzip();
 
                 quote! {
                     #doc
                     #[derive(#(#derives),*)]
                     #serde
                     pub struct #type_name {
-                        #(#properties)*
+                        #(#prop_streams)*
                     }
 
-                    // TODO add any support (e.g. serde default) functions here.
+                    #(#prop_defaults)*
                 }
             }
 
