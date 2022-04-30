@@ -63,8 +63,10 @@ pub(crate) enum TypeEntryDetails {
     Unit,
     /// Built-in complex types with no type generics such as Uuid
     BuiltIn(String),
-    /// Integers and booleans
-    Integral(String),
+    /// Boolean
+    Boolean,
+    /// Integers
+    Integer(String),
     /// Floating point numbers; not Eq, Ord, or Hash
     Float(String),
     /// Strings... which we handle a little specially.
@@ -102,24 +104,24 @@ pub(crate) enum VariantDetails {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct StructProperty {
     pub name: String,
-    pub serde_naming: SerdeNaming,
-    pub serde_rules: SerdeRules,
+    pub rename: StructPropertyRename,
+    pub state: StructPropertyState,
     pub description: Option<String>,
     pub type_id: TypeId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum SerdeNaming {
+pub(crate) enum StructPropertyRename {
     None,
     Rename(String),
     Flatten,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum SerdeRules {
-    None,
-    ImplicitDefault,
-    ExplicitDefault(serde_json::Value),
+pub(crate) enum StructPropertyState {
+    Required,
+    Optional,
+    Default(serde_json::Value),
 }
 
 #[derive(Debug)]
@@ -129,28 +131,22 @@ pub(crate) enum ValidDefault {
     Generic(DefaultFns),
 }
 
-impl Ord for SerdeRules {
+impl Ord for StructPropertyState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         match (self, other) {
-            (SerdeRules::None, SerdeRules::None) => std::cmp::Ordering::Equal,
-            (SerdeRules::None, SerdeRules::ImplicitDefault) => std::cmp::Ordering::Less,
-            (SerdeRules::None, SerdeRules::ExplicitDefault(_)) => std::cmp::Ordering::Less,
-            (SerdeRules::ImplicitDefault, SerdeRules::None) => std::cmp::Ordering::Greater,
-            (SerdeRules::ImplicitDefault, SerdeRules::ImplicitDefault) => std::cmp::Ordering::Equal,
-            (SerdeRules::ImplicitDefault, SerdeRules::ExplicitDefault(_)) => {
-                std::cmp::Ordering::Less
-            }
-            (SerdeRules::ExplicitDefault(_), SerdeRules::None) => std::cmp::Ordering::Greater,
-            (SerdeRules::ExplicitDefault(_), SerdeRules::ImplicitDefault) => {
-                std::cmp::Ordering::Greater
-            }
-            (SerdeRules::ExplicitDefault(_), SerdeRules::ExplicitDefault(_)) => {
-                std::cmp::Ordering::Equal
-            }
+            (Self::Required, Self::Required) => std::cmp::Ordering::Equal,
+            (Self::Required, Self::Optional) => std::cmp::Ordering::Less,
+            (Self::Required, Self::Default(_)) => std::cmp::Ordering::Less,
+            (Self::Optional, Self::Required) => std::cmp::Ordering::Greater,
+            (Self::Optional, Self::Optional) => std::cmp::Ordering::Equal,
+            (Self::Optional, Self::Default(_)) => std::cmp::Ordering::Less,
+            (Self::Default(_), Self::Required) => std::cmp::Ordering::Greater,
+            (Self::Default(_), Self::Optional) => std::cmp::Ordering::Greater,
+            (Self::Default(_), Self::Default(_)) => std::cmp::Ordering::Equal,
         }
     }
 }
-impl PartialOrd for SerdeRules {
+impl PartialOrd for StructPropertyState {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
@@ -237,9 +233,16 @@ impl TypeEntry {
             derives: None,
         }
     }
+    pub(crate) fn new_boolean() -> Self {
+        TypeEntry {
+            details: TypeEntryDetails::Boolean,
+            default: None,
+            derives: None,
+        }
+    }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
-            details: TypeEntryDetails::Integral(type_name.to_string()),
+            details: TypeEntryDetails::Integer(type_name.to_string()),
             default: None,
             derives: None,
         }
@@ -423,7 +426,8 @@ impl TypeEntry {
 
             // These types require no definition as they're already defined.
             TypeEntryDetails::BuiltIn(_)
-            | TypeEntryDetails::Integral(_)
+            | TypeEntryDetails::Boolean
+            | TypeEntryDetails::Integer(_)
             | TypeEntryDetails::Float(_)
             | TypeEntryDetails::String
             | TypeEntryDetails::Option(_)
@@ -533,8 +537,9 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
+            TypeEntryDetails::Boolean => quote! { bool },
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
                 .to_token_stream(),
@@ -609,7 +614,7 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeEntryDetails::Unit | TypeEntryDetails::Integral(_) | TypeEntryDetails::Float(_) => {
+            TypeEntryDetails::Unit | TypeEntryDetails::Boolean|TypeEntryDetails::Integer(_) | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, true)
             }
             TypeEntryDetails::String => quote! { & #lifetime str },
@@ -642,8 +647,9 @@ impl TypeEntry {
                         .join(", ")
                 )
             }
+            TypeEntryDetails::Boolean => "bool".to_string(),
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),
 

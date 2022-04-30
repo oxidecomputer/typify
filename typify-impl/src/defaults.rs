@@ -142,12 +142,12 @@ impl TypeEntry {
                 // TODO Not sure what could be done here...
                 Err(Error::InvalidDefaultValue)
             }
-            TypeEntryDetails::Integral(v) if v == "bool" => match default {
+            TypeEntryDetails::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(ValidDefault::Intrinsic),
                 serde_json::Value::Bool(true) => Ok(ValidDefault::Generic(DefaultFns::Boolean)),
                 _ => Err(Error::InvalidDefaultValue),
             },
-            TypeEntryDetails::Integral(_) if default.is_u64() => {
+            TypeEntryDetails::Integer(_) if default.is_u64() => {
                 if let Some(value) = default.as_u64() {
                     if value == 0 {
                         Ok(ValidDefault::Intrinsic)
@@ -158,7 +158,7 @@ impl TypeEntry {
                     Err(Error::InvalidDefaultValue)
                 }
             }
-            TypeEntryDetails::Integral(_) => {
+            TypeEntryDetails::Integer(_) => {
                 if let Some(value) = default.as_i64() {
                     if value == 0 {
                         Ok(ValidDefault::Intrinsic)
@@ -199,10 +199,8 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => unreachable!(),
             TypeEntryDetails::BuiltIn(_) => todo!(),
-            TypeEntryDetails::Integral(name) if name == "bool" => {
-                ("defaults::default_bool::<false>".to_string(), None)
-            }
-            TypeEntryDetails::Integral(name) => {
+            TypeEntryDetails::Boolean => ("defaults::default_bool::<false>".to_string(), None),
+            TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
                     (
                         format!("defaults::default_u64::<{}, {}>", name, value),

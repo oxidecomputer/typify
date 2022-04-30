@@ -108,8 +108,7 @@ pub struct TypeSpace {
     // enum of a "raw" or a "converted" schema.
     definitions: BTreeMap<String, Schema>,
 
-    // TODO needs an API
-    pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
+    id_to_entry: BTreeMap<TypeId, TypeEntry>,
     type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
@@ -119,8 +118,8 @@ pub struct TypeSpace {
     uses_uuid: bool,
     uses_serde_json: bool,
 
-    pub(crate) type_mod: Option<String>,
-    pub(crate) extra_derives: Vec<TokenStream>,
+    type_mod: Option<String>,
+    extra_derives: Vec<TokenStream>,
 
     defaults: BTreeSet<DefaultFns>,
 }
@@ -184,7 +183,8 @@ impl TypeSpace {
         }
 
         // Convert all types; note that we use the type id assigned from the
-        // previous step because each type may create additional types.
+        // previous step because each type may create additional types. This
+        // effectively is doing the word of `add_type` but in batches.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             let type_name = match ref_name.rfind('/') {
                 Some(idx) => &ref_name[idx..],
@@ -197,8 +197,11 @@ impl TypeSpace {
                 serde_json::to_string(&schema).unwrap()
             );
 
-            let (type_entry, metadata) =
+            let (mut type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
+            if let Some(metadata) = metadata {
+                type_entry.default = metadata.default.clone();
+            }
             let type_entry = match type_entry.details {
                 // The types that are already named are good to go.
                 TypeEntryDetails::Enum(_)
@@ -217,8 +220,7 @@ impl TypeSpace {
                 .into(),
 
                 // For types that don't have names, this is effectively a type
-                // alias which we treat as a newtype (though we could probably
-                // handle it as a actual ).unwrap();type alias).
+                // alias which we treat as a newtype.
                 _ => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
@@ -231,6 +233,12 @@ impl TypeSpace {
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
 
+        // Validate defaults.
+        for index in 0..def_len {
+            let type_id = TypeId(base_id + index);
+            let type_entry = self.id_to_entry.get(&type_id).unwrap();
+        }
+
         // TODO compute appropriate derives, taking care to account for
         // dependency cycles. Currently we're using a more minimal--safe--set
         // of derives than we might otherwise. This notably prevents us from
@@ -241,7 +249,7 @@ impl TypeSpace {
         // type entry at the given ID regardless of whether the type changes.
         for index in 0..def_len {
             let type_id = TypeId(base_id + index);
-            let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
+            let mut type_entry = self.id_to_entry.remove(&type_id).unwrap();
 
             // TODO: we've declared box_id here to avoid allocating it in the
             // ID space twice, but the dedup logic in assign_type() should
@@ -356,8 +364,7 @@ impl TypeSpace {
     /// Add a new type and return a type identifier that may be used in
     /// function signatures or embedded within other types.
     pub fn add_type(&mut self, schema: &Schema) -> Result<TypeId> {
-        let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
-        Ok(self.assign_type(type_entry))
+        self.add_type_with_name(schema, None)
     }
 
     /// Add a new type with a name hint and return a the components necessary
@@ -371,7 +378,12 @@ impl TypeSpace {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        let (type_entry, _) = self.convert_schema(name, schema)?;
+        let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        if let Some(metadata) = metadata {
+            // TODO validate default
+            type_entry.default = metadata.default.clone();
+        }
+
         Ok(self.assign_type(type_entry))
     }
 
@@ -481,14 +493,17 @@ impl TypeSpace {
     }
 
     /// Convert a schema to a TypeEntry and assign it a TypeId.
+    ///
+    /// This is used for sub-types such as the type of an array or the types of
+    /// properties of a struct.
     fn id_for_schema<'a>(
         &mut self,
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
-        let (ty, meta) = self.convert_schema(type_name, schema)?;
+        let (ty, metadata) = self.convert_schema(type_name, schema)?;
         let type_id = self.assign_type(ty);
-        Ok((type_id, meta))
+        Ok((type_id, metadata))
     }
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
@@ -590,8 +605,9 @@ impl<'a> Type<'a> {
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
+            TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
             TypeEntryDetails::String => TypeDetails::Builtin("String"),
 
             // Only used during processing; shouldn't be visible at this point

@@ -891,6 +891,7 @@ impl TypeSpace {
             _ => todo!("unhandled array validation {:#?}", validation),
         }
     }
+
     fn convert_array_of_any<'a>(
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
@@ -906,7 +907,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         _enum_values: &Option<Vec<serde_json::Value>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        Ok((TypeEntry::new_integer("bool"), metadata))
+        Ok((TypeEntry::new_boolean(), metadata))
     }
 
     fn convert_permissive<'a>(
