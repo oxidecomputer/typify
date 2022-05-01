@@ -263,7 +263,7 @@ impl TypeEntry {
     ) -> (String, Option<TokenStream>) {
         match &self.details {
             TypeEntryDetails::Enum(_) => todo!(),
-            TypeEntryDetails::Struct(_) => todo!(),
+            TypeEntryDetails::Struct(details) => details.default_fn(default, type_space),
             TypeEntryDetails::Newtype(_) => todo!(),
 
             TypeEntryDetails::Option(type_id) | TypeEntryDetails::Box(type_id) => type_space
@@ -277,7 +277,11 @@ impl TypeEntry {
             TypeEntryDetails::Set(_) => todo!(),
             TypeEntryDetails::Tuple(_) => todo!(),
 
+            // This can only be covered by the intrinsic default
             TypeEntryDetails::Unit => unreachable!(),
+            // Unclear what if anything we can do here. Perhaps we have to
+            // rely on serde to deserialize the default at runtime, which would
+            // risk an unwrap panic.
             TypeEntryDetails::BuiltIn(_) => todo!(),
             TypeEntryDetails::Boolean => ("defaults::default_bool::<false>".to_string(), None),
             TypeEntryDetails::Integer(name) => {
@@ -456,7 +460,13 @@ impl TypeEntryStruct {
         validate_default_struct_props(&self.properties, type_space, default)
     }
 
-    // TODO generated a function that produces the default value.
+    pub(crate) fn default_fn(
+        &self,
+        default: &serde_json::Value,
+        type_space: &TypeSpace,
+    ) -> (String, Option<TokenStream>) {
+        default_fn_struct_props(&self.properties, default, type_space)
+    }
 }
 
 fn validate_default_tuple(
@@ -488,27 +498,50 @@ fn validate_default_struct_props(
 ) -> Option<ValidDefault> {
     let map = default.as_object()?;
 
-    // Gather up all properties including those of flattened struct properties;
-    // a tuple of (name: String, type_id: TypeId, required: bool). Then put
-    // them into a map of name -> (type_id, required).
-    let flat_properties = properties
+    // Gather up all properties including those of flattened struct properties:
+    // a tuple of (name: Option<String>, type_id: TypeId, required: bool). We
+    // partition these into the named_properties which we then put into a map
+    // with the property name as the key, and unnamed_properties which consists
+    // of properties from flattened maps which have types but not names.
+    let (named_properties, unnamed_properties): (Vec<_>, Vec<_>) = properties
         .iter()
         .flat_map(|property| all_props(property, type_space))
-        .map(|(name, type_id, required)| (name, (type_id, required)))
+        .partition(|(name, _, _)| name.is_some());
+
+    let named_properties = named_properties
+        .into_iter()
+        .map(|(name, type_id, required)| (name.unwrap(), (type_id, required)))
         .collect::<BTreeMap<_, _>>();
+    let unnamed_properties = unnamed_properties
+        .into_iter()
+        .map(|(_, type_id, _)| type_id)
+        .collect::<Vec<_>>();
 
     // Make sure that every value in the map validates properly.
     map.iter().try_for_each(|(name, default_value)| {
-        let (type_id, _) = flat_properties.get(name)?;
-        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-        type_entry
-            .validate_default(default_value, type_space)
-            .ok()
-            .map(|_| ())
+        // If there's a matching, named property, the value needs to validate.
+        // Otherwise it needs to validate against the schema of one of the
+        // unnamed properties.
+        if let Some((type_id, _)) = named_properties.get(name) {
+            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+            type_entry
+                .validate_default(default_value, type_space)
+                .ok()
+                .map(|_| ())
+        } else if unnamed_properties.iter().any(|type_id| {
+            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+            type_entry
+                .validate_default(default_value, type_space)
+                .is_ok()
+        }) {
+            Some(())
+        } else {
+            None
+        }
     })?;
 
     // Make sure that every requires field is present in the map.
-    flat_properties
+    named_properties
         .iter()
         .filter(|(_, (_, required))| *required)
         .try_for_each(|(name, _)| map.get(*name).map(|_| ()))?;
@@ -519,40 +552,81 @@ fn validate_default_struct_props(
 fn all_props<'a>(
     property: &'a StructProperty,
     type_space: &'a TypeSpace,
-) -> Vec<(&'a String, &'a TypeId, bool)> {
-    let name = match &property.rename {
-        StructPropertyRename::None => &property.name,
-        StructPropertyRename::Rename(rename) => rename,
+) -> Vec<(Option<&'a String>, &'a TypeId, bool)> {
+    let maybe_name = match &property.rename {
+        StructPropertyRename::None => Some(&property.name),
+        StructPropertyRename::Rename(rename) => Some(rename),
+        StructPropertyRename::Flatten => None,
+    };
 
-        StructPropertyRename::Flatten => {
-            let type_entry = type_space.id_to_entry.get(&property.type_id).unwrap();
+    if let Some(name) = maybe_name {
+        let required = match &property.state {
+            StructPropertyState::Required => true,
+            StructPropertyState::Optional | StructPropertyState::Default(_) => false,
+        };
 
-            // This can only be a struct
-            let properties = match &type_entry.details {
-                TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => properties,
-                _ => unreachable!(),
+        vec![(Some(name), &property.type_id, required)]
+    } else {
+        // The type must be a struct, an option for a struct, or a map.
+        let type_entry = type_space.id_to_entry.get(&property.type_id).unwrap();
+
+        let (properties, all_required) = match &type_entry.details {
+            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
+                let optional = matches!(&property.state, StructPropertyState::Optional);
+                (properties, !optional)
+            }
+            TypeEntryDetails::Option(type_id) => {
+                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                if let TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) =
+                    &type_entry.details
+                {
+                    (properties, false)
+                } else {
+                    unreachable!()
+                }
+            }
+
+            TypeEntryDetails::Map(type_id) => return vec![(None, type_id, false)],
+            _ => unreachable!(),
+        };
+
+        properties
+            .iter()
+            .flat_map(|property| all_props(property, type_space))
+            .map(|(name, type_id, required)| (name, type_id, required && all_required))
+            .collect()
+    }
+}
+
+fn default_fn_struct_props(
+    properties: &[StructProperty],
+    default: &serde_json::Value,
+    type_space: &TypeSpace,
+) -> (String, Option<TokenStream>) {
+    let map = default.as_object().unwrap();
+
+    let prop_map = properties
+        .iter()
+        .filter_map(|prop| {
+            let name = match &prop.rename {
+                StructPropertyRename::None => &prop.name,
+                StructPropertyRename::Rename(rename) => rename,
+                StructPropertyRename::Flatten => return None,
             };
 
-            let ret = properties
-                .iter()
-                .flat_map(|property| all_props(property, type_space));
+            Some((name, prop))
+        })
+        .collect::<BTreeMap<_, _>>();
 
-            match &property.state {
-                StructPropertyState::Required => return ret.collect(),
-                StructPropertyState::Optional => {
-                    return ret
-                        .map(|(name, type_id, _)| (name, type_id, false))
-                        .collect()
-                }
-                StructPropertyState::Default(_) => unreachable!(),
-            }
-        }
-    };
+    let direct_props = map.iter().filter_map(|(name, value)| {
+        // It's okay if the property isn't in the prop_map... we've already
+        // validated this default so it must work for one of the flattened properties.
+        let prop = prop_map.get(name)?;
+        let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+        let x = type_entry.default_fn(value, type_space);
 
-    let required = match &property.state {
-        StructPropertyState::Required => true,
-        StructPropertyState::Optional | StructPropertyState::Default(_) => false,
-    };
+        Some(quote! { #name: #value,})
+    });
 
-    vec![(name, &property.type_id, required)]
+    todo!()
 }
