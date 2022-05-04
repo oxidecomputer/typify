@@ -19,6 +19,7 @@ mod enums;
 mod structs;
 mod type_entry;
 mod util;
+mod value;
 
 #[derive(Error, Debug)]
 pub enum Error {

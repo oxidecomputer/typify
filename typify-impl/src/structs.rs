@@ -348,6 +348,7 @@ pub(crate) fn output_struct_property(
     prop: &StructProperty,
     type_space: &TypeSpace,
     make_pub: bool,
+    type_name: &str,
 ) -> (TokenStream, Option<TokenStream>) {
     let name = format_ident!("{}", prop.name);
     let doc = match &prop.description {
@@ -356,6 +357,15 @@ pub(crate) fn output_struct_property(
     };
 
     let prop_type = type_space.id_to_entry.get(&prop.type_id).unwrap();
+    let (serde, default_fn) = generate_serde_attr(
+        type_name,
+        &prop.name,
+        &prop.rename,
+        &prop.state,
+        prop_type,
+        type_space,
+    );
+
     let type_name = prop_type.type_ident(type_space, false);
     let pub_token = if make_pub {
         quote! { pub }
@@ -363,8 +373,6 @@ pub(crate) fn output_struct_property(
         quote! {}
     };
 
-    // TODO add the default_fn to the type_space... somehow
-    let (serde, default_fn) = generate_serde_attr(&prop.rename, &prop.state, prop_type, type_space);
     let prop_stream = quote! {
         #doc
         #serde
@@ -374,13 +382,15 @@ pub(crate) fn output_struct_property(
 }
 
 fn generate_serde_attr(
-    serde_naming: &StructPropertyRename,
+    type_name: &str,
+    prop_name: &str,
+    naming: &StructPropertyRename,
     state: &StructPropertyState,
     prop_type: &TypeEntry,
     type_space: &TypeSpace,
 ) -> (TokenStream, Option<TokenStream>) {
     let mut serde_options = Vec::new();
-    match serde_naming {
+    match naming {
         StructPropertyRename::Rename(s) => serde_options.push(quote! { rename = #s }),
         StructPropertyRename::Flatten => serde_options.push(quote! { flatten }),
         StructPropertyRename::None => (),
@@ -409,7 +419,8 @@ fn generate_serde_attr(
         }
         (StructPropertyState::Required, _) => None,
         (StructPropertyState::Default(DefaultValue(value)), _) => {
-            let (fn_name, default_fn) = prop_type.default_fn(value, type_space);
+            let (fn_name, default_fn) =
+                prop_type.default_fn(value, type_space, type_name, prop_name);
             serde_options.push(quote! { default = #fn_name });
             default_fn
         }

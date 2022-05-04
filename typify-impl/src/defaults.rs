@@ -2,15 +2,17 @@
 
 use std::collections::BTreeMap;
 
+use convert_case::Case;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 
 use crate::{
     type_entry::{
         DefaultValue, EnumTagType, StructProperty, StructPropertyRename, StructPropertyState,
         TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
-        ValidDefault, VariantDetails,
+        ValidDefault, Variant, VariantDetails,
     },
+    util::sanitize,
     DefaultFns, Error, Result, TypeId, TypeSpace,
 };
 
@@ -120,12 +122,27 @@ impl TypeEntry {
         type_space: &TypeSpace,
     ) -> Result<ValidDefault> {
         match &self.details {
-            TypeEntryDetails::Enum(t) => t
-                .validate_default(default, type_space)
-                .ok_or(Error::InvalidDefaultValue),
-            TypeEntryDetails::Struct(t) => t
-                .validate_default(default, type_space)
-                .ok_or(Error::InvalidDefaultValue),
+            TypeEntryDetails::Enum(TypeEntryEnum {
+                tag_type, variants, ..
+            }) => match tag_type {
+                EnumTagType::External => {
+                    validate_default_for_external_enum(type_space, variants, default)
+                }
+                EnumTagType::Internal { tag } => {
+                    validate_default_for_internal_enum(type_space, variants, default, tag)
+                }
+                EnumTagType::Adjacent { tag, content } => {
+                    validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
+                }
+                EnumTagType::Untagged => {
+                    validate_default_for_untagged_enum(type_space, variants, default)
+                }
+            }
+            .ok_or(Error::InvalidDefaultValue),
+            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
+                validate_default_struct_props(properties, type_space, default)
+                    .ok_or(Error::InvalidDefaultValue)
+            }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => type_space
                 .id_to_entry
@@ -260,213 +277,160 @@ impl TypeEntry {
         &self,
         default: &serde_json::Value,
         type_space: &TypeSpace,
+        type_name: &str,
+        prop_name: &str,
     ) -> (String, Option<TokenStream>) {
-        match &self.details {
-            TypeEntryDetails::Enum(_) => todo!(),
-            TypeEntryDetails::Struct(details) => details.default_fn(default, type_space),
-            TypeEntryDetails::Newtype(_) => todo!(),
-
-            TypeEntryDetails::Option(type_id) | TypeEntryDetails::Box(type_id) => type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .default_fn(default, type_space),
-
-            TypeEntryDetails::Array(_) => todo!(),
-            TypeEntryDetails::Map(_) => todo!(),
-            TypeEntryDetails::Set(_) => todo!(),
-            TypeEntryDetails::Tuple(_) => todo!(),
-
+        let maybe_builtin = match &self.details {
             // This can only be covered by the intrinsic default
             TypeEntryDetails::Unit => unreachable!(),
-            // Unclear what if anything we can do here. Perhaps we have to
-            // rely on serde to deserialize the default at runtime, which would
-            // risk an unwrap panic.
-            TypeEntryDetails::BuiltIn(_) => todo!(),
-            TypeEntryDetails::Boolean => ("defaults::default_bool::<false>".to_string(), None),
+            TypeEntryDetails::Boolean => Some("defaults::default_bool::<false>".to_string()),
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
-                    (
-                        format!("defaults::default_u64::<{}, {}>", name, value),
-                        None,
-                    )
+                    Some(format!("defaults::default_u64::<{}, {}>", name, value))
                 } else if let Some(value) = default.as_i64() {
-                    (
-                        format!("defaults::default_i64::<{}, {}>", name, value),
-                        None,
-                    )
+                    Some(format!("defaults::default_i64::<{}, {}>", name, value))
                 } else {
                     panic!()
                 }
             }
-            TypeEntryDetails::Float(_) => todo!(),
-            TypeEntryDetails::String => todo!(),
-            TypeEntryDetails::Reference(_) => todo!(),
+            _ => None,
+        };
+
+        if let Some(fn_name) = maybe_builtin {
+            (fn_name, None)
+        } else {
+            let n = self.type_ident(type_space, false);
+            let value = self.value(type_space, default).unwrap();
+            let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
+            let fn_ident = format_ident!("{}", fn_name);
+            let def = quote! {
+                fn #fn_ident() -> #n { #value }
+            };
+            (fn_name, Some(def))
         }
     }
 }
 
-impl TypeEntryEnum {
-    pub(crate) fn validate_default(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> Option<ValidDefault> {
-        match &self.tag_type {
-            EnumTagType::External => self.validate_default_external(default, type_space),
-            EnumTagType::Internal { tag } => {
-                self.validate_default_internal(default, type_space, tag)
-            }
-            EnumTagType::Adjacent { tag, content } => {
-                self.validate_default_adjacent(default, type_space, tag, content)
-            }
-            EnumTagType::Untagged => self.validate_default_untagged(default, type_space),
+pub(crate) fn validate_default_for_external_enum(
+    type_space: &TypeSpace,
+    variants: &[Variant],
+    default: &serde_json::Value,
+) -> Option<ValidDefault> {
+    if let Some(simple_name) = default.as_str() {
+        let variant = variants
+            .iter()
+            .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+
+        match &variant.details {
+            VariantDetails::Simple => Some(ValidDefault::Specific),
+            _ => None,
         }
-    }
-
-    pub(crate) fn validate_default_external(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> Option<ValidDefault> {
-        if let Some(simple_name) = default.as_str() {
-            let variant = self
-                .variants
-                .iter()
-                .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-
-            match &variant.details {
-                VariantDetails::Simple => Some(ValidDefault::Specific),
-                _ => None,
-            }
-        } else if let Some(map) = default.as_object() {
-            if map.len() != 1 {
-                None?
-            }
-
-            let (name, value) = map.iter().next()?;
-
-            let variant = self
-                .variants
-                .iter()
-                .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-
-            match &variant.details {
-                VariantDetails::Simple => None,
-                VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, value),
-                VariantDetails::Struct(props) => {
-                    validate_default_struct_props(props, type_space, value)
-                }
-            }
-        } else {
-            None
-        }
-    }
-
-    pub(crate) fn validate_default_internal(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-        tag: &str,
-    ) -> Option<ValidDefault> {
+    } else {
         let map = default.as_object()?;
-        let name = map.get(tag).and_then(serde_json::Value::as_str)?;
-        let variant = self
-            .variants
+        if map.len() != 1 {
+            None?
+        }
+
+        let (name, value) = map.iter().next()?;
+
+        let variant = variants
             .iter()
             .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
 
         match &variant.details {
+            VariantDetails::Simple => None,
+            VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, value),
             VariantDetails::Struct(props) => {
-                // Make an object without the tag.
-                let inner_default = serde_json::Value::Object(
-                    map.clone()
-                        .into_iter()
-                        .filter(|(name, _)| name != tag)
-                        .collect(),
-                );
-
-                validate_default_struct_props(props, type_space, &inner_default)
-            }
-            _ => unreachable!(),
-        }
-    }
-
-    pub(crate) fn validate_default_adjacent(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-        tag: &str,
-        content: &str,
-    ) -> Option<ValidDefault> {
-        let map = default.as_object()?;
-
-        let (tag_value, content_value) = match (
-            map.len(),
-            map.get(tag).and_then(serde_json::Value::as_str),
-            map.get(content),
-        ) {
-            (1, Some(tag_value), None) => (tag_value, None),
-            (2, Some(tag_value), content_value @ Some(_)) => (tag_value, content_value),
-            _ => None?,
-        };
-
-        let variant = self
-            .variants
-            .iter()
-            .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
-
-        match &variant.details {
-            VariantDetails::Simple => {
-                // A simple variant expects no value
-                if content_value.is_none() {
-                    Some(ValidDefault::Specific)
-                } else {
-                    None
-                }
-            }
-            VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, content_value?),
-            VariantDetails::Struct(props) => {
-                validate_default_struct_props(props, type_space, content_value?)
+                validate_default_struct_props(props, type_space, value)
             }
         }
-    }
-
-    pub(crate) fn validate_default_untagged(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> Option<ValidDefault> {
-        self.variants.iter().find_map(|variant| {
-            // The name of the variant is not meaningful; we just need to see
-            // if any of the variants are valid with the given default.
-            match &variant.details {
-                VariantDetails::Simple => default.as_null().map(|_| ValidDefault::Specific),
-                VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
-                VariantDetails::Struct(props) => {
-                    validate_default_struct_props(props, type_space, default)
-                }
-            }
-        })
     }
 }
 
-impl TypeEntryStruct {
-    pub(crate) fn validate_default(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> Option<ValidDefault> {
-        validate_default_struct_props(&self.properties, type_space, default)
-    }
+pub(crate) fn validate_default_for_internal_enum(
+    type_space: &TypeSpace,
+    variants: &[Variant],
+    default: &serde_json::Value,
+    tag: &str,
+) -> Option<ValidDefault> {
+    let map = default.as_object()?;
+    let name = map.get(tag).and_then(serde_json::Value::as_str)?;
+    let variant = variants
+        .iter()
+        .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
 
-    pub(crate) fn default_fn(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-    ) -> (String, Option<TokenStream>) {
-        default_fn_struct_props(&self.properties, default, type_space)
+    match &variant.details {
+        VariantDetails::Struct(props) => {
+            // Make an object without the tag.
+            let inner_default = serde_json::Value::Object(
+                map.clone()
+                    .into_iter()
+                    .filter(|(name, _)| name != tag)
+                    .collect(),
+            );
+
+            validate_default_struct_props(props, type_space, &inner_default)
+        }
+        VariantDetails::Simple => Some(ValidDefault::Specific),
+        VariantDetails::Tuple(_) => unreachable!(),
     }
+}
+
+pub(crate) fn validate_default_for_adjacent_enum(
+    type_space: &TypeSpace,
+    variants: &[Variant],
+    default: &serde_json::Value,
+    tag: &str,
+    content: &str,
+) -> Option<ValidDefault> {
+    let map = default.as_object()?;
+
+    let (tag_value, content_value) = match (
+        map.len(),
+        map.get(tag).and_then(serde_json::Value::as_str),
+        map.get(content),
+    ) {
+        (1, Some(tag_value), None) => (tag_value, None),
+        (2, Some(tag_value), content_value @ Some(_)) => (tag_value, content_value),
+        _ => None?,
+    };
+
+    let variant = variants
+        .iter()
+        .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
+
+    match &variant.details {
+        VariantDetails::Simple => {
+            // A simple variant expects no value
+            if content_value.is_none() {
+                Some(ValidDefault::Specific)
+            } else {
+                None
+            }
+        }
+        VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, content_value?),
+        VariantDetails::Struct(props) => {
+            validate_default_struct_props(props, type_space, content_value?)
+        }
+    }
+}
+
+pub(crate) fn validate_default_for_untagged_enum(
+    type_space: &TypeSpace,
+    variants: &[Variant],
+    default: &serde_json::Value,
+) -> Option<ValidDefault> {
+    variants.iter().find_map(|variant| {
+        // The name of the variant is not meaningful; we just need to see
+        // if any of the variants are valid with the given default.
+        match &variant.details {
+            VariantDetails::Simple => default.as_null().map(|_| ValidDefault::Specific),
+            VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
+            VariantDetails::Struct(props) => {
+                validate_default_struct_props(props, type_space, default)
+            }
+        }
+    })
 }
 
 fn validate_default_tuple(
@@ -596,37 +560,4 @@ fn all_props<'a>(
             .map(|(name, type_id, required)| (name, type_id, required && all_required))
             .collect()
     }
-}
-
-fn default_fn_struct_props(
-    properties: &[StructProperty],
-    default: &serde_json::Value,
-    type_space: &TypeSpace,
-) -> (String, Option<TokenStream>) {
-    let map = default.as_object().unwrap();
-
-    let prop_map = properties
-        .iter()
-        .filter_map(|prop| {
-            let name = match &prop.rename {
-                StructPropertyRename::None => &prop.name,
-                StructPropertyRename::Rename(rename) => rename,
-                StructPropertyRename::Flatten => return None,
-            };
-
-            Some((name, prop))
-        })
-        .collect::<BTreeMap<_, _>>();
-
-    let direct_props = map.iter().filter_map(|(name, value)| {
-        // It's okay if the property isn't in the prop_map... we've already
-        // validated this default so it must work for one of the flattened properties.
-        let prop = prop_map.get(name)?;
-        let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let x = type_entry.default_fn(value, type_space);
-
-        Some(quote! { #name: #value,})
-    });
-
-    todo!()
 }

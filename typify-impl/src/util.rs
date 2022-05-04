@@ -463,7 +463,7 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
     Some(sanitize(&raw_name, Case::Pascal))
 }
 
-fn sanitize(input: &str, case: Case) -> String {
+pub(crate) fn sanitize(input: &str, case: Case) -> String {
     // If every case was special then none of them would be.
     let out = match input {
         "+1" => "plus1".to_string(),

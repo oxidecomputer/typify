@@ -45,8 +45,8 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     // in particular for cyclic types i.e. those for which the type itself is a
     // reference.
     //
-    // If we have converted the type already, use that, otherwise convert schema
-    // object
+    // If we have converted the type already, use that, otherwise convert the
+    // schema object.
     let ty = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
         type_space.id_to_entry.get(already_type_id).unwrap().clone()
     } else {
@@ -103,7 +103,7 @@ pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, false) {
         println!("{:#?}", schema);
-        println!("actual: {}", output.to_string());
+        println!("actual: {}", output);
         println!("expected: {}", name);
         panic!("{}", err);
     }

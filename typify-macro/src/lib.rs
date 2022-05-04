@@ -59,7 +59,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         serde_json::from_reader(std::fs::File::open(&path).map_err(|e| {
             syn::Error::new(
                 schema.span(),
-                format!("couldn't read file {}: {}", schema.value(), e.to_string()),
+                format!("couldn't read file {}: {}", schema.value(), e),
             )
         })?)
         .unwrap();

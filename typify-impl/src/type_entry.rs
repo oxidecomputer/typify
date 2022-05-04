@@ -338,10 +338,21 @@ impl TypeEntry {
 
                 let variants_decl = variants
                     .iter()
-                    .map(|variant| output_variant(variant, type_space))
+                    .map(|variant| output_variant(variant, type_space, name))
                     .collect::<Vec<_>>();
 
                 let enum_impl = enum_impl(&type_name, variants);
+
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
 
                 quote! {
                     #doc
@@ -352,6 +363,7 @@ impl TypeEntry {
                     }
 
                     #enum_impl
+                    #default_impl
                 }
             }
 
@@ -381,8 +393,19 @@ impl TypeEntry {
                 let type_name = format_ident!("{}", name);
                 let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
                     .iter()
-                    .map(|prop| output_struct_property(prop, type_space, true))
+                    .map(|prop| output_struct_property(prop, type_space, true, name))
                     .unzip();
+
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
 
                 quote! {
                     #doc
@@ -393,6 +416,8 @@ impl TypeEntry {
                     }
 
                     #(#prop_defaults)*
+
+                    #default_impl
                 }
             }
 
@@ -415,6 +440,17 @@ impl TypeEntry {
                 let sub_type = type_space.id_to_entry.get(type_id).unwrap();
                 let sub_type_name = sub_type.type_ident(type_space, false);
 
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
+
                 quote! {
                     #doc
                     #[derive(#(#derives),*)]
@@ -427,6 +463,8 @@ impl TypeEntry {
                             &self.0
                         }
                     }
+
+                    #default_impl
                 }
             }
 

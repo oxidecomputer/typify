@@ -363,21 +363,21 @@ impl TypeSpace {
         format: &Option<String>,
         _validation: &Option<Box<schemars::schema::StringValidation>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        trait OptionIsNoneOrDefault {
-            fn is_none_or_default(&self) -> bool;
-        }
+        // trait OptionIsNoneOrDefault {
+        //     fn is_none_or_default(&self) -> bool;
+        // }
 
-        impl<T> OptionIsNoneOrDefault for Option<T>
-        where
-            T: Default + PartialEq,
-        {
-            fn is_none_or_default(&self) -> bool {
-                match self {
-                    Some(t) => t == &T::default(),
-                    None => true,
-                }
-            }
-        }
+        // impl<T> OptionIsNoneOrDefault for Option<T>
+        // where
+        //     T: Default + PartialEq,
+        // {
+        //     fn is_none_or_default(&self) -> bool {
+        //         match self {
+        //             Some(t) => t == &T::default(),
+        //             None => true,
+        //         }
+        //     }
+        // }
         match format.as_ref().map(String::as_str) {
             None => {
                 // TODO we'll need to deal with strings with lengths and
@@ -773,8 +773,9 @@ impl TypeSpace {
     /// several cases to consider:
     ///
     /// Options expressed as enums are uncommon since { "type": [ "null",
-    /// "xxx"], ... } is a much simpler construction. Nevertheless, an option
-    /// may be expressed as a one of with two subschemas where one is null.
+    /// "<type>"], ... } is a much simpler construction. Nevertheless, an
+    /// option may be expressed as a "one of" with two subschemas where one is
+    /// null.
     ///
     /// Externally tagged enums are comprised of either an enumerated set of
     /// string values or objects that have a single required member. The
