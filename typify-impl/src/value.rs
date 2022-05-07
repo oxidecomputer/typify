@@ -124,9 +124,7 @@ impl TypeEntry {
                 quote! { #v }
             }
             TypeEntryDetails::Integer(type_name) | TypeEntryDetails::Float(type_name) => {
-                if !value.is_number() {
-                    None?
-                }
+                value.is_number().then(|| ())?;
                 let val = match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name))
                 {
                     Ok(v) => v,
@@ -154,23 +152,23 @@ fn value_for_external_enum(
         let variant = variants
             .iter()
             .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
+
         let var_ident = format_ident!("{}", &variant.name);
         let type_ident = format_ident!("{}", type_name);
         Some(quote! { #type_ident :: #var_ident })
     } else {
         let map = value.as_object()?;
-        if map.len() != 1 {
-            None?
-        }
+        (map.len() == 1).then(|| ())?;
 
         let (name, var_value) = map.iter().next()?;
 
         let variant = variants
             .iter()
             .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+
         let var_ident = format_ident!("{}", &variant.name);
         let type_ident = format_ident!("{}", type_name);
-
         match &variant.details {
             VariantDetails::Simple => None,
             VariantDetails::Tuple(types) => {
@@ -203,6 +201,7 @@ fn value_for_internal_enum(
     match &variant.details {
         VariantDetails::Simple => Some(quote! { #type_ident :: #var_ident }),
         VariantDetails::Struct(props) => {
+            // Make an object without the tag.
             let inner_value = serde_json::Value::Object(
                 map.clone()
                     .into_iter()
@@ -213,7 +212,7 @@ fn value_for_internal_enum(
             let props = value_for_struct_props(props, &inner_value, type_space)?;
             Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
         }
-        VariantDetails::Tuple(_) => None,
+        VariantDetails::Tuple(_) => unreachable!(),
     }
 }
 
@@ -234,7 +233,7 @@ fn value_for_adjacent_enum(
     ) {
         (1, Some(tag_value), None) => (tag_value, None),
         (2, Some(tag_value), content_value @ Some(_)) => (tag_value, content_value),
-        _ => None?,
+        _ => return None,
     };
 
     let variant = variants
@@ -243,22 +242,17 @@ fn value_for_adjacent_enum(
     let type_ident = format_ident!("{}", type_name);
     let var_ident = format_ident!("{}", &variant.name);
 
-    match &variant.details {
-        VariantDetails::Simple => {
-            // A simple variant expects no value.
-            if content_value.is_some() {
-                None?
-            }
-            Some(quote! { #type_ident :: #var_ident})
-        }
-        VariantDetails::Tuple(types) => {
-            let tup = value_for_tuple(type_space, content_value?, types)?;
+    match (&variant.details, content_value) {
+        (VariantDetails::Simple, None) => Some(quote! { #type_ident :: #var_ident}),
+        (VariantDetails::Tuple(types), Some(content_value)) => {
+            let tup = value_for_tuple(type_space, content_value, types)?;
             Some(quote! { #type_ident :: #var_ident ( #( #tup ),* ) })
         }
-        VariantDetails::Struct(props) => {
-            let props = value_for_struct_props(props, content_value?, type_space)?;
+        (VariantDetails::Struct(props), Some(content_value)) => {
+            let props = value_for_struct_props(props, content_value, type_space)?;
             Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
         }
+        _ => None,
     }
 }
 
@@ -294,9 +288,7 @@ fn value_for_tuple(
     types: &[TypeId],
 ) -> Option<Vec<TokenStream>> {
     let arr = value.as_array()?;
-    if arr.len() != types.len() {
-        None?
-    }
+    (arr.len() == types.len()).then(|| ())?;
     types
         .iter()
         .zip(arr)

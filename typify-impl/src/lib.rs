@@ -122,11 +122,12 @@ pub struct TypeSpace {
     type_mod: Option<String>,
     extra_derives: Vec<TokenStream>,
 
-    defaults: BTreeSet<DefaultFns>,
+    // Shared functions for generating default values
+    defaults: BTreeSet<DefaultImpl>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum DefaultFns {
+pub(crate) enum DefaultImpl {
     Boolean,
     I64,
     U64,

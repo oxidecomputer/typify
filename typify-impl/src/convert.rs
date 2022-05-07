@@ -984,8 +984,6 @@ mod tests {
     fn int_helper<T: JsonSchema>() {
         let schema = schema_for!(T);
 
-        println!("{:#?}", schema);
-
         let mut type_space = TypeSpace::default();
         type_space
             .add_ref_types(schema.definitions.clone())

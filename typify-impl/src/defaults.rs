@@ -13,18 +13,20 @@ use crate::{
         ValidDefault, Variant, VariantDetails,
     },
     util::sanitize,
-    DefaultFns, Error, Result, TypeId, TypeSpace,
+    DefaultImpl, Error, Result, TypeId, TypeSpace,
 };
 
-impl From<&DefaultFns> for TokenStream {
-    fn from(default: &DefaultFns) -> Self {
+// Implementations for "stock" default functions so we don't litter the
+// namespace with many that are effectively identical.
+impl From<&DefaultImpl> for TokenStream {
+    fn from(default: &DefaultImpl) -> Self {
         match default {
-            DefaultFns::Boolean => quote! {
+            DefaultImpl::Boolean => quote! {
                 pub(super) fn default_bool<const V: bool>() -> bool {
                     V
                 }
             },
-            DefaultFns::I64 => quote! {
+            DefaultImpl::I64 => quote! {
                 pub(super) fn default_i64<T, const V: i64>() -> T
                 where
                     T: std::convert::TryFrom<i64>,
@@ -33,7 +35,7 @@ impl From<&DefaultFns> for TokenStream {
                     T::try_from(V).unwrap()
                 }
             },
-            DefaultFns::U64 => quote! {
+            DefaultImpl::U64 => quote! {
                 pub(super) fn default_u64<T, const V: u64>() -> T
                 where
                     T: std::convert::TryFrom<u64>,
@@ -48,6 +50,7 @@ impl From<&DefaultFns> for TokenStream {
 
 impl TypeEntry {
     pub(crate) fn check_defaults(&self, type_space: &mut TypeSpace) -> Result<()> {
+        // Check the "whole-type" default.
         match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
                 default: Some(DefaultValue(default)),
@@ -71,6 +74,8 @@ impl TypeEntry {
             _ => (),
         }
 
+        // Check default values for struct properties or those of struct-type
+        // enum variants.
         match &self.details {
             TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
                 properties
@@ -233,21 +238,21 @@ impl TypeEntry {
             }
             TypeEntryDetails::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(ValidDefault::Intrinsic),
-                serde_json::Value::Bool(true) => Ok(ValidDefault::Generic(DefaultFns::Boolean)),
+                serde_json::Value::Bool(true) => Ok(ValidDefault::Generic(DefaultImpl::Boolean)),
                 _ => Err(Error::InvalidDefaultValue),
             },
             TypeEntryDetails::Integer(_) if default.is_u64() => {
                 if let Some(0) = default.as_u64() {
                     Ok(ValidDefault::Intrinsic)
                 } else {
-                    Ok(ValidDefault::Generic(DefaultFns::U64))
+                    Ok(ValidDefault::Generic(DefaultImpl::U64))
                 }
             }
             TypeEntryDetails::Integer(_) => {
                 if let Some(0) = default.as_i64() {
                     Ok(ValidDefault::Intrinsic)
                 } else {
-                    Ok(ValidDefault::Generic(DefaultFns::I64))
+                    Ok(ValidDefault::Generic(DefaultImpl::I64))
                 }
             }
             TypeEntryDetails::Float(_) => {
@@ -255,7 +260,7 @@ impl TypeEntry {
                     if value == 0.0 {
                         Ok(ValidDefault::Intrinsic)
                     } else {
-                        Ok(ValidDefault::Generic(DefaultFns::I64))
+                        Ok(ValidDefault::Generic(DefaultImpl::I64))
                     }
                 } else {
                     Err(Error::InvalidDefaultValue)
@@ -265,7 +270,7 @@ impl TypeEntry {
                 if let Some("") = default.as_str() {
                     Ok(ValidDefault::Intrinsic)
                 } else {
-                    Ok(ValidDefault::Generic(DefaultFns::I64))
+                    Ok(ValidDefault::Generic(DefaultImpl::I64))
                 }
             }
 
@@ -320,16 +325,12 @@ pub(crate) fn validate_default_for_external_enum(
         let variant = variants
             .iter()
             .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
 
-        match &variant.details {
-            VariantDetails::Simple => Some(ValidDefault::Specific),
-            _ => None,
-        }
+        Some(ValidDefault::Specific)
     } else {
         let map = default.as_object()?;
-        if map.len() != 1 {
-            None?
-        }
+        (map.len() == 1).then(|| ())?;
 
         let (name, value) = map.iter().next()?;
 
@@ -360,6 +361,7 @@ pub(crate) fn validate_default_for_internal_enum(
         .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
 
     match &variant.details {
+        VariantDetails::Simple => Some(ValidDefault::Specific),
         VariantDetails::Struct(props) => {
             // Make an object without the tag.
             let inner_default = serde_json::Value::Object(
@@ -371,7 +373,6 @@ pub(crate) fn validate_default_for_internal_enum(
 
             validate_default_struct_props(props, type_space, &inner_default)
         }
-        VariantDetails::Simple => Some(ValidDefault::Specific),
         VariantDetails::Tuple(_) => unreachable!(),
     }
 }
@@ -392,26 +393,22 @@ pub(crate) fn validate_default_for_adjacent_enum(
     ) {
         (1, Some(tag_value), None) => (tag_value, None),
         (2, Some(tag_value), content_value @ Some(_)) => (tag_value, content_value),
-        _ => None?,
+        _ => return None,
     };
 
     let variant = variants
         .iter()
         .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
 
-    match &variant.details {
-        VariantDetails::Simple => {
-            // A simple variant expects no value
-            if content_value.is_none() {
-                Some(ValidDefault::Specific)
-            } else {
-                None
-            }
+    match (&variant.details, content_value) {
+        (VariantDetails::Simple, None) => Some(ValidDefault::Specific),
+        (VariantDetails::Tuple(tup), Some(content_value)) => {
+            validate_default_tuple(tup, type_space, content_value)
         }
-        VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, content_value?),
-        VariantDetails::Struct(props) => {
-            validate_default_struct_props(props, type_space, content_value?)
+        (VariantDetails::Struct(props), Some(content_value)) => {
+            validate_default_struct_props(props, type_space, content_value)
         }
+        _ => None,
     }
 }
 
@@ -424,7 +421,10 @@ pub(crate) fn validate_default_for_untagged_enum(
         // The name of the variant is not meaningful; we just need to see
         // if any of the variants are valid with the given default.
         match &variant.details {
-            VariantDetails::Simple => default.as_null().map(|_| ValidDefault::Specific),
+            VariantDetails::Simple => {
+                default.as_null()?;
+                Some(ValidDefault::Specific)
+            }
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
             VariantDetails::Struct(props) => {
                 validate_default_struct_props(props, type_space, default)
@@ -434,13 +434,17 @@ pub(crate) fn validate_default_for_untagged_enum(
 }
 
 fn validate_default_tuple(
-    ids: &[TypeId],
+    types: &[TypeId],
     type_space: &TypeSpace,
     default: &serde_json::Value,
 ) -> Option<ValidDefault> {
-    let v = default.as_array()?;
-    if ids.len() == v.len()
-        && ids.iter().zip(v.iter()).all(|(type_id, value)| {
+    let arr = default.as_array()?;
+    (arr.len() == types.len()).then(|| ())?;
+
+    types
+        .iter()
+        .zip(arr.iter())
+        .all(|(type_id, value)| {
             type_space
                 .id_to_entry
                 .get(type_id)
@@ -448,11 +452,7 @@ fn validate_default_tuple(
                 .validate_default(value, type_space)
                 .is_ok()
         })
-    {
-        Some(ValidDefault::Specific)
-    } else {
-        None
-    }
+        .then(|| ValidDefault::Specific)
 }
 
 fn validate_default_struct_props(
@@ -472,10 +472,14 @@ fn validate_default_struct_props(
         .flat_map(|property| all_props(property, type_space))
         .partition(|(name, _, _)| name.is_some());
 
+    // These are the direct properties of this struct as well as the properties
+    // of any nested, flatted struct.
     let named_properties = named_properties
         .into_iter()
         .map(|(name, type_id, required)| (name.unwrap(), (type_id, required)))
         .collect::<BTreeMap<_, _>>();
+    // These are just the types for any flattened map (either within this
+    // struct or nested within another flattened struct).
     let unnamed_properties = unnamed_properties
         .into_iter()
         .map(|(_, type_id, _)| type_id)
@@ -485,26 +489,28 @@ fn validate_default_struct_props(
     map.iter().try_for_each(|(name, default_value)| {
         // If there's a matching, named property, the value needs to validate.
         // Otherwise it needs to validate against the schema of one of the
-        // unnamed properties.
+        // unnamed properties i.e. it must be a valid value type for a nested,
+        // flatted map.
         if let Some((type_id, _)) = named_properties.get(name) {
             let type_entry = type_space.id_to_entry.get(type_id).unwrap();
             type_entry
                 .validate_default(default_value, type_space)
                 .ok()
                 .map(|_| ())
-        } else if unnamed_properties.iter().any(|type_id| {
-            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-            type_entry
-                .validate_default(default_value, type_space)
-                .is_ok()
-        }) {
-            Some(())
         } else {
-            None
+            unnamed_properties
+                .iter()
+                .any(|type_id| {
+                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    type_entry
+                        .validate_default(default_value, type_space)
+                        .is_ok()
+                })
+                .then(|| ())
         }
     })?;
 
-    // Make sure that every requires field is present in the map.
+    // Make sure that every required field is present in the map.
     named_properties
         .iter()
         .filter(|(_, (_, required))| *required)

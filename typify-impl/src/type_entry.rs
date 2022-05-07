@@ -11,7 +11,7 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    DefaultFns, Name, TypeId, TypeSpace,
+    DefaultImpl, Name, TypeId, TypeSpace,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -149,7 +149,7 @@ pub(crate) enum StructPropertyState {
 pub(crate) enum ValidDefault {
     Intrinsic,
     Specific,
-    Generic(DefaultFns),
+    Generic(DefaultImpl),
 }
 
 impl TypeEntryEnum {
