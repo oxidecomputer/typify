@@ -1,6 +1,6 @@
 // Copyright 2021 Oxide Computer Company
 
-use convert_case::{Case, Casing};
+use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{
@@ -9,7 +9,7 @@ use schemars::schema::{
 
 use crate::{
     type_entry::{SerdeNaming, SerdeRules, StructProperty, TypeEntry, TypeEntryStruct},
-    util::{get_type_name, metadata_description, recase, schema_is_named},
+    util::{get_type_name, metadata_description, recase, schema_is_named, Case},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
@@ -29,10 +29,11 @@ impl TypeSpace {
             .properties
             .iter()
             .map(|(name, ty)| {
-                let prop_name = name.to_case(Case::Snake);
+                // Generate a name we can use for the type of this property
+                // should there not be a one defined in the schema.
                 let sub_type_name = type_name
                     .as_ref()
-                    .map(|base| format!("{}_{}", base, prop_name));
+                    .map(|base| format!("{}_{}", base, name.to_snake_case()));
                 self.struct_property(sub_type_name, &validation.required, name, ty)
             })
             .collect::<Result<Vec<_>>>()?;
@@ -121,7 +122,7 @@ impl TypeSpace {
             SerdeRules::Optional
         };
 
-        let (name, rename) = recase(prop_name.to_string(), Case::Snake);
+        let (name, rename) = recase(prop_name, Case::Snake);
         let serde_naming = match rename {
             Some(old_name) => SerdeNaming::Rename(old_name),
             None => SerdeNaming::None,
@@ -188,7 +189,7 @@ impl TypeSpace {
             .iter()
             .enumerate()
             .map(|(idx, schema)| {
-                let type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                let type_name = match get_type_name(&type_name, metadata) {
                     Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
                     None => Name::Unknown,
                 };
@@ -291,15 +292,16 @@ impl TypeSpace {
             }) if single.as_ref() == &InstanceType::Object => Some(validation),
             _ => None,
         }?;
-        let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+        let tmp_type_name = get_type_name(&type_name, metadata);
         let (unnamed_properties, deny) = self.struct_members(tmp_type_name, validation).ok()?;
 
         let named_properties = named
             .iter()
             .map(|(schema, property_name)| {
                 let (type_id, metadata) = self.id_for_schema(type_name.clone(), schema)?;
+                let (name, _) = recase(property_name, Case::Snake);
                 Ok(StructProperty {
-                    name: property_name.to_case(Case::Snake),
+                    name,
                     serde_naming: SerdeNaming::Flatten,
                     serde_rules: SerdeRules::None,
                     description: metadata_description(metadata),
