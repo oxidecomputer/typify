@@ -1,10 +1,8 @@
 mod types {
     #[derive(Serialize, Deserialize, Debug, Clone, JsonSchema)]
     pub struct CompoundType {
-        #[serde(rename = "value1")]
-        pub value_1: String,
-        #[serde(rename = "value2")]
-        pub value_2: u64,
+        pub value1: String,
+        pub value2: u64,
     }
     #[derive(
         Serialize, Deserialize, Debug, Clone, JsonSchema, Copy, PartialOrd, Ord, PartialEq, Eq, Hash,

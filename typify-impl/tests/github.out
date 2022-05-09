@@ -9663,13 +9663,10 @@ pub struct PackagePublishedPackagePackageVersionPackageFilesItem {
     pub created_at: String,
     pub download_url: String,
     pub id: i64,
-    #[serde(rename = "md5")]
-    pub md_5: String,
+    pub md5: String,
     pub name: String,
-    #[serde(rename = "sha1")]
-    pub sha_1: String,
-    #[serde(rename = "sha256")]
-    pub sha_256: String,
+    pub sha1: String,
+    pub sha256: String,
     pub size: i64,
     pub state: String,
     pub updated_at: String,
@@ -9762,13 +9759,10 @@ pub struct PackageUpdatedPackagePackageVersionPackageFilesItem {
     pub created_at: String,
     pub download_url: String,
     pub id: i64,
-    #[serde(rename = "md5")]
-    pub md_5: String,
+    pub md5: String,
     pub name: String,
-    #[serde(rename = "sha1")]
-    pub sha_1: String,
-    #[serde(rename = "sha256")]
-    pub sha_256: String,
+    pub sha1: String,
+    pub sha256: String,
     pub size: i64,
     pub state: String,
     pub updated_at: String,

@@ -2,7 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
-use convert_case::{Case, Casing};
+use heck::{ToKebabCase, ToPascalCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use schemars::schema::{
@@ -12,7 +12,9 @@ use schemars::schema::{
 use crate::{
     structs::output_struct_property,
     type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
-    util::{constant_string_value, get_type_name, metadata_description, recase, schema_is_named},
+    util::{
+        constant_string_value, get_type_name, metadata_description, recase, schema_is_named, Case,
+    },
     Name, Result, TypeSpace,
 };
 
@@ -188,12 +190,7 @@ impl TypeSpace {
                     name: variant_name,
                     description,
                 } => {
-                    let name = variant_name.to_case(Case::Pascal);
-                    let rename = if variant_name == name {
-                        None
-                    } else {
-                        Some(variant_name.to_string())
-                    };
+                    let (name, rename) = recase(variant_name, Case::Pascal);
                     Some(Variant {
                         name,
                         rename,
@@ -207,18 +204,12 @@ impl TypeSpace {
                     schema,
                     description,
                 } => {
-                    let name = variant_name.to_case(Case::Pascal);
-                    let rename = if variant_name == name {
-                        None
-                    } else {
-                        Some(variant_name.to_string())
-                    };
-
                     let (details, deny) = self
                         .external_variant(type_name.clone(), variant_name, schema)
                         .ok()?;
                     deny_unknown_fields |= deny;
 
+                    let (name, rename) = recase(variant_name, Case::Pascal);
                     Some(Variant {
                         name,
                         rename,
@@ -249,7 +240,7 @@ impl TypeSpace {
     ) -> Result<(VariantDetails, bool)> {
         let prop_type_name = match type_name {
             Name::Required(name) | Name::Suggested(name) => {
-                Name::Suggested(format!("{}{}", name, variant_name.to_case(Case::Pascal)))
+                Name::Suggested(format!("{}{}", name, variant_name.to_pascal_case()))
             }
             Name::Unknown => Name::Unknown,
         };
@@ -387,7 +378,10 @@ impl TypeSpace {
                         .filter_map(|(prop_name, prop_type)| {
                             constant_string_value(prop_type).map(|value| {
                                 // Tuple with the name and a set with a single value
-                                (prop_name.clone(), [value].iter().cloned().collect())
+                                (
+                                    prop_name.clone(),
+                                    [value.to_string()].iter().cloned().collect(),
+                                )
                             })
                         })
                         .collect()
@@ -462,7 +456,7 @@ impl TypeSpace {
         if validation.properties.len() == 1 {
             let (tag_name, schema) = validation.properties.iter().next().unwrap();
             let variant_name = constant_string_value(schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
+            let (name, rename) = recase(&variant_name, Case::Pascal);
 
             // The lone property must be our tag.
             assert_eq!(tag_name, tag);
@@ -478,7 +472,7 @@ impl TypeSpace {
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
             let variant_name = constant_string_value(tag_schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
+            let (name, rename) = recase(&variant_name, Case::Pascal);
 
             // Make a new object validation that omits the tag.
             let mut new_validation = validation.clone();
@@ -663,7 +657,7 @@ impl TypeSpace {
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<TypeEntry> {
-        let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+        let tmp_type_name = get_type_name(&type_name, metadata);
 
         let mut names_from_variants = true;
         let mut common_prefix = None;
@@ -779,14 +773,17 @@ fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
 /// Get the string that represents the common prefix, considering only
 /// case-relevant boundaries.
 fn get_common_prefix(name: &str, prefix: &str) -> String {
-    name.to_case(Case::Kebab)
+    // Convert both to kebab case, split by '-' and zip them together. Pick up
+    // components in order while they're equal, join, and convert to Pascal
+    // case for a variant name.
+    name.to_kebab_case()
         .split('-')
-        .zip(prefix.to_case(Case::Kebab).split('-'))
+        .zip(prefix.to_kebab_case().split('-'))
         .take_while(|(a, b)| a == b)
         .map(|(a, _)| a)
         .collect::<Vec<&str>>()
         .join("-")
-        .to_case(Case::Pascal)
+        .to_pascal_case()
 }
 
 pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> TokenStream {
@@ -1359,6 +1356,74 @@ mod tests {
                         _ => panic!("{:#?}", type_entry),
                     }
                 }
+            }
+            _ => panic!("{:#?}", type_entry),
+        }
+    }
+
+    #[test]
+    fn test_untagged_enum_nice_names() {
+        let schema_json = r##"
+        {
+            "definitions": {
+                "IpNet": {
+                    "oneOf": [
+                        {
+                            "title": "V4",
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/Ipv4Net"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "V6",
+                            "allOf": [
+                                {
+                                    "$ref": "#/components/schemas/Ipv4Net"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Ipv4Net": {
+                    "type": "string"
+                },
+                "Ipv6Net": {
+                    "type": "string"
+                }
+            }
+        }
+        "##;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
+
+        let type_id = type_space.ref_to_id.get("IpNet").unwrap();
+        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+
+        match &type_entry.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
+                tag_type,
+                variants,
+                deny_unknown_fields: _,
+                ..
+            }) => {
+                assert_eq!(tag_type, &EnumTagType::Untagged);
+                //assert_eq!(deny_unknown_fields, &true);
+                let variant_names = variants
+                    .iter()
+                    .map(|variant| variant.name.clone())
+                    .collect::<HashSet<_>>();
+                assert_eq!(
+                    variant_names,
+                    ["V4", "V6"]
+                        .iter()
+                        .map(ToString::to_string)
+                        .collect::<HashSet<_>>()
+                );
             }
             _ => panic!("{:#?}", type_entry),
         }
