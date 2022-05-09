@@ -2,7 +2,6 @@
 
 use std::collections::BTreeMap;
 
-use convert_case::Case;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
@@ -12,7 +11,7 @@ use crate::{
         TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
         ValidDefault, Variant, VariantDetails,
     },
-    util::sanitize,
+    util::{sanitize, Case},
     DefaultImpl, Error, Result, TypeId, TypeSpace,
 };
 

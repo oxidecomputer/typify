@@ -4,8 +4,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryStruct, Variant,
     VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, recase};
-use convert_case::Case;
+use crate::util::{all_mutually_exclusive, recase, Case};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
@@ -447,7 +446,7 @@ impl TypeSpace {
                     None
                 }
                 serde_json::Value::String(value) => {
-                    let (name, rename) = recase(value.clone(), Case::Pascal);
+                    let (name, rename) = recase(value, Case::Pascal);
                     Some(Ok(Variant {
                         name,
                         rename,
@@ -663,7 +662,7 @@ impl TypeSpace {
 
             // The typical case
             Some(validation) => {
-                let tmp_type_name = get_type_name(&type_name, metadata, Case::Pascal);
+                let tmp_type_name = get_type_name(&type_name, metadata);
                 let (properties, deny_unknown_fields) =
                     self.struct_members(tmp_type_name, validation)?;
 
@@ -876,7 +875,7 @@ impl TypeSpace {
                 unique_items,
                 contains: None,
             } => {
-                let tmp_type_name = match get_type_name(&type_name, metadata, Case::Pascal) {
+                let tmp_type_name = match get_type_name(&type_name, metadata) {
                     Some(s) => Name::Suggested(format!("{}Item", s)),
                     None => Name::Unknown,
                 };

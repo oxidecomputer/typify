@@ -2,7 +2,6 @@
 
 use std::collections::HashSet;
 
-use convert_case::{Case, Casing};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
@@ -327,7 +326,7 @@ fn array_schemas_mutually_exclusive(
 
 /// If this schema represents a constant-value string, return that string,
 /// otherwise return None.
-pub(crate) fn constant_string_value(schema: &Schema) -> Option<String> {
+pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     match schema {
         // Strings must be simple enumerations.
         Schema::Object(SchemaObject {
@@ -345,9 +344,7 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<String> {
             extensions: _,
         }) if single.as_ref() == &InstanceType::String => {
             if values.len() == 1 {
-                values
-                    .get(0)
-                    .and_then(|value| value.as_str().map(ToString::to_string))
+                values.get(0).and_then(|value| value.as_str())
             } else {
                 None
             }
@@ -463,19 +460,31 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
     Some(sanitize(&raw_name, Case::Pascal))
 }
 
+pub(crate) enum Case {
+    Pascal,
+    Snake,
+}
+
 pub(crate) fn sanitize(input: &str, case: Case) -> String {
+    use heck::{ToPascalCase, ToSnakeCase};
+    let to_case = match case {
+        Case::Pascal => str::to_pascal_case,
+        Case::Snake => str::to_snake_case,
+    };
+
     // If every case was special then none of them would be.
     let out = match input {
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
-        _ => input
-            .replace("'", "")
-            .replace(|c: char| !c.is_xid_continue(), "-")
-            .to_case(case),
+        _ => to_case(
+            &input
+                .replace("'", "")
+                .replace(|c: char| !c.is_xid_continue(), "-"),
+        ),
     };
 
     let out = match out.chars().next() {
-        None => "x".to_case(case),
+        None => to_case("x"),
         Some(c) if c.is_xid_start() => out,
         Some(_) => format!("_{}", out),
     };
@@ -488,17 +497,17 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
     }
 }
 
-pub(crate) fn recase(input: String, case: Case) -> (String, Option<String>) {
+pub(crate) fn recase(input: &str, case: Case) -> (String, Option<String>) {
     let new = sanitize(&input, case);
-    let rename = if new == input { None } else { Some(input) };
+    let rename = if new == input {
+        None
+    } else {
+        Some(input.to_string())
+    };
     (new, rename)
 }
 
-pub(crate) fn get_type_name(
-    type_name: &Name,
-    metadata: &Option<Box<Metadata>>,
-    case: Case,
-) -> Option<String> {
+pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) -> Option<String> {
     let name = match (type_name, metadata_title(metadata)) {
         (Name::Required(name), _) => name.clone(),
         (Name::Suggested(name), None) => name.clone(),
@@ -506,15 +515,14 @@ pub(crate) fn get_type_name(
         (Name::Unknown, None) => None?,
     };
 
-    Some(sanitize(&name, case))
+    Some(sanitize(&name, Case::Pascal))
 }
 
 #[cfg(test)]
 mod tests {
-    use convert_case::Case;
     use schemars::{schema_for, JsonSchema};
 
-    use crate::util::{sanitize, schemas_mutually_exclusive};
+    use crate::util::{sanitize, schemas_mutually_exclusive, Case};
 
     #[test]
     fn test_non_exclusive_structs() {
@@ -629,9 +637,11 @@ mod tests {
         assert_eq!(
             sanitize(
                 "urn:ietf:params:scim:schemas:extension:gluu:2.0:user_",
-                Case::Camel
+                Case::Pascal
             ),
-            "urnIetfParamsScimSchemasExtensionGluu20User"
+            "UrnIetfParamsScimSchemasExtensionGluu20User"
         );
+        assert_eq!(sanitize("Ipv6Net", Case::Snake), "ipv6_net");
+        assert_eq!(sanitize("V6", Case::Pascal), "V6");
     }
 }

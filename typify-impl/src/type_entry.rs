@@ -2,7 +2,6 @@
 
 use std::collections::BTreeSet;
 
-use convert_case::Case;
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
@@ -160,7 +159,7 @@ impl TypeEntryEnum {
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
     ) -> TypeEntryDetails {
-        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -183,7 +182,7 @@ impl TypeEntryStruct {
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
     ) -> TypeEntryDetails {
-        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
         let default = metadata
@@ -209,7 +208,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
     ) -> TypeEntryDetails {
-        let name = get_type_name(&type_name, metadata, Case::Pascal).unwrap();
+        let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
