@@ -14,6 +14,13 @@ use crate::{
 };
 
 impl TypeEntry {
+    /// Emit a [`TokenStream`] for the given [`Value`]
+    ///
+    /// This returns an Option for programming convenience, but we do not
+    /// expect it to fail. All validation should already have been done by
+    /// [`validate_default()`].
+    ///
+    /// [`Value`]: serde_json::Value
     pub fn value(&self, type_space: &TypeSpace, value: &serde_json::Value) -> Option<TokenStream> {
         let v = match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
@@ -364,42 +371,14 @@ fn value_for_struct_props(
 
 #[cfg(test)]
 mod tests {
-    use std::{any::type_name, collections::HashMap};
+    use std::collections::HashMap;
 
     use quote::quote;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::JsonSchema;
     use serde_json::json;
     use uuid::Uuid;
 
-    use crate::{type_entry::TypeEntry, TypeId, TypeSpace};
-
-    fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
-        let schema = schema_for!(T);
-
-        let name = type_name::<T>().rsplit_once("::").unwrap().1.to_string();
-
-        let mut type_space = TypeSpace::default();
-
-        // Convert all references
-        type_space
-            .add_ref_types(schema.definitions.clone())
-            .unwrap();
-
-        // In some situations, `schema_for!(T)` may actually give us two copies
-        // of the type: one in the definitions and one in the schema. This will
-        // occur in particular for cyclic types i.e. those for which the type
-        // itself is a reference.
-        //
-        // If we have converted the type already, use that, otherwise convert
-        // schema object
-        let type_id = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
-            already_type_id.clone()
-        } else {
-            type_space.add_type(&schema.schema.into()).unwrap()
-        };
-
-        (type_space, type_id)
-    }
+    use crate::{test_util::get_type, type_entry::TypeEntry};
 
     #[test]
     fn test_value_option() {

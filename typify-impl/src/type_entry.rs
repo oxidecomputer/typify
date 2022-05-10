@@ -145,7 +145,7 @@ pub(crate) enum StructPropertyState {
 }
 
 #[derive(Debug)]
-pub(crate) enum ValidDefault {
+pub(crate) enum DefaultKind {
     Intrinsic,
     Specific,
     Generic(DefaultImpl),
