@@ -240,18 +240,27 @@ impl TypeEntry {
                 }
             }
             TypeEntryDetails::BuiltIn(_) => {
-                // TODO Not sure what could be done here...
-                Err(Error::InvalidDefaultValue)
+                // This is tricky. There's not a lot we can do--particularly if
+                // and when we start to consider arbitrary types as "built-in"
+                // (e.g. if schemars tags types with an extension to denote
+                // their rust type or if the user can supply a list of type
+                // names to treat as built-in). So we just do no checking and
+                // will fail an `unwrap()` in the code emitted by `value()` if
+                // this Value is not valid for this built-in type.
+                Ok(DefaultKind::Specific)
             }
             TypeEntryDetails::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(DefaultKind::Intrinsic),
                 serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
                 _ => Err(Error::InvalidDefaultValue),
             },
+            // TODO this is quite annoying to do properly. We should probably
+            // include the max and min in the enum variant to do this more
+            // easily.
             TypeEntryDetails::Integer(_) => match (default.as_u64(), default.as_i64()) {
                 (None, None) => Err(Error::InvalidDefaultValue),
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
-                (_, Some(0)) => Ok(DefaultKind::Intrinsic),
+                (_, Some(0)) => unreachable!(),
                 (Some(_), _) => Ok(DefaultKind::Generic(DefaultImpl::U64)),
                 (_, Some(_)) => Ok(DefaultKind::Generic(DefaultImpl::I64)),
             },
@@ -270,7 +279,7 @@ impl TypeEntry {
                 if let Some("") = default.as_str() {
                     Ok(DefaultKind::Intrinsic)
                 } else {
-                    Ok(DefaultKind::Generic(DefaultImpl::I64))
+                    Ok(DefaultKind::Specific)
                 }
             }
 
@@ -572,7 +581,6 @@ fn all_props<'a>(
 mod tests {
     use std::collections::HashMap;
 
-    use quote::quote;
     use schemars::JsonSchema;
     use serde_json::json;
     use uuid::Uuid;
@@ -580,6 +588,7 @@ mod tests {
     use crate::{
         test_util::get_type,
         type_entry::{DefaultKind, TypeEntry},
+        DefaultImpl,
     };
 
     #[test]
@@ -643,24 +652,23 @@ mod tests {
         ));
     }
 
-    /*
     #[test]
     fn test_default_map() {
         let (type_space, type_id) = get_type::<HashMap<String, u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!({}))
-                .map(|x| x.to_string()),
-            Some("[] . into_iter () . collect ()".to_string()),
-        );
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!({"a": 1, "b": 2}))
-                .map(|x| x.to_string()),
-            Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!([])),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!({})),
+            Ok(DefaultKind::Intrinsic),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!({"a": 1, "b": 2})),
+            Ok(DefaultKind::Specific),
+        ));
     }
 
     #[test]
@@ -668,12 +676,14 @@ mod tests {
         let (type_space, type_id) = get_type::<(u32, u32, String)>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!([1, 2, "three"]))
-                .map(|x| x.to_string()),
-            Some(r#"(1_u32 , 2_u32 , "three" . to_string ())"#.to_string()),
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!([1, 2, "three", 4])),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!([1, 2, "three"])),
+            Ok(DefaultKind::Specific),
+        ));
     }
 
     #[test]
@@ -681,55 +691,56 @@ mod tests {
         let (type_space, type_id) = get_type::<Uuid>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!("not-a-uuid"))
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    serde_json::from_string::<uuid::Uuid>("\"not-a-uuid\"").unwrap()
-                }
-                .to_string()
-            ),
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("not-a-uuid")),
+            Ok(DefaultKind::Specific)
+        ));
     }
 
     #[test]
     fn test_default_bool() {
-        let (type_space, type_id) = get_type::<Option<bool>>();
+        let (type_space, type_id) = get_type::<bool>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!(true))
-                .map(|x| x.to_string()),
-            Some("Some (true)".to_string()),
-        );
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!(false))
-                .map(|x| x.to_string()),
-            Some("Some (false)".to_string()),
-        );
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!(null))
-                .map(|x| x.to_string()),
-            Some("None".to_string()),
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(false)),
+            Ok(DefaultKind::Intrinsic),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(true)),
+            Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
+        ));
     }
 
     #[test]
     fn test_default_numbers_and_string() {
-        let (type_space, type_id) = get_type::<(u32, i64, f64, String)>();
+        let (type_space, type_id) = get_type::<u32>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!([0, 0, 0, "zero"]))
-                .map(|x| x.to_string()),
-            Some(r#"(0_u32 , 0_i64 , 0_f64 , "zero" . to_string ())"#.to_string()),
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(true)),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(0)),
+            Ok(DefaultKind::Intrinsic),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(42)),
+            Ok(DefaultKind::Generic(DefaultImpl::U64)),
+        ));
+
+        let (type_space, type_id) = get_type::<String>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("")),
+            Ok(DefaultKind::Intrinsic),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("howdy")),
+            Ok(DefaultKind::Specific),
+        ));
     }
 
     #[test]
@@ -746,30 +757,45 @@ mod tests {
         let (type_space, type_id) = get_type::<Test>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!(
-                        {
-                            "a": "aaaa",
-                            "b": 7,
-                            "c": "cccc"
-                        }
-                    )
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test {
-                        a: "aaaa".to_string(),
-                        b: 7_u32,
-                        c: Some("cccc".to_string())
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!(
+                    {
+                        "a": "aaaa",
+                        "b": 7,
+                        "c": "cccc"
                     }
-                }
-                .to_string()
-            )
-        );
+                )
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!(
+                    {
+                        "a": "aaaa",
+                        "c": "cccc",
+                        "d": 7
+                    }
+                )
+            ),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!(
+                    {
+                        "a": "aaaa",
+                        "b": 7,
+                        "d": {}
+                    }
+                )
+            ),
+            Err(_),
+        ));
     }
 
     #[test]
@@ -785,52 +811,36 @@ mod tests {
         let (type_space, type_id) = get_type::<Test>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!("A"))
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::A
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "B": ["xx", "yy"]
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::B("xx".to_string(), "yy".to_string())
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "C": { "cc": "xx", "dd": "yy" }
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::C {
-                        cc: "xx".to_string(),
-                        dd: "yy".to_string()
-                    }
-                }
-                .to_string()
-            )
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("A")),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "B": ["xx", "yy"]
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "C": { "cc": "xx", "dd": "yy" }
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!({ "A": null })),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("B")),
+            Err(_),
+        ));
     }
 
     #[test]
@@ -846,43 +856,45 @@ mod tests {
         let (type_space, type_id) = get_type::<Test>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "tag": "A"
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::A
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "tag": "C",
-                        "cc": "xx",
-                        "dd": "yy"
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::C {
-                        cc: "xx".to_string(),
-                        dd: "yy".to_string()
-                    }
-                }
-                .to_string()
-            )
-        );
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "A"
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "C",
+                    "cc": "xx",
+                    "dd": "yy"
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "targ": "A"
+                })
+            ),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "B",
+                    "cc": "where's D?"
+                })
+            ),
+            Err(_),
+        ));
     }
 
     #[test]
@@ -899,61 +911,50 @@ mod tests {
         let (type_space, type_id) = get_type::<Test>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "tag": "A"
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::A
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "tag": "B",
-                        "content": ["xx", "yy"]
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::B("xx".to_string(), "yy".to_string())
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!({
-                        "tag": "C",
-                        "content": { "cc": "xx", "dd": "yy" }
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::C {
-                        cc: "xx".to_string(),
-                        dd: "yy".to_string()
-                    }
-                }
-                .to_string()
-            )
-        );
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "A"
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "B",
+                    "content": ["xx", "yy"]
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "C",
+                    "content": { "cc": "xx", "dd": "yy" }
+                })
+            ),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!("A")),
+            Err(_),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(
+                &type_space,
+                &json!({
+                    "tag": "A",
+                    "content": null,
+                })
+            ),
+            Err(_),
+        ));
     }
-
     #[test]
     fn test_enum_untagged() {
         #[derive(JsonSchema)]
@@ -968,47 +969,21 @@ mod tests {
         let (type_space, type_id) = get_type::<Test>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!(null))
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::Variant0
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(&type_space, &json!(["xx", "yy"]))
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::Variant1("xx".to_string(), "yy".to_string())
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .value(
-                    &type_space,
-                    &json!(
-                         { "cc": "xx", "dd": "yy" }
-                    )
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    Test::Variant2 {
-                        cc: "xx".to_string(),
-                        dd: "yy".to_string()
-                    }
-                }
-                .to_string()
-            )
-        );
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(null)),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!(["xx", "yy"])),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!( { "cc": "xx", "dd": "yy" })),
+            Ok(DefaultKind::Specific),
+        ));
+        assert!(matches!(
+            type_entry.validate_default(&type_space, &json!({})),
+            Err(_),
+        ));
     }
-    */
 }

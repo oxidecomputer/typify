@@ -17,7 +17,11 @@ use crate::{Name, TypeId, TypeSpace};
 pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let schema = schema_for!(T);
 
-    let name = type_name::<T>().rsplit_once("::").unwrap().1.to_string();
+    let type_name = type_name::<T>();
+    let name = type_name
+        .rsplit_once("::")
+        .map_or(type_name, |split| split.1)
+        .to_string();
 
     let mut type_space = TypeSpace::default();
 
