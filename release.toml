@@ -7,7 +7,7 @@ pre-release-replacements = [
   # Update the link to the list of raw commits in the formerly "Unreleased changes" section.  It should end at the tag for the newly-released version.
   {file="../CHANGELOG.adoc", search="\\\\.\\.\\.HEAD", replace="\\...{{tag_name}}", exactly=1},
   # Next, append a new "Unreleased changes" header beneath the sentinel line.
-  {file="../CHANGELOG.adoc", search="// cargo-release: next header goes here \\(do not change this line\\)", replace="// cargo-release: next header goes here (do not change this line)\n\n== Unreleased changes (release date TBD)\n\nhttps://github.com/oxidecomputer/typfiy/compare/{{tag_name}}\\...HEAD[Full list of commits]", exactly=1},
+  {file="../CHANGELOG.adoc", search="// cargo-release: next header goes here \\(do not change this line\\)", replace="// cargo-release: next header goes here (do not change this line)\n\n== Unreleased changes (release date TBD)\n\nhttps://github.com/oxidecomputer/typify/compare/{{tag_name}}\\...HEAD[Full list of commits]", exactly=1},
 ]
 
 disable-push = true

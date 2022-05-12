@@ -34,6 +34,4 @@ https://github.com/oxidecomputer/typify/compare/v0.0.4\...v0.0.5[Full list of co
 
 == 0.0.4 (released 2021-11-06)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.4\...v0.0.5[Full list of commits]
-
 First published version
