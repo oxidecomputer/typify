@@ -969,6 +969,8 @@ impl TypeSpace {
 mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
+    use paste::paste;
+    use quote::quote;
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, Metadata, NumberValidation, SchemaObject},
@@ -976,8 +978,10 @@ mod tests {
     };
     use serde_json::json;
 
-    use crate::{test_util::validate_output, validate_builtin, Error, Name, TypeSpace};
-    use paste::paste;
+    use crate::{
+        test_util::{get_type, validate_output},
+        validate_builtin, Error, Name, TypeSpace,
+    };
 
     #[track_caller]
     fn int_helper<T: JsonSchema>() {
@@ -1195,5 +1199,43 @@ mod tests {
             Err(Error::InvalidDefaultValue) => (),
             _ => panic!("unexpected result"),
         }
+    }
+
+    #[test]
+    fn test_some_ints() {
+        #[allow(dead_code)]
+        #[derive(Schema)]
+        struct Sub10Primes(u32);
+        impl JsonSchema for Sub10Primes {
+            fn schema_name() -> String {
+                "Sub10Primes".to_string()
+            }
+
+            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+                schemars::schema::SchemaObject {
+                    //metadata: todo!(),
+                    instance_type: Some(schemars::schema::InstanceType::Integer.into()),
+                    format: Some("uint".to_string()),
+                    enum_values: Some(vec![json!(2_u32), json!(3_u32), json!(5_u32), json!(7_u32)]),
+                    number: Some(
+                        schemars::schema::NumberValidation {
+                            ..Default::default()
+                        }
+                        .into(),
+                    ),
+                    ..Default::default()
+                }
+                .into()
+            }
+        }
+
+        let (type_space, type_id) = get_type::<Sub10Primes>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        let actual = type_entry.output(&type_space);
+        let expected = quote! {
+            // ??
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
