@@ -448,7 +448,7 @@ dependencies = [
 
 [[package]]
 name = "typify"
-version = "0.0.6-dev"
+version = "0.0.6"
 dependencies = [
  "schemars",
  "serde",
