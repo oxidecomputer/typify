@@ -1,0 +1,39 @@
+:showtitle:
+:toc: left
+:icons: font
+:toclevels: 1
+
+= Typify Changelog
+
+// WARNING: This file is modified programmatically by `cargo release` as
+// configured in release.toml.  DO NOT change the format of the headers or the
+// list of raw commits.
+
+// cargo-release: next header goes here (do not change this line)
+
+== Unreleased changes (release date TBD)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.5\...HEAD[Full list of commits]
+
+* Add an interface to allow consumers to specify additional derives for generated types (#35)
+* handle all invalid identifier characters (#37)
+* Add support for std::net::Ipv6Addr type (#38)
+* add Copy to simple enums (#40)
+* Box trivial cyclic refs (#41)
+* move to heck for case conversion (#43)
+* Improve handling of default values for object properties (#44)
+
+== 0.0.5 (released 2021-11-06)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.4\...v0.0.5[Full list of commits]
+
+* use include_str! so that our macro is re-run if the given file changes (#27)
+* Better handling of enums that look like the Result type (#26)
+* Pass through name for make_map (#25)
+
+
+== 0.0.4 (released 2021-11-06)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.4\...v0.0.5[Full list of commits]
+
+First published version
