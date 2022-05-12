@@ -52,7 +52,7 @@ checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
 name = "example-build"
-version = "0.0.6-dev"
+version = "0.0.0"
 dependencies = [
  "schemars",
  "serde",
@@ -62,7 +62,7 @@ dependencies = [
 
 [[package]]
 name = "example-macro"
-version = "0.0.6-dev"
+version = "0.0.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -448,7 +448,7 @@ dependencies = [
 
 [[package]]
 name = "typify"
-version = "0.0.6-dev"
+version = "0.0.6"
 dependencies = [
  "schemars",
  "serde",
@@ -458,7 +458,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.0.6-dev"
+version = "0.0.6"
 dependencies = [
  "expectorate",
  "heck",
@@ -479,7 +479,7 @@ dependencies = [
 
 [[package]]
 name = "typify-macro"
-version = "0.0.6-dev"
+version = "0.0.6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -493,7 +493,7 @@ dependencies = [
 
 [[package]]
 name = "typify-test"
-version = "0.0.6-dev"
+version = "0.0.0"
 dependencies = [
  "schemars",
  "serde",

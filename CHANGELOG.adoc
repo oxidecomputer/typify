@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.5\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.6\...HEAD[Full list of commits]
+
+== 0.0.6 (released 2022-05-12)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.5\...v0.0.6[Full list of commits]
 
 * Add an interface to allow consumers to specify additional derives for generated types (#35)
 * handle all invalid identifier characters (#37)
