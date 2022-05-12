@@ -7,10 +7,3 @@ members = [
 	"example-build",
 	"example-macro",
 ]
-
-default-members = [
-	"typify",
-	"typify-impl",
-	"typify-macro",
-	"typify-test",
-]
