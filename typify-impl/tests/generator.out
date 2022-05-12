@@ -21,6 +21,19 @@ mod types {
             }
         }
     }
+    #[derive(Serialize, Deserialize, Debug, Clone, JsonSchema)]
+    pub struct Pair {
+        #[serde(default = "pair_a")]
+        pub a: String,
+        #[serde(default = "pair_b")]
+        pub b: String,
+    }
+    fn pair_a() -> String {
+        "A".to_string()
+    }
+    fn pair_b() -> String {
+        "B".to_string()
+    }
 }
 pub fn do_stuff(
     body: &types::CompoundType,

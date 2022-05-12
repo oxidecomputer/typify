@@ -2,6 +2,7 @@
 
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
+use serde::Serialize;
 use typify_impl::TypeSpace;
 
 #[allow(dead_code)]
@@ -17,6 +18,21 @@ enum StringEnum {
     One,
     Two,
     BuckleMyShoe,
+}
+
+#[allow(dead_code)]
+#[derive(JsonSchema, Serialize)]
+#[serde(default = "default_pair")]
+struct Pair {
+    a: String,
+    b: String,
+}
+
+fn default_pair() -> Pair {
+    Pair {
+        a: "A".to_string(),
+        b: "B".to_string(),
+    }
 }
 
 fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
@@ -37,6 +53,9 @@ fn test_generation() {
     let string_schema = add_type::<String>(&mut generator);
     let opt_int_schema = add_type::<Option<u32>>(&mut generator);
     let strenum_schema = add_type::<StringEnum>(&mut generator);
+    let pair_schema = add_type::<Pair>(&mut generator);
+
+    println!("{:#?}", pair_schema);
 
     type_space
         .add_ref_types(generator.take_definitions())
@@ -53,6 +72,7 @@ fn test_generation() {
     let opt_int = type_space.get_type(&opt_int_id).unwrap().parameter_ident();
     let strenum_id = type_space.add_type(&strenum_schema).unwrap();
     let strenum = type_space.get_type(&strenum_id).unwrap().parameter_ident();
+    let _ = type_space.add_type(&pair_schema).unwrap();
 
     let types = type_space.to_stream();
 

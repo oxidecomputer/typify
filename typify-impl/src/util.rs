@@ -465,12 +465,13 @@ pub(crate) enum Case {
     Snake,
 }
 
-fn sanitize(input: &str, case: Case) -> String {
+pub(crate) fn sanitize(input: &str, case: Case) -> String {
     use heck::{ToPascalCase, ToSnakeCase};
     let to_case = match case {
         Case::Pascal => str::to_pascal_case,
         Case::Snake => str::to_snake_case,
     };
+
     // If every case was special then none of them would be.
     let out = match input {
         "+1" => "plus1".to_string(),

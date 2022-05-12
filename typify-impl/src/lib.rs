@@ -1,6 +1,6 @@
 // Copyright 2021 Oxide Computer Company
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use log::info;
 use proc_macro2::TokenStream;
@@ -8,16 +8,18 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
+use type_entry::{DefaultValue, TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
 
 #[cfg(test)]
 mod test_util;
 
 mod convert;
+mod defaults;
 mod enums;
 mod structs;
 mod type_entry;
 mod util;
+mod value;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -25,8 +27,8 @@ pub enum Error {
     BadValue(String, serde_json::Value),
     #[error("invalid TypeId")]
     InvalidTypeId,
-    #[error("unknown")]
-    Unknown,
+    #[error("default value does not conform to the given schema")]
+    InvalidDefaultValue,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -46,7 +48,7 @@ pub enum TypeDetails<'a> {
 
     Option(TypeId),
     Array(TypeId),
-    Map(TypeId, TypeId),
+    Map(TypeId),
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
@@ -107,8 +109,7 @@ pub struct TypeSpace {
     // enum of a "raw" or a "converted" schema.
     definitions: BTreeMap<String, Schema>,
 
-    // TODO needs an API
-    pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
+    id_to_entry: BTreeMap<TypeId, TypeEntry>,
     type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
@@ -118,8 +119,18 @@ pub struct TypeSpace {
     uses_uuid: bool,
     uses_serde_json: bool,
 
-    pub(crate) type_mod: Option<String>,
-    pub(crate) extra_derives: Vec<TokenStream>,
+    type_mod: Option<String>,
+    extra_derives: Vec<TokenStream>,
+
+    // Shared functions for generating default values
+    defaults: BTreeSet<DefaultImpl>,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum DefaultImpl {
+    Boolean,
+    I64,
+    U64,
 }
 
 impl Default for TypeSpace {
@@ -136,6 +147,7 @@ impl Default for TypeSpace {
             uses_serde_json: false,
             type_mod: None,
             extra_derives: Vec::new(),
+            defaults: BTreeSet::new(),
         }
     }
 }
@@ -173,7 +185,9 @@ impl TypeSpace {
         }
 
         // Convert all types; note that we use the type id assigned from the
-        // previous step because each type may create additional types.
+        // previous step because each type may create additional types. This
+        // effectively is doing the word of `add_type_with_name` but in
+        // bulk operations.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             let type_name = match ref_name.rfind('/') {
                 Some(idx) => &ref_name[idx..],
@@ -186,29 +200,44 @@ impl TypeSpace {
                 serde_json::to_string(&schema).unwrap()
             );
 
-            let (type_entry, metadata) =
+            let (mut type_entry, metadata) =
                 self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
-            let type_entry = match type_entry.details {
+            let default = metadata
+                .as_ref()
+                .and_then(|m| m.default.as_ref())
+                .cloned()
+                .map(DefaultValue::new);
+            let type_entry = match &mut type_entry.details {
                 // The types that are already named are good to go.
-                TypeEntryDetails::Enum(_)
-                | TypeEntryDetails::Struct(_)
-                | TypeEntryDetails::Newtype(_) => type_entry,
+                TypeEntryDetails::Enum(details) => {
+                    details.default = default;
+                    type_entry
+                }
+                TypeEntryDetails::Struct(details) => {
+                    details.default = default;
+                    type_entry
+                }
+                TypeEntryDetails::Newtype(details) => {
+                    details.default = default;
+                    type_entry
+                }
 
                 // If the type entry is a reference, then this definition is a
                 // simple alias to another type in this list of definitions
                 // (which may nor may not have already been converted). We
                 // simply create a newtype with that type ID.
-                TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
-                    Name::Required(type_name.to_string()),
-                    metadata,
-                    type_id,
-                )
-                .into(),
+                TypeEntryDetails::Reference(type_id) => {
+                    TypeEntryNewtype::from_metadata_with_default(
+                        Name::Required(type_name.to_string()),
+                        metadata,
+                        type_id.clone(),
+                    )
+                    .into()
+                }
 
                 // For types that don't have names, this is effectively a type
-                // alias which we treat as a newtype (though we could probably
-                // handle it as a type alias).
-                _ => TypeEntryNewtype::from_metadata(
+                // alias which we treat as a newtype.
+                _ => TypeEntryNewtype::from_metadata_with_default(
                     Name::Required(type_name.to_string()),
                     metadata,
                     self.assign_type(type_entry),
@@ -220,21 +249,33 @@ impl TypeSpace {
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
 
-        // TODO compute appropriate derives, taking care to account for
-        // dependency cycles. Currently we're using a more minimal--safe--set
-        // of derives than we might otherwise. This notably prevents us from
-        // using a HashSet or BTreeSet type where we might like to.
-
-        // Once all ref types are in, look for containment cycles that we need
-        // to break with a Box<T>.
+        // Now that all references have been processed, we can do some
+        // additional validation and processing.
         for index in 0..def_len {
+            // This is slightly inefficient, but we make a copy of the type in
+            // order to manipulate it without holding a reference on self.
             let type_id = TypeId(base_id + index);
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
 
+            type_entry.check_defaults(self)?;
+
+            // TODO compute appropriate derives, taking care to account for
+            // dependency cycles. Currently we're using a more minimal--safe--set
+            // of derives than we might otherwise. This notably prevents us from
+            // using a HashSet or BTreeSet type where we might like to.
+
+            // Once all ref types are in, look for containment cycles that we need
+            // to break with a Box<T>. Note that we unconditionally replace the
+            // type entry at the given ID regardless of whether the type changes.
+
+            // TODO: we've declared box_id here to avoid allocating it in the
+            // ID space twice, but the dedup logic in assign_type() should
+            // already address this. There's room to simplify here...
             let mut box_id = None;
-
-            let mut type_entry = self.id_to_entry.get_mut(&type_id).unwrap().clone();
             self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
-            let _ = self.id_to_entry.insert(type_id, type_entry);
+
+            // Overwrite the entry regardless of whether we modified it.
+            self.id_to_entry.insert(type_id, type_entry);
         }
 
         Ok(())
@@ -268,19 +309,14 @@ impl TypeSpace {
                 .get_or_insert_with(|| self.id_to_box(parent_type_id))
                 .clone();
         } else {
-            let mut child_type_entry = self.id_to_entry.get_mut(&child_type_id).unwrap().clone();
+            let mut child_type_entry = self.id_to_entry.get_mut(child_type_id).unwrap().clone();
 
-            match &mut child_type_entry.details {
-                // Look for the case where an option refers to the parent type
-                TypeEntryDetails::Option(option_type_id) => {
-                    if *option_type_id == *parent_type_id {
-                        *option_type_id = box_id
-                            .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                            .clone();
-                    }
+            if let TypeEntryDetails::Option(option_type_id) = &mut child_type_entry.details {
+                if *option_type_id == *parent_type_id {
+                    *option_type_id = box_id
+                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
+                        .clone();
                 }
-
-                _ => {}
             }
 
             let _ = self
@@ -336,7 +372,7 @@ impl TypeSpace {
             // Containers that can be size 0 are *not* cyclic references for that type
             TypeEntryDetails::Array(_) => {}
             TypeEntryDetails::Set(_) => {}
-            TypeEntryDetails::Map(_, _) => {}
+            TypeEntryDetails::Map(_) => {}
 
             // Everything else can be ignored
             _ => {}
@@ -346,8 +382,7 @@ impl TypeSpace {
     /// Add a new type and return a type identifier that may be used in
     /// function signatures or embedded within other types.
     pub fn add_type(&mut self, schema: &Schema) -> Result<TypeId> {
-        let (type_entry, _) = self.convert_schema(Name::Unknown, schema)?;
-        Ok(self.assign_type(type_entry))
+        self.add_type_with_name(schema, None)
     }
 
     /// Add a new type with a name hint and return a the components necessary
@@ -361,7 +396,23 @@ impl TypeSpace {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        let (type_entry, _) = self.convert_schema(name, schema)?;
+        let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        if let Some(metadata) = metadata {
+            match &mut type_entry.details {
+                TypeEntryDetails::Enum(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                TypeEntryDetails::Struct(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                TypeEntryDetails::Newtype(details) => {
+                    details.default = metadata.default.clone().map(DefaultValue::new)
+                }
+                _ => (),
+            }
+            type_entry.check_defaults(self)?;
+        }
+
         Ok(self.assign_type(type_entry))
     }
 
@@ -405,10 +456,28 @@ impl TypeSpace {
         })
     }
 
+    /// Common code, shared by types.
+    pub fn common_code(&self) -> TokenStream {
+        if self.defaults.is_empty() {
+            quote! {}
+        } else {
+            let fns = self.defaults.iter().map(TokenStream::from);
+            quote! {
+                mod defaults {
+                    #(#fns)*
+                }
+            }
+        }
+    }
+
+    /// All code for processed types.
     pub fn to_stream(&self) -> TokenStream {
         let type_defs = self.iter_types().map(|t| t.definition());
+        let shared = self.common_code();
 
         quote! {
+            #shared
+
             #(#type_defs)*
         }
     }
@@ -458,14 +527,17 @@ impl TypeSpace {
     }
 
     /// Convert a schema to a TypeEntry and assign it a TypeId.
+    ///
+    /// This is used for sub-types such as the type of an array or the types of
+    /// properties of a struct.
     fn id_for_schema<'a>(
         &mut self,
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
-        let (ty, meta) = self.convert_schema(type_name, schema)?;
+        let (ty, metadata) = self.convert_schema(type_name, schema)?;
         let type_id = self.assign_type(ty);
-        Ok((type_id, meta))
+        Ok((type_id, metadata))
     }
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
@@ -533,8 +605,10 @@ impl<'a> Type<'a> {
         type_entry.type_parameter_ident(type_space, Some(lifetime))
     }
 
-    /// The definition for this type. This will be empty for types that are
-    /// already defined such as `u32` or `uuid::Uuid`.
+    /// The definition for this type.
+    ///
+    /// This will be empty for types that are already defined such as `u32` or
+    /// `uuid::Uuid`. Note that this may refer to
     pub fn definition(&self) -> TokenStream {
         let Type {
             type_space,
@@ -559,9 +633,7 @@ impl<'a> Type<'a> {
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
             TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
-            TypeEntryDetails::Map(key_id, value_id) => {
-                TypeDetails::Map(key_id.clone(), value_id.clone())
-            }
+            TypeEntryDetails::Map(type_id) => TypeDetails::Map(type_id.clone()),
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
@@ -569,8 +641,9 @@ impl<'a> Type<'a> {
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
+            TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
             TypeEntryDetails::String => TypeDetails::Builtin("String"),
 
             // Only used during processing; shouldn't be visible at this point

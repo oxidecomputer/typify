@@ -786,7 +786,11 @@ fn get_common_prefix(name: &str, prefix: &str) -> String {
         .to_pascal_case()
 }
 
-pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> TokenStream {
+pub(crate) fn output_variant(
+    variant: &Variant,
+    type_space: &TypeSpace,
+    type_name: &str,
+) -> TokenStream {
     let name = format_ident!("{}", variant.name);
     let doc = match &variant.description {
         Some(s) => quote! {#[doc = #s]},
@@ -820,16 +824,25 @@ pub(crate) fn output_variant(variant: &Variant, type_space: &TypeSpace) -> Token
         }
 
         VariantDetails::Struct(props) => {
-            let properties = props
+            let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = props
                 .iter()
-                .map(|prop| output_struct_property(prop, type_space, false))
-                .collect::<Vec<_>>();
+                .map(|prop| {
+                    output_struct_property(
+                        prop,
+                        type_space,
+                        false,
+                        &format!("{}{}", type_name, &variant.name),
+                    )
+                })
+                .unzip();
             quote! {
                 #doc
                 #rename
                 #name {
-                    #(#properties)*
+                    #(#prop_streams)*
                 },
+
+                #(#prop_defaults)*
             }
         }
     }
@@ -1067,6 +1080,7 @@ mod tests {
                 name,
                 rename: None,
                 description: None,
+                default: None,
                 tag_type: EnumTagType::Untagged,
                 variants,
                 deny_unknown_fields: _,

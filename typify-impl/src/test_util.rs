@@ -12,7 +12,39 @@ use syn::{
     FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::{Name, TypeSpace};
+use crate::{Name, TypeId, TypeSpace};
+
+pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
+    let schema = schema_for!(T);
+
+    let type_name = type_name::<T>();
+    let name = type_name
+        .rsplit_once("::")
+        .map_or(type_name, |split| split.1)
+        .to_string();
+
+    let mut type_space = TypeSpace::default();
+
+    // Convert all references
+    type_space
+        .add_ref_types(schema.definitions.clone())
+        .unwrap();
+
+    // In some situations, `schema_for!(T)` may actually give us two copies
+    // of the type: one in the definitions and one in the schema. This will
+    // occur in particular for cyclic types i.e. those for which the type
+    // itself is a reference.
+    //
+    // If we have converted the type already, use that, otherwise convert
+    // schema object
+    let type_id = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
+        already_type_id.clone()
+    } else {
+        type_space.add_type(&schema.schema.into()).unwrap()
+    };
+
+    (type_space, type_id)
+}
 
 /// Ingest a type, spit it back out, and make sure it matches where we started.
 #[track_caller]
@@ -29,38 +61,10 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
 
 #[track_caller]
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
-    let schema = schema_for!(T);
+    let (type_space, type_id) = get_type::<T>();
+    let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-    let name = type_name::<T>().rsplit_once("::").unwrap().1.to_string();
-
-    let mut type_space = TypeSpace::default();
-
-    // Convert all references
-    type_space
-        .add_ref_types(schema.definitions.clone())
-        .unwrap();
-
-    // In some situations, `schema_for!(T)` may actually give us two copies of
-    // the type: one in the definitions and one in the schema. This will occur
-    // in particular for cyclic types i.e. those for which the type itself is a
-    // reference.
-    //
-    // If we have converted the type already, use that, otherwise convert schema
-    // object
-    let ty = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
-        type_space
-            .id_to_entry
-            .get(&already_type_id)
-            .unwrap()
-            .clone()
-    } else {
-        let (ty, _) = type_space
-            .convert_schema_object(Name::Required(name), &schema.schema)
-            .unwrap();
-        ty
-    };
-
-    let output = ty.output(&type_space);
+    let output = type_entry.output(&type_space);
 
     let expected = T::schema();
     // We may generate more than one item for a given schema. For example, we
@@ -69,12 +73,12 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     // converting it **back** to tokens, and then parsing it again as
     // DeriveInput.
     let file = parse2::<File>(output.clone()).unwrap();
-    assert!(!file.items.is_empty());
+    assert!(!file.items.is_empty(), "{}", output.to_string());
     let actual = parse2::<DeriveInput>(file.items.first().unwrap().to_token_stream()).unwrap();
 
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, ignore_variant_names) {
-        println!("{:#?}", schema);
+        println!("{:#?}", schema_for!(T));
         println!("{}", rustfmt(output.to_string()).unwrap());
         panic!("{}", err);
     }
@@ -107,7 +111,7 @@ pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, false) {
         println!("{:#?}", schema);
-        println!("actual: {}", output.to_string());
+        println!("actual: {}", output);
         println!("expected: {}", name);
         panic!("{}", err);
     }
@@ -187,11 +191,7 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
 impl SynCompare for syn::Ident {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         if self != other {
-            Err(format!(
-                "idents differ: {} {}",
-                self.to_string(),
-                other.to_string()
-            ))
+            Err(format!("idents differ: {} {}", self, other))
         } else {
             Ok(())
         }

@@ -3,6 +3,7 @@ use std::{env, fs, path::Path};
 
 use schemars::schema::Schema;
 use schemars::JsonSchema;
+use serde::Serialize;
 use typify::TypeSpace;
 
 #[allow(dead_code)]
@@ -10,6 +11,33 @@ use typify::TypeSpace;
 struct TestStruct {
     a: u32,
     b: u32,
+    #[schemars(default = "nope")]
+    c: bool,
+    #[schemars(default = "answer")]
+    d: i32,
+    #[schemars(default = "things")]
+    e: Things,
+}
+
+fn nope() -> bool {
+    true
+}
+
+fn answer() -> i32 {
+    42
+}
+#[allow(dead_code)]
+#[derive(JsonSchema, Serialize)]
+struct Things {
+    aa: u32,
+    bb: String,
+}
+
+fn things() -> Things {
+    Things {
+        aa: 42,
+        bb: "forty-two".to_string(),
+    }
 }
 
 #[allow(dead_code)]
@@ -48,7 +76,12 @@ where
 
         let base_type = &schema.schema;
         // Only convert the top-level type if it has a name
-        if (|| base_type.metadata.as_ref()?.title.as_ref())().is_some() {
+        if base_type
+            .metadata
+            .as_ref()
+            .and_then(|m| m.title.as_ref())
+            .is_some()
+        {
             let _ = type_space.add_type(&Schema::Object(schema.schema)).unwrap();
         }
     }

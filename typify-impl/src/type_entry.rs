@@ -10,7 +10,7 @@ use crate::{
     enums::{enum_impl, output_variant},
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
-    Name, TypeId, TypeSpace,
+    DefaultImpl, Name, TypeId, TypeSpace,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -18,6 +18,7 @@ pub(crate) struct TypeEntryEnum {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
@@ -28,6 +29,7 @@ pub(crate) struct TypeEntryStruct {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
 }
@@ -37,10 +39,30 @@ pub(crate) struct TypeEntryNewtype {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
+    pub default: Option<DefaultValue>,
     pub type_id: TypeId,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct DefaultValue(pub serde_json::Value);
+impl DefaultValue {
+    pub(crate) fn new(value: serde_json::Value) -> Self {
+        Self(value)
+    }
+}
+
+impl Ord for DefaultValue {
+    fn cmp(&self, _: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
+impl PartialOrd for DefaultValue {
+    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
+        Some(std::cmp::Ordering::Equal)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
     pub derives: Option<BTreeSet<&'static str>>,
@@ -55,14 +77,16 @@ pub(crate) enum TypeEntryDetails {
     Option(TypeId),
     Box(TypeId),
     Array(TypeId),
-    Map(TypeId, TypeId),
+    Map(TypeId),
     Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
     /// Built-in complex types with no type generics such as Uuid
     BuiltIn(String),
-    /// Integers and booleans
-    Integral(String),
+    /// Boolean
+    Boolean,
+    /// Integers
+    Integer(String),
     /// Floating point numbers; not Eq, Ord, or Hash
     Float(String),
     /// Strings... which we handle a little specially.
@@ -100,23 +124,31 @@ pub(crate) enum VariantDetails {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct StructProperty {
     pub name: String,
-    pub serde_naming: SerdeNaming,
-    pub serde_rules: SerdeRules,
+    pub rename: StructPropertyRename,
+    pub state: StructPropertyState,
     pub description: Option<String>,
     pub type_id: TypeId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum SerdeNaming {
+pub(crate) enum StructPropertyRename {
     None,
     Rename(String),
     Flatten,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum SerdeRules {
-    None,
+pub(crate) enum StructPropertyState {
+    Required,
     Optional,
+    Default(DefaultValue),
+}
+
+#[derive(Debug)]
+pub(crate) enum DefaultKind {
+    Intrinsic,
+    Specific,
+    Generic(DefaultImpl),
 }
 
 impl TypeEntryEnum {
@@ -135,6 +167,7 @@ impl TypeEntryEnum {
             name,
             rename,
             description,
+            default: None,
             tag_type,
             variants,
             deny_unknown_fields,
@@ -152,11 +185,17 @@ impl TypeEntryStruct {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
+        let default = metadata
+            .as_ref()
+            .and_then(|m| m.default.as_ref())
+            .cloned()
+            .map(DefaultValue::new);
 
         TypeEntryDetails::Struct(Self {
             name,
             rename,
             description,
+            default,
             properties,
             deny_unknown_fields,
         })
@@ -164,7 +203,7 @@ impl TypeEntryStruct {
 }
 
 impl TypeEntryNewtype {
-    pub(crate) fn from_metadata(
+    pub(crate) fn from_metadata_with_default(
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
@@ -177,6 +216,7 @@ impl TypeEntryNewtype {
             name,
             rename,
             description,
+            default: None,
             type_id,
         })
     }
@@ -198,9 +238,15 @@ impl TypeEntry {
             derives: None,
         }
     }
+    pub(crate) fn new_boolean() -> Self {
+        TypeEntry {
+            details: TypeEntryDetails::Boolean,
+            derives: None,
+        }
+    }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
-            details: TypeEntryDetails::Integral(type_name.to_string()),
+            details: TypeEntryDetails::Integer(type_name.to_string()),
             derives: None,
         }
     }
@@ -236,6 +282,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 tag_type,
                 variants,
                 deny_unknown_fields,
@@ -290,10 +337,21 @@ impl TypeEntry {
 
                 let variants_decl = variants
                     .iter()
-                    .map(|variant| output_variant(variant, type_space))
+                    .map(|variant| output_variant(variant, type_space, name))
                     .collect::<Vec<_>>();
 
                 let enum_impl = enum_impl(&type_name, variants);
+
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
 
                 quote! {
                     #doc
@@ -304,6 +362,7 @@ impl TypeEntry {
                     }
 
                     #enum_impl
+                    #default_impl
                 }
             }
 
@@ -311,6 +370,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 properties,
                 deny_unknown_fields,
             }) => {
@@ -330,18 +390,33 @@ impl TypeEntry {
                 };
 
                 let type_name = format_ident!("{}", name);
-                let properties = properties
+                let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
                     .iter()
-                    .map(|prop| output_struct_property(prop, type_space, true))
-                    .collect::<Vec<_>>();
+                    .map(|prop| output_struct_property(prop, type_space, true, name))
+                    .unzip();
+
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
 
                 quote! {
                     #doc
                     #[derive(#(#derives),*)]
                     #serde
                     pub struct #type_name {
-                        #(#properties)*
+                        #(#prop_streams)*
                     }
+
+                    #(#prop_defaults)*
+
+                    #default_impl
                 }
             }
 
@@ -349,6 +424,7 @@ impl TypeEntry {
                 name,
                 rename,
                 description,
+                default,
                 type_id,
             }) => {
                 let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
@@ -363,6 +439,17 @@ impl TypeEntry {
                 let sub_type = type_space.id_to_entry.get(type_id).unwrap();
                 let sub_type_name = sub_type.type_ident(type_space, false);
 
+                let default_impl = default.as_ref().map(|value| {
+                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    quote! {
+                        impl Default for #type_name {
+                            fn default() -> Self {
+                                #default_stream
+                            }
+                        }
+                    }
+                });
+
                 quote! {
                     #doc
                     #[derive(#(#derives),*)]
@@ -375,17 +462,20 @@ impl TypeEntry {
                             &self.0
                         }
                     }
+
+                    #default_impl
                 }
             }
 
             // These types require no definition as they're already defined.
             TypeEntryDetails::BuiltIn(_)
-            | TypeEntryDetails::Integral(_)
+            | TypeEntryDetails::Boolean
+            | TypeEntryDetails::Integer(_)
             | TypeEntryDetails::Float(_)
             | TypeEntryDetails::String
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Unit
             | TypeEntryDetails::Box(_)
@@ -456,19 +546,14 @@ impl TypeEntry {
                 quote! { Vec<#item> }
             }
 
-            TypeEntryDetails::Map(key_id, value_id) => {
-                let key_ty = type_space
+            TypeEntryDetails::Map(type_id) => {
+                let inner_ty = type_space
                     .id_to_entry
-                    .get(key_id)
-                    .expect("unresolved type id for map")
-                    .type_ident(type_space, external);
-                let value_ty = type_space
-                    .id_to_entry
-                    .get(value_id)
+                    .get(type_id)
                     .expect("unresolved type id for map")
                     .type_ident(type_space, external);
 
-                quote! { std::collections::HashMap<#key_ty, #value_ty> }
+                quote! { std::collections::HashMap<String, #inner_ty> }
             }
 
             TypeEntryDetails::Set(id) => {
@@ -495,8 +580,9 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
+            TypeEntryDetails::Boolean => quote! { bool },
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
                 .to_token_stream(),
@@ -535,7 +621,7 @@ impl TypeEntry {
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::BuiltIn(_) => {
@@ -571,7 +657,7 @@ impl TypeEntry {
                 quote! { ( #(#type_streams),* ) }
             }
 
-            TypeEntryDetails::Unit | TypeEntryDetails::Integral(_) | TypeEntryDetails::Float(_) => {
+            TypeEntryDetails::Unit | TypeEntryDetails::Boolean|TypeEntryDetails::Integer(_) | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, true)
             }
             TypeEntryDetails::String => quote! { & #lifetime str },
@@ -591,7 +677,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
-            TypeEntryDetails::Map(key_id, value_id) => format!("map {} {}", key_id.0, value_id.0),
+            TypeEntryDetails::Map(type_id) => format!("map {}", type_id.0),
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
             TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {
@@ -604,8 +690,9 @@ impl TypeEntry {
                         .join(", ")
                 )
             }
+            TypeEntryDetails::Boolean => "bool".to_string(),
             TypeEntryDetails::BuiltIn(name)
-            | TypeEntryDetails::Integral(name)
+            | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),
 
@@ -649,6 +736,7 @@ mod tests {
             name: "SomeType".to_string(),
             rename: None,
             description: None,
+            default: None,
             properties: vec![],
             deny_unknown_fields: false,
         }));

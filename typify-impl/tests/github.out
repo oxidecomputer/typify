@@ -1,3 +1,8 @@
+mod defaults {
+    pub(super) fn default_bool<const V: bool>() -> bool {
+        V
+    }
+}
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct AlertInstance {
@@ -2862,20 +2867,20 @@ pub struct RepoRef {
 #[serde(deny_unknown_fields)]
 pub struct Repository {
     #[doc = "Whether to allow auto-merge for pull requests."]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub allow_auto_merge: Option<bool>,
+    #[serde(default)]
+    pub allow_auto_merge: bool,
     #[doc = "Whether to allow private forks"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow_forking: Option<bool>,
     #[doc = "Whether to allow merge commits for pull requests."]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub allow_merge_commit: Option<bool>,
+    #[serde(default = "defaults::default_bool::<false>")]
+    pub allow_merge_commit: bool,
     #[doc = "Whether to allow rebase merges for pull requests."]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub allow_rebase_merge: Option<bool>,
+    #[serde(default = "defaults::default_bool::<false>")]
+    pub allow_rebase_merge: bool,
     #[doc = "Whether to allow squash merges for pull requests."]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub allow_squash_merge: Option<bool>,
+    #[serde(default = "defaults::default_bool::<false>")]
+    pub allow_squash_merge: bool,
     pub archive_url: String,
     #[doc = "Whether the repository is archived."]
     pub archived: bool,
@@ -2893,8 +2898,8 @@ pub struct Repository {
     #[doc = "The default branch of the repository."]
     pub default_branch: String,
     #[doc = "Whether to delete head branches when pull requests are merged"]
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub delete_branch_on_merge: Option<bool>,
+    #[serde(default)]
+    pub delete_branch_on_merge: bool,
     pub deployments_url: String,
     pub description: Option<String>,
     #[doc = "Returns whether or not this repository is disabled."]
