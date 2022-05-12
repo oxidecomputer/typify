@@ -456,10 +456,9 @@ impl TypeSpace {
         })
     }
 
-    pub fn to_stream(&self) -> TokenStream {
-        let type_defs = self.iter_types().map(|t| t.definition());
-
-        let defaults = if self.defaults.is_empty() {
+    /// Common code, shared by types.
+    pub fn common_code(&self) -> TokenStream {
+        if self.defaults.is_empty() {
             quote! {}
         } else {
             let fns = self.defaults.iter().map(TokenStream::from);
@@ -468,10 +467,16 @@ impl TypeSpace {
                     #(#fns)*
                 }
             }
-        };
+        }
+    }
+
+    /// All code for processed types.
+    pub fn to_stream(&self) -> TokenStream {
+        let type_defs = self.iter_types().map(|t| t.definition());
+        let shared = self.common_code();
 
         quote! {
-            #defaults
+            #shared
 
             #(#type_defs)*
         }
@@ -600,8 +605,10 @@ impl<'a> Type<'a> {
         type_entry.type_parameter_ident(type_space, Some(lifetime))
     }
 
-    /// The definition for this type. This will be empty for types that are
-    /// already defined such as `u32` or `uuid::Uuid`.
+    /// The definition for this type.
+    ///
+    /// This will be empty for types that are already defined such as `u32` or
+    /// `uuid::Uuid`. Note that this may refer to
     pub fn definition(&self) -> TokenStream {
         let Type {
             type_space,

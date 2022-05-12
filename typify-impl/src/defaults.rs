@@ -254,9 +254,8 @@ impl TypeEntry {
                 serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
                 _ => Err(Error::InvalidDefaultValue),
             },
-            // TODO this is quite annoying to do properly. We should probably
-            // include the max and min in the enum variant to do this more
-            // easily.
+            // Note that min and max values are handled already by the
+            // conversion routines since we have those close at hand.
             TypeEntryDetails::Integer(_) => match (default.as_u64(), default.as_i64()) {
                 (None, None) => Err(Error::InvalidDefaultValue),
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
