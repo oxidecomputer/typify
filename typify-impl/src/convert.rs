@@ -407,6 +407,11 @@ impl TypeSpace {
                 ))
             }
 
+            Some("decimal") => {
+                self.uses_rust_decimal = true;
+                Ok((TypeEntry::new_builtin("rust_decimal::Decimal"), metadata))
+            }
+
             Some("ipv6") => Ok((TypeEntry::new_builtin("std::net::Ipv6Addr"), metadata)),
 
             // TODO random types I'm not sure what to do with

@@ -116,6 +116,7 @@ pub struct TypeSpace {
     ref_to_id: BTreeMap<String, TypeId>,
 
     uses_chrono: bool,
+    uses_rust_decimal: bool,
     uses_uuid: bool,
     uses_serde_json: bool,
 
@@ -143,6 +144,7 @@ impl Default for TypeSpace {
             ref_to_id: BTreeMap::new(),
             type_to_id: BTreeMap::new(),
             uses_chrono: false,
+            uses_rust_decimal: false,
             uses_uuid: false,
             uses_serde_json: false,
             type_mod: None,
@@ -427,6 +429,10 @@ impl TypeSpace {
 
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
+    }
+
+    pub fn uses_rust_decimal(&self) -> bool {
+        self.uses_rust_decimal
     }
 
     pub fn uses_uuid(&self) -> bool {
