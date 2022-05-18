@@ -11,8 +11,8 @@ keywords = ["json", "schema", "proc_macro"]
 categories = ["api-bindings", "compilers"]
 
 [dependencies]
-typify-macro = { path = "../typify-macro" }
-typify-impl = { path = "../typify-impl" }
+typify-macro = { version = "0.0.7-dev", path = "../typify-macro" }
+typify-impl = { version = "0.0.7-dev", path = "../typify-impl" }
 
 [dev-dependencies]
 schemars = "0.8.10"
