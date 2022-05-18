@@ -13,5 +13,6 @@ pre-release-replacements = [
 pre-release-commit-message = "release {{crate_name}} {{version}}"
 post-release-commit-message = "starting {{crate_name}} {{next_version}} after releasing {{version}}"
 tag-message = "release {{crate_name}} {{version}}"
-tag-prefix=""
+tag-prefix = ""
+dev-version = true
 dev-version-ext = "dev"
