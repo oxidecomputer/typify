@@ -8,7 +8,7 @@ use quote::quote;
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{DefaultValue, TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails};
+use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails, WrappedValue};
 
 #[cfg(test)]
 mod test_util;
@@ -27,8 +27,8 @@ pub enum Error {
     BadValue(String, serde_json::Value),
     #[error("invalid TypeId")]
     InvalidTypeId,
-    #[error("default value does not conform to the given schema")]
-    InvalidDefaultValue,
+    #[error("value does not conform to the given schema")]
+    InvalidValue,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -206,7 +206,7 @@ impl TypeSpace {
                 .as_ref()
                 .and_then(|m| m.default.as_ref())
                 .cloned()
-                .map(DefaultValue::new);
+                .map(WrappedValue::new);
             let type_entry = match &mut type_entry.details {
                 // The types that are already named are good to go.
                 TypeEntryDetails::Enum(details) => {
@@ -226,18 +226,16 @@ impl TypeSpace {
                 // simple alias to another type in this list of definitions
                 // (which may nor may not have already been converted). We
                 // simply create a newtype with that type ID.
-                TypeEntryDetails::Reference(type_id) => {
-                    TypeEntryNewtype::from_metadata_with_default(
-                        Name::Required(type_name.to_string()),
-                        metadata,
-                        type_id.clone(),
-                    )
-                    .into()
-                }
+                TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+                    Name::Required(type_name.to_string()),
+                    metadata,
+                    type_id.clone(),
+                )
+                .into(),
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype.
-                _ => TypeEntryNewtype::from_metadata_with_default(
+                _ => TypeEntryNewtype::from_metadata(
                     Name::Required(type_name.to_string()),
                     metadata,
                     self.assign_type(type_entry),
@@ -400,13 +398,13 @@ impl TypeSpace {
         if let Some(metadata) = metadata {
             match &mut type_entry.details {
                 TypeEntryDetails::Enum(details) => {
-                    details.default = metadata.default.clone().map(DefaultValue::new)
+                    details.default = metadata.default.clone().map(WrappedValue::new)
                 }
                 TypeEntryDetails::Struct(details) => {
-                    details.default = metadata.default.clone().map(DefaultValue::new)
+                    details.default = metadata.default.clone().map(WrappedValue::new)
                 }
                 TypeEntryDetails::Newtype(details) => {
-                    details.default = metadata.default.clone().map(DefaultValue::new)
+                    details.default = metadata.default.clone().map(WrappedValue::new)
                 }
                 _ => (),
             }

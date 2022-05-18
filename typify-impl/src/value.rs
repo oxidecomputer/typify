@@ -21,7 +21,11 @@ impl TypeEntry {
     /// [`validate_default()`].
     ///
     /// [`Value`]: serde_json::Value
-    pub fn value(&self, type_space: &TypeSpace, value: &serde_json::Value) -> Option<TokenStream> {
+    pub fn output_value(
+        &self,
+        type_space: &TypeSpace,
+        value: &serde_json::Value,
+    ) -> Option<TokenStream> {
         let v = match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
                 name,
@@ -54,7 +58,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(type_id)
                     .unwrap()
-                    .value(type_space, value);
+                    .output_value(type_space, value);
                 let ident = format_ident!("{}", name);
                 quote! { #ident ( #inner )}
             }
@@ -67,7 +71,7 @@ impl TypeEntry {
                         .id_to_entry
                         .get(type_id)
                         .unwrap()
-                        .value(type_space, value)?;
+                        .output_value(type_space, value)?;
                     quote! { Some(#inner) }
                 }
             }
@@ -76,7 +80,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(type_id)
                     .unwrap()
-                    .value(type_space, value)?;
+                    .output_value(type_space, value)?;
                 quote! { Box::new(#inner) }
             }
             // TODO: this should become a HashSet<_> once we figure out the
@@ -86,7 +90,7 @@ impl TypeEntry {
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let values = arr
                     .iter()
-                    .map(|arr_value| inner.value(type_space, arr_value))
+                    .map(|arr_value| inner.output_value(type_space, arr_value))
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
@@ -95,7 +99,9 @@ impl TypeEntry {
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let kvs = obj
                     .iter()
-                    .map(|(name, obj_value)| Some((name, inner.value(type_space, obj_value)?)))
+                    .map(|(name, obj_value)| {
+                        Some((name, inner.output_value(type_space, obj_value)?))
+                    })
                     .collect::<Option<Vec<_>>>()?;
                 let (keys, values): (Vec<_>, Vec<_>) = kvs.into_iter().unzip();
                 quote! {
@@ -304,7 +310,7 @@ fn value_for_tuple(
                 .id_to_entry
                 .get(type_id)
                 .unwrap()
-                .value(type_space, tup_value)
+                .output_value(type_space, tup_value)
         })
         .collect()
 }
@@ -334,7 +340,7 @@ fn value_for_struct_props(
         // of one of the flattened properties.
         let prop = prop_map.get(name)?;
         let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let prop_value = type_entry.value(type_space, value)?;
+        let prop_value = type_entry.output_value(type_space, value)?;
         let name_ident = format_ident!("{}", name);
 
         Some(quote! { #name_ident: #prop_value })
@@ -359,7 +365,7 @@ fn value_for_struct_props(
                 _ => unreachable!(),
             }
 
-            let flat_value = type_entry.value(type_space, &extra_value)?;
+            let flat_value = type_entry.output_value(type_space, &extra_value)?;
             let name = &prop.name;
             Some(quote! { #name: #flat_value })
         }
@@ -387,13 +393,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null))
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(42))
+                .output_value(&type_space, &json!(42))
                 .map(|x| x.to_string()),
             Some("Some (42_u32)".to_string()),
         );
@@ -410,13 +416,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null))
                 .map(|x| x.to_string()),
             Some("Box :: new (None)".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(42))
+                .output_value(&type_space, &json!(42))
                 .map(|x| x.to_string()),
             Some("Box :: new (Some (42_u32))".to_string()),
         );
@@ -429,13 +435,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!([]))
+                .output_value(&type_space, &json!([]))
                 .map(|x| x.to_string()),
             Some("vec ! []".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!([1, 2, 5]))
+                .output_value(&type_space, &json!([1, 2, 5]))
                 .map(|x| x.to_string()),
             Some("vec ! [1_u32 , 2_u32 , 5_u32]".to_string()),
         );
@@ -448,13 +454,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!({}))
+                .output_value(&type_space, &json!({}))
                 .map(|x| x.to_string()),
             Some("[] . into_iter () . collect ()".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!({"a": 1, "b": 2}))
+                .output_value(&type_space, &json!({"a": 1, "b": 2}))
                 .map(|x| x.to_string()),
             Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
         );
@@ -467,7 +473,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!([1, 2, "three"]))
+                .output_value(&type_space, &json!([1, 2, "three"]))
                 .map(|x| x.to_string()),
             Some(r#"(1_u32 , 2_u32 , "three" . to_string ())"#.to_string()),
         );
@@ -480,7 +486,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!("not-a-uuid"))
+                .output_value(&type_space, &json!("not-a-uuid"))
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -498,19 +504,19 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(true))
+                .output_value(&type_space, &json!(true))
                 .map(|x| x.to_string()),
             Some("Some (true)".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(false))
+                .output_value(&type_space, &json!(false))
                 .map(|x| x.to_string()),
             Some("Some (false)".to_string()),
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null))
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
@@ -523,7 +529,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!([0, 0, 0, "zero"]))
+                .output_value(&type_space, &json!([0, 0, 0, "zero"]))
                 .map(|x| x.to_string()),
             Some(r#"(0_u32 , 0_i64 , 0_f64 , "zero" . to_string ())"#.to_string()),
         );
@@ -545,7 +551,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!(
                         {
@@ -584,7 +590,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!("A"))
+                .output_value(&type_space, &json!("A"))
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -595,7 +601,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "B": ["xx", "yy"]
@@ -611,7 +617,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "C": { "cc": "xx", "dd": "yy" }
@@ -645,7 +651,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "tag": "A"
@@ -661,7 +667,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "tag": "C",
@@ -698,7 +704,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "tag": "A"
@@ -714,7 +720,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "tag": "B",
@@ -731,7 +737,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!({
                         "tag": "C",
@@ -767,7 +773,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null))
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -778,7 +784,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(&type_space, &json!(["xx", "yy"]))
+                .output_value(&type_space, &json!(["xx", "yy"]))
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -789,7 +795,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .value(
+                .output_value(
                     &type_space,
                     &json!(
                          { "cc": "xx", "dd": "yy" }

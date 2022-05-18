@@ -1,8 +1,10 @@
 // Copyright 2021 Oxide Computer Company
 
+use std::collections::HashSet;
+
 use crate::type_entry::{
-    EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryStruct, Variant,
-    VariantDetails,
+    EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
+    Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase, Case};
 use schemars::schema::{
@@ -153,7 +155,7 @@ impl TypeSpace {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
                 format: None,
-                enum_values,
+                enum_values: _,
                 const_value: None,
                 subschemas: None,
                 number: None,
@@ -162,9 +164,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::Boolean => {
-                self.convert_bool(metadata, enum_values)
-            }
+            } if single.as_ref() == &InstanceType::Boolean => self.convert_bool(metadata),
 
             // Structs
             SchemaObject {
@@ -266,9 +266,16 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_reference(metadata, reference),
 
+            // Enum of a single, known type.
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(_)),
+                enum_values: Some(enum_values),
+                ..
+            } => self.convert_typed_enum(type_name, schema, enum_values),
+
             // Enum of unknown type
             SchemaObject {
-                metadata,
+                metadata: _,
                 instance_type: None,
                 format: None,
                 enum_values: Some(enum_values),
@@ -280,7 +287,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } => self.convert_unknown_enum(type_name, metadata, enum_values),
+            } => self.convert_unknown_enum(type_name, schema, enum_values),
 
             // Subschemas
             SchemaObject {
@@ -536,7 +543,7 @@ impl TypeSpace {
                         .and_then(|v| v.as_f64())
                     {
                         if default < *imin || default > *imax {
-                            return Err(Error::InvalidDefaultValue);
+                            return Err(Error::InvalidValue);
                         }
                     }
                     return Ok((TypeEntry::new_integer(ty), metadata));
@@ -565,7 +572,7 @@ impl TypeSpace {
                 (Some(value), Some(fmin), Some(fmax)) if value >= fmin && value <= fmax => Some(()),
                 _ => None,
             }
-            .ok_or(Error::InvalidDefaultValue)?;
+            .ok_or(Error::InvalidValue)?;
         }
 
         // See if the value bounds fit within a known type.
@@ -905,7 +912,6 @@ impl TypeSpace {
     fn convert_bool<'a>(
         &self,
         metadata: &'a Option<Box<Metadata>>,
-        _enum_values: &Option<Vec<serde_json::Value>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         Ok((TypeEntry::new_boolean(), metadata))
     }
@@ -918,10 +924,56 @@ impl TypeSpace {
         Ok((TypeEntry::new_builtin("serde_json::Value"), metadata))
     }
 
+    fn convert_typed_enum<'a>(
+        &mut self,
+        type_name: Name,
+        schema: &'a SchemaObject,
+        enum_values: &[serde_json::Value],
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let type_schema = SchemaObject {
+            enum_values: None,
+            ..schema.clone()
+        };
+
+        let inner_type_name = match &type_name {
+            Name::Required(name) | Name::Suggested(name) => {
+                Name::Suggested(format!("{}Inner", name))
+            }
+            // TODO return an error indicating that a name is required here...
+            Name::Unknown => todo!(),
+        };
+
+        let (type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
+
+        // Make sure all the values are valid.
+        enum_values
+            .iter()
+            .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
+
+        let type_id = self.assign_type(type_entry);
+
+        let newtype_entry = TypeEntryNewtype::from_metadata_with_enum_values(
+            type_name,
+            metadata,
+            type_id,
+            enum_values,
+        )
+        .into();
+
+        Ok((
+            newtype_entry,
+            if metadata.is_some() {
+                &schema.metadata
+            } else {
+                &None
+            },
+        ))
+    }
+
     fn convert_unknown_enum<'a>(
         &mut self,
         type_name: Name,
-        metadata: &'a Option<Box<Metadata>>,
+        schema: &'a SchemaObject,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         // We're here because the schema didn't have a type; that seems busted,
@@ -939,16 +991,40 @@ impl TypeSpace {
                 serde_json::Value::Array(_) => InstanceType::Array,
                 serde_json::Value::Object(_) => InstanceType::Object,
             })
-            .collect::<Vec<_>>();
+            .collect::<HashSet<_>>();
 
-        match (instance_types.len(), instance_types.first()) {
+        match (instance_types.len(), instance_types.iter().next()) {
             (1, Some(InstanceType::String)) => {
-                self.convert_enum_string(type_name, metadata, enum_values)
+                self.convert_enum_string(type_name, &schema.metadata, enum_values)
             }
-            (1, Some(InstanceType::Boolean)) => {
-                self.convert_bool(metadata, &Some(enum_values.into()))
+
+            // TOD0 We're ignoring booleans for the moment because some of the
+            // tests show that this may require more careful consideration.
+            (1, Some(InstanceType::Boolean)) => self.convert_bool(&schema.metadata),
+
+            (1, Some(instance_type)) => {
+                let fixed_schema = SchemaObject {
+                    instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
+                        *instance_type,
+                    ))),
+                    ..schema.clone()
+                };
+                let (type_entry, metadata) =
+                    self.convert_typed_enum(type_name, &fixed_schema, enum_values)?;
+                Ok((
+                    type_entry,
+                    if metadata.is_some() {
+                        &schema.metadata
+                    } else {
+                        &None
+                    },
+                ))
             }
-            _ => panic!(),
+            (1, None) => unreachable!(),
+            _ => panic!(
+                "multiple implied types for an un-typed enum {:?} {:?}",
+                instance_types, enum_values
+            ),
         }
     }
 
@@ -1168,7 +1244,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         match type_space.convert_schema_object(Name::Unknown, &schema) {
-            Err(Error::InvalidDefaultValue) => (),
+            Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }
     }
@@ -1196,7 +1272,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         match type_space.convert_schema_object(Name::Unknown, &schema) {
-            Err(Error::InvalidDefaultValue) => (),
+            Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }
     }
@@ -1234,7 +1310,32 @@ mod tests {
 
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            // ??
+            #[derive(Serialize, Deserialize, Debug, Clone)]
+            pub struct Sub10Primes(u32);
+
+            impl std::ops::Deref for Sub10Primes {
+                type Target = u32;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+
+            impl std::convert::TryFrom<u32> for Sub10Primes {
+                type Error = &'static str;
+
+                fn try_from(value: u32) -> Result<Self, Self::Error> {
+                    if ![
+                        2_u32,
+                        3_u32,
+                        5_u32,
+                        7_u32,
+                    ].contains(&value) {
+                        Err("invalid value")
+                    } else {
+                        Ok(Self(value))
+                    }
+                }
+            }
         };
         assert_eq!(actual.to_string(), expected.to_string());
     }

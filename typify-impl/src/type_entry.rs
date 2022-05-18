@@ -18,7 +18,7 @@ pub(crate) struct TypeEntryEnum {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
-    pub default: Option<DefaultValue>,
+    pub default: Option<WrappedValue>,
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
@@ -29,7 +29,7 @@ pub(crate) struct TypeEntryStruct {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
-    pub default: Option<DefaultValue>,
+    pub default: Option<WrappedValue>,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
 }
@@ -39,24 +39,25 @@ pub(crate) struct TypeEntryNewtype {
     pub name: String,
     pub rename: Option<String>,
     pub description: Option<String>,
-    pub default: Option<DefaultValue>,
+    pub default: Option<WrappedValue>,
     pub type_id: TypeId,
+    pub enum_values: Option<Vec<WrappedValue>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct DefaultValue(pub serde_json::Value);
-impl DefaultValue {
+pub(crate) struct WrappedValue(pub serde_json::Value);
+impl WrappedValue {
     pub(crate) fn new(value: serde_json::Value) -> Self {
         Self(value)
     }
 }
 
-impl Ord for DefaultValue {
+impl Ord for WrappedValue {
     fn cmp(&self, _: &Self) -> std::cmp::Ordering {
         std::cmp::Ordering::Equal
     }
 }
-impl PartialOrd for DefaultValue {
+impl PartialOrd for WrappedValue {
     fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
         Some(std::cmp::Ordering::Equal)
     }
@@ -141,7 +142,7 @@ pub(crate) enum StructPropertyRename {
 pub(crate) enum StructPropertyState {
     Required,
     Optional,
-    Default(DefaultValue),
+    Default(WrappedValue),
 }
 
 #[derive(Debug)]
@@ -189,7 +190,7 @@ impl TypeEntryStruct {
             .as_ref()
             .and_then(|m| m.default.as_ref())
             .cloned()
-            .map(DefaultValue::new);
+            .map(WrappedValue::new);
 
         TypeEntryDetails::Struct(Self {
             name,
@@ -203,7 +204,7 @@ impl TypeEntryStruct {
 }
 
 impl TypeEntryNewtype {
-    pub(crate) fn from_metadata_with_default(
+    pub(crate) fn from_metadata(
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
@@ -218,6 +219,27 @@ impl TypeEntryNewtype {
             description,
             default: None,
             type_id,
+            enum_values: None,
+        })
+    }
+
+    pub(crate) fn from_metadata_with_enum_values(
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        enum_values: &[serde_json::Value],
+    ) -> TypeEntryDetails {
+        let name = get_type_name(&type_name, metadata).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        TypeEntryDetails::Newtype(Self {
+            name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            enum_values: Some(enum_values.iter().cloned().map(WrappedValue::new).collect()),
         })
     }
 }
@@ -343,7 +365,7 @@ impl TypeEntry {
                 let enum_impl = enum_impl(&type_name, variants);
 
                 let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    let default_stream = self.output_value(type_space, &value.0).unwrap();
                     quote! {
                         impl Default for #type_name {
                             fn default() -> Self {
@@ -396,7 +418,7 @@ impl TypeEntry {
                     .unzip();
 
                 let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    let default_stream = self.output_value(type_space, &value.0).unwrap();
                     quote! {
                         impl Default for #type_name {
                             fn default() -> Self {
@@ -426,6 +448,7 @@ impl TypeEntry {
                 description,
                 default,
                 type_id,
+                enum_values,
             }) => {
                 let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
@@ -439,8 +462,32 @@ impl TypeEntry {
                 let sub_type = type_space.id_to_entry.get(type_id).unwrap();
                 let sub_type_name = sub_type.type_ident(type_space, false);
 
+                let (vis, try_from_impl) = if let Some(enum_values) = enum_values {
+                    let value_output = enum_values
+                        .iter()
+                        .map(|value| sub_type.output_value(type_space, &value.0));
+                    let try_from_impl = quote! {
+                        impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                            type Error = &'static str;
+
+                            fn try_from(value: #sub_type_name) -> Result<Self, Self::Error> {
+                                if ![
+                                    #(#value_output,)*
+                                ].contains(&value) {
+                                    Err("invalid value")
+                                } else {
+                                    Ok(Self(value))
+                                }
+                            }
+                        }
+                    };
+                    (quote! {}, try_from_impl)
+                } else {
+                    (quote! {pub}, quote! {})
+                };
+
                 let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.value(type_space, &value.0).unwrap();
+                    let default_stream = self.output_value(type_space, &value.0).unwrap();
                     quote! {
                         impl Default for #type_name {
                             fn default() -> Self {
@@ -454,7 +501,7 @@ impl TypeEntry {
                     #doc
                     #[derive(#(#derives),*)]
                     #serde
-                    pub struct #type_name(pub #sub_type_name);
+                    pub struct #type_name(#vis #sub_type_name);
 
                     impl std::ops::Deref for #type_name {
                         type Target = #sub_type_name;
@@ -464,6 +511,7 @@ impl TypeEntry {
                     }
 
                     #default_impl
+                    #try_from_impl
                 }
             }
 
