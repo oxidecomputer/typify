@@ -15,16 +15,18 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.0.6\...HEAD[Full list of commits]
 
+* Update to `uuid` v1.0.0 for testing (non-breaking change)
+
 == 0.0.6 (released 2022-05-12)
 
 https://github.com/oxidecomputer/typify/compare/v0.0.5\...v0.0.6[Full list of commits]
 
 * Add an interface to allow consumers to specify additional derives for generated types (#35)
-* handle all invalid identifier characters (#37)
-* Add support for std::net::Ipv6Addr type (#38)
-* add Copy to simple enums (#40)
-* Box trivial cyclic refs (#41)
-* move to heck for case conversion (#43)
+* Handle all invalid identifier characters (#37)
+* Add support for `std::net::Ipv6Addr` type (#38)
+* Add `Copy` to simple enums (#40)
+* `Box` trivial cyclic refs (#41)
+* Move to heck for case conversion (#43)
 * Improve handling of default values for object properties (#44)
 
 == 0.0.5 (released 2021-11-06)
