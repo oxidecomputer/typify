@@ -40,7 +40,9 @@ pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let type_id = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
         already_type_id.clone()
     } else {
-        type_space.add_type(&schema.schema.into()).unwrap()
+        type_space
+            .add_type_with_name(&schema.schema.into(), Some(name.to_string()))
+            .unwrap()
     };
 
     (type_space, type_id)
