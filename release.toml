@@ -16,3 +16,7 @@ tag-message = "release {{crate_name}} {{version}}"
 tag-prefix = ""
 dev-version = true
 dev-version-ext = "dev"
+consolidate-commits = true
+push = false
+shared-version = true
+dependent-version = "upgrade"
