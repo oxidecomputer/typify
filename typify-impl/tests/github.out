@@ -158,11 +158,42 @@ pub struct BranchProtectionRuleEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum BranchProtectionRuleEvent {
-    Created(BranchProtectionRuleCreated),
-    Deleted(BranchProtectionRuleDeleted),
-    Edited(BranchProtectionRuleEdited),
+    #[doc = "branch protection rule created event\n\nActivity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        rule: BranchProtectionRule,
+        sender: User,
+    },
+    #[doc = "branch protection rule deleted event\n\nActivity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        rule: BranchProtectionRule,
+        sender: User,
+    },
+    #[doc = "branch protection rule edited event\n\nActivity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: BranchProtectionRuleEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        rule: BranchProtectionRule,
+        sender: User,
+    },
 }
 #[doc = "A deployment to a repository environment. This will only be populated if the check run was created by a GitHub Actions workflow job that references an environment."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -248,12 +279,62 @@ pub struct CheckRunRerequested {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum CheckRunEvent {
-    Completed(CheckRunCompleted),
-    Created(CheckRunCreated),
-    RequestedAction(CheckRunRequestedAction),
-    Rerequested(CheckRunRerequested),
+    #[doc = "check_run completed event"]
+    #[serde(rename = "completed")]
+    Completed {
+        check_run: CheckRunCompletedCheckRun,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        #[doc = "The action requested by the user."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requested_action: Option<CheckRunCompletedRequestedAction>,
+        sender: User,
+    },
+    #[doc = "check_run created event"]
+    #[serde(rename = "created")]
+    Created {
+        check_run: CheckRunCreatedCheckRun,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        #[doc = "The action requested by the user."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requested_action: Option<CheckRunCreatedRequestedAction>,
+        sender: User,
+    },
+    #[doc = "check_run requested_action event"]
+    #[serde(rename = "requested_action")]
+    RequestedAction {
+        check_run: CheckRunRequestedActionCheckRun,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        requested_action: CheckRunRequestedActionRequestedAction,
+        sender: User,
+    },
+    #[doc = "check_run rerequested event"]
+    #[serde(rename = "rerequested")]
+    Rerequested {
+        check_run: CheckRunRerequestedCheckRun,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        #[doc = "The action requested by the user."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requested_action: Option<CheckRunRerequestedRequestedAction>,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -292,11 +373,41 @@ pub struct CheckSuiteRerequested {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum CheckSuiteEvent {
-    Completed(CheckSuiteCompleted),
-    Requested(CheckSuiteRequested),
-    Rerequested(CheckSuiteRerequested),
+    #[doc = "check_suite completed event"]
+    #[serde(rename = "completed")]
+    Completed {
+        check_suite: CheckSuiteCompletedCheckSuite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "check_suite requested event"]
+    #[serde(rename = "requested")]
+    Requested {
+        check_suite: CheckSuiteRequestedCheckSuite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "check_suite rerequested event"]
+    #[serde(rename = "rerequested")]
+    Rerequested {
+        check_suite: CheckSuiteRerequestedCheckSuite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -401,14 +512,104 @@ pub struct CodeScanningAlertReopenedByUser {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum CodeScanningAlertEvent {
-    AppearedInBranch(CodeScanningAlertAppearedInBranch),
-    ClosedByUser(CodeScanningAlertClosedByUser),
-    Created(CodeScanningAlertCreated),
-    Fixed(CodeScanningAlertFixed),
-    Reopened(CodeScanningAlertReopened),
-    ReopenedByUser(CodeScanningAlertReopenedByUser),
+    #[doc = "code_scanning_alert appeared_in_branch event"]
+    #[serde(rename = "appeared_in_branch")]
+    AppearedInBranch {
+        alert: CodeScanningAlertAppearedInBranchAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: GithubOrg,
+    },
+    #[doc = "code_scanning_alert closed_by_user event"]
+    #[serde(rename = "closed_by_user")]
+    ClosedByUser {
+        alert: CodeScanningAlertClosedByUserAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "code_scanning_alert created event"]
+    #[serde(rename = "created")]
+    Created {
+        alert: CodeScanningAlertCreatedAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: GithubOrg,
+    },
+    #[doc = "code_scanning_alert fixed event"]
+    #[serde(rename = "fixed")]
+    Fixed {
+        alert: CodeScanningAlertFixedAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: GithubOrg,
+    },
+    #[doc = "code_scanning_alert reopened event"]
+    #[serde(rename = "reopened")]
+    Reopened {
+        alert: CodeScanningAlertReopenedAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: GithubOrg,
+    },
+    #[doc = "code_scanning_alert reopened_by_user event"]
+    #[serde(rename = "reopened_by_user")]
+    ReopenedByUser {
+        alert: CodeScanningAlertReopenedByUserAlert,
+        #[doc = "The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        commit_oid: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        #[doc = "The Git reference of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty."]
+        #[serde(rename = "ref")]
+        ref_: String,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -561,10 +762,30 @@ pub struct DeployKeyDeleted {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum DeployKeyEvent {
-    Created(DeployKeyCreated),
-    Deleted(DeployKeyDeleted),
+    #[doc = "deploy_key created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        key: DeployKeyCreatedKey,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "deploy_key deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        key: DeployKeyDeletedKey,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -637,7 +858,7 @@ pub struct Discussion {
 pub struct DiscussionAnswered {
     pub action: DiscussionAnsweredAction,
     pub answer: DiscussionAnsweredAnswer,
-    pub discussion: DiscussionAnsweredDiscussion,
+    pub discussion: Discussion,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -662,7 +883,7 @@ pub struct DiscussionCategoryChanged {
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCreated {
     pub action: DiscussionCreatedAction,
-    pub discussion: DiscussionCreatedDiscussion,
+    pub discussion: Discussion,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -713,7 +934,7 @@ pub struct DiscussionLabeled {
 #[serde(deny_unknown_fields)]
 pub struct DiscussionLocked {
     pub action: DiscussionLockedAction,
-    pub discussion: DiscussionLockedDiscussion,
+    pub discussion: Discussion,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -750,7 +971,7 @@ pub struct DiscussionTransferred {
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnanswered {
     pub action: DiscussionUnansweredAction,
-    pub discussion: DiscussionUnansweredDiscussion,
+    pub discussion: Discussion,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     pub old_answer: DiscussionUnansweredOldAnswer,
@@ -776,7 +997,7 @@ pub struct DiscussionUnlabeled {
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnlocked {
     pub action: DiscussionUnlockedAction,
-    pub discussion: DiscussionUnlockedDiscussion,
+    pub discussion: Discussion,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -834,35 +1055,204 @@ pub struct DiscussionCommentEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum DiscussionCommentEvent {
-    Created(DiscussionCommentCreated),
-    Deleted(DiscussionCommentDeleted),
-    Edited(DiscussionCommentEdited),
+    #[doc = "discussion_comment created event"]
+    #[serde(rename = "created")]
+    Created {
+        comment: DiscussionCommentCreatedComment,
+        discussion: Discussion,
+        installation: InstallationLite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion_comment deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        comment: DiscussionCommentDeletedComment,
+        discussion: Discussion,
+        installation: InstallationLite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion_comment edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: DiscussionCommentEditedChanges,
+        comment: DiscussionCommentEditedComment,
+        discussion: Discussion,
+        installation: InstallationLite,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum DiscussionEvent {
-    Answered(DiscussionAnswered),
-    CategoryChanged(DiscussionCategoryChanged),
-    Created(DiscussionCreated),
-    Deleted(DiscussionDeleted),
-    Edited(DiscussionEdited),
-    Labeled(DiscussionLabeled),
-    Locked(DiscussionLocked),
-    Pinned(DiscussionPinned),
-    Transferred(DiscussionTransferred),
-    Unanswered(DiscussionUnanswered),
-    Unlabeled(DiscussionUnlabeled),
-    Unlocked(DiscussionUnlocked),
-    Unpinned(DiscussionUnpinned),
+    #[doc = "discussion answered event"]
+    #[serde(rename = "answered")]
+    Answered {
+        answer: DiscussionAnsweredAnswer,
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion category changed event"]
+    #[serde(rename = "category_changed")]
+    CategoryChanged {
+        changes: DiscussionCategoryChangedChanges,
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion created event"]
+    #[serde(rename = "created")]
+    Created {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        changes: Option<DiscussionEditedChanges>,
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion labeled event"]
+    #[serde(rename = "labeled")]
+    Labeled {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        label: Label,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion locked event"]
+    #[serde(rename = "locked")]
+    Locked {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion pinned event"]
+    #[serde(rename = "pinned")]
+    Pinned {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion transferred event"]
+    #[serde(rename = "transferred")]
+    Transferred {
+        changes: DiscussionTransferredChanges,
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion unanswered event"]
+    #[serde(rename = "unanswered")]
+    Unanswered {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        old_answer: DiscussionUnansweredOldAnswer,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion unlabeled event"]
+    #[serde(rename = "unlabeled")]
+    Unlabeled {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        label: Label,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion unlocked event"]
+    #[serde(rename = "unlocked")]
+    Unlocked {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "discussion unpinned event"]
+    #[serde(rename = "unpinned")]
+    Unpinned {
+        discussion: Discussion,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[doc = "A user forks a repository."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ForkEvent {
     #[doc = "The created [`repository`](https://docs.github.com/en/rest/reference/repos#get-a-repository) resource."]
-    pub forkee: ForkEventForkee,
+    pub forkee: Repository,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -994,7 +1384,7 @@ pub struct InstallationNewPermissionsAccepted {
 #[serde(deny_unknown_fields)]
 pub struct InstallationSuspend {
     pub action: InstallationSuspendAction,
-    pub installation: InstallationSuspendInstallation,
+    pub installation: Installation,
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationSuspendRepositoriesItem>,
@@ -1006,7 +1396,7 @@ pub struct InstallationSuspend {
 #[serde(deny_unknown_fields)]
 pub struct InstallationUnsuspend {
     pub action: InstallationUnsuspendAction,
-    pub installation: InstallationUnsuspendInstallation,
+    pub installation: Installation,
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationUnsuspendRepositoriesItem>,
@@ -1023,13 +1413,63 @@ pub struct InstallationLite {
     pub node_id: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum InstallationEvent {
-    Created(InstallationCreated),
-    Deleted(InstallationDeleted),
-    NewPermissionsAccepted(InstallationNewPermissionsAccepted),
-    Suspend(InstallationSuspend),
-    Unsuspend(InstallationUnsuspend),
+    #[doc = "installation created event"]
+    #[serde(rename = "created")]
+    Created {
+        installation: Installation,
+        #[doc = "An array of repository objects that the installation can access."]
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        repositories: Vec<InstallationCreatedRepositoriesItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requester: Option<User>,
+        sender: User,
+    },
+    #[doc = "installation deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        installation: Installation,
+        #[doc = "An array of repository objects that the installation can access."]
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        repositories: Vec<InstallationDeletedRepositoriesItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requester: Option<()>,
+        sender: User,
+    },
+    #[doc = "installation new_permissions_accepted event"]
+    #[serde(rename = "new_permissions_accepted")]
+    NewPermissionsAccepted {
+        installation: Installation,
+        #[doc = "An array of repository objects that the installation can access."]
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        repositories: Vec<InstallationNewPermissionsAcceptedRepositoriesItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requester: Option<()>,
+        sender: User,
+    },
+    #[doc = "installation suspend event"]
+    #[serde(rename = "suspend")]
+    Suspend {
+        installation: Installation,
+        #[doc = "An array of repository objects that the installation can access."]
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        repositories: Vec<InstallationSuspendRepositoriesItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requester: Option<()>,
+        sender: User,
+    },
+    #[doc = "installation unsuspend event"]
+    #[serde(rename = "unsuspend")]
+    Unsuspend {
+        installation: Installation,
+        #[doc = "An array of repository objects that the installation can access."]
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        repositories: Vec<InstallationUnsuspendRepositoriesItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        requester: Option<()>,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1060,10 +1500,34 @@ pub struct InstallationRepositoriesRemoved {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum InstallationRepositoriesEvent {
-    Added(InstallationRepositoriesAdded),
-    Removed(InstallationRepositoriesRemoved),
+    #[doc = "installation_repositories added event"]
+    #[serde(rename = "added")]
+    Added {
+        installation: Installation,
+        #[doc = "An array of repository objects, which were added to the installation."]
+        repositories_added: Vec<InstallationRepositoriesAddedRepositoriesAddedItem>,
+        #[doc = "An array of repository objects, which were removed from the installation."]
+        repositories_removed: Vec<InstallationRepositoriesAddedRepositoriesRemovedItem>,
+        #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
+        repository_selection: InstallationRepositoriesAddedRepositorySelection,
+        requester: Option<User>,
+        sender: User,
+    },
+    #[doc = "installation_repositories removed event"]
+    #[serde(rename = "removed")]
+    Removed {
+        installation: Installation,
+        #[doc = "An array of repository objects, which were added to the installation."]
+        repositories_added: Vec<InstallationRepositoriesRemovedRepositoriesAddedItem>,
+        #[doc = "An array of repository objects, which were removed from the installation."]
+        repositories_removed: Vec<InstallationRepositoriesRemovedRepositoriesRemovedItem>,
+        #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
+        repository_selection: InstallationRepositoriesRemovedRepositorySelection,
+        requester: Option<User>,
+        sender: User,
+    },
 }
 #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1133,7 +1597,7 @@ pub struct IssueCommentCreated {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-    pub issue: IssueCommentCreatedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1147,7 +1611,7 @@ pub struct IssueCommentDeleted {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-    pub issue: IssueCommentDeletedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1162,18 +1626,55 @@ pub struct IssueCommentEdited {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-    pub issue: IssueCommentEditedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum IssueCommentEvent {
-    Created(IssueCommentCreated),
-    Deleted(IssueCommentDeleted),
-    Edited(IssueCommentEdited),
+    #[doc = "issue_comment created event"]
+    #[serde(rename = "created")]
+    Created {
+        comment: IssueComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issue_comment deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        comment: IssueComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issue_comment edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: IssueCommentEditedChanges,
+        comment: IssueComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[doc = "Activity related to an issue. The type of activity is specified in the action property."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1200,7 +1701,7 @@ pub struct IssuesClosed {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
-    pub issue: IssuesClosedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1224,7 +1725,7 @@ pub struct IssuesDemilestoned {
     pub action: IssuesDemilestonedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesDemilestonedIssue,
+    pub issue: Issue,
     pub milestone: Milestone,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
@@ -1267,7 +1768,7 @@ pub struct IssuesLocked {
     pub action: IssuesLockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesLockedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1279,7 +1780,7 @@ pub struct IssuesMilestoned {
     pub action: IssuesMilestonedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesMilestonedIssue,
+    pub issue: Issue,
     pub milestone: Milestone,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
@@ -1294,7 +1795,7 @@ pub struct IssuesOpened {
     pub changes: Option<IssuesOpenedChanges>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesOpenedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1318,7 +1819,7 @@ pub struct IssuesReopened {
     pub action: IssuesReopenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesReopenedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1374,7 +1875,7 @@ pub struct IssuesUnlocked {
     pub action: IssuesUnlockedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub issue: IssuesUnlockedIssue,
+    pub issue: Issue,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1393,24 +1894,205 @@ pub struct IssuesUnpinned {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum IssuesEvent {
-    Assigned(IssuesAssigned),
-    Closed(IssuesClosed),
-    Deleted(IssuesDeleted),
-    Demilestoned(IssuesDemilestoned),
-    Edited(IssuesEdited),
-    Labeled(IssuesLabeled),
-    Locked(IssuesLocked),
-    Milestoned(IssuesMilestoned),
-    Opened(IssuesOpened),
-    Pinned(IssuesPinned),
-    Reopened(IssuesReopened),
-    Transferred(IssuesTransferred),
-    Unassigned(IssuesUnassigned),
-    Unlabeled(IssuesUnlabeled),
-    Unlocked(IssuesUnlocked),
-    Unpinned(IssuesUnpinned),
+    #[doc = "issues assigned event\n\nActivity related to an issue. The type of activity is specified in the action property."]
+    #[serde(rename = "assigned")]
+    Assigned {
+        #[doc = "The optional user who was assigned or unassigned from the issue."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        assignee: Option<User>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues closed event"]
+    #[serde(rename = "closed")]
+    Closed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues demilestoned event"]
+    #[serde(rename = "demilestoned")]
+    Demilestoned {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: IssuesEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        label: Option<Label>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues labeled event"]
+    #[serde(rename = "labeled")]
+    Labeled {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[doc = "The label that was added to the issue."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        label: Option<Label>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues locked event"]
+    #[serde(rename = "locked")]
+    Locked {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues milestoned event"]
+    #[serde(rename = "milestoned")]
+    Milestoned {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues opened event"]
+    #[serde(rename = "opened")]
+    Opened {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        changes: Option<IssuesOpenedChanges>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues pinned event"]
+    #[serde(rename = "pinned")]
+    Pinned {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues reopened event"]
+    #[serde(rename = "reopened")]
+    Reopened {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues transferred event"]
+    #[serde(rename = "transferred")]
+    Transferred {
+        changes: IssuesTransferredChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues unassigned event"]
+    #[serde(rename = "unassigned")]
+    Unassigned {
+        #[doc = "The optional user who was assigned or unassigned from the issue."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        assignee: Option<User>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues unlabeled event"]
+    #[serde(rename = "unlabeled")]
+    Unlabeled {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[doc = "The label that was removed from the issue."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        label: Option<Label>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues unlocked event"]
+    #[serde(rename = "unlocked")]
+    Unlocked {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "issues unpinned event"]
+    #[serde(rename = "unpinned")]
+    Unpinned {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        issue: Issue,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1468,11 +2150,46 @@ pub struct LabelEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum LabelEvent {
-    Created(LabelCreated),
-    Deleted(LabelDeleted),
-    Edited(LabelEdited),
+    #[doc = "label created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The label that was added."]
+        label: Label,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "label deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The label that was removed."]
+        label: Label,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "label edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        changes: Option<LabelEditedChanges>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The label that was edited."]
+        label: Label,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1505,7 +2222,7 @@ pub struct MarketplacePurchase {
 pub struct MarketplacePurchaseCancelled {
     pub action: MarketplacePurchaseCancelledAction,
     pub effective_date: String,
-    pub marketplace_purchase: MarketplacePurchaseCancelledMarketplacePurchase,
+    pub marketplace_purchase: MarketplacePurchase,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous_marketplace_purchase: Option<MarketplacePurchase>,
     pub sender: MarketplacePurchaseCancelledSender,
@@ -1515,7 +2232,7 @@ pub struct MarketplacePurchaseCancelled {
 pub struct MarketplacePurchaseChanged {
     pub action: MarketplacePurchaseChangedAction,
     pub effective_date: String,
-    pub marketplace_purchase: MarketplacePurchaseChangedMarketplacePurchase,
+    pub marketplace_purchase: MarketplacePurchase,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous_marketplace_purchase: Option<MarketplacePurchase>,
     pub sender: MarketplacePurchaseChangedSender,
@@ -1525,7 +2242,7 @@ pub struct MarketplacePurchaseChanged {
 pub struct MarketplacePurchasePendingChange {
     pub action: MarketplacePurchasePendingChangeAction,
     pub effective_date: String,
-    pub marketplace_purchase: MarketplacePurchasePendingChangeMarketplacePurchase,
+    pub marketplace_purchase: MarketplacePurchase,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous_marketplace_purchase: Option<MarketplacePurchase>,
     pub sender: MarketplacePurchasePendingChangeSender,
@@ -1535,7 +2252,7 @@ pub struct MarketplacePurchasePendingChange {
 pub struct MarketplacePurchasePendingChangeCancelled {
     pub action: MarketplacePurchasePendingChangeCancelledAction,
     pub effective_date: String,
-    pub marketplace_purchase: MarketplacePurchasePendingChangeCancelledMarketplacePurchase,
+    pub marketplace_purchase: MarketplacePurchase,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous_marketplace_purchase: Option<MarketplacePurchase>,
     pub sender: MarketplacePurchasePendingChangeCancelledSender,
@@ -1545,19 +2262,59 @@ pub struct MarketplacePurchasePendingChangeCancelled {
 pub struct MarketplacePurchasePurchased {
     pub action: MarketplacePurchasePurchasedAction,
     pub effective_date: String,
-    pub marketplace_purchase: MarketplacePurchasePurchasedMarketplacePurchase,
+    pub marketplace_purchase: MarketplacePurchase,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous_marketplace_purchase: Option<MarketplacePurchase>,
     pub sender: MarketplacePurchasePurchasedSender,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum MarketplacePurchaseEvent {
-    Cancelled(MarketplacePurchaseCancelled),
-    Changed(MarketplacePurchaseChanged),
-    PendingChange(MarketplacePurchasePendingChange),
-    PendingChangeCancelled(MarketplacePurchasePendingChangeCancelled),
-    Purchased(MarketplacePurchasePurchased),
+    #[doc = "marketplace_purchase cancelled event"]
+    #[serde(rename = "cancelled")]
+    Cancelled {
+        effective_date: String,
+        marketplace_purchase: MarketplacePurchase,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_marketplace_purchase: Option<MarketplacePurchase>,
+        sender: MarketplacePurchaseCancelledSender,
+    },
+    #[doc = "marketplace_purchase changed event"]
+    #[serde(rename = "changed")]
+    Changed {
+        effective_date: String,
+        marketplace_purchase: MarketplacePurchase,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_marketplace_purchase: Option<MarketplacePurchase>,
+        sender: MarketplacePurchaseChangedSender,
+    },
+    #[doc = "marketplace_purchase pending_change event"]
+    #[serde(rename = "pending_change")]
+    PendingChange {
+        effective_date: String,
+        marketplace_purchase: MarketplacePurchase,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_marketplace_purchase: Option<MarketplacePurchase>,
+        sender: MarketplacePurchasePendingChangeSender,
+    },
+    #[doc = "marketplace_purchase pending_change_cancelled event"]
+    #[serde(rename = "pending_change_cancelled")]
+    PendingChangeCancelled {
+        effective_date: String,
+        marketplace_purchase: MarketplacePurchase,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_marketplace_purchase: Option<MarketplacePurchase>,
+        sender: MarketplacePurchasePendingChangeCancelledSender,
+    },
+    #[doc = "marketplace_purchase purchased event"]
+    #[serde(rename = "purchased")]
+    Purchased {
+        effective_date: String,
+        marketplace_purchase: MarketplacePurchase,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_marketplace_purchase: Option<MarketplacePurchase>,
+        sender: MarketplacePurchasePurchasedSender,
+    },
 }
 #[doc = "Activity related to repository collaborators. The type of activity is specified in the action property."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1597,11 +2354,41 @@ pub struct MemberRemoved {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum MemberEvent {
-    Added(MemberAdded),
-    Edited(MemberEdited),
-    Removed(MemberRemoved),
+    #[doc = "member added event\n\nActivity related to repository collaborators. The type of activity is specified in the action property."]
+    #[serde(rename = "added")]
+    Added {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        changes: Option<MemberAddedChanges>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The user that was added."]
+        member: User,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "member edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: MemberEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The user who's permissions are changed."]
+        member: User,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "member removed event"]
+    #[serde(rename = "removed")]
+    Removed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The user that was removed."]
+        member: User,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[doc = "The membership between the user and the organization. Not present when the action is `member_invited`."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1644,10 +2431,36 @@ pub struct MembershipRemoved {
     pub team: MembershipRemovedTeam,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum MembershipEvent {
-    Added(MembershipAdded),
-    Removed(MembershipRemoved),
+    #[doc = "membership added event"]
+    #[serde(rename = "added")]
+    Added {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [user](https://docs.github.com/en/rest/reference/users) that was added or removed."]
+        member: User,
+        organization: Organization,
+        #[doc = "The scope of the membership. Currently, can only be `team`."]
+        scope: MembershipAddedScope,
+        sender: User,
+        #[doc = "The [team](https://docs.github.com/en/rest/reference/teams) for the membership."]
+        team: Team,
+    },
+    #[doc = "membership removed event"]
+    #[serde(rename = "removed")]
+    Removed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[doc = "The [user](https://docs.github.com/en/rest/reference/users) that was added or removed."]
+        member: User,
+        organization: Organization,
+        #[doc = "The scope of the membership. Currently, can only be `team`."]
+        scope: MembershipRemovedScope,
+        sender: User,
+        #[doc = "The [team](https://docs.github.com/en/rest/reference/teams) for the membership."]
+        team: MembershipRemovedTeam,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1697,7 +2510,7 @@ pub struct MilestoneClosed {
     pub action: MilestoneClosedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub milestone: MilestoneClosedMilestone,
+    pub milestone: Milestone,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1709,7 +2522,7 @@ pub struct MilestoneCreated {
     pub action: MilestoneCreatedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub milestone: MilestoneCreatedMilestone,
+    pub milestone: Milestone,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
@@ -1746,20 +2559,71 @@ pub struct MilestoneOpened {
     pub action: MilestoneOpenedAction,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
-    pub milestone: MilestoneOpenedMilestone,
+    pub milestone: Milestone,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
     pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum MilestoneEvent {
-    Closed(MilestoneClosed),
-    Created(MilestoneCreated),
-    Deleted(MilestoneDeleted),
-    Edited(MilestoneEdited),
-    Opened(MilestoneOpened),
+    #[doc = "milestone closed event"]
+    #[serde(rename = "closed")]
+    Closed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "milestone created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "milestone deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "milestone edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: MilestoneEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "milestone opened event"]
+    #[serde(rename = "opened")]
+    Opened {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        milestone: Milestone,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1784,10 +2648,28 @@ pub struct OrgBlockUnblocked {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum OrgBlockEvent {
-    Blocked(OrgBlockBlocked),
-    Unblocked(OrgBlockUnblocked),
+    #[doc = "org_block blocked event"]
+    #[serde(rename = "blocked")]
+    Blocked {
+        #[doc = "Information about the user that was blocked or unblocked."]
+        blocked_user: User,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        sender: User,
+    },
+    #[doc = "org_block unblocked event"]
+    #[serde(rename = "unblocked")]
+    Unblocked {
+        #[doc = "Information about the user that was blocked or unblocked."]
+        blocked_user: User,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1859,13 +2741,54 @@ pub struct OrganizationRenamed {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum OrganizationEvent {
-    Deleted(OrganizationDeleted),
-    MemberAdded(OrganizationMemberAdded),
-    MemberInvited(OrganizationMemberInvited),
-    MemberRemoved(OrganizationMemberRemoved),
-    Renamed(OrganizationRenamed),
+    #[doc = "organization deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        membership: Membership,
+        organization: Organization,
+        sender: User,
+    },
+    #[doc = "organization member_added event"]
+    #[serde(rename = "member_added")]
+    MemberAdded {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        membership: Membership,
+        organization: Organization,
+        sender: User,
+    },
+    #[doc = "organization member_invited event"]
+    #[serde(rename = "member_invited")]
+    MemberInvited {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        invitation: OrganizationMemberInvitedInvitation,
+        organization: Organization,
+        sender: User,
+        user: User,
+    },
+    #[doc = "organization member_removed event"]
+    #[serde(rename = "member_removed")]
+    MemberRemoved {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        membership: Membership,
+        organization: Organization,
+        sender: User,
+    },
+    #[doc = "organization renamed event"]
+    #[serde(rename = "renamed")]
+    Renamed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        membership: Membership,
+        organization: Organization,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -1888,10 +2811,26 @@ pub struct PackageUpdated {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum PackageEvent {
-    Published(PackagePublished),
-    Updated(PackageUpdated),
+    #[doc = "package published event"]
+    #[serde(rename = "published")]
+    Published {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        package: PackagePublishedPackage,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "package updated event"]
+    #[serde(rename = "updated")]
+    Updated {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        package: PackageUpdatedPackage,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[doc = "Page Build"]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -2095,18 +3034,71 @@ pub struct ProjectCardMoved {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub project_card: ProjectCardMovedProjectCard,
+    pub project_card: ProjectCard,
     pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum ProjectCardEvent {
-    Converted(ProjectCardConverted),
-    Created(ProjectCardCreated),
-    Deleted(ProjectCardDeleted),
-    Edited(ProjectCardEdited),
-    Moved(ProjectCardMoved),
+    #[doc = "project_card converted event"]
+    #[serde(rename = "converted")]
+    Converted {
+        changes: ProjectCardConvertedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_card: ProjectCard,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_card created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_card: ProjectCard,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_card deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_card: ProjectCard,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_card edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: ProjectCardEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_card: ProjectCard,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_card moved event"]
+    #[serde(rename = "moved")]
+    Moved {
+        changes: ProjectCardMovedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_card: ProjectCard,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -2158,21 +3150,113 @@ pub struct ProjectColumnMoved {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum ProjectColumnEvent {
-    Created(ProjectColumnCreated),
-    Deleted(ProjectColumnDeleted),
-    Edited(ProjectColumnEdited),
-    Moved(ProjectColumnMoved),
+    #[doc = "project_column created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_column: ProjectColumn,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_column deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_column: ProjectColumn,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_column edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: ProjectColumnEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_column: ProjectColumn,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project_column moved event"]
+    #[serde(rename = "moved")]
+    Moved {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project_column: ProjectColumn,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum ProjectEvent {
-    Closed(ProjectClosed),
-    Created(ProjectCreated),
-    Deleted(ProjectDeleted),
-    Edited(ProjectEdited),
-    Reopened(ProjectReopened),
+    #[doc = "project closed event"]
+    #[serde(rename = "closed")]
+    Closed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project: Project,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project: Project,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project: Project,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: ProjectEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project: Project,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "project reopened event"]
+    #[serde(rename = "reopened")]
+    Reopened {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        project: Project,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[doc = "When a private repository is made public."]
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -2182,7 +3266,7 @@ pub struct PublicEvent {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: PublicEventRepository,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -2346,7 +3430,7 @@ pub struct PullRequestClosed {
     pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub pull_request: PullRequestClosedPullRequest,
+    pub pull_request: PullRequest,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2360,7 +3444,7 @@ pub struct PullRequestConvertedToDraft {
     pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub pull_request: PullRequestConvertedToDraftPullRequest,
+    pub pull_request: PullRequest,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2418,7 +3502,7 @@ pub struct PullRequestOpened {
     pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub pull_request: PullRequestOpenedPullRequest,
+    pub pull_request: PullRequest,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2432,7 +3516,7 @@ pub struct PullRequestReadyForReview {
     pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub pull_request: PullRequestReadyForReviewPullRequest,
+    pub pull_request: PullRequest,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2446,7 +3530,7 @@ pub struct PullRequestReopened {
     pub number: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub pull_request: PullRequestReopenedPullRequest,
+    pub pull_request: PullRequest,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2672,18 +3756,86 @@ pub struct PullRequestReviewCommentEdited {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum PullRequestReviewCommentEvent {
-    Created(PullRequestReviewCommentCreated),
-    Deleted(PullRequestReviewCommentDeleted),
-    Edited(PullRequestReviewCommentEdited),
+    #[doc = "pull_request_review_comment created event"]
+    #[serde(rename = "created")]
+    Created {
+        comment: PullRequestReviewComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: PullRequestReviewCommentCreatedPullRequest,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "pull_request_review_comment deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        comment: PullRequestReviewComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: PullRequestReviewCommentDeletedPullRequest,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "pull_request_review_comment edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: PullRequestReviewCommentEditedChanges,
+        comment: PullRequestReviewComment,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: PullRequestReviewCommentEditedPullRequest,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum PullRequestReviewEvent {
-    Dismissed(PullRequestReviewDismissed),
-    Edited(PullRequestReviewEdited),
-    Submitted(PullRequestReviewSubmitted),
+    #[doc = "pull_request_review dismissed event"]
+    #[serde(rename = "dismissed")]
+    Dismissed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: SimplePullRequest,
+        repository: Repository,
+        review: PullRequestReviewDismissedReview,
+        sender: User,
+    },
+    #[doc = "pull_request_review edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: PullRequestReviewEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: SimplePullRequest,
+        repository: Repository,
+        review: PullRequestReviewEditedReview,
+        sender: User,
+    },
+    #[doc = "pull_request_review submitted event"]
+    #[serde(rename = "submitted")]
+    Submitted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        pull_request: SimplePullRequest,
+        repository: Repository,
+        review: PullRequestReviewSubmittedReview,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -2783,7 +3935,7 @@ pub struct ReleasePrereleased {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub release: ReleasePrereleasedRelease,
+    pub release: Release,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2795,7 +3947,7 @@ pub struct ReleasePublished {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub release: ReleasePublishedRelease,
+    pub release: Release,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2819,7 +3971,7 @@ pub struct ReleaseUnpublished {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub release: ReleaseUnpublishedRelease,
+    pub release: Release,
     pub repository: Repository,
     pub sender: User,
 }
@@ -2845,15 +3997,86 @@ pub struct ReleaseAsset {
     pub url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum ReleaseEvent {
-    Created(ReleaseCreated),
-    Deleted(ReleaseDeleted),
-    Edited(ReleaseEdited),
-    Prereleased(ReleasePrereleased),
-    Published(ReleasePublished),
-    Released(ReleaseReleased),
-    Unpublished(ReleaseUnpublished),
+    #[doc = "release created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: ReleaseEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release prereleased event"]
+    #[serde(rename = "prereleased")]
+    Prereleased {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release published event"]
+    #[serde(rename = "published")]
+    Published {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release released event"]
+    #[serde(rename = "released")]
+    Released {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "release unpublished event"]
+    #[serde(rename = "unpublished")]
+    Unpublished {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        release: Release,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -2987,7 +4210,7 @@ pub struct RepositoryArchived {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: RepositoryArchivedRepository,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3032,7 +4255,7 @@ pub struct RepositoryPrivatized {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: RepositoryPrivatizedRepository,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3043,7 +4266,7 @@ pub struct RepositoryPublicized {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: RepositoryPublicizedRepository,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3078,7 +4301,7 @@ pub struct RepositoryUnarchived {
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
-    pub repository: RepositoryUnarchivedRepository,
+    pub repository: Repository,
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -3155,17 +4378,101 @@ impl std::ops::Deref for RepositoryDispatchEvent {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum RepositoryEvent {
-    Archived(RepositoryArchived),
-    Created(RepositoryCreated),
-    Deleted(RepositoryDeleted),
-    Edited(RepositoryEdited),
-    Privatized(RepositoryPrivatized),
-    Publicized(RepositoryPublicized),
-    Renamed(RepositoryRenamed),
-    Transferred(RepositoryTransferred),
-    Unarchived(RepositoryUnarchived),
+    #[doc = "repository archived event"]
+    #[serde(rename = "archived")]
+    Archived {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: RepositoryEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository privatized event"]
+    #[serde(rename = "privatized")]
+    Privatized {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository publicized event"]
+    #[serde(rename = "publicized")]
+    Publicized {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository renamed event"]
+    #[serde(rename = "renamed")]
+    Renamed {
+        changes: RepositoryRenamedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository transferred event"]
+    #[serde(rename = "transferred")]
+    Transferred {
+        changes: RepositoryTransferredChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository unarchived event"]
+    #[serde(rename = "unarchived")]
+    Unarchived {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3209,11 +4516,35 @@ pub struct RepositoryVulnerabilityAlertResolve {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum RepositoryVulnerabilityAlertEvent {
-    Create(RepositoryVulnerabilityAlertCreate),
-    Dismiss(RepositoryVulnerabilityAlertDismiss),
-    Resolve(RepositoryVulnerabilityAlertResolve),
+    #[doc = "repository_vulnerability_alert create event"]
+    #[serde(rename = "create")]
+    Create {
+        alert: RepositoryVulnerabilityAlertCreateAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository_vulnerability_alert dismiss event"]
+    #[serde(rename = "dismiss")]
+    Dismiss {
+        alert: RepositoryVulnerabilityAlertDismissAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "repository_vulnerability_alert resolve event"]
+    #[serde(rename = "resolve")]
+    Resolve {
+        alert: RepositoryVulnerabilityAlertResolveAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3251,11 +4582,40 @@ pub struct SecretScanningAlertResolved {
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum SecretScanningAlertEvent {
-    Created(SecretScanningAlertCreated),
-    Reopened(SecretScanningAlertReopened),
-    Resolved(SecretScanningAlertResolved),
+    #[doc = "secret_scanning_alert created event"]
+    #[serde(rename = "created")]
+    Created {
+        alert: SecretScanningAlertCreatedAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+    },
+    #[doc = "secret_scanning_alert reopened event"]
+    #[serde(rename = "reopened")]
+    Reopened {
+        alert: SecretScanningAlertReopenedAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
+    #[doc = "secret_scanning_alert resolved event"]
+    #[serde(rename = "resolved")]
+    Resolved {
+        alert: SecretScanningAlertResolvedAlert,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3282,12 +4642,20 @@ pub struct SecurityAdvisoryWithdrawn {
     pub security_advisory: SecurityAdvisoryWithdrawnSecurityAdvisory,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", content = "security_advisory")]
 pub enum SecurityAdvisoryEvent {
-    Performed(SecurityAdvisoryPerformed),
-    Published(SecurityAdvisoryPublished),
-    Updated(SecurityAdvisoryUpdated),
-    Withdrawn(SecurityAdvisoryWithdrawn),
+    #[doc = "security_advisory performed event"]
+    #[serde(rename = "performed")]
+    Performed(SecurityAdvisoryPerformedSecurityAdvisory),
+    #[doc = "security_advisory published event"]
+    #[serde(rename = "published")]
+    Published(SecurityAdvisoryPublishedSecurityAdvisory),
+    #[doc = "security_advisory updated event"]
+    #[serde(rename = "updated")]
+    Updated(SecurityAdvisoryUpdatedSecurityAdvisory),
+    #[doc = "security_advisory withdrawn event"]
+    #[serde(rename = "withdrawn")]
+    Withdrawn(SecurityAdvisoryWithdrawnSecurityAdvisory),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3395,14 +4763,53 @@ pub struct SponsorshipTier {
     pub node_id: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum SponsorshipEvent {
-    Cancelled(SponsorshipCancelled),
-    Created(SponsorshipCreated),
-    Edited(SponsorshipEdited),
-    PendingCancellation(SponsorshipPendingCancellation),
-    PendingTierChange(SponsorshipPendingTierChange),
-    TierChanged(SponsorshipTierChanged),
+    #[doc = "sponsorship cancelled event"]
+    #[serde(rename = "cancelled")]
+    Cancelled {
+        sender: User,
+        sponsorship: SponsorshipCancelledSponsorship,
+    },
+    #[doc = "sponsorship created event"]
+    #[serde(rename = "created")]
+    Created {
+        sender: User,
+        sponsorship: SponsorshipCreatedSponsorship,
+    },
+    #[doc = "sponsorship edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: SponsorshipEditedChanges,
+        sender: User,
+        sponsorship: SponsorshipEditedSponsorship,
+    },
+    #[doc = "sponsorship pending_cancellation event"]
+    #[serde(rename = "pending_cancellation")]
+    PendingCancellation {
+        #[doc = "The `pending_cancellation` and `pending_tier_change` event types will include the date the cancellation or tier change will take effect."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effective_date: Option<String>,
+        sender: User,
+        sponsorship: SponsorshipPendingCancellationSponsorship,
+    },
+    #[doc = "sponsorship pending_tier_change event"]
+    #[serde(rename = "pending_tier_change")]
+    PendingTierChange {
+        changes: SponsorshipPendingTierChangeChanges,
+        #[doc = "The `pending_cancellation` and `pending_tier_change` event types will include the date the cancellation or tier change will take effect."]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effective_date: Option<String>,
+        sender: User,
+        sponsorship: SponsorshipPendingTierChangeSponsorship,
+    },
+    #[doc = "sponsorship tier_changed event"]
+    #[serde(rename = "tier_changed")]
+    TierChanged {
+        changes: SponsorshipTierChangedChanges,
+        sender: User,
+        sponsorship: SponsorshipTierChangedSponsorship,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3431,10 +4838,32 @@ pub struct StarDeleted {
     pub starred_at: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum StarEvent {
-    Created(StarCreated),
-    Deleted(StarDeleted),
+    #[doc = "star created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        #[doc = "The time the star was created. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`. Will be `null` for the `deleted` action."]
+        starred_at: String,
+    },
+    #[doc = "star deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        #[doc = "The time the star was created. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`. Will be `null` for the `deleted` action."]
+        starred_at: (),
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3560,13 +4989,64 @@ pub struct TeamAddEvent {
     pub team: Team,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum TeamEvent {
-    AddedToRepository(TeamAddedToRepository),
-    Created(TeamCreated),
-    Deleted(TeamDeleted),
-    Edited(TeamEdited),
-    RemovedFromRepository(TeamRemovedFromRepository),
+    #[doc = "team added_to_repository event"]
+    #[serde(rename = "added_to_repository")]
+    AddedToRepository {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        repository: Option<Repository>,
+        sender: User,
+        team: Team,
+    },
+    #[doc = "team created event"]
+    #[serde(rename = "created")]
+    Created {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        repository: Option<Repository>,
+        sender: User,
+        team: Team,
+    },
+    #[doc = "team deleted event"]
+    #[serde(rename = "deleted")]
+    Deleted {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        repository: Option<Repository>,
+        sender: User,
+        team: Team,
+    },
+    #[doc = "team edited event"]
+    #[serde(rename = "edited")]
+    Edited {
+        changes: TeamEditedChanges,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        repository: Option<Repository>,
+        sender: User,
+        team: Team,
+    },
+    #[doc = "team removed_from_repository event"]
+    #[serde(rename = "removed_from_repository")]
+    RemovedFromRepository {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        organization: Organization,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        repository: Option<Repository>,
+        sender: User,
+        team: Team,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3685,10 +5165,26 @@ pub struct WorkflowRun {
     pub workflow_url: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "status", deny_unknown_fields)]
 pub enum WorkflowStep {
-    InProgress(WorkflowStepInProgress),
-    Completed(WorkflowStepCompleted),
+    #[doc = "Workflow Step (In Progress)"]
+    #[serde(rename = "in_progress")]
+    InProgress {
+        completed_at: (),
+        conclusion: (),
+        name: String,
+        number: i64,
+        started_at: String,
+    },
+    #[doc = "Workflow Step (Completed)"]
+    #[serde(rename = "completed")]
+    Completed {
+        completed_at: String,
+        conclusion: WorkflowStepCompletedConclusion,
+        name: String,
+        number: i64,
+        started_at: String,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3734,7 +5230,7 @@ pub struct WorkflowJobCompleted {
     pub organization: Option<Organization>,
     pub repository: Repository,
     pub sender: User,
-    pub workflow_job: WorkflowJobCompletedWorkflowJob,
+    pub workflow_job: WorkflowJob,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3758,14 +5254,44 @@ pub struct WorkflowJobStarted {
     pub organization: Option<Organization>,
     pub repository: Repository,
     pub sender: User,
-    pub workflow_job: WorkflowJobStartedWorkflowJob,
+    pub workflow_job: WorkflowJob,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum WorkflowJobEvent {
-    Completed(WorkflowJobCompleted),
-    Queued(WorkflowJobQueued),
-    Started(WorkflowJobStarted),
+    #[doc = "workflow_job completed event"]
+    #[serde(rename = "completed")]
+    Completed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        workflow_job: WorkflowJob,
+    },
+    #[doc = "workflow_job queued event"]
+    #[serde(rename = "queued")]
+    Queued {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        workflow_job: WorkflowJobQueuedWorkflowJob,
+    },
+    #[doc = "workflow_job started event"]
+    #[serde(rename = "started")]
+    Started {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        workflow_job: WorkflowJob,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3778,7 +5304,7 @@ pub struct WorkflowRunCompleted {
     pub repository: Repository,
     pub sender: User,
     pub workflow: Workflow,
-    pub workflow_run: WorkflowRunCompletedWorkflowRun,
+    pub workflow_run: WorkflowRun,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -3794,10 +5320,32 @@ pub struct WorkflowRunRequested {
     pub workflow_run: WorkflowRun,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[serde(tag = "action", deny_unknown_fields)]
 pub enum WorkflowRunEvent {
-    Completed(WorkflowRunCompleted),
-    Requested(WorkflowRunRequested),
+    #[doc = "workflow_run completed event"]
+    #[serde(rename = "completed")]
+    Completed {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        workflow: Workflow,
+        workflow_run: WorkflowRun,
+    },
+    #[doc = "workflow_run requested event"]
+    #[serde(rename = "requested")]
+    Requested {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        installation: Option<InstallationLite>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        organization: Option<Organization>,
+        repository: Repository,
+        sender: User,
+        workflow: Workflow,
+        workflow_run: WorkflowRun,
+    },
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -5998,26 +7546,6 @@ impl ToString for CodeScanningAlertClosedByUserAlertDismissedReason {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum CodeScanningAlertClosedByUserAlertInstancesItemState {
-    #[serde(rename = "dismissed")]
-    Dismissed,
-}
-impl ToString for CodeScanningAlertClosedByUserAlertInstancesItemState {
-    fn to_string(&self) -> String {
-        match *self {
-            CodeScanningAlertClosedByUserAlertInstancesItemState::Dismissed => {
-                "dismissed".to_string()
-            }
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
-    #[serde(flatten)]
-    pub alert_instance: AlertInstance,
-    pub state: CodeScanningAlertClosedByUserAlertInstancesItemState,
-}
 #[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
@@ -6094,7 +7622,7 @@ pub struct CodeScanningAlertClosedByUserAlert {
     pub dismissed_reason: Option<CodeScanningAlertClosedByUserAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: String,
-    pub instances: Vec<CodeScanningAlertClosedByUserAlertInstancesItem>,
+    pub instances: Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
@@ -6116,27 +7644,6 @@ impl ToString for CodeScanningAlertCreatedAction {
             CodeScanningAlertCreatedAction::Created => "created".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum CodeScanningAlertCreatedAlertInstancesItemState {
-    #[serde(rename = "open")]
-    Open,
-    #[serde(rename = "dismissed")]
-    Dismissed,
-}
-impl ToString for CodeScanningAlertCreatedAlertInstancesItemState {
-    fn to_string(&self) -> String {
-        match *self {
-            CodeScanningAlertCreatedAlertInstancesItemState::Open => "open".to_string(),
-            CodeScanningAlertCreatedAlertInstancesItemState::Dismissed => "dismissed".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertCreatedAlertInstancesItem {
-    #[serde(flatten)]
-    pub alert_instance: AlertInstance,
-    pub state: CodeScanningAlertCreatedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -6217,7 +7724,7 @@ pub struct CodeScanningAlertCreatedAlert {
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: String,
-    pub instances: Vec<CodeScanningAlertCreatedAlertInstancesItem>,
+    pub instances: Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
@@ -6260,24 +7767,6 @@ impl ToString for CodeScanningAlertFixedAlertDismissedReason {
             CodeScanningAlertFixedAlertDismissedReason::UsedInTests => "used in tests".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum CodeScanningAlertFixedAlertInstancesItemState {
-    #[serde(rename = "fixed")]
-    Fixed,
-}
-impl ToString for CodeScanningAlertFixedAlertInstancesItemState {
-    fn to_string(&self) -> String {
-        match *self {
-            CodeScanningAlertFixedAlertInstancesItemState::Fixed => "fixed".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertFixedAlertInstancesItem {
-    #[serde(flatten)]
-    pub alert_instance: AlertInstance,
-    pub state: CodeScanningAlertFixedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -6355,7 +7844,7 @@ pub struct CodeScanningAlertFixedAlert {
     pub dismissed_reason: Option<CodeScanningAlertFixedAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: String,
-    pub instances: Vec<CodeScanningAlertFixedAlertInstancesItem>,
+    pub instances: Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6379,24 +7868,6 @@ impl ToString for CodeScanningAlertReopenedAction {
             CodeScanningAlertReopenedAction::Reopened => "reopened".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum CodeScanningAlertReopenedAlertInstancesItemState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for CodeScanningAlertReopenedAlertInstancesItemState {
-    fn to_string(&self) -> String {
-        match *self {
-            CodeScanningAlertReopenedAlertInstancesItemState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertReopenedAlertInstancesItem {
-    #[serde(flatten)]
-    pub alert_instance: AlertInstance,
-    pub state: CodeScanningAlertReopenedAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -6480,7 +7951,7 @@ pub struct CodeScanningAlertReopenedAlert {
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: String,
-    pub instances: Vec<CodeScanningAlertReopenedAlertInstancesItem>,
+    pub instances: Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
@@ -6502,24 +7973,6 @@ impl ToString for CodeScanningAlertReopenedByUserAction {
             CodeScanningAlertReopenedByUserAction::ReopenedByUser => "reopened_by_user".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum CodeScanningAlertReopenedByUserAlertInstancesItemState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for CodeScanningAlertReopenedByUserAlertInstancesItemState {
-    fn to_string(&self) -> String {
-        match *self {
-            CodeScanningAlertReopenedByUserAlertInstancesItemState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
-    #[serde(flatten)]
-    pub alert_instance: AlertInstance,
-    pub state: CodeScanningAlertReopenedByUserAlertInstancesItemState,
 }
 #[doc = "The severity of the alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -6587,7 +8040,7 @@ pub struct CodeScanningAlertReopenedByUserAlert {
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: String,
-    pub instances: Vec<CodeScanningAlertReopenedByUserAlertInstancesItem>,
+    pub instances: Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub most_recent_instance: Option<AlertInstance>,
     #[doc = "The code scanning alert number."]
@@ -6891,19 +8344,6 @@ pub struct DiscussionAnsweredAnswer {
     pub updated_at: chrono::DateTime<chrono::offset::Utc>,
     pub user: User,
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionAnsweredDiscussionCategory {
-    pub is_answerable: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionAnsweredDiscussion {
-    #[serde(flatten)]
-    pub discussion: Discussion,
-    pub answer_chosen_at: chrono::DateTime<chrono::offset::Utc>,
-    pub answer_chosen_by: User,
-    pub answer_html_url: String,
-    pub category: DiscussionAnsweredDiscussionCategory,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionCategoryChangedAction {
     #[serde(rename = "category_changed")]
@@ -6950,31 +8390,6 @@ impl ToString for DiscussionCreatedAction {
             DiscussionCreatedAction::Created => "created".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum DiscussionCreatedDiscussionState {
-    #[serde(rename = "open")]
-    Open,
-    #[serde(rename = "converting")]
-    Converting,
-}
-impl ToString for DiscussionCreatedDiscussionState {
-    fn to_string(&self) -> String {
-        match *self {
-            DiscussionCreatedDiscussionState::Open => "open".to_string(),
-            DiscussionCreatedDiscussionState::Converting => "converting".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionCreatedDiscussion {
-    #[serde(flatten)]
-    pub discussion: Discussion,
-    pub answer_chosen_at: (),
-    pub answer_chosen_by: (),
-    pub answer_html_url: (),
-    pub locked: bool,
-    pub state: DiscussionCreatedDiscussionState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionDeletedAction {
@@ -7043,25 +8458,6 @@ impl ToString for DiscussionLockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum DiscussionLockedDiscussionState {
-    #[serde(rename = "locked")]
-    Locked,
-}
-impl ToString for DiscussionLockedDiscussionState {
-    fn to_string(&self) -> String {
-        match *self {
-            DiscussionLockedDiscussionState::Locked => "locked".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionLockedDiscussion {
-    #[serde(flatten)]
-    pub discussion: Discussion,
-    pub locked: bool,
-    pub state: DiscussionLockedDiscussionState,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionPinnedAction {
     #[serde(rename = "pinned")]
     Pinned,
@@ -7104,19 +8500,6 @@ impl ToString for DiscussionUnansweredAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnansweredDiscussionCategory {
-    pub is_answerable: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnansweredDiscussion {
-    #[serde(flatten)]
-    pub discussion: Discussion,
-    pub answer_chosen_at: (),
-    pub answer_chosen_by: (),
-    pub answer_html_url: (),
-    pub category: DiscussionUnansweredDiscussionCategory,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnansweredOldAnswer {
     pub author_association: AuthorAssociation,
@@ -7155,25 +8538,6 @@ impl ToString for DiscussionUnlockedAction {
             DiscussionUnlockedAction::Unlocked => "unlocked".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum DiscussionUnlockedDiscussionState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for DiscussionUnlockedDiscussionState {
-    fn to_string(&self) -> String {
-        match *self {
-            DiscussionUnlockedDiscussionState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct DiscussionUnlockedDiscussion {
-    #[serde(flatten)]
-    pub discussion: Discussion,
-    pub locked: bool,
-    pub state: DiscussionUnlockedDiscussionState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum DiscussionUnpinnedAction {
@@ -7280,14 +8644,6 @@ pub struct DiscussionCommentEditedComment {
     pub repository_url: String,
     pub updated_at: String,
     pub user: User,
-}
-#[doc = "The created [`repository`](https://docs.github.com/en/rest/reference/repos#get-a-repository) resource."]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ForkEventForkee {
-    #[serde(flatten)]
-    pub repository: Repository,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fork: Option<bool>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum GithubAppAuthorizationRevokedAction {
@@ -8206,13 +9562,6 @@ impl ToString for InstallationSuspendAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct InstallationSuspendInstallation {
-    #[serde(flatten)]
-    pub installation: Installation,
-    pub suspended_at: chrono::DateTime<chrono::offset::Utc>,
-    pub suspended_by: User,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationSuspendRepositoriesItem {
     pub full_name: String,
@@ -8235,13 +9584,6 @@ impl ToString for InstallationUnsuspendAction {
             InstallationUnsuspendAction::Unsuspend => "unsuspend".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct InstallationUnsuspendInstallation {
-    #[serde(flatten)]
-    pub installation: Installation,
-    pub suspended_at: (),
-    pub suspended_by: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -8425,43 +9767,6 @@ impl ToString for IssueCommentCreatedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentCreatedIssuePullRequest {
-    pub diff_url: String,
-    pub html_url: String,
-    pub patch_url: String,
-    pub url: String,
-}
-#[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssueCommentCreatedIssueState {
-    #[serde(rename = "open")]
-    Open,
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for IssueCommentCreatedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssueCommentCreatedIssueState::Open => "open".to_string(),
-            IssueCommentCreatedIssueState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentCreatedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub assignee: Option<User>,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<IssueCommentCreatedIssuePullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentCreatedIssueState,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentDeletedAction {
     #[serde(rename = "deleted")]
@@ -8473,43 +9778,6 @@ impl ToString for IssueCommentDeletedAction {
             IssueCommentDeletedAction::Deleted => "deleted".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentDeletedIssuePullRequest {
-    pub diff_url: String,
-    pub html_url: String,
-    pub patch_url: String,
-    pub url: String,
-}
-#[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssueCommentDeletedIssueState {
-    #[serde(rename = "open")]
-    Open,
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for IssueCommentDeletedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssueCommentDeletedIssueState::Open => "open".to_string(),
-            IssueCommentDeletedIssueState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentDeletedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub assignee: Option<User>,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<IssueCommentDeletedIssuePullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentDeletedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssueCommentEditedAction {
@@ -8535,43 +9803,6 @@ pub struct IssueCommentEditedChangesBody {
 pub struct IssueCommentEditedChanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<IssueCommentEditedChangesBody>,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentEditedIssuePullRequest {
-    pub diff_url: String,
-    pub html_url: String,
-    pub patch_url: String,
-    pub url: String,
-}
-#[doc = "State of the issue; either 'open' or 'closed'"]
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssueCommentEditedIssueState {
-    #[serde(rename = "open")]
-    Open,
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for IssueCommentEditedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssueCommentEditedIssueState::Open => "open".to_string(),
-            IssueCommentEditedIssueState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) the comment belongs to."]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssueCommentEditedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub assignee: Option<User>,
-    pub labels: Vec<Label>,
-    pub locked: bool,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<IssueCommentEditedIssuePullRequest>,
-    #[doc = "State of the issue; either 'open' or 'closed'"]
-    pub state: IssueCommentEditedIssueState,
 }
 #[doc = "The action that was performed."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -8600,26 +9831,6 @@ impl ToString for IssuesClosedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssuesClosedIssueState {
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for IssuesClosedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssuesClosedIssueState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesClosedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub closed_at: String,
-    pub state: IssuesClosedIssueState,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesDeletedAction {
     #[serde(rename = "deleted")]
     Deleted,
@@ -8642,12 +9853,6 @@ impl ToString for IssuesDemilestonedAction {
             IssuesDemilestonedAction::Demilestoned => "demilestoned".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesDemilestonedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub milestone: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesEditedAction {
@@ -8707,34 +9912,6 @@ impl ToString for IssuesLockedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssuesLockedIssueActiveLockReason {
-    #[serde(rename = "resolved")]
-    Resolved,
-    #[serde(rename = "off-topic")]
-    OffTopic,
-    #[serde(rename = "too heated")]
-    TooHeated,
-    #[serde(rename = "spam")]
-    Spam,
-}
-impl ToString for IssuesLockedIssueActiveLockReason {
-    fn to_string(&self) -> String {
-        match *self {
-            IssuesLockedIssueActiveLockReason::Resolved => "resolved".to_string(),
-            IssuesLockedIssueActiveLockReason::OffTopic => "off-topic".to_string(),
-            IssuesLockedIssueActiveLockReason::TooHeated => "too heated".to_string(),
-            IssuesLockedIssueActiveLockReason::Spam => "spam".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesLockedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub active_lock_reason: Option<IssuesLockedIssueActiveLockReason>,
-    pub locked: bool,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesMilestonedAction {
     #[serde(rename = "milestoned")]
     Milestoned,
@@ -8745,12 +9922,6 @@ impl ToString for IssuesMilestonedAction {
             IssuesMilestonedAction::Milestoned => "milestoned".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesMilestonedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub milestone: Milestone,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesOpenedAction {
@@ -8769,25 +9940,6 @@ impl ToString for IssuesOpenedAction {
 pub struct IssuesOpenedChanges {
     pub old_issue: Issue,
     pub old_repository: Repository,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssuesOpenedIssueState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for IssuesOpenedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssuesOpenedIssueState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesOpenedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub closed_at: (),
-    pub state: IssuesOpenedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesPinnedAction {
@@ -8812,24 +9964,6 @@ impl ToString for IssuesReopenedAction {
             IssuesReopenedAction::Reopened => "reopened".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum IssuesReopenedIssueState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for IssuesReopenedIssueState {
-    fn to_string(&self) -> String {
-        match *self {
-            IssuesReopenedIssueState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesReopenedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub state: IssuesReopenedIssueState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesTransferredAction {
@@ -8885,13 +10019,6 @@ impl ToString for IssuesUnlockedAction {
             IssuesUnlockedAction::Unlocked => "unlocked".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IssuesUnlockedIssue {
-    #[serde(flatten)]
-    pub issue: Issue,
-    pub active_lock_reason: (),
-    pub locked: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum IssuesUnpinnedAction {
@@ -9006,12 +10133,6 @@ impl ToString for MarketplacePurchaseCancelledAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchaseCancelledMarketplacePurchase {
-    #[serde(flatten)]
-    pub marketplace_purchase: MarketplacePurchase,
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseCancelledSender {
     pub avatar_url: String,
@@ -9047,12 +10168,6 @@ impl ToString for MarketplacePurchaseChangedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchaseChangedMarketplacePurchase {
-    #[serde(flatten)]
-    pub marketplace_purchase: MarketplacePurchase,
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseChangedSender {
     pub avatar_url: String,
@@ -9086,12 +10201,6 @@ impl ToString for MarketplacePurchasePendingChangeAction {
             MarketplacePurchasePendingChangeAction::PendingChange => "pending_change".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePendingChangeMarketplacePurchase {
-    #[serde(flatten)]
-    pub marketplace_purchase: MarketplacePurchase,
-    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -9131,12 +10240,6 @@ impl ToString for MarketplacePurchasePendingChangeCancelledAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchase {
-    #[serde(flatten)]
-    pub marketplace_purchase: MarketplacePurchase,
-    pub next_billing_date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeCancelledSender {
     pub avatar_url: String,
@@ -9170,12 +10273,6 @@ impl ToString for MarketplacePurchasePurchasedAction {
             MarketplacePurchasePurchasedAction::Purchased => "purchased".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MarketplacePurchasePurchasedMarketplacePurchase {
-    #[serde(flatten)]
-    pub marketplace_purchase: MarketplacePurchase,
-    pub next_billing_date: String,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -9416,25 +10513,6 @@ impl ToString for MilestoneClosedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum MilestoneClosedMilestoneState {
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for MilestoneClosedMilestoneState {
-    fn to_string(&self) -> String {
-        match *self {
-            MilestoneClosedMilestoneState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneClosedMilestone {
-    #[serde(flatten)]
-    pub milestone: Milestone,
-    pub closed_at: String,
-    pub state: MilestoneClosedMilestoneState,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneCreatedAction {
     #[serde(rename = "created")]
     Created,
@@ -9445,25 +10523,6 @@ impl ToString for MilestoneCreatedAction {
             MilestoneCreatedAction::Created => "created".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum MilestoneCreatedMilestoneState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for MilestoneCreatedMilestoneState {
-    fn to_string(&self) -> String {
-        match *self {
-            MilestoneCreatedMilestoneState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneCreatedMilestone {
-    #[serde(flatten)]
-    pub milestone: Milestone,
-    pub closed_at: (),
-    pub state: MilestoneCreatedMilestoneState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum MilestoneDeletedAction {
@@ -9529,25 +10588,6 @@ impl ToString for MilestoneOpenedAction {
             MilestoneOpenedAction::Opened => "opened".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum MilestoneOpenedMilestoneState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for MilestoneOpenedMilestoneState {
-    fn to_string(&self) -> String {
-        match *self {
-            MilestoneOpenedMilestoneState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct MilestoneOpenedMilestone {
-    #[serde(flatten)]
-    pub milestone: Milestone,
-    pub closed_at: (),
-    pub state: MilestoneOpenedMilestoneState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum OrgBlockBlockedAction {
@@ -10100,12 +11140,6 @@ pub struct ProjectCardMovedChangesColumnId {
 pub struct ProjectCardMovedChanges {
     pub column_id: ProjectCardMovedChangesColumnId,
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjectCardMovedProjectCard {
-    #[serde(flatten)]
-    pub project_card: ProjectCard,
-    pub after_id: Option<f64>,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ProjectColumnCreatedAction {
     #[serde(rename = "created")]
@@ -10164,12 +11198,6 @@ impl ToString for ProjectColumnMovedAction {
             ProjectColumnMovedAction::Moved => "moved".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PublicEventRepository {
-    #[serde(flatten)]
-    pub repository: Repository,
-    pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -10337,28 +11365,6 @@ impl ToString for PullRequestClosedAction {
         }
     }
 }
-#[doc = "State of this Pull Request. Either `open` or `closed`."]
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum PullRequestClosedPullRequestState {
-    #[serde(rename = "closed")]
-    Closed,
-}
-impl ToString for PullRequestClosedPullRequestState {
-    fn to_string(&self) -> String {
-        match *self {
-            PullRequestClosedPullRequestState::Closed => "closed".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestClosedPullRequest {
-    #[serde(flatten)]
-    pub pull_request: PullRequest,
-    pub closed_at: chrono::DateTime<chrono::offset::Utc>,
-    pub merged: bool,
-    #[doc = "State of this Pull Request. Either `open` or `closed`."]
-    pub state: PullRequestClosedPullRequestState,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestConvertedToDraftAction {
     #[serde(rename = "converted_to_draft")]
@@ -10370,17 +11376,6 @@ impl ToString for PullRequestConvertedToDraftAction {
             PullRequestConvertedToDraftAction::ConvertedToDraft => "converted_to_draft".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestConvertedToDraftPullRequest {
-    #[serde(flatten)]
-    pub pull_request: PullRequest,
-    pub closed_at: (),
-    #[doc = "Indicates whether or not the pull request is a draft."]
-    pub draft: bool,
-    pub merged: bool,
-    pub merged_at: (),
-    pub merged_by: (),
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestEditedAction {
@@ -10452,29 +11447,6 @@ impl ToString for PullRequestOpenedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum PullRequestOpenedPullRequestState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for PullRequestOpenedPullRequestState {
-    fn to_string(&self) -> String {
-        match *self {
-            PullRequestOpenedPullRequestState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestOpenedPullRequest {
-    #[serde(flatten)]
-    pub pull_request: PullRequest,
-    pub active_lock_reason: (),
-    pub closed_at: (),
-    pub merge_commit_sha: (),
-    pub merged_at: (),
-    pub merged_by: (),
-    pub state: PullRequestOpenedPullRequestState,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReadyForReviewAction {
     #[serde(rename = "ready_for_review")]
     ReadyForReview,
@@ -10487,30 +11459,6 @@ impl ToString for PullRequestReadyForReviewAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum PullRequestReadyForReviewPullRequestState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for PullRequestReadyForReviewPullRequestState {
-    fn to_string(&self) -> String {
-        match *self {
-            PullRequestReadyForReviewPullRequestState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReadyForReviewPullRequest {
-    #[serde(flatten)]
-    pub pull_request: PullRequest,
-    pub closed_at: (),
-    #[doc = "Indicates whether or not the pull request is a draft."]
-    pub draft: bool,
-    pub merged: bool,
-    pub merged_at: (),
-    pub merged_by: (),
-    pub state: PullRequestReadyForReviewPullRequestState,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReopenedAction {
     #[serde(rename = "reopened")]
     Reopened,
@@ -10521,29 +11469,6 @@ impl ToString for PullRequestReopenedAction {
             PullRequestReopenedAction::Reopened => "reopened".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum PullRequestReopenedPullRequestState {
-    #[serde(rename = "open")]
-    Open,
-}
-impl ToString for PullRequestReopenedPullRequestState {
-    fn to_string(&self) -> String {
-        match *self {
-            PullRequestReopenedPullRequestState::Open => "open".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct PullRequestReopenedPullRequest {
-    #[serde(flatten)]
-    pub pull_request: PullRequest,
-    pub closed_at: (),
-    pub merge_commit_sha: (),
-    pub merged: bool,
-    pub merged_at: (),
-    pub merged_by: (),
-    pub state: PullRequestReopenedPullRequestState,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum PullRequestReviewRequestRemovedVariant0Action {
@@ -11276,13 +12201,6 @@ impl ToString for ReleasePrereleasedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleasePrereleasedRelease {
-    #[serde(flatten)]
-    pub release: Release,
-    #[doc = "Whether the release is identified as a prerelease or a full release."]
-    pub prerelease: bool,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleasePublishedAction {
     #[serde(rename = "published")]
@@ -11294,12 +12212,6 @@ impl ToString for ReleasePublishedAction {
             ReleasePublishedAction::Published => "published".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleasePublishedRelease {
-    #[serde(flatten)]
-    pub release: Release,
-    pub published_at: chrono::DateTime<chrono::offset::Utc>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum ReleaseReleasedAction {
@@ -11324,12 +12236,6 @@ impl ToString for ReleaseUnpublishedAction {
             ReleaseUnpublishedAction::Unpublished => "unpublished".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ReleaseUnpublishedRelease {
-    #[serde(flatten)]
-    pub release: Release,
-    pub published_at: (),
 }
 #[doc = "State of the release asset."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -11379,13 +12285,6 @@ impl ToString for RepositoryArchivedAction {
             RepositoryArchivedAction::Archived => "archived".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryArchivedRepository {
-    #[serde(flatten)]
-    pub repository: Repository,
-    #[doc = "Whether the repository is archived."]
-    pub archived: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryCreatedAction {
@@ -11460,13 +12359,6 @@ impl ToString for RepositoryPrivatizedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryPrivatizedRepository {
-    #[serde(flatten)]
-    pub repository: Repository,
-    #[doc = "Whether the repository is private or public."]
-    pub private: bool,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryPublicizedAction {
     #[serde(rename = "publicized")]
@@ -11478,13 +12370,6 @@ impl ToString for RepositoryPublicizedAction {
             RepositoryPublicizedAction::Publicized => "publicized".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryPublicizedRepository {
-    #[serde(flatten)]
-    pub repository: Repository,
-    #[doc = "Whether the repository is private or public."]
-    pub private: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryRenamedAction {
@@ -11552,13 +12437,6 @@ impl ToString for RepositoryUnarchivedAction {
             RepositoryUnarchivedAction::Unarchived => "unarchived".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RepositoryUnarchivedRepository {
-    #[serde(flatten)]
-    pub repository: Repository,
-    #[doc = "Whether the repository is archived."]
-    pub archived: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum RepositoryDispatchOnDemandTestAction {
@@ -12354,18 +13232,6 @@ pub struct StatusEventBranchesItem {
     pub protected: bool,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct StatusEventCommitCommitAuthor {
-    #[serde(flatten)]
-    pub committer: Committer,
-    pub date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct StatusEventCommitCommitCommitter {
-    #[serde(flatten)]
-    pub committer: Committer,
-    pub date: String,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitTree {
     pub sha: String,
@@ -12442,9 +13308,9 @@ pub struct StatusEventCommitCommitVerification {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommit {
-    pub author: StatusEventCommitCommitAuthor,
+    pub author: Committer,
     pub comment_count: i64,
-    pub committer: StatusEventCommitCommitCommitter,
+    pub committer: Committer,
     pub message: String,
     pub tree: StatusEventCommitCommitTree,
     pub url: String,
@@ -13009,27 +13875,6 @@ impl ToString for WorkflowJobCompletedAction {
     }
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum WorkflowJobCompletedWorkflowJobConclusion {
-    #[serde(rename = "success")]
-    Success,
-    #[serde(rename = "failure")]
-    Failure,
-}
-impl ToString for WorkflowJobCompletedWorkflowJobConclusion {
-    fn to_string(&self) -> String {
-        match *self {
-            WorkflowJobCompletedWorkflowJobConclusion::Success => "success".to_string(),
-            WorkflowJobCompletedWorkflowJobConclusion::Failure => "failure".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowJobCompletedWorkflowJob {
-    #[serde(flatten)]
-    pub workflow_job: WorkflowJob,
-    pub conclusion: WorkflowJobCompletedWorkflowJobConclusion,
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowJobQueuedAction {
     #[serde(rename = "queued")]
     Queued,
@@ -13084,14 +13929,6 @@ impl ToString for WorkflowJobStartedAction {
         }
     }
 }
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowJobStartedWorkflowJob {
-    #[serde(flatten)]
-    pub workflow_job: WorkflowJob,
-    pub completed_at: (),
-    pub conclusion: (),
-    pub steps: Vec<WorkflowStepInProgress>,
-}
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunCompletedAction {
     #[serde(rename = "completed")]
@@ -13103,44 +13940,6 @@ impl ToString for WorkflowRunCompletedAction {
             WorkflowRunCompletedAction::Completed => "completed".to_string(),
         }
     }
-}
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum WorkflowRunCompletedWorkflowRunConclusion {
-    #[serde(rename = "success")]
-    Success,
-    #[serde(rename = "failure")]
-    Failure,
-    #[serde(rename = "neutral")]
-    Neutral,
-    #[serde(rename = "cancelled")]
-    Cancelled,
-    #[serde(rename = "timed_out")]
-    TimedOut,
-    #[serde(rename = "action_required")]
-    ActionRequired,
-    #[serde(rename = "stale")]
-    Stale,
-}
-impl ToString for WorkflowRunCompletedWorkflowRunConclusion {
-    fn to_string(&self) -> String {
-        match *self {
-            WorkflowRunCompletedWorkflowRunConclusion::Success => "success".to_string(),
-            WorkflowRunCompletedWorkflowRunConclusion::Failure => "failure".to_string(),
-            WorkflowRunCompletedWorkflowRunConclusion::Neutral => "neutral".to_string(),
-            WorkflowRunCompletedWorkflowRunConclusion::Cancelled => "cancelled".to_string(),
-            WorkflowRunCompletedWorkflowRunConclusion::TimedOut => "timed_out".to_string(),
-            WorkflowRunCompletedWorkflowRunConclusion::ActionRequired => {
-                "action_required".to_string()
-            }
-            WorkflowRunCompletedWorkflowRunConclusion::Stale => "stale".to_string(),
-        }
-    }
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WorkflowRunCompletedWorkflowRun {
-    #[serde(flatten)]
-    pub workflow_run: WorkflowRun,
-    pub conclusion: WorkflowRunCompletedWorkflowRunConclusion,
 }
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum WorkflowRunRequestedAction {

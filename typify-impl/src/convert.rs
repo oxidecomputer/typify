@@ -709,8 +709,14 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // We'll often see this if the subschema was just to provide an
+        // additional level for annotation such as a "title" or "description".
         if subschemas.len() == 1 {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
+            return Ok((ty, metadata));
+        }
+
+        if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
             return Ok((ty, metadata));
         }
 
@@ -743,6 +749,8 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // We'll often see this if the subschema was just to provide an
+        // additional level for annotation such as a "title" or "description".
         if subschemas.len() == 1 {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
             return Ok((ty, metadata));
@@ -835,10 +843,13 @@ impl TypeSpace {
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // We'll often see this if the subschema was just to provide an
+        // additional level for annotation such as a "title" or "description".
         if subschemas.len() == 1 {
             let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
             return Ok((ty, metadata));
         }
+
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)
             .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))
