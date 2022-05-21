@@ -1264,8 +1264,8 @@ pub struct ForkEvent {
 #[serde(deny_unknown_fields)]
 pub struct GithubOrg {
     pub avatar_url: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub email: Option<()>,
+    #[serde(default)]
+    pub email: (),
     pub events_url: String,
     pub followers_url: String,
     pub following_url: String,
@@ -1364,8 +1364,8 @@ pub struct InstallationDeleted {
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationDeletedRepositoriesItem>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requester: Option<()>,
+    #[serde(default)]
+    pub requester: (),
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1376,8 +1376,8 @@ pub struct InstallationNewPermissionsAccepted {
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationNewPermissionsAcceptedRepositoriesItem>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requester: Option<()>,
+    #[serde(default)]
+    pub requester: (),
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1388,8 +1388,8 @@ pub struct InstallationSuspend {
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationSuspendRepositoriesItem>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requester: Option<()>,
+    #[serde(default)]
+    pub requester: (),
     pub sender: User,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -1400,8 +1400,8 @@ pub struct InstallationUnsuspend {
     #[doc = "An array of repository objects that the installation can access."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub repositories: Vec<InstallationUnsuspendRepositoriesItem>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requester: Option<()>,
+    #[serde(default)]
+    pub requester: (),
     pub sender: User,
 }
 #[doc = "Installation"]
@@ -1433,8 +1433,8 @@ pub enum InstallationEvent {
         #[doc = "An array of repository objects that the installation can access."]
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         repositories: Vec<InstallationDeletedRepositoriesItem>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        requester: Option<()>,
+        #[serde(default)]
+        requester: (),
         sender: User,
     },
     #[doc = "installation new_permissions_accepted event"]
@@ -1444,8 +1444,8 @@ pub enum InstallationEvent {
         #[doc = "An array of repository objects that the installation can access."]
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         repositories: Vec<InstallationNewPermissionsAcceptedRepositoriesItem>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        requester: Option<()>,
+        #[serde(default)]
+        requester: (),
         sender: User,
     },
     #[doc = "installation suspend event"]
@@ -1455,8 +1455,8 @@ pub enum InstallationEvent {
         #[doc = "An array of repository objects that the installation can access."]
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         repositories: Vec<InstallationSuspendRepositoriesItem>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        requester: Option<()>,
+        #[serde(default)]
+        requester: (),
         sender: User,
     },
     #[doc = "installation unsuspend event"]
@@ -1466,8 +1466,8 @@ pub enum InstallationEvent {
         #[doc = "An array of repository objects that the installation can access."]
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         repositories: Vec<InstallationUnsuspendRepositoriesItem>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        requester: Option<()>,
+        #[serde(default)]
+        requester: (),
         sender: User,
     },
 }
@@ -2943,8 +2943,8 @@ pub struct ProjectReopened {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCard {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub after_id: Option<()>,
+    #[serde(default)]
+    pub after_id: (),
     #[doc = "Whether or not the card is archived"]
     pub archived: bool,
     pub column_id: i64,
@@ -7575,16 +7575,16 @@ pub struct CodeScanningAlertClosedByUserAlertRule {
     pub description: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub full_description: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub help: Option<()>,
+    #[serde(default)]
+    pub help: (),
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertClosedByUserAlertRuleSeverity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<()>,
+    #[serde(default)]
+    pub tags: (),
 }
 #[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -7674,16 +7674,16 @@ pub struct CodeScanningAlertCreatedAlertRule {
     pub description: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub full_description: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub help: Option<()>,
+    #[serde(default)]
+    pub help: (),
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertCreatedAlertRuleSeverity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<()>,
+    #[serde(default)]
+    pub tags: (),
 }
 #[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -7797,16 +7797,16 @@ pub struct CodeScanningAlertFixedAlertRule {
     pub description: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub full_description: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub help: Option<()>,
+    #[serde(default)]
+    pub help: (),
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertFixedAlertRuleSeverity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<()>,
+    #[serde(default)]
+    pub tags: (),
 }
 #[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -7898,16 +7898,16 @@ pub struct CodeScanningAlertReopenedAlertRule {
     pub description: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub full_description: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub help: Option<()>,
+    #[serde(default)]
+    pub help: (),
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[doc = "The severity of the alert."]
     pub severity: Option<CodeScanningAlertReopenedAlertRuleSeverity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<()>,
+    #[serde(default)]
+    pub tags: (),
 }
 #[doc = "State of a code scanning alert."]
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -11812,8 +11812,8 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub auto_merge: Option<()>,
+    #[serde(default)]
+    pub auto_merge: (),
     pub base: PullRequestReviewCommentCreatedPullRequestBase,
     pub body: String,
     pub closed_at: Option<String>,
@@ -11948,8 +11948,8 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub auto_merge: Option<()>,
+    #[serde(default)]
+    pub auto_merge: (),
     pub base: PullRequestReviewCommentDeletedPullRequestBase,
     pub body: String,
     pub closed_at: Option<String>,
@@ -12097,8 +12097,8 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub assignee: Option<User>,
     pub assignees: Vec<User>,
     pub author_association: AuthorAssociation,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub auto_merge: Option<()>,
+    #[serde(default)]
+    pub auto_merge: (),
     pub base: PullRequestReviewCommentEditedPullRequestBase,
     pub body: String,
     pub closed_at: Option<String>,

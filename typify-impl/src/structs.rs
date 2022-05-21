@@ -523,7 +523,6 @@ fn generate_serde_attr(
 /// See if this type is a type that we can omit with a serde directive; note
 /// that the type id lookup will fail only for references (and only during
 /// initial reference processing).
-// TODO this requires updating to deal with defaults
 fn has_default(
     type_space: &mut TypeSpace,
     type_id: &TypeId,
@@ -532,7 +531,7 @@ fn has_default(
     // This lookup can fail in the scenario where a struct (or struct
     // variant) member is optional and the type of that optional member is a
     // reference to a type that has not yet been converted. This is fine: those
-    // are necessarily named types and not raw options, arrays, or maps.
+    // are necessarily named types and not raw options, arrays, maps, or units.
     match (
         type_space
             .id_to_entry
@@ -544,6 +543,7 @@ fn has_default(
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Array(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Map(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
         // Default specified is the same as the implicit default: null

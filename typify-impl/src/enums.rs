@@ -965,7 +965,6 @@ mod tests {
     use std::collections::HashSet;
 
     use quote::quote;
-    use rustfmt_wrapper::rustfmt;
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
@@ -1515,8 +1514,6 @@ mod tests {
 
         let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-
-        println!("{}", rustfmt(type_entry.output(&type_space)).unwrap());
 
         match &type_entry.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
