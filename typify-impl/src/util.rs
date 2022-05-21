@@ -22,6 +22,17 @@ pub(crate) fn metadata_title(metadata: &Option<Box<Metadata>>) -> Option<String>
         .and_then(|metadata| metadata.title.as_ref().cloned())
 }
 
+pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
+    metadata
+        .as_ref()
+        .and_then(|metadata| match (&metadata.title, &metadata.description) {
+            (Some(t), Some(d)) => Some(format!("{}\n\n{}", t, d)),
+            (Some(t), None) => Some(t.clone()),
+            (None, Some(d)) => Some(d.clone()),
+            (None, None) => None,
+        })
+}
+
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
     definitions: &schemars::Map<String, Schema>,
@@ -353,6 +364,13 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
+pub(crate) fn ref_key<'a>(ref_name: &String) -> &str {
+    match ref_name.rfind('/') {
+        Some(idx) => &ref_name[idx + 1..],
+        None => ref_name,
+    }
+}
+
 fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema>) -> &'a Schema {
     match schema {
         Schema::Bool(_) => schema,
@@ -367,15 +385,9 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
             string: None,
             array: None,
             object: None,
-            reference: Some(reference),
+            reference: Some(ref_name),
             extensions: _,
-        }) => {
-            let key = match reference.rfind('/') {
-                Some(idx) => &reference[idx + 1..],
-                None => reference,
-            };
-            definitions.get(key).unwrap()
-        }
+        }) => definitions.get(ref_key(ref_name)).unwrap(),
         Schema::Object(SchemaObject {
             reference: None, ..
         }) => schema,
@@ -403,10 +415,6 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             let idx = reference.rfind('/')?;
             Some((&reference[idx + 1..]).to_string())
         }
-        Schema::Object(SchemaObject {
-            metadata: Some(metadata),
-            ..
-        }) if metadata.as_ref().title.is_some() => Some(metadata.as_ref().title.as_ref()?.clone()),
         Schema::Object(SchemaObject {
             metadata: Some(metadata),
             ..
@@ -498,7 +506,7 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
 }
 
 pub(crate) fn recase(input: &str, case: Case) -> (String, Option<String>) {
-    let new = sanitize(&input, case);
+    let new = sanitize(input, case);
     let rename = if new == input {
         None
     } else {

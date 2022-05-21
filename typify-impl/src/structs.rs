@@ -8,6 +8,7 @@ use schemars::schema::{
 };
 
 use crate::{
+    enums::get_object,
     type_entry::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
         WrappedValue,
@@ -344,6 +345,86 @@ impl TypeSpace {
             .into(),
         )
     }
+
+    /// This handles the case where an allOf is used to denote constraints.
+    /// Currently we just look for a referenced type, which may be "closed"
+    /// (i.e. no unknown types permitted) and an explicit type. The latter must
+    /// be a subset of the former and compatible from the perspective of JSON
+    /// Schema validation (that is to say, it must be "open" or must fully
+    /// cover the named type).
+    ///
+    /// ```text
+    /// "allOf": [
+    ///     { "$ref": "#/definitions/SomeType" },
+    ///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
+    /// ]
+    /// ```
+    ///
+    /// Types such as these should be treated as the named type along with
+    /// constraints. What do we do to enforce these constraints or communicate
+    /// them to the consumer? Nothing!
+    ///
+    /// What could we do? We could add a custom `serialize_with` /
+    /// `deserialize_with` functions to validate the constrains in and out.
+    /// Or we could introduce a newtype wrapper to enforce those constraints.
+    pub(crate) fn maybe_all_of_constraints(
+        &mut self,
+        type_name: Name,
+        subschemas: &[Schema],
+    ) -> Option<TypeEntry> {
+        assert!(subschemas.len() > 1);
+
+        // Split the subschemas into named (superclass) and unnamed (subclass)
+        // schemas.
+        let mut named = Vec::new();
+        let mut unnamed = Vec::new();
+        for schema in subschemas {
+            match schema_is_named(schema) {
+                Some(name) => named.push((schema, name)),
+                None => unnamed.push(schema),
+            }
+        }
+
+        // We required exactly one named subschema and at least one unnamed
+        // subschema.
+        if unnamed.len() != 1 && !named.is_empty() {
+            return None;
+        }
+
+        let (named_schema, _) = named.first()?;
+
+        let (_, _, validation) = get_object(Name::Unknown, *named_schema, &self.definitions)?;
+
+        if validation.additional_properties.as_ref().map(Box::as_ref) != Some(&Schema::Bool(false))
+        {
+            return None;
+        }
+
+        unnamed
+            .into_iter()
+            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
+            .then(|| ())?;
+
+        let (type_entry, _) = self.convert_schema(type_name, named_schema).ok()?;
+        Some(type_entry)
+    }
+}
+
+fn is_obj_subset(validation: &ObjectValidation, constraint_schema: &Schema) -> bool {
+    if let Schema::Object(SchemaObject {
+        object: Some(obj), ..
+    }) = constraint_schema
+    {
+        // TODO there's a lot more we could do to determine whether this is a
+        // subset including inspection of the property types and confirming
+        // that either all properties are covered or that the constraint object
+        // is "open".
+        obj.properties
+            .keys()
+            .all(|key| validation.properties.contains_key(key))
+    } else {
+        false
+    }
 }
 
 pub(crate) fn output_struct_property(
@@ -442,7 +523,6 @@ fn generate_serde_attr(
 /// See if this type is a type that we can omit with a serde directive; note
 /// that the type id lookup will fail only for references (and only during
 /// initial reference processing).
-// TODO this requires updating to deal with defaults
 fn has_default(
     type_space: &mut TypeSpace,
     type_id: &TypeId,
@@ -451,7 +531,7 @@ fn has_default(
     // This lookup can fail in the scenario where a struct (or struct
     // variant) member is optional and the type of that optional member is a
     // reference to a type that has not yet been converted. This is fine: those
-    // are necessarily named types and not raw options, arrays, or maps.
+    // are necessarily named types and not raw options, arrays, maps, or units.
     match (
         type_space
             .id_to_entry
@@ -463,6 +543,7 @@ fn has_default(
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Array(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Map(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
         // Default specified is the same as the implicit default: null

@@ -13,7 +13,8 @@ use crate::{
     structs::output_struct_property,
     type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
     util::{
-        constant_string_value, get_type_name, metadata_description, recase, schema_is_named, Case,
+        constant_string_value, get_type_name, metadata_description, metadata_title_and_description,
+        recase, ref_key, schema_is_named, Case,
     },
     Name, Result, TypeSpace,
 };
@@ -204,8 +205,10 @@ impl TypeSpace {
                     schema,
                     description,
                 } => {
+                    // Append the variant name to the type_name for our new
+                    // type name hint.
                     let (details, deny) = self
-                        .external_variant(type_name.clone(), variant_name, schema)
+                        .external_variant(type_name.append(variant_name), schema)
                         .ok()?;
                     deny_unknown_fields |= deny;
 
@@ -234,28 +237,25 @@ impl TypeSpace {
 
     fn external_variant(
         &mut self,
-        type_name: Name,
-        variant_name: &str,
+        prop_type_name: Name,
         variant_schema: &Schema,
     ) -> Result<(VariantDetails, bool)> {
-        let prop_type_name = match type_name {
-            Name::Required(name) | Name::Suggested(name) => {
-                Name::Suggested(format!("{}{}", name, variant_name.to_pascal_case()))
-            }
-            Name::Unknown => Name::Unknown,
-        };
-
         // Arrays (tuples) must have a fixed size (max_items == min_items).
+        //
         // Per the JSON Schema specification, if the array.items is an array
         // (rather than a single element), then:
-        //   "validation succeeds if each element of the instance validates against
-        //   the schema at the same position, if any.""
-        // Accordingly we require the length if the items array to match the fixed
-        // size (max_items). Note that array.additionalItems is irrelevant due to
-        // this portion of the spec:
-        //   "If "items" is present, and its annotation result is a number,
-        //   validation succeeds if every instance element at an index greater than
-        //   that number validates against "additionalItems"."
+        //   'validation succeeds if each element of the instance validates
+        //   against the schema at the same position, if any.'
+        //
+        // Accordingly we require the length of the items array to match the
+        // fixed size (max_items). Note that array.additionalItems is
+        // irrelevant due to this portion of the spec:
+        //   'If "items" is present, and its annotation result is a number,
+        //   validation succeeds if every instance element at an index greater
+        //   than that number validates against "additionalItems".'
+        //
+        // Note that this is not part fo the match below due to the nested
+        // conditions and destructuring.
         if let Schema::Object(SchemaObject {
             metadata: _,
             instance_type: Some(SingleOrVec::Single(single)),
@@ -369,24 +369,26 @@ impl TypeSpace {
         // properties along with the specific values.
         let constant_value_properties_sets = subschemas
             .iter()
-            .map(|schema| match get_object(schema) {
-                None => BTreeMap::<String, BTreeSet<String>>::new(),
-                Some((_, validation)) => {
-                    validation
-                        .properties
-                        .iter()
-                        .filter_map(|(prop_name, prop_type)| {
-                            constant_string_value(prop_type).map(|value| {
-                                // Tuple with the name and a set with a single value
-                                (
-                                    prop_name.clone(),
-                                    [value.to_string()].iter().cloned().collect(),
-                                )
+            .map(
+                |schema| match get_object(type_name.clone(), schema, &self.definitions) {
+                    None => BTreeMap::<String, BTreeSet<String>>::new(),
+                    Some((_, _, validation)) => {
+                        validation
+                            .properties
+                            .iter()
+                            .filter_map(|(prop_name, prop_type)| {
+                                constant_string_value(prop_type).map(|value| {
+                                    // Tuple with the name and a set with a single value
+                                    (
+                                        prop_name.clone(),
+                                        [value.to_string()].iter().cloned().collect(),
+                                    )
+                                })
                             })
-                        })
-                        .collect()
-                }
-            })
+                            .collect()
+                    }
+                },
+            )
             // Reduce these sets down to those A. that are common among all
             // subschemas and B. for which the values for each is unique.
             .reduce(|a, b| {
@@ -420,21 +422,21 @@ impl TypeSpace {
             .map(|schema| {
                 // We've already validated this; we just need to pluck out the
                 // pieces we need to construct the variant.
-                if let Schema::Object(SchemaObject {
-                    object: Some(validation),
-                    ..
-                }) = schema
-                {
-                    match validation.additional_properties.as_ref().map(Box::as_ref) {
-                        Some(Schema::Bool(false)) => {
-                            deny_unknown_fields = true;
+                match get_object(type_name.clone(), schema, &self.definitions) {
+                    None => unreachable!(),
+                    Some((sub_type_name, metadata, validation)) => {
+                        match validation.additional_properties.as_ref().map(Box::as_ref) {
+                            Some(Schema::Bool(false)) => {
+                                deny_unknown_fields = true;
+                            }
+                            None => {}
+                            _ => unreachable!(),
                         }
-                        None => {}
-                        _ => unreachable!(),
+                        // Release our borrow of self.
+                        let validation = validation.clone();
+                        let metadata = metadata.clone();
+                        Ok(self.internal_variant(sub_type_name, &metadata, &validation, tag)?)
                     }
-                    Ok(self.internal_variant(validation, tag)?)
-                } else {
-                    unreachable!();
                 }
             })
             .collect::<Result<Vec<_>>>()
@@ -452,11 +454,17 @@ impl TypeSpace {
         )
     }
 
-    fn internal_variant(&mut self, validation: &ObjectValidation, tag: &str) -> Result<Variant> {
+    fn internal_variant(
+        &mut self,
+        type_name: Name,
+        metadata: &Option<Box<schemars::schema::Metadata>>,
+        validation: &ObjectValidation,
+        tag: &str,
+    ) -> Result<Variant> {
         if validation.properties.len() == 1 {
             let (tag_name, schema) = validation.properties.iter().next().unwrap();
             let variant_name = constant_string_value(schema).unwrap();
-            let (name, rename) = recase(&variant_name, Case::Pascal);
+            let (name, rename) = recase(variant_name, Case::Pascal);
 
             // The lone property must be our tag.
             assert_eq!(tag_name, tag);
@@ -472,18 +480,18 @@ impl TypeSpace {
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
             let variant_name = constant_string_value(tag_schema).unwrap();
-            let (name, rename) = recase(&variant_name, Case::Pascal);
+            let (name, rename) = recase(variant_name, Case::Pascal);
 
             // Make a new object validation that omits the tag.
             let mut new_validation = validation.clone();
             new_validation.properties.remove(tag);
             new_validation.required.remove(tag);
 
-            let (properties, _) = self.struct_members(None, &new_validation)?;
+            let (properties, _) = self.struct_members(type_name.into_option(), &new_validation)?;
             let variant = Variant {
                 name,
                 rename,
-                description: None,
+                description: metadata_title_and_description(metadata),
                 details: VariantDetails::Struct(properties),
             };
             Ok(variant)
@@ -502,28 +510,30 @@ impl TypeSpace {
         // subschema.
         let prop_sets = subschemas
             .iter()
-            .map(|schema| match get_object(schema) {
-                Some((_, validation))
-                    if validation.properties.len() == validation.required.len() =>
-                {
-                    let constants = validation
-                        .properties
-                        .iter()
-                        .filter_map(|(prop_name, prop_type)| {
-                            constant_string_value(prop_type).map(|_| prop_name.clone())
-                        })
-                        .collect::<BTreeSet<_>>();
-                    let properties = validation
-                        .properties
-                        .iter()
-                        .map(|(prop_name, _)| prop_name.clone())
-                        .collect::<BTreeSet<_>>();
+            .map(
+                |schema| match get_object(type_name.clone(), schema, &self.definitions) {
+                    Some((_, _, validation))
+                        if validation.properties.len() == validation.required.len() =>
+                    {
+                        let constants = validation
+                            .properties
+                            .iter()
+                            .filter_map(|(prop_name, prop_type)| {
+                                constant_string_value(prop_type).map(|_| prop_name.clone())
+                            })
+                            .collect::<BTreeSet<_>>();
+                        let properties = validation
+                            .properties
+                            .iter()
+                            .map(|(prop_name, _)| prop_name.clone())
+                            .collect::<BTreeSet<_>>();
 
-                    Some((constants, properties))
-                }
+                        Some((constants, properties))
+                    }
 
-                _ => None,
-            })
+                    _ => None,
+                },
+            )
             .collect::<Option<Vec<_>>>()?;
 
         // We take the intersection of all tag properties and the union of all
@@ -545,7 +555,7 @@ impl TypeSpace {
             return None;
         }
 
-        let content = content_props.difference(&tag_props).cloned().next()?;
+        let content = content_props.difference(&tag_props).next().cloned()?;
         let tag = tag_props.into_iter().next()?;
 
         let mut deny_unknown_fields = false;
@@ -555,16 +565,21 @@ impl TypeSpace {
             .map(|schema| {
                 // We've already validated this; we just need to pluck out the
                 // pieces we need to construct the variant.
-                if let Schema::Object(SchemaObject {
-                    object: Some(validation),
-                    ..
-                }) = schema
-                {
-                    let (variant, deny) = self.adjacent_variant(validation, &tag, &content)?;
-                    deny_unknown_fields |= deny;
-                    Ok(variant)
-                } else {
-                    unreachable!();
+                match get_object(type_name.clone(), schema, &self.definitions) {
+                    None => unreachable!(),
+                    Some((sub_type_name, metadata, validation)) => {
+                        let metadata = metadata.clone();
+                        let validation = validation.clone();
+                        let (variant, deny) = self.adjacent_variant(
+                            sub_type_name,
+                            &metadata,
+                            &validation,
+                            &tag,
+                            &content,
+                        )?;
+                        deny_unknown_fields |= deny;
+                        Ok(variant)
+                    }
                 }
             })
             .collect::<Result<Vec<_>>>()
@@ -584,6 +599,8 @@ impl TypeSpace {
 
     fn adjacent_variant(
         &mut self,
+        type_name: Name,
+        metadata: &Option<Box<schemars::schema::Metadata>>,
         validation: &ObjectValidation,
         tag: &str,
         content: &str,
@@ -609,13 +626,31 @@ impl TypeSpace {
             let variant_name = constant_string_value(tag_schema).unwrap();
             let (name, rename) = recase(variant_name, Case::Pascal);
 
+            let sub_type_name = match type_name {
+                // If the type name is known (required) we append the name of
+                // the content (i.e. the struct member); because this type is
+                // required (i.e. a named reference) it will be genetated as a
+                // struct as well. This naming ensures that any inferred
+                // subtypes match between ths variant and the independent
+                // struct type.
+                //
+                // Note that below we include the variant name to ensure
+                // uniqueness, but that is not required here as the required
+                // type name already ensures uniqueness.
+                name @ Name::Required(_) => name.append(content),
+
+                // Otherwise we simply append the variant name for
+                // disambiguation.
+                name => name.append(variant_name),
+            };
+
             let content_schema = validation.properties.get(content).unwrap();
-            let (details, deny) = self.external_variant(Name::Unknown, &name, content_schema)?;
+            let (details, deny) = self.external_variant(sub_type_name, content_schema)?;
 
             let variant = Variant {
                 name,
                 rename,
-                description: None,
+                description: metadata_title_and_description(metadata),
                 details,
             };
             Ok((variant, deny))
@@ -670,12 +705,15 @@ impl TypeSpace {
             .enumerate()
             .map(|(idx, schema)| {
                 let variant_name = format!("Variant{}", idx);
-                let sub_type_name = match &tmp_type_name {
+                // We provide a suggested name for the variant value's type
+                // simply by appending the variant name to the type name we've
+                // inferred for this enum.
+                let prop_type_name = match &tmp_type_name {
                     Some(name) => Name::Suggested(name.clone()),
                     None => Name::Unknown,
-                };
-                let (details, deny) =
-                    self.external_variant(sub_type_name, &variant_name, schema)?;
+                }
+                .append(&variant_name);
+                let (details, deny) = self.external_variant(prop_type_name, schema)?;
                 deny_unknown_fields |= deny;
                 let good_name = schema_is_named(schema);
                 match (&good_name, common_prefix.as_ref()) {
@@ -718,6 +756,7 @@ impl TypeSpace {
             .collect();
 
         Ok(TypeEntryEnum::from_metadata(
+            // TODO should this be tmp_type_name?
             type_name,
             metadata,
             EnumTagType::Untagged,
@@ -729,9 +768,19 @@ impl TypeSpace {
 }
 
 /// Internally and adjacently tagged enums expect their subschemas to be
-/// objects. Return the object data or None if it's not an object or doesn't
-/// conform to the objects we know how to handle.
-fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)> {
+/// objects. Return the object data or None if it's not an object (or reference
+/// to an object) or doesn't conform to the objects we know how to handle.
+// TODO in the case of a reference, it would be typical for the referenced type
+// *only* to be useful in the context of the enum and *not* as a stand-alone
+// struct (i.e. one that necessarily contains a field whose value is constant).
+// In this situation one could imagine an input option that would cause us to
+// discard top-level types like this and use them only in enum-context.
+// TODO should we look through trivial (n = 1) subschemas?
+pub(crate) fn get_object<'a>(
+    type_name: Name,
+    schema: &'a Schema,
+    definitions: &'a BTreeMap<String, Schema>,
+) -> Option<(Name, &'a Option<Box<Metadata>>, &'a ObjectValidation)> {
     match schema {
         Schema::Object(SchemaObject {
             metadata,
@@ -753,7 +802,29 @@ fn get_object(schema: &Schema) -> Option<(Option<&Metadata>, &ObjectValidation)>
             && validation.pattern_properties.is_empty()
             && validation.property_names.is_none() =>
         {
-            Some((metadata.as_ref().map(|m| m.as_ref()), validation.as_ref()))
+            Some((type_name, metadata, validation.as_ref()))
+        }
+
+        Schema::Object(SchemaObject {
+            metadata: None,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: Some(ref_name),
+            extensions: _,
+        }) => {
+            let ref_key = ref_key(ref_name);
+            get_object(
+                Name::Required(ref_key.to_string()),
+                definitions.get(ref_key).unwrap(),
+                definitions,
+            )
         }
 
         // None if the schema doesn't match the shape we expect.
@@ -1287,7 +1358,6 @@ mod tests {
                     "$schema": "http://json-schema.org/draft-07/schema",
                     "required": [
                         "name",
-                        "status",
                         "conclusion",
                         "number",
                         "started_at",
@@ -1296,7 +1366,6 @@ mod tests {
                     "type": "object",
                     "properties": {
                         "name": { "type": "string" },
-                        "status": { "type": "string", "enum": ["completed"] },
                         "conclusion": {
                             "type": "string",
                             "enum": ["failure", "skipped", "success"]
@@ -1312,7 +1381,6 @@ mod tests {
                     "$schema": "http://json-schema.org/draft-07/schema",
                     "required": [
                         "name",
-                        "status",
                         "conclusion",
                         "number",
                         "started_at",
@@ -1321,7 +1389,6 @@ mod tests {
                     "type": "object",
                     "properties": {
                         "name": { "type": "string" },
-                        "status": { "type": "string", "enum": ["in_progress"] },
                         "conclusion": { "type": "null" },
                         "number": { "type": "integer" },
                         "started_at": { "type": "string" },
@@ -1370,6 +1437,97 @@ mod tests {
                         _ => panic!("{:#?}", type_entry),
                     }
                 }
+            }
+            _ => panic!("{:#?}", type_entry),
+        }
+    }
+
+    #[test]
+    fn test_tricky_internally_tagged_enum() {
+        let schema_json = r##"
+        {
+            "definitions": {
+                "workflow-step-completed": {
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "required": [
+                        "name",
+                        "status",
+                        "conclusion",
+                        "number",
+                        "started_at",
+                        "completed_at"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "status": { "type": "string", "enum": ["completed_x"] },
+                        "conclusion": {
+                            "type": "string",
+                            "enum": ["failure", "skipped", "success"]
+                        },
+                        "number": { "type": "integer" },
+                        "started_at": { "type": "string" },
+                        "completed_at": { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "title": "Workflow Step (Completed)"
+                },
+                "workflow-step-in_progress": {
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "required": [
+                        "name",
+                        "status",
+                        "conclusion",
+                        "number",
+                        "started_at",
+                        "completed_at"
+                    ],
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "status": { "type": "string", "enum": ["in_progress_y"] },
+                        "conclusion": { "type": "null" },
+                        "number": { "type": "integer" },
+                        "started_at": { "type": "string" },
+                        "completed_at": { "type": "null" }
+                    },
+                    "additionalProperties": false,
+                    "title": "Workflow Step (In Progress)"
+                },
+                "workflow-step": {
+                    "$schema": "http://json-schema.org/draft-07/schema",
+                    "type": "object",
+                    "oneOf": [
+                        { "$ref": "#/definitions/workflow-step-in_progress" },
+                        { "$ref": "#/definitions/workflow-step-completed" }
+                    ],
+                    "title": "Workflow Step"
+                }
+            }
+        }
+        "##;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        type_space.add_ref_types(schema.definitions).unwrap();
+
+        let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
+        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+
+        match &type_entry.details {
+            TypeEntryDetails::Enum(TypeEntryEnum {
+                tag_type,
+                deny_unknown_fields,
+                ..
+            }) => {
+                assert_eq!(
+                    tag_type,
+                    &EnumTagType::Internal {
+                        tag: "status".to_string()
+                    }
+                );
+                assert_eq!(deny_unknown_fields, &true);
             }
             _ => panic!("{:#?}", type_entry),
         }

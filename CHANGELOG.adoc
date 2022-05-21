@@ -16,6 +16,9 @@
 https://github.com/oxidecomputer/typify/compare/v0.0.7\...HEAD[Full list of commits]
 
 * Support for integer schemas with `enum_values` populated (breaking change) (#57)
+* Deeper inspection of `oneOf` constructions to make better `enum`s (#59)
+* Simple handling for "constraint" `allOf` constructions (#59)
+* Improved handling of non-required unit struct members (#59)
 
 == 0.0.7 (released 2022-05-18)
 

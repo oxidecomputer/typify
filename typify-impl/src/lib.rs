@@ -90,10 +90,19 @@ pub(crate) enum Name {
 }
 
 impl Name {
-    pub(crate) fn into_option(self) -> Option<String> {
+    pub fn into_option(self) -> Option<String> {
         match self {
             Name::Required(s) | Name::Suggested(s) => Some(s),
             Name::Unknown => None,
+        }
+    }
+
+    pub fn append(&self, s: &str) -> Self {
+        match self {
+            Name::Required(prefix) | Name::Suggested(prefix) => {
+                Self::Suggested(format!("{}_{}", prefix, s))
+            }
+            Name::Unknown => Name::Unknown,
         }
     }
 }
@@ -179,9 +188,10 @@ impl TypeSpace {
         let def_len = definitions.len() as u64;
         self.next_id += def_len;
 
-        for (index, (ref_name, _)) in definitions.iter().enumerate() {
+        for (index, (ref_name, schema)) in definitions.iter().enumerate() {
             self.ref_to_id
                 .insert(ref_name.to_string(), TypeId(base_id + index as u64));
+            self.definitions.insert(ref_name.clone(), schema.clone());
         }
 
         // Convert all types; note that we use the type id assigned from the
@@ -242,7 +252,6 @@ impl TypeSpace {
                 )
                 .into(),
             };
-            self.definitions.insert(ref_name, schema);
             self.id_to_entry
                 .insert(TypeId(base_id + index as u64), type_entry);
         }
