@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.7\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.8\...HEAD[Full list of commits]
+
+== 0.0.8 (released 2022-05-22)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.7\...v0.0.8[Full list of commits]
 
 * Support for integer schemas with `enum_values` populated (breaking change) (#57)
 * Deeper inspection of `oneOf` constructions to make better `enum`s (#59)
