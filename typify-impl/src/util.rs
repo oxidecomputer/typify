@@ -6,7 +6,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
 };
-use unicode_xid::UnicodeXID;
+use unicode_ident::{is_xid_continue, is_xid_start};
 
 use crate::Name;
 
@@ -364,7 +364,7 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
-pub(crate) fn ref_key<'a>(ref_name: &String) -> &str {
+pub(crate) fn ref_key(ref_name: &String) -> &str {
     match ref_name.rfind('/') {
         Some(idx) => &ref_name[idx + 1..],
         None => ref_name,
@@ -484,16 +484,12 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
     let out = match input {
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
-        _ => to_case(
-            &input
-                .replace("'", "")
-                .replace(|c: char| !c.is_xid_continue(), "-"),
-        ),
+        _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
     };
 
     let out = match out.chars().next() {
         None => to_case("x"),
-        Some(c) if c.is_xid_start() => out,
+        Some(c) if is_xid_start(c) => out,
         Some(_) => format!("_{}", out),
     };
 
