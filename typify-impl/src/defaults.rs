@@ -296,7 +296,7 @@ impl TypeEntry {
         let maybe_builtin = match &self.details {
             // This can only be covered by the intrinsic default
             TypeEntryDetails::Unit => unreachable!(),
-            TypeEntryDetails::Boolean => Some("super::defaults::default_bool::<false>".to_string()),
+            TypeEntryDetails::Boolean => Some("defaults::default_bool::<false>".to_string()),
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_i64() {
                     Some(format!("defaults::default_i64::<{}, {}>", name, value))
