@@ -522,7 +522,7 @@ impl TypeSpace {
             ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
             ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
             ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
-            ("seconds", "i64", i64::MIN as f64, i64::MAX as f64),
+            ("seconds", "u64", u64::MIN as f64, u64::MAX as f64),
         ];
 
         if let Some(format) = format {
