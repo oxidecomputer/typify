@@ -105,6 +105,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "humantime"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
+
+[[package]]
 name = "instant"
 version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -462,6 +468,7 @@ version = "0.0.9-dev"
 dependencies = [
  "expectorate",
  "heck",
+ "humantime",
  "log",
  "paste",
  "proc-macro2",
