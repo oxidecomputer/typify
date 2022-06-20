@@ -16,6 +16,7 @@
 https://github.com/oxidecomputer/typify/compare/v0.0.8\...HEAD[Full list of commits]
 
 * Switched from `unicode-xid` to `unicode-ident` (#60)
+* Elevate `TypeDetail::String` rather than `TypeDetail::BuiltIn("String")`
 
 == 0.0.8 (released 2022-05-22)
 
