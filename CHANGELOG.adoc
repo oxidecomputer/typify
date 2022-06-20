@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.8\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.9\...HEAD[Full list of commits]
+
+== 0.0.9 (released 2022-06-20)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.8\...v0.0.9[Full list of commits]
 
 * Switched from `unicode-xid` to `unicode-ident` (#60)
 * Elevate `TypeDetail::String` rather than `TypeDetail::BuiltIn("String")` (#72)
