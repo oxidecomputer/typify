@@ -52,8 +52,10 @@ pub enum TypeDetails<'a> {
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
-    Unit,
     Builtin(&'a str),
+
+    Unit,
+    String,
 }
 
 /// Enum type details.
@@ -651,7 +653,7 @@ impl<'a> Type<'a> {
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
-            TypeEntryDetails::String => TypeDetails::Builtin("String"),
+            TypeEntryDetails::String => TypeDetails::String,
 
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),
