@@ -414,10 +414,12 @@ impl TypeSpace {
                 ))
             }
 
+            Some("ip") => Ok((TypeEntry::new_builtin("std::net::IpAddr"), metadata)),
+            Some("ipv4") => Ok((TypeEntry::new_builtin("std::net::Ipv4Addr"), metadata)),
             Some("ipv6") => Ok((TypeEntry::new_builtin("std::net::Ipv6Addr"), metadata)),
 
             // TODO random types I'm not sure what to do with
-            Some("uri" | "uri-template" | "email" | "ip") => {
+            Some("uri" | "uri-template" | "email") => {
                 Ok((TypeEntryDetails::String.into(), metadata))
             }
 
