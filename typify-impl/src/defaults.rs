@@ -298,15 +298,15 @@ impl TypeEntry {
             TypeEntryDetails::Unit => unreachable!(),
             TypeEntryDetails::Boolean => Some("defaults::default_bool::<false>".to_string()),
             TypeEntryDetails::Integer(name) => {
-                if let Some(value) = default.as_i64() {
-                    Some(format!("defaults::default_i64::<{}, {}>", name, value))
-                } else if let Some(value) = default.as_u64() {
+                if let Some(value) = default.as_u64() {
                     Some(format!("defaults::default_u64::<{}, {}>", name, value))
+                } else if let Some(value) = default.as_i64() {
+                    Some(format!("defaults::default_i64::<{}, {}>", name, value))
                 } else if let Some(duration) = default.as_str() {
                     if let Ok(value) = humantime::parse_duration(duration) {
                         Some(format!("defaults::default_u64::<{}, {}>", name, value.as_secs()))
                     } else {
-                        panic!("Integer type default cannot be converted to valid integer")
+                        panic!("Seconds format default cannot be parsed as a Duration.")
                     }
                 } else {
                     panic!("Integer type default cannot be converted to valid integer")
