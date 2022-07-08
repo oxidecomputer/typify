@@ -16,6 +16,7 @@
 https://github.com/oxidecomputer/typify/compare/v0.0.9\...HEAD[Full list of commits]
 
 * Add support for string types with format set to `ip`, `ipv4`, or `ipv6` (#76)
+* Be more accommodating in the face of a missing `type` field #(79)
 
 == 0.0.9 (released 2022-06-20)
 

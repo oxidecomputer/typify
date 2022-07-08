@@ -6,7 +6,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, recase, Case};
+use crate::util::{all_mutually_exclusive, none_or_single, recase, Case};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
@@ -177,17 +177,33 @@ impl TypeSpace {
                 number: None,
                 string: None,
                 array: None,
-                object: validation,
+                object,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Object => {
-                self.convert_object(type_name, metadata, validation)
+                self.convert_object(type_name, metadata, object)
             }
+
+            // Structs with the type omitted, but validation present
+            SchemaObject {
+                metadata,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: object @ Some(_),
+                reference: None,
+                extensions: _,
+            } => self.convert_object(type_name, metadata, object),
 
             // Arrays
             SchemaObject {
                 metadata,
-                instance_type: Some(SingleOrVec::Single(single)),
+                instance_type,
                 format: None,
                 enum_values: None,
                 const_value: None,
@@ -198,7 +214,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::Array => {
+            } if none_or_single(instance_type, &InstanceType::Array) => {
                 self.convert_array(type_name, metadata, validation)
             }
 
