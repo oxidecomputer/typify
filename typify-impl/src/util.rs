@@ -522,6 +522,17 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     Some(sanitize(&name, Case::Pascal))
 }
 
+pub(crate) fn none_or_single<T>(test: &Option<SingleOrVec<T>>, value: &T) -> bool
+where
+    T: Eq,
+{
+    match test {
+        None => true,
+        Some(SingleOrVec::Single(single)) if single.as_ref() == value => true,
+        _ => false,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use schemars::{schema_for, JsonSchema};

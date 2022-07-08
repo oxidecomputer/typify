@@ -14,7 +14,7 @@ use crate::{
     type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
     util::{
         constant_string_value, get_type_name, metadata_description, metadata_title_and_description,
-        recase, ref_key, schema_is_named, Case,
+        none_or_single, recase, ref_key, schema_is_named, Case,
     },
     Name, Result, TypeSpace,
 };
@@ -318,7 +318,7 @@ impl TypeSpace {
             // embedded within the variant as the struct type.
             Schema::Object(SchemaObject {
                 metadata,
-                instance_type: Some(SingleOrVec::Single(single)),
+                instance_type,
                 format: None,
                 enum_values: None,
                 const_value: None,
@@ -329,7 +329,7 @@ impl TypeSpace {
                 object: Some(validation),
                 reference: None,
                 extensions: _,
-            }) if single.as_ref() == &InstanceType::Object
+            }) if none_or_single(instance_type, &InstanceType::Object)
                 && metadata
                     .as_ref()
                     .map(|m| m.as_ref().title.as_ref())
@@ -1654,6 +1654,59 @@ mod tests {
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_untagged_untyped_unnamed_struct_variants() {
+        let schema_json = r#"
+        {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "one-of-types",
+            "type": "object",
+            "oneOf": [
+              {
+                "properties": {
+                  "bar": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "bar"
+                ]
+              },
+              {
+                "properties": {
+                  "foo": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "foo"
+                ]
+              }
+            ]
+          }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let _ = type_space.add_type(&schema.schema.into()).unwrap();
+
+        let actual = type_space.to_stream();
+        let expected = quote! {
+            #[derive(Serialize, Deserialize, Debug, Clone)]
+            #[serde(untagged)]
+            pub enum OneOfTypes {
+                Variant0 {
+                    bar: i64,
+                },
+                Variant1 {
+                    foo: String,
+                },
             }
         };
         assert_eq!(actual.to_string(), expected.to_string());
