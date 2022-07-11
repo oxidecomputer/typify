@@ -29,6 +29,8 @@ pub enum Error {
     InvalidTypeId,
     #[error("value does not conform to the given schema")]
     InvalidValue,
+    #[error("schema invalid: {0}")]
+    InvalidSchema(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -129,6 +131,7 @@ pub struct TypeSpace {
     uses_chrono: bool,
     uses_uuid: bool,
     uses_serde_json: bool,
+    uses_regress: bool,
 
     type_mod: Option<String>,
     extra_derives: Vec<TokenStream>,
@@ -156,6 +159,7 @@ impl Default for TypeSpace {
             uses_chrono: false,
             uses_uuid: false,
             uses_serde_json: false,
+            uses_regress: false,
             type_mod: None,
             extra_derives: Vec::new(),
             defaults: BTreeSet::new(),

@@ -7,6 +7,7 @@ use crate::type_entry::{
     Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, none_or_single, recase, Case};
+use log::info;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     SubschemaValidation,
@@ -93,8 +94,24 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::String => {
-                self.convert_string(metadata, format, validation)
+                self.convert_string(type_name, metadata, format, validation)
             }
+
+            // Strings with the type omitted, but validation present
+            SchemaObject {
+                metadata,
+                instance_type: None,
+                format,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: validation @ Some(_),
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            } => self.convert_string(type_name, metadata, format, validation),
 
             // Simple string enum
             SchemaObject {
@@ -177,11 +194,11 @@ impl TypeSpace {
                 number: None,
                 string: None,
                 array: None,
-                object,
+                object: validation,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Object => {
-                self.convert_object(type_name, metadata, object)
+                self.convert_object(type_name, metadata, validation)
             }
 
             // Structs with the type omitted, but validation present
@@ -195,10 +212,10 @@ impl TypeSpace {
                 number: None,
                 string: None,
                 array: None,
-                object: object @ Some(_),
+                object: validation @ Some(_),
                 reference: None,
                 extensions: _,
-            } => self.convert_object(type_name, metadata, object),
+            } => self.convert_object(type_name, metadata, validation),
 
             // Arrays
             SchemaObject {
@@ -375,39 +392,47 @@ impl TypeSpace {
             }
 
             // Unknown
-            SchemaObject { .. } => todo!("{:#?}", schema),
+            SchemaObject { .. } => todo!("invalid (or unexpected) schema:\n{:#?}", schema),
         }
     }
 
     fn convert_string<'a>(
         &mut self,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         format: &Option<String>,
-        _validation: &Option<Box<schemars::schema::StringValidation>>,
+        validation: &Option<Box<schemars::schema::StringValidation>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // trait OptionIsNoneOrDefault {
-        //     fn is_none_or_default(&self) -> bool;
-        // }
-
-        // impl<T> OptionIsNoneOrDefault for Option<T>
-        // where
-        //     T: Default + PartialEq,
-        // {
-        //     fn is_none_or_default(&self) -> bool {
-        //         match self {
-        //             Some(t) => t == &T::default(),
-        //             None => true,
-        //         }
-        //     }
-        // }
         match format.as_ref().map(String::as_str) {
-            None => {
-                // TODO we'll need to deal with strings with lengths and
-                // patterns, but it seems like a pain in the neck so I'm
-                // punting for now.
-                // assert!(validation.is_none_or_default(), "{:#?}", validation);
-                Ok((TypeEntryDetails::String.into(), metadata))
-            }
+            None => match validation.as_ref().map(Box::as_ref) {
+                // It would be unusual for the StringValidation to be Some, but
+                // all its fields to be None, but ... whatever.
+                None
+                | Some(schemars::schema::StringValidation {
+                    max_length: None,
+                    min_length: None,
+                    pattern: None,
+                }) => Ok((TypeEntryDetails::String.into(), metadata)),
+
+                Some(validation) => {
+                    if let Some(pattern) = &validation.pattern {
+                        let _ = regress::Regex::new(pattern).map_err(|e| {
+                            Error::InvalidSchema(format!("invalid pattern '{}' {}", pattern, e))
+                        })?;
+                        self.uses_regress = true;
+                    }
+
+                    let string = TypeEntryDetails::String.into();
+                    let type_id = self.assign_type(string);
+                    Ok((
+                        TypeEntryNewtype::from_metadata_with_string_validation(
+                            type_name, metadata, type_id, validation,
+                        )
+                        .into(),
+                        metadata,
+                    ))
+                }
+            },
 
             Some("uuid") => {
                 self.uses_uuid = true;
@@ -434,12 +459,10 @@ impl TypeSpace {
             Some("ipv4") => Ok((TypeEntry::new_builtin("std::net::Ipv4Addr"), metadata)),
             Some("ipv6") => Ok((TypeEntry::new_builtin("std::net::Ipv6Addr"), metadata)),
 
-            // TODO random types I'm not sure what to do with
-            Some("uri" | "uri-template" | "email") => {
+            Some(unhandled) => {
+                info!("treating a string format '{}' as a String", unhandled);
                 Ok((TypeEntryDetails::String.into(), metadata))
             }
-
-            unhandled => todo!("{:#?}", unhandled),
         }
     }
 
@@ -1318,7 +1341,6 @@ mod tests {
 
             fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
                 schemars::schema::SchemaObject {
-                    //metadata: todo!(),
                     instance_type: Some(schemars::schema::InstanceType::Integer.into()),
                     format: Some("uint".to_string()),
                     enum_values: Some(vec![json!(2_u32), json!(3_u32), json!(5_u32), json!(7_u32)]),
@@ -1339,7 +1361,7 @@ mod tests {
 
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            #[derive(Serialize, Deserialize, Debug, Clone)]
+            #[derive(Clone, Debug, Deserialize, Serialize)]
             pub struct Sub10Primes(u32);
 
             impl std::ops::Deref for Sub10Primes {
@@ -1363,6 +1385,75 @@ mod tests {
                     } else {
                         Ok(Self(value))
                     }
+                }
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_pattern_string() {
+        #[allow(dead_code)]
+        #[derive(Schema)]
+        struct PatternString(String);
+        impl JsonSchema for PatternString {
+            fn schema_name() -> String {
+                "PatternString".to_string()
+            }
+
+            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+                schemars::schema::SchemaObject {
+                    instance_type: Some(schemars::schema::InstanceType::String.into()),
+                    string: Some(
+                        schemars::schema::StringValidation {
+                            pattern: Some("xx".to_string()),
+                            ..Default::default()
+                        }
+                        .into(),
+                    ),
+                    ..Default::default()
+                }
+                .into()
+            }
+        }
+
+        let (type_space, _) = get_type::<PatternString>();
+        let actual = type_space.to_stream();
+        let expected = quote! {
+            #[derive(Clone, Debug, Serialize)]
+            pub struct PatternString(String);
+            impl std::ops::Deref for PatternString {
+                type Target = String;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+            impl std::convert::TryFrom<&str> for PatternString {
+                type Error = &'static str;
+                fn try_from(value: &str) -> Result<Self, Self::Error> {
+                    if regress::Regex::new("xx").unwrap().find(value).is_none() {
+                        return Err("doesn't match pattern \"xx\"");
+                    }
+                    Ok(Self(value.to_string()))
+                }
+            }
+            impl std::convert::TryFrom<String> for PatternString {
+                type Error = &'static str;
+                fn try_from(value: String) -> Result<Self, Self::Error> {
+                    Self::try_from(value.as_str())
+                }
+            }
+            impl<'de> serde::Deserialize<'de> for PatternString {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: serde::Deserializer<'de>,
+                {
+                    Self::try_from(String::deserialize(deserializer)?)
+                        .map_err(|e| {
+                            <D::Error as serde::de::Error>::custom(
+                                e.to_string(),
+                            )
+                        })
                 }
             }
         };

@@ -15,8 +15,14 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.0.9\...HEAD[Full list of commits]
 
-* Add support for string types with format set to `ip`, `ipv4`, or `ipv6` (#76)
+* Add support for string types with `format`` set to `ip`, `ipv4`, or `ipv6` (#76)
 * Be more accommodating in the face of a missing `type` field #(79)
+* The order of derives on types has stabilized (and therefore has changed) (#XXX)
+* Specific `From` and `Deserialize` implementations for constrainted string types (#XXX)
+* Specific `From` implementation for untagged enums with constrained string variants (#XXX)
+* `FromStr` implementation for simple-variant-only `enum`s (#XXX)
+* Ignore unknown `format` values (#XXX)
+* Added `regress` dependency for ECMA 262 style regexes (#XXX)
 
 == 0.0.9 (released 2022-06-20)
 

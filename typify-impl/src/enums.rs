@@ -3,7 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use heck::{ToKebabCase, ToPascalCase};
-use proc_macro2::{Ident, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -919,47 +919,6 @@ pub(crate) fn output_variant(
     }
 }
 
-pub(crate) fn enum_impl(type_name: &Ident, variants: &[Variant]) -> TokenStream {
-    let maybe_simple_variants = variants
-        .iter()
-        .map(|variant| {
-            if let VariantDetails::Simple = variant.details {
-                Some(variant)
-            } else {
-                None
-            }
-        })
-        .collect::<Option<Vec<_>>>();
-
-    match maybe_simple_variants {
-        Some(simple_variants) => {
-            let match_variants = simple_variants.iter().map(|variant| {
-                let variant_name = format_ident!("{}", variant.name);
-                let variant_str = match &variant.rename {
-                    Some(s) => s,
-                    None => &variant.name,
-                };
-                quote! {
-                    #type_name::#variant_name => #variant_str.to_string()
-                }
-            });
-
-            quote! {
-                impl ToString for #type_name {
-                    fn to_string(&self) -> String {
-                        match *self {
-                            #(#match_variants),*
-                        }
-                    }
-                }
-            }
-        }
-
-        // Not all of the variants were simple
-        None => quote! {},
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashSet;
@@ -1627,7 +1586,7 @@ mod tests {
             .unwrap();
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            #[derive(Serialize, Deserialize, Debug, Clone)]
+            #[derive(Clone, Debug, Deserialize, Serialize)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
@@ -1650,7 +1609,7 @@ mod tests {
             .unwrap();
         let actual = type_entry.output(&type_space);
         let expected = quote! {
-            #[derive(Serialize, Deserialize, Debug, Clone, A, B, C, D)]
+            #[derive(Clone, Debug, Deserialize, Serialize, A, B, C, D)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
@@ -1698,7 +1657,7 @@ mod tests {
 
         let actual = type_space.to_stream();
         let expected = quote! {
-            #[derive(Serialize, Deserialize, Debug, Clone)]
+            #[derive(Clone, Debug, Deserialize, Serialize)]
             #[serde(untagged)]
             pub enum OneOfTypes {
                 Variant0 {
