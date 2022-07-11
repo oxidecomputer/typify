@@ -1,11 +1,11 @@
 mod types {
-    #[derive(Serialize, Deserialize, Debug, Clone, JsonSchema)]
+    #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
     pub struct CompoundType {
         pub value1: String,
         pub value2: u64,
     }
     #[derive(
-        Serialize, Deserialize, Debug, Clone, JsonSchema, Copy, PartialOrd, Ord, PartialEq, Eq, Hash,
+        Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, JsonSchema,
     )]
     pub enum StringEnum {
         One,
@@ -15,13 +15,24 @@ mod types {
     impl ToString for StringEnum {
         fn to_string(&self) -> String {
             match *self {
-                StringEnum::One => "One".to_string(),
-                StringEnum::Two => "Two".to_string(),
-                StringEnum::BuckleMyShoe => "BuckleMyShoe".to_string(),
+                Self::One => "One".to_string(),
+                Self::Two => "Two".to_string(),
+                Self::BuckleMyShoe => "BuckleMyShoe".to_string(),
             }
         }
     }
-    #[derive(Serialize, Deserialize, Debug, Clone, JsonSchema)]
+    impl std::str::FromStr for StringEnum {
+        type Err = &'static str;
+        fn from_str(value: &str) -> Result<Self, Self::Err> {
+            match value {
+                "One" => Ok(Self::One),
+                "Two" => Ok(Self::Two),
+                "BuckleMyShoe" => Ok(Self::BuckleMyShoe),
+                _ => Err("invalid value"),
+            }
+        }
+    }
+    #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
     pub struct Pair {
         #[serde(default = "pair_a")]
         pub a: String,

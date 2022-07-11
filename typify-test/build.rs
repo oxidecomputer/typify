@@ -46,10 +46,58 @@ struct WithSet {
     set: HashSet<TestStruct>,
 }
 
+struct LoginName(String);
+impl JsonSchema for LoginName {
+    fn schema_name() -> String {
+        "LoginName".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            string: Some(Box::new(schemars::schema::StringValidation {
+                max_length: Some(8),
+                min_length: Some(1),
+                pattern: Some("^[a-z]*$".to_string()),
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
+struct Pancakes(String);
+impl JsonSchema for Pancakes {
+    fn schema_name() -> String {
+        "Pancakes".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            instance_type: Some(schemars::schema::InstanceType::String.into()),
+            format: Some("pancakes".to_string()),
+            ..Default::default()
+        }
+        .into()
+    }
+
+    fn is_referenceable() -> bool {
+        false
+    }
+}
+
+#[derive(JsonSchema)]
+struct UnknownFormat {
+    #[allow(dead_code)]
+    pancakes: Pancakes,
+}
+
 fn main() {
     let mut type_space = TypeSpace::default();
 
     WithSet::add(&mut type_space);
+    LoginName::add(&mut type_space);
+    UnknownFormat::add(&mut type_space);
+    ipnetwork::IpNetwork::add(&mut type_space);
 
     let content = format!(
         "{}\n{}",

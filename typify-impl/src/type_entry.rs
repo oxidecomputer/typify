@@ -7,7 +7,7 @@ use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
 
 use crate::{
-    enums::{enum_impl, output_variant},
+    enums::output_variant,
     structs::output_struct_property,
     util::{get_type_name, metadata_description},
     DefaultImpl, Name, TypeId, TypeSpace,
@@ -41,7 +41,18 @@ pub(crate) struct TypeEntryNewtype {
     pub description: Option<String>,
     pub default: Option<WrappedValue>,
     pub type_id: TypeId,
-    pub enum_values: Option<Vec<WrappedValue>>,
+    pub constraints: TypeEntryNewtypeConstraints,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum TypeEntryNewtypeConstraints {
+    None,
+    EnumValue(Vec<WrappedValue>),
+    String {
+        max_length: Option<u32>,
+        min_length: Option<u32>,
+        pattern: Option<String>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -219,7 +230,7 @@ impl TypeEntryNewtype {
             description,
             default: None,
             type_id,
-            enum_values: None,
+            constraints: TypeEntryNewtypeConstraints::None,
         })
     }
 
@@ -239,7 +250,39 @@ impl TypeEntryNewtype {
             description,
             default: None,
             type_id,
-            enum_values: Some(enum_values.iter().cloned().map(WrappedValue::new).collect()),
+            constraints: TypeEntryNewtypeConstraints::EnumValue(
+                enum_values.iter().cloned().map(WrappedValue::new).collect(),
+            ),
+        })
+    }
+
+    pub(crate) fn from_metadata_with_string_validation(
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        validation: &schemars::schema::StringValidation,
+    ) -> TypeEntryDetails {
+        let name = get_type_name(&type_name, metadata).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        let schemars::schema::StringValidation {
+            max_length,
+            min_length,
+            pattern,
+        } = validation.clone();
+
+        TypeEntryDetails::Newtype(Self {
+            name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            constraints: TypeEntryNewtypeConstraints::String {
+                max_length,
+                min_length,
+                pattern,
+            },
         })
     }
 }
@@ -290,229 +333,19 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
-        let mut derives = vec![
-            quote! { Serialize },
-            quote! { Deserialize },
-            quote! { Debug },
-            quote! { Clone },
-        ];
-
-        derives.extend(type_space.extra_derives.clone());
+        let derive_set = ["Serialize", "Deserialize", "Debug", "Clone"]
+            .into_iter()
+            .collect::<BTreeSet<_>>();
 
         match &self.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                name,
-                rename,
-                description,
-                default,
-                tag_type,
-                variants,
-                deny_unknown_fields,
-            }) => {
-                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
-
-                // TODO this is a one-off for some useful traits
-                if variants
-                    .iter()
-                    .all(|variant| matches!(variant.details, VariantDetails::Simple))
-                {
-                    derives.extend(
-                        vec![
-                            quote! { Copy },
-                            quote! { PartialOrd },
-                            quote! { Ord },
-                            quote! { PartialEq },
-                            quote! { Eq },
-                            quote! { Hash },
-                        ]
-                        .into_iter(),
-                    );
-                }
-
-                let mut serde_options = Vec::new();
-                if let Some(old_name) = rename {
-                    serde_options.push(quote! { rename = #old_name });
-                }
-                match tag_type {
-                    EnumTagType::External => {}
-                    EnumTagType::Internal { tag } => {
-                        serde_options.push(quote! { tag = #tag });
-                    }
-                    EnumTagType::Adjacent { tag, content } => {
-                        serde_options.push(quote! { tag = #tag });
-                        serde_options.push(quote! { content = #content });
-                    }
-                    EnumTagType::Untagged => {
-                        serde_options.push(quote! { untagged });
-                    }
-                }
-                if *deny_unknown_fields {
-                    serde_options.push(quote! { deny_unknown_fields });
-                }
-                let serde = if serde_options.is_empty() {
-                    quote! {}
-                } else {
-                    quote! { #[serde( #( #serde_options ),* )] }
-                };
-
-                let type_name = format_ident!("{}", name);
-
-                let variants_decl = variants
-                    .iter()
-                    .map(|variant| output_variant(variant, type_space, name))
-                    .collect::<Vec<_>>();
-
-                let enum_impl = enum_impl(&type_name, variants);
-
-                let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.output_value(type_space, &value.0).unwrap();
-                    quote! {
-                        impl Default for #type_name {
-                            fn default() -> Self {
-                                #default_stream
-                            }
-                        }
-                    }
-                });
-
-                quote! {
-                    #doc
-                    #[derive(#(#derives),*)]
-                    #serde
-                    pub enum #type_name {
-                        #(#variants_decl)*
-                    }
-
-                    #enum_impl
-                    #default_impl
-                }
+            TypeEntryDetails::Enum(enum_details) => {
+                self.output_enum(type_space, enum_details, derive_set)
             }
-
-            TypeEntryDetails::Struct(TypeEntryStruct {
-                name,
-                rename,
-                description,
-                default,
-                properties,
-                deny_unknown_fields,
-            }) => {
-                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
-
-                let mut serde_options = Vec::new();
-                if let Some(old_name) = rename {
-                    serde_options.push(quote! { rename = #old_name });
-                }
-                if *deny_unknown_fields {
-                    serde_options.push(quote! { deny_unknown_fields });
-                }
-                let serde = if serde_options.is_empty() {
-                    quote! {}
-                } else {
-                    quote! { #[serde( #( #serde_options ),* )] }
-                };
-
-                let type_name = format_ident!("{}", name);
-                let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
-                    .iter()
-                    .map(|prop| output_struct_property(prop, type_space, true, name))
-                    .unzip();
-
-                let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.output_value(type_space, &value.0).unwrap();
-                    quote! {
-                        impl Default for #type_name {
-                            fn default() -> Self {
-                                #default_stream
-                            }
-                        }
-                    }
-                });
-
-                quote! {
-                    #doc
-                    #[derive(#(#derives),*)]
-                    #serde
-                    pub struct #type_name {
-                        #(#prop_streams)*
-                    }
-
-                    #(#prop_defaults)*
-
-                    #default_impl
-                }
+            TypeEntryDetails::Struct(struct_details) => {
+                self.output_struct(type_space, struct_details, derive_set)
             }
-
-            TypeEntryDetails::Newtype(TypeEntryNewtype {
-                name,
-                rename,
-                description,
-                default,
-                type_id,
-                enum_values,
-            }) => {
-                let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
-
-                let serde = rename.as_ref().map(|old_name| {
-                    quote! {
-                        #[serde(rename = #old_name)]
-                    }
-                });
-
-                let type_name = format_ident!("{}", name);
-                let sub_type = type_space.id_to_entry.get(type_id).unwrap();
-                let sub_type_name = sub_type.type_ident(type_space, false);
-
-                let (vis, try_from_impl) = if let Some(enum_values) = enum_values {
-                    let value_output = enum_values
-                        .iter()
-                        .map(|value| sub_type.output_value(type_space, &value.0));
-                    let try_from_impl = quote! {
-                        impl std::convert::TryFrom<#sub_type_name> for #type_name {
-                            type Error = &'static str;
-
-                            fn try_from(value: #sub_type_name) -> Result<Self, Self::Error> {
-                                if ![
-                                    #(#value_output,)*
-                                ].contains(&value) {
-                                    Err("invalid value")
-                                } else {
-                                    Ok(Self(value))
-                                }
-                            }
-                        }
-                    };
-                    (quote! {}, try_from_impl)
-                } else {
-                    (quote! {pub}, quote! {})
-                };
-
-                let default_impl = default.as_ref().map(|value| {
-                    let default_stream = self.output_value(type_space, &value.0).unwrap();
-                    quote! {
-                        impl Default for #type_name {
-                            fn default() -> Self {
-                                #default_stream
-                            }
-                        }
-                    }
-                });
-
-                quote! {
-                    #doc
-                    #[derive(#(#derives),*)]
-                    #serde
-                    pub struct #type_name(#vis #sub_type_name);
-
-                    impl std::ops::Deref for #type_name {
-                        type Target = #sub_type_name;
-                        fn deref(&self) -> &Self::Target {
-                            &self.0
-                        }
-                    }
-
-                    #default_impl
-                    #try_from_impl
-                }
+            TypeEntryDetails::Newtype(newtype_details) => {
+                self.output_newtype(type_space, newtype_details, derive_set)
             }
 
             // These types require no definition as they're already defined.
@@ -532,6 +365,429 @@ impl TypeEntry {
             // We should never get here as reference types should only be used
             // in-flight, but never recorded into the type space.
             TypeEntryDetails::Reference(_) => unreachable!(),
+        }
+    }
+
+    fn output_enum(
+        &self,
+        type_space: &TypeSpace,
+        enum_details: &TypeEntryEnum,
+        mut derive_set: BTreeSet<&str>,
+    ) -> TokenStream {
+        let TypeEntryEnum {
+            name,
+            rename,
+            description,
+            default,
+            tag_type,
+            variants,
+            deny_unknown_fields,
+        } = enum_details;
+
+        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+        // TODO this is a one-off for some useful traits
+        if variants
+            .iter()
+            .all(|variant| matches!(variant.details, VariantDetails::Simple))
+        {
+            derive_set.extend(["Copy", "PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+        }
+
+        let mut serde_options = Vec::new();
+        if let Some(old_name) = rename {
+            serde_options.push(quote! { rename = #old_name });
+        }
+        match tag_type {
+            EnumTagType::External => {}
+            EnumTagType::Internal { tag } => {
+                serde_options.push(quote! { tag = #tag });
+            }
+            EnumTagType::Adjacent { tag, content } => {
+                serde_options.push(quote! { tag = #tag });
+                serde_options.push(quote! { content = #content });
+            }
+            EnumTagType::Untagged => {
+                serde_options.push(quote! { untagged });
+            }
+        }
+        if *deny_unknown_fields {
+            serde_options.push(quote! { deny_unknown_fields });
+        }
+
+        let serde = (!serde_options.is_empty()).then(|| {
+            quote! { #[serde( #( #serde_options ),* )] }
+        });
+
+        let type_name = format_ident!("{}", name);
+
+        let variants_decl = variants
+            .iter()
+            .map(|variant| output_variant(variant, type_space, name))
+            .collect::<Vec<_>>();
+
+        // ToString impl for enums that are made exclusively of simple variants.
+        let simple_enum_impl = variants
+            .iter()
+            .map(|variant| {
+                if let VariantDetails::Simple = variant.details {
+                    Some(variant)
+                } else {
+                    None
+                }
+            })
+            .collect::<Option<Vec<_>>>()
+            .map(|simple_variants| {
+                // It should not be possible to construct an untagged enum
+                // exclusively of simple variants--it would not be usable.
+                assert!(tag_type != &EnumTagType::Untagged);
+
+                let (match_variants, match_strs): (Vec<_>, Vec<_>) = simple_variants
+                    .iter()
+                    .map(|variant| {
+                        let variant_name = format_ident!("{}", variant.name);
+                        let variant_str = match &variant.rename {
+                            Some(s) => s,
+                            None => &variant.name,
+                        };
+                        (variant_name, variant_str)
+                    })
+                    .unzip();
+
+                quote! {
+                    impl ToString for #type_name {
+                        fn to_string(&self) -> String {
+                            match *self {
+                                #(Self::#match_variants => #match_strs.to_string(),)*
+                            }
+                        }
+                    }
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
+
+                        fn from_str(
+                            value: &str
+                        ) -> Result<Self, Self::Err> {
+                            match value {
+                                #(#match_strs => Ok(Self::#match_variants),)*
+                                _ => Err("invalid value"),
+                            }
+                        }
+                    }
+                }
+            });
+
+        let default_impl = default.as_ref().map(|value| {
+            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            quote! {
+                impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
+                    }
+                }
+            }
+        });
+
+        let untagged_newtype_impl =
+            all_variants_support_from_string(type_space, tag_type, variants).then(|| {
+                let (variant_name, variant_type): (Vec<_>, Vec<_>) = variants
+                    .iter()
+                    .map(|variant| {
+                        let type_id = match &variant.details {
+                            VariantDetails::Tuple(types) if types.len() == 1 => {
+                                types.first().unwrap()
+                            }
+                            _ => unreachable!(),
+                        };
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+
+                        (
+                            format_ident!("{}", variant.name),
+                            type_entry.type_ident(type_space, false),
+                        )
+                    })
+                    .unzip();
+
+                // Implement From<String> by doing a try_from() for each
+                // variant.
+                quote! {
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &str) -> Result<Self, Self::Error> {
+                            // Seed with an error to make successive cases more
+                            // consistent; this will never reach the user.
+                            Err("")
+                            #(
+                                .or_else(|_: Self::Error| {
+                                    Ok(Self::#variant_name(
+                                        #variant_type::try_from(value)?,
+                                    ))
+                                })
+                            )*
+                            .or_else(|_: Self::Error| {
+                                Err("string conversion failed for all variants")
+                            })
+                        }
+                    }
+                    impl std::convert::TryFrom<String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: String) -> Result<Self, Self::Error> {
+                            Self::try_from(value.as_str())
+                        }
+                    }
+                }
+            });
+
+        let derives = derive_set
+            .iter()
+            .map(|derive| format_ident!("{}", derive).to_token_stream())
+            .chain(type_space.extra_derives.clone());
+
+        quote! {
+            #doc
+            #[derive(#(#derives),*)]
+            #serde
+            pub enum #type_name {
+                #(#variants_decl)*
+            }
+
+            #simple_enum_impl
+            #default_impl
+            #untagged_newtype_impl
+        }
+    }
+
+    fn output_struct(
+        &self,
+        type_space: &TypeSpace,
+        struct_details: &TypeEntryStruct,
+        derive_set: BTreeSet<&str>,
+    ) -> TokenStream {
+        let TypeEntryStruct {
+            name,
+            rename,
+            description,
+            default,
+            properties,
+            deny_unknown_fields,
+        } = struct_details;
+        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+        let mut serde_options = Vec::new();
+        if let Some(old_name) = rename {
+            serde_options.push(quote! { rename = #old_name });
+        }
+        if *deny_unknown_fields {
+            serde_options.push(quote! { deny_unknown_fields });
+        }
+        let serde = if serde_options.is_empty() {
+            quote! {}
+        } else {
+            quote! { #[serde( #( #serde_options ),* )] }
+        };
+
+        let type_name = format_ident!("{}", name);
+        let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
+            .iter()
+            .map(|prop| output_struct_property(prop, type_space, true, name))
+            .unzip();
+
+        let default_impl = default.as_ref().map(|value| {
+            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            quote! {
+                impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
+                    }
+                }
+            }
+        });
+
+        let derives = derive_set
+            .iter()
+            .map(|derive| format_ident!("{}", derive).to_token_stream())
+            .chain(type_space.extra_derives.clone());
+
+        quote! {
+            #doc
+            #[derive(#(#derives),*)]
+            #serde
+            pub struct #type_name {
+                #(#prop_streams)*
+            }
+
+            #(#prop_defaults)*
+
+            #default_impl
+        }
+    }
+
+    fn output_newtype(
+        &self,
+        type_space: &TypeSpace,
+        newtype_details: &TypeEntryNewtype,
+        mut derive_set: BTreeSet<&str>,
+    ) -> TokenStream {
+        let TypeEntryNewtype {
+            name,
+            rename,
+            description,
+            default,
+            type_id,
+            constraints,
+        } = newtype_details;
+        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+        let serde = rename.as_ref().map(|old_name| {
+            quote! {
+                #[serde(rename = #old_name)]
+            }
+        });
+
+        let type_name = format_ident!("{}", name);
+        let sub_type = type_space.id_to_entry.get(type_id).unwrap();
+        let sub_type_name = sub_type.type_ident(type_space, false);
+
+        let constraint_impl = match constraints {
+            TypeEntryNewtypeConstraints::None => None,
+
+            TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
+                let value_output = enum_values
+                    .iter()
+                    .map(|value| sub_type.output_value(type_space, &value.0));
+                // TODO if the sub_type is a string we could probably impl
+                // TryFrom<&str> as well
+                Some(quote! {
+                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(
+                            value: #sub_type_name
+                        ) -> Result<Self, Self::Error> {
+                            if ![
+                                #(#value_output,)*
+                            ].contains(&value) {
+                                Err("invalid value")
+                            } else {
+                                Ok(Self(value))
+                            }
+                        }
+                    }
+                })
+            }
+
+            TypeEntryNewtypeConstraints::String {
+                max_length,
+                min_length,
+                pattern,
+            } => {
+                let max = max_length.map(|v| {
+                    let v = v as usize;
+                    let err = format!("longer than {} characters", v);
+                    quote! {
+                        if value.len() > #v {
+                            return Err(#err);
+                        }
+                    }
+                });
+                let min = min_length.map(|v| {
+                    let v = v as usize;
+                    let err = format!("shorter than {} characters", v);
+                    quote! {
+                        if value.len() < #v {
+                            return Err(#err);
+                        }
+                    }
+                });
+                let pat = pattern.as_ref().map(|p| {
+                    let err = format!("doesn't match pattern \"{}\"", p);
+                    quote! {
+                        if regress::Regex::new(#p).unwrap().find(value).is_none() {
+                            return Err(#err);
+                        }
+                    }
+                });
+
+                // We're going to impl Deserialize so we can remove it
+                // from the set of derived impls.
+                derive_set.remove("Deserialize");
+
+                Some(quote! {
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &str) -> Result<Self, Self::Error> {
+                            #max
+                            #min
+                            #pat
+
+                            Ok(Self(value.to_string()))
+                        }
+                    }
+                    impl std::convert::TryFrom<String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from( value: String) -> Result<Self, Self::Error> {
+                            Self::try_from(value.as_str())
+                        }
+                    }
+                    impl<'de> serde::Deserialize<'de> for #type_name {
+                        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                        where
+                            D: serde::Deserializer<'de>,
+                        {
+                            Self::try_from(String::deserialize(deserializer)?)
+                                .map_err(|e| {
+                                    <D::Error as serde::de::Error>::custom(
+                                        e.to_string(),
+                                    )
+                                })
+                        }
+                    }
+                })
+            }
+        };
+
+        // If there are no constraints, let folks directly access the
+        // value.
+        let vis = match constraints {
+            TypeEntryNewtypeConstraints::None => Some(quote! {pub}),
+            _ => None,
+        };
+
+        let default_impl = default.as_ref().map(|value| {
+            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            quote! {
+                impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
+                    }
+                }
+            }
+        });
+
+        let derives = derive_set
+            .iter()
+            .map(|derive| format_ident!("{}", derive).to_token_stream())
+            .chain(type_space.extra_derives.clone());
+
+        quote! {
+            #doc
+            #[derive(#(#derives),*)]
+            #serde
+            pub struct #type_name(#vis #sub_type_name);
+
+            impl std::ops::Deref for #type_name {
+                type Target = #sub_type_name;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+
+            #default_impl
+            #constraint_impl
         }
     }
 
@@ -610,7 +866,8 @@ impl TypeEntry {
                     .get(id)
                     .expect("unresolved type id for set");
                 let item = inner_ty.type_ident(type_space, external);
-                // TODO we'll want this to be a Set of some kind, but we need to get the derives right first.
+                // TODO we'll want this to be a Set of some kind, but we need
+                // to get the derives right first.
                 quote! { Vec<#item> }
             }
 
@@ -747,6 +1004,37 @@ impl TypeEntry {
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
+}
+
+fn all_variants_support_from_string(
+    type_space: &TypeSpace,
+    tag_type: &EnumTagType,
+    variants: &[Variant],
+) -> bool {
+    tag_type == &EnumTagType::Untagged
+        && variants.iter().all(|variant| {
+            // If the variant is a tuple...
+            match &variant.details {
+                VariantDetails::Tuple(types) if types.len() == 1 => types.first(),
+                _ => None,
+            }
+            .map_or_else(
+                || false,
+                |type_id| {
+                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    matches!(
+                        &type_entry.details,
+                        // ... and its type is either a string
+                        TypeEntryDetails::String
+                        // ... or a newtype wrapper around a constrained string
+                            | TypeEntryDetails::Newtype(TypeEntryNewtype {
+                                constraints: TypeEntryNewtypeConstraints::String { .. },
+                                ..
+                            })
+                    )
+                },
+            )
+        })
 }
 
 #[cfg(test)]
