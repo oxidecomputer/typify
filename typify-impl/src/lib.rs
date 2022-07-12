@@ -273,13 +273,14 @@ impl TypeSpace {
             type_entry.check_defaults(self)?;
 
             // TODO compute appropriate derives, taking care to account for
-            // dependency cycles. Currently we're using a more minimal--safe--set
-            // of derives than we might otherwise. This notably prevents us from
-            // using a HashSet or BTreeSet type where we might like to.
+            // dependency cycles. Currently we're using a more minimal--safe--
+            // set of derives than we might otherwise. This notably prevents us
+            // from using a HashSet or BTreeSet type where we might like to.
 
-            // Once all ref types are in, look for containment cycles that we need
-            // to break with a Box<T>. Note that we unconditionally replace the
-            // type entry at the given ID regardless of whether the type changes.
+            // Once all ref types are in, look for containment cycles that we
+            // need to break with a Box<T>. Note that we unconditionally
+            // replace the type entry at the given ID regardless of whether the
+            // type changes.
 
             // TODO: we've declared box_id here to avoid allocating it in the
             // ID space twice, but the dedup logic in assign_type() should
@@ -294,8 +295,8 @@ impl TypeSpace {
         Ok(())
     }
 
-    /// If a type refers to itself, this creates a cycle that will eventually be
-    /// emit as a Rust struct that cannot be constructed. Break those cycles
+    /// If a type refers to itself, this creates a cycle that will eventually
+    /// be emit as a Rust struct that cannot be constructed. Break those cycles
     /// here.
     ///
     /// While we aren't yet handling the general case of type containment
@@ -303,14 +304,13 @@ impl TypeSpace {
     ///
     ///   1) A type refering to itself: A -> A
     ///   2) A type optionally referring to itself: A -> Option<A>
-    ///   3) An enum variant referring to itself, either optionally or directly.
-    ///
+    ///   3) An enum variant referring to itself, either optionally or directly
+    ///   
     /// TODO currently only trivial cycles are broken. A more generic solution
     /// may be required, but it may also a point to ask oneself why such a
     /// complicated type is required :) A generic solution is difficult because
     /// certain cycles introduce a question of *where* to Box to break the
     /// cycle, and there's no one answer to this.
-    ///
     fn check_for_cyclic_ref(
         &mut self,
         parent_type_id: &TypeId,

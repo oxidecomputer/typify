@@ -282,7 +282,7 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntryDetails::Reference(_) => todo!(),
+            TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
 

@@ -7,6 +7,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
+    SubschemaValidation,
 };
 
 use crate::{
@@ -345,13 +346,12 @@ impl TypeSpace {
 
             // Otherwise we create a single-element tuple variant with the given type.
             prop_type => {
-                //assert!(prop_type_name != Name::Unknown);
                 let (type_id, _) = self.id_for_schema(prop_type_name, prop_type)?;
-                // TODO We'd ideally look at the type itself to determine if they
-                // represent a "closed" struct in which case we'd return "true".
-                // However these may be yet-unresolved references so to do this
-                // properly we'd need to go through the JSON schema itself rather
-                // than our intermediate representation.
+                // TODO We'd ideally look at the type itself to determine if
+                // they represent a "closed" struct in which case we'd return
+                // "true". However these may be yet-unresolved references so to
+                // do this properly we'd need to go through the JSON schema
+                // itself rather than our intermediate representation.
                 let details = VariantDetails::Tuple(vec![type_id]);
                 Ok((details, false))
             }
@@ -770,18 +770,13 @@ impl TypeSpace {
 /// Internally and adjacently tagged enums expect their subschemas to be
 /// objects. Return the object data or None if it's not an object (or reference
 /// to an object) or doesn't conform to the objects we know how to handle.
-// TODO in the case of a reference, it would be typical for the referenced type
-// *only* to be useful in the context of the enum and *not* as a stand-alone
-// struct (i.e. one that necessarily contains a field whose value is constant).
-// In this situation one could imagine an input option that would cause us to
-// discard top-level types like this and use them only in enum-context.
-// TODO should we look through trivial (n = 1) subschemas?
 pub(crate) fn get_object<'a>(
     type_name: Name,
     schema: &'a Schema,
     definitions: &'a BTreeMap<String, Schema>,
 ) -> Option<(Name, &'a Option<Box<Metadata>>, &'a ObjectValidation)> {
     match schema {
+        // Objects
         Schema::Object(SchemaObject {
             metadata,
             instance_type: Some(SingleOrVec::Single(single)),
@@ -805,6 +800,7 @@ pub(crate) fn get_object<'a>(
             Some((type_name, metadata, validation.as_ref()))
         }
 
+        // References
         Schema::Object(SchemaObject {
             metadata: None,
             instance_type: None,
@@ -826,6 +822,57 @@ pub(crate) fn get_object<'a>(
                 definitions,
             )
         }
+
+        // Trivial (n == 1) subschemas
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: _,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: Some(subschemas),
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => match subschemas.as_ref() {
+            SubschemaValidation {
+                all_of: Some(subschemas),
+                any_of: None,
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } if subschemas.len() == 1 => subschemas.first(),
+            SubschemaValidation {
+                all_of: None,
+                any_of: Some(subschemas),
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } if subschemas.len() == 1 => subschemas.first(),
+            SubschemaValidation {
+                all_of: None,
+                any_of: None,
+                one_of: Some(subschemas),
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } if subschemas.len() == 1 => subschemas.first(),
+            _ => None,
+        }
+        .and_then(|sub_schema| {
+            get_object(type_name, sub_schema, definitions).map(|(name, m, validation)| match m {
+                Some(_) => (name, metadata, validation),
+                None => (name, &None, validation),
+            })
+        }),
 
         // None if the schema doesn't match the shape we expect.
         _ => None,
@@ -1539,11 +1586,11 @@ mod tests {
             TypeEntryDetails::Enum(TypeEntryEnum {
                 tag_type,
                 variants,
-                deny_unknown_fields: _,
+                deny_unknown_fields,
                 ..
             }) => {
                 assert_eq!(tag_type, &EnumTagType::Untagged);
-                //assert_eq!(deny_unknown_fields, &true);
+                assert_eq!(deny_unknown_fields, &false);
                 let variant_names = variants
                     .iter()
                     .map(|variant| variant.name.clone())
@@ -1562,9 +1609,7 @@ mod tests {
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
-    // TODO change this to deny_unknown_fields, but there's a bug in schemars;
-    // see https://github.com/GREsau/schemars/pull/113
-    #[serde(tag = "tag")]
+    #[serde(tag = "tag", deny_unknown_fields)]
     enum InternalSimple {
         Shadrach,
         Meshach,

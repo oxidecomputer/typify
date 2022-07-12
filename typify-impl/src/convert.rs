@@ -947,7 +947,10 @@ impl TypeSpace {
                 }
             }
 
-            _ => todo!("unhandled array validation {:#?}", validation),
+            _ => Err(Error::InvalidSchema(format!(
+                "unhandled array validation {:#?}",
+                validation
+            ))),
         }
     }
 
