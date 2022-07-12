@@ -442,12 +442,16 @@ impl TypeSpace {
         self.uses_chrono
     }
 
-    pub fn uses_uuid(&self) -> bool {
-        self.uses_uuid
+    pub fn uses_regress(&self) -> bool {
+        self.uses_regress
     }
 
     pub fn uses_serde_json(&self) -> bool {
         self.uses_serde_json
+    }
+
+    pub fn uses_uuid(&self) -> bool {
+        self.uses_uuid
     }
 
     /// Set the name of the path prefix for types defined in this [TypeSpace].
