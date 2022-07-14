@@ -1671,28 +1671,28 @@ mod tests {
             "title": "one-of-types",
             "type": "object",
             "oneOf": [
-              {
-                "properties": {
-                  "bar": {
-                    "type": "integer"
-                  }
+                {
+                    "properties": {
+                        "bar": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "bar"
+                    ]
                 },
-                "required": [
-                  "bar"
-                ]
-              },
-              {
-                "properties": {
-                  "foo": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "foo"
-                ]
-              }
+                {
+                    "properties": {
+                        "foo": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "foo"
+                    ]
+                }
             ]
-          }
+        }
         "#;
 
         let schema: RootSchema = serde_json::from_str(schema_json).unwrap();

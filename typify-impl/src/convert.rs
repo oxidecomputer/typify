@@ -505,20 +505,29 @@ impl TypeSpace {
                 _ => Some(Err(Error::BadValue("string".to_string(), value.clone()))),
             })
             .collect::<Result<Vec<Variant>>>()?;
-        let mut ty = TypeEntryEnum::from_metadata(
-            type_name,
-            metadata,
-            EnumTagType::External,
-            variants,
-            false,
-        )
-        .into();
 
-        if has_null {
-            ty = self.type_to_option(ty);
+        if variants.is_empty() {
+            if has_null {
+                self.convert_null(metadata)
+            } else {
+                Err(Error::InvalidSchema("empty enum array".to_string()))
+            }
+        } else {
+            let mut ty = TypeEntryEnum::from_metadata(
+                type_name,
+                metadata,
+                EnumTagType::External,
+                variants,
+                false,
+            )
+            .into();
+
+            if has_null {
+                ty = self.type_to_option(ty);
+            }
+
+            Ok((ty, metadata))
         }
-
-        Ok((ty, metadata))
     }
 
     fn convert_integer<'a>(
@@ -1104,7 +1113,7 @@ mod tests {
     use quote::quote;
     use schema::Schema;
     use schemars::{
-        schema::{InstanceType, Metadata, NumberValidation, SchemaObject},
+        schema::{InstanceType, Metadata, NumberValidation, RootSchema, SchemaObject},
         schema_for, JsonSchema,
     };
     use serde_json::json;
@@ -1460,6 +1469,26 @@ mod tests {
                 }
             }
         };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_null() {
+        let schema_json = r#"
+        {
+            "title": "Null",
+            "type": "string",
+            "enum": [null]
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let _ = type_space.add_type(&schema.schema.into()).unwrap();
+
+        let actual = type_space.to_stream();
+        let expected = quote! {};
         assert_eq!(actual.to_string(), expected.to_string());
     }
 }
