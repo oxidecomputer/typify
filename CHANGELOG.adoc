@@ -23,6 +23,7 @@ https://github.com/oxidecomputer/typify/compare/v0.0.9\...HEAD[Full list of comm
 * `FromStr` implementation for simple-variant-only `enum`s (#81)
 * Ignore unknown `format` values (#81)
 * Added `regress` dependency for ECMA 262 style regexes (#81)
+* Dropshot produces a complex `Null` type (by necessity); now rendered as `()` (#83)
 
 == 0.0.9 (released 2022-06-20)
 
