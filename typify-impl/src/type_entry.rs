@@ -5,10 +5,12 @@ use std::collections::BTreeSet;
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
+use syn::Path;
 
 use crate::{
     enums::output_variant,
-    structs::output_struct_property,
+    output::{OutputSpace, OutputSpaceMod},
+    structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description},
     DefaultImpl, Name, TypeId, TypeSpace,
 };
@@ -332,48 +334,38 @@ impl TypeEntry {
         }
     }
 
-    pub(crate) fn output(&self, type_space: &TypeSpace) -> TokenStream {
+    pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
         let derive_set = ["Serialize", "Deserialize", "Debug", "Clone"]
             .into_iter()
             .collect::<BTreeSet<_>>();
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
-                self.output_enum(type_space, enum_details, derive_set)
+                self.output_enum(type_space, output, enum_details, derive_set)
             }
             TypeEntryDetails::Struct(struct_details) => {
-                self.output_struct(type_space, struct_details, derive_set)
+                self.output_struct(type_space, output, struct_details, derive_set)
             }
             TypeEntryDetails::Newtype(newtype_details) => {
-                self.output_newtype(type_space, newtype_details, derive_set)
+                self.output_newtype(type_space, output, newtype_details, derive_set)
             }
-
-            // These types require no definition as they're already defined.
-            TypeEntryDetails::BuiltIn(_)
-            | TypeEntryDetails::Boolean
-            | TypeEntryDetails::Integer(_)
-            | TypeEntryDetails::Float(_)
-            | TypeEntryDetails::String
-            | TypeEntryDetails::Option(_)
-            | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_)
-            | TypeEntryDetails::Set(_)
-            | TypeEntryDetails::Unit
-            | TypeEntryDetails::Box(_)
-            | TypeEntryDetails::Tuple(_) => quote! {},
 
             // We should never get here as reference types should only be used
             // in-flight, but never recorded into the type space.
             TypeEntryDetails::Reference(_) => unreachable!(),
+
+            // Unnamed types require no definition as they're already defined.
+            _ => (),
         }
     }
 
     fn output_enum(
         &self,
         type_space: &TypeSpace,
+        output: &mut OutputSpace,
         enum_details: &TypeEntryEnum,
         mut derive_set: BTreeSet<&str>,
-    ) -> TokenStream {
+    ) {
         let TypeEntryEnum {
             name,
             rename,
@@ -423,7 +415,7 @@ impl TypeEntry {
 
         let variants_decl = variants
             .iter()
-            .map(|variant| output_variant(variant, type_space, name))
+            .map(|variant| output_variant(variant, type_space, output, name))
             .collect::<Vec<_>>();
 
         // ToString impl for enums that are made exclusively of simple variants.
@@ -503,7 +495,7 @@ impl TypeEntry {
 
                         (
                             format_ident!("{}", variant.name),
-                            type_entry.type_ident(type_space, false),
+                            type_entry.type_ident(type_space, &None),
                         )
                     })
                     .unzip();
@@ -525,8 +517,8 @@ impl TypeEntry {
                                     ))
                                 })
                             )*
-                            .or_else(|_: Self::Error| {
-                                Err("string conversion failed for all variants")
+                            .map_err(|_: Self::Error| {
+                                "string conversion failed for all variants"
                             })
                         }
                     }
@@ -540,12 +532,9 @@ impl TypeEntry {
                 }
             });
 
-        let derives = derive_set
-            .iter()
-            .map(|derive| format_ident!("{}", derive).to_token_stream())
-            .chain(type_space.extra_derives.clone());
+        let derives = strings_to_derives(derive_set, &type_space.settings.extra_derives);
 
-        quote! {
+        let item = quote! {
             #doc
             #[derive(#(#derives),*)]
             #serde
@@ -556,15 +545,17 @@ impl TypeEntry {
             #simple_enum_impl
             #default_impl
             #untagged_newtype_impl
-        }
+        };
+        output.add_item(OutputSpaceMod::Crate, name, item);
     }
 
     fn output_struct(
         &self,
         type_space: &TypeSpace,
+        output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
         derive_set: BTreeSet<&str>,
-    ) -> TokenStream {
+    ) {
         let TypeEntryStruct {
             name,
             rename,
@@ -575,6 +566,7 @@ impl TypeEntry {
         } = struct_details;
         let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
+        // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
         if let Some(old_name) = rename {
             serde_options.push(quote! { rename = #old_name });
@@ -582,54 +574,173 @@ impl TypeEntry {
         if *deny_unknown_fields {
             serde_options.push(quote! { deny_unknown_fields });
         }
-        let serde = if serde_options.is_empty() {
-            quote! {}
-        } else {
-            quote! { #[serde( #( #serde_options ),* )] }
-        };
+        let serde =
+            (!serde_options.is_empty()).then(|| quote! { #[serde( #( #serde_options ),* )] });
 
         let type_name = format_ident!("{}", name);
-        let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = properties
-            .iter()
-            .map(|prop| output_struct_property(prop, type_space, true, name))
-            .unzip();
 
-        let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
-            quote! {
-                impl Default for #type_name {
-                    fn default() -> Self {
-                        #default_stream
+        // Gather the various components for all properties.
+        let mut prop_doc = Vec::new();
+        let mut prop_serde = Vec::new();
+        let mut prop_default = Vec::new();
+        let mut prop_name = Vec::new();
+        let mut prop_error = Vec::new();
+        let mut prop_type = Vec::new();
+        let mut prop_type_scoped = Vec::new();
+
+        properties.iter().for_each(|prop| {
+            prop_doc.push(prop.description.as_ref().map(|d| quote! { #[doc = #d] }));
+            prop_name.push(format_ident!("{}", prop.name));
+            prop_error.push(format!(
+                "error converting supplied value for {}: {{}}",
+                prop.name,
+            ));
+
+            let prop_type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+            prop_type.push(prop_type_entry.type_ident(type_space, &None));
+            prop_type_scoped
+                .push(prop_type_entry.type_ident(type_space, &Some("super".to_string())));
+
+            let (serde, default_fn) = generate_serde_attr(
+                name,
+                &prop.name,
+                &prop.rename,
+                &prop.state,
+                prop_type_entry,
+                type_space,
+                output,
+            );
+
+            prop_serde.push(serde);
+            prop_default.push(match default_fn {
+                DefaultFunction::Default => {
+                    quote! {
+                        Ok(Default::default())
                     }
                 }
-            }
+                DefaultFunction::Custom(fn_name) => {
+                    let default_fn = syn::parse_str::<Path>(&fn_name).unwrap();
+                    quote! {
+                        Ok(super::#default_fn())
+                    }
+                }
+                DefaultFunction::None => {
+                    let err_msg = format!("no value supplied for {}", prop.name);
+                    quote! {
+                        Err(#err_msg.to_string())
+                    }
+                }
+            });
         });
 
-        let derives = derive_set
-            .iter()
-            .map(|derive| format_ident!("{}", derive).to_token_stream())
-            .chain(type_space.extra_derives.clone());
+        let derives =
+            strings_to_derives(derive_set, &type_space.settings.extra_derives).collect::<Vec<_>>();
 
-        quote! {
-            #doc
-            #[derive(#(#derives),*)]
-            #serde
-            pub struct #type_name {
-                #(#prop_streams)*
-            }
+        output.add_item(
+            OutputSpaceMod::Crate,
+            name,
+            quote! {
+                #doc
+                #[derive(#(#derives),*)]
+                #serde
+                pub struct #type_name {
+                    #(
+                        #prop_doc
+                        #prop_serde
+                        pub #prop_name: #prop_type,
+                    )*
+                }
+            },
+        );
 
-            #(#prop_defaults)*
+        // If there's a default value, generate an impl Default
+        if let Some(value) = default {
+            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            output.add_item(
+                OutputSpaceMod::Crate,
+                name,
+                quote! {
+                    impl Default for #type_name {
+                        fn default() -> Self {
+                            #default_stream
+                        }
+                    }
+                },
+            );
+        }
 
-            #default_impl
+        if type_space.settings.struct_builder {
+            output.add_item(
+                OutputSpaceMod::Crate,
+                name,
+                quote! {
+                    impl #type_name {
+                        pub fn builder() -> builder::#type_name {
+                            builder::#type_name::default()
+                        }
+                    }
+                },
+            );
+
+            output.add_item(
+                OutputSpaceMod::Builder,
+                name,
+                quote! {
+                    pub struct #type_name {
+                        #(
+                            #prop_name: Result<#prop_type_scoped, String>,
+                        )*
+                    }
+
+                    impl Default for #type_name {
+                        fn default() -> Self {
+                            Self {
+                                #(
+                                    #prop_name: #prop_default,
+                                )*
+                            }
+                        }
+                    }
+
+                    impl #type_name {
+                        #(
+                            pub fn #prop_name<T>(mut self, value: T) -> Self
+                                where
+                                    T: std::convert::TryInto<#prop_type_scoped>,
+                                    T::Error: std::fmt::Display,
+                            {
+                                self.#prop_name = value.try_into()
+                                    .map_err(|e| format!(#prop_error, e));
+                                self
+                            }
+                        )*
+                    }
+
+                    impl std::convert::TryFrom<#type_name> for super::#type_name {
+                        type Error = String;
+
+                        fn try_from(value: #type_name)
+                            -> Result<Self, Self::Error>
+                        {
+                            Ok(Self {
+                                #(
+                                    #prop_name: value.#prop_name?,
+                                )*
+                            })
+                        }
+                    }
+                },
+            );
         }
     }
 
     fn output_newtype(
         &self,
         type_space: &TypeSpace,
+        output: &mut OutputSpace,
         newtype_details: &TypeEntryNewtype,
         mut derive_set: BTreeSet<&str>,
-    ) -> TokenStream {
+    ) {
         let TypeEntryNewtype {
             name,
             rename,
@@ -648,7 +759,7 @@ impl TypeEntry {
 
         let type_name = format_ident!("{}", name);
         let sub_type = type_space.id_to_entry.get(type_id).unwrap();
-        let sub_type_name = sub_type.type_ident(type_space, false);
+        let sub_type_name = sub_type.type_ident(type_space, &None);
 
         let constraint_impl = match constraints {
             TypeEntryNewtypeConstraints::None => None,
@@ -768,12 +879,9 @@ impl TypeEntry {
             }
         });
 
-        let derives = derive_set
-            .iter()
-            .map(|derive| format_ident!("{}", derive).to_token_stream())
-            .chain(type_space.extra_derives.clone());
+        let derives = strings_to_derives(derive_set, &type_space.settings.extra_derives);
 
-        quote! {
+        let item = quote! {
             #doc
             #[derive(#(#derives),*)]
             #serde
@@ -788,38 +896,41 @@ impl TypeEntry {
 
             #default_impl
             #constraint_impl
-        }
+        };
+        output.add_item(OutputSpaceMod::Crate, name, item);
     }
 
     pub(crate) fn type_name(&self, type_space: &TypeSpace) -> String {
-        self.type_ident(type_space, false).to_string()
+        self.type_ident(type_space, &None).to_string()
     }
 
-    pub(crate) fn type_ident(&self, type_space: &TypeSpace, external: bool) -> TokenStream {
+    pub(crate) fn type_ident(
+        &self,
+        type_space: &TypeSpace,
+        type_mod: &Option<String>,
+    ) -> TokenStream {
         match &self.details {
             // Named types.
             TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
             | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
-            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => {
-                match &type_space.type_mod {
-                    Some(type_mod) if external => {
-                        let type_mod = format_ident!("{}", type_mod);
-                        let type_name = format_ident!("{}", name);
-                        quote! { #type_mod :: #type_name }
-                    }
-                    _ => {
-                        let type_name = format_ident!("{}", name);
-                        quote! { #type_name }
-                    }
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => match &type_mod {
+                Some(type_mod) => {
+                    let type_mod = format_ident!("{}", type_mod);
+                    let type_name = format_ident!("{}", name);
+                    quote! { #type_mod :: #type_name }
                 }
-            }
+                None => {
+                    let type_name = format_ident!("{}", name);
+                    quote! { #type_name }
+                }
+            },
 
             TypeEntryDetails::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for option");
-                let inner_ident = inner_ty.type_ident(type_space, external);
+                let inner_ident = inner_ty.type_ident(type_space, type_mod);
 
                 // Flatten nested Option types. This would only happen if the
                 // schema encoded it; it's an odd construction.
@@ -835,7 +946,7 @@ impl TypeEntry {
                     .get(id)
                     .expect("unresolved type id for box");
 
-                let item = inner_ty.type_ident(type_space, external);
+                let item = inner_ty.type_ident(type_space, type_mod);
 
                 quote! { Box<#item> }
             }
@@ -845,7 +956,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for array");
-                let item = inner_ty.type_ident(type_space, external);
+                let item = inner_ty.type_ident(type_space, type_mod);
 
                 quote! { Vec<#item> }
             }
@@ -855,7 +966,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(type_id)
                     .expect("unresolved type id for map")
-                    .type_ident(type_space, external);
+                    .type_ident(type_space, type_mod);
 
                 quote! { std::collections::HashMap<String, #inner_ty> }
             }
@@ -865,7 +976,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(id)
                     .expect("unresolved type id for set");
-                let item = inner_ty.type_ident(type_space, external);
+                let item = inner_ty.type_ident(type_space, type_mod);
                 // TODO we'll want this to be a Set of some kind, but we need
                 // to get the derives right first.
                 quote! { Vec<#item> }
@@ -877,7 +988,7 @@ impl TypeEntry {
                         .id_to_entry
                         .get(item)
                         .expect("unresolved type id for tuple")
-                        .type_ident(type_space, external)
+                        .type_ident(type_space, type_mod)
                 });
 
                 quote! { ( #(#type_streams),* ) }
@@ -919,7 +1030,7 @@ impl TypeEntry {
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
             {
-                self.type_ident(type_space, true)
+                self.type_ident(type_space, &type_space.settings.type_mod)
             }
 
             TypeEntryDetails::Enum(_)
@@ -930,7 +1041,7 @@ impl TypeEntry {
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::BuiltIn(_) => {
-                let ident = self.type_ident(type_space, true);
+                let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
                 }
@@ -963,7 +1074,7 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Unit | TypeEntryDetails::Boolean|TypeEntryDetails::Integer(_) | TypeEntryDetails::Float(_) => {
-                self.type_ident(type_space, true)
+                self.type_ident(type_space, &type_space.settings.type_mod)
             }
             TypeEntryDetails::String => quote! { & #lifetime str },
 
@@ -1004,6 +1115,20 @@ impl TypeEntry {
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
+}
+
+fn strings_to_derives<'a>(
+    derive_set: BTreeSet<&'a str>,
+    extra_derives: &'a [String],
+) -> impl Iterator<Item = TokenStream> + 'a {
+    derive_set
+        .into_iter()
+        .chain(extra_derives.iter().map(String::as_str))
+        .map(|derive| {
+            syn::parse_str::<syn::Path>(derive)
+                .unwrap()
+                .into_token_stream()
+        })
 }
 
 fn all_variants_support_from_string(
@@ -1048,14 +1173,16 @@ mod tests {
     fn test_ident() {
         let ts = TypeSpace::default();
 
+        let type_mod = Some("tha_mod".to_string());
+
         let t = TypeEntry::new_integer("u32");
-        let ident = t.type_ident(&ts, true);
+        let ident = t.type_ident(&ts, &type_mod);
         assert_eq!(ident.to_string(), "u32");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "u32");
 
         let t = TypeEntry::from(TypeEntryDetails::String);
-        let ident = t.type_ident(&ts, true);
+        let ident = t.type_ident(&ts, &type_mod);
         assert_eq!(ident.to_string(), "String");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& str");
@@ -1063,7 +1190,7 @@ mod tests {
         assert_eq!(parameter.to_string(), "& 'static str");
 
         let t = TypeEntry::from(TypeEntryDetails::Unit);
-        let ident = t.type_ident(&ts, true);
+        let ident = t.type_ident(&ts, &type_mod);
         assert_eq!(ident.to_string(), "()");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "()");
@@ -1077,8 +1204,8 @@ mod tests {
             deny_unknown_fields: false,
         }));
 
-        let ident = t.type_ident(&ts, true);
-        assert_eq!(ident.to_string(), "SomeType");
+        let ident = t.type_ident(&ts, &type_mod);
+        assert_eq!(ident.to_string(), "tha_mod :: SomeType");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& SomeType");
         let parameter = t.type_parameter_ident(&ts, Some("a"));

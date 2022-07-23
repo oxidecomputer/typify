@@ -1,9 +1,9 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
 use serde::Serialize;
-use typify_impl::TypeSpace;
+use typify_impl::{TypeSpace, TypeSpaceSettings};
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -13,7 +13,7 @@ struct CompoundType {
 }
 
 #[allow(dead_code)]
-#[derive(JsonSchema)]
+#[derive(JsonSchema, Serialize)]
 enum StringEnum {
     One,
     Two,
@@ -24,14 +24,14 @@ enum StringEnum {
 #[derive(JsonSchema, Serialize)]
 #[serde(default = "default_pair")]
 struct Pair {
-    a: String,
-    b: String,
+    a: StringEnum,
+    b: StringEnum,
 }
 
 fn default_pair() -> Pair {
     Pair {
-        a: "A".to_string(),
-        b: "B".to_string(),
+        a: StringEnum::One,
+        b: StringEnum::Two,
     }
 }
 
@@ -43,10 +43,12 @@ fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
 
 #[test]
 fn test_generation() {
-    let mut type_space = TypeSpace::default();
-
-    type_space.add_derive(quote! { JsonSchema });
-    type_space.set_type_mod("types");
+    let mut type_space = TypeSpace::new(
+        TypeSpaceSettings::default()
+            .with_derive("JsonSchema".to_string())
+            .with_type_mod("types")
+            .with_struct_builder(true),
+    );
 
     let mut generator = SchemaGenerator::default();
     let body_schema = add_type::<CompoundType>(&mut generator);

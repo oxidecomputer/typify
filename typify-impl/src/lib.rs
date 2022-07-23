@@ -3,6 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use log::info;
+use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::quote;
 use rustfmt_wrapper::rustfmt;
@@ -16,6 +17,7 @@ mod test_util;
 mod convert;
 mod defaults;
 mod enums;
+mod output;
 mod structs;
 mod type_entry;
 mod util;
@@ -133,11 +135,29 @@ pub struct TypeSpace {
     uses_serde_json: bool,
     uses_regress: bool,
 
-    type_mod: Option<String>,
-    extra_derives: Vec<TokenStream>,
+    settings: TypeSpaceSettings,
 
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
+}
+
+impl Default for TypeSpace {
+    fn default() -> Self {
+        Self {
+            next_id: 1,
+            definitions: Default::default(),
+            id_to_entry: Default::default(),
+            type_to_id: Default::default(),
+            name_to_id: Default::default(),
+            ref_to_id: Default::default(),
+            uses_chrono: Default::default(),
+            uses_uuid: Default::default(),
+            uses_serde_json: Default::default(),
+            uses_regress: Default::default(),
+            settings: Default::default(),
+            defaults: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -147,27 +167,41 @@ pub(crate) enum DefaultImpl {
     U64,
 }
 
-impl Default for TypeSpace {
-    fn default() -> Self {
-        Self {
-            next_id: 1,
-            definitions: BTreeMap::new(),
-            id_to_entry: BTreeMap::new(),
-            name_to_id: BTreeMap::new(),
-            ref_to_id: BTreeMap::new(),
-            type_to_id: BTreeMap::new(),
-            uses_chrono: false,
-            uses_uuid: false,
-            uses_serde_json: false,
-            uses_regress: false,
-            type_mod: None,
-            extra_derives: Vec::new(),
-            defaults: BTreeSet::new(),
-        }
+#[derive(Debug, Default, Clone)]
+pub struct TypeSpaceSettings {
+    type_mod: Option<String>,
+    extra_derives: Vec<String>,
+    struct_builder: bool,
+}
+
+impl TypeSpaceSettings {
+    /// Set the name of the path prefix for types defined in this [TypeSpace].
+    pub fn with_type_mod<S: AsRef<str>>(&mut self, type_mod: S) -> &mut Self {
+        self.type_mod = Some(type_mod.as_ref().to_string());
+        self
+    }
+
+    /// Add an additional derive macro to apply to all defined types.
+    pub fn with_derive(&mut self, derive: String) -> &mut Self {
+        self.extra_derives.push(derive);
+        self
+    }
+
+    pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
+        self.struct_builder = struct_builder;
+        self
     }
 }
 
 impl TypeSpace {
+    /// Create a new TypeSpace with custom settings
+    pub fn new(settings: &TypeSpaceSettings) -> Self {
+        Self {
+            settings: settings.clone(),
+            ..Default::default()
+        }
+    }
+
     /// Add a collection of types that will be used as references. Regardless
     /// of how these types are defined--*de novo* or built-in--each type will
     /// appear in the final output as a struct, enum or newtype. This method
@@ -202,8 +236,8 @@ impl TypeSpace {
 
         // Convert all types; note that we use the type id assigned from the
         // previous step because each type may create additional types. This
-        // effectively is doing the word of `add_type_with_name` but in
-        // bulk operations.
+        // effectively is doing the work of `add_type_with_name` but for a
+        // batch of types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             let type_name = match ref_name.rfind('/') {
                 Some(idx) => &ref_name[idx..],
@@ -258,8 +292,15 @@ impl TypeSpace {
                 )
                 .into(),
             };
-            self.id_to_entry
-                .insert(TypeId(base_id + index as u64), type_entry);
+
+            // We expect and require these types to have a name. Even a type
+            // that would resolve to a built-in type should result in a newtype
+            // wrapper with a name simply so that it can be referred to by
+            // name.
+            let entry_name = type_entry.name().unwrap().clone();
+            let type_id = TypeId(base_id + index as u64);
+            self.name_to_id.insert(entry_name, type_id.clone());
+            self.id_to_entry.insert(type_id, type_entry);
         }
 
         // Now that all references have been processed, we can do some
@@ -454,16 +495,6 @@ impl TypeSpace {
         self.uses_uuid
     }
 
-    /// Set the name of the path prefix for types defined in this [TypeSpace].
-    pub fn set_type_mod<S: AsRef<str>>(&mut self, type_mod: S) {
-        self.type_mod = Some(type_mod.as_ref().to_string());
-    }
-
-    /// Add an additional derive macro to apply to all defined types.
-    pub fn add_derive(&mut self, derive: TokenStream) {
-        self.extra_derives.push(derive);
-    }
-
     /// Iterate over all types including those defined in this [TypeSpace] and
     /// those referred to by those types.
     pub fn iter_types(&self) -> impl Iterator<Item = Type> {
@@ -486,17 +517,21 @@ impl TypeSpace {
             }
         }
     }
-
     /// All code for processed types.
     pub fn to_stream(&self) -> TokenStream {
-        let type_defs = self.iter_types().map(|t| t.definition());
-        let shared = self.common_code();
+        let mut output = OutputSpace::default();
 
-        quote! {
-            #shared
+        // Add all types.
+        self.id_to_entry
+            .values()
+            .for_each(|type_entry| type_entry.output(self, &mut output));
 
-            #(#type_defs)*
-        }
+        // Add all shared default functions.
+        self.defaults
+            .iter()
+            .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
+
+        output.into_stream()
     }
 
     /// Allocated the next TypeId.
@@ -596,7 +631,8 @@ impl<'a> Type<'a> {
             type_space,
             type_entry,
         } = self;
-        type_entry.type_ident(type_space, true)
+        assert!(type_space.settings.type_mod.is_some());
+        type_entry.type_ident(type_space, &type_space.settings.type_mod)
     }
 
     /// The identifier for the type as might be used for a parameter in a
@@ -620,18 +656,6 @@ impl<'a> Type<'a> {
             type_entry,
         } = self;
         type_entry.type_parameter_ident(type_space, Some(lifetime))
-    }
-
-    /// The definition for this type.
-    ///
-    /// This will be empty for types that are already defined such as `u32` or
-    /// `uuid::Uuid`. Note that this may refer to
-    pub fn definition(&self) -> TokenStream {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.output(type_space)
     }
 
     /// A textual description of the type appropriate for debug output.
@@ -711,6 +735,7 @@ mod tests {
     use std::collections::HashSet;
 
     use crate::{
+        output::OutputSpace,
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
         Name, TypeEntryDetails, TypeSpace,
@@ -773,13 +798,15 @@ mod tests {
 
         println!("{:#?}", ty);
 
-        let out = ty.output(&type_space);
-        println!("{}", out);
+        let mut output = OutputSpace::default();
+        ty.output(&type_space, &mut output);
+        println!("{}", output.into_stream());
 
         for ty in type_space.id_to_entry.values() {
             println!("{:#?}", ty);
-            let out = ty.output(&type_space);
-            println!("{}", out);
+            let mut output = OutputSpace::default();
+            ty.output(&type_space, &mut output);
+            println!("{}", output.into_stream());
         }
     }
 
@@ -821,8 +848,9 @@ mod tests {
                 );
             }
             _ => {
-                let out = ty.output(&type_space);
-                println!("{}", out);
+                let mut output = OutputSpace::default();
+                ty.output(&type_space, &mut output);
+                println!("{}", output.into_stream());
                 panic!();
             }
         }

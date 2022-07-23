@@ -4,6 +4,23 @@ mod types {
         pub value1: String,
         pub value2: u64,
     }
+    impl CompoundType {
+        pub fn builder() -> builder::CompoundType {
+            builder::CompoundType::default()
+        }
+    }
+    #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
+    pub struct Pair {
+        #[serde(default = "defaults::pair_a")]
+        pub a: StringEnum,
+        #[serde(default = "defaults::pair_b")]
+        pub b: StringEnum,
+    }
+    impl Pair {
+        pub fn builder() -> builder::Pair {
+            builder::Pair::default()
+        }
+    }
     #[derive(
         Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, JsonSchema,
     )]
@@ -32,18 +49,101 @@ mod types {
             }
         }
     }
-    #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
-    pub struct Pair {
-        #[serde(default = "pair_a")]
-        pub a: String,
-        #[serde(default = "pair_b")]
-        pub b: String,
+    mod builder {
+        pub struct CompoundType {
+            value1: Result<String, String>,
+            value2: Result<u64, String>,
+        }
+        impl Default for CompoundType {
+            fn default() -> Self {
+                Self {
+                    value1: Err("no value supplied for value1".to_string()),
+                    value2: Err("no value supplied for value2".to_string()),
+                }
+            }
+        }
+        impl CompoundType {
+            pub fn value1<T>(mut self, value: T) -> Self
+            where
+                T: std::convert::TryInto<String>,
+                T::Error: std::fmt::Display,
+            {
+                self.value1 = value
+                    .try_into()
+                    .map_err(|e| format!("error converting supplied value for value1: {}", e));
+                self
+            }
+            pub fn value2<T>(mut self, value: T) -> Self
+            where
+                T: std::convert::TryInto<u64>,
+                T::Error: std::fmt::Display,
+            {
+                self.value2 = value
+                    .try_into()
+                    .map_err(|e| format!("error converting supplied value for value2: {}", e));
+                self
+            }
+        }
+        impl std::convert::TryFrom<CompoundType> for super::CompoundType {
+            type Error = String;
+            fn try_from(value: CompoundType) -> Result<Self, Self::Error> {
+                Ok(Self {
+                    value1: value.value1?,
+                    value2: value.value2?,
+                })
+            }
+        }
+        pub struct Pair {
+            a: Result<super::StringEnum, String>,
+            b: Result<super::StringEnum, String>,
+        }
+        impl Default for Pair {
+            fn default() -> Self {
+                Self {
+                    a: Ok(super::defaults::pair_a()),
+                    b: Ok(super::defaults::pair_b()),
+                }
+            }
+        }
+        impl Pair {
+            pub fn a<T>(mut self, value: T) -> Self
+            where
+                T: std::convert::TryInto<super::StringEnum>,
+                T::Error: std::fmt::Display,
+            {
+                self.a = value
+                    .try_into()
+                    .map_err(|e| format!("error converting supplied value for a: {}", e));
+                self
+            }
+            pub fn b<T>(mut self, value: T) -> Self
+            where
+                T: std::convert::TryInto<super::StringEnum>,
+                T::Error: std::fmt::Display,
+            {
+                self.b = value
+                    .try_into()
+                    .map_err(|e| format!("error converting supplied value for b: {}", e));
+                self
+            }
+        }
+        impl std::convert::TryFrom<Pair> for super::Pair {
+            type Error = String;
+            fn try_from(value: Pair) -> Result<Self, Self::Error> {
+                Ok(Self {
+                    a: value.a?,
+                    b: value.b?,
+                })
+            }
+        }
     }
-    fn pair_a() -> String {
-        "A".to_string()
-    }
-    fn pair_b() -> String {
-        "B".to_string()
+    mod defaults {
+        pub(super) fn pair_a() -> super::StringEnum {
+            super::StringEnum::One
+        }
+        pub(super) fn pair_b() -> super::StringEnum {
+            super::StringEnum::Two
+        }
     }
 }
 pub fn do_stuff(

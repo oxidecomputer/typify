@@ -286,6 +286,10 @@ impl TypeEntry {
         }
     }
 
+    /// Return a string representing the function that can be called to produce
+    /// the value for the given default. If there is no such built-in function,
+    /// the .1 will be Some with a TokenStream for a function that can produce
+    /// that value.
     pub(crate) fn default_fn(
         &self,
         default: &serde_json::Value,
@@ -312,14 +316,16 @@ impl TypeEntry {
         if let Some(fn_name) = maybe_builtin {
             (fn_name, None)
         } else {
-            let n = self.type_ident(type_space, false);
+            let n = self.type_ident(type_space, &None);
             let value = self.output_value(type_space, default).unwrap();
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {
-                fn #fn_ident() -> #n { #value }
+                pub(super) fn #fn_ident() -> super::#n {
+                    #value
+                }
             };
-            (fn_name, Some(def))
+            (format!("defaults::{}", fn_name), Some(def))
         }
     }
 }
