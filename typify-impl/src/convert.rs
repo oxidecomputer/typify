@@ -759,10 +759,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // We'll often see this if the subschema was just to provide an
-        // additional level for annotation such as a "title" or "description".
-        if subschemas.len() == 1 {
-            let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
+        if let Some(ty) = self.maybe_singleton_subschema(type_name.clone(), subschemas) {
             return Ok((ty, metadata));
         }
 
@@ -799,19 +796,12 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // We'll often see this if the subschema was just to provide an
-        // additional level for annotation such as a "title" or "description".
-        if subschemas.len() == 1 {
-            let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
-            return Ok((ty, metadata));
-        }
-
         // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"}
-        // for Option, so match against that here to short circuit the check
-        // for mutual exclusivity below.
-        if let Some(option_type_entry) = self.maybe_option(type_name.clone(), metadata, subschemas)
-        {
-            return Ok((option_type_entry, metadata));
+        // for Option. We match this here because the mutual exclusion check
+        // below may fail for cases such as Option<T> where T is defined to be,
+        // say, (). In such a case, both variants are actually null.
+        if let Some(ty) = self.maybe_option(type_name.clone(), metadata, subschemas) {
+            return Ok((ty, metadata));
         }
 
         // Check if this could be more precisely handled as a "one-of". This
@@ -893,18 +883,12 @@ impl TypeSpace {
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // We'll often see this if the subschema was just to provide an
-        // additional level for annotation such as a "title" or "description".
-        if subschemas.len() == 1 {
-            let (ty, _) = self.convert_schema(type_name, subschemas.first().unwrap())?;
-            return Ok((ty, metadata));
-        }
-
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)
             .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas))
             .or_else(|| self.maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas))
+            .or_else(|| self.maybe_singleton_subschema(type_name.clone(), subschemas))
             .map_or_else(|| self.untagged_enum(type_name, metadata, subschemas), Ok)?;
 
         Ok((ty, metadata))
@@ -1102,6 +1086,19 @@ impl TypeSpace {
         let ty = self.type_to_option(ty);
 
         Ok((ty, metadata))
+    }
+
+    /// We'll often see this if the subschema was just to provide an additional
+    /// level for annotation such as a "title" or "description".
+    pub(crate) fn maybe_singleton_subschema(
+        &mut self,
+        type_name: Name,
+        subschemas: &[Schema],
+    ) -> Option<TypeEntry> {
+        match (subschemas.len(), subschemas.first()) {
+            (1, Some(subschema)) => Some(self.convert_schema(type_name, subschema).ok()?.0),
+            _ => None,
+        }
     }
 }
 

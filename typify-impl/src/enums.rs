@@ -1715,4 +1715,16 @@ mod tests {
         };
         assert_eq!(actual.to_string(), expected.to_string());
     }
+
+    #[test]
+    fn test_singleton_enum() {
+        #[allow(dead_code)]
+        #[derive(Serialize, JsonSchema, Schema)]
+        #[serde(tag = "type", content = "data")]
+        enum Hobsons {
+            Choice(String),
+        }
+
+        validate_output::<Hobsons>();
+    }
 }
