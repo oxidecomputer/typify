@@ -80,7 +80,7 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
 
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, ignore_variant_names) {
-        println!("{:#?}", schema_for!(T));
+        println!("{}", serde_json::to_string_pretty(&schema_for!(T)).unwrap());
         println!("{}", rustfmt(output.to_string()).unwrap());
         panic!("{}", err);
     }

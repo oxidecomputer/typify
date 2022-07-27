@@ -60,6 +60,89 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
         (Schema::Bool(true), _) => false,
         (_, Schema::Bool(true)) => false,
 
+        // Iterate over subschemas.
+        (
+            other,
+            Schema::Object(SchemaObject {
+                metadata: None,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: Some(subschemas),
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            }),
+        )
+        | (
+            Schema::Object(SchemaObject {
+                metadata: None,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: Some(subschemas),
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            }),
+            other,
+        ) => match subschemas.as_ref() {
+            // For an allOf, *any* subschema incompatibility means that the
+            // schemas are mutually exclusive.
+            SubschemaValidation {
+                all_of: Some(s),
+                any_of: None,
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } => s.iter().any(|sub| schemas_mutually_exclusive(sub, other)),
+
+            // For a oneOf or anyOf, *all* subschemas need to be incompatible.
+            SubschemaValidation {
+                all_of: None,
+                any_of: Some(s),
+                one_of: None,
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            }
+            | SubschemaValidation {
+                all_of: None,
+                any_of: None,
+                one_of: Some(s),
+                not: None,
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } => s.iter().all(|sub| schemas_mutually_exclusive(sub, b)),
+
+            // For a not, they're mutually exclusive if they *do* match.
+            SubschemaValidation {
+                all_of: None,
+                any_of: None,
+                one_of: None,
+                not: Some(sub),
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            } => !schemas_mutually_exclusive(sub, other),
+
+            // Assume other subschemas are complex to understand and may
+            // therefore be compatible.
+            _ => false,
+        },
+
         // Neither is a Schema::Bool; we need to look at the instance types.
         (Schema::Object(a), Schema::Object(b)) => {
             match (&a.instance_type, &b.instance_type) {
