@@ -19,7 +19,7 @@ schemars = "0.8.10"
 serde_json = "1.0"
 syn = { version = "1.0", features = ["full"] }
 thiserror = "1.0"
-unicode-ident = "1.0.2"
+unicode-ident = "1.0.3"
 
 [dev-dependencies]
 expectorate = "1.0"
