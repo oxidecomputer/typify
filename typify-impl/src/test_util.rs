@@ -12,7 +12,7 @@ use syn::{
     FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::{Name, TypeId, TypeSpace};
+use crate::{output::OutputSpace, Name, TypeId, TypeSpace};
 
 pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let schema = schema_for!(T);
@@ -66,7 +66,9 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let (type_space, type_id) = get_type::<T>();
     let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-    let output = type_entry.output(&type_space);
+    let mut output = OutputSpace::default();
+    type_entry.output(&type_space, &mut output);
+    let output = output.into_stream();
 
     let expected = T::schema();
     // We may generate more than one item for a given schema. For example, we
@@ -105,7 +107,7 @@ pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
         .convert_schema_object(Name::Unknown, &schema.schema)
         .unwrap();
 
-    let output = ty.type_ident(&type_space, false);
+    let output = ty.type_ident(&type_space, &None);
 
     let actual = syn::parse2::<syn::Type>(output.clone()).unwrap();
     let expected = syn::parse_str::<syn::Type>(name).unwrap();

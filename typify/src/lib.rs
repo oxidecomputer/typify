@@ -1,4 +1,4 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 //! Typify lets you convert JSON Schema documents into Rust types. It can be
 //! used via a macro [`import_types!`] or a `build.rs` file.
@@ -49,8 +49,8 @@
 //!
 //! Typify exports a [TypeSpace] interface that is intended for programmatic
 //! construction of types. This can be for something simple like a `build.rs`
-//! script or something more complex like a generated that includes types as
-//! part of its definition.
+//! script or something more complex like a generator whose input includes JSON
+//! schema type definitions.
 //!
 //! # Mapping JSON Schema to Rust
 //!
@@ -68,5 +68,6 @@ pub use typify_impl::TypeEnumVariant;
 pub use typify_impl::TypeId;
 pub use typify_impl::TypeNewtype;
 pub use typify_impl::TypeSpace;
+pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::TypeStruct;
 pub use typify_macro::import_types;

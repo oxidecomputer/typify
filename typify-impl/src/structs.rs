@@ -2,13 +2,14 @@
 
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 use schemars::schema::{
     InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
 };
 
 use crate::{
     enums::get_object,
+    output::{OutputSpace, OutputSpaceMod},
     type_entry::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
         WrappedValue,
@@ -427,51 +428,29 @@ fn is_obj_subset(validation: &ObjectValidation, constraint_schema: &Schema) -> b
     }
 }
 
-pub(crate) fn output_struct_property(
-    prop: &StructProperty,
-    type_space: &TypeSpace,
-    make_pub: bool,
-    type_name: &str,
-) -> (TokenStream, Option<TokenStream>) {
-    let name = format_ident!("{}", prop.name);
-    let doc = match &prop.description {
-        Some(s) => quote! {#[doc = #s]},
-        None => quote! {},
-    };
-
-    let prop_type = type_space.id_to_entry.get(&prop.type_id).unwrap();
-    let (serde, default_fn) = generate_serde_attr(
-        type_name,
-        &prop.name,
-        &prop.rename,
-        &prop.state,
-        prop_type,
-        type_space,
-    );
-
-    let type_name = prop_type.type_ident(type_space, false);
-    let pub_token = if make_pub {
-        quote! { pub }
-    } else {
-        quote! {}
-    };
-
-    let prop_stream = quote! {
-        #doc
-        #serde
-        #pub_token #name: #type_name,
-    };
-    (prop_stream, default_fn)
+pub(crate) enum DefaultFunction {
+    None,
+    Default,
+    Custom(String),
 }
 
-fn generate_serde_attr(
+/// Generate the serde attribute parameters for the given property.
+///
+/// This may include a default value that requires a generated function to
+/// produce it. In such a case, that function will be added to the OutputSpace.
+///
+/// Note that if we have several serde attribute parameters, they could each
+/// appear in their own attribute. We choose to condense them for the sake of
+/// legibility.
+pub(crate) fn generate_serde_attr(
     type_name: &str,
     prop_name: &str,
     naming: &StructPropertyRename,
     state: &StructPropertyState,
     prop_type: &TypeEntry,
     type_space: &TypeSpace,
-) -> (TokenStream, Option<TokenStream>) {
+    output: &mut OutputSpace,
+) -> (TokenStream, DefaultFunction) {
     let mut serde_options = Vec::new();
     match naming {
         StructPropertyRename::Rename(s) => serde_options.push(quote! { rename = #s }),
@@ -483,30 +462,36 @@ fn generate_serde_attr(
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
-            None
+            DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Array(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
-            None
+            DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Map(_)) => {
             serde_options.push(quote! { default });
             serde_options
                 .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
-            None
+            DefaultFunction::Default
         }
         (StructPropertyState::Optional, _) => {
             serde_options.push(quote! { default });
-            None
+            DefaultFunction::Default
         }
-        (StructPropertyState::Required, _) => None,
+
         (StructPropertyState::Default(WrappedValue(value)), _) => {
             let (fn_name, default_fn) =
                 prop_type.default_fn(value, type_space, type_name, prop_name);
             serde_options.push(quote! { default = #fn_name });
-            default_fn
+
+            if let Some(default_fn) = default_fn {
+                output.add_item(OutputSpaceMod::Defaults, type_name, default_fn);
+            }
+            DefaultFunction::Custom(fn_name)
         }
+
+        (StructPropertyState::Required, _) => DefaultFunction::None,
     };
 
     let serde = if serde_options.is_empty() {

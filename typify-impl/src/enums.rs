@@ -11,7 +11,8 @@ use schemars::schema::{
 };
 
 use crate::{
-    structs::output_struct_property,
+    output::OutputSpace,
+    structs::generate_serde_attr,
     type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
     util::{
         constant_string_value, get_type_name, metadata_description, metadata_title_and_description,
@@ -907,60 +908,69 @@ fn get_common_prefix(name: &str, prefix: &str) -> String {
 pub(crate) fn output_variant(
     variant: &Variant,
     type_space: &TypeSpace,
+    output: &mut OutputSpace,
     type_name: &str,
 ) -> TokenStream {
     let name = format_ident!("{}", variant.name);
-    let doc = match &variant.description {
-        Some(s) => quote! {#[doc = #s]},
-        None => quote! {},
-    };
-    let rename = match &variant.rename {
-        Some(s) => quote! { #[serde(rename = #s)]},
-        None => quote! {},
-    };
+    let doc = variant.description.as_ref().map(|s| {
+        quote! { #[doc = #s] }
+    });
+    let serde = variant.rename.as_ref().map(|s| {
+        quote! { #[serde(rename = #s)] }
+    });
     match &variant.details {
         VariantDetails::Simple => quote! {
             #doc
-            #rename
+            #serde
             #name,
         },
 
         VariantDetails::Tuple(tuple) => {
-            let types = tuple
-                .iter()
-                .map(|type_id| {
-                    let item_type = type_space.id_to_entry.get(type_id).unwrap();
-                    let type_name = item_type.type_ident(type_space, false);
-                    quote! { #type_name }
-                })
-                .collect::<Vec<_>>();
+            let types = tuple.iter().map(|type_id| {
+                type_space
+                    .id_to_entry
+                    .get(type_id)
+                    .unwrap()
+                    .type_ident(type_space, &None)
+            });
+
             quote! {
                 #doc
-                #rename
+                #serde
                 #name(#(#types),*),
             }
         }
 
         VariantDetails::Struct(props) => {
-            let (prop_streams, prop_defaults): (Vec<_>, Vec<_>) = props
-                .iter()
-                .map(|prop| {
-                    output_struct_property(
-                        prop,
-                        type_space,
-                        false,
-                        &format!("{}{}", type_name, &variant.name),
-                    )
-                })
-                .unzip();
+            let prop_streams = props.iter().map(|prop| {
+                let prop_doc = prop.description.as_ref().map(|s| quote! { #[doc = #s] });
+
+                let prop_type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+                let (prop_serde, _) = generate_serde_attr(
+                    &format!("{}{}", type_name, &variant.name),
+                    &prop.name,
+                    &prop.rename,
+                    &prop.state,
+                    prop_type_entry,
+                    type_space,
+                    output,
+                );
+
+                let prop_name = format_ident!("{}", prop.name);
+                let prop_type = prop_type_entry.type_ident(type_space, &None);
+
+                quote! {
+                    #prop_doc
+                    #prop_serde
+                    #prop_name: #prop_type,
+                }
+            });
             quote! {
                 #doc
-                #rename
+                #serde
                 #name {
                     #(#prop_streams)*
                 },
-
-                #(#prop_defaults)*
             }
         }
     }
@@ -979,9 +989,10 @@ mod tests {
     use serde::Serialize;
 
     use crate::{
+        output::OutputSpace,
         test_util::{validate_output, validate_output_for_untagged_enm},
         type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
-        Name, TypeEntryDetails, TypeId, TypeSpace,
+        Name, TypeEntryDetails, TypeId, TypeSpace, TypeSpaceSettings,
     };
 
     #[allow(dead_code)]
@@ -1629,7 +1640,9 @@ mod tests {
         let type_entry = type_space
             .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
             .unwrap();
-        let actual = type_entry.output(&type_space);
+        let mut output = OutputSpace::default();
+        type_entry.output(&type_space, &mut output);
+        let actual = output.into_stream();
         let expected = quote! {
             #[derive(Clone, Debug, Deserialize, Serialize)]
             pub enum ResultX {
@@ -1642,17 +1655,21 @@ mod tests {
 
     #[test]
     fn test_result_derives() {
-        let mut type_space = TypeSpace::default();
-        type_space.add_derive(quote! { A });
-        type_space.add_derive(quote! { B });
-        type_space.add_derive(quote! { C });
-        type_space.add_derive(quote! { D });
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_derive("A".to_string())
+                .with_derive("B".to_string())
+                .with_derive("C".to_string())
+                .with_derive("D".to_string()),
+        );
         let schema = schema_for!(Result<u32, String>);
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
             .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
             .unwrap();
-        let actual = type_entry.output(&type_space);
+        let mut output = OutputSpace::default();
+        type_entry.output(&type_space, &mut output);
+        let actual = output.into_stream();
         let expected = quote! {
             #[derive(Clone, Debug, Deserialize, Serialize, A, B, C, D)]
             pub enum ResultX {

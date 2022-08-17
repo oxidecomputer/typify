@@ -1,4 +1,4 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 use std::path::Path;
 
@@ -8,7 +8,7 @@ use schemars::schema::Schema;
 use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
-use typify_impl::TypeSpace;
+use typify_impl::{TypeSpace, TypeSpaceSettings};
 
 /// Import types from a schema file. This may be invoked with simply a pathname
 /// for a JSON Schema file (relative to `$CARGO_MANIFEST_DIR`), or it may be
@@ -34,18 +34,26 @@ struct Settings {
     schema: ParseWrapper<LitStr>,
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
+    #[serde(default)]
+    struct_builder: bool,
 }
 
 fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     // Allow the caller to give us either a simple string or a compound object.
-    let (schema, derives) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
-        (ll, Vec::new())
+    let (schema, settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
+        (ll, TypeSpaceSettings::default())
     } else {
-        let Settings { schema, derives } = serde_tokenstream::from_tokenstream(&item.into())?;
-        (
-            schema.into_inner(),
-            derives.into_iter().map(ParseWrapper::into_inner).collect(),
-        )
+        let Settings {
+            schema,
+            derives,
+            struct_builder,
+        } = serde_tokenstream::from_tokenstream(&item.into())?;
+        let mut settings = TypeSpaceSettings::default();
+        derives.iter().for_each(|derive| {
+            settings.with_derive(derive.to_token_stream().to_string());
+        });
+        settings.with_struct_builder(struct_builder);
+        (schema.into_inner(), settings)
     };
 
     let dir = std::env::var("CARGO_MANIFEST_DIR").map_or_else(
@@ -64,11 +72,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         })?)
         .unwrap();
 
-    let mut type_space = TypeSpace::default();
-    derives
-        .iter()
-        .cloned()
-        .for_each(|derive| type_space.add_derive(derive.to_token_stream()));
+    let mut type_space = TypeSpace::new(&settings);
     type_space
         .add_ref_types(root_schema.definitions)
         .map_err(|e| into_syn_err(e, schema.span()))?;

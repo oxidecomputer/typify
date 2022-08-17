@@ -1,13 +1,13 @@
 use std::{env, fs, path::Path};
 
 use schemars::schema::Schema;
-use typify::TypeSpace;
+use typify::{TypeSpace, TypeSpaceSettings};
 
 fn main() {
     let content = std::fs::read_to_string("../example.json").unwrap();
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
-    let mut type_space = TypeSpace::default();
+    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
     type_space.add_ref_types(schema.definitions).unwrap();
     let base_type = &schema.schema;
     // Only convert the top-level type if it has a name

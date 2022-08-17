@@ -51,7 +51,7 @@ impl TypeEntry {
             }) => {
                 let props = value_for_struct_props(properties, value, type_space)?;
                 let ident = format_ident!("{}", name);
-                quote! { #ident { #( #props ),* }}
+                quote! { super::#ident { #( #props ),* }}
             }
             TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
                 let inner = type_space
@@ -60,7 +60,7 @@ impl TypeEntry {
                     .unwrap()
                     .output_value(type_space, value);
                 let ident = format_ident!("{}", name);
-                quote! { #ident ( #inner )}
+                quote! { super::#ident ( #inner )}
             }
 
             TypeEntryDetails::Option(type_id) => {
@@ -169,7 +169,7 @@ fn value_for_external_enum(
 
         let var_ident = format_ident!("{}", &variant.name);
         let type_ident = format_ident!("{}", type_name);
-        Some(quote! { #type_ident :: #var_ident })
+        Some(quote! { super::#type_ident::#var_ident })
     } else {
         let map = value.as_object()?;
         (map.len() == 1).then(|| ())?;
@@ -186,11 +186,11 @@ fn value_for_external_enum(
             VariantDetails::Simple => None,
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, var_value, types)?;
-                Some(quote! { #type_ident :: #var_ident ( #( #tup ),* ) })
+                Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
             }
             VariantDetails::Struct(props) => {
                 let props = value_for_struct_props(props, var_value, type_space)?;
-                Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
+                Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
             }
         }
     }
@@ -212,7 +212,7 @@ fn value_for_internal_enum(
     let type_ident = format_ident!("{}", type_name);
 
     match &variant.details {
-        VariantDetails::Simple => Some(quote! { #type_ident :: #var_ident }),
+        VariantDetails::Simple => Some(quote! { super::#type_ident::#var_ident }),
         VariantDetails::Struct(props) => {
             // Make an object without the tag.
             let inner_value = serde_json::Value::Object(
@@ -223,7 +223,7 @@ fn value_for_internal_enum(
             );
 
             let props = value_for_struct_props(props, &inner_value, type_space)?;
-            Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
+            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
         }
         VariantDetails::Tuple(_) => unreachable!(),
     }
@@ -256,14 +256,14 @@ fn value_for_adjacent_enum(
     let var_ident = format_ident!("{}", &variant.name);
 
     match (&variant.details, content_value) {
-        (VariantDetails::Simple, None) => Some(quote! { #type_ident :: #var_ident}),
+        (VariantDetails::Simple, None) => Some(quote! { super::#type_ident::#var_ident}),
         (VariantDetails::Tuple(types), Some(content_value)) => {
             let tup = value_for_tuple(type_space, content_value, types)?;
-            Some(quote! { #type_ident :: #var_ident ( #( #tup ),* ) })
+            Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
         }
         (VariantDetails::Struct(props), Some(content_value)) => {
             let props = value_for_struct_props(props, content_value, type_space)?;
-            Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
+            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
         }
         _ => None,
     }
@@ -281,15 +281,15 @@ fn value_for_untagged_enum(
         match &variant.details {
             VariantDetails::Simple => {
                 value.as_null()?;
-                Some(quote! { #type_ident :: #var_ident })
+                Some(quote! { super::#type_ident::#var_ident })
             }
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, value, types)?;
-                Some(quote! { #type_ident :: #var_ident ( #( #tup ),* ) })
+                Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
             }
             VariantDetails::Struct(props) => {
                 let props = value_for_struct_props(props, value, type_space)?;
-                Some(quote! { #type_ident :: #var_ident { #( #props ),* } })
+                Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
             }
         }
     })
@@ -564,7 +564,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test {
+                    super::Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
                         c: Some("cccc".to_string())
@@ -594,7 +594,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::A
+                    super::Test::A
                 }
                 .to_string()
             )
@@ -610,7 +610,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::B("xx".to_string(), "yy".to_string())
+                    super::Test::B("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -626,7 +626,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::C {
+                    super::Test::C {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }
@@ -660,7 +660,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::A
+                    super::Test::A
                 }
                 .to_string()
             )
@@ -678,7 +678,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::C {
+                    super::Test::C {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }
@@ -713,7 +713,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::A
+                    super::Test::A
                 }
                 .to_string()
             )
@@ -730,7 +730,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::B("xx".to_string(), "yy".to_string())
+                    super::Test::B("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -747,7 +747,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::C {
+                    super::Test::C {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }
@@ -777,7 +777,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant0
+                    super::Test::Variant0
                 }
                 .to_string()
             )
@@ -788,7 +788,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant1("xx".to_string(), "yy".to_string())
+                    super::Test::Variant1("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -804,7 +804,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant2 {
+                    super::Test::Variant2 {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }

@@ -1,10 +1,15 @@
-// Copyright 2021 Oxide Computer Company
+// Copyright 2022 Oxide Computer Company
 
 use typify::import_types;
 
 use serde::{Deserialize, Serialize};
 
 import_types!("../example.json");
+
+#[test]
+fn test_main() {
+    main()
+}
 
 fn main() {
     let veg = Veggie {

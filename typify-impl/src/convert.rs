@@ -1116,6 +1116,7 @@ mod tests {
     use serde_json::json;
 
     use crate::{
+        output::OutputSpace,
         test_util::{get_type, validate_output},
         validate_builtin, Error, Name, TypeSpace,
     };
@@ -1368,7 +1369,9 @@ mod tests {
         let (type_space, type_id) = get_type::<Sub10Primes>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        let actual = type_entry.output(&type_space);
+        let mut output = OutputSpace::default();
+        type_entry.output(&type_space, &mut output);
+        let actual = output.into_stream();
         let expected = quote! {
             #[derive(Clone, Debug, Deserialize, Serialize)]
             pub struct Sub10Primes(u32);
