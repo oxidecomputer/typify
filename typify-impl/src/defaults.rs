@@ -316,12 +316,12 @@ impl TypeEntry {
         if let Some(fn_name) = maybe_builtin {
             (fn_name, None)
         } else {
-            let n = self.type_ident(type_space, &None);
+            let n = self.type_ident(type_space, &Some("super".to_string()));
             let value = self.output_value(type_space, default).unwrap();
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {
-                pub(super) fn #fn_ident() -> super::#n {
+                pub(super) fn #fn_ident() -> #n {
                     #value
                 }
             };
