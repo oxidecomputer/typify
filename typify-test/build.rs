@@ -17,6 +17,8 @@ struct TestStruct {
     d: i32,
     #[schemars(default = "things")]
     e: Things,
+    #[schemars(default = "yes_yes")]
+    f: Option<bool>,
 }
 
 fn nope() -> bool {
@@ -26,6 +28,11 @@ fn nope() -> bool {
 fn answer() -> i32 {
     42
 }
+
+fn yes_yes() -> Option<bool> {
+    Some(true)
+}
+
 #[allow(dead_code)]
 #[derive(JsonSchema, Serialize)]
 struct Things {
