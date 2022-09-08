@@ -13908,13 +13908,13 @@ pub struct Repository {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow_forking: Option<bool>,
     #[doc = "Whether to allow merge commits for pull requests."]
-    #[serde(default = "defaults::default_bool::<false>")]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub allow_merge_commit: bool,
     #[doc = "Whether to allow rebase merges for pull requests."]
-    #[serde(default = "defaults::default_bool::<false>")]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub allow_rebase_merge: bool,
     #[doc = "Whether to allow squash merges for pull requests."]
-    #[serde(default = "defaults::default_bool::<false>")]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub allow_squash_merge: bool,
     pub archive_url: String,
     #[doc = "Whether the repository is archived."]
