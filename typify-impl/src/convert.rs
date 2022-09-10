@@ -1449,6 +1449,12 @@ mod tests {
                     Ok(Self(value.to_string()))
                 }
             }
+            impl std::convert::TryFrom<&String> for PatternString {
+                type Error = &'static str;
+                fn try_from(value: &String) -> Result<Self, Self::Error> {
+                    Self::try_from(value.as_str())
+                }
+            }
             impl std::convert::TryFrom<String> for PatternString {
                 type Error = &'static str;
                 fn try_from(value: String) -> Result<Self, Self::Error> {
