@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.9\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
+
+== 0.0.10 (released 2022-09-10)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.9\...v0.0.10[Full list of commits]
 
 * Add support for string types with `format` set to `ip`, `ipv4`, or `ipv6` (#76)
 * Be more accommodating in the face of a missing `type` field #(79)

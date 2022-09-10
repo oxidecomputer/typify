@@ -1,6 +1,6 @@
 [package]
 name = "typify-impl"
-version = "0.0.10-dev"
+version = "0.0.10"
 authors = ["Adam H. Leventhal <ahl@oxidecomputer.com"]
 edition = "2021"
 license = "Apache-2.0"
