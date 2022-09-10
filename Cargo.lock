@@ -478,7 +478,7 @@ dependencies = [
 
 [[package]]
 name = "typify"
-version = "0.0.10"
+version = "0.0.11-dev"
 dependencies = [
  "schemars",
  "serde",
@@ -488,7 +488,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.0.10"
+version = "0.0.11-dev"
 dependencies = [
  "expectorate",
  "heck",
@@ -510,7 +510,7 @@ dependencies = [
 
 [[package]]
 name = "typify-macro"
-version = "0.0.10"
+version = "0.0.11-dev"
 dependencies = [
  "proc-macro2",
  "quote",
