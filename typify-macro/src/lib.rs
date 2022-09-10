@@ -14,13 +14,22 @@ use typify_impl::{TypeSpace, TypeSpaceSettings};
 /// for a JSON Schema file (relative to `$CARGO_MANIFEST_DIR`), or it may be
 /// invoked with a structured form:
 /// ```
-/// # use typify_macro::import_types;
-/// # use serde::{Deserialize,Serialize};
+/// use typify_macro::import_types;
+/// use serde::{Deserialize,Serialize};
 /// import_types!(
 ///     schema = "../example.json",
 ///     derives = [schemars::JsonSchema],
 /// );
 /// ```
+///
+/// - `schema`: string literal; the JSON schema file
+///
+/// - `derives`: optional array of derive macro paths; the derive macros to be
+/// applied to all generated types
+///
+/// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
+/// method for each generated struct that can be used to specify each property
+/// and construct the struct
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
     match do_import_types(item) {
