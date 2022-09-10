@@ -34,6 +34,37 @@
 //! );
 //! ```
 //!
+//! Generated structs can optionally include a builder-style interface:
+//! ```
+//! # mod x {
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(
+//!     schema = "../example.json",
+//!     struct_builder = true,
+//! );
+//! # }
+//! ```
+//!
+//! With this set, consumers can construct a struct `Veggie` as follows:
+//! ```
+//! # mod x {
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! # import_types!(
+//! #    schema = "../example.json",
+//! #    struct_builder = true,
+//! # );
+//! # fn _x() {
+//! let veggie: Veggie = Veggie::builder()
+//!     .veggie_name("radish")
+//!     .veggie_like(true)
+//!     .try_into()
+//!     .unwrap();
+//! # }
+//! # }
+//! ```
+//!
 //! #### Macro vs. `build.rs`
 //!
 //! While using the [`import_types!`] macro is quite a bit simpler, you can

@@ -167,6 +167,7 @@ pub(crate) enum DefaultImpl {
     U64,
 }
 
+/// Settings that alter type generation.
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
