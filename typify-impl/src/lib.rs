@@ -173,6 +173,7 @@ pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
     struct_builder: bool,
+    serde_crate_location: Option<String>,
 }
 
 impl TypeSpaceSettings {
@@ -190,6 +191,11 @@ impl TypeSpaceSettings {
 
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
+        self
+    }
+
+    pub fn with_serde_crate_location(&mut self, crate_location: String) -> &mut Self {
+        self.serde_crate_location = Some(crate_location);
         self
     }
 }

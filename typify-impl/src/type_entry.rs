@@ -406,6 +406,9 @@ impl TypeEntry {
         if *deny_unknown_fields {
             serde_options.push(quote! { deny_unknown_fields });
         }
+        if let Some(crate_loc) = &type_space.settings.serde_crate_location {
+            serde_options.push(quote! { crate = #crate_loc });
+        }
 
         let serde = (!serde_options.is_empty()).then(|| {
             quote! { #[serde( #( #serde_options ),* )] }
@@ -580,6 +583,9 @@ impl TypeEntry {
         }
         if *deny_unknown_fields {
             serde_options.push(quote! { deny_unknown_fields });
+        }
+        if let Some(crate_loc) = &type_space.settings.serde_crate_location {
+            serde_options.push(quote! { crate = #crate_loc });
         }
         let serde =
             (!serde_options.is_empty()).then(|| quote! { #[serde( #( #serde_options ),* )] });
@@ -1182,6 +1188,9 @@ mod tests {
         type_entry::{TypeEntry, TypeEntryStruct},
         TypeEntryDetails, TypeSpace,
     };
+    use quote::quote;
+    use schema::Schema;
+    use schemars::JsonSchema;
 
     #[test]
     fn test_ident() {
@@ -1224,5 +1233,54 @@ mod tests {
         assert_eq!(parameter.to_string(), "& SomeType");
         let parameter = t.type_parameter_ident(&ts, Some("a"));
         assert_eq!(parameter.to_string(), "& 'a SomeType");
+    }
+
+    #[test]
+    fn test_alternate_crate_location() {
+        #[allow(dead_code)]
+        #[derive(Schema, JsonSchema)]
+        struct MyStruct {
+            my_enum: MyEnum,
+        }
+        #[allow(dead_code)]
+        #[derive(Schema, JsonSchema)]
+        enum MyEnum {
+            A,
+        }
+
+        let (mut type_space, _) = crate::test_util::get_type::<MyStruct>();
+        type_space
+            .settings
+            .with_serde_crate_location("crate::serde_reexport".to_string());
+        let actual = type_space.to_stream();
+        let expected = quote! {
+            #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+            #[serde(crate = "crate::serde_reexport")]
+            pub enum MyEnum {
+                A,
+            }
+            impl ToString for MyEnum {
+                fn to_string(&self) -> String {
+                    match *self {
+                        Self::A => "A".to_string(),
+                    }
+                }
+            }
+            impl std::str::FromStr for MyEnum {
+                type Err = &'static str;
+                fn from_str(value: &str) -> Result<Self, Self::Err> {
+                    match value {
+                        "A" => Ok(Self::A),
+                        _ => Err("invalid value"),
+                    }
+                }
+            }
+            #[derive(Clone, Debug, Deserialize, Serialize)]
+            #[serde(crate = "crate::serde_reexport")]
+            pub struct MyStruct {
+                pub my_enum: MyEnum,
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
     }
 }
