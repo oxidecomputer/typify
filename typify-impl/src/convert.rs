@@ -146,7 +146,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Integer => {
-                self.convert_integer(metadata, validation, format)
+                self.convert_num(metadata, validation, format, true)
             }
 
             // Numbers
@@ -164,7 +164,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Number => {
-                self.convert_number(metadata, validation, format)
+                self.convert_num(metadata, validation, format, false)
             }
 
             // Boolean
@@ -530,49 +530,57 @@ impl TypeSpace {
         }
     }
 
-    fn convert_integer<'a>(
+    fn convert_num<'a>(
         &self,
         metadata: &'a Option<Box<Metadata>>,
         validation: &Option<Box<schemars::schema::NumberValidation>>,
         format: &Option<String>,
+        is_int: bool,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let shifter = if is_int { 1.0 } else { f64::EPSILON };
         let (mut min, mut max, multiple) = if let Some(validation) = validation {
             let min = match (&validation.minimum, &validation.exclusive_minimum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value + 1.0),
+                (None, Some(value)) => Some(value + shifter),
                 (Some(value), None) => Some(*value),
-                (Some(min), Some(emin)) => Some(min.max(emin + 1.0)),
+                (Some(min), Some(emin)) => Some(min.max(emin + shifter)),
             };
             let max = match (&validation.maximum, &validation.exclusive_maximum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value - 1.0),
+                (None, Some(value)) => Some(value - shifter),
                 (Some(value), None) => Some(*value),
-                (Some(max), Some(emax)) => Some(max.min(emax - 1.0)),
+                (Some(max), Some(emax)) => Some(max.min(emax - shifter)),
             };
             (min, max, validation.multiple_of)
         } else {
             (None, None, None)
         };
-
         // Ordered from most- to least-restrictive.
-        let formats: &[(&str, &str, f64, f64)] = &[
-            ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
-            ("", "std::num::NonZeroU8", 1.0, u8::MAX as f64),
-            ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
-            ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
-            ("", "std::num::NonZeroU16", 1.0, u16::MAX as f64),
-            ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
-            ("int", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("", "std::num::NonZeroU32", 1.0, u32::MAX as f64),
-            ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
-            ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
-            // TODO all these are wrong as casting to an f64 loses precision.
-            // However, schemars stores everything as an f64 so... meh for now.
-            ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
-            ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
-            ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
-        ];
+        let formats: &[(&str, &str, f64, f64)] = if is_int {
+            &[
+                ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
+                ("", "std::num::NonZeroU8", 1.0, u8::MAX as f64),
+                ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
+                ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
+                ("", "std::num::NonZeroU16", 1.0, u16::MAX as f64),
+                ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
+                ("int", "i32", i32::MIN as f64, i32::MAX as f64),
+                ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
+                ("", "std::num::NonZeroU32", 1.0, u32::MAX as f64),
+                ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
+                ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
+                // TODO all these are wrong as casting to an f64 loses precision.
+                // However, schemars stores everything as an f64 so... meh for now.
+                ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
+                ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
+                ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
+            ]
+        } else {
+            &[
+                ("float", "f32", f32::MIN as f64, f32::MAX as f64),
+                ("double", "f64", f64::MIN, f64::MAX),
+            ]
+        };
 
         if let Some(format) = format {
             if let Some((_, ty, imin, imax)) = formats
@@ -596,7 +604,11 @@ impl TypeSpace {
                             return Err(Error::InvalidValue);
                         }
                     }
-                    return Ok((TypeEntry::new_integer(ty), metadata));
+                    return Ok(if is_int {
+                        (TypeEntry::new_integer(ty), metadata)
+                    } else {
+                        (TypeEntry::new_float(ty), metadata)
+                    });
                 }
 
                 if min.is_none() {
@@ -667,32 +679,22 @@ impl TypeSpace {
 
         // TODO we should do something with `multiple`
         if let Some(ty) = maybe_type {
-            Ok((TypeEntry::new_integer(ty), metadata))
+            Ok(if is_int {
+                (TypeEntry::new_integer(ty), metadata)
+            } else {
+                (TypeEntry::new_float(ty), metadata)
+            })
         } else {
             // TODO we could construct a type that itself enforces the various
             // bounds.
             // TODO failing that, we should find the type that most tightly
             // matches these bounds.
-            Ok((TypeEntry::new_integer("i64"), metadata))
+            Ok(if is_int {
+                (TypeEntry::new_integer("i64"), metadata)
+            } else {
+                (TypeEntry::new_float("f64"), metadata)
+            })
         }
-    }
-
-    // TODO deal with metadata and format
-    fn convert_number<'a>(
-        &self,
-        _metadata: &'a Option<Box<Metadata>>,
-        validation: &Option<Box<schemars::schema::NumberValidation>>,
-        _format: &Option<String>,
-    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if let Some(validation) = validation {
-            assert!(validation.multiple_of.is_none());
-            assert!(validation.maximum.is_none());
-            assert!(validation.exclusive_maximum.is_none());
-            assert!(validation.minimum.is_none());
-            assert!(validation.exclusive_minimum.is_none());
-        }
-
-        Ok((TypeEntry::new_float("f64"), &None))
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
@@ -1136,7 +1138,7 @@ mod tests {
     };
 
     #[track_caller]
-    fn int_helper<T: JsonSchema>() {
+    fn test_helper<T: JsonSchema>() {
         let schema = schema_for!(T);
 
         let mut type_space = TypeSpace::default();
@@ -1158,29 +1160,31 @@ mod tests {
         assert_eq!(actual, expected);
     }
 
-    macro_rules! int_test {
-        ($t:ty) => {
+    macro_rules! helper_test {
+        ($s:expr, $t:ty) => {
             paste! {
                 #[test]
-                fn [<test_int_ $t:lower>]() {
-                    int_helper::<$t>()
+                fn [<test_ $s _ $t:lower>]() {
+                    test_helper::<$t>()
                 }
             }
         };
     }
 
-    int_test!(u8);
-    int_test!(u16);
-    int_test!(u32);
-    int_test!(u64);
-    int_test!(i8);
-    int_test!(i16);
-    int_test!(i32);
-    int_test!(i64);
-    int_test!(NonZeroU8);
-    int_test!(NonZeroU16);
-    int_test!(NonZeroU32);
-    int_test!(NonZeroU64);
+    helper_test!("int", u8);
+    helper_test!("int", u16);
+    helper_test!("int", u32);
+    helper_test!("int", u64);
+    helper_test!("int", i8);
+    helper_test!("int", i16);
+    helper_test!("int", i32);
+    helper_test!("int", i64);
+    helper_test!("int", NonZeroU8);
+    helper_test!("int", NonZeroU16);
+    helper_test!("int", NonZeroU32);
+    helper_test!("int", NonZeroU64);
+    helper_test!("number", f32);
+    helper_test!("number", f64);
 
     #[test]
     fn test_redundant_types() {
@@ -1462,6 +1466,70 @@ mod tests {
                         3_u32,
                         5_u32,
                         7_u32,
+                    ].contains(&value) {
+                        Err("invalid value")
+                    } else {
+                        Ok(Self(value))
+                    }
+                }
+            }
+        };
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_some_numbers() {
+        #[allow(dead_code)]
+        #[derive(Schema)]
+        struct Sub10Primes(f64);
+        impl JsonSchema for Sub10Primes {
+            fn schema_name() -> String {
+                "Sub10Primes".to_string()
+            }
+
+            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+                schemars::schema::SchemaObject {
+                    instance_type: Some(schemars::schema::InstanceType::Number.into()),
+                    format: Some("f64".to_string()),
+                    enum_values: Some(vec![json!(2_f64), json!(3_f64), json!(5_f64), json!(7_f64)]),
+                    number: Some(
+                        schemars::schema::NumberValidation {
+                            ..Default::default()
+                        }
+                        .into(),
+                    ),
+                    ..Default::default()
+                }
+                .into()
+            }
+        }
+
+        let (type_space, type_id) = get_type::<Sub10Primes>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        let mut output = OutputSpace::default();
+        type_entry.output(&type_space, &mut output);
+        let actual = output.into_stream();
+        let expected = quote! {
+            #[derive(Clone, Debug, Deserialize, Serialize)]
+            pub struct Sub10Primes(f64);
+
+            impl std::ops::Deref for Sub10Primes {
+                type Target = f64;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+
+            impl std::convert::TryFrom<f64> for Sub10Primes {
+                type Error = &'static str;
+
+                fn try_from(value: f64) -> Result<Self, Self::Error> {
+                    if ![
+                        2.0_f64,
+                        3.0_f64,
+                        5.0_f64,
+                        7.0_f64,
                     ].contains(&value) {
                         Err("invalid value")
                     } else {
