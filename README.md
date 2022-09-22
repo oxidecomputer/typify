@@ -67,20 +67,6 @@ generated type isn't what you expect, please file an issue.
 
 There are some known areas where we'd like to improve:
 
-### Bounded numbers
-
-Bounded numbers aren't very well handled. Consider, for example, the schema:
-
-```json
-{
-    "type": "integer",
-    "minimum": 1,
-    "maximum": 6
-}
-```
-
-The resulting types won't enforce those value constraints.
-
 ### User-defined type-handling
 
 A useful addition would be to have Typify (builder or macro) accept a map of
