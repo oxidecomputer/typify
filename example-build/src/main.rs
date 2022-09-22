@@ -5,10 +5,13 @@ include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 #[test]
 fn test_main() {
-    main()
+    match main() {
+        Ok(it) => it,
+        Err(_) => (),
+    };
 }
 
-fn main() {
+fn main() -> Result<(), String> {
     let veg = Veggie::builder()
         .veggie_name("carrots")
         .veggie_like(true)
@@ -18,6 +21,8 @@ fn main() {
     let veggies = Veggies {
         fruits: vec![String::from("apple"), String::from("mango")],
         vegetables: vec![veg],
+        id_num: Some(VeggiesIdNum::try_from(25)?),
     };
     println!("{:?}", veggies);
+    Ok(())
 }

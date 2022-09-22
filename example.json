@@ -16,15 +16,18 @@
       "items": {
         "$ref": "#/$defs/veggie"
       }
+    },
+    "idNum": {
+      "type": "integer",
+      "maximum": 30,
+      "minimum": 20,
+      "multipleOf": 5
     }
   },
   "$defs": {
     "veggie": {
       "type": "object",
-      "required": [
-        "veggieName",
-        "veggieLike"
-      ],
+      "required": ["veggieName", "veggieLike"],
       "properties": {
         "veggieName": {
           "type": "string",

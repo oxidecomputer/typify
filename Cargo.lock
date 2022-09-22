@@ -51,6 +51,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
+name = "eq-float"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c02b5d1d1e6ba431b960d4bf971c8b0e2d2942b8cbc577d9bdf9c60fca5d41d"
+
+[[package]]
 name = "example-build"
 version = "0.0.0"
 dependencies = [
@@ -490,6 +496,7 @@ dependencies = [
 name = "typify-impl"
 version = "0.0.11-dev"
 dependencies = [
+ "eq-float",
  "expectorate",
  "heck",
  "log",

@@ -2,6 +2,7 @@
 
 use std::collections::BTreeSet;
 
+use eq_float::F64;
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
@@ -54,6 +55,11 @@ pub(crate) enum TypeEntryNewtypeConstraints {
         max_length: Option<u32>,
         min_length: Option<u32>,
         pattern: Option<String>,
+    },
+    Number {
+        max: Option<F64>,
+        min: Option<F64>,
+        multiple_of: Option<F64>,
     },
 }
 
@@ -284,6 +290,49 @@ impl TypeEntryNewtype {
                 max_length,
                 min_length,
                 pattern,
+            },
+        })
+    }
+
+    pub(crate) fn from_metadata_with_number_validation(
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        validation: &schemars::schema::NumberValidation,
+    ) -> TypeEntryDetails {
+        let name = get_type_name(&type_name, metadata).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        let schemars::schema::NumberValidation {
+            maximum,
+            minimum,
+            multiple_of,
+            ..
+        } = validation.clone();
+
+        TypeEntryDetails::Newtype(Self {
+            name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            constraints: TypeEntryNewtypeConstraints::Number {
+                max: if let Some(m) = maximum {
+                    Some(F64::from(m))
+                } else {
+                    None
+                },
+                min: if let Some(m) = minimum {
+                    Some(F64::from(m))
+                } else {
+                    None
+                },
+                multiple_of: if let Some(m) = multiple_of {
+                    Some(F64::from(m))
+                } else {
+                    None
+                },
             },
         })
     }
@@ -869,6 +918,56 @@ impl TypeEntry {
                                         e.to_string(),
                                     )
                                 })
+                        }
+                    }
+                })
+            }
+
+            TypeEntryNewtypeConstraints::Number {
+                max: max_value,
+                min: min_value,
+                multiple_of,
+            } => {
+                let max = max_value.map(|v| {
+                    let v = v.0;
+                    let err = format!("larger than {}", v);
+                    quote! {
+                        if value > (#v as #sub_type_name) {
+                            return Err(#err);
+                        }
+                    }
+                });
+                let min = min_value.map(|v| {
+                    let v = v.0;
+                    let err = format!("smaller than {}", v);
+                    quote! {
+                       if value < (#v as #sub_type_name) {
+                          return Err(#err);
+                       }
+                    }
+                });
+                let multiple = multiple_of.map(|v| {
+                    let v = v.0;
+                    let err = format!("not a multiple of {}", v);
+                    quote! {
+                        if value % (#v as #sub_type_name) != (0 as #sub_type_name) {
+                            return Err(#err);
+                        }
+                    }
+                });
+
+                Some(quote! {
+                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                        type Error = &'static str;
+                        fn try_from(
+                            value: #sub_type_name
+                        ) -> Result<Self, Self::Error> {
+                            #max
+                            #min
+                            #multiple
+
+                            Ok(Self(value))
+
                         }
                     }
                 })

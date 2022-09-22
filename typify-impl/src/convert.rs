@@ -9,8 +9,8 @@ use crate::type_entry::{
 use crate::util::{all_mutually_exclusive, none_or_single, recase, Case};
 use log::info;
 use schemars::schema::{
-    ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-    SubschemaValidation,
+    ArrayValidation, InstanceType, Metadata, NumberValidation, ObjectValidation, Schema,
+    SchemaObject, SingleOrVec, SubschemaValidation,
 };
 
 use crate::util::get_type_name;
@@ -146,7 +146,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Integer => {
-                self.convert_num(metadata, validation, format, true)
+                self.convert_num(type_name, metadata, validation, format, true)
             }
 
             // Numbers
@@ -164,7 +164,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Number => {
-                self.convert_num(metadata, validation, format, false)
+                self.convert_num(type_name, metadata, validation, format, false)
             }
 
             // Boolean
@@ -531,14 +531,15 @@ impl TypeSpace {
     }
 
     fn convert_num<'a>(
-        &self,
+        &mut self,
+        type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         validation: &Option<Box<schemars::schema::NumberValidation>>,
         format: &Option<String>,
         is_int: bool,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let shifter = if is_int { 1.0 } else { f64::EPSILON };
-        let (mut min, mut max, multiple) = if let Some(validation) = validation {
+        let (min, max, multiple) = if let Some(validation) = validation {
             let min = match (&validation.minimum, &validation.exclusive_minimum) {
                 (None, None) => None,
                 (None, Some(value)) => Some(value + shifter),
@@ -576,10 +577,7 @@ impl TypeSpace {
                 ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
             ]
         } else {
-            &[
-                ("float", "f32", f32::MIN as f64, f32::MAX as f64),
-                ("double", "f64", f64::MIN, f64::MAX),
-            ]
+            &[("f64", "f64", f64::MIN, f64::MAX)]
         };
 
         if let Some(format) = format {
@@ -609,13 +607,6 @@ impl TypeSpace {
                     } else {
                         (TypeEntry::new_float(ty), metadata)
                     });
-                }
-
-                if min.is_none() {
-                    min = Some(*imin);
-                }
-                if max.is_none() {
-                    max = Some(*imax);
                 }
             }
         }
@@ -677,23 +668,63 @@ impl TypeSpace {
             (None, None) => None,
         };
 
-        // TODO we should do something with `multiple`
-        if let Some(ty) = maybe_type {
-            Ok(if is_int {
-                (TypeEntry::new_integer(ty), metadata)
-            } else {
-                (TypeEntry::new_float(ty), metadata)
-            })
-        } else {
-            // TODO we could construct a type that itself enforces the various
-            // bounds.
-            // TODO failing that, we should find the type that most tightly
-            // matches these bounds.
-            Ok(if is_int {
-                (TypeEntry::new_integer("i64"), metadata)
-            } else {
-                (TypeEntry::new_float("f64"), metadata)
-            })
+        match (min, max, multiple) {
+            (None, None, None) => {
+                return Ok(if is_int {
+                    (
+                        TypeEntry::new_integer(if let Some(ty) = maybe_type {
+                            ty
+                        } else {
+                            "i64".to_string()
+                        }),
+                        metadata,
+                    )
+                } else {
+                    (
+                        TypeEntry::new_float(if let Some(ty) = maybe_type {
+                            ty
+                        } else {
+                            "f64".to_string()
+                        }),
+                        metadata,
+                    )
+                });
+            }
+            _ => {
+                let type_entry = if is_int {
+                    TypeEntryDetails::Integer(if let Some(ty) = maybe_type {
+                        ty
+                    } else {
+                        "i64".to_string()
+                    })
+                    .into()
+                } else {
+                    TypeEntryDetails::Integer(if let Some(ty) = maybe_type {
+                        ty
+                    } else {
+                        "f64".to_string()
+                    })
+                    .into()
+                };
+                let type_id = self.assign_type(type_entry);
+
+                return Ok((
+                    TypeEntryNewtype::from_metadata_with_number_validation(
+                        type_name,
+                        metadata,
+                        type_id,
+                        &(NumberValidation {
+                            maximum: max,
+                            multiple_of: multiple,
+                            exclusive_maximum: None,
+                            minimum: min,
+                            exclusive_minimum: None,
+                        }),
+                    )
+                    .into(),
+                    metadata,
+                ));
+            }
         }
     }
 
@@ -1183,7 +1214,6 @@ mod tests {
     helper_test!("int", NonZeroU16);
     helper_test!("int", NonZeroU32);
     helper_test!("int", NonZeroU64);
-    helper_test!("number", f32);
     helper_test!("number", f64);
 
     #[test]
@@ -1379,7 +1409,7 @@ mod tests {
         };
 
         let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(Name::Unknown, &schema) {
+        match type_space.convert_schema_object(Name::Suggested("Test".to_string()), &schema) {
             Ok(_) => (),
             _ => panic!("unexpected result"),
         };
@@ -1407,7 +1437,7 @@ mod tests {
         };
 
         let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(Name::Unknown, &schema) {
+        match type_space.convert_schema_object(Name::Suggested("Test".to_string()), &schema) {
             Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }

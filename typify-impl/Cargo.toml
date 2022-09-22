@@ -9,6 +9,7 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
 [dependencies]
+eq-float = "0.1.0"
 heck = "0.4.0"
 log = "0.4"
 proc-macro2 = "1.0"
