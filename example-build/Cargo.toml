@@ -10,4 +10,4 @@ serde = { workspace = true }
 [build-dependencies]
 schemars = { workspace = true }
 serde_json = { workspace = true }
-typify = { path = "../typify" }
+typify = { workspace = true }

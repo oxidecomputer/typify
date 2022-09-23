@@ -13,4 +13,4 @@ serde_json = { workspace = true }
 ipnetwork = { version = "0.20.0", features = ["schemars"] }
 schemars = { workspace = true }
 serde = { workspace = true }
-typify = { path = "../typify" }
+typify = { workspace = true }

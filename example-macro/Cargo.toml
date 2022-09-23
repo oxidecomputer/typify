@@ -5,6 +5,6 @@ authors = ["Adam H. Leventhal <ahl@oxidecomputer.com>"]
 edition = "2021"
 
 [dependencies]
-typify = { path = "../typify" }
+typify = { workspace = true }
 serde = "1.0"
 serde_json = "1.0"
