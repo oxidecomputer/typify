@@ -676,9 +676,10 @@ impl TypeSpace {
                         metadata,
                     )
                 } else {
-                    (TypeEntry::new_integer(
-                        maybe_type.unwrap_or_else(|| "f64".to_string()),
-                    ),)
+                    (
+                        TypeEntry::new_integer(maybe_type.unwrap_or_else(|| "f64".to_string())),
+                        metadata,
+                    )
                 });
             }
             _ => {
