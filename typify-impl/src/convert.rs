@@ -675,7 +675,6 @@ impl TypeSpace {
 
         match (min, max, multiple) {
             (None, None, None) => Ok((TypeEntry::new_integer(underlying_type), metadata)),
-
             _ => {
                 let type_entry = TypeEntryDetails::Integer(underlying_type).into();
                 let type_id = self.assign_type(type_entry);
