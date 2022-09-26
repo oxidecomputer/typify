@@ -667,29 +667,17 @@ impl TypeSpace {
             }),
             (None, None) => None,
         };
+        let underlying_type = maybe_type.unwrap_or(if is_int {
+            "i64".to_string()
+        } else {
+            "f64".to_string()
+        });
 
         match (min, max, multiple) {
-            (None, None, None) => {
-                return Ok(if is_int {
-                    (
-                        TypeEntry::new_integer(maybe_type.unwrap_or_else(|| "i64".to_string())),
-                        metadata,
-                    )
-                } else {
-                    (
-                        TypeEntry::new_integer(maybe_type.unwrap_or_else(|| "f64".to_string())),
-                        metadata,
-                    )
-                });
-            }
+            (None, None, None) => Ok((TypeEntry::new_integer(underlying_type), metadata)),
+
             _ => {
-                let type_entry = if is_int {
-                    TypeEntryDetails::Integer(maybe_type.unwrap_or_else(|| "i64".to_string()))
-                        .into()
-                } else {
-                    TypeEntryDetails::Integer(maybe_type.unwrap_or_else(|| "f64".to_string()))
-                        .into()
-                };
+                let type_entry = TypeEntryDetails::Integer(underlying_type).into();
                 let type_id = self.assign_type(type_entry);
 
                 return Ok((
