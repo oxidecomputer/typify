@@ -17,7 +17,7 @@ regress = { workspace = true }
 rustfmt-wrapper = "0.2"
 schemars = { workspace = true }
 serde_json = { workspace = true }
-syn = { workspace = true, features= ["full"] }
+syn = { workspace = true, features = ["full"] }
 thiserror = "1.0"
 unicode-ident = "1.0.3"
 
