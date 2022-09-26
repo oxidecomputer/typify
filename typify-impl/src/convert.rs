@@ -674,7 +674,11 @@ impl TypeSpace {
         });
 
         match (min, max, multiple) {
-            (None, None, None) => Ok((TypeEntry::new_integer(underlying_type), metadata)),
+            (None, None, None) => Ok(if is_int {
+                (TypeEntry::new_integer(underlying_type), metadata)
+            } else {
+                (TypeEntry::new_float(underlying_type), metadata)
+            }),
             _ => {
                 let type_entry = TypeEntryDetails::Integer(underlying_type).into();
                 let type_id = self.assign_type(type_entry);
