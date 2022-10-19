@@ -772,6 +772,7 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::None => None,
 
             TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
+                derive_set.insert("PartialEq");
                 let value_output = enum_values
                     .iter()
                     .map(|value| sub_type.output_value(type_space, &value.0));

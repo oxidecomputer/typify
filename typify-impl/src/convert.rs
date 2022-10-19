@@ -1373,7 +1373,7 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[derive(Clone, Debug, Deserialize, Serialize)]
+            #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
             pub struct Sub10Primes(u32);
 
             impl std::ops::Deref for Sub10Primes {

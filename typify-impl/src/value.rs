@@ -60,7 +60,7 @@ impl TypeEntry {
                     .unwrap()
                     .output_value(type_space, value);
                 let ident = format_ident!("{}", name);
-                quote! { super::#ident ( #inner )}
+                quote! { #ident ( #inner )}
             }
 
             TypeEntryDetails::Option(type_id) => {

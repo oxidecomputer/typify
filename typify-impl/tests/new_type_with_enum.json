@@ -1,0 +1,14 @@
+{
+  "$id": "https://example.com/arrays.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Everything",
+  "type": "object",
+  "properties": {
+    "enum_property": {
+      "description": "name",
+      "type": "string",
+      "maxLength": 32,
+      "enum": ["first", "second"]
+    }
+  }
+}
