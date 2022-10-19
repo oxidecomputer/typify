@@ -772,6 +772,8 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::None => None,
 
             TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
+                // We are going to compare the given value to the enum_values, so
+                // we'll want to have implemented PartialEq.
                 derive_set.insert("PartialEq");
                 let value_output = enum_values
                     .iter()
