@@ -12,6 +12,7 @@ readme = "../README.md"
 proc-macro = true
 
 [dependencies]
+educe = "0.4.20"
 proc-macro2 = "1.0"
 quote = "1.0"
 schemars = "0.8.11"

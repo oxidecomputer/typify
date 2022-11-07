@@ -1605,8 +1605,10 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[derive(Clone, Debug, Deserialize, Serialize)]
+            #[derive(Clone, Debug, Deserialize, Serialize, educe::Educe)]
+            #[educe(Default)]
             pub enum ResultX {
+                #[educe(Default)]
                 Ok(u32),
                 Err(String),
             }
@@ -1632,8 +1634,10 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[derive(A, B, C, Clone, D, Debug, Deserialize, Serialize)]
+            #[derive(A, B, C, Clone, D, Debug, Deserialize, Serialize, educe::Educe)]
+            #[educe(Default)]
             pub enum ResultX {
+                #[educe(Default)]
                 Ok(u32),
                 Err(String),
             }

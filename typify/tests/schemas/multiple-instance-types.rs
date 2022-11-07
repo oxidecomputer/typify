@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, educe :: Educe)]
+#[educe(Default)]
 #[serde(untagged)]
 pub enum IntOrStr {
+    #[educe(Default)]
     String(String),
     Integer(i64),
 }
@@ -37,9 +39,11 @@ impl ToString for IntOrStr {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, educe :: Educe)]
+#[educe(Default)]
 #[serde(untagged)]
 pub enum OneOfSeveral {
+    #[educe(Default)]
     Null,
     Boolean(bool),
     Object(std::collections::HashMap<String, serde_json::Value>),
@@ -47,7 +51,7 @@ pub enum OneOfSeveral {
     String(String),
     Integer(i64),
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SeriouslyAnything(pub serde_json::Value);
 impl std::ops::Deref for SeriouslyAnything {
     type Target = serde_json::Value;

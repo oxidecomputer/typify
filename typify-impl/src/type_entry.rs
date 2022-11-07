@@ -510,10 +510,22 @@ impl TypeEntry {
 
         let type_name = format_ident!("{}", name);
 
-        let variants_decl = variants
-            .iter()
-            .map(|variant| output_variant(variant, type_space, output, name))
-            .collect::<Vec<_>>();
+        // The normal Default derive doesn't work with struct enum variants.
+        let mut variants_decl: Vec<TokenStream>;
+        if default.is_none() {
+            variants_decl = vec![quote! { #[educe(Default)] }];
+            variants_decl.append(
+                &mut variants
+                    .iter()
+                    .map(|variant| output_variant(variant, type_space, output, name))
+                    .collect::<Vec<_>>(),
+            );
+        } else {
+            variants_decl = variants
+                .iter()
+                .map(|variant| output_variant(variant, type_space, output, name))
+                .collect::<Vec<_>>();
+        }
 
         // It should not be possible to construct an untagged enum
         // with more than one simple variants--it would not be usable.
@@ -579,6 +591,32 @@ impl TypeEntry {
                 }
             }
         });
+
+        /*
+        // if using `educe` crate isnt acceptable, we can manually build the default value
+        // here similar to what `educe` is doing behind the scenes.
+        let default_value: serde_json::Value;
+        let default_stream: TokenStream;
+        if default.is_none() {
+            default_value = variants[0].name.clone().into();
+            // now we need to generate a <default_value>, or <default_value>::default(),
+            // but with structs it is more complicated, and needs a dedicated function like
+            // `output_default`, similar to `output_value`.
+            let default_stream = ...
+        }
+        else {
+            default_value = default.clone().unwrap().0;
+            let default_stream = self.output_value(type_space, &default_value, &quote! {}).unwrap();
+        }
+
+        let default_impl = quote! {
+            impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
+                    }
+                }
+            };
+        */
 
         let default_impl = default.as_ref().map(|value| {
             let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
@@ -647,6 +685,11 @@ impl TypeEntry {
                 }
             });
 
+        let mut educe: TokenStream = TokenStream::default();
+        if default.is_none() {
+            derive_set.insert("educe::Educe");
+            educe = quote! { #[educe(Default)] };
+        }
         let derives = strings_to_derives(
             derive_set,
             &self.derives,
@@ -656,6 +699,7 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
+            #educe
             #serde
             pub enum #type_name {
                 #(#variants_decl)*
@@ -674,7 +718,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
-        derive_set: BTreeSet<&str>,
+        mut derive_set: BTreeSet<&str>,
     ) {
         let TypeEntryStruct {
             name,
@@ -752,7 +796,9 @@ impl TypeEntry {
                 }
             });
         });
-
+        if default.is_none() {
+            derive_set.insert("Default");
+        }
         let derives = strings_to_derives(
             derive_set,
             &self.derives,
@@ -1013,6 +1059,9 @@ impl TypeEntry {
             }
         });
 
+        if default_impl.is_none() {
+            derive_set.insert("Default");
+        }
         let derives = strings_to_derives(
             derive_set,
             &self.derives,

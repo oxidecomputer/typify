@@ -1,11 +1,15 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LetterBox {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub letter: Option<LetterBoxLetter>,
 }
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, educe :: Educe,
+)]
+#[educe(Default)]
 pub enum LetterBoxLetter {
+    #[educe(Default)]
     #[serde(rename = "a")]
     A,
     #[serde(rename = "b")]

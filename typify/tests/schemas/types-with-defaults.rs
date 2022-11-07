@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
     pub any: Vec<serde_json::Value>,
