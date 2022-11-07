@@ -1232,15 +1232,14 @@ fn strings_to_derives<'a>(
     type_derives: &'a BTreeSet<String>,
     extra_derives: &'a [String],
 ) -> impl Iterator<Item = TokenStream> + 'a {
-    derive_set
-        .into_iter()
-        .chain(type_derives.iter().map(String::as_str))
-        .chain(extra_derives.iter().map(String::as_str))
-        .map(|derive| {
-            syn::parse_str::<syn::Path>(derive)
-                .unwrap()
-                .into_token_stream()
-        })
+    let mut combined_derives = derive_set.clone();
+    combined_derives.extend(extra_derives.iter().map(String::as_str));
+    combined_derives.extend(type_derives.iter().map(String::as_str));
+    combined_derives.into_iter().map(|derive| {
+        syn::parse_str::<syn::Path>(derive)
+            .unwrap()
+            .into_token_stream()
+    })
 }
 
 fn untagged_newtype_variants(

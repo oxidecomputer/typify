@@ -1665,7 +1665,7 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[derive(Clone, Debug, Deserialize, Serialize, A, B, C, D)]
+            #[derive(A, B, C, Clone, D, Debug, Deserialize, Serialize)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
