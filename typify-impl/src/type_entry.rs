@@ -335,13 +335,16 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
-        let derive_set = ["Serialize", "Deserialize", "Debug", "Clone"]
+        let derive_set = ["Serialize", "Deserialize", "Debug", "Default", "Clone"]
+            .into_iter()
+            .collect::<BTreeSet<_>>();
+        let derive_set_enum = ["Serialize", "Deserialize", "Debug", "Clone"]
             .into_iter()
             .collect::<BTreeSet<_>>();
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
-                self.output_enum(type_space, output, enum_details, derive_set)
+                self.output_enum(type_space, output, enum_details, derive_set_enum)
             }
             TypeEntryDetails::Struct(struct_details) => {
                 self.output_struct(type_space, output, struct_details, derive_set)
