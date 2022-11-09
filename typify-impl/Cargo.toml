@@ -19,7 +19,7 @@ schemars = { workspace = true }
 serde_json = { workspace = true }
 syn = { workspace = true, features = ["full"] }
 thiserror = "1.0"
-unicode-ident = "1.0.3"
+unicode-ident = "1.0.5"
 
 [dev-dependencies]
 expectorate = "1.0"
