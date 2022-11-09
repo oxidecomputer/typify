@@ -11,7 +11,7 @@ use crate::{
     enums::output_variant,
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description},
+    util::{get_type_name, metadata_description, type_adjust},
     DefaultImpl, Name, TypeId, TypeSpace,
 };
 
@@ -79,7 +79,7 @@ impl PartialOrd for WrappedValue {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
-    pub derives: Option<BTreeSet<&'static str>>,
+    pub derives: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -167,17 +167,20 @@ pub(crate) enum DefaultKind {
 
 impl TypeEntryEnum {
     pub(crate) fn from_metadata(
+        type_space: &TypeSpace,
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         tag_type: EnumTagType,
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
-    ) -> TypeEntryDetails {
+    ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntryDetails::Enum(Self {
+        let (name, derives) = type_adjust(type_space, name);
+
+        let details = TypeEntryDetails::Enum(Self {
             name,
             rename,
             description,
@@ -185,17 +188,20 @@ impl TypeEntryEnum {
             tag_type,
             variants,
             deny_unknown_fields,
-        })
+        });
+
+        TypeEntry { details, derives }
     }
 }
 
 impl TypeEntryStruct {
     pub(crate) fn from_metadata(
+        type_space: &TypeSpace,
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
-    ) -> TypeEntryDetails {
+    ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
@@ -205,48 +211,60 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        TypeEntryDetails::Struct(Self {
+        let (name, derives) = type_adjust(type_space, name);
+
+        let details = TypeEntryDetails::Struct(Self {
             name,
             rename,
             description,
             default,
             properties,
             deny_unknown_fields,
-        })
+        });
+
+        TypeEntry { details, derives }
     }
 }
 
 impl TypeEntryNewtype {
     pub(crate) fn from_metadata(
+        type_space: &TypeSpace,
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
-    ) -> TypeEntryDetails {
+    ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntryDetails::Newtype(Self {
+        let (name, derives) = type_adjust(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
             name,
             rename,
             description,
             default: None,
             type_id,
             constraints: TypeEntryNewtypeConstraints::None,
-        })
+        });
+
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn from_metadata_with_enum_values(
+        type_space: &TypeSpace,
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
-    ) -> TypeEntryDetails {
+    ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
-        TypeEntryDetails::Newtype(Self {
+        let (name, derives) = type_adjust(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
             name,
             rename,
             description,
@@ -255,15 +273,18 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::EnumValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
-        })
+        });
+
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn from_metadata_with_string_validation(
+        type_space: &TypeSpace,
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
-    ) -> TypeEntryDetails {
+    ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
@@ -274,7 +295,9 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        TypeEntryDetails::Newtype(Self {
+        let (name, derives) = type_adjust(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
             name,
             rename,
             description,
@@ -285,7 +308,9 @@ impl TypeEntryNewtype {
                 min_length,
                 pattern,
             },
-        })
+        });
+
+        TypeEntry { details, derives }
     }
 }
 
@@ -293,7 +318,7 @@ impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         Self {
             details,
-            derives: None,
+            derives: Default::default(),
         }
     }
 }
@@ -302,25 +327,25 @@ impl TypeEntry {
     pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::BuiltIn(type_name.to_string()),
-            derives: None,
+            derives: Default::default(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
-            derives: None,
+            derives: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Integer(type_name.to_string()),
-            derives: None,
+            derives: Default::default(),
         }
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
-            derives: None,
+            derives: Default::default(),
         }
     }
 
@@ -539,7 +564,11 @@ impl TypeEntry {
                 }
             });
 
-        let derives = strings_to_derives(derive_set, &type_space.settings.extra_derives);
+        let derives = strings_to_derives(
+            derive_set,
+            &self.derives,
+            &type_space.settings.extra_derives,
+        );
 
         let item = quote! {
             #doc
@@ -640,8 +669,12 @@ impl TypeEntry {
             });
         });
 
-        let derives =
-            strings_to_derives(derive_set, &type_space.settings.extra_derives).collect::<Vec<_>>();
+        let derives = strings_to_derives(
+            derive_set,
+            &self.derives,
+            &type_space.settings.extra_derives,
+        )
+        .collect::<Vec<_>>();
 
         output.add_item(
             OutputSpaceMod::Crate,
@@ -893,7 +926,11 @@ impl TypeEntry {
             }
         });
 
-        let derives = strings_to_derives(derive_set, &type_space.settings.extra_derives);
+        let derives = strings_to_derives(
+            derive_set,
+            &self.derives,
+            &type_space.settings.extra_derives,
+        );
 
         let item = quote! {
             #doc
@@ -1133,10 +1170,12 @@ impl TypeEntry {
 
 fn strings_to_derives<'a>(
     derive_set: BTreeSet<&'a str>,
+    type_derives: &'a BTreeSet<String>,
     extra_derives: &'a [String],
 ) -> impl Iterator<Item = TokenStream> + 'a {
     derive_set
         .into_iter()
+        .chain(type_derives.iter().map(String::as_str))
         .chain(extra_derives.iter().map(String::as_str))
         .map(|derive| {
             syn::parse_str::<syn::Path>(derive)

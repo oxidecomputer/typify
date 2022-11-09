@@ -240,7 +240,7 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()?;
 
         Ok((
-            TypeEntryStruct::from_metadata(type_name, metadata, properties, false).into(),
+            TypeEntryStruct::from_metadata(self, type_name, metadata, properties, false),
             metadata,
         ))
     }
@@ -333,18 +333,16 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(
-            TypeEntryStruct::from_metadata(
-                type_name,
-                metadata,
-                named_properties
-                    .into_iter()
-                    .chain(unnamed_properties.into_iter())
-                    .collect(),
-                deny,
-            )
-            .into(),
-        )
+        Some(TypeEntryStruct::from_metadata(
+            self,
+            type_name,
+            metadata,
+            named_properties
+                .into_iter()
+                .chain(unnamed_properties.into_iter())
+                .collect(),
+            deny,
+        ))
     }
 
     /// This handles the case where an allOf is used to denote constraints.
@@ -394,7 +392,7 @@ impl TypeSpace {
 
         let (named_schema, _) = named.first()?;
 
-        let (_, _, validation) = get_object(Name::Unknown, *named_schema, &self.definitions)?;
+        let (_, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
 
         if validation.additional_properties.as_ref().map(Box::as_ref) != Some(&Schema::Bool(false))
         {
@@ -404,7 +402,7 @@ impl TypeSpace {
         unnamed
             .into_iter()
             .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
-            .then(|| ())?;
+            .then_some(())?;
 
         let (type_entry, _) = self.convert_schema(type_name, named_schema).ok()?;
         Some(type_entry)

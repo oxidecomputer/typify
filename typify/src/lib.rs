@@ -93,6 +93,7 @@
 
 pub use typify_impl::Error;
 pub use typify_impl::Type;
+pub use typify_impl::TypeAdjustment;
 pub use typify_impl::TypeDetails;
 pub use typify_impl::TypeEnum;
 pub use typify_impl::TypeEnumVariant;

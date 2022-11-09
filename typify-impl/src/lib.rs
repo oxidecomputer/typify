@@ -172,7 +172,14 @@ pub(crate) enum DefaultImpl {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
+    type_adjustments: BTreeMap<String, TypeAdjustment>,
     struct_builder: bool,
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct TypeAdjustment {
+    rename: Option<String>,
+    derives: Vec<String>,
 }
 
 impl TypeSpaceSettings {
@@ -190,6 +197,28 @@ impl TypeSpaceSettings {
 
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
+        self
+    }
+
+    pub fn with_type_adjustment<S: AsRef<str>>(
+        &mut self,
+        type_name: S,
+        type_adjustment: &TypeAdjustment,
+    ) -> &mut Self {
+        self.type_adjustments
+            .insert(type_name.as_ref().to_string(), type_adjustment.clone());
+        self
+    }
+}
+
+impl TypeAdjustment {
+    pub fn with_rename<S: AsRef<str>>(&mut self, rename: S) -> &mut Self {
+        self.rename = Some(rename.as_ref().to_string());
+        self
+    }
+
+    pub fn with_derive<S: AsRef<str>>(&mut self, derive: S) -> &mut Self {
+        self.derives.push(derive.as_ref().to_string());
         self
     }
 }
@@ -278,20 +307,24 @@ impl TypeSpace {
                 // (which may nor may not have already been converted). We
                 // simply create a newtype with that type ID.
                 TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+                    self,
                     Name::Required(type_name.to_string()),
                     metadata,
                     type_id.clone(),
-                )
-                .into(),
+                ),
 
                 // For types that don't have names, this is effectively a type
                 // alias which we treat as a newtype.
-                _ => TypeEntryNewtype::from_metadata(
-                    Name::Required(type_name.to_string()),
-                    metadata,
-                    self.assign_type(type_entry),
-                )
-                .into(),
+                _ => {
+                    let subtype_id = self.assign_type(type_entry);
+
+                    TypeEntryNewtype::from_metadata(
+                        self,
+                        Name::Required(type_name.to_string()),
+                        metadata,
+                        subtype_id,
+                    )
+                }
             };
 
             // We expect and require these types to have a name. Even a type

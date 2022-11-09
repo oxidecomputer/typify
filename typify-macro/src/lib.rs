@@ -1,6 +1,6 @@
 // Copyright 2022 Oxide Computer Company
 
-use std::path::Path;
+use std::{collections::HashMap, path::Path};
 
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
@@ -8,7 +8,7 @@ use schemars::schema::Schema;
 use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
-use typify_impl::{TypeSpace, TypeSpaceSettings};
+use typify_impl::{TypeAdjustment, TypeSpace, TypeSpaceSettings};
 
 /// Import types from a schema file. This may be invoked with simply a pathname
 /// for a JSON Schema file (relative to `$CARGO_MANIFEST_DIR`), or it may be
@@ -44,7 +44,30 @@ struct Settings {
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
     #[serde(default)]
+    adjustments: HashMap<String, Adjustment>,
+    #[serde(default)]
     struct_builder: bool,
+}
+
+#[derive(Deserialize)]
+struct Adjustment {
+    #[serde(default)]
+    rename: Option<String>,
+    #[serde(default)]
+    derives: Vec<ParseWrapper<syn::Path>>,
+}
+
+impl From<Adjustment> for TypeAdjustment {
+    fn from(a: Adjustment) -> Self {
+        let mut s = Self::default();
+        a.rename.iter().for_each(|rename| {
+            s.with_rename(rename);
+        });
+        a.derives.iter().for_each(|derive| {
+            s.with_derive(derive.to_token_stream().to_string());
+        });
+        s
+    }
 }
 
 fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
@@ -55,11 +78,15 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         let Settings {
             schema,
             derives,
+            adjustments,
             struct_builder,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
-        derives.iter().for_each(|derive| {
+        derives.into_iter().for_each(|derive| {
             settings.with_derive(derive.to_token_stream().to_string());
+        });
+        adjustments.into_iter().for_each(|(type_name, adjustment)| {
+            settings.with_type_adjustment(type_name, &adjustment.into());
         });
         settings.with_struct_builder(struct_builder);
         (schema.into_inner(), settings)
