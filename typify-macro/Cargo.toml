@@ -14,7 +14,7 @@ quote = "1.0"
 schemars = "0.8.11"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-serde_tokenstream = "0.1.3"
+serde_tokenstream = "0.1.4"
 syn = "1.0"
 typify-impl = { version = "0.0.11-dev", path = "../typify-impl" }
 
