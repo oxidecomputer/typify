@@ -44,7 +44,7 @@ struct Settings {
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
     #[serde(default)]
-    adjustments: HashMap<String, Adjustment>,
+    adjustments: HashMap<ParseWrapper<syn::Type>, Adjustment>,
     #[serde(default)]
     struct_builder: bool,
 }
