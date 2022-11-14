@@ -609,9 +609,9 @@ pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, 
     match type_space.settings.patch.get(&type_name) {
         None => (type_name, Default::default()),
 
-        Some(adj) => {
-            let name = adj.rename.clone().unwrap_or(type_name);
-            let derives = adj.derives.iter().cloned().collect();
+        Some(patch) => {
+            let name = patch.rename.clone().unwrap_or(type_name);
+            let derives = patch.derives.iter().cloned().collect();
 
             (name, derives)
         }
