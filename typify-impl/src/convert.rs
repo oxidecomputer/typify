@@ -426,9 +426,8 @@ impl TypeSpace {
                     let type_id = self.assign_type(string);
                     Ok((
                         TypeEntryNewtype::from_metadata_with_string_validation(
-                            type_name, metadata, type_id, validation,
-                        )
-                        .into(),
+                            self, type_name, metadata, type_id, validation,
+                        ),
                         metadata,
                     ))
                 }
@@ -514,13 +513,13 @@ impl TypeSpace {
             }
         } else {
             let mut ty = TypeEntryEnum::from_metadata(
+                self,
                 type_name,
                 metadata,
                 EnumTagType::External,
                 variants,
                 false,
-            )
-            .into();
+            );
 
             if has_null {
                 ty = self.type_to_option(ty);
@@ -725,12 +724,12 @@ impl TypeSpace {
 
                 Ok((
                     TypeEntryStruct::from_metadata(
+                        self,
                         type_name,
                         metadata,
                         properties,
                         deny_unknown_fields,
-                    )
-                    .into(),
+                    ),
                     &None,
                 ))
             }
@@ -1001,12 +1000,12 @@ impl TypeSpace {
         let type_id = self.assign_type(type_entry);
 
         let newtype_entry = TypeEntryNewtype::from_metadata_with_enum_values(
+            self,
             type_name,
             metadata,
             type_id,
             enum_values,
-        )
-        .into();
+        );
 
         Ok((
             newtype_entry,

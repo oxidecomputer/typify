@@ -225,16 +225,14 @@ impl TypeSpace {
             })
             .collect::<Option<Vec<_>>>()?;
 
-        Some(
-            TypeEntryEnum::from_metadata(
-                type_name,
-                metadata,
-                EnumTagType::External,
-                variants,
-                deny_unknown_fields,
-            )
-            .into(),
-        )
+        Some(TypeEntryEnum::from_metadata(
+            self,
+            type_name,
+            metadata,
+            EnumTagType::External,
+            variants,
+            deny_unknown_fields,
+        ))
     }
 
     fn external_variant(
@@ -443,16 +441,14 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(
-            TypeEntryEnum::from_metadata(
-                type_name,
-                metadata,
-                EnumTagType::Internal { tag: tag.clone() },
-                variants,
-                deny_unknown_fields,
-            )
-            .into(),
-        )
+        Some(TypeEntryEnum::from_metadata(
+            self,
+            type_name,
+            metadata,
+            EnumTagType::Internal { tag: tag.clone() },
+            variants,
+            deny_unknown_fields,
+        ))
     }
 
     fn internal_variant(
@@ -586,16 +582,14 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(
-            TypeEntryEnum::from_metadata(
-                type_name,
-                metadata,
-                EnumTagType::Adjacent { tag, content },
-                variants,
-                deny_unknown_fields,
-            )
-            .into(),
-        )
+        Some(TypeEntryEnum::from_metadata(
+            self,
+            type_name,
+            metadata,
+            EnumTagType::Adjacent { tag, content },
+            variants,
+            deny_unknown_fields,
+        ))
     }
 
     fn adjacent_variant(
@@ -743,7 +737,7 @@ impl TypeSpace {
             .enumerate()
             .map(|(idx, (details, good_name))| {
                 let name = if names_from_variants {
-                    (&good_name.unwrap()[common_prefix_index..]).to_string()
+                    good_name.unwrap()[common_prefix_index..].to_string()
                 } else {
                     format!("Variant{}", idx)
                 };
@@ -757,14 +751,14 @@ impl TypeSpace {
             .collect();
 
         Ok(TypeEntryEnum::from_metadata(
+            self,
             // TODO should this be tmp_type_name?
             type_name,
             metadata,
             EnumTagType::Untagged,
             variants,
             deny_unknown_fields,
-        )
-        .into())
+        ))
     }
 }
 

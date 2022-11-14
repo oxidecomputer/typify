@@ -453,7 +453,7 @@ fn validate_default_tuple(
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
     let arr = default.as_array()?;
-    (arr.len() == types.len()).then(|| ())?;
+    (arr.len() == types.len()).then_some(())?;
 
     types
         .iter()
@@ -466,7 +466,7 @@ fn validate_default_tuple(
                 .validate_value(type_space, value)
                 .is_ok()
         })
-        .then(|| DefaultKind::Specific)
+        .then_some(DefaultKind::Specific)
 }
 
 fn validate_default_struct_props(
@@ -518,7 +518,7 @@ fn validate_default_struct_props(
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                     type_entry.validate_value(type_space, default_value).is_ok()
                 })
-                .then(|| ())
+                .then_some(())
         }
     })?;
 
@@ -619,7 +619,7 @@ mod tests {
 
         let type_entry = TypeEntry {
             details: crate::type_entry::TypeEntryDetails::Box(type_id),
-            derives: None,
+            derives: Default::default(),
         };
 
         assert!(matches!(

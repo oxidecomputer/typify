@@ -99,6 +99,7 @@ pub use typify_impl::TypeEnumVariant;
 pub use typify_impl::TypeId;
 pub use typify_impl::TypeNewtype;
 pub use typify_impl::TypeSpace;
+pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::TypeStruct;
 pub use typify_macro::import_types;

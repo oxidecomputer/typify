@@ -1,4 +1,15 @@
 mod types {
+    #[derive(
+        Clone, Debug, Deserialize, Serialize, Eq, Hash, Ord, PartialEq, PartialOrd, JsonSchema,
+    )]
+    pub struct AllTheTraits {
+        pub ok: String,
+    }
+    impl AllTheTraits {
+        pub fn builder() -> builder::AllTheTraits {
+            builder::AllTheTraits::default()
+        }
+    }
     #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
     pub struct CompoundType {
         pub value1: String,
@@ -50,6 +61,34 @@ mod types {
         }
     }
     mod builder {
+        pub struct AllTheTraits {
+            ok: Result<String, String>,
+        }
+        impl Default for AllTheTraits {
+            fn default() -> Self {
+                Self {
+                    ok: Err("no value supplied for ok".to_string()),
+                }
+            }
+        }
+        impl AllTheTraits {
+            pub fn ok<T>(mut self, value: T) -> Self
+            where
+                T: std::convert::TryInto<String>,
+                T::Error: std::fmt::Display,
+            {
+                self.ok = value
+                    .try_into()
+                    .map_err(|e| format!("error converting supplied value for ok: {}", e));
+                self
+            }
+        }
+        impl std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
+            type Error = String;
+            fn try_from(value: AllTheTraits) -> Result<Self, Self::Error> {
+                Ok(Self { ok: value.ok? })
+            }
+        }
         pub struct CompoundType {
             value1: Result<String, String>,
             value2: Result<u64, String>,

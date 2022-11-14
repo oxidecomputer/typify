@@ -3,7 +3,7 @@
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
 use serde::Serialize;
-use typify_impl::{TypeSpace, TypeSpaceSettings};
+use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -35,6 +35,12 @@ fn default_pair() -> Pair {
     }
 }
 
+#[derive(JsonSchema)]
+#[allow(dead_code)]
+struct AllTheTraits {
+    ok: String,
+}
+
 fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
     let mut schema = T::json_schema(generator).into_object();
     schema.metadata().title = Some(T::schema_name());
@@ -47,7 +53,16 @@ fn test_generation() {
         TypeSpaceSettings::default()
             .with_derive("JsonSchema".to_string())
             .with_type_mod("types")
-            .with_struct_builder(true),
+            .with_struct_builder(true)
+            .with_patch(
+                "AllTheTraits",
+                TypeSpacePatch::default()
+                    .with_derive("Hash")
+                    .with_derive("Ord")
+                    .with_derive("PartialOrd")
+                    .with_derive("Eq")
+                    .with_derive("PartialEq"),
+            ),
     );
 
     let mut generator = SchemaGenerator::default();
@@ -56,8 +71,7 @@ fn test_generation() {
     let opt_int_schema = add_type::<Option<u32>>(&mut generator);
     let strenum_schema = add_type::<StringEnum>(&mut generator);
     let pair_schema = add_type::<Pair>(&mut generator);
-
-    println!("{:#?}", pair_schema);
+    let all_the_traits = add_type::<AllTheTraits>(&mut generator);
 
     type_space
         .add_ref_types(generator.take_definitions())
@@ -75,6 +89,7 @@ fn test_generation() {
     let strenum_id = type_space.add_type(&strenum_schema).unwrap();
     let strenum = type_space.get_type(&strenum_id).unwrap().parameter_ident();
     let _ = type_space.add_type(&pair_schema).unwrap();
+    let _ = type_space.add_type(&all_the_traits).unwrap();
 
     let types = type_space.to_stream();
 

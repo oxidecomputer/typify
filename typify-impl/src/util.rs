@@ -1,6 +1,6 @@
 // Copyright 2022 Oxide Computer Company
 
-use std::collections::HashSet;
+use std::collections::{BTreeSet, HashSet};
 
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -8,7 +8,7 @@ use schemars::schema::{
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::Name;
+use crate::{Name, TypeSpace};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -496,7 +496,7 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             extensions: _,
         }) => {
             let idx = reference.rfind('/')?;
-            Some((&reference[idx + 1..]).to_string())
+            Some(reference[idx + 1..].to_string())
         }
         Schema::Object(SchemaObject {
             metadata: Some(metadata),
@@ -603,6 +603,19 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     };
 
     Some(sanitize(&name, Case::Pascal))
+}
+
+pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
+    match type_space.settings.patch.get(&type_name) {
+        None => (type_name, Default::default()),
+
+        Some(patch) => {
+            let name = patch.rename.clone().unwrap_or(type_name);
+            let derives = patch.derives.iter().cloned().collect();
+
+            (name, derives)
+        }
+    }
 }
 
 pub(crate) fn none_or_single<T>(test: &Option<SingleOrVec<T>>, value: &T) -> bool
