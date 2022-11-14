@@ -8,7 +8,7 @@ use schemars::schema::Schema;
 use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
-use typify_impl::{TypeAdjustment, TypeSpace, TypeSpaceSettings};
+use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 /// Import types from a schema file. This may be invoked with simply a pathname
 /// for a JSON Schema file (relative to `$CARGO_MANIFEST_DIR`), or it may be
@@ -25,11 +25,14 @@ use typify_impl::{TypeAdjustment, TypeSpace, TypeSpaceSettings};
 /// - `schema`: string literal; the JSON schema file
 ///
 /// - `derives`: optional array of derive macro paths; the derive macros to be
-/// applied to all generated types
+///   applied to all generated types
 ///
+/// - `patch`: optional map of type to an object with the optional members
+///   `rename` and `derives` for type-specific renames and derive macros.
+///   
 /// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
-/// method for each generated struct that can be used to specify each property
-/// and construct the struct
+///   method for each generated struct that can be used to specify each
+///   property and construct the struct
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
     match do_import_types(item) {
@@ -39,26 +42,26 @@ pub fn import_types(item: TokenStream) -> TokenStream {
 }
 
 #[derive(Deserialize)]
-struct Settings {
+struct MacroSettings {
     schema: ParseWrapper<LitStr>,
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
     #[serde(default)]
-    adjustments: HashMap<ParseWrapper<syn::Type>, Adjustment>,
+    patch: HashMap<ParseWrapper<syn::Type>, MacroPatch>,
     #[serde(default)]
     struct_builder: bool,
 }
 
 #[derive(Deserialize)]
-struct Adjustment {
+struct MacroPatch {
     #[serde(default)]
     rename: Option<String>,
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
 }
 
-impl From<Adjustment> for TypeAdjustment {
-    fn from(a: Adjustment) -> Self {
+impl From<MacroPatch> for TypeSpacePatch {
+    fn from(a: MacroPatch) -> Self {
         let mut s = Self::default();
         a.rename.iter().for_each(|rename| {
             s.with_rename(rename);
@@ -75,18 +78,18 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     let (schema, settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
         (ll, TypeSpaceSettings::default())
     } else {
-        let Settings {
+        let MacroSettings {
             schema,
             derives,
-            adjustments,
+            patch,
             struct_builder,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
             settings.with_derive(derive.to_token_stream().to_string());
         });
-        adjustments.into_iter().for_each(|(type_name, adjustment)| {
-            settings.with_type_adjustment(type_name, &adjustment.into());
+        patch.into_iter().for_each(|(type_name, patch)| {
+            settings.with_patch(type_name.to_token_stream().to_string(), &patch.into());
         });
         settings.with_struct_builder(struct_builder);
         (schema.into_inner(), settings)

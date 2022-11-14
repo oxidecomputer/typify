@@ -605,8 +605,8 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     Some(sanitize(&name, Case::Pascal))
 }
 
-pub(crate) fn type_adjust(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
-    match type_space.settings.type_adjustments.get(&type_name) {
+pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
+    match type_space.settings.patch.get(&type_name) {
         None => (type_name, Default::default()),
 
         Some(adj) => {

@@ -11,7 +11,7 @@ use crate::{
     enums::output_variant,
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description, type_adjust},
+    util::{get_type_name, metadata_description, type_patch},
     DefaultImpl, Name, TypeId, TypeSpace,
 };
 
@@ -178,7 +178,7 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_adjust(type_space, name);
+        let (name, derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
             name,
@@ -211,7 +211,7 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, derives) = type_adjust(type_space, name);
+        let (name, derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
             name,
@@ -237,7 +237,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_adjust(type_space, name);
+        let (name, derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -262,7 +262,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_adjust(type_space, name);
+        let (name, derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -295,7 +295,7 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, derives) = type_adjust(type_space, name);
+        let (name, derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,

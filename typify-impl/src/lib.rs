@@ -172,12 +172,13 @@ pub(crate) enum DefaultImpl {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
-    type_adjustments: BTreeMap<String, TypeAdjustment>,
+    patch: BTreeMap<String, TypeSpacePatch>,
     struct_builder: bool,
 }
 
+/// Per-type modifications.
 #[derive(Debug, Default, Clone)]
-pub struct TypeAdjustment {
+pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
 }
@@ -195,28 +196,34 @@ impl TypeSpaceSettings {
         self
     }
 
+    /// For structs, include a "builder" type that can be used to construct it.
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
         self
     }
 
-    pub fn with_type_adjustment<S: AsRef<str>>(
+    /// Modify a type with the given name. Note that specifying a type not
+    /// created by the input JSON schema does **not** result in an error and is
+    /// silently ignored.
+    pub fn with_patch<S: AsRef<str>>(
         &mut self,
         type_name: S,
-        type_adjustment: &TypeAdjustment,
+        type_patch: &TypeSpacePatch,
     ) -> &mut Self {
-        self.type_adjustments
-            .insert(type_name.as_ref().to_string(), type_adjustment.clone());
+        self.patch
+            .insert(type_name.as_ref().to_string(), type_patch.clone());
         self
     }
 }
 
-impl TypeAdjustment {
+impl TypeSpacePatch {
+    /// Specify the new name for patched type.
     pub fn with_rename<S: AsRef<str>>(&mut self, rename: S) -> &mut Self {
         self.rename = Some(rename.as_ref().to_string());
         self
     }
 
+    /// Specify extra derives to apply to the patched type.
     pub fn with_derive<S: AsRef<str>>(&mut self, derive: S) -> &mut Self {
         self.derives.push(derive.as_ref().to_string());
         self

@@ -3,7 +3,7 @@
 use quote::quote;
 use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
 use serde::Serialize;
-use typify_impl::{TypeAdjustment, TypeSpace, TypeSpaceSettings};
+use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -54,9 +54,9 @@ fn test_generation() {
             .with_derive("JsonSchema".to_string())
             .with_type_mod("types")
             .with_struct_builder(true)
-            .with_type_adjustment(
+            .with_patch(
                 "AllTheTraits",
-                TypeAdjustment::default()
+                TypeSpacePatch::default()
                     .with_derive("Hash")
                     .with_derive("Ord")
                     .with_derive("PartialOrd")
