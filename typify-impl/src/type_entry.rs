@@ -12,6 +12,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
+    value::extract_selected_variant,
     DefaultImpl, Name, TypeId, TypeSpace,
 };
 
@@ -495,11 +496,12 @@ impl TypeEntry {
             });
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let (variant, _) = extract_selected_variant(&variants, &value.0).unwrap();
+            let var_ident = format_ident!("{}", &variant.name);
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {
-                        #default_stream
+                        Self::#var_ident
                     }
                 }
             }

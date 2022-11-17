@@ -4,6 +4,7 @@ use std::{collections::BTreeMap, str::FromStr};
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
+use serde_json::Value;
 
 use crate::{
     type_entry::{
@@ -155,43 +156,44 @@ impl TypeEntry {
     }
 }
 
+pub(crate) fn extract_selected_variant<'a, 'b>(
+    variants: &'b [Variant],
+    value: &'a serde_json::Value,
+) -> Option<(&'b Variant, Option<&'a Value>)> {
+    let (var_name, var_value) = if let Some(name) = value.as_str() {
+        (name.to_string(), None)
+    } else {
+        let map = value.as_object()?;
+        (map.len() == 1).then(|| ())?;
+
+        let (name, var_value) = map.iter().next()?;
+        (name.to_string(), Some(var_value))
+    };
+    let variant = variants
+        .iter()
+        .find(|variant| &var_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+    Some((variant, var_value))
+}
+
 fn value_for_external_enum(
     type_space: &TypeSpace,
     type_name: &str,
     variants: &[Variant],
     value: &serde_json::Value,
 ) -> Option<TokenStream> {
-    if let Some(simple_name) = value.as_str() {
-        let variant = variants
-            .iter()
-            .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-        matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
+    let (variant, var_value) = extract_selected_variant(variants, value)?;
 
-        let var_ident = format_ident!("{}", &variant.name);
-        let type_ident = format_ident!("{}", type_name);
-        Some(quote! { super::#type_ident::#var_ident })
-    } else {
-        let map = value.as_object()?;
-        (map.len() == 1).then(|| ())?;
-
-        let (name, var_value) = map.iter().next()?;
-
-        let variant = variants
-            .iter()
-            .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-
-        let var_ident = format_ident!("{}", &variant.name);
-        let type_ident = format_ident!("{}", type_name);
-        match &variant.details {
-            VariantDetails::Simple => None,
-            VariantDetails::Tuple(types) => {
-                let tup = value_for_tuple(type_space, var_value, types)?;
-                Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
-            }
-            VariantDetails::Struct(props) => {
-                let props = value_for_struct_props(props, var_value, type_space)?;
-                Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
-            }
+    let var_ident = format_ident!("{}", &variant.name);
+    let type_ident = format_ident!("{}", type_name);
+    match &variant.details {
+        VariantDetails::Simple => Some(quote! { super::#type_ident::#var_ident }),
+        VariantDetails::Tuple(types) => {
+            let tup = value_for_tuple(type_space, var_value?, types)?;
+            Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
+        }
+        VariantDetails::Struct(props) => {
+            let props = value_for_struct_props(props, var_value?, type_space)?;
+            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
         }
     }
 }
