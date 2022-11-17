@@ -497,13 +497,18 @@ impl TypeEntry {
 
         let default_impl = default.as_ref().map(|value| {
             let (variant, _) = extract_selected_variant(&variants, &value.0).unwrap();
+
             let var_ident = format_ident!("{}", &variant.name);
-            quote! {
-                impl Default for #type_name {
-                    fn default() -> Self {
-                        Self::#var_ident
+            if let VariantDetails::Simple = &variant.details {
+                Some(quote! {
+                    impl Default for #type_name {
+                        fn default() -> Self {
+                            Self::#var_ident
+                        }
                     }
-                }
+                })
+            } else {
+                None
             }
         });
 

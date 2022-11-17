@@ -1454,7 +1454,7 @@ mod tests {
     }
 
     #[test]
-    fn test_default_generation() {
+    fn test_enum_default_generation_simple_variant() {
         let schema_json = r##"
         {
             "definitions": {
@@ -1774,7 +1774,7 @@ mod tests {
         let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
 
         let mut type_space = TypeSpace::default();
-        let _ = type_space.add_type(&schema.schema.into()).unwrap();
+        type_space.add_type(&schema.schema.into()).unwrap();
 
         let actual = type_space.to_stream();
         let expected = quote! {
