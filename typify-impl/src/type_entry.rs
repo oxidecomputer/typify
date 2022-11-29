@@ -12,7 +12,6 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
-    value::extract_selected_variant,
     DefaultImpl, Name, TypeId, TypeSpace,
 };
 

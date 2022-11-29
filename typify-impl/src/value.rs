@@ -171,7 +171,7 @@ impl TypeEntry {
     }
 }
 
-pub(crate) fn extract_selected_variant<'a, 'b>(
+fn extract_selected_variant<'a, 'b>(
     variants: &'b [Variant],
     value: &'a serde_json::Value,
 ) -> Option<(&'b Variant, Option<&'a Value>)> {
