@@ -572,7 +572,7 @@ mod tests {
     }
 
     #[test]
-    fn test_struct_simple() {
+    fn test_struct_simple_super_scoped() {
         #[derive(JsonSchema)]
         #[allow(dead_code)]
         struct Test {
@@ -612,6 +612,46 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_struct_simple() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        struct Test {
+            a: String,
+            b: u32,
+            c: Option<String>,
+            d: Option<f64>,
+        }
+
+        let (type_space, type_id) = get_type::<Test>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!(
+                        {
+                            "a": "aaaa",
+                            "b": 7,
+                            "c": "cccc"
+                        }
+                    ),
+                    false
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test {
+                        a: "aaaa".to_string(),
+                        b: 7_u32,
+                        c: Some("cccc".to_string())
+                    }
+                }
+                .to_string()
+            )
+        );
+    }
     #[test]
     fn test_enum_external_super_scoped() {
         #[derive(JsonSchema)]
