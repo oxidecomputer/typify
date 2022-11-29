@@ -1511,7 +1511,7 @@ mod tests {
         }
         impl Default for TestEnum {
             fn default() -> Self {
-                Self::Failure
+                TestEnum::Failure
             }
         }};
 

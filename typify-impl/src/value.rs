@@ -26,6 +26,7 @@ impl TypeEntry {
         &self,
         type_space: &TypeSpace,
         value: &serde_json::Value,
+        super_scoped: bool,
     ) -> Option<TokenStream> {
         let v = match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
@@ -35,16 +36,22 @@ impl TypeEntry {
                 ..
             }) => match tag_type {
                 EnumTagType::External => {
-                    value_for_external_enum(type_space, name, variants, value)?
+                    value_for_external_enum(type_space, name, variants, value, super_scoped)?
                 }
                 EnumTagType::Internal { tag } => {
-                    value_for_internal_enum(type_space, name, variants, value, tag)?
+                    value_for_internal_enum(type_space, name, variants, value, tag, super_scoped)?
                 }
-                EnumTagType::Adjacent { tag, content } => {
-                    value_for_adjacent_enum(type_space, name, variants, value, tag, content)?
-                }
+                EnumTagType::Adjacent { tag, content } => value_for_adjacent_enum(
+                    type_space,
+                    name,
+                    variants,
+                    value,
+                    tag,
+                    content,
+                    super_scoped,
+                )?,
                 EnumTagType::Untagged => {
-                    value_for_untagged_enum(type_space, name, variants, value)?
+                    value_for_untagged_enum(type_space, name, variants, value, super_scoped)?
                 }
             },
             TypeEntryDetails::Struct(TypeEntryStruct {
@@ -52,16 +59,24 @@ impl TypeEntry {
             }) => {
                 let props = value_for_struct_props(properties, value, type_space)?;
                 let ident = format_ident!("{}", name);
-                quote! { super::#ident { #( #props ),* }}
+                let mut path_prefix = TokenStream::new();
+                if super_scoped {
+                    path_prefix = quote!(super::);
+                };
+                quote! { #path_prefix #ident { #( #props ),* }}
             }
             TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
                 let inner = type_space
                     .id_to_entry
                     .get(type_id)
                     .unwrap()
-                    .output_value(type_space, value);
+                    .output_value(type_space, value, false);
                 let ident = format_ident!("{}", name);
-                quote! { super::#ident ( #inner )}
+                let mut path_prefix = TokenStream::new();
+                if super_scoped {
+                    path_prefix = quote!(super::);
+                };
+                quote! { #path_prefix #ident ( #inner )}
             }
 
             TypeEntryDetails::Option(type_id) => {
@@ -72,7 +87,7 @@ impl TypeEntry {
                         .id_to_entry
                         .get(type_id)
                         .unwrap()
-                        .output_value(type_space, value)?;
+                        .output_value(type_space, value, false)?;
                     quote! { Some(#inner) }
                 }
             }
@@ -81,7 +96,7 @@ impl TypeEntry {
                     .id_to_entry
                     .get(type_id)
                     .unwrap()
-                    .output_value(type_space, value)?;
+                    .output_value(type_space, value, false)?;
                 quote! { Box::new(#inner) }
             }
             // TODO: this should become a HashSet<_> once we figure out the
@@ -91,7 +106,7 @@ impl TypeEntry {
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let values = arr
                     .iter()
-                    .map(|arr_value| inner.output_value(type_space, arr_value))
+                    .map(|arr_value| inner.output_value(type_space, arr_value, false))
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
@@ -101,7 +116,7 @@ impl TypeEntry {
                 let kvs = obj
                     .iter()
                     .map(|(name, obj_value)| {
-                        Some((name, inner.output_value(type_space, obj_value)?))
+                        Some((name, inner.output_value(type_space, obj_value, false)?))
                     })
                     .collect::<Option<Vec<_>>>()?;
                 let (keys, values): (Vec<_>, Vec<_>) = kvs.into_iter().unzip();
@@ -180,20 +195,25 @@ fn value_for_external_enum(
     type_name: &str,
     variants: &[Variant],
     value: &serde_json::Value,
+    super_scoped: bool,
 ) -> Option<TokenStream> {
     let (variant, var_value) = extract_selected_variant(variants, value)?;
 
     let var_ident = format_ident!("{}", &variant.name);
     let type_ident = format_ident!("{}", type_name);
+    let mut path_prefix = TokenStream::new();
+    if super_scoped {
+        path_prefix = quote!(super::);
+    };
     match &variant.details {
-        VariantDetails::Simple => Some(quote! { super::#type_ident::#var_ident }),
+        VariantDetails::Simple => Some(quote! { #path_prefix #type_ident::#var_ident }),
         VariantDetails::Tuple(types) => {
             let tup = value_for_tuple(type_space, var_value?, types)?;
-            Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
+            Some(quote! { #path_prefix #type_ident::#var_ident ( #( #tup ),* ) })
         }
         VariantDetails::Struct(props) => {
             let props = value_for_struct_props(props, var_value?, type_space)?;
-            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
+            Some(quote! { #path_prefix #type_ident::#var_ident { #( #props ),* } })
         }
     }
 }
@@ -204,6 +224,7 @@ fn value_for_internal_enum(
     variants: &[Variant],
     value: &serde_json::Value,
     tag: &str,
+    super_scoped: bool,
 ) -> Option<TokenStream> {
     let map = value.as_object()?;
     let ser_name = map.get(tag).and_then(serde_json::Value::as_str)?;
@@ -212,9 +233,13 @@ fn value_for_internal_enum(
         .find(|variant| ser_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
     let var_ident = format_ident!("{}", &variant.name);
     let type_ident = format_ident!("{}", type_name);
+    let mut path_prefix = TokenStream::new();
+    if super_scoped {
+        path_prefix = quote!(super::);
+    };
 
     match &variant.details {
-        VariantDetails::Simple => Some(quote! { super::#type_ident::#var_ident }),
+        VariantDetails::Simple => Some(quote! { #path_prefix #type_ident::#var_ident }),
         VariantDetails::Struct(props) => {
             // Make an object without the tag.
             let inner_value = serde_json::Value::Object(
@@ -225,7 +250,7 @@ fn value_for_internal_enum(
             );
 
             let props = value_for_struct_props(props, &inner_value, type_space)?;
-            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
+            Some(quote! { #path_prefix #type_ident::#var_ident { #( #props ),* } })
         }
         VariantDetails::Tuple(_) => unreachable!(),
     }
@@ -238,6 +263,7 @@ fn value_for_adjacent_enum(
     value: &serde_json::Value,
     tag: &str,
     content: &str,
+    super_scoped: bool,
 ) -> Option<TokenStream> {
     let map = value.as_object()?;
 
@@ -256,16 +282,19 @@ fn value_for_adjacent_enum(
         .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
     let type_ident = format_ident!("{}", type_name);
     let var_ident = format_ident!("{}", &variant.name);
-
+    let mut path_prefix = TokenStream::new();
+    if super_scoped {
+        path_prefix = quote!(super::);
+    };
     match (&variant.details, content_value) {
-        (VariantDetails::Simple, None) => Some(quote! { super::#type_ident::#var_ident}),
+        (VariantDetails::Simple, None) => Some(quote! { #path_prefix #type_ident::#var_ident}),
         (VariantDetails::Tuple(types), Some(content_value)) => {
             let tup = value_for_tuple(type_space, content_value, types)?;
-            Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
+            Some(quote! { #path_prefix #type_ident::#var_ident ( #( #tup ),* ) })
         }
         (VariantDetails::Struct(props), Some(content_value)) => {
             let props = value_for_struct_props(props, content_value, type_space)?;
-            Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
+            Some(quote! { #path_prefix #type_ident::#var_ident { #( #props ),* } })
         }
         _ => None,
     }
@@ -276,22 +305,27 @@ fn value_for_untagged_enum(
     type_name: &str,
     variants: &[Variant],
     value: &serde_json::Value,
+    super_scoped: bool,
 ) -> Option<TokenStream> {
     let type_ident = format_ident!("{}", type_name);
     variants.iter().find_map(|variant| {
         let var_ident = format_ident!("{}", &variant.name);
+        let mut path_prefix = TokenStream::new();
+        if super_scoped {
+            path_prefix = quote!(super::);
+        };
         match &variant.details {
             VariantDetails::Simple => {
                 value.as_null()?;
-                Some(quote! { super::#type_ident::#var_ident })
+                Some(quote! { #path_prefix #type_ident::#var_ident })
             }
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, value, types)?;
-                Some(quote! { super::#type_ident::#var_ident ( #( #tup ),* ) })
+                Some(quote! { #path_prefix #type_ident::#var_ident ( #( #tup ),* ) })
             }
             VariantDetails::Struct(props) => {
                 let props = value_for_struct_props(props, value, type_space)?;
-                Some(quote! { super::#type_ident::#var_ident { #( #props ),* } })
+                Some(quote! { #path_prefix #type_ident::#var_ident { #( #props ),* } })
             }
         }
     })
@@ -312,7 +346,7 @@ fn value_for_tuple(
                 .id_to_entry
                 .get(type_id)
                 .unwrap()
-                .output_value(type_space, tup_value)
+                .output_value(type_space, tup_value, false)
         })
         .collect()
 }
@@ -342,7 +376,7 @@ fn value_for_struct_props(
         // of one of the flattened properties.
         let prop = prop_map.get(name)?;
         let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let prop_value = type_entry.output_value(type_space, value)?;
+        let prop_value = type_entry.output_value(type_space, value, false)?;
         let name_ident = format_ident!("{}", name);
 
         Some(quote! { #name_ident: #prop_value })
@@ -367,7 +401,7 @@ fn value_for_struct_props(
                 _ => unreachable!(),
             }
 
-            let flat_value = type_entry.output_value(type_space, &extra_value)?;
+            let flat_value = type_entry.output_value(type_space, &extra_value, false)?;
             let name = &prop.name;
             Some(quote! { #name: #flat_value })
         }
@@ -395,13 +429,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null), false)
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(42))
+                .output_value(&type_space, &json!(42), false)
                 .map(|x| x.to_string()),
             Some("Some (42_u32)".to_string()),
         );
@@ -418,13 +452,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null), false)
                 .map(|x| x.to_string()),
             Some("Box :: new (None)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(42))
+                .output_value(&type_space, &json!(42), false)
                 .map(|x| x.to_string()),
             Some("Box :: new (Some (42_u32))".to_string()),
         );
@@ -437,13 +471,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([]))
+                .output_value(&type_space, &json!([]), false)
                 .map(|x| x.to_string()),
             Some("vec ! []".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([1, 2, 5]))
+                .output_value(&type_space, &json!([1, 2, 5]), false)
                 .map(|x| x.to_string()),
             Some("vec ! [1_u32 , 2_u32 , 5_u32]".to_string()),
         );
@@ -456,13 +490,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!({}))
+                .output_value(&type_space, &json!({}), false)
                 .map(|x| x.to_string()),
             Some("[] . into_iter () . collect ()".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!({"a": 1, "b": 2}))
+                .output_value(&type_space, &json!({"a": 1, "b": 2}), false)
                 .map(|x| x.to_string()),
             Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
         );
@@ -475,7 +509,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([1, 2, "three"]))
+                .output_value(&type_space, &json!([1, 2, "three"]), false)
                 .map(|x| x.to_string()),
             Some(r#"(1_u32 , 2_u32 , "three" . to_string ())"#.to_string()),
         );
@@ -488,7 +522,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!("not-a-uuid"))
+                .output_value(&type_space, &json!("not-a-uuid"), false)
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -506,19 +540,19 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(true))
+                .output_value(&type_space, &json!(true), false)
                 .map(|x| x.to_string()),
             Some("Some (true)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(false))
+                .output_value(&type_space, &json!(false), false)
                 .map(|x| x.to_string()),
             Some("Some (false)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null), false)
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
@@ -531,7 +565,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([0, 0, 0, "zero"]))
+                .output_value(&type_space, &json!([0, 0, 0, "zero"]), false)
                 .map(|x| x.to_string()),
             Some(r#"(0_u32 , 0_i64 , 0_f64 , "zero" . to_string ())"#.to_string()),
         );
@@ -561,7 +595,8 @@ mod tests {
                             "b": 7,
                             "c": "cccc"
                         }
-                    )
+                    ),
+                    true
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -570,6 +605,69 @@ mod tests {
                         a: "aaaa".to_string(),
                         b: 7_u32,
                         c: Some("cccc".to_string())
+                    }
+                }
+                .to_string()
+            )
+        );
+    }
+
+    #[test]
+    fn test_enum_external_super_scoped() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        enum Test {
+            A,
+            B(String, String),
+            C { cc: String, dd: String },
+        }
+
+        let (type_space, type_id) = get_type::<Test>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert_eq!(
+            type_entry
+                .output_value(&type_space, &json!("A"), true)
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::A
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "B": ["xx", "yy"]
+                    }),
+                    true
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::B("xx".to_string(), "yy".to_string())
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "C": { "cc": "xx", "dd": "yy" }
+                    }),
+                    true
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::C {
+                        cc: "xx".to_string(),
+                        dd: "yy".to_string()
                     }
                 }
                 .to_string()
@@ -592,7 +690,76 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!("A"))
+                .output_value(&type_space, &json!("A"), false)
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test::A
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "B": ["xx", "yy"]
+                    }),
+                    false
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test::B("xx".to_string(), "yy".to_string())
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "C": { "cc": "xx", "dd": "yy" }
+                    }),
+                    false
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test::C {
+                        cc: "xx".to_string(),
+                        dd: "yy".to_string()
+                    }
+                }
+                .to_string()
+            )
+        );
+    }
+
+    #[test]
+    fn test_enum_internal_super_scoped() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        #[serde(tag = "tag")]
+        enum Test {
+            A,
+            C { cc: String, dd: String },
+        }
+
+        let (type_space, type_id) = get_type::<Test>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "tag": "A"
+                    }),
+                    true
+                )
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -606,24 +773,11 @@ mod tests {
                 .output_value(
                     &type_space,
                     &json!({
-                        "B": ["xx", "yy"]
-                    })
-                )
-                .map(|x| x.to_string()),
-            Some(
-                quote! {
-                    super::Test::B("xx".to_string(), "yy".to_string())
-                }
-                .to_string()
-            )
-        );
-        assert_eq!(
-            type_entry
-                .output_value(
-                    &type_space,
-                    &json!({
-                        "C": { "cc": "xx", "dd": "yy" }
-                    })
+                        "tag": "C",
+                        "cc": "xx",
+                        "dd": "yy"
+                    }),
+                    true
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -657,7 +811,63 @@ mod tests {
                     &type_space,
                     &json!({
                         "tag": "A"
-                    })
+                    }),
+                    false
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test::A
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "tag": "C",
+                        "cc": "xx",
+                        "dd": "yy"
+                    }),
+                    false
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    Test::C {
+                        cc: "xx".to_string(),
+                        dd: "yy".to_string()
+                    }
+                }
+                .to_string()
+            )
+        );
+    }
+
+    #[test]
+    fn test_enum_adjacent_super_scoped() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        #[serde(tag = "tag", content = "content")]
+        enum Test {
+            A,
+            B(String, String),
+            C { cc: String, dd: String },
+        }
+
+        let (type_space, type_id) = get_type::<Test>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
+                        "tag": "A"
+                    }),
+                    true
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -672,10 +882,28 @@ mod tests {
                 .output_value(
                     &type_space,
                     &json!({
+                        "tag": "B",
+                        "content": ["xx", "yy"]
+                    }),
+                    true
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::B("xx".to_string(), "yy".to_string())
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!({
                         "tag": "C",
-                        "cc": "xx",
-                        "dd": "yy"
-                    })
+                        "content": { "cc": "xx", "dd": "yy" }
+                    }),
+                    true
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -710,12 +938,13 @@ mod tests {
                     &type_space,
                     &json!({
                         "tag": "A"
-                    })
+                    }),
+                    false
                 )
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::A
+                    Test::A
                 }
                 .to_string()
             )
@@ -727,12 +956,13 @@ mod tests {
                     &json!({
                         "tag": "B",
                         "content": ["xx", "yy"]
-                    })
+                    }),
+                    false
                 )
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::B("xx".to_string(), "yy".to_string())
+                    Test::B("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -744,12 +974,71 @@ mod tests {
                     &json!({
                         "tag": "C",
                         "content": { "cc": "xx", "dd": "yy" }
-                    })
+                    }),
+                    false
                 )
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::C {
+                    Test::C {
+                        cc: "xx".to_string(),
+                        dd: "yy".to_string()
+                    }
+                }
+                .to_string()
+            )
+        );
+    }
+
+    #[test]
+    fn test_enum_untagged_super_scoped() {
+        #[derive(JsonSchema)]
+        #[allow(dead_code)]
+        #[serde(untagged)]
+        enum Test {
+            A,
+            B(String, String),
+            C { cc: String, dd: String },
+        }
+
+        let (type_space, type_id) = get_type::<Test>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert_eq!(
+            type_entry
+                .output_value(&type_space, &json!(null), true)
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::Variant0
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(&type_space, &json!(["xx", "yy"]), true)
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::Variant1("xx".to_string(), "yy".to_string())
+                }
+                .to_string()
+            )
+        );
+        assert_eq!(
+            type_entry
+                .output_value(
+                    &type_space,
+                    &json!(
+                         { "cc": "xx", "dd": "yy" }
+                    ),
+                    true
+                )
+                .map(|x| x.to_string()),
+            Some(
+                quote! {
+                    super::Test::Variant2 {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }
@@ -775,22 +1064,22 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null))
+                .output_value(&type_space, &json!(null), false)
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant0
+                    Test::Variant0
                 }
                 .to_string()
             )
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(["xx", "yy"]))
+                .output_value(&type_space, &json!(["xx", "yy"]), false)
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant1("xx".to_string(), "yy".to_string())
+                    Test::Variant1("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -801,12 +1090,13 @@ mod tests {
                     &type_space,
                     &json!(
                          { "cc": "xx", "dd": "yy" }
-                    )
+                    ),
+                    false
                 )
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant2 {
+                    Test::Variant2 {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }

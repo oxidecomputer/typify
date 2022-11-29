@@ -496,19 +496,13 @@ impl TypeEntry {
             });
 
         let default_impl = default.as_ref().map(|value| {
-            let (variant, _) = extract_selected_variant(&variants, &value.0).unwrap();
-
-            let var_ident = format_ident!("{}", &variant.name);
-            if let VariantDetails::Simple = &variant.details {
-                Some(quote! {
-                    impl Default for #type_name {
-                        fn default() -> Self {
-                            Self::#var_ident
-                        }
+            let default_stream = self.output_value(type_space, &value.0, false).unwrap();
+            quote! {
+                impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
                     }
-                })
-            } else {
-                None
+                }
             }
         });
 
@@ -702,7 +696,7 @@ impl TypeEntry {
 
         // If there's a default value, generate an impl Default
         if let Some(value) = default {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let default_stream = self.output_value(type_space, &value.0, false).unwrap();
             output.add_item(
                 OutputSpaceMod::Crate,
                 name,
@@ -814,7 +808,7 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
                 let value_output = enum_values
                     .iter()
-                    .map(|value| sub_type.output_value(type_space, &value.0));
+                    .map(|value| sub_type.output_value(type_space, &value.0, false));
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well
                 Some(quote! {
@@ -923,7 +917,7 @@ impl TypeEntry {
         };
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let default_stream = self.output_value(type_space, &value.0, false).unwrap();
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {
