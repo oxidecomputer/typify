@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IdOrName",
+  "oneOf": [
+    {
+      "title": "Id",
+      "allOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        }
+      ]
+    },
+    {
+      "title": "Name",
+      "allOf": [
+        {
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}
