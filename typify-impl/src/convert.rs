@@ -999,7 +999,8 @@ impl TypeSpace {
             Name::Unknown => todo!(),
         };
 
-        let (mut type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
+        let (mut type_entry, metadata) =
+            self.convert_schema_object(inner_type_name, &type_schema)?;
 
         // Make sure all the values are valid.
         enum_values
@@ -1029,7 +1030,12 @@ impl TypeSpace {
         // ```
         // This will fail due to InnerType not implementing `PartialEq`
         // TODO: What other conditions will cause this to fail?
-        if let TypeEntry { details: TypeEntryDetails::Newtype(_), derives, .. } = &mut type_entry {
+        if let TypeEntry {
+            details: TypeEntryDetails::Newtype(_),
+            derives,
+            ..
+        } = &mut type_entry
+        {
             derives.insert("PartialEq".to_string());
         }
 
@@ -1558,16 +1564,17 @@ mod tests {
                         enum_values: Some(vec![
                             serde_json::Value::String("a".to_string()),
                             serde_json::Value::String("b".to_string()),
-                            serde_json::Value::String("c".to_string())
+                            serde_json::Value::String("c".to_string()),
                         ]),
                         string: Some(
                             schemars::schema::StringValidation {
                                 max_length: Some(64),
                                 ..Default::default()
-                            }.into(),
+                            }
+                            .into(),
                         ),
                         ..Default::default()
-                    })
+                    }),
                 );
 
                 schemars::schema::Schema::Object(schemars::schema::SchemaObject {
@@ -1577,7 +1584,8 @@ mod tests {
                             required,
                             properties,
                             ..Default::default()
-                        }.into(),
+                        }
+                        .into(),
                     ),
                     ..Default::default()
                 })
