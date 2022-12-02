@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IdOrName",
+  "oneOf": [
+    {
+      "title": "Id",
+      "allOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        }
+      ]
+    },
+    {
+      "title": "Name",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Name"
+        }
+      ]
+    }
+  ],
+  "definitions": {
+    "Name": {
+      "title": "A name unique within the parent collection",
+      "description": "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID.",
+      "type": "string",
+      "pattern": "^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$",
+      "maxLength": 63
+    }
+  }
+}
