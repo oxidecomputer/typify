@@ -9,14 +9,13 @@ use typify::TypeSpace;
 
 #[test]
 fn test_schemas() {
+    // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
         validate_schema(entry.unwrap()).unwrap();
     }
 
-    let t = trybuild::TestCases::new();
-    t.pass("tests/schemas/*.rs");
-
-    //panic!();
+    // Make sure it all compiles.
+    trybuild::TestCases::new().pass("tests/schemas/*.rs");
 }
 
 fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
