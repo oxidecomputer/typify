@@ -291,7 +291,10 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             derives,
-            impls: Default::default(),
+            impls: ["Display", "FromStr"]
+                .into_iter()
+                .map(ToString::to_string)
+                .collect(),
         }
     }
 
@@ -330,7 +333,10 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             derives,
-            impls: ["Display".to_string()].into_iter().collect(),
+            impls: ["Display", "FromStr"]
+                .into_iter()
+                .map(ToString::to_string)
+                .collect(),
         }
     }
 }
@@ -338,7 +344,10 @@ impl TypeEntryNewtype {
 impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         let impls = match details {
-            TypeEntryDetails::String => ["Display"].into_iter().map(ToString::to_string).collect(),
+            TypeEntryDetails::String => ["Display", "FromStr"]
+                .into_iter()
+                .map(ToString::to_string)
+                .collect(),
             _ => Default::default(),
         };
         Self {
@@ -473,56 +482,58 @@ impl TypeEntry {
             .map(|variant| output_variant(variant, type_space, output, name))
             .collect::<Vec<_>>();
 
-        // ToString impl for enums that are made exclusively of simple variants.
-        let simple_enum_impl = variants
+        // It should not be possible to construct an untagged enum
+        // with more than one simple variants--it would not be usable.
+        if variants
             .iter()
-            .map(|variant| {
-                if let VariantDetails::Simple = variant.details {
-                    Some(variant)
-                } else {
-                    None
-                }
-            })
-            .collect::<Option<Vec<_>>>()
-            .map(|simple_variants| {
-                // It should not be possible to construct an untagged enum
-                // exclusively of simple variants--it would not be usable.
-                assert!(tag_type != &EnumTagType::Untagged);
+            .filter(|variant| matches!(variant.details, VariantDetails::Simple))
+            .count()
+            > 1
+        {
+            assert!(tag_type != &EnumTagType::Untagged);
+        }
 
-                let (match_variants, match_strs): (Vec<_>, Vec<_>) = simple_variants
-                    .iter()
-                    .map(|variant| {
-                        let variant_name = format_ident!("{}", variant.name);
-                        let variant_str = match &variant.rename {
-                            Some(s) => s,
-                            None => &variant.name,
-                        };
-                        (variant_name, variant_str)
-                    })
-                    .unzip();
+        // ToString and FromStr impls for enums that are made exclusively of
+        // simple variants (and are not untagged).
+        let simple_enum_impl = (tag_type != &EnumTagType::Untagged
+            && variants
+                .iter()
+                .all(|variant| matches!(variant.details, VariantDetails::Simple)))
+        .then(|| {
+            let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
+                .iter()
+                .map(|variant| {
+                    let variant_name = format_ident!("{}", variant.name);
+                    let variant_str = match &variant.rename {
+                        Some(s) => s,
+                        None => &variant.name,
+                    };
+                    (variant_name, variant_str)
+                })
+                .unzip();
 
-                quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
-                            match *self {
-                                #(Self::#match_variants => #match_strs.to_string(),)*
-                            }
-                        }
-                    }
-                    impl std::str::FromStr for #type_name {
-                        type Err = &'static str;
-
-                        fn from_str(
-                            value: &str
-                        ) -> Result<Self, Self::Err> {
-                            match value {
-                                #(#match_strs => Ok(Self::#match_variants),)*
-                                _ => Err("invalid value"),
-                            }
+            quote! {
+                impl ToString for #type_name {
+                    fn to_string(&self) -> String {
+                        match *self {
+                            #(Self::#match_variants => #match_strs.to_string(),)*
                         }
                     }
                 }
-            });
+                impl std::str::FromStr for #type_name {
+                    type Err = &'static str;
+
+                    fn from_str(
+                        value: &str
+                    ) -> Result<Self, Self::Err> {
+                        match value {
+                            #(#match_strs => Ok(Self::#match_variants),)*
+                            _ => Err("invalid value"),
+                        }
+                    }
+                }
+            }
+        });
 
         let default_impl = default.as_ref().map(|value| {
             let default_stream = self.output_value(type_space, &value.0).unwrap();
@@ -535,8 +546,8 @@ impl TypeEntry {
             }
         });
 
-        let untagged_newtype_impl =
-            all_variants_support_from_string(type_space, tag_type, variants).then(|| {
+        let untagged_newtype_from_string_impl =
+            untagged_newtype_variants(type_space, tag_type, variants, "FromStr").then(|| {
                 let (variant_name, variant_type): (Vec<_>, Vec<_>) = variants
                     .iter()
                     .map(|variant| {
@@ -594,6 +605,23 @@ impl TypeEntry {
                 }
             });
 
+        let untagged_newtype_to_string_impl =
+            untagged_newtype_variants(type_space, tag_type, variants, "Display").then(|| {
+                let variant_name = variants
+                    .iter()
+                    .map(|variant| format_ident!("{}", variant.name));
+
+                quote! {
+                    impl ToString for #type_name {
+                        fn to_string(&self) -> String {
+                            match self {
+                                #(Self::#variant_name(x) => x.to_string(),)*
+                            }
+                        }
+                    }
+                }
+            });
+
         let derives = strings_to_derives(
             derive_set,
             &self.derives,
@@ -610,7 +638,8 @@ impl TypeEntry {
 
             #simple_enum_impl
             #default_impl
-            #untagged_newtype_impl
+            #untagged_newtype_from_string_impl
+            #untagged_newtype_to_string_impl
         };
         output.add_item(OutputSpaceMod::Crate, name, item);
     }
@@ -1214,10 +1243,11 @@ fn strings_to_derives<'a>(
         })
 }
 
-fn all_variants_support_from_string(
+fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
     variants: &[Variant],
+    req_impl: &str,
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
@@ -1230,16 +1260,8 @@ fn all_variants_support_from_string(
                 || false,
                 |type_id| {
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                    matches!(
-                        &type_entry.details,
-                        // ... and its type is either a string
-                        TypeEntryDetails::String
-                        // ... or a newtype wrapper around a constrained string
-                            | TypeEntryDetails::Newtype(TypeEntryNewtype {
-                                constraints: TypeEntryNewtypeConstraints::String { .. },
-                                ..
-                            })
-                    )
+                    // ... and its type has the required impl
+                    type_entry.impls.contains(req_impl)
                 },
             )
         })

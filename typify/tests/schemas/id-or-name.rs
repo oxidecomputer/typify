@@ -5,6 +5,14 @@ pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
 }
+impl ToString for IdOrName {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Id(x) => x.to_string(),
+            Self::Name(x) => x.to_string(),
+        }
+    }
+}
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
 #[derive(Clone, Debug, Serialize)]
 pub struct Name(String);
