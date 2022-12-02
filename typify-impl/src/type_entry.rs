@@ -80,6 +80,7 @@ impl PartialOrd for WrappedValue {
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
     pub derives: BTreeSet<String>,
+    pub impls: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -190,7 +191,11 @@ impl TypeEntryEnum {
             deny_unknown_fields,
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            derives,
+            impls: Default::default(),
+        }
     }
 }
 
@@ -222,7 +227,11 @@ impl TypeEntryStruct {
             deny_unknown_fields,
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            derives,
+            impls: Default::default(),
+        }
     }
 }
 
@@ -248,7 +257,11 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::None,
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            derives,
+            impls: Default::default(),
+        }
     }
 
     pub(crate) fn from_metadata_with_enum_values(
@@ -275,7 +288,11 @@ impl TypeEntryNewtype {
             ),
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            derives,
+            impls: Default::default(),
+        }
     }
 
     pub(crate) fn from_metadata_with_string_validation(
@@ -310,42 +327,55 @@ impl TypeEntryNewtype {
             },
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            derives,
+            impls: ["Display".to_string()].into_iter().collect(),
+        }
     }
 }
 
 impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
+        let impls = match details {
+            TypeEntryDetails::String => ["Display"].into_iter().map(ToString::to_string).collect(),
+            _ => Default::default(),
+        };
         Self {
             details,
             derives: Default::default(),
+            impls,
         }
     }
 }
 
 impl TypeEntry {
-    pub(crate) fn new_builtin<S: ToString>(type_name: S) -> Self {
+    pub(crate) fn new_builtin<S: ToString>(type_name: S, impls: &[&str]) -> Self {
         TypeEntry {
             details: TypeEntryDetails::BuiltIn(type_name.to_string()),
             derives: Default::default(),
+            impls: impls.iter().map(ToString::to_string).collect(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
             derives: Default::default(),
+            impls: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Integer(type_name.to_string()),
             derives: Default::default(),
+            impls: Default::default(),
         }
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
             derives: Default::default(),
+            impls: Default::default(),
         }
     }
 
@@ -1191,7 +1221,7 @@ fn all_variants_support_from_string(
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
-            // If the variant is a tuple...
+            // If the variant is a one-element tuple...
             match &variant.details {
                 VariantDetails::Tuple(types) if types.len() == 1 => types.first(),
                 _ => None,

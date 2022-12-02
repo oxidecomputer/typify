@@ -435,13 +435,13 @@ impl TypeSpace {
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((TypeEntry::new_builtin("uuid::Uuid"), metadata))
+                Ok((TypeEntry::new_builtin("uuid::Uuid", &["Display"]), metadata))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>"),
+                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
@@ -449,14 +449,23 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>"),
+                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
 
-            Some("ip") => Ok((TypeEntry::new_builtin("std::net::IpAddr"), metadata)),
-            Some("ipv4") => Ok((TypeEntry::new_builtin("std::net::Ipv4Addr"), metadata)),
-            Some("ipv6") => Ok((TypeEntry::new_builtin("std::net::Ipv6Addr"), metadata)),
+            Some("ip") => Ok((
+                TypeEntry::new_builtin("std::net::IpAddr", &["Display"]),
+                metadata,
+            )),
+            Some("ipv4") => Ok((
+                TypeEntry::new_builtin("std::net::Ipv4Addr", &["Display"]),
+                metadata,
+            )),
+            Some("ipv6") => Ok((
+                TypeEntry::new_builtin("std::net::Ipv6Addr", &["Display"]),
+                metadata,
+            )),
 
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
@@ -950,7 +959,7 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let any = TypeEntry::new_builtin("serde_json::Value");
+        let any = TypeEntry::new_builtin("serde_json::Value", &[]);
         let type_id = self.assign_type(any);
         Ok((TypeEntryDetails::Array(type_id).into(), metadata))
     }
@@ -968,7 +977,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((TypeEntry::new_builtin("serde_json::Value"), metadata))
+        Ok((TypeEntry::new_builtin("serde_json::Value", &[]), metadata))
     }
 
     fn convert_typed_enum<'a>(
