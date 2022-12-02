@@ -999,12 +999,39 @@ impl TypeSpace {
             Name::Unknown => todo!(),
         };
 
-        let (type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
+        let (mut type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
 
         // Make sure all the values are valid.
         enum_values
             .iter()
             .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
+
+        // If the inner type is a also a NewType than we need to additionally derive `PartialEq`.
+        // If we do not, then we will generate a compilation error by trying to generate:
+        //
+        // ```
+        // impl TryFrom<InnerType> for OuterType {
+        //   type Error = &'static str;
+        //   fn try_from(value: InnerType) -> Result<Self, Self::Error> {
+        //     if ![
+        //         InnerType("a".to_string()),
+        //         InnerType("b".to_string()),
+        //         InnerType("c".to_string()),
+        //     ]
+        //     .contains(&value)
+        //     {
+        //         Err("invalid value")
+        //     } else {
+        //         Ok(Self(value))
+        //     }
+        //   }
+        // }
+        // ```
+        // This will fail due to InnerType not implementing `PartialEq`
+        // TODO: What other conditions will cause this to fail?
+        if let TypeEntry { details: TypeEntryDetails::Newtype(_), derives, .. } = &mut type_entry {
+            derives.insert("PartialEq".to_string());
+        }
 
         let type_id = self.assign_type(type_entry);
 
@@ -1503,6 +1530,143 @@ mod tests {
 
         let actual = type_space.to_stream();
         let expected = quote! {};
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_nested_newtypes() {
+        #[allow(dead_code)]
+        #[derive(Schema)]
+        struct NestedNewTypes(String);
+        impl JsonSchema for NestedNewTypes {
+            fn schema_name() -> String {
+                "NestedNewTypes".to_string()
+            }
+
+            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
+                let mut required = std::collections::BTreeSet::new();
+                required.insert("nested_id".to_string());
+
+                let mut properties = std::collections::BTreeMap::new();
+
+                // Combining `enum_values` with `string` validation will trigger nested newtype
+                // structs to be generated
+                properties.insert(
+                    "nested_id".to_string(),
+                    schemars::schema::Schema::Object(SchemaObject {
+                        instance_type: Some(schemars::schema::InstanceType::String.into()),
+                        enum_values: Some(vec![
+                            serde_json::Value::String("a".to_string()),
+                            serde_json::Value::String("b".to_string()),
+                            serde_json::Value::String("c".to_string())
+                        ]),
+                        string: Some(
+                            schemars::schema::StringValidation {
+                                max_length: Some(64),
+                                ..Default::default()
+                            }.into(),
+                        ),
+                        ..Default::default()
+                    })
+                );
+
+                schemars::schema::Schema::Object(schemars::schema::SchemaObject {
+                    instance_type: Some(schemars::schema::InstanceType::Object.into()),
+                    object: Some(
+                        schemars::schema::ObjectValidation {
+                            required,
+                            properties,
+                            ..Default::default()
+                        }.into(),
+                    ),
+                    ..Default::default()
+                })
+            }
+        }
+
+        // We want an isolated typespace to work with and output
+        let mut type_space = TypeSpace::default();
+
+        let schema = schema_for!(NestedNewTypes);
+        let name = "NestedNewTypes".to_string();
+
+        type_space
+            .add_type_with_name(&schema.schema.into(), Some(name))
+            .unwrap();
+
+        let actual = type_space.to_stream();
+        let expected = quote! {
+            #[derive(Clone, Debug, Deserialize, Serialize)]
+            pub struct NestedNewTypes {
+                pub nested_id: NestedNewTypesNestedId,
+            }
+            #[derive(Clone, Debug, Deserialize, Serialize)]
+            pub struct NestedNewTypesNestedId(NestedNewTypesNestedIdInner);
+            impl std::ops::Deref for NestedNewTypesNestedId {
+                type Target = NestedNewTypesNestedIdInner;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+            impl std::convert::TryFrom<NestedNewTypesNestedIdInner> for NestedNewTypesNestedId {
+                type Error = &'static str;
+                fn try_from(value: NestedNewTypesNestedIdInner) -> Result<Self, Self::Error> {
+                    if ![
+                        super::NestedNewTypesNestedIdInner("a".to_string()),
+                        super::NestedNewTypesNestedIdInner("b".to_string()),
+                        super::NestedNewTypesNestedIdInner("c".to_string()),
+                    ]
+                    .contains(&value)
+                    {
+                        Err("invalid value")
+                    } else {
+                        Ok(Self(value))
+                    }
+                }
+            }
+            #[derive(Clone, Debug, Serialize, PartialEq)]
+            pub struct NestedNewTypesNestedIdInner(String);
+            impl std::ops::Deref for NestedNewTypesNestedIdInner {
+                type Target = String;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+            impl std::convert::TryFrom<&str> for NestedNewTypesNestedIdInner {
+                type Error = &'static str;
+                fn try_from(value: &str) -> Result<Self, Self::Error> {
+                    if value.len() > 64usize {
+                        return Err("longer than 64 characters");
+                    }
+                    Ok(Self(value.to_string()))
+                }
+            }
+            impl std::convert::TryFrom<&String> for NestedNewTypesNestedIdInner {
+                type Error = &'static str;
+                fn try_from(value: &String) -> Result<Self, Self::Error> {
+                    Self::try_from(value.as_str())
+                }
+            }
+            impl std::convert::TryFrom<String> for NestedNewTypesNestedIdInner {
+                type Error = &'static str;
+                fn try_from(value: String) -> Result<Self, Self::Error> {
+                    Self::try_from(value.as_str())
+                }
+            }
+            impl<'de> serde::Deserialize<'de> for NestedNewTypesNestedIdInner {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: serde::Deserializer<'de>,
+                {
+                    Self::try_from(String::deserialize(deserializer)?)
+                        .map_err(|e| {
+                            <D::Error as serde::de::Error>::custom(
+                                e.to_string(),
+                            )
+                        })
+                }
+            }
+        };
         assert_eq!(actual.to_string(), expected.to_string());
     }
 }
