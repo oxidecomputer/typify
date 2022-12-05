@@ -1,0 +1,14 @@
+{
+  "title": "NestedNewType",
+  "type": "object",
+  "properties": {
+    "field": {
+      "type": "string",
+      "enum": [
+        "a",
+        "b"
+      ],
+      "maxLength": 25
+    }
+  }
+}
