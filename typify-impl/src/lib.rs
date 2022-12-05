@@ -908,7 +908,12 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let (te, _) = type_space
-            .convert_enum_string(Name::Required("OnTheGo".to_string()), &None, &enum_values)
+            .convert_enum_string(
+                Name::Required("OnTheGo".to_string()),
+                &None,
+                &enum_values,
+                None,
+            )
             .unwrap();
 
         if let TypeEntryDetails::Option(id) = &te.details {
