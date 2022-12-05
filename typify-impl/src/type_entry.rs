@@ -872,7 +872,11 @@ impl TypeEntry {
                 // to ensure that the `TryFrom` below is correct. We must make sure that we only
                 // implement `PartialEq` here for types that we define. Primitive types and Vecs
                 // already have implementations.
-                let p_eq = if let TypeEntry { details: TypeEntryDetails::Newtype(_), .. } = sub_type {
+                let p_eq = if let TypeEntry {
+                    details: TypeEntryDetails::Newtype(_),
+                    ..
+                } = sub_type
+                {
                     quote! {
                         impl std::cmp::PartialEq for #sub_type_name {
                             #[inline]

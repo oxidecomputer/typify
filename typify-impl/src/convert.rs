@@ -999,8 +999,7 @@ impl TypeSpace {
             Name::Unknown => todo!(),
         };
 
-        let (type_entry, metadata) =
-            self.convert_schema_object(inner_type_name, &type_schema)?;
+        let (type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
 
         // Make sure all the values are valid.
         enum_values
