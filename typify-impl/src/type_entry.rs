@@ -867,9 +867,27 @@ impl TypeEntry {
                 let value_output = enum_values
                     .iter()
                     .map(|value| sub_type.output_value(type_space, &value.0));
+
+                // If the sub type is a new type, than we additionally need to implement `PartialEq`
+                // to ensure that the `TryFrom` below is correct. We must make sure that we only
+                // implement `PartialEq` here for types that we define. Primitive types and Vecs
+                // already have implementations.
+                let p_eq = if let TypeEntry { details: TypeEntryDetails::Newtype(_), .. } = sub_type {
+                    quote! {
+                        impl std::cmp::PartialEq for #sub_type_name {
+                            #[inline]
+                            fn eq(&self, other: &#sub_type_name) -> bool { self.0 == other.0 }
+                        }
+                    }
+                } else {
+                    quote! {}
+                };
+
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well
                 Some(quote! {
+                    #p_eq
+
                     impl std::convert::TryFrom<#sub_type_name> for #type_name {
                         type Error = &'static str;
 
