@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
@@ -14,6 +15,7 @@ use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails, 
 #[cfg(test)]
 mod test_util;
 
+mod conversions;
 mod convert;
 mod defaults;
 mod enums;
@@ -137,6 +139,8 @@ pub struct TypeSpace {
 
     settings: TypeSpaceSettings,
 
+    cache: SchemaCache,
+
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
 }
@@ -155,6 +159,7 @@ impl Default for TypeSpace {
             uses_serde_json: Default::default(),
             uses_regress: Default::default(),
             settings: Default::default(),
+            cache: Default::default(),
             defaults: Default::default(),
         }
     }
@@ -172,8 +177,10 @@ pub(crate) enum DefaultImpl {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
-    patch: BTreeMap<String, TypeSpacePatch>,
     struct_builder: bool,
+
+    patch: BTreeMap<String, TypeSpacePatch>,
+    convert: Vec<TypeSpaceConversion>,
 }
 
 /// Per-type modifications.
@@ -181,6 +188,13 @@ pub struct TypeSpaceSettings {
 pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
+}
+
+#[derive(Debug, Clone)]
+struct TypeSpaceConversion {
+    schema: schemars::schema::SchemaObject,
+    type_name: String,
+    impls: Vec<String>,
 }
 
 impl TypeSpaceSettings {
@@ -205,27 +219,40 @@ impl TypeSpaceSettings {
     /// Modify a type with the given name. Note that specifying a type not
     /// created by the input JSON schema does **not** result in an error and is
     /// silently ignored.
-    pub fn with_patch<S: AsRef<str>>(
+    pub fn with_patch<S: ToString>(
         &mut self,
         type_name: S,
         type_patch: &TypeSpacePatch,
     ) -> &mut Self {
-        self.patch
-            .insert(type_name.as_ref().to_string(), type_patch.clone());
+        self.patch.insert(type_name.to_string(), type_patch.clone());
+        self
+    }
+
+    pub fn with_conversion<S: ToString, I: Iterator<Item = impl ToString>>(
+        &mut self,
+        schema: schemars::schema::SchemaObject,
+        type_name: S,
+        impls: I,
+    ) -> &mut Self {
+        self.convert.push(TypeSpaceConversion {
+            schema,
+            type_name: type_name.to_string(),
+            impls: impls.map(|x| x.to_string()).collect(),
+        });
         self
     }
 }
 
 impl TypeSpacePatch {
     /// Specify the new name for patched type.
-    pub fn with_rename<S: AsRef<str>>(&mut self, rename: S) -> &mut Self {
-        self.rename = Some(rename.as_ref().to_string());
+    pub fn with_rename<S: ToString>(&mut self, rename: S) -> &mut Self {
+        self.rename = Some(rename.to_string());
         self
     }
 
     /// Specify extra derives to apply to the patched type.
-    pub fn with_derive<S: AsRef<str>>(&mut self, derive: S) -> &mut Self {
-        self.derives.push(derive.as_ref().to_string());
+    pub fn with_derive<S: ToString>(&mut self, derive: S) -> &mut Self {
+        self.derives.push(derive.to_string());
         self
     }
 }
@@ -233,8 +260,21 @@ impl TypeSpacePatch {
 impl TypeSpace {
     /// Create a new TypeSpace with custom settings
     pub fn new(settings: &TypeSpaceSettings) -> Self {
+        let mut cache = SchemaCache::default();
+
+        settings.convert.iter().for_each(
+            |TypeSpaceConversion {
+                 schema,
+                 type_name,
+                 impls,
+             }| {
+                cache.insert(schema, type_name, impls);
+            },
+        );
+
         Self {
             settings: settings.clone(),
+            cache,
             ..Default::default()
         }
     }
@@ -672,7 +712,6 @@ impl<'a> Type<'a> {
             type_space,
             type_entry,
         } = self;
-        assert!(type_space.settings.type_mod.is_some());
         type_entry.type_ident(type_space, &type_space.settings.type_mod)
     }
 
