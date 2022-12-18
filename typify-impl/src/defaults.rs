@@ -1,7 +1,6 @@
 // Copyright 2022 Oxide Computer Company
 
 use std::collections::BTreeMap;
-use std::str::FromStr;
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
@@ -319,11 +318,7 @@ impl TypeEntry {
         } else {
             let n = self.type_ident(type_space, &Some("super".to_string()));
             let value = self
-                .output_value(
-                    type_space,
-                    default,
-                    TokenStream::from_str("super::").unwrap(),
-                )
+                .output_value(type_space, default, &quote! { super:: })
                 .unwrap();
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);

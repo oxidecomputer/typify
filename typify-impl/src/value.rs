@@ -26,7 +26,7 @@ impl TypeEntry {
         &self,
         type_space: &TypeSpace,
         value: &serde_json::Value,
-        scope: TokenStream,
+        scope: &TokenStream,
     ) -> Option<TokenStream> {
         let v = match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
@@ -51,16 +51,16 @@ impl TypeEntry {
             TypeEntryDetails::Struct(TypeEntryStruct {
                 name, properties, ..
             }) => {
-                let props = value_for_struct_props(properties, value, type_space)?;
+                let props = value_for_struct_props(properties, value, type_space, scope)?;
                 let ident = format_ident!("{}", name);
                 quote! { #scope #ident { #( #props ),* }}
             }
             TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
-                let inner = type_space.id_to_entry.get(type_id).unwrap().output_value(
-                    type_space,
-                    value,
-                    TokenStream::new(),
-                );
+                let inner = type_space
+                    .id_to_entry
+                    .get(type_id)
+                    .unwrap()
+                    .output_value(type_space, value, scope);
                 let ident = format_ident!("{}", name);
                 quote! { #scope #ident ( #inner )}
             }
@@ -69,20 +69,20 @@ impl TypeEntry {
                 if let serde_json::Value::Null = value {
                     quote! { None }
                 } else {
-                    let inner = type_space.id_to_entry.get(type_id).unwrap().output_value(
-                        type_space,
-                        value,
-                        TokenStream::new(),
-                    )?;
+                    let inner = type_space
+                        .id_to_entry
+                        .get(type_id)
+                        .unwrap()
+                        .output_value(type_space, value, scope)?;
                     quote! { Some(#inner) }
                 }
             }
             TypeEntryDetails::Box(type_id) => {
-                let inner = type_space.id_to_entry.get(type_id).unwrap().output_value(
-                    type_space,
-                    value,
-                    TokenStream::new(),
-                )?;
+                let inner = type_space
+                    .id_to_entry
+                    .get(type_id)
+                    .unwrap()
+                    .output_value(type_space, value, scope)?;
                 quote! { Box::new(#inner) }
             }
             // TODO: this should become a HashSet<_> once we figure out the
@@ -92,7 +92,7 @@ impl TypeEntry {
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let values = arr
                     .iter()
-                    .map(|arr_value| inner.output_value(type_space, arr_value, TokenStream::new()))
+                    .map(|arr_value| inner.output_value(type_space, arr_value, scope))
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
@@ -102,10 +102,7 @@ impl TypeEntry {
                 let kvs = obj
                     .iter()
                     .map(|(name, obj_value)| {
-                        Some((
-                            name,
-                            inner.output_value(type_space, obj_value, TokenStream::new())?,
-                        ))
+                        Some((name, inner.output_value(type_space, obj_value, scope)?))
                     })
                     .collect::<Option<Vec<_>>>()?;
                 let (keys, values): (Vec<_>, Vec<_>) = kvs.into_iter().unzip();
@@ -116,7 +113,7 @@ impl TypeEntry {
                 }
             }
             TypeEntryDetails::Tuple(types) => {
-                let tup = value_for_tuple(type_space, value, types)?;
+                let tup = value_for_tuple(type_space, value, types, scope)?;
                 quote! { ( #( #tup ),* )}
             }
             TypeEntryDetails::Unit => {
@@ -160,45 +157,44 @@ impl TypeEntry {
     }
 }
 
-fn extract_selected_variant<'a, 'b>(
-    variants: &'b [Variant],
-    value: &'a serde_json::Value,
-) -> Option<(&'b Variant, Option<&'a Value>)> {
-    let (var_name, var_value) = if let Some(name) = value.as_str() {
-        (name.to_string(), None)
-    } else {
-        let map = value.as_object()?;
-        (map.len() == 1).then(|| ())?;
-
-        let (name, var_value) = map.iter().next()?;
-        (name.to_string(), Some(var_value))
-    };
-    let variant = variants
-        .iter()
-        .find(|variant| &var_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-    Some((variant, var_value))
-}
-
 fn value_for_external_enum(
     type_space: &TypeSpace,
     type_name: &str,
     variants: &[Variant],
     value: &serde_json::Value,
-    scope: TokenStream,
+    scope: &TokenStream,
 ) -> Option<TokenStream> {
-    let (variant, var_value) = extract_selected_variant(variants, value)?;
+    if let Some(simple_name) = value.as_str() {
+        let variant = variants
+            .iter()
+            .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
 
-    let var_ident = format_ident!("{}", &variant.name);
-    let type_ident = format_ident!("{}", type_name);
-    match &variant.details {
-        VariantDetails::Simple => Some(quote! { #scope #type_ident::#var_ident }),
-        VariantDetails::Tuple(types) => {
-            let tup = value_for_tuple(type_space, var_value?, types)?;
-            Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
-        }
-        VariantDetails::Struct(props) => {
-            let props = value_for_struct_props(props, var_value?, type_space)?;
-            Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
+        let var_ident = format_ident!("{}", &variant.name);
+        let type_ident = format_ident!("{}", type_name);
+        Some(quote! { #scope #type_ident::#var_ident })
+    } else {
+        let map = value.as_object()?;
+        (map.len() == 1).then(|| ())?;
+
+        let (name, var_value) = map.iter().next()?;
+
+        let variant = variants
+            .iter()
+            .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+
+        let var_ident = format_ident!("{}", &variant.name);
+        let type_ident = format_ident!("{}", type_name);
+        match &variant.details {
+            VariantDetails::Simple => None,
+            VariantDetails::Tuple(types) => {
+                let tup = value_for_tuple(type_space, var_value, types, scope)?;
+                Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
+            }
+            VariantDetails::Struct(props) => {
+                let props = value_for_struct_props(props, var_value, type_space, scope)?;
+                Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
+            }
         }
     }
 }
@@ -209,7 +205,7 @@ fn value_for_internal_enum(
     variants: &[Variant],
     value: &serde_json::Value,
     tag: &str,
-    scope: TokenStream,
+    scope: &TokenStream,
 ) -> Option<TokenStream> {
     let map = value.as_object()?;
     let ser_name = map.get(tag).and_then(serde_json::Value::as_str)?;
@@ -230,7 +226,7 @@ fn value_for_internal_enum(
                     .collect(),
             );
 
-            let props = value_for_struct_props(props, &inner_value, type_space)?;
+            let props = value_for_struct_props(props, &inner_value, type_space, scope)?;
             Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
         }
         VariantDetails::Tuple(_) => unreachable!(),
@@ -244,7 +240,7 @@ fn value_for_adjacent_enum(
     value: &serde_json::Value,
     tag: &str,
     content: &str,
-    scope: TokenStream,
+    scope: &TokenStream,
 ) -> Option<TokenStream> {
     let map = value.as_object()?;
 
@@ -266,11 +262,11 @@ fn value_for_adjacent_enum(
     match (&variant.details, content_value) {
         (VariantDetails::Simple, None) => Some(quote! { #scope #type_ident::#var_ident}),
         (VariantDetails::Tuple(types), Some(content_value)) => {
-            let tup = value_for_tuple(type_space, content_value, types)?;
+            let tup = value_for_tuple(type_space, content_value, types, scope)?;
             Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
         }
         (VariantDetails::Struct(props), Some(content_value)) => {
-            let props = value_for_struct_props(props, content_value, type_space)?;
+            let props = value_for_struct_props(props, content_value, type_space, scope)?;
             Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
         }
         _ => None,
@@ -282,7 +278,7 @@ fn value_for_untagged_enum(
     type_name: &str,
     variants: &[Variant],
     value: &serde_json::Value,
-    scope: TokenStream,
+    scope: &TokenStream,
 ) -> Option<TokenStream> {
     let type_ident = format_ident!("{}", type_name);
     variants.iter().find_map(|variant| {
@@ -293,11 +289,11 @@ fn value_for_untagged_enum(
                 Some(quote! { #scope #type_ident::#var_ident })
             }
             VariantDetails::Tuple(types) => {
-                let tup = value_for_tuple(type_space, value, types)?;
+                let tup = value_for_tuple(type_space, value, types, scope)?;
                 Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
             }
             VariantDetails::Struct(props) => {
-                let props = value_for_struct_props(props, value, type_space)?;
+                let props = value_for_struct_props(props, value, type_space, scope)?;
                 Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
             }
         }
@@ -308,6 +304,7 @@ fn value_for_tuple(
     type_space: &TypeSpace,
     value: &serde_json::Value,
     types: &[TypeId],
+    scope: &TokenStream,
 ) -> Option<Vec<TokenStream>> {
     let arr = value.as_array()?;
     (arr.len() == types.len()).then(|| ())?;
@@ -315,11 +312,11 @@ fn value_for_tuple(
         .iter()
         .zip(arr)
         .map(|(type_id, tup_value)| {
-            type_space.id_to_entry.get(type_id).unwrap().output_value(
-                type_space,
-                tup_value,
-                TokenStream::new(),
-            )
+            type_space
+                .id_to_entry
+                .get(type_id)
+                .unwrap()
+                .output_value(type_space, tup_value, scope)
         })
         .collect()
 }
@@ -328,6 +325,7 @@ fn value_for_struct_props(
     properties: &[StructProperty],
     value: &serde_json::Value,
     type_space: &TypeSpace,
+    scope: &TokenStream,
 ) -> Option<Vec<TokenStream>> {
     let map = value.as_object()?;
 
@@ -349,7 +347,7 @@ fn value_for_struct_props(
         // of one of the flattened properties.
         let prop = prop_map.get(name)?;
         let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let prop_value = type_entry.output_value(type_space, value, TokenStream::new())?;
+        let prop_value = type_entry.output_value(type_space, value, scope)?;
         let name_ident = format_ident!("{}", name);
 
         Some(quote! { #name_ident: #prop_value })
@@ -374,8 +372,7 @@ fn value_for_struct_props(
                 _ => unreachable!(),
             }
 
-            let flat_value =
-                type_entry.output_value(type_space, &extra_value, TokenStream::new())?;
+            let flat_value = type_entry.output_value(type_space, &extra_value, scope)?;
             let name = &prop.name;
             Some(quote! { #name: #flat_value })
         }
@@ -387,12 +384,10 @@ fn value_for_struct_props(
 
 #[cfg(test)]
 mod tests {
-    use proc_macro2::TokenStream;
     use quote::quote;
     use schemars::JsonSchema;
     use serde_json::json;
     use std::collections::HashMap;
-    use std::str::FromStr;
     use uuid::Uuid;
 
     use crate::{test_util::get_type, type_entry::TypeEntry};
@@ -404,13 +399,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null), TokenStream::new())
+                .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(42), TokenStream::new())
+                .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
             Some("Some (42_u32)".to_string()),
         );
@@ -427,13 +422,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null), TokenStream::new())
+                .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
             Some("Box :: new (None)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(42), TokenStream::new())
+                .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
             Some("Box :: new (Some (42_u32))".to_string()),
         );
@@ -446,13 +441,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([]), TokenStream::new())
+                .output_value(&type_space, &json!([]), &quote! {})
                 .map(|x| x.to_string()),
             Some("vec ! []".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([1, 2, 5]), TokenStream::new())
+                .output_value(&type_space, &json!([1, 2, 5]), &quote! {})
                 .map(|x| x.to_string()),
             Some("vec ! [1_u32 , 2_u32 , 5_u32]".to_string()),
         );
@@ -465,13 +460,13 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!({}), TokenStream::new())
+                .output_value(&type_space, &json!({}), &quote! {})
                 .map(|x| x.to_string()),
             Some("[] . into_iter () . collect ()".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!({"a": 1, "b": 2}), TokenStream::new())
+                .output_value(&type_space, &json!({"a": 1, "b": 2}), &quote! {})
                 .map(|x| x.to_string()),
             Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
         );
@@ -484,7 +479,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([1, 2, "three"]), TokenStream::new())
+                .output_value(&type_space, &json!([1, 2, "three"]), &quote! {})
                 .map(|x| x.to_string()),
             Some(r#"(1_u32 , 2_u32 , "three" . to_string ())"#.to_string()),
         );
@@ -497,7 +492,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!("not-a-uuid"), TokenStream::new())
+                .output_value(&type_space, &json!("not-a-uuid"), &quote! {})
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -515,19 +510,19 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(true), TokenStream::new())
+                .output_value(&type_space, &json!(true), &quote! {})
                 .map(|x| x.to_string()),
             Some("Some (true)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(false), TokenStream::new())
+                .output_value(&type_space, &json!(false), &quote! {})
                 .map(|x| x.to_string()),
             Some("Some (false)".to_string()),
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null), TokenStream::new())
+                .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
             Some("None".to_string()),
         );
@@ -540,7 +535,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!([0, 0, 0, "zero"]), TokenStream::new())
+                .output_value(&type_space, &json!([0, 0, 0, "zero"]), &quote! {})
                 .map(|x| x.to_string()),
             Some(r#"(0_u32 , 0_i64 , 0_f64 , "zero" . to_string ())"#.to_string()),
         );
@@ -571,7 +566,7 @@ mod tests {
                             "c": "cccc"
                         }
                     ),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! {super::}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -612,7 +607,7 @@ mod tests {
                             "c": "cccc"
                         }
                     ),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -642,11 +637,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(
-                    &type_space,
-                    &json!("A"),
-                    TokenStream::from_str("super::").unwrap()
-                )
+                .output_value(&type_space, &json!("A"), &quote! { super:: })
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -662,7 +653,7 @@ mod tests {
                     &json!({
                         "B": ["xx", "yy"]
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -679,7 +670,7 @@ mod tests {
                     &json!({
                         "C": { "cc": "xx", "dd": "yy" }
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -709,7 +700,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!("A"), TokenStream::new())
+                .output_value(&type_space, &json!("A"), &quote! {})
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -725,7 +716,7 @@ mod tests {
                     &json!({
                         "B": ["xx", "yy"]
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -742,7 +733,7 @@ mod tests {
                     &json!({
                         "C": { "cc": "xx", "dd": "yy" }
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -777,7 +768,7 @@ mod tests {
                     &json!({
                         "tag": "A"
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -796,7 +787,7 @@ mod tests {
                         "cc": "xx",
                         "dd": "yy"
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -831,7 +822,7 @@ mod tests {
                     &json!({
                         "tag": "A"
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -850,7 +841,7 @@ mod tests {
                         "cc": "xx",
                         "dd": "yy"
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -886,7 +877,7 @@ mod tests {
                     &json!({
                         "tag": "A"
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -904,7 +895,7 @@ mod tests {
                         "tag": "B",
                         "content": ["xx", "yy"]
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -922,7 +913,7 @@ mod tests {
                         "tag": "C",
                         "content": { "cc": "xx", "dd": "yy" }
                     }),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -958,7 +949,7 @@ mod tests {
                     &json!({
                         "tag": "A"
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -976,7 +967,7 @@ mod tests {
                         "tag": "B",
                         "content": ["xx", "yy"]
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -994,7 +985,7 @@ mod tests {
                         "tag": "C",
                         "content": { "cc": "xx", "dd": "yy" }
                     }),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -1025,11 +1016,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(
-                    &type_space,
-                    &json!(null),
-                    TokenStream::from_str("super::").unwrap()
-                )
+                .output_value(&type_space, &json!(null), &quote! { super:: })
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -1040,11 +1027,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .output_value(
-                    &type_space,
-                    &json!(["xx", "yy"]),
-                    TokenStream::from_str("super::").unwrap()
-                )
+                .output_value(&type_space, &json!(["xx", "yy"]), &quote! { super:: })
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -1060,7 +1043,7 @@ mod tests {
                     &json!(
                          { "cc": "xx", "dd": "yy" }
                     ),
-                    TokenStream::from_str("super::").unwrap()
+                    &quote! { super:: }
                 )
                 .map(|x| x.to_string()),
             Some(
@@ -1091,7 +1074,7 @@ mod tests {
 
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(null), TokenStream::new())
+                .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -1102,7 +1085,7 @@ mod tests {
         );
         assert_eq!(
             type_entry
-                .output_value(&type_space, &json!(["xx", "yy"]), TokenStream::new())
+                .output_value(&type_space, &json!(["xx", "yy"]), &quote! {})
                 .map(|x| x.to_string()),
             Some(
                 quote! {
@@ -1118,7 +1101,7 @@ mod tests {
                     &json!(
                          { "cc": "xx", "dd": "yy" }
                     ),
-                    TokenStream::new()
+                    &quote! {}
                 )
                 .map(|x| x.to_string()),
             Some(
