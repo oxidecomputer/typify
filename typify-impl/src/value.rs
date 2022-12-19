@@ -4,7 +4,6 @@ use std::{collections::BTreeMap, str::FromStr};
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use serde_json::Value;
 
 use crate::{
     type_entry::{

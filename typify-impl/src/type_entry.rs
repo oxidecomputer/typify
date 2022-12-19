@@ -1,9 +1,10 @@
 // Copyright 2022 Oxide Computer Company
 
+use std::collections::BTreeSet;
+
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
-use std::collections::BTreeSet;
 
 use syn::Path;
 
