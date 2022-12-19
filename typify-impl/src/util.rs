@@ -4,11 +4,11 @@ use std::collections::{BTreeSet, HashSet};
 
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-    SubschemaValidation,
+    StringValidation, SubschemaValidation,
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{Name, TypeSpace};
+use crate::{Error, Name, Result, TypeSpace};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -629,11 +629,58 @@ where
     }
 }
 
+pub(crate) struct StringValidator {
+    max_length: Option<u32>,
+    min_length: Option<u32>,
+    pattern: Option<regress::Regex>,
+}
+
+impl StringValidator {
+    pub fn new(validation: Option<&StringValidation>) -> Result<Self> {
+        let (max_length, min_length, pattern) =
+            validation.map_or(Ok((None, None, None)), |validation| {
+                let max = validation.max_length;
+                let min = validation.min_length;
+                let pattern = validation
+                    .pattern
+                    .as_ref()
+                    .map(|pattern| {
+                        regress::Regex::new(pattern).map_err(|e| {
+                            Error::InvalidSchema(format!("invalid pattern '{}' {}", pattern, e))
+                        })
+                    })
+                    .transpose()?;
+                Ok((max, min, pattern))
+            })?;
+        Ok(Self {
+            max_length,
+            min_length,
+            pattern,
+        })
+    }
+
+    pub fn is_valid<S: AsRef<str>>(&self, s: S) -> bool {
+        self.max_length
+            .as_ref()
+            .map_or(true, |max| s.as_ref().len() as u32 <= *max)
+            && self
+                .min_length
+                .as_ref()
+                .map_or(true, |min| s.as_ref().len() as u32 >= *min)
+            && self
+                .pattern
+                .as_ref()
+                .map_or(true, |pattern| pattern.find(s.as_ref()).is_some())
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use schemars::{schema_for, JsonSchema};
+    use schemars::{schema::StringValidation, schema_for, JsonSchema};
 
     use crate::util::{sanitize, schemas_mutually_exclusive, Case};
+
+    use super::StringValidator;
 
     #[test]
     fn test_non_exclusive_structs() {
@@ -754,5 +801,41 @@ mod tests {
         );
         assert_eq!(sanitize("Ipv6Net", Case::Snake), "ipv6_net");
         assert_eq!(sanitize("V6", Case::Pascal), "V6");
+    }
+
+    #[test]
+    fn test_string_validation() {
+        let permissive = StringValidator::new(None).unwrap();
+        assert!(permissive.is_valid("everything should be fine"));
+        assert!(permissive.is_valid(""));
+
+        let also_permissive = StringValidator::new(Some(&StringValidation {
+            max_length: None,
+            min_length: None,
+            pattern: None,
+        }))
+        .unwrap();
+        assert!(also_permissive.is_valid("everything should be fine"));
+        assert!(also_permissive.is_valid(""));
+
+        let eight = StringValidator::new(Some(&StringValidation {
+            max_length: Some(8),
+            min_length: Some(8),
+            pattern: None,
+        }))
+        .unwrap();
+        assert!(eight.is_valid("Shadrach"));
+        assert!(!eight.is_valid("Meshach"));
+        assert!(eight.is_valid("Abednego"));
+
+        let ach = StringValidator::new(Some(&StringValidation {
+            max_length: None,
+            min_length: None,
+            pattern: Some("ach$".to_string()),
+        }))
+        .unwrap();
+        assert!(ach.is_valid("Shadrach"));
+        assert!(ach.is_valid("Meshach"));
+        assert!(!ach.is_valid("Abednego"));
     }
 }

@@ -6,11 +6,11 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, none_or_single, recase, Case};
+use crate::util::{all_mutually_exclusive, none_or_single, recase, Case, StringValidator};
 use log::info;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-    SubschemaValidation,
+    StringValidation, SubschemaValidation,
 };
 
 use crate::util::get_type_name;
@@ -88,14 +88,17 @@ impl TypeSpace {
                 const_value: None,
                 subschemas: None,
                 number: None,
-                string: validation,
+                string,
                 array: None,
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::String => {
-                self.convert_string(type_name, metadata, format, validation)
-            }
+            } if single.as_ref() == &InstanceType::String => self.convert_string(
+                type_name,
+                metadata,
+                format,
+                string.as_ref().map(Box::as_ref),
+            ),
 
             // Strings with the type omitted, but validation present
             SchemaObject {
@@ -106,14 +109,19 @@ impl TypeSpace {
                 const_value: None,
                 subschemas: None,
                 number: None,
-                string: validation @ Some(_),
+                string: string @ Some(_),
                 array: None,
                 object: None,
                 reference: None,
                 extensions: _,
-            } => self.convert_string(type_name, metadata, format, validation),
+            } => self.convert_string(
+                type_name,
+                metadata,
+                format,
+                string.as_ref().map(Box::as_ref),
+            ),
 
-            // Simple string enum
+            // Enumerated string type
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
@@ -122,14 +130,17 @@ impl TypeSpace {
                 const_value: None,
                 subschemas: None,
                 number: None,
-                string: None,
+                string,
                 array: None,
                 object: None,
                 reference: None,
                 extensions: _,
-            } if single.as_ref() == &InstanceType::String => {
-                self.convert_enum_string(type_name, metadata, enum_values)
-            }
+            } if single.as_ref() == &InstanceType::String => self.convert_enum_string(
+                type_name,
+                metadata,
+                enum_values,
+                string.as_ref().map(Box::as_ref),
+            ),
 
             // Integers
             SchemaObject {
@@ -401,10 +412,10 @@ impl TypeSpace {
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         format: &Option<String>,
-        validation: &Option<Box<schemars::schema::StringValidation>>,
+        validation: Option<&StringValidation>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match format.as_ref().map(String::as_str) {
-            None => match validation.as_ref().map(Box::as_ref) {
+            None => match validation {
                 // It would be unusual for the StringValidation to be Some, but
                 // all its fields to be None, but ... whatever.
                 None
@@ -435,13 +446,13 @@ impl TypeSpace {
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((TypeEntry::new_builtin("uuid::Uuid"), metadata))
+                Ok((TypeEntry::new_builtin("uuid::Uuid", &["Display"]), metadata))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>"),
+                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
@@ -449,14 +460,23 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>"),
+                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
 
-            Some("ip") => Ok((TypeEntry::new_builtin("std::net::IpAddr"), metadata)),
-            Some("ipv4") => Ok((TypeEntry::new_builtin("std::net::Ipv4Addr"), metadata)),
-            Some("ipv6") => Ok((TypeEntry::new_builtin("std::net::Ipv6Addr"), metadata)),
+            Some("ip") => Ok((
+                TypeEntry::new_builtin("std::net::IpAddr", &["Display"]),
+                metadata,
+            )),
+            Some("ipv4") => Ok((
+                TypeEntry::new_builtin("std::net::Ipv4Addr", &["Display"]),
+                metadata,
+            )),
+            Some("ipv6") => Ok((
+                TypeEntry::new_builtin("std::net::Ipv6Addr", &["Display"]),
+                metadata,
+            )),
 
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
@@ -470,6 +490,7 @@ impl TypeSpace {
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
+        validation: Option<&StringValidation>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         // We expect all enum values to be either a string **or** a null. We
         // gather them all up and then choose to either be an enum of simple
@@ -483,6 +504,8 @@ impl TypeSpace {
         // JSON schema.
         let mut has_null = false;
 
+        let validator = StringValidator::new(validation)?;
+
         let variants = enum_values
             .iter()
             .flat_map(|value| match value {
@@ -492,7 +515,7 @@ impl TypeSpace {
                     has_null = true;
                     None
                 }
-                serde_json::Value::String(value) => {
+                serde_json::Value::String(value) if validator.is_valid(value) => {
                     let (name, rename) = recase(value, Case::Pascal);
                     Some(Ok(Variant {
                         name,
@@ -501,6 +524,13 @@ impl TypeSpace {
                         details: VariantDetails::Simple,
                     }))
                 }
+
+                // Ignore enum variants whose strings don't match the given
+                // constraints. If we wanted to get fancy we could include
+                // these variants in the enum but exclude them from the FromStr
+                // conversion... but that seems like unnecessary swag.
+                serde_json::Value::String(_) => None,
+
                 _ => Some(Err(Error::BadValue("string".to_string(), value.clone()))),
             })
             .collect::<Result<Vec<Variant>>>()?;
@@ -950,7 +980,7 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let any = TypeEntry::new_builtin("serde_json::Value");
+        let any = TypeEntry::new_builtin("serde_json::Value", &[]);
         let type_id = self.assign_type(any);
         Ok((TypeEntryDetails::Array(type_id).into(), metadata))
     }
@@ -968,7 +998,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((TypeEntry::new_builtin("serde_json::Value"), metadata))
+        Ok((TypeEntry::new_builtin("serde_json::Value", &[]), metadata))
     }
 
     fn convert_typed_enum<'a>(
@@ -1041,9 +1071,12 @@ impl TypeSpace {
             .collect::<HashSet<_>>();
 
         match (instance_types.len(), instance_types.iter().next()) {
-            (1, Some(InstanceType::String)) => {
-                self.convert_enum_string(type_name, &schema.metadata, enum_values)
-            }
+            (1, Some(InstanceType::String)) => self.convert_enum_string(
+                type_name,
+                &schema.metadata,
+                enum_values,
+                schema.string.as_ref().map(Box::as_ref),
+            ),
 
             // TOD0 We're ignoring booleans for the moment because some of the
             // tests show that this may require more careful consideration.

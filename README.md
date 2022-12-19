@@ -41,7 +41,7 @@ In general, objects turn in to Rust structs. If, however, the schema defines no
 properties, Typify emits a `HashMap<String, T>` if the `additionalProperties`
 schema specifies `T` or a `HashMap<String, serde_json::Value>` otherwise.
 
-Properties that are not in the `required` set ar typically represented as an
+Properties that are not in the `required` set are typically represented as an
 `Option<T>` with the `#[serde(default)]` attribute applied. Non-required
 properties with types that already have a default value (such as a `Vec<T>`)
 simply get the `#[serde(default)]` attribute (so you won't see e.g.
