@@ -1,0 +1,13 @@
+{
+  "definitions": {
+    "test-enum": {
+      "type": "string",
+      "enum": [
+        "failure",
+        "skipped",
+        "success"
+      ],
+      "default": "failure"
+    }
+  }
+}

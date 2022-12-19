@@ -317,7 +317,9 @@ impl TypeEntry {
             (fn_name, None)
         } else {
             let n = self.type_ident(type_space, &Some("super".to_string()));
-            let value = self.output_value(type_space, default).unwrap();
+            let value = self
+                .output_value(type_space, default, &quote! { super:: })
+                .unwrap();
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {

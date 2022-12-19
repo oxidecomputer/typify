@@ -5,6 +5,7 @@ use std::collections::BTreeSet;
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
+
 use syn::Path;
 
 use crate::{
@@ -536,7 +537,7 @@ impl TypeEntry {
         });
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {
@@ -754,7 +755,7 @@ impl TypeEntry {
 
         // If there's a default value, generate an impl Default
         if let Some(value) = default {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
             output.add_item(
                 OutputSpaceMod::Crate,
                 name,
@@ -866,7 +867,7 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
                 let value_output = enum_values
                     .iter()
-                    .map(|value| sub_type.output_value(type_space, &value.0));
+                    .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well
                 Some(quote! {
@@ -975,7 +976,7 @@ impl TypeEntry {
         };
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0).unwrap();
+            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {
