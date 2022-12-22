@@ -1,5 +1,7 @@
 // Copyright 2022 Oxide Computer Company
 
+//! # Typify
+//!
 //! Typify lets you convert JSON Schema documents into Rust types. It can be
 //! used via a macro [`import_types!`] or a `build.rs` file.
 //!
@@ -65,12 +67,57 @@
 //! # }
 //! ```
 //!
+//! # Altering Conversion
+//!
+//! ## Renames and additional derivations
+//!
+//! You can specify renames types or add additional derive macros for generated
+//! types using the `patch` syntax:
+//! ```
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(
+//!     schema = "../example.json",
+//!     patch = {
+//!         Veggie = {
+//!             rename = "Vegetable",
+//!             derives = [ schemars::JsonSchema ],
+//!         }
+//!     }
+//! );
+//! ```
+//!
+//! ## Conversion overrides
+//!
+//! You can override a conversion for a particular JSON schema construct by
+//! specifying an association between the schema and a tuple of the type and
+//! the traits that affect `typify`'s code generation (in particular `Display`):
+//! ```
+//! # mod my_fancy_uuid_crate {
+//! # #[derive(serde::Deserialize)]
+//! # pub struct MyUuid(String);
+//! # }
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(
+//!     schema = "../example.json",
+//!     convert = {
+//!         {
+//!             type = "string",
+//!             format = "uuid",
+//!         } = (my_fancy_uuid_crate::MyUuid, [Display])
+//!     }
+//! );
+//! ```
+//!
+//!
+//!
 //! #### Macro vs. `build.rs`
 //!
 //! While using the [`import_types!`] macro is quite a bit simpler, you can
 //! also construct output in a `build.rs` script. Doing so requires a little
-//! more work do process the JSON Schema document and write out the file to
-//! your intended location. The significant benefit is that the generated type
+//! more work to process the JSON Schema document and write out the file to
+//! your intended location. The biggest benefit is that the generated type
 //! definitions are significantly easier to inspect. The macro-generated types
 //! can be viewed with `cargo expand` and they (like `build.rs`-derived types)
 //! have generated documentation, but if you find that you'd like to see the
