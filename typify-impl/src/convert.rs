@@ -24,9 +24,15 @@ impl TypeSpace {
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match schema {
-            Schema::Bool(true) => self.convert_permissive(&None),
-            Schema::Object(obj) => self.convert_schema_object(type_name, obj),
+            Schema::Object(obj) => {
+                if let Some(type_entry) = self.cache.lookup(obj) {
+                    Ok((type_entry, &obj.metadata))
+                } else {
+                    self.convert_schema_object(type_name, obj)
+                }
+            }
 
+            Schema::Bool(true) => self.convert_permissive(&None),
             // TODO Not sure what to do here... need to return something toxic?
             Schema::Bool(false) => todo!(),
         }
@@ -416,8 +422,8 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match format.as_ref().map(String::as_str) {
             None => match validation {
-                // It would be unusual for the StringValidation to be Some, but
-                // all its fields to be None, but ... whatever.
+                // It should not be possible for the StringValidation to be
+                // Some, but all its fields to be None, but... just to be sure.
                 None
                 | Some(schemars::schema::StringValidation {
                     max_length: None,
@@ -477,7 +483,6 @@ impl TypeSpace {
                 TypeEntry::new_builtin("std::net::Ipv6Addr", &["Display"]),
                 metadata,
             )),
-
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
                 Ok((TypeEntryDetails::String.into(), metadata))
@@ -1150,7 +1155,7 @@ mod tests {
     use crate::{
         output::OutputSpace,
         test_util::{get_type, validate_output},
-        validate_builtin, Error, Name, TypeSpace,
+        validate_builtin, Error, Name, TypeSpace, TypeSpaceSettings,
     };
 
     #[track_caller]
@@ -1527,6 +1532,35 @@ mod tests {
 
         let actual = type_space.to_stream();
         let expected = quote! {};
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_overridden_conversion() {
+        let schema_json = r#"
+        {
+            "description": "don't let this fool you",
+            "type": "string",
+            "format": "uuid"
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_conversion(
+            SchemaObject {
+                instance_type: Some(InstanceType::String.into()),
+                format: Some("uuid".to_string()),
+                ..Default::default()
+            },
+            "not::a::real::library::Uuid",
+            ["Display"].iter(),
+        ));
+        let type_id = type_space.add_type(&schema.schema.into()).unwrap();
+        let typ = type_space.get_type(&type_id).unwrap();
+
+        let actual = typ.ident();
+        let expected = quote! { not::a::real::library::Uuid };
         assert_eq!(actual.to_string(), expected.to_string());
     }
 }

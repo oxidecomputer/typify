@@ -47,9 +47,15 @@ struct MacroSettings {
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
     #[serde(default)]
+    struct_builder: bool,
+
+    #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Type>, MacroPatch>,
     #[serde(default)]
-    struct_builder: bool,
+    convert: serde_tokenstream::OrderedMap<
+        schemars::schema::SchemaObject,
+        (ParseWrapper<syn::Path>, Vec<ParseWrapper<syn::Path>>),
+    >,
 }
 
 #[derive(Deserialize)]
@@ -83,15 +89,27 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             derives,
             patch,
             struct_builder,
+            convert,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
             settings.with_derive(derive.to_token_stream().to_string());
         });
-        patch.into_iter().for_each(|(type_name, patch)| {
-            settings.with_patch(type_name.to_token_stream().to_string(), &patch.into());
-        });
         settings.with_struct_builder(struct_builder);
+
+        patch.into_iter().for_each(|(type_name, patch)| {
+            settings.with_patch(type_name.to_token_stream(), &patch.into());
+        });
+        convert
+            .into_iter()
+            .for_each(|(schema, (type_name, impls))| {
+                settings.with_conversion(
+                    schema,
+                    type_name.to_token_stream(),
+                    impls.into_iter().map(|x| x.to_token_stream()),
+                );
+            });
+
         (schema.into_inner(), settings)
     };
 

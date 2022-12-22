@@ -15,6 +15,11 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
 
+* Allow per-type renames and derive macro applications (#131)
+* `ToString` implementations for untagged enums with trivial newtype variants (#145)
+* Fixed an issue with generation of enum defaults (#137)
+* Allow conversion overrides by specifying a schema (#155)
+
 == 0.0.10 (released 2022-09-10)
 
 https://github.com/oxidecomputer/typify/compare/v0.0.9\...v0.0.10[Full list of commits]
