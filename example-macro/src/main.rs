@@ -4,15 +4,7 @@ use typify::import_types;
 
 use serde::{Deserialize, Serialize};
 
-import_types!(
-    schema = "../example.json",
-    convert = {
-        {
-            type = "string",
-            format = "uuid",
-        } = (uuid::Uuid, [Display]),
-    }
-);
+import_types!(schema = "../example.json");
 
 #[test]
 fn test_main() {
