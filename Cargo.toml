@@ -8,6 +8,6 @@ members = [
 	"example-macro",
 ]
 
-[patch.crates-io]
-serde_tokenstream = { path = "../serde_tokenstream" }
+#[patch.crates-io]
+#serde_tokenstream = { path = "../serde_tokenstream" }
 

@@ -1244,6 +1244,10 @@ fn strings_to_derives<'a>(
         })
 }
 
+/// Returns true iff...
+/// - the enum is untagged
+/// - all variants are 1-item tuple-types (aka newtype variants)
+/// - the type of the newtype variant implements the required trait
 fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
