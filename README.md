@@ -81,12 +81,6 @@ Bounded numbers aren't very well handled. Consider, for example, the schema:
 
 The resulting types won't enforce those value constraints.
 
-### User-defined type-handling
-
-A useful addition would be to have Typify (builder or macro) accept a map of
-JSON Schemas to named Rust types. This would allow consumers to substitute a
-preferred type for some known schema.
-
 ### Configurable dependencies
 
 A string schema with `format` set to `uuid` will result in the `uuid::Uuid`
