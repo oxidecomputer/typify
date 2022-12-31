@@ -12,7 +12,7 @@ impl std::ops::Deref for TestTypeWhereNot {
         &self.0
     }
 }
-impl std::convert::TryFrom<String> for TestTypeWhereNot {
+impl std::convert::TryFrom<&String> for TestTypeWhereNot {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         if ["start".to_string(), "middle".to_string(), "end".to_string()].contains(&value) {
@@ -30,7 +30,7 @@ impl std::ops::Deref for TestTypeWhyNot {
         &self.0
     }
 }
-impl std::convert::TryFrom<String> for TestTypeWhyNot {
+impl std::convert::TryFrom<&String> for TestTypeWhyNot {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         if ["because".to_string()].contains(&value) {

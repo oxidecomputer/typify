@@ -964,7 +964,7 @@ impl TypeEntry {
                         type Error = &'static str;
 
                         fn try_from(
-                            value: #sub_type_name
+                            value: &#sub_type_name
                         ) -> Result<Self, &'static str> {
                             if #not [
                                 #(#value_output,)*
