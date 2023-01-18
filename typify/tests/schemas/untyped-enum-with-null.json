@@ -1,0 +1,18 @@
+{
+  "$comment": "validate a type with no type and enum values that include a null",
+  "title": "TestType",
+  "type": "object",
+  "properties": {
+    "value": {
+      "enum": [
+        null,
+        "start",
+        "middle",
+        "end"
+      ]
+    }
+  },
+  "required": [
+    "value"
+  ]
+}

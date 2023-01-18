@@ -325,7 +325,7 @@ impl TypeSpace {
 
             // Enum of unknown type
             SchemaObject {
-                metadata: _,
+                metadata,
                 instance_type: None,
                 format: None,
                 enum_values: Some(enum_values),
@@ -337,7 +337,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } => self.convert_unknown_enum(type_name, schema, enum_values),
+            } => self.convert_unknown_enum(type_name, metadata, enum_values),
 
             // Subschemas
             SchemaObject {
@@ -1055,15 +1055,15 @@ impl TypeSpace {
     fn convert_unknown_enum<'a>(
         &mut self,
         type_name: Name,
-        schema: &'a SchemaObject,
+        metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // We're here because the schema didn't have a type; that seems busted,
+        // We're here because the schema didn't have a type; that's a bummer,
         // but we'll do our best to roll with the punches.
         assert!(!enum_values.is_empty());
 
         // Let's hope all these values are the same type.
-        let instance_types = enum_values
+        let mut instance_types = enum_values
             .iter()
             .map(|v| match v {
                 serde_json::Value::Null => InstanceType::Null,
@@ -1075,41 +1075,57 @@ impl TypeSpace {
             })
             .collect::<HashSet<_>>();
 
-        match (instance_types.len(), instance_types.iter().next()) {
-            (1, Some(InstanceType::String)) => self.convert_enum_string(
-                type_name,
-                &schema.metadata,
-                enum_values,
-                schema.string.as_ref().map(Box::as_ref),
-            ),
+        let has_null = instance_types.remove(&InstanceType::Null);
 
-            // TOD0 We're ignoring booleans for the moment because some of the
-            // tests show that this may require more careful consideration.
-            (1, Some(InstanceType::Boolean)) => self.convert_bool(&schema.metadata),
+        if has_null {
+            // If there's a null-value, recur with the null value removed; then
+            // convert the resulting type to be optional.
+            let enum_values = enum_values
+                .iter()
+                .cloned()
+                .filter(|v| !v.is_null())
+                .collect::<Vec<_>>();
 
-            (1, Some(instance_type)) => {
-                let fixed_schema = SchemaObject {
-                    instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
-                        *instance_type,
-                    ))),
-                    ..schema.clone()
-                };
-                let (type_entry, metadata) =
-                    self.convert_typed_enum(type_name, &fixed_schema, enum_values)?;
-                Ok((
-                    type_entry,
-                    if metadata.is_some() {
-                        &schema.metadata
-                    } else {
-                        &None
-                    },
-                ))
+            let (type_entry, metadata) =
+                self.convert_unknown_enum(type_name, metadata, &enum_values)?;
+            let type_entry = self.type_to_option(type_entry);
+            Ok((type_entry, metadata))
+        } else {
+            match (instance_types.len(), instance_types.iter().next()) {
+                (1, Some(InstanceType::String)) => {
+                    self.convert_enum_string(type_name, metadata, enum_values, None)
+                }
+
+                // TODO We're ignoring enumerated values for the boolean
+                // type--at least for the moment--because some of the tests
+                // show that this may require more careful consideration.
+                (1, Some(InstanceType::Boolean)) => self.convert_bool(metadata),
+
+                (1, Some(instance_type)) => {
+                    let repaired_schema = SchemaObject {
+                        metadata: metadata.clone(),
+                        instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
+                            *instance_type,
+                        ))),
+                        ..Default::default()
+                    };
+                    let (type_entry, new_metadata) =
+                        self.convert_typed_enum(type_name, &repaired_schema, enum_values)?;
+                    Ok((
+                        type_entry,
+                        if new_metadata.is_some() {
+                            metadata
+                        } else {
+                            &None
+                        },
+                    ))
+                }
+                (1, None) => unreachable!(),
+                _ => panic!(
+                    "multiple implied types for an un-typed enum {:?} {:?}",
+                    instance_types, enum_values
+                ),
             }
-            (1, None) => unreachable!(),
-            _ => panic!(
-                "multiple implied types for an un-typed enum {:?} {:?}",
-                instance_types, enum_values
-            ),
         }
     }
 
