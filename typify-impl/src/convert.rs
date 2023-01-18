@@ -1096,7 +1096,7 @@ impl TypeSpace {
                     self.convert_enum_string(type_name, metadata, enum_values, None)
                 }
 
-                // TOD0 We're ignoring enumerated values for the boolean
+                // TODO We're ignoring enumerated values for the boolean
                 // type--at least for the moment--because some of the tests
                 // show that this may require more careful consideration.
                 (1, Some(InstanceType::Boolean)) => self.convert_bool(metadata),
