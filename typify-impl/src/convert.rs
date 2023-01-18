@@ -316,7 +316,7 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_reference(metadata, reference),
 
-            // Enum of a single, known type.
+            // Enum of a single, known, non-String type (strings above).
             SchemaObject {
                 instance_type: Some(SingleOrVec::Single(_)),
                 enum_values: Some(enum_values),

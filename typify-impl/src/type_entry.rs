@@ -17,11 +17,11 @@ use crate::{
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum TypeEntryImpl {
-    FromStr,
-    Display,
-    Eq,
-    Hash,
-    Ord,
+    // FromStr,
+    // Display,
+    // Eq,
+    // Hash,
+    // Ord,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -38,10 +38,10 @@ pub(crate) struct TypeEntryEnum {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum TypeEntryEnumImpl {
-    Default,
-    AllSimpleVariants,
-    UntaggedFromStr,
-    UntaggedDisplay,
+    // Default,
+    // AllSimpleVariants,
+    // UntaggedFromStr,
+    // UntaggedDisplay,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -950,6 +950,17 @@ impl TypeEntry {
             | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
                 let not = matches!(constraints, TypeEntryNewtypeConstraints::EnumValue(_))
                     .then(|| quote! { ! });
+                // Note that string types with enumerated values are converted
+                // into simple enums rather than newtypes so we would not
+                // expect to see a string as the inner type here.
+                assert!(!matches!(&sub_type.details, TypeEntryDetails::String));
+
+                // We're going to impl Deserialize so we can remove it
+                // from the set of derived impls.
+                derive_set.remove("Deserialize");
+
+                // TODO: if a user were to derive schemars::JsonSchema, it
+                // wouldn't be accurate.
 
                 let value_output = enum_values
                     .iter()
@@ -965,7 +976,8 @@ impl TypeEntry {
 
                         fn try_from(
                             value: &#sub_type_name
-                        ) -> Result<Self, &'static str> {
+                        ) -> Result<Self, &'static str>
+                        {
                             if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
@@ -973,6 +985,34 @@ impl TypeEntry {
                             } else {
                                 Ok(Self(value))
                             }
+                        }
+                    }
+
+                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(
+                            value: #sub_type_name
+                        ) -> Result<Self, Self::Error> {
+                            Self::try_from(&value)
+                        }
+                    }
+
+                    impl<'de> serde::Deserialize<'de> for #type_name {
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> Result<Self, D::Error>
+                        where
+                            D: serde::Deserializer<'de>,
+                        {
+                            Self::try_from(
+                                #sub_type_name::deserialize(deserializer)?,
+                            )
+                            .map_err(|e| {
+                                <D::Error as serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
                         }
                     }
                 })
@@ -1004,7 +1044,7 @@ impl TypeEntry {
                 let pat = pattern.as_ref().map(|p| {
                     let err = format!("doesn't match pattern \"{}\"", p);
                     quote! {
-                        if regress::Regex::new(#p).unwrap().find(value) .is_none() {
+                        if regress::Regex::new(#p).unwrap().find(value).is_none() {
                             return Err(#err);
                         }
                     }
@@ -1012,11 +1052,10 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                // TODO: should we look for JsonSchema and special case that?
-                // TODO: or maybe make an external utility type for this
-                // specifically?
                 derive_set.remove("Deserialize");
 
+                // TODO: if a user were to derive schemars::JsonSchema, it
+                // wouldn't be accurate.
                 Some(quote! {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
@@ -1043,8 +1082,11 @@ impl TypeEntry {
                             value.parse()
                         }
                     }
+
                     impl<'de> serde::Deserialize<'de> for #type_name {
-                        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> Result<Self, D::Error>
                         where
                             D: serde::Deserializer<'de>,
                         {

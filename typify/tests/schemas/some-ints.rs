@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Sub10Primes(u32);
 impl std::ops::Deref for Sub10Primes {
     type Target = u32;
