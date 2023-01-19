@@ -37,6 +37,12 @@ pub enum Error {
     InvalidSchema(String),
 }
 
+impl Error {
+    fn invalid_value() -> Self {
+        Self::InvalidValue
+    }
+}
+
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Representation of a type which may have a definition or may be built-in.
@@ -484,13 +490,20 @@ impl TypeSpace {
                     match &mut variant.details {
                         // Simple variants will not refer to anything
                         VariantDetails::Simple => {}
-                        // Look for a tuple entry that refers to the parent type
+                        // Look for a single-item tuple that refers to the
+                        // parent type.
+                        VariantDetails::Item(item_type_id) => {
+                            self.check_for_cyclic_ref(parent_type_id, item_type_id, box_id);
+                        }
+                        // Look for a tuple entry that refers to the parent
+                        // type.
                         VariantDetails::Tuple(vec_type_id) => {
                             for tuple_type_id in vec_type_id {
                                 self.check_for_cyclic_ref(parent_type_id, tuple_type_id, box_id);
                             }
                         }
-                        // Look for a struct property that refers to the parent type
+                        // Look for a struct property that refers to the parent
+                        // type.
                         VariantDetails::Struct(vec_struct_property) => {
                             for struct_property in vec_struct_property {
                                 let vec_type_id = &mut struct_property.type_id;
@@ -780,6 +793,11 @@ impl<'a> TypeEnum<'a> {
         self.details.variants.iter().map(move |variant| {
             let v = match &variant.details {
                 type_entry::VariantDetails::Simple => TypeEnumVariant::Simple,
+                // The disctinction between a lone item variant and a tuple
+                // variant with a single item is only relevant internally.
+                type_entry::VariantDetails::Item(type_id) => {
+                    TypeEnumVariant::Tuple(vec![type_id.clone()])
+                }
                 type_entry::VariantDetails::Tuple(types) => TypeEnumVariant::Tuple(types.clone()),
                 type_entry::VariantDetails::Struct(properties) => TypeEnumVariant::Struct(
                     properties

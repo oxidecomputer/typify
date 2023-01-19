@@ -247,14 +247,19 @@ impl TypeSpace {
         //   'validation succeeds if each element of the instance validates
         //   against the schema at the same position, if any.'
         //
-        // Accordingly we require the length of the items array to match the
-        // fixed size (max_items). Note that array.additionalItems is
-        // irrelevant due to this portion of the spec:
+        // Accordingly we require that either the length of the items array
+        // match the fixed size (max_items) or that there's a single type. Note
+        // that array.additionalItems is irrelevant due to this portion of the
+        // spec:
         //   'If "items" is present, and its annotation result is a number,
         //   validation succeeds if every instance element at an index greater
         //   than that number validates against "additionalItems".'
         //
-        // Note that this is not part fo the match below due to the nested
+        // We could conceivably treat single-item, fixed-size arrays as their
+        // own type rather than a tuple variant, but since we don't yet handle
+        // that conversion this allows for a tighter match such a schema.
+        //
+        // Note that this is not part of the match below due to the nested
         // conditions and destructuring.
         if let Schema::Object(SchemaObject {
             metadata: _,
@@ -287,10 +292,28 @@ impl TypeSpace {
                             items
                                 .iter()
                                 .map(|item_type| {
-                                    Ok(self.id_for_schema(prop_type_name.clone(), item_type)?.0)
+                                    let (ty, _) =
+                                        self.id_for_schema(prop_type_name.clone(), item_type)?;
+                                    Ok(ty)
                                 })
                                 .collect::<Result<Vec<_>>>()?,
                         );
+                        return Ok((details, false));
+                    }
+                }
+                if let ArrayValidation {
+                    items: Some(SingleOrVec::Single(item)),
+                    additional_items: None,
+                    max_items: Some(max_items),
+                    min_items: Some(min_items),
+                    unique_items: None,
+                    contains: None,
+                } = validation.as_ref()
+                {
+                    if *max_items >= 2 && max_items == min_items {
+                        let (ty, _) = self.id_for_schema(prop_type_name.clone(), item).unwrap();
+                        let details =
+                            VariantDetails::Tuple((0..*max_items).map(|_| ty.clone()).collect());
                         return Ok((details, false));
                     }
                 }
@@ -351,7 +374,7 @@ impl TypeSpace {
                 // "true". However these may be yet-unresolved references so to
                 // do this properly we'd need to go through the JSON schema
                 // itself rather than our intermediate representation.
-                let details = VariantDetails::Tuple(vec![type_id]);
+                let details = VariantDetails::Item(type_id);
                 Ok((details, false))
             }
         }
@@ -918,6 +941,19 @@ pub(crate) fn output_variant(
             #serde
             #name,
         },
+        VariantDetails::Item(type_id) => {
+            let item_type_ident = type_space
+                .id_to_entry
+                .get(type_id)
+                .unwrap()
+                .type_ident(type_space, &None);
+
+            quote! {
+                #doc
+                #serde
+                #name(#item_type_ident),
+            }
+        }
 
         VariantDetails::Tuple(tuple) => {
             let types = tuple.iter().map(|type_id| {
@@ -1187,9 +1223,9 @@ mod tests {
                 assert!(matches!(
                     variants.get(2).unwrap(),
                     Variant {
-                        details: VariantDetails::Tuple(tup),
+                        details: VariantDetails::Item(_),
                         ..
-                    } if tup.len() == 1
+                    }
                 ));
                 assert!(matches!(
                     variants.get(3).unwrap(),
@@ -1440,9 +1476,8 @@ mod tests {
                 //assert_eq!(deny_unknown_fields, &true);
                 for variant in variants {
                     match &variant.details {
-                        VariantDetails::Tuple(items) if items.len() == 1 => {
-                            let variant_type =
-                                type_space.id_to_entry.get(items.first().unwrap()).unwrap();
+                        VariantDetails::Item(item) => {
+                            let variant_type = type_space.id_to_entry.get(item).unwrap();
                             assert!(variant_type.name().unwrap().ends_with(&variant.name));
                         }
                         _ => panic!("{:#?}", type_entry),

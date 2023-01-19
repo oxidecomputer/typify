@@ -143,6 +143,42 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
             _ => false,
         },
 
+        // If one type has an explicit type and has enumerated value (but no
+        // type), we can check to see if every enumerated value is incompatible
+        // with the given type.
+        (
+            Schema::Object(SchemaObject {
+                instance_type: Some(SingleOrVec::Single(marked_type)),
+                ..
+            }),
+            Schema::Object(SchemaObject {
+                instance_type: None,
+                enum_values: Some(enum_values),
+                ..
+            }),
+        )
+        | (
+            Schema::Object(SchemaObject {
+                instance_type: None,
+                enum_values: Some(enum_values),
+                ..
+            }),
+            Schema::Object(SchemaObject {
+                instance_type: Some(SingleOrVec::Single(marked_type)),
+                ..
+            }),
+        ) => enum_values
+            .iter()
+            .map(|v| match v {
+                serde_json::Value::Null => InstanceType::Null,
+                serde_json::Value::Bool(_) => InstanceType::Boolean,
+                serde_json::Value::Number(_) => InstanceType::Number,
+                serde_json::Value::String(_) => InstanceType::String,
+                serde_json::Value::Array(_) => InstanceType::Array,
+                serde_json::Value::Object(_) => InstanceType::Object,
+            })
+            .all(|value_type| value_type != **marked_type),
+
         // Neither is a Schema::Bool; we need to look at the instance types.
         (Schema::Object(a), Schema::Object(b)) => {
             match (&a.instance_type, &b.instance_type) {
@@ -565,6 +601,7 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
 
     // If every case was special then none of them would be.
     let out = match input {
+        "async" => "async_".to_string(), // TODO syn should handle this case...
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
         _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
