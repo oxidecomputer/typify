@@ -381,6 +381,15 @@ impl TypeSpace {
                     then_schema: None,
                     else_schema: None,
                 } => self.convert_one_of(type_name, metadata, subschemas),
+                SubschemaValidation {
+                    all_of: None,
+                    any_of: None,
+                    one_of: None,
+                    not: Some(subschema),
+                    if_schema: None,
+                    then_schema: None,
+                    else_schema: None,
+                } => self.convert_not(type_name, metadata, subschema),
 
                 // Unknown
                 _ => todo!("{:#?}", subschemas),
@@ -928,6 +937,121 @@ impl TypeSpace {
         Ok((ty, metadata))
     }
 
+    pub(crate) fn convert_not<'a>(
+        &mut self,
+        type_name: Name,
+        metadata: &'a Option<Box<schemars::schema::Metadata>>,
+        subschema: &'a Schema,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        match subschema {
+            // This is a weird construct, but simple enough to handle.
+            Schema::Bool(b) => {
+                let (type_entry, _) = self.convert_schema(type_name, &Schema::Bool(!b))?;
+                Ok((type_entry, metadata))
+            }
+
+            Schema::Object(SchemaObject {
+                metadata,
+                instance_type: None,
+                format: None,
+                enum_values: Some(enum_values),
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            }) => {
+                // All the values need to be of the same type.
+                let instance_types = enum_values
+                    .iter()
+                    .map(|v| match v {
+                        serde_json::Value::Bool(_) => InstanceType::Boolean,
+                        serde_json::Value::Number(_) => InstanceType::Number,
+                        serde_json::Value::String(_) => InstanceType::String,
+
+                        serde_json::Value::Null
+                        | serde_json::Value::Array(_)
+                        | serde_json::Value::Object(_) => {
+                            panic!("unhandled type for `not` construction: {}", v)
+                        }
+                    })
+                    .collect::<HashSet<_>>();
+
+                match (instance_types.len(), instance_types.iter().next()) {
+                    (1, Some(instance_type)) => {
+                        let typed_schema = SchemaObject {
+                            instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
+                                *instance_type,
+                            ))),
+                            ..Default::default()
+                        };
+
+                        let (type_entry, _) =
+                            self.convert_schema_object(Name::Unknown, &typed_schema)?;
+                        // Make sure all the values are valid.
+                        enum_values.iter().try_for_each(|value| {
+                            type_entry.validate_value(self, value).map(|_| ())
+                        })?;
+
+                        let type_id = self.assign_type(type_entry);
+
+                        let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
+                            self,
+                            type_name,
+                            metadata,
+                            type_id,
+                            enum_values,
+                        );
+
+                        Ok((newtype_entry, metadata))
+                    }
+
+                    _ => panic!(
+                        "multiple implied types for an un-typed enum {:?} {:?}",
+                        instance_types, enum_values,
+                    ),
+                }
+            }
+
+            Schema::Object(
+                schema @ SchemaObject {
+                    instance_type: Some(SingleOrVec::Single(_)),
+                    enum_values: Some(enum_values),
+                    ..
+                },
+            ) => {
+                let type_schema = SchemaObject {
+                    enum_values: None,
+                    ..schema.clone()
+                };
+
+                let (type_entry, _) = self.convert_schema_object(Name::Unknown, &type_schema)?;
+
+                // Make sure all the values are valid.
+                enum_values
+                    .iter()
+                    .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
+
+                let type_id = self.assign_type(type_entry);
+
+                let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
+                    self,
+                    type_name,
+                    metadata,
+                    type_id,
+                    enum_values,
+                );
+
+                Ok((newtype_entry, metadata))
+            }
+
+            _ => todo!("unhandled not schema {:#?}", subschema),
+        }
+    }
+
     fn convert_array<'a>(
         &mut self,
         type_name: Name,
@@ -1102,15 +1226,14 @@ impl TypeSpace {
                 (1, Some(InstanceType::Boolean)) => self.convert_bool(metadata),
 
                 (1, Some(instance_type)) => {
-                    let repaired_schema = SchemaObject {
-                        metadata: metadata.clone(),
+                    let typed_schema = SchemaObject {
                         instance_type: Some(schemars::schema::SingleOrVec::Single(Box::new(
                             *instance_type,
                         ))),
                         ..Default::default()
                     };
                     let (type_entry, new_metadata) =
-                        self.convert_typed_enum(type_name, &repaired_schema, enum_values)?;
+                        self.convert_typed_enum(type_name, &typed_schema, enum_values)?;
                     Ok((
                         type_entry,
                         if new_metadata.is_some() {
@@ -1123,7 +1246,7 @@ impl TypeSpace {
                 (1, None) => unreachable!(),
                 _ => panic!(
                     "multiple implied types for an un-typed enum {:?} {:?}",
-                    instance_types, enum_values
+                    instance_types, enum_values,
                 ),
             }
         }

@@ -186,6 +186,10 @@ fn value_for_external_enum(
         let type_ident = format_ident!("{}", type_name);
         match &variant.details {
             VariantDetails::Simple => None,
+            VariantDetails::Item(type_id) => {
+                let item = value_for_item(type_space, var_value, type_id, scope);
+                Some(quote! { #scope #type_ident::#var_ident ( #item ) })
+            }
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, var_value, types, scope)?;
                 Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
@@ -228,7 +232,8 @@ fn value_for_internal_enum(
             let props = value_for_struct_props(props, &inner_value, type_space, scope)?;
             Some(quote! { #scope #type_ident::#var_ident { #( #props ),* } })
         }
-        VariantDetails::Tuple(_) => unreachable!(),
+
+        VariantDetails::Item(_) | VariantDetails::Tuple(_) => unreachable!(),
     }
 }
 
@@ -287,6 +292,10 @@ fn value_for_untagged_enum(
                 value.as_null()?;
                 Some(quote! { #scope #type_ident::#var_ident })
             }
+            VariantDetails::Item(type_id) => {
+                let item = value_for_item(type_space, value, type_id, scope)?;
+                Some(quote! { #scope #type_ident::#var_ident ( #item ) })
+            }
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, value, types, scope)?;
                 Some(quote! { #scope #type_ident::#var_ident ( #( #tup ),* ) })
@@ -297,6 +306,19 @@ fn value_for_untagged_enum(
             }
         }
     })
+}
+
+fn value_for_item(
+    type_space: &TypeSpace,
+    value: &serde_json::Value,
+    type_id: &TypeId,
+    scope: &TokenStream,
+) -> Option<TokenStream> {
+    type_space
+        .id_to_entry
+        .get(type_id)
+        .unwrap()
+        .output_value(type_space, value, scope)
 }
 
 fn value_for_tuple(

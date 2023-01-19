@@ -51,6 +51,7 @@ pub(crate) struct TypeEntryNewtype {
 pub(crate) enum TypeEntryNewtypeConstraints {
     None,
     EnumValue(Vec<WrappedValue>),
+    DenyValue(Vec<WrappedValue>),
     String {
         max_length: Option<u32>,
         min_length: Option<u32>,
@@ -133,6 +134,7 @@ pub(crate) struct Variant {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum VariantDetails {
     Simple,
+    Item(TypeId),
     Tuple(Vec<TypeId>),
     Struct(Vec<StructProperty>),
 }
@@ -285,6 +287,40 @@ impl TypeEntryNewtype {
             default: None,
             type_id,
             constraints: TypeEntryNewtypeConstraints::EnumValue(
+                enum_values.iter().cloned().map(WrappedValue::new).collect(),
+            ),
+        });
+
+        TypeEntry {
+            details,
+            derives,
+            impls: ["Display", "FromStr"]
+                .into_iter()
+                .map(ToString::to_string)
+                .collect(),
+        }
+    }
+
+    pub(crate) fn from_metadata_with_deny_values(
+        type_space: &TypeSpace,
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        enum_values: &[serde_json::Value],
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        let (name, derives) = type_patch(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
+            name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            constraints: TypeEntryNewtypeConstraints::DenyValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
         });
@@ -552,18 +588,16 @@ impl TypeEntry {
                 let (variant_name, variant_type): (Vec<_>, Vec<_>) = variants
                     .iter()
                     .map(|variant| {
-                        let type_id = match &variant.details {
-                            VariantDetails::Tuple(types) if types.len() == 1 => {
-                                types.first().unwrap()
-                            }
-                            _ => unreachable!(),
-                        };
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        if let VariantDetails::Item(type_id) = &variant.details {
+                            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
-                        (
-                            format_ident!("{}", variant.name),
-                            type_entry.type_ident(type_space, &None),
-                        )
+                            (
+                                format_ident!("{}", variant.name),
+                                type_entry.type_ident(type_space, &None),
+                            )
+                        } else {
+                            unreachable!()
+                        }
                     })
                     .unzip();
 
@@ -864,12 +898,16 @@ impl TypeEntry {
         let constraint_impl = match constraints {
             TypeEntryNewtypeConstraints::None => None,
 
-            TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
+            TypeEntryNewtypeConstraints::DenyValue(enum_values)
+            | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
+                let not = match constraints {
+                    TypeEntryNewtypeConstraints::EnumValue(_) => quote! { ! },
+                    _ => quote! {},
+                };
+
                 let value_output = enum_values
                     .iter()
                     .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
-                // TODO if the sub_type is a string we could probably impl
-                // TryFrom<&str> as well
                 Some(quote! {
                     impl std::convert::TryFrom<#sub_type_name> for #type_name {
                         type Error = &'static str;
@@ -877,7 +915,7 @@ impl TypeEntry {
                         fn try_from(
                             value: #sub_type_name
                         ) -> Result<Self, Self::Error> {
-                            if ![
+                            if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
                                 Err("invalid value")
@@ -1257,7 +1295,7 @@ fn untagged_newtype_variants(
         && variants.iter().all(|variant| {
             // If the variant is a one-element tuple...
             match &variant.details {
-                VariantDetails::Tuple(types) if types.len() == 1 => types.first(),
+                VariantDetails::Item(type_id) => Some(type_id),
                 _ => None,
             }
             .map_or_else(

@@ -139,21 +139,24 @@ impl TypeEntry {
             }) => match tag_type {
                 EnumTagType::External => {
                     validate_default_for_external_enum(type_space, variants, default)
+                        .ok_or_else(|| Error::invalid_value())
                 }
                 EnumTagType::Internal { tag } => {
                     validate_default_for_internal_enum(type_space, variants, default, tag)
+                        .ok_or_else(|| Error::invalid_value())
                 }
                 EnumTagType::Adjacent { tag, content } => {
                     validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
+                        .ok_or_else(|| Error::invalid_value())
                 }
                 EnumTagType::Untagged => {
                     validate_default_for_untagged_enum(type_space, variants, default)
+                        .ok_or_else(|| Error::invalid_value())
                 }
-            }
-            .ok_or(Error::InvalidValue),
+            },
             TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
                 validate_default_struct_props(properties, type_space, default)
-                    .ok_or(Error::InvalidValue)
+                    .ok_or_else(|| Error::invalid_value())
             }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => type_space
@@ -189,7 +192,7 @@ impl TypeEntry {
                         Ok(DefaultKind::Specific)
                     }
                 } else {
-                    Err(Error::InvalidValue)
+                    Err(Error::invalid_value())
                 }
             }
             TypeEntryDetails::Map(type_id) => {
@@ -204,7 +207,7 @@ impl TypeEntry {
                         Ok(DefaultKind::Specific)
                     }
                 } else {
-                    Err(Error::InvalidValue)
+                    Err(Error::invalid_value())
                 }
             }
             TypeEntryDetails::Set(type_id) => {
@@ -218,7 +221,7 @@ impl TypeEntry {
                             // Ord so O(n^2) it is!
                             for other in &v[(i + 1)..] {
                                 if value == other {
-                                    return Err(Error::InvalidValue);
+                                    return Err(Error::invalid_value());
                                 }
                             }
                             let _ = type_entry.validate_value(type_space, value)?;
@@ -226,17 +229,16 @@ impl TypeEntry {
                         Ok(DefaultKind::Specific)
                     }
                 } else {
-                    Err(Error::InvalidValue)
+                    Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Tuple(ids) => {
-                validate_default_tuple(ids, type_space, default).ok_or(Error::InvalidValue)
-            }
+            TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
+                .ok_or_else(|| Error::invalid_value()),
             TypeEntryDetails::Unit => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
                 } else {
-                    Err(Error::InvalidValue)
+                    Err(Error::invalid_value())
                 }
             }
             TypeEntryDetails::BuiltIn(_) => {
@@ -252,12 +254,12 @@ impl TypeEntry {
             TypeEntryDetails::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(DefaultKind::Intrinsic),
                 serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
-                _ => Err(Error::InvalidValue),
+                _ => Err(Error::invalid_value()),
             },
             // Note that min and max values are handled already by the
             // conversion routines since we have those close at hand.
             TypeEntryDetails::Integer(_) => match (default.as_u64(), default.as_i64()) {
-                (None, None) => Err(Error::InvalidValue),
+                (None, None) => Err(Error::invalid_value()),
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
                 (_, Some(0)) => unreachable!(),
                 (Some(_), _) => Ok(DefaultKind::Generic(DefaultImpl::U64)),
@@ -271,7 +273,7 @@ impl TypeEntry {
                         Ok(DefaultKind::Generic(DefaultImpl::I64))
                     }
                 } else {
-                    Err(Error::InvalidValue)
+                    Err(Error::invalid_value())
                 }
             }
             TypeEntryDetails::String => {
@@ -356,6 +358,7 @@ pub(crate) fn validate_default_for_external_enum(
 
         match &variant.details {
             VariantDetails::Simple => None,
+            VariantDetails::Item(type_id) => validate_default_item(type_id, type_space, value),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, value),
             VariantDetails::Struct(props) => {
                 validate_default_struct_props(props, type_space, value)
@@ -389,7 +392,8 @@ pub(crate) fn validate_default_for_internal_enum(
 
             validate_default_struct_props(props, type_space, &inner_default)
         }
-        VariantDetails::Tuple(_) => unreachable!(),
+
+        VariantDetails::Item(_) | VariantDetails::Tuple(_) => unreachable!(),
     }
 }
 
@@ -441,12 +445,25 @@ pub(crate) fn validate_default_for_untagged_enum(
                 default.as_null()?;
                 Some(DefaultKind::Specific)
             }
+            VariantDetails::Item(type_id) => validate_default_item(type_id, type_space, default),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
             VariantDetails::Struct(props) => {
                 validate_default_struct_props(props, type_space, default)
             }
         }
     })
+}
+
+fn validate_default_item(
+    type_id: &TypeId,
+    type_space: &TypeSpace,
+    default: &serde_json::Value,
+) -> Option<DefaultKind> {
+    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+    type_entry
+        .validate_value(type_space, default)
+        .is_ok()
+        .then_some(DefaultKind::Specific)
 }
 
 fn validate_default_tuple(
