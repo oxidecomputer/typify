@@ -159,26 +159,19 @@ impl TypeEntry {
                     .ok_or_else(|| Error::invalid_value())
             }
 
-            TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .validate_value(type_space, default),
+            TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
+                validate_type_id(type_id, type_space, default)
+            }
             TypeEntryDetails::Option(type_id) => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
                 } else {
-                    let ty = type_space.id_to_entry.get(type_id).unwrap();
                     // Make sure the default is valid for the sub-type.
-                    let _ = ty.validate_value(type_space, default)?;
+                    let _ = validate_type_id(type_id, type_space, default)?;
                     Ok(DefaultKind::Specific)
                 }
             }
-            TypeEntryDetails::Box(type_id) => type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .validate_value(type_space, default),
+            TypeEntryDetails::Box(type_id) => validate_type_id(type_id, type_space, default),
 
             TypeEntryDetails::Array(type_id) => {
                 if let serde_json::Value::Array(v) = default {
@@ -358,7 +351,7 @@ pub(crate) fn validate_default_for_external_enum(
 
         match &variant.details {
             VariantDetails::Simple => None,
-            VariantDetails::Item(type_id) => validate_default_item(type_id, type_space, value),
+            VariantDetails::Item(type_id) => validate_type_id(type_id, type_space, value).ok(),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, value),
             VariantDetails::Struct(props) => {
                 validate_default_struct_props(props, type_space, value)
@@ -445,7 +438,7 @@ pub(crate) fn validate_default_for_untagged_enum(
                 default.as_null()?;
                 Some(DefaultKind::Specific)
             }
-            VariantDetails::Item(type_id) => validate_default_item(type_id, type_space, default),
+            VariantDetails::Item(type_id) => validate_type_id(type_id, type_space, default).ok(),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
             VariantDetails::Struct(props) => {
                 validate_default_struct_props(props, type_space, default)
@@ -454,16 +447,13 @@ pub(crate) fn validate_default_for_untagged_enum(
     })
 }
 
-fn validate_default_item(
+fn validate_type_id(
     type_id: &TypeId,
     type_space: &TypeSpace,
     default: &serde_json::Value,
-) -> Option<DefaultKind> {
+) -> Result<DefaultKind> {
     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-    type_entry
-        .validate_value(type_space, default)
-        .is_ok()
-        .then_some(DefaultKind::Specific)
+    type_entry.validate_value(type_space, default)
 }
 
 fn validate_default_tuple(
@@ -477,14 +467,7 @@ fn validate_default_tuple(
     types
         .iter()
         .zip(arr.iter())
-        .all(|(type_id, value)| {
-            type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .validate_value(type_space, value)
-                .is_ok()
-        })
+        .all(|(type_id, value)| validate_type_id(type_id, type_space, value).is_ok())
         .then_some(DefaultKind::Specific)
 }
 
@@ -525,18 +508,13 @@ fn validate_default_struct_props(
         // unnamed properties i.e. it must be a valid value type for a nested,
         // flatted map.
         if let Some((type_id, _)) = named_properties.get(name) {
-            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-            type_entry
-                .validate_value(type_space, default_value)
+            validate_type_id(type_id, type_space, default_value)
                 .ok()
                 .map(|_| ())
         } else {
             unnamed_properties
                 .iter()
-                .any(|type_id| {
-                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                    type_entry.validate_value(type_space, default_value).is_ok()
-                })
+                .any(|type_id| validate_type_id(type_id, type_space, default_value).is_ok())
                 .then_some(())
         }
     })?;

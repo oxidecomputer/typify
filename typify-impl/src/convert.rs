@@ -937,6 +937,22 @@ impl TypeSpace {
         Ok((ty, metadata))
     }
 
+    /// The "not" construction is pretty challenging to handle in the general
+    /// case: what is the appropriate rust structure for a type that is merely
+    /// the exclusion of another? This is tractable, however, in some special
+    /// cases that occur frequently enough in the wild to consider them.
+    ///
+    /// The simplest is for the boolean schemas: true to accept everything;
+    /// false to accept nothing. These we can simply invert. Why someone would
+    /// specify a type in this fashion... hard to say.
+    ///
+    /// The next we consider is that of enumerated values: if the schema
+    /// explicitly enumerates its valid values, we can construct a type that
+    /// disallows those values (just as we have a type that may only be one of
+    /// several specific values). We either use the specified type (e.g.
+    /// string) or infer the type from the enumerated values. These are
+    /// represented as a newtype that contains a deny list (rather than an
+    /// allow list as is the case for non-string enumerated values).
     pub(crate) fn convert_not<'a>(
         &mut self,
         type_name: Name,
@@ -950,6 +966,42 @@ impl TypeSpace {
                 Ok((type_entry, metadata))
             }
 
+            // An explicit type and enumerated values.
+            Schema::Object(
+                schema @ SchemaObject {
+                    instance_type: Some(SingleOrVec::Single(_)),
+                    enum_values: Some(enum_values),
+                    ..
+                },
+            ) => {
+                let type_schema = SchemaObject {
+                    enum_values: None,
+                    ..schema.clone()
+                };
+
+                let (type_entry, _) = self.convert_schema_object(Name::Unknown, &type_schema)?;
+
+                // Make sure all the values are valid.
+                // TODO this isn't strictly legal since we may not yet have
+                // resolved references.
+                enum_values
+                    .iter()
+                    .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
+
+                let type_id = self.assign_type(type_entry);
+
+                let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
+                    self,
+                    type_name,
+                    metadata,
+                    type_id,
+                    enum_values,
+                );
+
+                Ok((newtype_entry, metadata))
+            }
+
+            // No type so we infer it from the values.
             Schema::Object(SchemaObject {
                 metadata,
                 instance_type: None,
@@ -992,6 +1044,8 @@ impl TypeSpace {
                         let (type_entry, _) =
                             self.convert_schema_object(Name::Unknown, &typed_schema)?;
                         // Make sure all the values are valid.
+                        // TODO this isn't strictly legal since we may not yet
+                        // have resolved references.
                         enum_values.iter().try_for_each(|value| {
                             type_entry.validate_value(self, value).map(|_| ())
                         })?;
@@ -1014,38 +1068,6 @@ impl TypeSpace {
                         instance_types, enum_values,
                     ),
                 }
-            }
-
-            Schema::Object(
-                schema @ SchemaObject {
-                    instance_type: Some(SingleOrVec::Single(_)),
-                    enum_values: Some(enum_values),
-                    ..
-                },
-            ) => {
-                let type_schema = SchemaObject {
-                    enum_values: None,
-                    ..schema.clone()
-                };
-
-                let (type_entry, _) = self.convert_schema_object(Name::Unknown, &type_schema)?;
-
-                // Make sure all the values are valid.
-                enum_values
-                    .iter()
-                    .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
-
-                let type_id = self.assign_type(type_entry);
-
-                let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
-                    self,
-                    type_name,
-                    metadata,
-                    type_id,
-                    enum_values,
-                );
-
-                Ok((newtype_entry, metadata))
             }
 
             _ => todo!("unhandled not schema {:#?}", subschema),
