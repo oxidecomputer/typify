@@ -900,10 +900,8 @@ impl TypeEntry {
 
             TypeEntryNewtypeConstraints::DenyValue(enum_values)
             | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
-                let not = match constraints {
-                    TypeEntryNewtypeConstraints::EnumValue(_) => quote! { ! },
-                    _ => quote! {},
-                };
+                let not = matches!(constraints, TypeEntryNewtypeConstraints::EnumValue(_))
+                    .then(|| quote! { ! });
 
                 let value_output = enum_values
                     .iter()

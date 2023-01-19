@@ -1,0 +1,28 @@
+{
+  "$comment": "validate a 'not' schema with typed- and untyped-subschemas",
+  "title": "TestType",
+  "type": "object",
+  "properties": {
+    "where_not": {
+      "not": {
+        "enum": [
+          "start",
+          "middle",
+          "end"
+        ]
+      }
+    },
+    "why_not": {
+      "not": {
+        "type": "string",
+        "enum": [
+          "because"
+        ]
+      }
+    }
+  },
+  "required": [
+    "where_not",
+    "why_not"
+  ]
+}

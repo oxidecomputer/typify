@@ -13,7 +13,6 @@ fn test_github() {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
-    // Read the JSON contents of the file as an instance of `User`.
     let mut schema: RootSchema = serde_json::from_reader(reader).unwrap();
     schema.schema.metadata().title = Some("Everything".to_string());
 
@@ -65,11 +64,10 @@ fn test_other() {
 
     let mut type_space = TypeSpace::new(&settings);
 
-    let path = Path::new("tests/v5.22.1.json");
+    let path = Path::new("tests/vega.json");
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
-    // Read the JSON contents of the file as an instance of `User`.
     let mut schema: RootSchema = serde_json::from_reader(reader).unwrap();
     schema.schema.metadata().title = Some("Everything".to_string());
 
@@ -80,5 +78,5 @@ fn test_other() {
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 
-    expectorate::assert_contents("tests/xxx.out", fmt.as_str());
+    expectorate::assert_contents("tests/vega.out", fmt.as_str());
 }
