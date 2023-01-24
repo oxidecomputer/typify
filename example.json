@@ -35,6 +35,29 @@
           "description": "Do I like this vegetable?"
         }
       }
+    },
+    "fruit": {
+      "type": "object"
+    },
+    "fruit-or-veg": {
+      "oneOf": [
+        {
+          "title": "veg",
+          "anyOf": [
+            {
+              "$ref": "#/defs/veggie"
+            }
+          ]
+        },
+        {
+          "title": "fruit",
+          "anyOf": [
+            {
+              "$ref": "#/defs/fruit"
+            }
+          ]
+        }
+      ]
     }
   }
 }

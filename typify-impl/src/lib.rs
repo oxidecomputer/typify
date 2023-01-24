@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -11,6 +11,8 @@ use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails, WrappedValue};
+
+use crate::util::{sanitize, Case};
 
 #[cfg(test)]
 mod test_util;
@@ -185,16 +187,9 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     struct_builder: bool,
 
-    replace: BTreeMap<String, TypeSpaceReplace>,
     patch: BTreeMap<String, TypeSpacePatch>,
+    replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
-}
-
-/// By-name replacements
-#[derive(Debug, Default, Clone)]
-pub struct TypeSpaceReplace {
-    replace_type: String,
-    impls: Vec<String>,
 }
 
 /// Per-type modifications.
@@ -202,6 +197,13 @@ pub struct TypeSpaceReplace {
 pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
+}
+
+/// By-name replacements
+#[derive(Debug, Default, Clone)]
+pub struct TypeSpaceReplace {
+    replace_type: String,
+    impls: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -364,7 +366,8 @@ impl TypeSpace {
             // Check for manually replaced types. Proceed with type conversion
             // if there is none; use the specified type if there is.
             let type_id = TypeId(base_id + index as u64);
-            match self.settings.replace.get(&type_name.to_string()) {
+            let check_name = sanitize(type_name, Case::Pascal);
+            match self.settings.replace.get(&check_name) {
                 None => self.convert_ref_type(type_name, schema, type_id)?,
 
                 Some(replace_type) => {

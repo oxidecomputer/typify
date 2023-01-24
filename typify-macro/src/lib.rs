@@ -85,7 +85,7 @@ impl From<MacroPatch> for TypeSpacePatch {
             s.with_rename(rename);
         });
         a.derives.iter().for_each(|derive| {
-            s.with_derive(derive.to_token_stream().to_string());
+            s.with_derive(derive.to_token_stream());
         });
         s
     }
@@ -119,7 +119,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             let impls = type_and_impls
                 .impls
                 .into_iter()
-                .map(|x| x.to_token_stream());
+                .map(|it| it.to_token_stream());
             settings.with_replacement(type_name.to_token_stream(), replace_type, impls);
         });
         convert.into_iter().for_each(|(schema, type_and_impls)| {
@@ -128,7 +128,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             let impls = type_and_impls
                 .impls
                 .into_iter()
-                .map(|x| x.to_token_stream());
+                .map(|it| it.to_token_stream());
             settings.with_conversion(schema, type_name, impls);
         });
 
