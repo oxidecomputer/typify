@@ -74,32 +74,5 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     let text = rustfmt_wrapper::rustfmt(code).unwrap();
     assert_contents(out_path, &text);
 
-    // TODO I sort of liked this idea, but I cooled on it. I think it would be
-    // simpler to have a stand-alone macro test.
-
-    // Make a file with the macro invocation to validate that path as well.
-    // This is to validate that there isn't some terrible divergence between
-    // builder and macro generation.
-    // let mut macro_path = path.clone();
-    // macro_path.set_extension("macro.rs");
-    // let path_str = format!("{}/{}", env!("CARGO_MANIFEST_DIR"), path.to_string_lossy());
-    // let macro_code = quote! {
-    //     use serde::{Deserialize, Serialize};
-    //     typify::import_types!{
-    //         schema = #path_str,
-    //         replace = {
-    //             HardToGenerateType = String,
-    //         },
-    //         convert = {
-    //             {
-    //                 enum = [ 1, "one" ]
-    //             } = (serde_json::Value, [Display]),
-    //         }
-    //     }
-    //     fn main() {}
-    // };
-    // let macro_text = rustfmt_wrapper::rustfmt(macro_code).unwrap();
-    // assert_contents(macro_path, &macro_text);
-
     Ok(())
 }
