@@ -128,9 +128,7 @@
 //! );
 //! ```
 //!
-//!
-//!
-//! #### Macro vs. `build.rs`
+//! # Macro vs. `build.rs`
 //!
 //! While using the [`import_types!`] macro is quite a bit simpler, you can
 //! also construct output in a `build.rs` script. Doing so requires a little
