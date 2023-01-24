@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "one-of-types": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "bar": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "bar"
+          ]
+        },
+        {
+          "properties": {
+            "foo": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "foo"
+          ]
+        }
+      ]
+    },
+    "IpNet": {
+      "$comment": "we want to see *nice* variant names in the output",
+      "oneOf": [
+        {
+          "title": "V4",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/Ipv4Net"
+            }
+          ]
+        },
+        {
+          "title": "V6",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/Ipv4Net"
+            }
+          ]
+        }
+      ]
+    },
+    "Ipv4Net": {
+      "type": "string"
+    },
+    "Ipv6Net": {
+      "type": "string"
+    }
+  }
+}
