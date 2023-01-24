@@ -33,5 +33,4 @@ impl Default for TestEnum {
         TestEnum::Failure
     }
 }
-
 fn main() {}

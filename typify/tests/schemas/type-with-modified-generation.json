@@ -1,0 +1,35 @@
+{
+  "$comment": "validate replacement, patch, and conversion settings",
+  "title": "TestType",
+  "type": "object",
+  "properties": {
+    "replaced_type": {
+      "$ref": "#/definitions/HandGeneratedType"
+    },
+    "patched_type": {
+      "$ref": "#/definitions/TypeThatNeedsMoreDerives"
+    },
+    "converted_type": {
+      "enum": [
+        1,
+        "one"
+      ]
+    }
+  },
+  "required": [
+    "replaced_type",
+    "patched_type",
+    "converted_type"
+  ],
+  "definitions": {
+    "HandGeneratedType": {
+      "$comment": "imagine a type we want hand-generated"
+    },
+    "TypeThatNeedsMoreDerives": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

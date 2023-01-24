@@ -6,7 +6,7 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{quote, ToTokens};
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
@@ -185,8 +185,16 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     struct_builder: bool,
 
+    replace: BTreeMap<String, TypeSpaceReplace>,
     patch: BTreeMap<String, TypeSpacePatch>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+/// By-name replacements
+#[derive(Debug, Default, Clone)]
+pub struct TypeSpaceReplace {
+    replace_type: String,
+    impls: Vec<String>,
 }
 
 /// Per-type modifications.
@@ -221,6 +229,24 @@ impl TypeSpaceSettings {
     /// For structs, include a "builder" type that can be used to construct it.
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
+        self
+    }
+
+    /// Replace a referenced type with a named type. This causes the referenced
+    /// type *not* to be generated.
+    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = impl ToString>>(
+        &mut self,
+        type_name: TS,
+        replace_type: RS,
+        impls: I,
+    ) -> &mut Self {
+        self.replace.insert(
+            type_name.to_string(),
+            TypeSpaceReplace {
+                replace_type: replace_type.to_string(),
+                impls: impls.map(|x| x.to_string()).collect(),
+            },
+        );
         self
     }
 
@@ -335,61 +361,21 @@ impl TypeSpace {
                 serde_json::to_string(&schema).unwrap()
             );
 
-            let (mut type_entry, metadata) =
-                self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
-            let default = metadata
-                .as_ref()
-                .and_then(|m| m.default.as_ref())
-                .cloned()
-                .map(WrappedValue::new);
-            let type_entry = match &mut type_entry.details {
-                // The types that are already named are good to go.
-                TypeEntryDetails::Enum(details) => {
-                    details.default = default;
-                    type_entry
-                }
-                TypeEntryDetails::Struct(details) => {
-                    details.default = default;
-                    type_entry
-                }
-                TypeEntryDetails::Newtype(details) => {
-                    details.default = default;
-                    type_entry
-                }
-
-                // If the type entry is a reference, then this definition is a
-                // simple alias to another type in this list of definitions
-                // (which may nor may not have already been converted). We
-                // simply create a newtype with that type ID.
-                TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
-                    self,
-                    Name::Required(type_name.to_string()),
-                    metadata,
-                    type_id.clone(),
-                ),
-
-                // For types that don't have names, this is effectively a type
-                // alias which we treat as a newtype.
-                _ => {
-                    let subtype_id = self.assign_type(type_entry);
-
-                    TypeEntryNewtype::from_metadata(
-                        self,
-                        Name::Required(type_name.to_string()),
-                        metadata,
-                        subtype_id,
-                    )
-                }
-            };
-
-            // We expect and require these types to have a name. Even a type
-            // that would resolve to a built-in type should result in a newtype
-            // wrapper with a name simply so that it can be referred to by
-            // name.
-            let entry_name = type_entry.name().unwrap().clone();
+            // Check for manually replaced types. Proceed with type conversion
+            // if there is none; use the specified type if there is.
             let type_id = TypeId(base_id + index as u64);
-            self.name_to_id.insert(entry_name, type_id.clone());
-            self.id_to_entry.insert(type_id, type_entry);
+            match self.settings.replace.get(&type_name.to_string()) {
+                None => self.convert_ref_type(type_name, schema, type_id)?,
+
+                Some(replace_type) => {
+                    let type_entry = TypeEntry {
+                        details: TypeEntryDetails::BuiltIn(replace_type.replace_type.clone()),
+                        derives: Default::default(),
+                        impls: replace_type.impls.iter().map(ToString::to_string).collect(),
+                    };
+                    self.id_to_entry.insert(type_id, type_entry);
+                }
+            }
         }
 
         // Now that all references have been processed, we can do some
@@ -422,6 +408,59 @@ impl TypeSpace {
             self.id_to_entry.insert(type_id, type_entry);
         }
 
+        Ok(())
+    }
+
+    fn convert_ref_type(&mut self, type_name: &str, schema: Schema, type_id: TypeId) -> Result<()> {
+        let (mut type_entry, metadata) =
+            self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
+        let default = metadata
+            .as_ref()
+            .and_then(|m| m.default.as_ref())
+            .cloned()
+            .map(WrappedValue::new);
+        let type_entry = match &mut type_entry.details {
+            // The types that are already named are good to go.
+            TypeEntryDetails::Enum(details) => {
+                details.default = default;
+                type_entry
+            }
+            TypeEntryDetails::Struct(details) => {
+                details.default = default;
+                type_entry
+            }
+            TypeEntryDetails::Newtype(details) => {
+                details.default = default;
+                type_entry
+            }
+
+            // If the type entry is a reference, then this definition is a
+            // simple alias to another type in this list of definitions
+            // (which may nor may not have already been converted). We
+            // simply create a newtype with that type ID.
+            TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+                self,
+                Name::Required(type_name.to_string()),
+                metadata,
+                type_id.clone(),
+            ),
+
+            // For types that don't have names, this is effectively a type
+            // alias which we treat as a newtype.
+            _ => {
+                let subtype_id = self.assign_type(type_entry);
+
+                TypeEntryNewtype::from_metadata(
+                    self,
+                    Name::Required(type_name.to_string()),
+                    metadata,
+                    subtype_id,
+                )
+            }
+        };
+        let entry_name = type_entry.name().unwrap().clone();
+        self.name_to_id.insert(entry_name, type_id.clone());
+        self.id_to_entry.insert(type_id, type_entry);
         Ok(())
     }
 
@@ -707,6 +746,12 @@ impl TypeSpace {
 impl ToString for TypeSpace {
     fn to_string(&self) -> String {
         rustfmt(self.to_stream().to_string()).unwrap()
+    }
+}
+
+impl ToTokens for TypeSpace {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        tokens.extend(self.to_stream())
     }
 }
 
