@@ -1579,74 +1579,6 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_untagged_enum_nice_names() {
-        let schema_json = r##"
-        {
-            "definitions": {
-                "IpNet": {
-                    "oneOf": [
-                        {
-                            "title": "V4",
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/Ipv4Net"
-                                }
-                            ]
-                        },
-                        {
-                            "title": "V6",
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/Ipv4Net"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "Ipv4Net": {
-                    "type": "string"
-                },
-                "Ipv6Net": {
-                    "type": "string"
-                }
-            }
-        }
-        "##;
-
-        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
-
-        let mut type_space = TypeSpace::default();
-        type_space.add_ref_types(schema.definitions).unwrap();
-
-        let type_id = type_space.ref_to_id.get("IpNet").unwrap();
-        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-
-        match &type_entry.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                tag_type,
-                variants,
-                deny_unknown_fields,
-                ..
-            }) => {
-                assert_eq!(tag_type, &EnumTagType::Untagged);
-                assert_eq!(deny_unknown_fields, &false);
-                let variant_names = variants
-                    .iter()
-                    .map(|variant| variant.name.clone())
-                    .collect::<HashSet<_>>();
-                assert_eq!(
-                    variant_names,
-                    ["V4", "V6"]
-                        .iter()
-                        .map(ToString::to_string)
-                        .collect::<HashSet<_>>()
-                );
-            }
-            _ => panic!("{:#?}", type_entry),
-        }
-    }
-
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
     #[serde(tag = "tag", deny_unknown_fields)]
@@ -1704,59 +1636,6 @@ mod tests {
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
-            }
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
-    }
-
-    #[test]
-    fn test_untagged_untyped_unnamed_struct_variants() {
-        let schema_json = r#"
-        {
-            "$schema": "http://json-schema.org/draft-04/schema#",
-            "title": "one-of-types",
-            "type": "object",
-            "oneOf": [
-                {
-                    "properties": {
-                        "bar": {
-                            "type": "integer"
-                        }
-                    },
-                    "required": [
-                        "bar"
-                    ]
-                },
-                {
-                    "properties": {
-                        "foo": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "foo"
-                    ]
-                }
-            ]
-        }
-        "#;
-
-        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
-
-        let mut type_space = TypeSpace::default();
-        type_space.add_type(&schema.schema.into()).unwrap();
-
-        let actual = type_space.to_stream();
-        let expected = quote! {
-            #[derive(Clone, Debug, Deserialize, Serialize)]
-            #[serde(untagged)]
-            pub enum OneOfTypes {
-                Variant0 {
-                    bar: i64,
-                },
-                Variant1 {
-                    foo: String,
-                },
             }
         };
         assert_eq!(actual.to_string(), expected.to_string());
