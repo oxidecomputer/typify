@@ -32,5 +32,4 @@ impl std::str::FromStr for TestTypeValue {
         }
     }
 }
-
 fn main() {}

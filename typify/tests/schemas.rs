@@ -1,11 +1,13 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::{error::Error, fs::File, io::BufReader};
 
 use expectorate::assert_contents;
 use glob::glob;
+use quote::quote;
 use schemars::schema::{RootSchema, Schema};
-use typify::TypeSpace;
+use serde_json::json;
+use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 #[test]
 fn test_schemas() {
@@ -22,13 +24,31 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     let mut out_path = path.clone();
     out_path.set_extension("rs");
 
-    let file = File::open(path)?;
+    let file = File::open(path.clone())?;
     let reader = BufReader::new(file);
 
     // Read the JSON contents of the file as an instance of `User`.
     let root_schema: RootSchema = serde_json::from_reader(reader)?;
 
-    let mut type_space = TypeSpace::default();
+    let schema_raw = json! {
+        {
+            "enum": [ 1, "one" ]
+        }
+    };
+    let schema = serde_json::from_value(schema_raw).unwrap();
+
+    let mut type_space = TypeSpace::new(
+        TypeSpaceSettings::default()
+            .with_replacement("HandGeneratedType", "String", ["Display"].into_iter())
+            .with_patch(
+                "TypeThatNeedsMoreDerives",
+                TypeSpacePatch::default()
+                    .with_rename("TypeThatHasMoreDerives")
+                    .with_derive("Eq")
+                    .with_derive("PartialEq"),
+            )
+            .with_conversion(schema, "serde_json::Value", ["Display"].into_iter()),
+    );
     type_space.add_ref_types(root_schema.definitions)?;
 
     let base_type = &root_schema.schema;
@@ -45,13 +65,14 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
             .unwrap();
     }
 
-    let code = format!(
-        "{}\n{}\nfn main() {{}}\n",
-        "use serde::{Deserialize, Serialize};",
-        type_space.to_string()
-    );
-
-    assert_contents(out_path, &code);
+    // Make a file with the generated code.
+    let code = quote! {
+        use serde::{Deserialize, Serialize};
+        #type_space
+        fn main() {}
+    };
+    let text = rustfmt_wrapper::rustfmt(code).unwrap();
+    assert_contents(out_path, &text);
 
     Ok(())
 }

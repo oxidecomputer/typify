@@ -40,5 +40,4 @@ impl std::convert::TryFrom<String> for TestTypeWhyNot {
         }
     }
 }
-
 fn main() {}

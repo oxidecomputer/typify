@@ -503,7 +503,9 @@ version = "0.0.11-dev"
 dependencies = [
  "expectorate",
  "glob",
+ "quote",
  "regress",
+ "rustfmt-wrapper",
  "schemars",
  "serde",
  "serde_json",

@@ -27,5 +27,4 @@ pub enum OneOfTypes {
     Variant0 { bar: i64 },
     Variant1 { foo: String },
 }
-
 fn main() {}

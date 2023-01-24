@@ -1,10 +1,25 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use typify::import_types;
 
 use serde::{Deserialize, Serialize};
 
-import_types!(schema = "../example.json");
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct MyFruit {
+    seeds: (),
+}
+
+import_types!(
+    schema = "../example.json",
+    patch = {
+        Veggie = {
+            rename = "Vegetable",
+        },
+    },
+    replace = {
+        Fruit = MyFruit: ?Display,
+    }
+);
 
 #[test]
 fn test_main() {
@@ -12,7 +27,7 @@ fn test_main() {
 }
 
 fn main() {
-    let veg = Veggie {
+    let veg = Vegetable {
         veggie_name: String::from("carrots"),
         veggie_like: true,
     };
@@ -21,4 +36,6 @@ fn main() {
         vegetables: vec![veg],
     };
     println!("{:?}", veggies);
+    let fov = FruitOrVeg::Fruit(MyFruit { seeds: () });
+    println!("{:?}", fov);
 }

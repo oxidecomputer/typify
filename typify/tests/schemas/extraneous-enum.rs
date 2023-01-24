@@ -29,5 +29,4 @@ impl std::str::FromStr for LetterBoxLetter {
         }
     }
 }
-
 fn main() {}

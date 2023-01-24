@@ -87,11 +87,29 @@
 //! );
 //! ```
 //!
+//! ## Replacement types
+//!
+//! You can replace a generated type with an existing type by specifying an
+//! association between the name of a type with the type to use in its place:
+//! ```
+//! # mod my_fancy_networking_crate {
+//! # #[derive(serde::Deserialize)]
+//! # pub struct Ipv6Cidr(String);
+//! # }
+//! # use typify_macro::import_types;
+//! # use serde::{Deserialize,Serialize};
+//! import_types!(
+//!     schema = "../example.json",
+//!     replace = {
+//!         Ipv6Cidr = my_fancy_networking_crate::Ipv6Cidr,
+//!     }
+//! );
+//! ```
+//!
 //! ## Conversion overrides
 //!
 //! You can override a conversion for a particular JSON schema construct by
-//! specifying an association between the schema and a tuple of the type and
-//! the traits that affect `typify`'s code generation (in particular `Display`):
+//! specifying an association between the schema and the type.
 //! ```
 //! # mod my_fancy_uuid_crate {
 //! # #[derive(serde::Deserialize)]
@@ -105,14 +123,12 @@
 //!         {
 //!             type = "string",
 //!             format = "uuid",
-//!         } = (my_fancy_uuid_crate::MyUuid, [Display])
+//!         } = my_fancy_uuid_crate::MyUuid,
 //!     }
 //! );
 //! ```
 //!
-//!
-//!
-//! #### Macro vs. `build.rs`
+//! # Macro vs. `build.rs`
 //!
 //! While using the [`import_types!`] macro is quite a bit simpler, you can
 //! also construct output in a `build.rs` script. Doing so requires a little

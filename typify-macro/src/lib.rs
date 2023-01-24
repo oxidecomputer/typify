@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::{collections::HashMap, path::Path};
 
@@ -8,7 +8,10 @@ use schemars::schema::Schema;
 use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
+use token_utils::TypeAndImpls;
 use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
+
+mod token_utils;
 
 /// Import types from a schema file. This may be invoked with simply a pathname
 /// for a JSON Schema file (relative to `$CARGO_MANIFEST_DIR`), or it may be
@@ -27,12 +30,21 @@ use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 /// - `derives`: optional array of derive macro paths; the derive macros to be
 ///   applied to all generated types
 ///
-/// - `patch`: optional map of type to an object with the optional members
-///   `rename` and `derives` for type-specific renames and derive macros.
-///   
 /// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
 ///   method for each generated struct that can be used to specify each
 ///   property and construct the struct
+///
+/// - `patch`: optional map from type to an object with the optional members
+///   `rename` and `derives`. This may be used to renamed generated types or
+///   to apply additional (non-default) derive macros to them.
+///
+/// - `replace`: optional map from definition name to a replacement type. This
+///   may be used to skip generation of the named type and use a existing Rust
+///   type.
+///   
+/// - `convert`: optional map from a JSON schema to a replacement type. This
+///   may be used to skip generation of the schema and use an existing Rust
+///   type.
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
     match do_import_types(item) {
@@ -50,12 +62,12 @@ struct MacroSettings {
     struct_builder: bool,
 
     #[serde(default)]
-    patch: HashMap<ParseWrapper<syn::Type>, MacroPatch>,
+    patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
     #[serde(default)]
-    convert: serde_tokenstream::OrderedMap<
-        schemars::schema::SchemaObject,
-        (ParseWrapper<syn::Path>, Vec<ParseWrapper<syn::Path>>),
-    >,
+    replace: HashMap<ParseWrapper<syn::Ident>, ParseWrapper<TypeAndImpls>>,
+    #[serde(default)]
+    convert:
+        serde_tokenstream::OrderedMap<schemars::schema::SchemaObject, ParseWrapper<TypeAndImpls>>,
 }
 
 #[derive(Deserialize)]
@@ -73,7 +85,7 @@ impl From<MacroPatch> for TypeSpacePatch {
             s.with_rename(rename);
         });
         a.derives.iter().for_each(|derive| {
-            s.with_derive(derive.to_token_stream().to_string());
+            s.with_derive(derive.to_token_stream());
         });
         s
     }
@@ -87,6 +99,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         let MacroSettings {
             schema,
             derives,
+            replace,
             patch,
             struct_builder,
             convert,
@@ -100,15 +113,24 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
         });
-        convert
-            .into_iter()
-            .for_each(|(schema, (type_name, impls))| {
-                settings.with_conversion(
-                    schema,
-                    type_name.to_token_stream(),
-                    impls.into_iter().map(|x| x.to_token_stream()),
-                );
-            });
+        replace.into_iter().for_each(|(type_name, type_and_impls)| {
+            let type_and_impls = type_and_impls.into_inner();
+            let replace_type = type_and_impls.type_name.to_token_stream();
+            let impls = type_and_impls
+                .impls
+                .into_iter()
+                .map(|it| it.to_token_stream());
+            settings.with_replacement(type_name.to_token_stream(), replace_type, impls);
+        });
+        convert.into_iter().for_each(|(schema, type_and_impls)| {
+            let type_and_impls = type_and_impls.into_inner();
+            let type_name = type_and_impls.type_name.to_token_stream();
+            let impls = type_and_impls
+                .impls
+                .into_iter()
+                .map(|it| it.to_token_stream());
+            settings.with_conversion(schema, type_name, impls);
+        });
 
         (schema.into_inner(), settings)
     };

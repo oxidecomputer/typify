@@ -53,5 +53,4 @@ impl<'de> serde::Deserialize<'de> for Name {
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
-
 fn main() {}
