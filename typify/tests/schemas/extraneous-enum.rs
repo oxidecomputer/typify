@@ -29,4 +29,16 @@ impl std::str::FromStr for LetterBoxLetter {
         }
     }
 }
+impl std::convert::TryFrom<&str> for LetterBoxLetter {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for LetterBoxLetter {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &String) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
 fn main() {}

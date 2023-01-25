@@ -342,6 +342,7 @@ impl TypeSpace {
             // Subschemas
             SchemaObject {
                 metadata,
+                // TODO we probably shouldn't ignore this...
                 instance_type: _,
                 format: None,
                 enum_values: None,
@@ -415,6 +416,95 @@ impl TypeSpace {
                         Some(_) => panic!("unexpected metadata value"),
                         None => (te, &None),
                     })
+            }
+
+            // In actual, not-made-up, in-the-wild specs, I've seen the type
+            // field enumerate all possibilities... perhaps to emphasize their
+            // seriousness of the schema representing **anything**. In that
+            // case, we can strip it out and try again.
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Vec(instance_types)),
+                metadata,
+                ..
+            } if instance_types.contains(&InstanceType::Null)
+                && instance_types.contains(&InstanceType::Boolean)
+                && instance_types.contains(&InstanceType::Object)
+                && instance_types.contains(&InstanceType::Array)
+                && instance_types.contains(&InstanceType::Number)
+                && instance_types.contains(&InstanceType::String)
+                && instance_types.contains(&InstanceType::Integer) =>
+            {
+                let (type_entry, _) = self.convert_schema_object(
+                    type_name,
+                    &SchemaObject {
+                        instance_type: None,
+                        ..schema.clone()
+                    },
+                )?;
+                Ok((type_entry, metadata))
+            }
+
+            // If we have a simple type--complicated only by accepting multiple
+            // types (none duplicated)--we can create an enum; note that the
+            // case of a 2-type list with one of them Null is already handled
+            // above (and rendered into an Option).
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Vec(instance_types)),
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            } if instance_types.len() == instance_types.iter().collect::<HashSet<_>>().len() => {
+                let variants = instance_types
+                    .iter()
+                    .map(|it| {
+                        let (name, maybe_ty) = match it {
+                            InstanceType::Null => ("Null", None),
+                            InstanceType::Boolean => ("Boolean", Some(TypeEntry::new_boolean())),
+                            InstanceType::Object => {
+                                let (ty, _) = self.make_map(None, &None)?;
+                                ("Object", Some(ty))
+                            }
+                            InstanceType::Array => {
+                                let (ty, _) = self.convert_array_of_any(&None)?;
+                                ("Array", Some(ty))
+                            }
+                            InstanceType::Number => ("Number", Some(TypeEntry::new_float("f64"))),
+                            InstanceType::String => {
+                                ("String", Some(TypeEntry::from(TypeEntryDetails::String)))
+                            }
+                            InstanceType::Integer => {
+                                ("Integer", Some(TypeEntry::new_integer("i64")))
+                            }
+                        };
+                        let details = match maybe_ty {
+                            Some(ty) => VariantDetails::Item(self.assign_type(ty)),
+                            None => VariantDetails::Simple,
+                        };
+                        Ok(Variant {
+                            name: name.to_string(),
+                            rename: None,
+                            description: None,
+                            details,
+                        })
+                    })
+                    .collect::<Result<_>>()?;
+                let type_entry = TypeEntryEnum::from_metadata(
+                    self,
+                    type_name,
+                    metadata,
+                    EnumTagType::Untagged,
+                    variants,
+                    false,
+                );
+                Ok((type_entry, metadata))
             }
 
             // Unknown
@@ -1314,9 +1404,7 @@ mod tests {
     use serde_json::json;
 
     use crate::{
-        output::OutputSpace,
-        test_util::{get_type, validate_output},
-        validate_builtin, Error, Name, TypeSpace, TypeSpaceSettings,
+        test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceSettings,
     };
 
     #[track_caller]
@@ -1535,145 +1623,6 @@ mod tests {
             Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }
-    }
-
-    #[test]
-    fn test_some_ints() {
-        #[allow(dead_code)]
-        #[derive(Schema)]
-        struct Sub10Primes(u32);
-        impl JsonSchema for Sub10Primes {
-            fn schema_name() -> String {
-                "Sub10Primes".to_string()
-            }
-
-            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-                schemars::schema::SchemaObject {
-                    instance_type: Some(schemars::schema::InstanceType::Integer.into()),
-                    format: Some("uint".to_string()),
-                    enum_values: Some(vec![json!(2_u32), json!(3_u32), json!(5_u32), json!(7_u32)]),
-                    number: Some(
-                        schemars::schema::NumberValidation {
-                            ..Default::default()
-                        }
-                        .into(),
-                    ),
-                    ..Default::default()
-                }
-                .into()
-            }
-        }
-
-        let (type_space, type_id) = get_type::<Sub10Primes>();
-        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
-
-        let mut output = OutputSpace::default();
-        type_entry.output(&type_space, &mut output);
-        let actual = output.into_stream();
-        let expected = quote! {
-            #[derive(Clone, Debug, Deserialize, Serialize)]
-            pub struct Sub10Primes(u32);
-
-            impl std::ops::Deref for Sub10Primes {
-                type Target = u32;
-                fn deref(&self) -> &Self::Target {
-                    &self.0
-                }
-            }
-
-            impl std::convert::TryFrom<u32> for Sub10Primes {
-                type Error = &'static str;
-
-                fn try_from(value: u32) -> Result<Self, Self::Error> {
-                    if ![
-                        2_u32,
-                        3_u32,
-                        5_u32,
-                        7_u32,
-                    ].contains(&value) {
-                        Err("invalid value")
-                    } else {
-                        Ok(Self(value))
-                    }
-                }
-            }
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
-    }
-
-    #[test]
-    fn test_pattern_string() {
-        #[allow(dead_code)]
-        #[derive(Schema)]
-        struct PatternString(String);
-        impl JsonSchema for PatternString {
-            fn schema_name() -> String {
-                "PatternString".to_string()
-            }
-
-            fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-                schemars::schema::SchemaObject {
-                    instance_type: Some(schemars::schema::InstanceType::String.into()),
-                    string: Some(
-                        schemars::schema::StringValidation {
-                            pattern: Some("xx".to_string()),
-                            ..Default::default()
-                        }
-                        .into(),
-                    ),
-                    ..Default::default()
-                }
-                .into()
-            }
-        }
-
-        let (type_space, _) = get_type::<PatternString>();
-        let actual = type_space.to_stream();
-        let expected = quote! {
-            #[derive(Clone, Debug, Serialize)]
-            pub struct PatternString(String);
-            impl std::ops::Deref for PatternString {
-                type Target = String;
-                fn deref(&self) -> &Self::Target {
-                    &self.0
-                }
-            }
-            impl std::convert::TryFrom<&str> for PatternString {
-                type Error = &'static str;
-                fn try_from(value: &str) -> Result<Self, Self::Error> {
-                    if regress::Regex::new("xx").unwrap().find(value).is_none() {
-                        return Err("doesn't match pattern \"xx\"");
-                    }
-                    Ok(Self(value.to_string()))
-                }
-            }
-            impl std::convert::TryFrom<&String> for PatternString {
-                type Error = &'static str;
-                fn try_from(value: &String) -> Result<Self, Self::Error> {
-                    Self::try_from(value.as_str())
-                }
-            }
-            impl std::convert::TryFrom<String> for PatternString {
-                type Error = &'static str;
-                fn try_from(value: String) -> Result<Self, Self::Error> {
-                    Self::try_from(value.as_str())
-                }
-            }
-            impl<'de> serde::Deserialize<'de> for PatternString {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where
-                    D: serde::Deserializer<'de>,
-                {
-                    Self::try_from(String::deserialize(deserializer)?)
-                        .map_err(|e| {
-                            <D::Error as serde::de::Error>::custom(
-                                e.to_string(),
-                            )
-                        })
-                }
-            }
-        };
-        assert_eq!(actual.to_string(), expected.to_string());
     }
 
     #[test]

@@ -322,6 +322,11 @@ impl TypeSpace {
             .map(|(schema, property_name)| {
                 let (type_id, metadata) = self.id_for_schema(type_name.clone(), schema)?;
                 let (name, _) = recase(property_name, Case::Snake);
+                let name = if validation.properties.contains_key(&name) {
+                    format!("{}__", name)
+                } else {
+                    name
+                };
                 Ok(StructProperty {
                     name,
                     rename: StructPropertyRename::Flatten,

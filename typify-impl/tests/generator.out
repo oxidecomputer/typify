@@ -60,6 +60,18 @@ mod types {
             }
         }
     }
+    impl std::convert::TryFrom<&str> for StringEnum {
+        type Error = <Self as std::str::FromStr>::Err;
+        fn try_from(value: &str) -> Result<Self, Self::Error> {
+            value.parse()
+        }
+    }
+    impl std::convert::TryFrom<&String> for StringEnum {
+        type Error = <Self as std::str::FromStr>::Err;
+        fn try_from(value: &String) -> Result<Self, Self::Error> {
+            value.parse()
+        }
+    }
     mod builder {
         pub struct AllTheTraits {
             ok: Result<String, String>,

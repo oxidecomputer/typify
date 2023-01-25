@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "seriously-anything": {
+      "type": [
+        "null",
+        "boolean",
+        "object",
+        "array",
+        "number",
+        "string",
+        "integer"
+      ]
+    },
+    "one-of-several": {
+      "type": [
+        "null",
+        "boolean",
+        "object",
+        "array",
+        "string",
+        "integer"
+      ]
+    },
+    "int-or-str": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    }
+  }
+}

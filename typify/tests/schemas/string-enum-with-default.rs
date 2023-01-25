@@ -28,6 +28,18 @@ impl std::str::FromStr for TestEnum {
         }
     }
 }
+impl std::convert::TryFrom<&str> for TestEnum {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TestEnum {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &String) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
 impl Default for TestEnum {
     fn default() -> Self {
         TestEnum::Failure

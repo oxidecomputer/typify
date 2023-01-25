@@ -32,4 +32,16 @@ impl std::str::FromStr for TestTypeValue {
         }
     }
 }
+impl std::convert::TryFrom<&str> for TestTypeValue {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TestTypeValue {
+    type Error = <Self as std::str::FromStr>::Err;
+    fn try_from(value: &String) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
 fn main() {}
