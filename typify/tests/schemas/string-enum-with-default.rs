@@ -19,13 +19,25 @@ impl ToString for TestEnum {
 }
 impl std::str::FromStr for TestEnum {
     type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
             "failure" => Ok(Self::Failure),
             "skipped" => Ok(Self::Skipped),
             "success" => Ok(Self::Success),
             _ => Err("invalid value"),
         }
+    }
+}
+impl std::convert::TryFrom<&str> for TestEnum {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TestEnum {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
     }
 }
 impl Default for TestEnum {

@@ -222,7 +222,7 @@ impl TypeSpaceSettings {
 
     /// Add an additional derive macro to apply to all defined types.
     pub fn with_derive(&mut self, derive: String) -> &mut Self {
-        if !self.extra_derives.contains(&derive.to_string()) {
+        if !self.extra_derives.contains(&derive) {
             self.extra_derives.push(derive);
         }
         self

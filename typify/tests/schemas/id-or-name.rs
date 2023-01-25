@@ -18,13 +18,13 @@ impl ToString for IdOrName {
 pub struct Name(String);
 impl std::ops::Deref for Name {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }
-impl std::convert::TryFrom<&str> for Name {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+impl std::str::FromStr for Name {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
         if value.len() > 63usize {
             return Err("longer than 63 characters");
         }
@@ -32,16 +32,16 @@ impl std::convert::TryFrom<&str> for Name {
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&String> for Name {
+impl std::convert::TryFrom<&str> for Name {
     type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, Self::Error> {
-        Self::try_from(value.as_str())
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
     }
 }
-impl std::convert::TryFrom<String> for Name {
+impl std::convert::TryFrom<&String> for Name {
     type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
-        Self::try_from(value.as_str())
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
     }
 }
 impl<'de> serde::Deserialize<'de> for Name {
@@ -49,8 +49,9 @@ impl<'de> serde::Deserialize<'de> for Name {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+        String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}

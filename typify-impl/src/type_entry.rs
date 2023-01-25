@@ -381,7 +381,7 @@ impl TypeEntryNewtype {
 impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         let impls = match details {
-            TypeEntryDetails::String => ["Display", "FromStr"]
+            TypeEntryDetails::Integer(_) | TypeEntryDetails::String => ["Display", "FromStr"]
                 .into_iter()
                 .map(ToString::to_string)
                 .collect(),
@@ -411,11 +411,7 @@ impl TypeEntry {
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
-        TypeEntry {
-            details: TypeEntryDetails::Integer(type_name.to_string()),
-            derives: Default::default(),
-            impls: Default::default(),
-        }
+        TypeEntryDetails::Integer(type_name.to_string()).into()
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
@@ -560,13 +556,25 @@ impl TypeEntry {
                 impl std::str::FromStr for #type_name {
                     type Err = &'static str;
 
-                    fn from_str(
-                        value: &str
-                    ) -> Result<Self, Self::Err> {
+                    fn from_str(value: &str) -> Result<Self, &'static str> {
                         match value {
                             #(#match_strs => Ok(Self::#match_variants),)*
                             _ => Err("invalid value"),
                         }
+                    }
+                }
+                impl std::convert::TryFrom<&str> for #type_name {
+                    type Error = &'static str;
+
+                    fn try_from(value: &str) -> Result<Self, &'static str> {
+                        value.parse()
+                    }
+                }
+                impl std::convert::TryFrom<&String> for #type_name {
+                    type Error = &'static str;
+
+                    fn try_from(value: &String) -> Result<Self, &'static str> {
+                        value.parse()
                     }
                 }
             }
@@ -585,56 +593,38 @@ impl TypeEntry {
 
         let untagged_newtype_from_string_impl =
             untagged_newtype_variants(type_space, tag_type, variants, "FromStr").then(|| {
-                let (variant_name, variant_type): (Vec<_>, Vec<_>) = variants
+                let variant_name = variants
                     .iter()
-                    .map(|variant| {
-                        if let VariantDetails::Item(type_id) = &variant.details {
-                            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    .map(|variant| format_ident!("{}", variant.name));
 
-                            (
-                                format_ident!("{}", variant.name),
-                                type_entry.type_ident(type_space, &None),
-                            )
-                        } else {
-                            unreachable!()
-                        }
-                    })
-                    .unzip();
-
-                // Implement From<String> by doing a try_from() for each
-                // variant.
                 quote! {
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
+
+                        // Try to parse() into each variant.
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                            #(
+                                if let Ok(v) = value.parse() {
+                                    Ok(Self::#variant_name(v))
+                                } else
+                            )*
+                            {
+                                Err("string conversion failed for all variants")
+                            }
+                        }
+                    }
                     impl std::convert::TryFrom<&str> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, Self::Error> {
-                            // Seed with an error to make successive cases more
-                            // consistent; this will never reach the user.
-                            Err("")
-                            #(
-                                .or_else(|_: Self::Error| {
-                                    Ok(Self::#variant_name(
-                                        #variant_type::try_from(value)?,
-                                    ))
-                                })
-                            )*
-                            .map_err(|_: Self::Error| {
-                                "string conversion failed for all variants"
-                            })
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                            value.parse()
                         }
                     }
                     impl std::convert::TryFrom<&String> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, Self::Error> {
-                            Self::try_from(value.as_str())
-                        }
-                    }
-                    impl std::convert::TryFrom<String> for #type_name {
-                        type Error = &'static str;
-
-                        fn try_from(value: String) -> Result<Self, Self::Error> {
-                            Self::try_from(value.as_str())
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                            value.parse()
                         }
                     }
                 }
@@ -854,7 +844,7 @@ impl TypeEntry {
                         type Error = String;
 
                         fn try_from(value: #type_name)
-                            -> Result<Self, Self::Error>
+                            -> Result<Self, String>
                         {
                             Ok(Self {
                                 #(
@@ -912,7 +902,7 @@ impl TypeEntry {
 
                         fn try_from(
                             value: #sub_type_name
-                        ) -> Result<Self, Self::Error> {
+                        ) -> Result<Self, &'static str> {
                             if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
@@ -962,10 +952,10 @@ impl TypeEntry {
                 derive_set.remove("Deserialize");
 
                 Some(quote! {
-                    impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = &'static str;
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, Self::Error> {
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
                             #max
                             #min
                             #pat
@@ -973,18 +963,18 @@ impl TypeEntry {
                             Ok(Self(value.to_string()))
                         }
                     }
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                            value.parse()
+                        }
+                    }
                     impl std::convert::TryFrom<&String> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, Self::Error> {
-                            Self::try_from(value.as_str())
-                        }
-                    }
-                    impl std::convert::TryFrom<String> for #type_name {
-                        type Error = &'static str;
-
-                        fn try_from(value: String) -> Result<Self, Self::Error> {
-                            Self::try_from(value.as_str())
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                            value.parse()
                         }
                     }
                     impl<'de> serde::Deserialize<'de> for #type_name {
@@ -992,8 +982,9 @@ impl TypeEntry {
                         where
                             D: serde::Deserializer<'de>,
                         {
-                            Self::try_from(String::deserialize(deserializer)?)
-                                .map_err(|e| {
+                            String::deserialize(deserializer)?
+                                .parse()
+                                .map_err(|e: &'static str| {
                                     <D::Error as serde::de::Error>::custom(
                                         e.to_string(),
                                     )
@@ -1036,7 +1027,7 @@ impl TypeEntry {
 
             impl std::ops::Deref for #type_name {
                 type Target = #sub_type_name;
-                fn deref(&self) -> &Self::Target {
+                fn deref(&self) -> &#sub_type_name {
                     &self.0
                 }
             }

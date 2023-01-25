@@ -51,13 +51,25 @@ mod types {
     }
     impl std::str::FromStr for StringEnum {
         type Err = &'static str;
-        fn from_str(value: &str) -> Result<Self, Self::Err> {
+        fn from_str(value: &str) -> Result<Self, &'static str> {
             match value {
                 "One" => Ok(Self::One),
                 "Two" => Ok(Self::Two),
                 "BuckleMyShoe" => Ok(Self::BuckleMyShoe),
                 _ => Err("invalid value"),
             }
+        }
+    }
+    impl std::convert::TryFrom<&str> for StringEnum {
+        type Error = &'static str;
+        fn try_from(value: &str) -> Result<Self, &'static str> {
+            value.parse()
+        }
+    }
+    impl std::convert::TryFrom<&String> for StringEnum {
+        type Error = &'static str;
+        fn try_from(value: &String) -> Result<Self, &'static str> {
+            value.parse()
         }
     }
     mod builder {
@@ -85,7 +97,7 @@ mod types {
         }
         impl std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
             type Error = String;
-            fn try_from(value: AllTheTraits) -> Result<Self, Self::Error> {
+            fn try_from(value: AllTheTraits) -> Result<Self, String> {
                 Ok(Self { ok: value.ok? })
             }
         }
@@ -125,7 +137,7 @@ mod types {
         }
         impl std::convert::TryFrom<CompoundType> for super::CompoundType {
             type Error = String;
-            fn try_from(value: CompoundType) -> Result<Self, Self::Error> {
+            fn try_from(value: CompoundType) -> Result<Self, String> {
                 Ok(Self {
                     value1: value.value1?,
                     value2: value.value2?,
@@ -168,7 +180,7 @@ mod types {
         }
         impl std::convert::TryFrom<Pair> for super::Pair {
             type Error = String;
-            fn try_from(value: Pair) -> Result<Self, Self::Error> {
+            fn try_from(value: Pair) -> Result<Self, String> {
                 Ok(Self {
                     a: value.a?,
                     b: value.b?,

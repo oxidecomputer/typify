@@ -21,12 +21,24 @@ impl ToString for LetterBoxLetter {
 }
 impl std::str::FromStr for LetterBoxLetter {
     type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
             "a" => Ok(Self::A),
             "b" => Ok(Self::B),
             _ => Err("invalid value"),
         }
+    }
+}
+impl std::convert::TryFrom<&str> for LetterBoxLetter {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for LetterBoxLetter {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
     }
 }
 fn main() {}

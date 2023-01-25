@@ -9,7 +9,7 @@ pub struct TestType {
 pub struct TypeThatHasMoreDerives(pub std::collections::HashMap<String, String>);
 impl std::ops::Deref for TypeThatHasMoreDerives {
     type Target = std::collections::HashMap<String, String>;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &std::collections::HashMap<String, String> {
         &self.0
     }
 }

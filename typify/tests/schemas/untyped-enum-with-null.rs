@@ -23,13 +23,25 @@ impl ToString for TestTypeValue {
 }
 impl std::str::FromStr for TestTypeValue {
     type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
             "start" => Ok(Self::Start),
             "middle" => Ok(Self::Middle),
             "end" => Ok(Self::End),
             _ => Err("invalid value"),
         }
+    }
+}
+impl std::convert::TryFrom<&str> for TestTypeValue {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TestTypeValue {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
     }
 }
 fn main() {}
