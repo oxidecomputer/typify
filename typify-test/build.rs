@@ -106,7 +106,7 @@ fn main() {
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
 
-    let content = format!(
+    let contents = format!(
         "{}\n{}",
         "use serde::{Deserialize, Serialize};",
         type_space.to_string()
@@ -114,7 +114,7 @@ fn main() {
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");
-    fs::write(out_file, &content).unwrap();
+    fs::write(out_file, contents).unwrap();
 }
 
 trait AddType {

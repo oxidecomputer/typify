@@ -7,7 +7,7 @@ pub enum IntOrStr {
 }
 impl std::str::FromStr for IntOrStr {
     type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
             Ok(Self::String(v))
         } else if let Ok(v) = value.parse() {
@@ -18,14 +18,14 @@ impl std::str::FromStr for IntOrStr {
     }
 }
 impl std::convert::TryFrom<&str> for IntOrStr {
-    type Error = <Self as std::str::FromStr>::Err;
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IntOrStr {
-    type Error = <Self as std::str::FromStr>::Err;
-    fn try_from(value: &String) -> Result<Self, Self::Error> {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -51,7 +51,7 @@ pub enum OneOfSeveral {
 pub struct SeriouslyAnything(pub serde_json::Value);
 impl std::ops::Deref for SeriouslyAnything {
     type Target = serde_json::Value;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &serde_json::Value {
         &self.0
     }
 }

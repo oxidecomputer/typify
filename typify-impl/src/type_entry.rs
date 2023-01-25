@@ -556,7 +556,7 @@ impl TypeEntry {
                 impl std::str::FromStr for #type_name {
                     type Err = &'static str;
 
-                    fn from_str(value: &str) -> Result<Self, Self::Err> {
+                    fn from_str(value: &str) -> Result<Self, &'static str> {
                         match value {
                             #(#match_strs => Ok(Self::#match_variants),)*
                             _ => Err("invalid value"),
@@ -564,16 +564,16 @@ impl TypeEntry {
                     }
                 }
                 impl std::convert::TryFrom<&str> for #type_name {
-                    type Error = <Self as std::str::FromStr>::Err;
+                    type Error = &'static str;
 
-                    fn try_from(value: &str) -> Result<Self, Self::Error> {
+                    fn try_from(value: &str) -> Result<Self, &'static str> {
                         value.parse()
                     }
                 }
                 impl std::convert::TryFrom<&String> for #type_name {
-                    type Error = <Self as std::str::FromStr>::Err;
+                    type Error = &'static str;
 
-                    fn try_from(value: &String) -> Result<Self, Self::Error> {
+                    fn try_from(value: &String) -> Result<Self, &'static str> {
                         value.parse()
                     }
                 }
@@ -597,12 +597,12 @@ impl TypeEntry {
                     .iter()
                     .map(|variant| format_ident!("{}", variant.name));
 
-                // Implement FromStr by trying to parse() into each variant.
                 quote! {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
 
-                        fn from_str(value: &str) -> Result<Self, Self::Err> {
+                        // Try to parse() into each variant.
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
                             #(
                                 if let Ok(v) = value.parse() {
                                     Ok(Self::#variant_name(v))
@@ -614,16 +614,16 @@ impl TypeEntry {
                         }
                     }
                     impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = <Self as std::str::FromStr>::Err;
+                        type Error = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, Self::Error> {
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
                     impl std::convert::TryFrom<&String> for #type_name {
-                        type Error = <Self as std::str::FromStr>::Err;
+                        type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, Self::Error> {
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
@@ -844,7 +844,7 @@ impl TypeEntry {
                         type Error = String;
 
                         fn try_from(value: #type_name)
-                            -> Result<Self, Self::Error>
+                            -> Result<Self, String>
                         {
                             Ok(Self {
                                 #(
@@ -902,7 +902,7 @@ impl TypeEntry {
 
                         fn try_from(
                             value: #sub_type_name
-                        ) -> Result<Self, Self::Error> {
+                        ) -> Result<Self, &'static str> {
                             if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
@@ -955,7 +955,7 @@ impl TypeEntry {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
 
-                        fn from_str(value: &str) -> Result<Self, Self::Err> {
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
                             #max
                             #min
                             #pat
@@ -964,16 +964,16 @@ impl TypeEntry {
                         }
                     }
                     impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = <Self as std::str::FromStr>::Err;
+                        type Error = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, Self::Error> {
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
                     impl std::convert::TryFrom<&String> for #type_name {
-                        type Error = <Self as std::str::FromStr>::Err;
+                        type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, Self::Error> {
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
@@ -984,7 +984,7 @@ impl TypeEntry {
                         {
                             String::deserialize(deserializer)?
                                 .parse()
-                                .map_err(|e: <Self as std::str::FromStr>::Err| {
+                                .map_err(|e: &'static str| {
                                     <D::Error as serde::de::Error>::custom(
                                         e.to_string(),
                                     )
@@ -1027,7 +1027,7 @@ impl TypeEntry {
 
             impl std::ops::Deref for #type_name {
                 type Target = #sub_type_name;
-                fn deref(&self) -> &Self::Target {
+                fn deref(&self) -> &#sub_type_name {
                     &self.0
                 }
             }

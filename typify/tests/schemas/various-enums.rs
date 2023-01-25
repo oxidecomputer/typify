@@ -9,7 +9,7 @@ pub enum IpNet {
 pub struct Ipv4Net(pub String);
 impl std::ops::Deref for Ipv4Net {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }
@@ -17,7 +17,7 @@ impl std::ops::Deref for Ipv4Net {
 pub struct Ipv6Net(pub String);
 impl std::ops::Deref for Ipv6Net {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }

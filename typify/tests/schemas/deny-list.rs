@@ -8,13 +8,13 @@ pub struct TestType {
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }
 impl std::convert::TryFrom<String> for TestTypeWhereNot {
     type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    fn try_from(value: String) -> Result<Self, &'static str> {
         if ["start".to_string(), "middle".to_string(), "end".to_string()].contains(&value) {
             Err("invalid value")
         } else {
@@ -26,13 +26,13 @@ impl std::convert::TryFrom<String> for TestTypeWhereNot {
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }
 impl std::convert::TryFrom<String> for TestTypeWhyNot {
     type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    fn try_from(value: String) -> Result<Self, &'static str> {
         if ["because".to_string()].contains(&value) {
             Err("invalid value")
         } else {

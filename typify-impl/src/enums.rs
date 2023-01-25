@@ -544,8 +544,8 @@ impl TypeSpace {
                             .collect::<BTreeSet<_>>();
                         let properties = validation
                             .properties
-                            .iter()
-                            .map(|(prop_name, _)| prop_name.clone())
+                            .keys()
+                            .cloned()
                             .collect::<BTreeSet<_>>();
 
                         Some((constants, properties))
