@@ -879,7 +879,10 @@ impl TypeSpace {
             Some(idx) => &ref_name[idx + 1..],
             None => ref_name,
         };
-        let type_id = self.ref_to_id.get(key).unwrap();
+        let type_id = self
+            .ref_to_id
+            .get(key)
+            .expect(format!("key {} is missing", key).as_str());
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,
