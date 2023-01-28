@@ -5,7 +5,6 @@ use std::collections::BTreeSet;
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
-
 use syn::Path;
 
 use crate::{
@@ -17,6 +16,15 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum TypeEntryImpl {
+    FromStr,
+    Display,
+    Eq,
+    Hash,
+    Ord,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct TypeEntryEnum {
     pub name: String,
     pub rename: Option<String>,
@@ -25,6 +33,15 @@ pub(crate) struct TypeEntryEnum {
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
+    pub impls: Vec<TypeEntryEnumImpl>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum TypeEntryEnumImpl {
+    Default,
+    AllSimpleVariants,
+    UntaggedFromStr,
+    UntaggedDisplay,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -59,6 +76,12 @@ pub(crate) enum TypeEntryNewtypeConstraints {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) struct TypeEntryNative {
+    pub type_name: String,
+    impls: Vec<String>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct WrappedValue(pub serde_json::Value);
 impl WrappedValue {
@@ -78,6 +101,11 @@ impl PartialOrd for WrappedValue {
     }
 }
 
+// TODO This struct needs to go away (again). The derives should go into the
+// generated struct/enum/newtype structs. Same for the impls. Native types will
+// also have impls. Builtin generic types such as Box or Vec will delegate to
+// their subtypes; builtin simple types such as u64 or String have a static
+// list.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
@@ -91,6 +119,10 @@ pub(crate) enum TypeEntryDetails {
     Struct(TypeEntryStruct),
     Newtype(TypeEntryNewtype),
 
+    /// Native types exported from a well-known crate.
+    Native(TypeEntryNative),
+
+    // Types from core and std.
     Option(TypeId),
     Box(TypeId),
     Array(TypeId),
@@ -98,9 +130,6 @@ pub(crate) enum TypeEntryDetails {
     Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
-    /// Built-in complex types with no type generics such as Uuid
-    BuiltIn(String),
-    /// Boolean
     Boolean,
     /// Integers
     Integer(String),
@@ -192,6 +221,7 @@ impl TypeEntryEnum {
             tag_type,
             variants,
             deny_unknown_fields,
+            impls: Vec::new(),
         });
 
         TypeEntry {
@@ -396,9 +426,12 @@ impl From<TypeEntryDetails> for TypeEntry {
 }
 
 impl TypeEntry {
-    pub(crate) fn new_builtin<S: ToString>(type_name: S, impls: &[&str]) -> Self {
+    pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[&str]) -> Self {
         TypeEntry {
-            details: TypeEntryDetails::BuiltIn(type_name.to_string()),
+            details: TypeEntryDetails::Native(TypeEntryNative {
+                type_name: type_name.to_string(),
+                impls: impls.iter().map(ToString::to_string).collect(),
+            }),
             derives: Default::default(),
             impls: impls.iter().map(ToString::to_string).collect(),
         }
@@ -428,6 +461,27 @@ impl TypeEntry {
             | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
 
             _ => None,
+        }
+    }
+
+    pub(crate) fn impls(&self) -> &[String] {
+        match &self.details {
+            TypeEntryDetails::Enum(_) => &[],
+            TypeEntryDetails::Struct(_) => todo!(),
+            TypeEntryDetails::Newtype(_) => todo!(),
+            TypeEntryDetails::Native(n) => &n.impls,
+            TypeEntryDetails::Option(_) => todo!(),
+            TypeEntryDetails::Box(_) => todo!(),
+            TypeEntryDetails::Array(_) => todo!(),
+            TypeEntryDetails::Map(_) => todo!(),
+            TypeEntryDetails::Set(_) => todo!(),
+            TypeEntryDetails::Tuple(_) => todo!(),
+            TypeEntryDetails::Unit => todo!(),
+            TypeEntryDetails::Boolean => todo!(),
+            TypeEntryDetails::Integer(_) => todo!(),
+            TypeEntryDetails::Float(_) => todo!(),
+            TypeEntryDetails::String => todo!(),
+            TypeEntryDetails::Reference(_) => todo!(),
         }
     }
 
@@ -471,11 +525,13 @@ impl TypeEntry {
             tag_type,
             variants,
             deny_unknown_fields,
+            impls: _,
         } = enum_details;
 
         let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
-        // TODO this is a one-off for some useful traits
+        // TODO this is a one-off for some useful traits; this should move into
+        // the creation of the enum type.
         if variants
             .iter()
             .all(|variant| matches!(variant.details, VariantDetails::Simple))
@@ -528,6 +584,8 @@ impl TypeEntry {
 
         // ToString and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
+        // TODO we've already checked the simple-ness of the variants above;
+        // this could be done when we construct the type.
         let simple_enum_impl = (tag_type != &EnumTagType::Untagged
             && variants
                 .iter()
@@ -896,8 +954,13 @@ impl TypeEntry {
                 let value_output = enum_values
                     .iter()
                     .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
+                // TODO if the sub_type is a string we could probably impl
+                // TryFrom<&str> as well and FromStr.
+                // TODO derive Deserialize is wrong since it won't check the
+                // enumerated values.
+                // TODO maybe we want to handle JsonSchema here
                 Some(quote! {
-                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                    impl std::convert::TryFrom<&#sub_type_name> for #type_name {
                         type Error = &'static str;
 
                         fn try_from(
@@ -941,7 +1004,7 @@ impl TypeEntry {
                 let pat = pattern.as_ref().map(|p| {
                     let err = format!("doesn't match pattern \"{}\"", p);
                     quote! {
-                        if regress::Regex::new(#p).unwrap().find(value).is_none() {
+                        if regress::Regex::new(#p).unwrap().find(value) .is_none() {
                             return Err(#err);
                         }
                     }
@@ -949,6 +1012,9 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
+                // TODO: should we look for JsonSchema and special case that?
+                // TODO: or maybe make an external utility type for this
+                // specifically?
                 derive_set.remove("Deserialize");
 
                 Some(quote! {
@@ -1135,7 +1201,9 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
@@ -1178,7 +1246,7 @@ impl TypeEntry {
             | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
-            | TypeEntryDetails::BuiltIn(_) => {
+            | TypeEntryDetails::Native(_) => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
@@ -1245,7 +1313,9 @@ impl TypeEntry {
                 )
             }
             TypeEntryDetails::Boolean => "bool".to_string(),
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),

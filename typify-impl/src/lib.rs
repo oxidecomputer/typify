@@ -10,7 +10,9 @@ use quote::{quote, ToTokens};
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails, WrappedValue};
+use type_entry::{
+    TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype, VariantDetails, WrappedValue,
+};
 
 use crate::util::{sanitize, Case};
 
@@ -304,7 +306,11 @@ impl TypeSpace {
                  type_name,
                  impls,
              }| {
-                cache.insert(schema, type_name, impls);
+                cache.insert(
+                    schema,
+                    type_name,
+                    &impls.iter().map(String::as_str).collect::<Vec<_>>(),
+                );
             },
         );
 
@@ -371,11 +377,14 @@ impl TypeSpace {
                 None => self.convert_ref_type(type_name, schema, type_id)?,
 
                 Some(replace_type) => {
-                    let type_entry = TypeEntry {
-                        details: TypeEntryDetails::BuiltIn(replace_type.replace_type.clone()),
-                        derives: Default::default(),
-                        impls: replace_type.impls.iter().map(ToString::to_string).collect(),
-                    };
+                    let type_entry = TypeEntry::new_native(
+                        replace_type.replace_type.clone(),
+                        &replace_type
+                            .impls
+                            .iter()
+                            .map(String::as_str)
+                            .collect::<Vec<_>>(),
+                    );
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
@@ -824,7 +833,9 @@ impl<'a> Type<'a> {
 
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),

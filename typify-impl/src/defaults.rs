@@ -234,7 +234,7 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::BuiltIn(_) => {
+            TypeEntryDetails::Native(_) => {
                 // This is tricky. There's not a lot we can do--particularly if
                 // and when we start to consider arbitrary types as "built-in"
                 // (e.g. if schemars tags types with an extension to denote

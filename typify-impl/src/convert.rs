@@ -551,13 +551,13 @@ impl TypeSpace {
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((TypeEntry::new_builtin("uuid::Uuid", &["Display"]), metadata))
+                Ok((TypeEntry::new_native("uuid::Uuid", &["Display"]), metadata))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_native("chrono::Date<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
@@ -565,21 +565,21 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_native("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
                     metadata,
                 ))
             }
 
             Some("ip") => Ok((
-                TypeEntry::new_builtin("std::net::IpAddr", &["Display"]),
+                TypeEntry::new_native("std::net::IpAddr", &["Display"]),
                 metadata,
             )),
             Some("ipv4") => Ok((
-                TypeEntry::new_builtin("std::net::Ipv4Addr", &["Display"]),
+                TypeEntry::new_native("std::net::Ipv4Addr", &["Display"]),
                 metadata,
             )),
             Some("ipv6") => Ok((
-                TypeEntry::new_builtin("std::net::Ipv6Addr", &["Display"]),
+                TypeEntry::new_native("std::net::Ipv6Addr", &["Display"]),
                 metadata,
             )),
             Some(unhandled) => {
@@ -1200,11 +1200,11 @@ impl TypeSpace {
                 unique_items,
                 contains: None,
             } => {
-                let tmp_type_name = match get_type_name(&type_name, metadata) {
+                let item_type_name = match get_type_name(&type_name, metadata) {
                     Some(s) => Name::Suggested(format!("{}Item", s)),
                     None => Name::Unknown,
                 };
-                let (type_id, _) = self.id_for_schema(tmp_type_name, item.as_ref())?;
+                let (type_id, _) = self.id_for_schema(item_type_name, item.as_ref())?;
 
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
@@ -1224,7 +1224,7 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let any = TypeEntry::new_builtin("serde_json::Value", &[]);
+        let any = TypeEntry::new_native("serde_json::Value", &[]);
         let type_id = self.assign_type(any);
         Ok((TypeEntryDetails::Array(type_id).into(), metadata))
     }
@@ -1242,7 +1242,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((TypeEntry::new_builtin("serde_json::Value", &[]), metadata))
+        Ok((TypeEntry::new_native("serde_json::Value", &[]), metadata))
     }
 
     fn convert_typed_enum<'a>(
@@ -1256,12 +1256,9 @@ impl TypeSpace {
             ..schema.clone()
         };
 
-        let inner_type_name = match &type_name {
-            Name::Required(name) | Name::Suggested(name) => {
-                Name::Suggested(format!("{}Inner", name))
-            }
-            // TODO return an error indicating that a name is required here...
-            Name::Unknown => todo!(),
+        let inner_type_name = match get_type_name(&type_name, &schema.metadata) {
+            Some(s) => Name::Suggested(format!("{}Inner", s)),
+            None => Name::Unknown,
         };
 
         let (type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
