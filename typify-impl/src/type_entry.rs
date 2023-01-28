@@ -970,15 +970,13 @@ impl TypeEntry {
                     .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well and FromStr.
-                // TODO derive Deserialize is wrong since it won't check the
-                // enumerated values.
                 // TODO maybe we want to handle JsonSchema here
                 Some(quote! {
-                    impl std::convert::TryFrom<&#sub_type_name> for #type_name {
+                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
                         type Error = &'static str;
 
                         fn try_from(
-                            value: &#sub_type_name
+                            value: #sub_type_name
                         ) -> Result<Self, &'static str>
                         {
                             if #not [
@@ -988,16 +986,6 @@ impl TypeEntry {
                             } else {
                                 Ok(Self(value))
                             }
-                        }
-                    }
-
-                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
-                        type Error = &'static str;
-
-                        fn try_from(
-                            value: #sub_type_name
-                        ) -> Result<Self, Self::Error> {
-                            Self::try_from(&value)
                         }
                     }
 
