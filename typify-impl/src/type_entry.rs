@@ -953,7 +953,10 @@ impl TypeEntry {
                 // Note that string types with enumerated values are converted
                 // into simple enums rather than newtypes so we would not
                 // expect to see a string as the inner type here.
-                assert!(!matches!(&sub_type.details, TypeEntryDetails::String));
+                assert!(
+                    matches!(constraints, TypeEntryNewtypeConstraints::DenyValue(_))
+                        || !matches!(&sub_type.details, TypeEntryDetails::String)
+                );
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
