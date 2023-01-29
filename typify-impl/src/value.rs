@@ -130,7 +130,7 @@ impl TypeEntry {
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    serde_json::from_string::< #( #type_path )::* >(#text).unwrap()
+                    serde_json::from_str::< #( #type_path )::* >(#text).unwrap()
                 }
             }
             TypeEntryDetails::Boolean => {
@@ -518,7 +518,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    serde_json::from_string::<uuid::Uuid>("\"not-a-uuid\"").unwrap()
+                    serde_json::from_str::<uuid::Uuid>("\"not-a-uuid\"").unwrap()
                 }
                 .to_string()
             ),
