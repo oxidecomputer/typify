@@ -551,13 +551,19 @@ impl TypeSpace {
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((TypeEntry::new_builtin("uuid::Uuid", &["Display"]), metadata))
+                Ok((
+                    TypeEntry::new_builtin("uuid::Uuid", &["Default", "Display"]),
+                    metadata,
+                ))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::Date<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_builtin(
+                        "chrono::Date<chrono::offset::Utc>",
+                        &["Default", "Display"],
+                    ),
                     metadata,
                 ))
             }
@@ -565,21 +571,24 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_builtin("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_builtin(
+                        "chrono::DateTime<chrono::offset::Utc>",
+                        &["Default", "Display"],
+                    ),
                     metadata,
                 ))
             }
 
             Some("ip") => Ok((
-                TypeEntry::new_builtin("std::net::IpAddr", &["Display"]),
+                TypeEntry::new_builtin("std::net::IpAddr", &["Default", "Display"]),
                 metadata,
             )),
             Some("ipv4") => Ok((
-                TypeEntry::new_builtin("std::net::Ipv4Addr", &["Display"]),
+                TypeEntry::new_builtin("std::net::Ipv4Addr", &["Default", "Display"]),
                 metadata,
             )),
             Some("ipv6") => Ok((
-                TypeEntry::new_builtin("std::net::Ipv6Addr", &["Display"]),
+                TypeEntry::new_builtin("std::net::Ipv6Addr", &["Default", "Display"]),
                 metadata,
             )),
             Some(unhandled) => {
