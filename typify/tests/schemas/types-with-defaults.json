@@ -1,0 +1,33 @@
+{
+  "$comment": "defaults for built-in types",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "TestBed": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "default": "abc123-is-this-a-uuid"
+        },
+        "any": {
+          "type": "array",
+          "items": {},
+          "default": [
+            [
+              8,
+              6,
+              7
+            ],
+            [
+              5,
+              3,
+              0,
+              9
+            ]
+          ]
+        }
+      }
+    }
+  }
+}
