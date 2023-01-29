@@ -1202,7 +1202,7 @@ mod tests {
                 tag_type: EnumTagType::Untagged,
                 variants,
                 deny_unknown_fields: _,
-                impls: _,
+                bespoke_impls: _,
             }) => {
                 assert_eq!(name, "UntaggedEnum");
                 assert_eq!(variants.len(), 5);

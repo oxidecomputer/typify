@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::collections::BTreeSet;
 
@@ -12,7 +12,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
-    DefaultImpl, Name, TypeId, TypeSpace,
+    DefaultImpl, Name, Result, TypeId, TypeSpace,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -33,15 +33,14 @@ pub(crate) struct TypeEntryEnum {
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
-    pub impls: Vec<TypeEntryEnumImpl>,
+    pub bespoke_impls: BTreeSet<TypeEntryEnumImpl>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum TypeEntryEnumImpl {
-    // Default,
-    // AllSimpleVariants,
-    // UntaggedFromStr,
-    // UntaggedDisplay,
+    AllSimpleVariants,
+    UntaggedFromStr,
+    UntaggedDisplay,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -221,7 +220,7 @@ impl TypeEntryEnum {
             tag_type,
             variants,
             deny_unknown_fields,
-            impls: Vec::new(),
+            bespoke_impls: Default::default(),
         });
 
         TypeEntry {
@@ -229,6 +228,27 @@ impl TypeEntryEnum {
             derives,
             impls: Default::default(),
         }
+    }
+
+    pub(crate) fn finalize(&mut self, type_space: &TypeSpace) {
+        self.bespoke_impls = [
+            // Not untagged with all simple variants.
+            (self.tag_type != EnumTagType::Untagged
+                && self
+                    .variants
+                    .iter()
+                    .all(|variant| matches!(variant.details, VariantDetails::Simple)))
+            .then(|| TypeEntryEnumImpl::AllSimpleVariants),
+            // Untagged and all variants impl FromStr
+            untagged_newtype_variants(type_space, &self.tag_type, &self.variants, "FromStr")
+                .then(|| TypeEntryEnumImpl::UntaggedFromStr),
+            // Untagged and all variants impl Display
+            untagged_newtype_variants(type_space, &self.tag_type, &self.variants, "Display")
+                .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+        ]
+        .into_iter()
+        .flatten()
+        .collect();
     }
 }
 
@@ -454,6 +474,14 @@ impl TypeEntry {
         }
     }
 
+    pub(crate) fn finalize(&mut self, type_space: &mut TypeSpace) -> Result<()> {
+        if let TypeEntryDetails::Enum(enum_details) = &mut self.details {
+            enum_details.finalize(type_space);
+        }
+
+        self.check_defaults(type_space)
+    }
+
     pub(crate) fn name(&self) -> Option<&String> {
         match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
@@ -525,7 +553,7 @@ impl TypeEntry {
             tag_type,
             variants,
             deny_unknown_fields,
-            impls: _,
+            bespoke_impls,
         } = enum_details;
 
         let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
@@ -584,90 +612,36 @@ impl TypeEntry {
 
         // ToString and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
-        // TODO we've already checked the simple-ness of the variants above;
-        // this could be done when we construct the type.
-        let simple_enum_impl = (tag_type != &EnumTagType::Untagged
-            && variants
-                .iter()
-                .all(|variant| matches!(variant.details, VariantDetails::Simple)))
-        .then(|| {
-            let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
-                .iter()
-                .map(|variant| {
-                    let variant_name = format_ident!("{}", variant.name);
-                    let variant_str = match &variant.rename {
-                        Some(s) => s,
-                        None => &variant.name,
-                    };
-                    (variant_name, variant_str)
-                })
-                .unzip();
-
-            quote! {
-                impl ToString for #type_name {
-                    fn to_string(&self) -> String {
-                        match *self {
-                            #(Self::#match_variants => #match_strs.to_string(),)*
-                        }
-                    }
-                }
-                impl std::str::FromStr for #type_name {
-                    type Err = &'static str;
-
-                    fn from_str(value: &str) -> Result<Self, &'static str> {
-                        match value {
-                            #(#match_strs => Ok(Self::#match_variants),)*
-                            _ => Err("invalid value"),
-                        }
-                    }
-                }
-                impl std::convert::TryFrom<&str> for #type_name {
-                    type Error = &'static str;
-
-                    fn try_from(value: &str) -> Result<Self, &'static str> {
-                        value.parse()
-                    }
-                }
-                impl std::convert::TryFrom<&String> for #type_name {
-                    type Error = &'static str;
-
-                    fn try_from(value: &String) -> Result<Self, &'static str> {
-                        value.parse()
-                    }
-                }
-            }
-        });
-
-        let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
-            quote! {
-                impl Default for #type_name {
-                    fn default() -> Self {
-                        #default_stream
-                    }
-                }
-            }
-        });
-
-        let untagged_newtype_from_string_impl =
-            untagged_newtype_variants(type_space, tag_type, variants, "FromStr").then(|| {
-                let variant_name = variants
+        let simple_enum_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+            .then(|| {
+                let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
                     .iter()
-                    .map(|variant| format_ident!("{}", variant.name));
+                    .map(|variant| {
+                        let variant_name = format_ident!("{}", variant.name);
+                        let variant_str = match &variant.rename {
+                            Some(s) => s,
+                            None => &variant.name,
+                        };
+                        (variant_name, variant_str)
+                    })
+                    .unzip();
 
                 quote! {
+                    impl ToString for #type_name {
+                        fn to_string(&self) -> String {
+                            match *self {
+                                #(Self::#match_variants => #match_strs.to_string(),)*
+                            }
+                        }
+                    }
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
 
-                        // Try to parse() into each variant.
                         fn from_str(value: &str) -> Result<Self, &'static str> {
-                            #(
-                                if let Ok(v) = value.parse() {
-                                    Ok(Self::#variant_name(v))
-                                } else
-                            )*
-                            {
-                                Err("string conversion failed for all variants")
+                            match value {
+                                #(#match_strs => Ok(Self::#match_variants),)*
+                                _ => Err("invalid value"),
                             }
                         }
                     }
@@ -688,8 +662,66 @@ impl TypeEntry {
                 }
             });
 
-        let untagged_newtype_to_string_impl =
-            untagged_newtype_variants(type_space, tag_type, variants, "Display").then(|| {
+        let default_impl = default.as_ref().map(|value| {
+            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
+            quote! {
+                impl Default for #type_name {
+                    fn default() -> Self {
+                        #default_stream
+                    }
+                }
+            }
+        });
+
+        let untagged_newtype_from_string_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::UntaggedFromStr)
+            .then(|| {
+                let variant_name = variants
+                    .iter()
+                    .map(|variant| format_ident!("{}", variant.name));
+
+                quote! {
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
+
+                        fn from_str(value: &str) ->
+                            Result<Self, &'static str>
+                        {
+                            #(
+                                // Try to parse() into each variant.
+                                if let Ok(v) = value.parse() {
+                                    Ok(Self::#variant_name(v))
+                                } else
+                            )*
+                            {
+                                Err("string conversion failed for all variants")
+                            }
+                        }
+                    }
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &str) ->
+                            Result<Self, &'static str>
+                        {
+                            value.parse()
+                        }
+                    }
+                    impl std::convert::TryFrom<&String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &String) ->
+                            Result<Self, &'static str>
+                        {
+                            value.parse()
+                        }
+                    }
+                }
+            });
+
+        let untagged_newtype_to_string_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::UntaggedDisplay)
+            .then(|| {
                 let variant_name = variants
                     .iter()
                     .map(|variant| format_ident!("{}", variant.name));
@@ -1069,7 +1101,9 @@ impl TypeEntry {
                     impl std::convert::TryFrom<&String> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                        fn try_from(value: &String) ->
+                            Result<Self, &'static str>
+                        {
                             value.parse()
                         }
                     }
@@ -1094,8 +1128,7 @@ impl TypeEntry {
             }
         };
 
-        // If there are no constraints, let folks directly access the
-        // value.
+        // If there are no constraints, let consumers directly access the value.
         let vis = match constraints {
             TypeEntryNewtypeConstraints::None => Some(quote! {pub}),
             _ => None,

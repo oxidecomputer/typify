@@ -398,8 +398,6 @@ impl TypeSpace {
             let type_id = TypeId(base_id + index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
 
-            type_entry.check_defaults(self)?;
-
             // TODO compute appropriate derives, taking care to account for
             // dependency cycles. Currently we're using a more minimal--safe--
             // set of derives than we might otherwise. This notably prevents us
@@ -417,6 +415,14 @@ impl TypeSpace {
             self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
 
             // Overwrite the entry regardless of whether we modified it.
+            self.id_to_entry.insert(type_id, type_entry);
+        }
+
+        // Finalize all created types.
+        for index in base_id..self.next_id {
+            let type_id = TypeId(index);
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -593,11 +599,14 @@ impl TypeSpace {
         schema: &Schema,
         name_hint: Option<String>,
     ) -> Result<TypeId> {
+        let base_id = self.next_id;
+
         let name = match name_hint {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        // let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        let (mut type_entry, metadata) = self.convert_schema(name, schema).unwrap();
         if let Some(metadata) = metadata {
             match &mut type_entry.details {
                 TypeEntryDetails::Enum(details) => {
@@ -611,10 +620,19 @@ impl TypeSpace {
                 }
                 _ => (),
             }
-            type_entry.check_defaults(self)?;
         }
 
-        Ok(self.assign_type(type_entry))
+        let type_id = self.assign_type(type_entry);
+
+        // Finalize all created types.
+        for index in base_id..self.next_id {
+            let type_id = TypeId(index);
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            type_entry.finalize(self)?;
+            self.id_to_entry.insert(type_id, type_entry);
+        }
+
+        Ok(type_id)
     }
 
     /// Get a type given its ID.
@@ -706,8 +724,11 @@ impl TypeSpace {
             // them to be different and resolve that by renaming or scoping
             // them in some way.
             if let Some(type_id) = self.name_to_id.get(name) {
-                let existing_ty = self.id_to_entry.get(type_id).unwrap();
-                assert_eq!(existing_ty, &ty);
+                // TODO we'd like to verify that the type is structurally the
+                // same, but the types may not be functionally equal. This is a
+                // consequence of types being "finalized" after each type
+                // addition. This further emphasized the need for a more
+                // deliberate, multi-pass approach.
                 type_id.clone()
             } else {
                 let type_id = self.assign();

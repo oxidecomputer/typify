@@ -2637,7 +2637,7 @@ impl std::convert::TryFrom<&String> for BindVariant2Input {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct BindVariant3Input(String);
 impl std::ops::Deref for BindVariant3Input {
     type Target = String;
@@ -2660,6 +2660,15 @@ impl std::convert::TryFrom<String> for BindVariant3Input {
         } else {
             Ok(Self(value))
         }
+    }
+}
+impl<'de> serde::Deserialize<'de> for BindVariant3Input {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(String::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11119,7 +11128,7 @@ pub struct MarkVisual {
     #[serde(rename = "type", default, skip_serializing_if = "Option::is_none")]
     pub type_: Option<MarkVisualType>,
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct MarkVisualType(String);
 impl std::ops::Deref for MarkVisualType {
     type Target = String;
@@ -11135,6 +11144,15 @@ impl std::convert::TryFrom<String> for MarkVisualType {
         } else {
             Ok(Self(value))
         }
+    }
+}
+impl<'de> serde::Deserialize<'de> for MarkVisualType {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(String::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -15721,7 +15739,7 @@ pub enum Signal {
         value: Option<serde_json::Value>,
     },
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct SignalName(String);
 impl std::ops::Deref for SignalName {
     type Target = String;
@@ -15744,6 +15762,15 @@ impl std::convert::TryFrom<String> for SignalName {
         } else {
             Ok(Self(value))
         }
+    }
+}
+impl<'de> serde::Deserialize<'de> for SignalName {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(String::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
