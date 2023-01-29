@@ -604,7 +604,11 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
         "async" => "async_".to_string(), // TODO syn should handle this case...
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
-        _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
+        _ => to_case(
+            &input
+                .replace('\'', "")
+                .replace(|c| !is_xid_continue(c), "-"),
+        ),
     };
 
     let out = match out.chars().next() {

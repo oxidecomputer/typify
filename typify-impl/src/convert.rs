@@ -940,7 +940,7 @@ impl TypeSpace {
         let type_id = self
             .ref_to_id
             .get(key)
-            .expect(format!("key {} is missing", key).as_str());
+            .unwrap_or_else(|| panic!("key {} is missing", key));
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,
@@ -1422,11 +1422,11 @@ impl TypeSpace {
         }
     }
 
-    pub(crate) fn convert_option<'a, 'b>(
+    pub(crate) fn convert_option<'a>(
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        schema: &'b Schema,
+        schema: &Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let (ty, _) = self.convert_schema(type_name, schema)?;
         let ty = self.type_to_option(ty);

@@ -659,7 +659,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
-        let output = ty.type_name(&type_space).replace(" ", "");
+        let output = ty.type_name(&type_space).replace(' ', "");
         assert_eq!(
             output,
             "std::collections::HashMap<String,serde_json::Value>"

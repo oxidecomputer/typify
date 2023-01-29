@@ -25,7 +25,7 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     let mut out_path = path.clone();
     out_path.set_extension("rs");
 
-    let file = File::open(path.clone())?;
+    let file = File::open(path)?;
     let reader = BufReader::new(file);
 
     // Read the JSON contents of the file as an instance of `User`.

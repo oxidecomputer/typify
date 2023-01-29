@@ -91,7 +91,7 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
 #[macro_export]
 macro_rules! validate_builtin {
     ($t:ty) => {
-        crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
+        $crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
     };
 }
 

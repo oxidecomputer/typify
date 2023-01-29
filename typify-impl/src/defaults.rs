@@ -139,24 +139,24 @@ impl TypeEntry {
             }) => match tag_type {
                 EnumTagType::External => {
                     validate_default_for_external_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Internal { tag } => {
                     validate_default_for_internal_enum(type_space, variants, default, tag)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Adjacent { tag, content } => {
                     validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Untagged => {
                     validate_default_for_untagged_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
             },
             TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
                 validate_default_struct_props(properties, type_space, default)
-                    .ok_or_else(|| Error::invalid_value())
+                    .ok_or_else(Error::invalid_value)
             }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
@@ -225,8 +225,9 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
-                .ok_or_else(|| Error::invalid_value()),
+            TypeEntryDetails::Tuple(ids) => {
+                validate_default_tuple(ids, type_space, default).ok_or_else(Error::invalid_value)
+            }
             TypeEntryDetails::Unit => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
@@ -341,7 +342,7 @@ pub(crate) fn validate_default_for_external_enum(
         Some(DefaultKind::Specific)
     } else {
         let map = default.as_object()?;
-        (map.len() == 1).then(|| ())?;
+        (map.len() == 1).then_some(())?;
 
         let (name, value) = map.iter().next()?;
 
