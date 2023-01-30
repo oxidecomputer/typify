@@ -81,6 +81,12 @@ impl std::convert::TryFrom<&String> for AlertInstanceState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AlertInstanceState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -310,6 +316,12 @@ impl std::convert::TryFrom<&String> for AppEventsItem {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppEventsItem {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The set of permissions for the GitHub app"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -420,6 +432,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsActions {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsActions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsAdministration {
     #[serde(rename = "read")]
@@ -454,6 +472,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsAdministration {
 impl std::convert::TryFrom<&String> for AppPermissionsAdministration {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsAdministration {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -494,6 +518,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsChecks {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsChecks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsContentReferences {
     #[serde(rename = "read")]
@@ -528,6 +558,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsContentReferences {
 impl std::convert::TryFrom<&String> for AppPermissionsContentReferences {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsContentReferences {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -568,6 +604,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsContents {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsContents {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsDeployments {
     #[serde(rename = "read")]
@@ -602,6 +644,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsDeployments {
 impl std::convert::TryFrom<&String> for AppPermissionsDeployments {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsDeployments {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -642,6 +690,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsDiscussions {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsDiscussions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsEmails {
     #[serde(rename = "read")]
@@ -676,6 +730,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsEmails {
 impl std::convert::TryFrom<&String> for AppPermissionsEmails {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsEmails {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -716,6 +776,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsEnvironments {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsEnvironments {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsIssues {
     #[serde(rename = "read")]
@@ -750,6 +816,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsIssues {
 impl std::convert::TryFrom<&String> for AppPermissionsIssues {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsIssues {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -790,6 +862,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsMembers {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsMembers {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsMetadata {
     #[serde(rename = "read")]
@@ -824,6 +902,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsMetadata {
 impl std::convert::TryFrom<&String> for AppPermissionsMetadata {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsMetadata {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -864,6 +948,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsOrganizationAdministration
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationAdministration {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsOrganizationHooks {
     #[serde(rename = "read")]
@@ -898,6 +988,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsOrganizationHooks {
 impl std::convert::TryFrom<&String> for AppPermissionsOrganizationHooks {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationHooks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -938,6 +1034,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsOrganizationPackages {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationPackages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsOrganizationPlan {
     #[serde(rename = "read")]
@@ -972,6 +1074,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsOrganizationPlan {
 impl std::convert::TryFrom<&String> for AppPermissionsOrganizationPlan {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationPlan {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1012,6 +1120,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsOrganizationProjects {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationProjects {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsOrganizationSecrets {
     #[serde(rename = "read")]
@@ -1046,6 +1160,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsOrganizationSecrets {
 impl std::convert::TryFrom<&String> for AppPermissionsOrganizationSecrets {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationSecrets {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1086,6 +1206,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsOrganizationSelfHostedRunn
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationSelfHostedRunners {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsOrganizationUserBlocking {
     #[serde(rename = "read")]
@@ -1120,6 +1246,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsOrganizationUserBlocking {
 impl std::convert::TryFrom<&String> for AppPermissionsOrganizationUserBlocking {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsOrganizationUserBlocking {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1160,6 +1292,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsPackages {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsPackages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsPages {
     #[serde(rename = "read")]
@@ -1194,6 +1332,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsPages {
 impl std::convert::TryFrom<&String> for AppPermissionsPages {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsPages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1234,6 +1378,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsPullRequests {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsPullRequests {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsRepositoryHooks {
     #[serde(rename = "read")]
@@ -1268,6 +1418,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsRepositoryHooks {
 impl std::convert::TryFrom<&String> for AppPermissionsRepositoryHooks {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsRepositoryHooks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1308,6 +1464,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsRepositoryProjects {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsRepositoryProjects {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsSecretScanningAlerts {
     #[serde(rename = "read")]
@@ -1342,6 +1504,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsSecretScanningAlerts {
 impl std::convert::TryFrom<&String> for AppPermissionsSecretScanningAlerts {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsSecretScanningAlerts {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1382,6 +1550,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsSecrets {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsSecrets {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsSecurityEvents {
     #[serde(rename = "read")]
@@ -1416,6 +1590,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsSecurityEvents {
 impl std::convert::TryFrom<&String> for AppPermissionsSecurityEvents {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsSecurityEvents {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1456,6 +1636,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsSecurityScanningAlert {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsSecurityScanningAlert {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsSingleFile {
     #[serde(rename = "read")]
@@ -1490,6 +1676,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsSingleFile {
 impl std::convert::TryFrom<&String> for AppPermissionsSingleFile {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsSingleFile {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1530,6 +1722,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsStatuses {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsStatuses {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsTeamDiscussions {
     #[serde(rename = "read")]
@@ -1564,6 +1762,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsTeamDiscussions {
 impl std::convert::TryFrom<&String> for AppPermissionsTeamDiscussions {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsTeamDiscussions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1604,6 +1808,12 @@ impl std::convert::TryFrom<&String> for AppPermissionsVulnerabilityAlerts {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AppPermissionsVulnerabilityAlerts {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AppPermissionsWorkflows {
     #[serde(rename = "read")]
@@ -1638,6 +1848,12 @@ impl std::convert::TryFrom<&str> for AppPermissionsWorkflows {
 impl std::convert::TryFrom<&String> for AppPermissionsWorkflows {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AppPermissionsWorkflows {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1700,6 +1916,12 @@ impl std::convert::TryFrom<&str> for AuthorAssociation {
 impl std::convert::TryFrom<&String> for AuthorAssociation {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AuthorAssociation {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1779,6 +2001,12 @@ impl std::convert::TryFrom<&String> for BranchProtectionRuleAllowDeletionsEnforc
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BranchProtectionRuleAllowDeletionsEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BranchProtectionRuleAllowForcePushesEnforcementLevel {
     #[serde(rename = "off")]
@@ -1817,6 +2045,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleAllowForcePushesEnforce
 impl std::convert::TryFrom<&String> for BranchProtectionRuleAllowForcePushesEnforcementLevel {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleAllowForcePushesEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1866,6 +2100,12 @@ impl std::convert::TryFrom<&String> for BranchProtectionRuleCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BranchProtectionRuleCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "Activity related to a branch protection rule. For more information, see \"[About branch protection rules](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-rules).\""]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -1909,6 +2149,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleDeletedAction {
 impl std::convert::TryFrom<&String> for BranchProtectionRuleDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1956,6 +2202,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleEditedAction {
 impl std::convert::TryFrom<&String> for BranchProtectionRuleEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2059,6 +2311,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BranchProtectionRuleMergeQueueEnforcementLevel {
     #[serde(rename = "off")]
@@ -2097,6 +2357,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleMergeQueueEnforcementLe
 impl std::convert::TryFrom<&String> for BranchProtectionRuleMergeQueueEnforcementLevel {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleMergeQueueEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2141,6 +2407,12 @@ impl std::convert::TryFrom<&String> for BranchProtectionRulePullRequestReviewsEn
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BranchProtectionRulePullRequestReviewsEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BranchProtectionRuleRequiredConversationResolutionLevel {
     #[serde(rename = "off")]
@@ -2179,6 +2451,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleRequiredConversationRes
 impl std::convert::TryFrom<&String> for BranchProtectionRuleRequiredConversationResolutionLevel {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleRequiredConversationResolutionLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2223,6 +2501,12 @@ impl std::convert::TryFrom<&String> for BranchProtectionRuleRequiredDeploymentsE
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
     #[serde(rename = "off")]
@@ -2264,6 +2548,12 @@ impl std::convert::TryFrom<&String> for BranchProtectionRuleRequiredStatusChecks
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BranchProtectionRuleSignatureRequirementEnforcementLevel {
     #[serde(rename = "off")]
@@ -2302,6 +2592,12 @@ impl std::convert::TryFrom<&str> for BranchProtectionRuleSignatureRequirementEnf
 impl std::convert::TryFrom<&String> for BranchProtectionRuleSignatureRequirementEnforcementLevel {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BranchProtectionRuleSignatureRequirementEnforcementLevel {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2350,6 +2646,12 @@ impl std::convert::TryFrom<&str> for CheckRunCompletedAction {
 impl std::convert::TryFrom<&String> for CheckRunCompletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCompletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2463,6 +2765,12 @@ impl std::convert::TryFrom<&String> for CheckRunCompletedCheckRunCheckSuiteConcl
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunCompletedCheckRunCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckRunCompletedCheckRunCheckSuiteStatus {
     #[serde(rename = "in_progress")]
@@ -2501,6 +2809,12 @@ impl std::convert::TryFrom<&str> for CheckRunCompletedCheckRunCheckSuiteStatus {
 impl std::convert::TryFrom<&String> for CheckRunCompletedCheckRunCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCompletedCheckRunCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2566,6 +2880,12 @@ impl std::convert::TryFrom<&String> for CheckRunCompletedCheckRunConclusion {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunCompletedCheckRunConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRunOutput {
@@ -2607,6 +2927,12 @@ impl std::convert::TryFrom<&str> for CheckRunCompletedCheckRunStatus {
 impl std::convert::TryFrom<&String> for CheckRunCompletedCheckRunStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCompletedCheckRunStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2663,6 +2989,12 @@ impl std::convert::TryFrom<&str> for CheckRunCreatedAction {
 impl std::convert::TryFrom<&String> for CheckRunCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2776,6 +3108,12 @@ impl std::convert::TryFrom<&String> for CheckRunCreatedCheckRunCheckSuiteConclus
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunCreatedCheckRunCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckRunCreatedCheckRunCheckSuiteStatus {
     #[serde(rename = "queued")]
@@ -2814,6 +3152,12 @@ impl std::convert::TryFrom<&str> for CheckRunCreatedCheckRunCheckSuiteStatus {
 impl std::convert::TryFrom<&String> for CheckRunCreatedCheckRunCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCreatedCheckRunCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2879,6 +3223,12 @@ impl std::convert::TryFrom<&String> for CheckRunCreatedCheckRunConclusion {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunCreatedCheckRunConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRunOutput {
@@ -2928,6 +3278,12 @@ impl std::convert::TryFrom<&str> for CheckRunCreatedCheckRunStatus {
 impl std::convert::TryFrom<&String> for CheckRunCreatedCheckRunStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunCreatedCheckRunStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3084,6 +3440,12 @@ impl std::convert::TryFrom<&String> for CheckRunRequestedActionAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunRequestedActionAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The [check_run](https://docs.github.com/en/rest/reference/checks#get-a-check-run)."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -3194,6 +3556,12 @@ impl std::convert::TryFrom<&String> for CheckRunRequestedActionCheckRunCheckSuit
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunRequestedActionCheckRunCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckRunRequestedActionCheckRunCheckSuiteStatus {
     #[serde(rename = "queued")]
@@ -3232,6 +3600,12 @@ impl std::convert::TryFrom<&str> for CheckRunRequestedActionCheckRunCheckSuiteSt
 impl std::convert::TryFrom<&String> for CheckRunRequestedActionCheckRunCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunRequestedActionCheckRunCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3297,6 +3671,12 @@ impl std::convert::TryFrom<&String> for CheckRunRequestedActionCheckRunConclusio
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunRequestedActionCheckRunConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRunOutput {
@@ -3346,6 +3726,12 @@ impl std::convert::TryFrom<&str> for CheckRunRequestedActionCheckRunStatus {
 impl std::convert::TryFrom<&String> for CheckRunRequestedActionCheckRunStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunRequestedActionCheckRunStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3402,6 +3788,12 @@ impl std::convert::TryFrom<&str> for CheckRunRerequestedAction {
 impl std::convert::TryFrom<&String> for CheckRunRerequestedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunRerequestedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3515,6 +3907,12 @@ impl std::convert::TryFrom<&String> for CheckRunRerequestedCheckRunCheckSuiteCon
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunRerequestedCheckRunCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckRunRerequestedCheckRunCheckSuiteStatus {
     #[serde(rename = "completed")]
@@ -3545,6 +3943,12 @@ impl std::convert::TryFrom<&str> for CheckRunRerequestedCheckRunCheckSuiteStatus
 impl std::convert::TryFrom<&String> for CheckRunRerequestedCheckRunCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunRerequestedCheckRunCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3610,6 +4014,12 @@ impl std::convert::TryFrom<&String> for CheckRunRerequestedCheckRunConclusion {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckRunRerequestedCheckRunConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRunOutput {
@@ -3651,6 +4061,12 @@ impl std::convert::TryFrom<&str> for CheckRunRerequestedCheckRunStatus {
 impl std::convert::TryFrom<&String> for CheckRunRerequestedCheckRunStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckRunRerequestedCheckRunStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3704,6 +4120,12 @@ impl std::convert::TryFrom<&str> for CheckSuiteCompletedAction {
 impl std::convert::TryFrom<&String> for CheckSuiteCompletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckSuiteCompletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3792,6 +4214,12 @@ impl std::convert::TryFrom<&String> for CheckSuiteCompletedCheckSuiteConclusion 
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckSuiteCompletedCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckSuiteCompletedCheckSuiteStatus {
@@ -3835,6 +4263,12 @@ impl std::convert::TryFrom<&str> for CheckSuiteCompletedCheckSuiteStatus {
 impl std::convert::TryFrom<&String> for CheckSuiteCompletedCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckSuiteCompletedCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3917,6 +4351,12 @@ impl std::convert::TryFrom<&str> for CheckSuiteRequestedAction {
 impl std::convert::TryFrom<&String> for CheckSuiteRequestedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckSuiteRequestedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4005,6 +4445,12 @@ impl std::convert::TryFrom<&String> for CheckSuiteRequestedCheckSuiteConclusion 
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckSuiteRequestedCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckSuiteRequestedCheckSuiteStatus {
@@ -4051,6 +4497,12 @@ impl std::convert::TryFrom<&String> for CheckSuiteRequestedCheckSuiteStatus {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckSuiteRequestedCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CheckSuiteRerequested {
@@ -4093,6 +4545,12 @@ impl std::convert::TryFrom<&str> for CheckSuiteRerequestedAction {
 impl std::convert::TryFrom<&String> for CheckSuiteRerequestedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckSuiteRerequestedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4181,6 +4639,12 @@ impl std::convert::TryFrom<&String> for CheckSuiteRerequestedCheckSuiteConclusio
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CheckSuiteRerequestedCheckSuiteConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CheckSuiteRerequestedCheckSuiteStatus {
@@ -4224,6 +4688,12 @@ impl std::convert::TryFrom<&str> for CheckSuiteRerequestedCheckSuiteStatus {
 impl std::convert::TryFrom<&String> for CheckSuiteRerequestedCheckSuiteStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CheckSuiteRerequestedCheckSuiteStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4274,6 +4744,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertAppearedInBranchAction {
 impl std::convert::TryFrom<&String> for CodeScanningAlertAppearedInBranchAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertAppearedInBranchAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4343,6 +4819,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertAppearedInBranchAlertDi
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertAppearedInBranchAlertDismissedReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlertRule {
@@ -4399,6 +4881,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertAppearedInBranchAlertRu
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertAppearedInBranchAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertAppearedInBranchAlertState {
@@ -4438,6 +4926,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertAppearedInBranchAlertState
 impl std::convert::TryFrom<&String> for CodeScanningAlertAppearedInBranchAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertAppearedInBranchAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4496,6 +4990,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertClosedByUserAction {
 impl std::convert::TryFrom<&String> for CodeScanningAlertClosedByUserAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertClosedByUserAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4565,6 +5065,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertClosedByUserAlertDismis
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertClosedByUserAlertDismissedReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlertRule {
@@ -4629,6 +5135,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertClosedByUserAlertRuleSe
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertClosedByUserAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertClosedByUserAlertState {
@@ -4660,6 +5172,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertClosedByUserAlertState {
 impl std::convert::TryFrom<&String> for CodeScanningAlertClosedByUserAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertClosedByUserAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4720,6 +5238,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertCreatedAction {
 impl std::convert::TryFrom<&String> for CodeScanningAlertCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4811,6 +5335,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertCreatedAlertRuleSeverit
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertCreatedAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertCreatedAlertState {
@@ -4846,6 +5376,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertCreatedAlertState {
 impl std::convert::TryFrom<&String> for CodeScanningAlertCreatedAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertCreatedAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5009,6 +5545,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertFixedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertFixedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The code scanning alert involved in the event."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -5077,6 +5619,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertFixedAlertDismissedReas
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertFixedAlertDismissedReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlertRule {
@@ -5141,6 +5689,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertFixedAlertRuleSeverity 
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertFixedAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertFixedAlertState {
@@ -5172,6 +5726,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertFixedAlertState {
 impl std::convert::TryFrom<&String> for CodeScanningAlertFixedAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertFixedAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5232,6 +5792,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertReopenedAction {
 impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5323,6 +5889,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedAlertRuleSeveri
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertReopenedAlertState {
@@ -5362,6 +5934,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertReopenedAlertState {
 impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5422,6 +6000,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertReopenedByUserAction {
 impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedByUserAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedByUserAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5505,6 +6089,12 @@ impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedByUserAlertRule
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedByUserAlertRuleSeverity {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of a code scanning alert."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum CodeScanningAlertReopenedByUserAlertState {
@@ -5536,6 +6126,12 @@ impl std::convert::TryFrom<&str> for CodeScanningAlertReopenedByUserAlertState {
 impl std::convert::TryFrom<&String> for CodeScanningAlertReopenedByUserAlertState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CodeScanningAlertReopenedByUserAlertState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5614,6 +6210,12 @@ impl std::convert::TryFrom<&str> for CommitCommentCreatedAction {
 impl std::convert::TryFrom<&String> for CommitCommentCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CommitCommentCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5724,6 +6326,12 @@ impl std::convert::TryFrom<&String> for ContentReferenceCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ContentReferenceCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ContentReferenceCreatedContentReference {
@@ -5805,6 +6413,12 @@ impl std::convert::TryFrom<&String> for CreateEventRefType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CreateEventRefType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "A Git branch or tag is deleted."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -5861,6 +6475,12 @@ impl std::convert::TryFrom<&String> for DeleteEventRefType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DeleteEventRefType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DeployKeyCreated {
@@ -5903,6 +6523,12 @@ impl std::convert::TryFrom<&str> for DeployKeyCreatedAction {
 impl std::convert::TryFrom<&String> for DeployKeyCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DeployKeyCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5960,6 +6586,12 @@ impl std::convert::TryFrom<&str> for DeployKeyDeletedAction {
 impl std::convert::TryFrom<&String> for DeployKeyDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DeployKeyDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6045,6 +6677,12 @@ impl std::convert::TryFrom<&str> for DeploymentCreatedAction {
 impl std::convert::TryFrom<&String> for DeploymentCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DeploymentCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6134,6 +6772,12 @@ impl std::convert::TryFrom<&str> for DeploymentStatusCreatedAction {
 impl std::convert::TryFrom<&String> for DeploymentStatusCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DeploymentStatusCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6269,6 +6913,12 @@ impl std::convert::TryFrom<&String> for DiscussionAnsweredAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionAnsweredAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredAnswer {
@@ -6344,6 +6994,12 @@ impl std::convert::TryFrom<&String> for DiscussionCategoryChangedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionCategoryChangedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChangedChanges {
@@ -6412,6 +7068,12 @@ impl std::convert::TryFrom<&String> for DiscussionCommentCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionCommentCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCommentCreatedComment {
@@ -6470,6 +7132,12 @@ impl std::convert::TryFrom<&str> for DiscussionCommentDeletedAction {
 impl std::convert::TryFrom<&String> for DiscussionCommentDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionCommentDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6532,6 +7200,12 @@ impl std::convert::TryFrom<&str> for DiscussionCommentEditedAction {
 impl std::convert::TryFrom<&String> for DiscussionCommentEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionCommentEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6644,6 +7318,12 @@ impl std::convert::TryFrom<&String> for DiscussionCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionDeleted {
@@ -6686,6 +7366,12 @@ impl std::convert::TryFrom<&str> for DiscussionDeletedAction {
 impl std::convert::TryFrom<&String> for DiscussionDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6733,6 +7419,12 @@ impl std::convert::TryFrom<&str> for DiscussionEditedAction {
 impl std::convert::TryFrom<&String> for DiscussionEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6955,6 +7647,12 @@ impl std::convert::TryFrom<&String> for DiscussionLabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionLabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionLocked {
@@ -6997,6 +7695,12 @@ impl std::convert::TryFrom<&str> for DiscussionLockedAction {
 impl std::convert::TryFrom<&String> for DiscussionLockedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionLockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7045,6 +7749,12 @@ impl std::convert::TryFrom<&String> for DiscussionPinnedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionPinnedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DiscussionState {
     #[serde(rename = "open")]
@@ -7083,6 +7793,12 @@ impl std::convert::TryFrom<&str> for DiscussionState {
 impl std::convert::TryFrom<&String> for DiscussionState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7129,6 +7845,12 @@ impl std::convert::TryFrom<&str> for DiscussionTransferredAction {
 impl std::convert::TryFrom<&String> for DiscussionTransferredAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionTransferredAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7181,6 +7903,12 @@ impl std::convert::TryFrom<&str> for DiscussionUnansweredAction {
 impl std::convert::TryFrom<&String> for DiscussionUnansweredAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionUnansweredAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7246,6 +7974,12 @@ impl std::convert::TryFrom<&String> for DiscussionUnlabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionUnlabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnlocked {
@@ -7291,6 +8025,12 @@ impl std::convert::TryFrom<&String> for DiscussionUnlockedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DiscussionUnlockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnpinned {
@@ -7333,6 +8073,12 @@ impl std::convert::TryFrom<&str> for DiscussionUnpinnedAction {
 impl std::convert::TryFrom<&String> for DiscussionUnpinnedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiscussionUnpinnedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7454,6 +8200,12 @@ impl std::convert::TryFrom<&String> for GithubAppAuthorizationRevokedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for GithubAppAuthorizationRevokedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct GithubOrg {
@@ -7547,6 +8299,12 @@ impl std::convert::TryFrom<&String> for GollumEventPagesItemAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for GollumEventPagesItemAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The GitHub App installation."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -7622,6 +8380,12 @@ impl std::convert::TryFrom<&String> for InstallationCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum InstallationCreatedAt {
@@ -7690,6 +8454,12 @@ impl std::convert::TryFrom<&str> for InstallationDeletedAction {
 impl std::convert::TryFrom<&String> for InstallationDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7973,6 +8743,12 @@ impl std::convert::TryFrom<&String> for InstallationEventsItem {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationEventsItem {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "Installation"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -8023,6 +8799,12 @@ impl std::convert::TryFrom<&str> for InstallationNewPermissionsAcceptedAction {
 impl std::convert::TryFrom<&String> for InstallationNewPermissionsAcceptedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationNewPermissionsAcceptedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8150,6 +8932,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsActions {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsActions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsAdministration {
     #[serde(rename = "read")]
@@ -8184,6 +8972,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsAdministration {
 impl std::convert::TryFrom<&String> for InstallationPermissionsAdministration {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsAdministration {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8224,6 +9018,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsChecks {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsChecks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsContentReferences {
     #[serde(rename = "read")]
@@ -8258,6 +9058,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsContentReferences {
 impl std::convert::TryFrom<&String> for InstallationPermissionsContentReferences {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsContentReferences {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8298,6 +9104,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsContents {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsContents {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsDeployments {
     #[serde(rename = "read")]
@@ -8332,6 +9144,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsDeployments {
 impl std::convert::TryFrom<&String> for InstallationPermissionsDeployments {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsDeployments {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8372,6 +9190,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsDiscussions {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsDiscussions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsEmails {
     #[serde(rename = "read")]
@@ -8406,6 +9230,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsEmails {
 impl std::convert::TryFrom<&String> for InstallationPermissionsEmails {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsEmails {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8446,6 +9276,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsEnvironments {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsEnvironments {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsIssues {
     #[serde(rename = "read")]
@@ -8480,6 +9316,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsIssues {
 impl std::convert::TryFrom<&String> for InstallationPermissionsIssues {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsIssues {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8520,6 +9362,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsMembers {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsMembers {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsMetadata {
     #[serde(rename = "read")]
@@ -8554,6 +9402,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsMetadata {
 impl std::convert::TryFrom<&String> for InstallationPermissionsMetadata {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsMetadata {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8594,6 +9448,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationAdmin
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationAdministration {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsOrganizationEvents {
     #[serde(rename = "read")]
@@ -8628,6 +9488,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsOrganizationEvents {
 impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationEvents {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationEvents {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8668,6 +9534,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationHooks
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationHooks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsOrganizationPackages {
     #[serde(rename = "read")]
@@ -8702,6 +9574,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsOrganizationPackages
 impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationPackages {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationPackages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8742,6 +9620,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationPlan 
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationPlan {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsOrganizationProjects {
     #[serde(rename = "read")]
@@ -8776,6 +9660,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsOrganizationProjects
 impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationProjects {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationProjects {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8816,6 +9706,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationSecre
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationSecrets {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsOrganizationSelfHostedRunners {
     #[serde(rename = "read")]
@@ -8850,6 +9746,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsOrganizationSelfHost
 impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationSelfHostedRunners {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationSelfHostedRunners {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8890,6 +9792,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsOrganizationUserB
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsOrganizationUserBlocking {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsPackages {
     #[serde(rename = "read")]
@@ -8924,6 +9832,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsPackages {
 impl std::convert::TryFrom<&String> for InstallationPermissionsPackages {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsPackages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8964,6 +9878,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsPages {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsPages {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsPullRequests {
     #[serde(rename = "read")]
@@ -8998,6 +9918,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsPullRequests {
 impl std::convert::TryFrom<&String> for InstallationPermissionsPullRequests {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsPullRequests {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9038,6 +9964,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsRepositoryHooks {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsRepositoryHooks {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsRepositoryProjects {
     #[serde(rename = "read")]
@@ -9072,6 +10004,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsRepositoryProjects {
 impl std::convert::TryFrom<&String> for InstallationPermissionsRepositoryProjects {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsRepositoryProjects {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9112,6 +10050,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsSecretScanningAle
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsSecretScanningAlerts {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsSecrets {
     #[serde(rename = "read")]
@@ -9146,6 +10090,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsSecrets {
 impl std::convert::TryFrom<&String> for InstallationPermissionsSecrets {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsSecrets {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9186,6 +10136,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsSecurityEvents {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsSecurityEvents {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsSecurityScanningAlert {
     #[serde(rename = "read")]
@@ -9220,6 +10176,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsSecurityScanningAler
 impl std::convert::TryFrom<&String> for InstallationPermissionsSecurityScanningAlert {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsSecurityScanningAlert {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9260,6 +10222,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsSingleFile {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsSingleFile {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsStatuses {
     #[serde(rename = "read")]
@@ -9294,6 +10262,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsStatuses {
 impl std::convert::TryFrom<&String> for InstallationPermissionsStatuses {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsStatuses {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9334,6 +10308,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsTeamDiscussions {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsTeamDiscussions {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsVulnerabilityAlerts {
     #[serde(rename = "read")]
@@ -9371,6 +10351,12 @@ impl std::convert::TryFrom<&String> for InstallationPermissionsVulnerabilityAler
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationPermissionsVulnerabilityAlerts {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationPermissionsWorkflows {
     #[serde(rename = "read")]
@@ -9405,6 +10391,12 @@ impl std::convert::TryFrom<&str> for InstallationPermissionsWorkflows {
 impl std::convert::TryFrom<&String> for InstallationPermissionsWorkflows {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationPermissionsWorkflows {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9452,6 +10444,12 @@ impl std::convert::TryFrom<&str> for InstallationRepositoriesAddedAction {
 impl std::convert::TryFrom<&String> for InstallationRepositoriesAddedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationRepositoriesAddedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9519,6 +10517,12 @@ impl std::convert::TryFrom<&str> for InstallationRepositoriesAddedRepositorySele
 impl std::convert::TryFrom<&String> for InstallationRepositoriesAddedRepositorySelection {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationRepositoriesAddedRepositorySelection {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9599,6 +10603,12 @@ impl std::convert::TryFrom<&String> for InstallationRepositoriesRemovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationRepositoriesRemovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesRemovedRepositoriesAddedItem {
@@ -9661,6 +10671,12 @@ impl std::convert::TryFrom<&String> for InstallationRepositoriesRemovedRepositor
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationRepositoriesRemovedRepositorySelection {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum InstallationRepositorySelection {
@@ -9696,6 +10712,12 @@ impl std::convert::TryFrom<&str> for InstallationRepositorySelection {
 impl std::convert::TryFrom<&String> for InstallationRepositorySelection {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationRepositorySelection {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9741,6 +10763,12 @@ impl std::convert::TryFrom<&str> for InstallationSuspendAction {
 impl std::convert::TryFrom<&String> for InstallationSuspendAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationSuspendAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9791,6 +10819,12 @@ impl std::convert::TryFrom<&String> for InstallationTargetType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for InstallationTargetType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationUnsuspend {
@@ -9833,6 +10867,12 @@ impl std::convert::TryFrom<&str> for InstallationUnsuspendAction {
 impl std::convert::TryFrom<&String> for InstallationUnsuspendAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationUnsuspendAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9948,6 +10988,12 @@ impl std::convert::TryFrom<&String> for IssueActiveLockReason {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssueActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The [comment](https://docs.github.com/en/rest/reference/issues#comments) itself."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -10014,6 +11060,12 @@ impl std::convert::TryFrom<&String> for IssueCommentCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssueCommentCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentDeleted {
@@ -10058,6 +11110,12 @@ impl std::convert::TryFrom<&str> for IssueCommentDeletedAction {
 impl std::convert::TryFrom<&String> for IssueCommentDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssueCommentDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10106,6 +11164,12 @@ impl std::convert::TryFrom<&str> for IssueCommentEditedAction {
 impl std::convert::TryFrom<&String> for IssueCommentEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssueCommentEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10216,6 +11280,12 @@ impl std::convert::TryFrom<&String> for IssueState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssueState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "Activity related to an issue. The type of activity is specified in the action property."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -10267,6 +11337,12 @@ impl std::convert::TryFrom<&String> for IssuesAssignedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesAssignedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesClosed {
@@ -10315,6 +11391,12 @@ impl std::convert::TryFrom<&String> for IssuesClosedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesClosedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesDeleted {
@@ -10357,6 +11439,12 @@ impl std::convert::TryFrom<&str> for IssuesDeletedAction {
 impl std::convert::TryFrom<&String> for IssuesDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10406,6 +11494,12 @@ impl std::convert::TryFrom<&String> for IssuesDemilestonedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesDemilestonedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesEdited {
@@ -10451,6 +11545,12 @@ impl std::convert::TryFrom<&str> for IssuesEditedAction {
 impl std::convert::TryFrom<&String> for IssuesEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10724,6 +11824,12 @@ impl std::convert::TryFrom<&String> for IssuesLabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesLabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesLocked {
@@ -10766,6 +11872,12 @@ impl std::convert::TryFrom<&str> for IssuesLockedAction {
 impl std::convert::TryFrom<&String> for IssuesLockedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesLockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10815,6 +11927,12 @@ impl std::convert::TryFrom<&String> for IssuesMilestonedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesMilestonedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesOpened {
@@ -10859,6 +11977,12 @@ impl std::convert::TryFrom<&str> for IssuesOpenedAction {
 impl std::convert::TryFrom<&String> for IssuesOpenedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesOpenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10913,6 +12037,12 @@ impl std::convert::TryFrom<&String> for IssuesPinnedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesPinnedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesReopened {
@@ -10955,6 +12085,12 @@ impl std::convert::TryFrom<&str> for IssuesReopenedAction {
 impl std::convert::TryFrom<&String> for IssuesReopenedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesReopenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11001,6 +12137,12 @@ impl std::convert::TryFrom<&str> for IssuesTransferredAction {
 impl std::convert::TryFrom<&String> for IssuesTransferredAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesTransferredAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11060,6 +12202,12 @@ impl std::convert::TryFrom<&String> for IssuesUnassignedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesUnassignedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesUnlabeled {
@@ -11108,6 +12256,12 @@ impl std::convert::TryFrom<&String> for IssuesUnlabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesUnlabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesUnlocked {
@@ -11153,6 +12307,12 @@ impl std::convert::TryFrom<&String> for IssuesUnlockedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IssuesUnlockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesUnpinned {
@@ -11195,6 +12355,12 @@ impl std::convert::TryFrom<&str> for IssuesUnpinnedAction {
 impl std::convert::TryFrom<&String> for IssuesUnpinnedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IssuesUnpinnedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11258,6 +12424,12 @@ impl std::convert::TryFrom<&String> for LabelCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LabelCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct LabelDeleted {
@@ -11301,6 +12473,12 @@ impl std::convert::TryFrom<&str> for LabelDeletedAction {
 impl std::convert::TryFrom<&String> for LabelDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LabelDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11349,6 +12527,12 @@ impl std::convert::TryFrom<&str> for LabelEditedAction {
 impl std::convert::TryFrom<&String> for LabelEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LabelEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11502,6 +12686,12 @@ impl std::convert::TryFrom<&String> for MarketplacePurchaseCancelledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MarketplacePurchaseCancelledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseCancelledSender {
@@ -11565,6 +12755,12 @@ impl std::convert::TryFrom<&str> for MarketplacePurchaseChangedAction {
 impl std::convert::TryFrom<&String> for MarketplacePurchaseChangedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MarketplacePurchaseChangedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11683,6 +12879,12 @@ impl std::convert::TryFrom<&String> for MarketplacePurchasePendingChangeAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MarketplacePurchasePendingChangeAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeCancelled {
@@ -11723,6 +12925,12 @@ impl std::convert::TryFrom<&str> for MarketplacePurchasePendingChangeCancelledAc
 impl std::convert::TryFrom<&String> for MarketplacePurchasePendingChangeCancelledAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MarketplacePurchasePendingChangeCancelledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11828,6 +13036,12 @@ impl std::convert::TryFrom<&String> for MarketplacePurchasePurchasedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MarketplacePurchasePurchasedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePurchasedSender {
@@ -11898,6 +13112,12 @@ impl std::convert::TryFrom<&String> for MemberAddedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MemberAddedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MemberAddedChanges {
@@ -11946,6 +13166,12 @@ impl std::convert::TryFrom<&String> for MemberAddedChangesPermissionTo {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MemberAddedChangesPermissionTo {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MemberEdited {
@@ -11988,6 +13214,12 @@ impl std::convert::TryFrom<&str> for MemberEditedAction {
 impl std::convert::TryFrom<&String> for MemberEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MemberEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12084,6 +13316,12 @@ impl std::convert::TryFrom<&String> for MemberRemovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MemberRemovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The membership between the user and the organization. Not present when the action is `member_invited`."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -12142,6 +13380,12 @@ impl std::convert::TryFrom<&String> for MembershipAddedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MembershipAddedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The scope of the membership. Currently, can only be `team`."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum MembershipAddedScope {
@@ -12173,6 +13417,12 @@ impl std::convert::TryFrom<&str> for MembershipAddedScope {
 impl std::convert::TryFrom<&String> for MembershipAddedScope {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MembershipAddedScope {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12256,6 +13506,12 @@ impl std::convert::TryFrom<&String> for MembershipRemovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MembershipRemovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The scope of the membership. Currently, can only be `team`."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum MembershipRemovedScope {
@@ -12291,6 +13547,12 @@ impl std::convert::TryFrom<&str> for MembershipRemovedScope {
 impl std::convert::TryFrom<&String> for MembershipRemovedScope {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MembershipRemovedScope {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12349,6 +13611,12 @@ impl std::convert::TryFrom<&String> for MetaDeletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MetaDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The modified webhook. This will contain different keys based on the type of webhook it is: repository, organization, business, app, or GitHub Marketplace."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -12404,6 +13672,12 @@ impl std::convert::TryFrom<&str> for MetaDeletedHookConfigContentType {
 impl std::convert::TryFrom<&String> for MetaDeletedHookConfigContentType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MetaDeletedHookConfigContentType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12489,6 +13763,12 @@ impl std::convert::TryFrom<&String> for MilestoneClosedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MilestoneClosedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneCreated {
@@ -12531,6 +13811,12 @@ impl std::convert::TryFrom<&str> for MilestoneCreatedAction {
 impl std::convert::TryFrom<&String> for MilestoneCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MilestoneCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12579,6 +13865,12 @@ impl std::convert::TryFrom<&String> for MilestoneDeletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MilestoneDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneEdited {
@@ -12622,6 +13914,12 @@ impl std::convert::TryFrom<&str> for MilestoneEditedAction {
 impl std::convert::TryFrom<&String> for MilestoneEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MilestoneEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12759,6 +14057,12 @@ impl std::convert::TryFrom<&String> for MilestoneOpenedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for MilestoneOpenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The state of the milestone."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum MilestoneState {
@@ -12794,6 +14098,12 @@ impl std::convert::TryFrom<&str> for MilestoneState {
 impl std::convert::TryFrom<&String> for MilestoneState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MilestoneState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12838,6 +14148,12 @@ impl std::convert::TryFrom<&str> for OrgBlockBlockedAction {
 impl std::convert::TryFrom<&String> for OrgBlockBlockedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrgBlockBlockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12909,6 +14225,12 @@ impl std::convert::TryFrom<&String> for OrgBlockUnblockedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for OrgBlockUnblockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Organization {
@@ -12967,6 +14289,12 @@ impl std::convert::TryFrom<&str> for OrganizationDeletedAction {
 impl std::convert::TryFrom<&String> for OrganizationDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrganizationDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13063,6 +14391,12 @@ impl std::convert::TryFrom<&String> for OrganizationMemberAddedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for OrganizationMemberAddedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvited {
@@ -13104,6 +14438,12 @@ impl std::convert::TryFrom<&str> for OrganizationMemberInvitedAction {
 impl std::convert::TryFrom<&String> for OrganizationMemberInvitedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrganizationMemberInvitedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13166,6 +14506,12 @@ impl std::convert::TryFrom<&String> for OrganizationMemberRemovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for OrganizationMemberRemovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct OrganizationRenamed {
@@ -13206,6 +14552,12 @@ impl std::convert::TryFrom<&str> for OrganizationRenamedAction {
 impl std::convert::TryFrom<&String> for OrganizationRenamedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrganizationRenamedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13271,6 +14623,12 @@ impl std::convert::TryFrom<&str> for PackagePublishedAction {
 impl std::convert::TryFrom<&String> for PackagePublishedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PackagePublishedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13398,6 +14756,12 @@ impl std::convert::TryFrom<&str> for PackageUpdatedAction {
 impl std::convert::TryFrom<&String> for PackageUpdatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PackageUpdatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13599,6 +14963,12 @@ impl std::convert::TryFrom<&String> for PingEventHookConfigContentType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PingEventHookConfigContentType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PingEventHookLastResponse {
@@ -13693,6 +15063,12 @@ impl std::convert::TryFrom<&String> for ProjectCardConvertedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectCardConvertedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCardConvertedChanges {
@@ -13748,6 +15124,12 @@ impl std::convert::TryFrom<&String> for ProjectCardCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectCardCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCardDeleted {
@@ -13790,6 +15172,12 @@ impl std::convert::TryFrom<&str> for ProjectCardDeletedAction {
 impl std::convert::TryFrom<&String> for ProjectCardDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectCardDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13836,6 +15224,12 @@ impl std::convert::TryFrom<&str> for ProjectCardEditedAction {
 impl std::convert::TryFrom<&String> for ProjectCardEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectCardEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13957,6 +15351,12 @@ impl std::convert::TryFrom<&String> for ProjectCardMovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectCardMovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCardMovedChanges {
@@ -14009,6 +15409,12 @@ impl std::convert::TryFrom<&str> for ProjectClosedAction {
 impl std::convert::TryFrom<&String> for ProjectClosedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectClosedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14071,6 +15477,12 @@ impl std::convert::TryFrom<&String> for ProjectColumnCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectColumnCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectColumnDeleted {
@@ -14113,6 +15525,12 @@ impl std::convert::TryFrom<&str> for ProjectColumnDeletedAction {
 impl std::convert::TryFrom<&String> for ProjectColumnDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectColumnDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14159,6 +15577,12 @@ impl std::convert::TryFrom<&str> for ProjectColumnEditedAction {
 impl std::convert::TryFrom<&String> for ProjectColumnEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectColumnEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14267,6 +15691,12 @@ impl std::convert::TryFrom<&String> for ProjectColumnMovedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectColumnMovedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCreated {
@@ -14309,6 +15739,12 @@ impl std::convert::TryFrom<&str> for ProjectCreatedAction {
 impl std::convert::TryFrom<&String> for ProjectCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14357,6 +15793,12 @@ impl std::convert::TryFrom<&String> for ProjectDeletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectEdited {
@@ -14400,6 +15842,12 @@ impl std::convert::TryFrom<&str> for ProjectEditedAction {
 impl std::convert::TryFrom<&String> for ProjectEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14529,6 +15977,12 @@ impl std::convert::TryFrom<&String> for ProjectReopenedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ProjectReopenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "State of the project; either 'open' or 'closed'"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ProjectState {
@@ -14564,6 +16018,12 @@ impl std::convert::TryFrom<&str> for ProjectState {
 impl std::convert::TryFrom<&String> for ProjectState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14681,6 +16141,12 @@ impl std::convert::TryFrom<&String> for PullRequestActiveLockReason {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestAssigned {
@@ -14726,6 +16192,12 @@ impl std::convert::TryFrom<&str> for PullRequestAssignedAction {
 impl std::convert::TryFrom<&String> for PullRequestAssignedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestAssignedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14775,6 +16247,12 @@ impl std::convert::TryFrom<&String> for PullRequestAutoMergeDisabledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestAutoMergeDisabledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestAutoMergeEnabled {
@@ -14818,6 +16296,12 @@ impl std::convert::TryFrom<&str> for PullRequestAutoMergeEnabledAction {
 impl std::convert::TryFrom<&String> for PullRequestAutoMergeEnabledAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestAutoMergeEnabledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14878,6 +16362,12 @@ impl std::convert::TryFrom<&String> for PullRequestClosedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestClosedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestConvertedToDraft {
@@ -14922,6 +16412,12 @@ impl std::convert::TryFrom<&str> for PullRequestConvertedToDraftAction {
 impl std::convert::TryFrom<&String> for PullRequestConvertedToDraftAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestConvertedToDraftAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14970,6 +16466,12 @@ impl std::convert::TryFrom<&str> for PullRequestEditedAction {
 impl std::convert::TryFrom<&String> for PullRequestEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15073,6 +16575,12 @@ impl std::convert::TryFrom<&String> for PullRequestLabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestLabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestLinks {
@@ -15133,6 +16641,12 @@ impl std::convert::TryFrom<&String> for PullRequestLockedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestLockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestOpened {
@@ -15177,6 +16691,12 @@ impl std::convert::TryFrom<&str> for PullRequestOpenedAction {
 impl std::convert::TryFrom<&String> for PullRequestOpenedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestOpenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15227,6 +16747,12 @@ impl std::convert::TryFrom<&String> for PullRequestReadyForReviewAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReadyForReviewAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReopened {
@@ -15271,6 +16797,12 @@ impl std::convert::TryFrom<&str> for PullRequestReopenedAction {
 impl std::convert::TryFrom<&String> for PullRequestReopenedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReopenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15378,6 +16910,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequest {
@@ -15466,6 +17004,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentCreatedPullReque
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequestBase {
@@ -15542,6 +17086,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentCreatedPullReque
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentCreatedPullRequestState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeleted {
@@ -15585,6 +17135,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewCommentDeletedAction {
 impl std::convert::TryFrom<&String> for PullRequestReviewCommentDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewCommentDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15676,6 +17232,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentDeletedPullReque
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequestBase {
@@ -15752,6 +17314,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentDeletedPullReque
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentDeletedPullRequestState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEdited {
@@ -15796,6 +17364,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewCommentEditedAction {
 impl std::convert::TryFrom<&String> for PullRequestReviewCommentEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewCommentEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15900,6 +17474,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentEditedPullReques
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentEditedPullRequestActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequestBase {
@@ -15973,6 +17553,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewCommentEditedPullRequestSt
 impl std::convert::TryFrom<&String> for PullRequestReviewCommentEditedPullRequestState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewCommentEditedPullRequestState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16063,6 +17649,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewCommentSide {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewCommentSide {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The side of the first line of the range for a multi-line comment."]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PullRequestReviewCommentStartSide {
@@ -16098,6 +17690,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewCommentStartSide {
 impl std::convert::TryFrom<&String> for PullRequestReviewCommentStartSide {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewCommentStartSide {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16144,6 +17742,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewDismissedAction {
 impl std::convert::TryFrom<&String> for PullRequestReviewDismissedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewDismissedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16206,6 +17810,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewDismissedReviewState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewDismissedReviewState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEdited {
@@ -16250,6 +17860,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewEditedAction {
 impl std::convert::TryFrom<&String> for PullRequestReviewEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16395,6 +18011,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewRequestRemovedVariant0A
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewRequestRemovedVariant0Action {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PullRequestReviewRequestRemovedVariant1Action {
     #[serde(rename = "review_request_removed")]
@@ -16425,6 +18047,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewRequestRemovedVariant1Acti
 impl std::convert::TryFrom<&String> for PullRequestReviewRequestRemovedVariant1Action {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewRequestRemovedVariant1Action {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16491,6 +18119,12 @@ impl std::convert::TryFrom<&String> for PullRequestReviewRequestedVariant0Action
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestReviewRequestedVariant0Action {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PullRequestReviewRequestedVariant1Action {
     #[serde(rename = "review_requested")]
@@ -16521,6 +18155,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewRequestedVariant1Action {
 impl std::convert::TryFrom<&String> for PullRequestReviewRequestedVariant1Action {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewRequestedVariant1Action {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16567,6 +18207,12 @@ impl std::convert::TryFrom<&str> for PullRequestReviewSubmittedAction {
 impl std::convert::TryFrom<&String> for PullRequestReviewSubmittedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestReviewSubmittedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16634,6 +18280,12 @@ impl std::convert::TryFrom<&String> for PullRequestState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestSynchronize {
@@ -16680,6 +18332,12 @@ impl std::convert::TryFrom<&str> for PullRequestSynchronizeAction {
 impl std::convert::TryFrom<&String> for PullRequestSynchronizeAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestSynchronizeAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16731,6 +18389,12 @@ impl std::convert::TryFrom<&String> for PullRequestUnassignedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestUnassignedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestUnlabeled {
@@ -16779,6 +18443,12 @@ impl std::convert::TryFrom<&String> for PullRequestUnlabeledAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PullRequestUnlabeledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestUnlocked {
@@ -16823,6 +18493,12 @@ impl std::convert::TryFrom<&str> for PullRequestUnlockedAction {
 impl std::convert::TryFrom<&String> for PullRequestUnlockedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PullRequestUnlockedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16934,6 +18610,12 @@ impl std::convert::TryFrom<&String> for ReleaseAssetState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ReleaseAssetState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseCreated {
@@ -16976,6 +18658,12 @@ impl std::convert::TryFrom<&str> for ReleaseCreatedAction {
 impl std::convert::TryFrom<&String> for ReleaseCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ReleaseCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17024,6 +18712,12 @@ impl std::convert::TryFrom<&String> for ReleaseDeletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ReleaseDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseEdited {
@@ -17067,6 +18761,12 @@ impl std::convert::TryFrom<&str> for ReleaseEditedAction {
 impl std::convert::TryFrom<&String> for ReleaseEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ReleaseEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17217,6 +18917,12 @@ impl std::convert::TryFrom<&String> for ReleasePrereleasedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ReleasePrereleasedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ReleasePublished {
@@ -17259,6 +18965,12 @@ impl std::convert::TryFrom<&str> for ReleasePublishedAction {
 impl std::convert::TryFrom<&String> for ReleasePublishedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ReleasePublishedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17307,6 +19019,12 @@ impl std::convert::TryFrom<&String> for ReleaseReleasedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ReleaseReleasedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseUnpublished {
@@ -17349,6 +19067,12 @@ impl std::convert::TryFrom<&str> for ReleaseUnpublishedAction {
 impl std::convert::TryFrom<&String> for ReleaseUnpublishedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ReleaseUnpublishedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17520,6 +19244,12 @@ impl std::convert::TryFrom<&String> for RepositoryArchivedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryArchivedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryCreated {
@@ -17561,6 +19291,12 @@ impl std::convert::TryFrom<&str> for RepositoryCreatedAction {
 impl std::convert::TryFrom<&String> for RepositoryCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17619,6 +19355,12 @@ impl std::convert::TryFrom<&str> for RepositoryDeletedAction {
 impl std::convert::TryFrom<&String> for RepositoryDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17682,6 +19424,12 @@ impl std::convert::TryFrom<&String> for RepositoryDispatchOnDemandTestAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryDispatchOnDemandTestAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryEdited {
@@ -17724,6 +19472,12 @@ impl std::convert::TryFrom<&str> for RepositoryEditedAction {
 impl std::convert::TryFrom<&String> for RepositoryEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17901,6 +19655,12 @@ impl std::convert::TryFrom<&String> for RepositoryImportEventStatus {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryImportEventStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryLite {
@@ -18009,6 +19769,12 @@ impl std::convert::TryFrom<&String> for RepositoryPrivatizedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryPrivatizedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryPublicized {
@@ -18050,6 +19816,12 @@ impl std::convert::TryFrom<&str> for RepositoryPublicizedAction {
 impl std::convert::TryFrom<&String> for RepositoryPublicizedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryPublicizedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18102,6 +19874,12 @@ impl std::convert::TryFrom<&str> for RepositoryRenamedAction {
 impl std::convert::TryFrom<&String> for RepositoryRenamedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryRenamedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18165,6 +19943,12 @@ impl std::convert::TryFrom<&String> for RepositoryTransferredAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryTransferredAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryTransferredChanges {
@@ -18225,6 +20009,12 @@ impl std::convert::TryFrom<&String> for RepositoryUnarchivedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryUnarchivedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryVulnerabilityAlertCreate {
@@ -18265,6 +20055,12 @@ impl std::convert::TryFrom<&str> for RepositoryVulnerabilityAlertCreateAction {
 impl std::convert::TryFrom<&String> for RepositoryVulnerabilityAlertCreateAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryVulnerabilityAlertCreateAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18331,6 +20127,12 @@ impl std::convert::TryFrom<&str> for RepositoryVulnerabilityAlertDismissAction {
 impl std::convert::TryFrom<&String> for RepositoryVulnerabilityAlertDismissAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryVulnerabilityAlertDismissAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18428,6 +20230,12 @@ impl std::convert::TryFrom<&String> for RepositoryVulnerabilityAlertResolveActio
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RepositoryVulnerabilityAlertResolveAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The security alert of the vulnerable dependency."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -18492,6 +20300,12 @@ impl std::convert::TryFrom<&str> for SecretScanningAlertCreatedAction {
 impl std::convert::TryFrom<&String> for SecretScanningAlertCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SecretScanningAlertCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18586,6 +20400,12 @@ impl std::convert::TryFrom<&String> for SecretScanningAlertReopenedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SecretScanningAlertReopenedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The secret scanning alert involved in the event."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -18638,6 +20458,12 @@ impl std::convert::TryFrom<&str> for SecretScanningAlertResolvedAction {
 impl std::convert::TryFrom<&String> for SecretScanningAlertResolvedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SecretScanningAlertResolvedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18696,6 +20522,12 @@ impl std::convert::TryFrom<&String> for SecretScanningAlertResolvedAlertResoluti
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SecretScanningAlertResolvedAlertResolution {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "action", content = "security_advisory")]
 pub enum SecurityAdvisoryEvent {
@@ -18748,6 +20580,12 @@ impl std::convert::TryFrom<&str> for SecurityAdvisoryPerformedAction {
 impl std::convert::TryFrom<&String> for SecurityAdvisoryPerformedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SecurityAdvisoryPerformedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18851,6 +20689,12 @@ impl std::convert::TryFrom<&String> for SecurityAdvisoryPublishedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SecurityAdvisoryPublishedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -18951,6 +20795,12 @@ impl std::convert::TryFrom<&String> for SecurityAdvisoryUpdatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SecurityAdvisoryUpdatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[doc = "The details of the security advisory, including summary, description, and severity."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -19048,6 +20898,12 @@ impl std::convert::TryFrom<&str> for SecurityAdvisoryWithdrawnAction {
 impl std::convert::TryFrom<&String> for SecurityAdvisoryWithdrawnAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SecurityAdvisoryWithdrawnAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19198,6 +21054,12 @@ impl std::convert::TryFrom<&String> for SimplePullRequestActiveLockReason {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SimplePullRequestActiveLockReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SimplePullRequestBase {
@@ -19274,6 +21136,12 @@ impl std::convert::TryFrom<&String> for SimplePullRequestState {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SimplePullRequestState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipCancelled {
@@ -19311,6 +21179,12 @@ impl std::convert::TryFrom<&str> for SponsorshipCancelledAction {
 impl std::convert::TryFrom<&String> for SponsorshipCancelledAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SponsorshipCancelledAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19364,6 +21238,12 @@ impl std::convert::TryFrom<&String> for SponsorshipCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SponsorshipCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipCreatedSponsorship {
@@ -19412,6 +21292,12 @@ impl std::convert::TryFrom<&str> for SponsorshipEditedAction {
 impl std::convert::TryFrom<&String> for SponsorshipEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SponsorshipEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19529,6 +21415,12 @@ impl std::convert::TryFrom<&String> for SponsorshipPendingCancellationAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SponsorshipPendingCancellationAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipPendingCancellationSponsorship {
@@ -19580,6 +21472,12 @@ impl std::convert::TryFrom<&str> for SponsorshipPendingTierChangeAction {
 impl std::convert::TryFrom<&String> for SponsorshipPendingTierChangeAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SponsorshipPendingTierChangeAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19657,6 +21555,12 @@ impl std::convert::TryFrom<&String> for SponsorshipTierChangedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SponsorshipTierChangedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipTierChangedChanges {
@@ -19723,6 +21627,12 @@ impl std::convert::TryFrom<&String> for StarCreatedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for StarCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct StarDeleted {
@@ -19766,6 +21676,12 @@ impl std::convert::TryFrom<&str> for StarDeletedAction {
 impl std::convert::TryFrom<&String> for StarDeletedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StarDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19958,6 +21874,12 @@ impl std::convert::TryFrom<&String> for StatusEventCommitCommitVerificationReaso
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for StatusEventCommitCommitVerificationReason {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitParentsItem {
@@ -20008,6 +21930,12 @@ impl std::convert::TryFrom<&str> for StatusEventState {
 impl std::convert::TryFrom<&String> for StatusEventState {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StatusEventState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20089,6 +22017,12 @@ impl std::convert::TryFrom<&String> for TeamAddedToRepositoryAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TeamAddedToRepositoryAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct TeamCreated {
@@ -20131,6 +22065,12 @@ impl std::convert::TryFrom<&str> for TeamCreatedAction {
 impl std::convert::TryFrom<&String> for TeamCreatedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TeamCreatedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20179,6 +22119,12 @@ impl std::convert::TryFrom<&String> for TeamDeletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TeamDeletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct TeamEdited {
@@ -20222,6 +22168,12 @@ impl std::convert::TryFrom<&str> for TeamEditedAction {
 impl std::convert::TryFrom<&String> for TeamEditedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TeamEditedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20400,6 +22352,12 @@ impl std::convert::TryFrom<&String> for TeamParentPrivacy {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TeamParentPrivacy {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TeamPrivacy {
     #[serde(rename = "open")]
@@ -20438,6 +22396,12 @@ impl std::convert::TryFrom<&str> for TeamPrivacy {
 impl std::convert::TryFrom<&String> for TeamPrivacy {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TeamPrivacy {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20483,6 +22447,12 @@ impl std::convert::TryFrom<&str> for TeamRemovedFromRepositoryAction {
 impl std::convert::TryFrom<&String> for TeamRemovedFromRepositoryAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TeamRemovedFromRepositoryAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20551,6 +22521,12 @@ impl std::convert::TryFrom<&String> for UserType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for UserType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "action", deny_unknown_fields)]
 pub enum WatchEvent {
@@ -20606,6 +22582,12 @@ impl std::convert::TryFrom<&str> for WatchStartedAction {
 impl std::convert::TryFrom<&String> for WatchStartedAction {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WatchStartedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -20832,6 +22814,12 @@ impl std::convert::TryFrom<&String> for WebhookEventsVariant0Item {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WebhookEventsVariant0Item {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Workflow {
@@ -20924,6 +22912,12 @@ impl std::convert::TryFrom<&String> for WorkflowJobCompletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowJobCompletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum WorkflowJobConclusion {
     #[serde(rename = "success")]
@@ -20958,6 +22952,12 @@ impl std::convert::TryFrom<&str> for WorkflowJobConclusion {
 impl std::convert::TryFrom<&String> for WorkflowJobConclusion {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowJobConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -21043,6 +23043,12 @@ impl std::convert::TryFrom<&String> for WorkflowJobQueuedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowJobQueuedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJobQueuedWorkflowJob {
@@ -21095,6 +23101,12 @@ impl std::convert::TryFrom<&String> for WorkflowJobQueuedWorkflowJobStatus {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowJobQueuedWorkflowJobStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJobStarted {
@@ -21140,6 +23152,12 @@ impl std::convert::TryFrom<&String> for WorkflowJobStartedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowJobStartedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum WorkflowJobStatus {
     #[serde(rename = "queued")]
@@ -21178,6 +23196,12 @@ impl std::convert::TryFrom<&str> for WorkflowJobStatus {
 impl std::convert::TryFrom<&String> for WorkflowJobStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowJobStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -21258,6 +23282,12 @@ impl std::convert::TryFrom<&String> for WorkflowRunCompletedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowRunCompletedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum WorkflowRunConclusion {
     #[serde(rename = "success")]
@@ -21312,6 +23342,12 @@ impl std::convert::TryFrom<&str> for WorkflowRunConclusion {
 impl std::convert::TryFrom<&String> for WorkflowRunConclusion {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowRunConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -21414,6 +23450,12 @@ impl std::convert::TryFrom<&String> for WorkflowRunRequestedAction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowRunRequestedAction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum WorkflowRunStatus {
     #[serde(rename = "requested")]
@@ -21456,6 +23498,12 @@ impl std::convert::TryFrom<&str> for WorkflowRunStatus {
 impl std::convert::TryFrom<&String> for WorkflowRunStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowRunStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -21532,6 +23580,12 @@ impl std::convert::TryFrom<&String> for WorkflowStepCompletedConclusion {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WorkflowStepCompletedConclusion {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum WorkflowStepCompletedStatus {
     #[serde(rename = "completed")]
@@ -21562,6 +23616,12 @@ impl std::convert::TryFrom<&str> for WorkflowStepCompletedStatus {
 impl std::convert::TryFrom<&String> for WorkflowStepCompletedStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowStepCompletedStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -21605,6 +23665,12 @@ impl std::convert::TryFrom<&str> for WorkflowStepInProgressStatus {
 impl std::convert::TryFrom<&String> for WorkflowStepInProgressStatus {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WorkflowStepInProgressStatus {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }

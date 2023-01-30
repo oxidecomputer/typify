@@ -72,6 +72,12 @@ mod types {
             value.parse()
         }
     }
+    impl std::convert::TryFrom<String> for StringEnum {
+        type Error = &'static str;
+        fn try_from(value: String) -> Result<Self, &'static str> {
+            value.parse()
+        }
+    }
     mod builder {
         pub struct AllTheTraits {
             ok: Result<String, String>,

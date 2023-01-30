@@ -44,4 +44,10 @@ impl std::convert::TryFrom<&String> for TestTypeValue {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TestTypeValue {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 fn main() {}
