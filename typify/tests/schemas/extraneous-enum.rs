@@ -41,4 +41,10 @@ impl std::convert::TryFrom<&String> for LetterBoxLetter {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LetterBoxLetter {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 fn main() {}

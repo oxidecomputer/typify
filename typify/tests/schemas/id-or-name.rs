@@ -44,6 +44,12 @@ impl std::convert::TryFrom<&String> for Name {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for Name {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 impl<'de> serde::Deserialize<'de> for Name {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

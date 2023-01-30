@@ -28,6 +28,12 @@ impl std::convert::TryFrom<&String> for PatternString {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PatternString {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 impl<'de> serde::Deserialize<'de> for PatternString {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
