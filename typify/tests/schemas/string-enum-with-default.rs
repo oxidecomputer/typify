@@ -40,6 +40,12 @@ impl std::convert::TryFrom<&String> for TestEnum {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TestEnum {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 impl Default for TestEnum {
     fn default() -> Self {
         TestEnum::Failure

@@ -216,6 +216,12 @@ impl std::convert::TryFrom<&String> for AggregateTransformOpsVariant0ItemVariant
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AggregateTransformOpsVariant0ItemVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AggregateTransformType {
     #[serde(rename = "aggregate")]
@@ -246,6 +252,12 @@ impl std::convert::TryFrom<&str> for AggregateTransformType {
 impl std::convert::TryFrom<&String> for AggregateTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AggregateTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -337,6 +349,12 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -419,6 +437,12 @@ impl std::convert::TryFrom<&str> for AlignValueVariant1Subtype1Subtype0Variant1V
 impl std::convert::TryFrom<&String> for AlignValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AlignValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -522,6 +546,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -604,6 +636,12 @@ impl std::convert::TryFrom<&str> for AnchorValueVariant1Subtype1Subtype0Variant1
 impl std::convert::TryFrom<&String> for AnchorValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AnchorValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -890,6 +928,12 @@ impl std::convert::TryFrom<&String> for AutosizeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AutosizeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AutosizeVariant1Contains {
     #[serde(rename = "content")]
@@ -924,6 +968,12 @@ impl std::convert::TryFrom<&str> for AutosizeVariant1Contains {
 impl std::convert::TryFrom<&String> for AutosizeVariant1Contains {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AutosizeVariant1Contains {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -973,6 +1023,12 @@ impl std::convert::TryFrom<&str> for AutosizeVariant1Type {
 impl std::convert::TryFrom<&String> for AutosizeVariant1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AutosizeVariant1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1438,6 +1494,12 @@ impl std::convert::TryFrom<&String> for AxisFormatTypeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AxisFormatTypeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AxisGridCap {
@@ -1522,6 +1584,12 @@ impl std::convert::TryFrom<&String> for AxisLabelAlignVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AxisLabelAlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AxisLabelAngle {
@@ -1584,6 +1652,12 @@ impl std::convert::TryFrom<&str> for AxisLabelBaselineVariant0 {
 impl std::convert::TryFrom<&String> for AxisLabelBaselineVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AxisLabelBaselineVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1731,6 +1805,12 @@ impl std::convert::TryFrom<&String> for AxisOrientVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AxisOrientVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AxisPosition {
@@ -1839,6 +1919,12 @@ impl std::convert::TryFrom<&String> for AxisTitleAlignVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for AxisTitleAlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AxisTitleAnchor {
@@ -1883,6 +1969,12 @@ impl std::convert::TryFrom<&str> for AxisTitleAnchorVariant0 {
 impl std::convert::TryFrom<&String> for AxisTitleAnchorVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AxisTitleAnchorVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -1948,6 +2040,12 @@ impl std::convert::TryFrom<&str> for AxisTitleBaselineVariant0 {
 impl std::convert::TryFrom<&String> for AxisTitleBaselineVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AxisTitleBaselineVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2201,6 +2299,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -2287,6 +2393,12 @@ impl std::convert::TryFrom<&str> for BaselineValueVariant1Subtype1Subtype0Varian
 impl std::convert::TryFrom<&String> for BaselineValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BaselineValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -2478,6 +2590,12 @@ impl std::convert::TryFrom<&String> for BinTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BinTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum Bind {
@@ -2567,6 +2685,12 @@ impl std::convert::TryFrom<&String> for BindVariant0Input {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BindVariant0Input {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BindVariant1Input {
     #[serde(rename = "radio")]
@@ -2604,6 +2728,12 @@ impl std::convert::TryFrom<&String> for BindVariant1Input {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BindVariant1Input {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum BindVariant2Input {
     #[serde(rename = "range")]
@@ -2637,7 +2767,13 @@ impl std::convert::TryFrom<&String> for BindVariant2Input {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
+impl std::convert::TryFrom<String> for BindVariant2Input {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BindVariant3Input(String);
 impl std::ops::Deref for BindVariant3Input {
     type Target = String;
@@ -2807,6 +2943,12 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -2937,6 +3079,12 @@ impl std::convert::TryFrom<&str> for BlendValueVariant1Subtype1Subtype0Variant1V
 impl std::convert::TryFrom<&String> for BlendValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BlendValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3099,6 +3247,12 @@ impl std::convert::TryFrom<&str> for CollectTransformType {
 impl std::convert::TryFrom<&String> for CollectTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CollectTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3283,6 +3437,12 @@ impl std::convert::TryFrom<&String> for ContourTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ContourTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ContourTransformValues {
@@ -3395,6 +3555,12 @@ impl std::convert::TryFrom<&String> for CountpatternTransformCaseVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for CountpatternTransformCaseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CountpatternTransformField {
@@ -3444,6 +3610,12 @@ impl std::convert::TryFrom<&str> for CountpatternTransformType {
 impl std::convert::TryFrom<&String> for CountpatternTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CountpatternTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3501,6 +3673,12 @@ impl std::convert::TryFrom<&str> for CrossTransformType {
 impl std::convert::TryFrom<&String> for CrossTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CrossTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3563,6 +3741,12 @@ impl std::convert::TryFrom<&str> for CrossfilterTransformType {
 impl std::convert::TryFrom<&String> for CrossfilterTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CrossfilterTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3687,6 +3871,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype0ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype0ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
@@ -3742,6 +3932,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
@@ -3776,6 +3974,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3849,6 +4055,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype1ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
@@ -3904,6 +4116,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
@@ -3938,6 +4158,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -3983,6 +4211,12 @@ impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1Type {
 impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4042,6 +4276,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype2ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
@@ -4097,6 +4337,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
@@ -4131,6 +4379,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4180,6 +4436,12 @@ impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2Type {
 impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype2Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4240,6 +4502,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype3ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
@@ -4295,6 +4563,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
@@ -4329,6 +4605,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4374,6 +4658,12 @@ impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3Type {
 impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype3Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4430,6 +4720,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype4Varian
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype4Variant0Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype4Variant1Filter {
     #[serde(rename = "interior")]
@@ -4467,6 +4763,12 @@ impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype4Varian
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype4Variant1Filter {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype4Variant1Type {
     #[serde(rename = "topojson")]
@@ -4497,6 +4799,12 @@ impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant1T
 impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype4Variant1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype4Variant1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4572,6 +4880,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype0ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype0ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
@@ -4627,6 +4941,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
@@ -4661,6 +4983,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4734,6 +5064,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype1ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
@@ -4789,6 +5125,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
@@ -4823,6 +5167,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4868,6 +5220,12 @@ impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1Type {
 impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -4927,6 +5285,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype2ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
@@ -4982,6 +5346,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
@@ -5016,6 +5388,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5065,6 +5445,12 @@ impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2Type {
 impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype2Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5125,6 +5511,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype3ParseV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
@@ -5180,6 +5572,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1(String);
 impl std::ops::Deref for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
@@ -5214,6 +5614,14 @@ impl std::convert::TryFrom<&String>
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5259,6 +5667,12 @@ impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3Type {
 impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype3Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5315,6 +5729,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype4Varian
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype4Variant0Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype4Variant1Filter {
     #[serde(rename = "interior")]
@@ -5352,6 +5772,12 @@ impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype4Varian
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype4Variant1Filter {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype4Variant1Type {
     #[serde(rename = "topojson")]
@@ -5382,6 +5808,12 @@ impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant1T
 impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype4Variant1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype4Variant1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5498,6 +5930,12 @@ impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant0Func
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DensityTransformDistributionVariant0Function {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformDistributionVariant0Mean {
@@ -5543,6 +5981,12 @@ impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant1Func
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DensityTransformDistributionVariant1Function {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformDistributionVariant1Mean {
@@ -5585,6 +6029,12 @@ impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant2Functio
 impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant2Function {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DensityTransformDistributionVariant2Function {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5646,6 +6096,12 @@ impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant3Func
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for DensityTransformDistributionVariant3Function {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformDistributionVariant4Distributions {
@@ -5682,6 +6138,12 @@ impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant4Functio
 impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant4Function {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DensityTransformDistributionVariant4Function {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5766,6 +6228,12 @@ impl std::convert::TryFrom<&str> for DensityTransformType {
 impl std::convert::TryFrom<&String> for DensityTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DensityTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -5855,6 +6323,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -5933,6 +6409,12 @@ impl std::convert::TryFrom<&str> for DirectionValueVariant1Subtype1Subtype0Varia
 impl std::convert::TryFrom<&String> for DirectionValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DirectionValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6033,6 +6515,12 @@ impl std::convert::TryFrom<&str> for DotbinTransformType {
 impl std::convert::TryFrom<&String> for DotbinTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DotbinTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6359,6 +6847,12 @@ impl std::convert::TryFrom<&String> for ExtentTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ExtentTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Facet {
@@ -6461,6 +6955,12 @@ impl std::convert::TryFrom<&String> for FilterTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for FilterTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct FlattenTransform {
@@ -6538,6 +7038,12 @@ impl std::convert::TryFrom<&String> for FlattenTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for FlattenTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct FoldTransform {
@@ -6604,6 +7110,12 @@ impl std::convert::TryFrom<&str> for FoldTransformType {
 impl std::convert::TryFrom<&String> for FoldTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for FoldTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6869,6 +7381,12 @@ impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant0Force {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant0Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant0X {
@@ -6911,6 +7429,12 @@ impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant1Force {
 impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant1Force {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant1Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -6979,6 +7503,12 @@ impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant2Force {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant2Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant2Strength {
@@ -7029,6 +7559,12 @@ impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant3Force {
 impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant3Force {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant3Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7086,6 +7622,12 @@ impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant4Force {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant4Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant4Strength {
@@ -7129,6 +7671,12 @@ impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant5Force {
 impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant5Force {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant5Force {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7196,6 +7744,12 @@ impl std::convert::TryFrom<&String> for ForceTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ForceTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformVelocityDecay {
@@ -7257,6 +7811,12 @@ impl std::convert::TryFrom<&str> for FormulaTransformType {
 impl std::convert::TryFrom<&String> for FormulaTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for FormulaTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7334,6 +7894,12 @@ impl std::convert::TryFrom<&String> for GeojsonTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for GeojsonTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct GeopathTransform {
@@ -7405,6 +7971,12 @@ impl std::convert::TryFrom<&str> for GeopathTransformType {
 impl std::convert::TryFrom<&String> for GeopathTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for GeopathTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7481,6 +8053,12 @@ impl std::convert::TryFrom<&String> for GeopointTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for GeopointTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct GeoshapeTransform {
@@ -7552,6 +8130,12 @@ impl std::convert::TryFrom<&str> for GeoshapeTransformType {
 impl std::convert::TryFrom<&String> for GeoshapeTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for GeoshapeTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7707,6 +8291,12 @@ impl std::convert::TryFrom<&String> for GraticuleTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for GraticuleTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct GuideEncode {
@@ -7807,6 +8397,12 @@ impl std::convert::TryFrom<&String> for HeatmapTransformResolveVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for HeatmapTransformResolveVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum HeatmapTransformType {
     #[serde(rename = "heatmap")]
@@ -7837,6 +8433,12 @@ impl std::convert::TryFrom<&str> for HeatmapTransformType {
 impl std::convert::TryFrom<&String> for HeatmapTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for HeatmapTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7886,6 +8488,12 @@ impl std::convert::TryFrom<&str> for IdentifierTransformType {
 impl std::convert::TryFrom<&String> for IdentifierTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IdentifierTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -7995,6 +8603,12 @@ impl std::convert::TryFrom<&String> for ImputeTransformMethodVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ImputeTransformMethodVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ImputeTransformType {
     #[serde(rename = "impute")]
@@ -8025,6 +8639,12 @@ impl std::convert::TryFrom<&str> for ImputeTransformType {
 impl std::convert::TryFrom<&String> for ImputeTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ImputeTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8125,6 +8745,12 @@ impl std::convert::TryFrom<&String> for IsocontourTransformResolveVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IsocontourTransformResolveVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IsocontourTransformScale {
@@ -8195,6 +8821,12 @@ impl std::convert::TryFrom<&str> for IsocontourTransformType {
 impl std::convert::TryFrom<&String> for IsocontourTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IsocontourTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8406,6 +9038,12 @@ impl std::convert::TryFrom<&String> for JoinaggregateTransformOpsVariant0ItemVar
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for JoinaggregateTransformOpsVariant0ItemVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum JoinaggregateTransformType {
     #[serde(rename = "joinaggregate")]
@@ -8436,6 +9074,12 @@ impl std::convert::TryFrom<&str> for JoinaggregateTransformType {
 impl std::convert::TryFrom<&String> for JoinaggregateTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for JoinaggregateTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8550,6 +9194,12 @@ impl std::convert::TryFrom<&str> for Kde2dTransformType {
 impl std::convert::TryFrom<&String> for Kde2dTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for Kde2dTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8720,6 +9370,12 @@ impl std::convert::TryFrom<&String> for KdeTransformResolveVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for KdeTransformResolveVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum KdeTransformSteps {
@@ -8756,6 +9412,12 @@ impl std::convert::TryFrom<&str> for KdeTransformType {
 impl std::convert::TryFrom<&String> for KdeTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for KdeTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8800,6 +9462,12 @@ impl std::convert::TryFrom<&str> for LabelOverlapVariant1 {
 impl std::convert::TryFrom<&String> for LabelOverlapVariant1 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LabelOverlapVariant1 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -8966,6 +9634,12 @@ impl std::convert::TryFrom<&String> for LabelTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LabelTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum Layout {
@@ -9063,6 +9737,12 @@ impl std::convert::TryFrom<&String> for LayoutVariant0AlignVariant0Variant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LayoutVariant0AlignVariant0Variant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LayoutVariant0AlignVariant1Column {
@@ -9107,6 +9787,12 @@ impl std::convert::TryFrom<&str> for LayoutVariant0AlignVariant1ColumnVariant0 {
 impl std::convert::TryFrom<&String> for LayoutVariant0AlignVariant1ColumnVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LayoutVariant0AlignVariant1ColumnVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9157,6 +9843,12 @@ impl std::convert::TryFrom<&String> for LayoutVariant0AlignVariant1RowVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LayoutVariant0AlignVariant1RowVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LayoutVariant0Bounds {
@@ -9197,6 +9889,12 @@ impl std::convert::TryFrom<&str> for LayoutVariant0BoundsVariant0 {
 impl std::convert::TryFrom<&String> for LayoutVariant0BoundsVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LayoutVariant0BoundsVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9334,6 +10032,12 @@ impl std::convert::TryFrom<&String> for LayoutVariant0TitleAnchorVariant0Variant
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LayoutVariant0TitleAnchorVariant0Variant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LayoutVariant0TitleAnchorVariant1Column {
@@ -9377,6 +10081,12 @@ impl std::convert::TryFrom<&String> for LayoutVariant0TitleAnchorVariant1ColumnV
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LayoutVariant0TitleAnchorVariant1ColumnVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LayoutVariant0TitleAnchorVariant1Row {
@@ -9417,6 +10127,12 @@ impl std::convert::TryFrom<&str> for LayoutVariant0TitleAnchorVariant1RowVariant
 impl std::convert::TryFrom<&String> for LayoutVariant0TitleAnchorVariant1RowVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LayoutVariant0TitleAnchorVariant1RowVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -9818,6 +10534,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0Direction {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0Direction {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct LegendSubtype0Encode {
@@ -9916,6 +10638,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0FormatTypeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0FormatTypeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0GradientOpacity {
@@ -9982,6 +10710,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0GridAlignVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0GridAlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0LabelAlign {
@@ -10026,6 +10760,12 @@ impl std::convert::TryFrom<&str> for LegendSubtype0LabelAlignVariant0 {
 impl std::convert::TryFrom<&String> for LegendSubtype0LabelAlignVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LegendSubtype0LabelAlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10085,6 +10825,12 @@ impl std::convert::TryFrom<&str> for LegendSubtype0LabelBaselineVariant0 {
 impl std::convert::TryFrom<&String> for LegendSubtype0LabelBaselineVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LegendSubtype0LabelBaselineVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10226,6 +10972,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0OrientVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0OrientVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0Padding {
@@ -10342,6 +11094,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0TitleAlignVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0TitleAlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0TitleAnchor {
@@ -10386,6 +11144,12 @@ impl std::convert::TryFrom<&str> for LegendSubtype0TitleAnchorVariant0 {
 impl std::convert::TryFrom<&String> for LegendSubtype0TitleAnchorVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LegendSubtype0TitleAnchorVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10445,6 +11209,12 @@ impl std::convert::TryFrom<&str> for LegendSubtype0TitleBaselineVariant0 {
 impl std::convert::TryFrom<&String> for LegendSubtype0TitleBaselineVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LegendSubtype0TitleBaselineVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10548,6 +11318,12 @@ impl std::convert::TryFrom<&String> for LegendSubtype0TitleOrientVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LegendSubtype0TitleOrientVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0TitlePadding {
@@ -10588,6 +11364,12 @@ impl std::convert::TryFrom<&str> for LegendSubtype0Type {
 impl std::convert::TryFrom<&String> for LegendSubtype0Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LegendSubtype0Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10648,6 +11430,12 @@ impl std::convert::TryFrom<&str> for LinearGradientGradient {
 impl std::convert::TryFrom<&String> for LinearGradientGradient {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LinearGradientGradient {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10728,6 +11516,12 @@ impl std::convert::TryFrom<&String> for LinkpathTransformOrientVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LinkpathTransformOrientVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LinkpathTransformShape {
@@ -10780,6 +11574,12 @@ impl std::convert::TryFrom<&str> for LinkpathTransformShapeVariant0 {
 impl std::convert::TryFrom<&String> for LinkpathTransformShapeVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LinkpathTransformShapeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10841,6 +11641,12 @@ impl std::convert::TryFrom<&str> for LinkpathTransformType {
 impl std::convert::TryFrom<&String> for LinkpathTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LinkpathTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -10928,6 +11734,12 @@ impl std::convert::TryFrom<&str> for LoessTransformType {
 impl std::convert::TryFrom<&String> for LoessTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for LoessTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11027,6 +11839,12 @@ impl std::convert::TryFrom<&String> for LookupTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for LookupTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LookupTransformValues {
@@ -11116,6 +11934,12 @@ impl std::convert::TryFrom<&str> for MarkGroupType {
 impl std::convert::TryFrom<&String> for MarkGroupType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for MarkGroupType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11231,6 +12055,12 @@ impl std::convert::TryFrom<&str> for NestTransformType {
 impl std::convert::TryFrom<&String> for NestTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for NestTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11563,6 +12393,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -11649,6 +12487,12 @@ impl std::convert::TryFrom<&str> for OrientValueVariant1Subtype1Subtype0Variant1
 impl std::convert::TryFrom<&String> for OrientValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrientValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11764,6 +12608,12 @@ impl std::convert::TryFrom<&str> for PackTransformType {
 impl std::convert::TryFrom<&String> for PackTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PackTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -11896,6 +12746,12 @@ impl std::convert::TryFrom<&String> for PartitionTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PartitionTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PieTransform {
@@ -11985,6 +12841,12 @@ impl std::convert::TryFrom<&str> for PieTransformType {
 impl std::convert::TryFrom<&String> for PieTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PieTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12170,6 +13032,12 @@ impl std::convert::TryFrom<&String> for PivotTransformOpVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for PivotTransformOpVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PivotTransformType {
     #[serde(rename = "pivot")]
@@ -12200,6 +13068,12 @@ impl std::convert::TryFrom<&str> for PivotTransformType {
 impl std::convert::TryFrom<&String> for PivotTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for PivotTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12278,6 +13152,12 @@ impl std::convert::TryFrom<&str> for ProjectTransformType {
 impl std::convert::TryFrom<&String> for ProjectTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ProjectTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12479,6 +13359,12 @@ impl std::convert::TryFrom<&String> for QuantileTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for QuantileTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RadialGradient {
@@ -12529,6 +13415,12 @@ impl std::convert::TryFrom<&str> for RadialGradientGradient {
 impl std::convert::TryFrom<&String> for RadialGradientGradient {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RadialGradientGradient {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -12645,6 +13537,12 @@ impl std::convert::TryFrom<&String> for RegressionTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for RegressionTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum RegressionTransformX {
@@ -12708,6 +13606,12 @@ impl std::convert::TryFrom<&String> for ResolvefilterTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ResolvefilterTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12759,6 +13663,12 @@ impl std::convert::TryFrom<&str> for SampleTransformType {
 impl std::convert::TryFrom<&String> for SampleTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SampleTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13225,6 +14135,12 @@ impl std::convert::TryFrom<&String> for ScaleDataVariant1SortVariant1Op {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleDataVariant1SortVariant1Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ScaleDataVariant1SortVariant2Op {
     #[serde(rename = "count")]
@@ -13263,6 +14179,12 @@ impl std::convert::TryFrom<&str> for ScaleDataVariant1SortVariant2Op {
 impl std::convert::TryFrom<&String> for ScaleDataVariant1SortVariant2Op {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleDataVariant1SortVariant2Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13330,6 +14252,12 @@ impl std::convert::TryFrom<&String> for ScaleDataVariant2SortVariant1Op {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleDataVariant2SortVariant1Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ScaleDataVariant2SortVariant2Op {
     #[serde(rename = "count")]
@@ -13368,6 +14296,12 @@ impl std::convert::TryFrom<&str> for ScaleDataVariant2SortVariant2Op {
 impl std::convert::TryFrom<&String> for ScaleDataVariant2SortVariant2Op {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleDataVariant2SortVariant2Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13445,6 +14379,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant0Type {
 impl std::convert::TryFrom<&String> for ScaleVariant0Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant0Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13554,6 +14494,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant10RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant10RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant10RangeVariant1Item {
@@ -13613,6 +14559,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant10Type {
 impl std::convert::TryFrom<&String> for ScaleVariant10Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant10Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13722,6 +14674,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant11RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant11RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant11RangeVariant1Item {
@@ -13781,6 +14739,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant11Type {
 impl std::convert::TryFrom<&String> for ScaleVariant11Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant11Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13881,6 +14845,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant1RangeVariant0 {
 impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -13997,6 +14967,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant3Variant1SortVa
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant3Variant1SortVariant1Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ScaleVariant1RangeVariant3Variant1SortVariant2Op {
     #[serde(rename = "count")]
@@ -14035,6 +15011,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant1SortVaria
 impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14102,6 +15084,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant3Variant2SortVa
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant3Variant2SortVariant1Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ScaleVariant1RangeVariant3Variant2SortVariant2Op {
     #[serde(rename = "count")]
@@ -14143,6 +15131,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant3Variant2SortVa
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant3Variant2SortVariant2Op {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ScaleVariant1Type {
     #[serde(rename = "ordinal")]
@@ -14173,6 +15167,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant1Type {
 impl std::convert::TryFrom<&String> for ScaleVariant1Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant1Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14269,6 +15269,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant2RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant2RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant2RangeVariant1Item {
@@ -14309,6 +15315,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant2Type {
 impl std::convert::TryFrom<&String> for ScaleVariant2Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant2Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14405,6 +15417,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant3RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant3RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant3RangeVariant1Item {
@@ -14445,6 +15463,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant3Type {
 impl std::convert::TryFrom<&String> for ScaleVariant3Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant3Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14554,6 +15578,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant4RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant4RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant4RangeVariant1Item {
@@ -14617,6 +15647,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant4Type {
 impl std::convert::TryFrom<&String> for ScaleVariant4Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant4Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14719,6 +15755,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant5RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant5RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant5RangeVariant1Item {
@@ -14778,6 +15820,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant5Type {
 impl std::convert::TryFrom<&String> for ScaleVariant5Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant5Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -14880,6 +15928,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant6RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant6RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant6RangeVariant1Item {
@@ -14939,6 +15993,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant6Type {
 impl std::convert::TryFrom<&String> for ScaleVariant6Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant6Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15038,6 +16098,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant7NiceVariant1 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant7NiceVariant1 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant7NiceVariant2Interval {
@@ -15102,6 +16168,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant7NiceVariant2IntervalVariant0 {
 impl std::convert::TryFrom<&String> for ScaleVariant7NiceVariant2IntervalVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant7NiceVariant2IntervalVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15180,6 +16252,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant7RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant7RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant7RangeVariant1Item {
@@ -15243,6 +16321,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant7Type {
 impl std::convert::TryFrom<&String> for ScaleVariant7Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant7Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15352,6 +16436,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant8RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant8RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant8RangeVariant1Item {
@@ -15419,6 +16509,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant8Type {
 impl std::convert::TryFrom<&String> for ScaleVariant8Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant8Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15528,6 +16624,12 @@ impl std::convert::TryFrom<&String> for ScaleVariant9RangeVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for ScaleVariant9RangeVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant9RangeVariant1Item {
@@ -15587,6 +16689,12 @@ impl std::convert::TryFrom<&str> for ScaleVariant9Type {
 impl std::convert::TryFrom<&String> for ScaleVariant9Type {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant9Type {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15700,6 +16808,12 @@ impl std::convert::TryFrom<&String> for SequenceTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SequenceTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum Signal {
@@ -15810,6 +16924,12 @@ impl std::convert::TryFrom<&String> for SignalVariant0Push {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for SignalVariant0Push {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum SortOrder {
@@ -15850,6 +16970,12 @@ impl std::convert::TryFrom<&str> for SortOrderVariant0 {
 impl std::convert::TryFrom<&String> for SortOrderVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for SortOrderVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -15950,6 +17076,12 @@ impl std::convert::TryFrom<&String> for StackTransformOffsetVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for StackTransformOffsetVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum StackTransformType {
     #[serde(rename = "stack")]
@@ -15980,6 +17112,12 @@ impl std::convert::TryFrom<&str> for StackTransformType {
 impl std::convert::TryFrom<&String> for StackTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StackTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16038,6 +17176,12 @@ impl std::convert::TryFrom<&str> for StratifyTransformType {
 impl std::convert::TryFrom<&String> for StratifyTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StratifyTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16289,6 +17433,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -16371,6 +17523,12 @@ impl std::convert::TryFrom<&str> for StrokeCapValueVariant1Subtype1Subtype0Varia
 impl std::convert::TryFrom<&String> for StrokeCapValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StrokeCapValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16476,6 +17634,14 @@ impl std::convert::TryFrom<&String>
         value.parse()
     }
 }
+impl std::convert::TryFrom<String>
+    for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant1Value
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
@@ -16558,6 +17724,12 @@ impl std::convert::TryFrom<&str> for StrokeJoinValueVariant1Subtype1Subtype0Vari
 impl std::convert::TryFrom<&String> for StrokeJoinValueVariant1Subtype1Subtype0Variant1Value {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StrokeJoinValueVariant1Subtype1Subtype0Variant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -16747,6 +17919,12 @@ impl std::convert::TryFrom<&String> for TickBandVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TickBandVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum TickCount {
@@ -16820,6 +17998,12 @@ impl std::convert::TryFrom<&String> for TickCountVariant1 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TickCountVariant1 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TickCountVariant2Interval {
@@ -16884,6 +18068,12 @@ impl std::convert::TryFrom<&str> for TickCountVariant2IntervalVariant0 {
 impl std::convert::TryFrom<&String> for TickCountVariant2IntervalVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TickCountVariant2IntervalVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17002,6 +18192,12 @@ impl std::convert::TryFrom<&String> for TimeunitTransformTimezoneVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TimeunitTransformTimezoneVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TimeunitTransformType {
     #[serde(rename = "timeunit")]
@@ -17032,6 +18228,12 @@ impl std::convert::TryFrom<&str> for TimeunitTransformType {
 impl std::convert::TryFrom<&String> for TimeunitTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TimeunitTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17117,6 +18319,12 @@ impl std::convert::TryFrom<&str> for TimeunitTransformUnitsVariant0ItemVariant0 
 impl std::convert::TryFrom<&String> for TimeunitTransformUnitsVariant0ItemVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TimeunitTransformUnitsVariant0ItemVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17272,6 +18480,12 @@ impl std::convert::TryFrom<&String> for TitleVariant1AlignVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TitleVariant1AlignVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TitleVariant1Anchor {
@@ -17316,6 +18530,12 @@ impl std::convert::TryFrom<&str> for TitleVariant1AnchorVariant0 {
 impl std::convert::TryFrom<&String> for TitleVariant1AnchorVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TitleVariant1AnchorVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17381,6 +18601,12 @@ impl std::convert::TryFrom<&str> for TitleVariant1BaselineVariant0 {
 impl std::convert::TryFrom<&String> for TitleVariant1BaselineVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TitleVariant1BaselineVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17490,6 +18716,12 @@ impl std::convert::TryFrom<&String> for TitleVariant1FrameVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TitleVariant1FrameVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TitleVariant1Limit {
@@ -17560,6 +18792,12 @@ impl std::convert::TryFrom<&str> for TitleVariant1OrientVariant0 {
 impl std::convert::TryFrom<&String> for TitleVariant1OrientVariant0 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TitleVariant1OrientVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -17778,6 +19016,12 @@ impl std::convert::TryFrom<&String> for TreeTransformMethodVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TreeTransformMethodVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreeTransformNodeSize {
@@ -17841,6 +19085,12 @@ impl std::convert::TryFrom<&String> for TreeTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TreeTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct TreelinksTransform {
@@ -17879,6 +19129,12 @@ impl std::convert::TryFrom<&str> for TreelinksTransformType {
 impl std::convert::TryFrom<&String> for TreelinksTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TreelinksTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18027,6 +19283,12 @@ impl std::convert::TryFrom<&String> for TreemapTransformMethodVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TreemapTransformMethodVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreemapTransformPadding {
@@ -18126,6 +19388,12 @@ impl std::convert::TryFrom<&String> for TreemapTransformType {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for TreemapTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct VoronoiTransform {
@@ -18196,6 +19464,12 @@ impl std::convert::TryFrom<&str> for VoronoiTransformType {
 impl std::convert::TryFrom<&String> for VoronoiTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for VoronoiTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18489,6 +19763,12 @@ impl std::convert::TryFrom<&String> for WindowTransformOpsVariant0ItemVariant0 {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for WindowTransformOpsVariant0ItemVariant0 {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WindowTransformParams {
@@ -18532,6 +19812,12 @@ impl std::convert::TryFrom<&str> for WindowTransformType {
 impl std::convert::TryFrom<&String> for WindowTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WindowTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -18716,6 +20002,12 @@ impl std::convert::TryFrom<&str> for WordcloudTransformType {
 impl std::convert::TryFrom<&String> for WordcloudTransformType {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for WordcloudTransformType {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -19129,8 +20421,8 @@ mod defaults {
     }
     pub(super) fn voronoi_transform_extent() -> super::VoronoiTransformExtent {
         super::VoronoiTransformExtent::Variant0(
-            serde_json::from_string::<serde_json::Value>("[-100000,-100000]").unwrap(),
-            serde_json::from_string::<serde_json::Value>("[100000,100000]").unwrap(),
+            serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
+            serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
         )
     }
     pub(super) fn window_transform_frame() -> super::WindowTransformFrame {

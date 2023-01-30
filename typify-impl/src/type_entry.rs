@@ -628,34 +628,41 @@ impl TypeEntry {
                     .unzip();
 
                 quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
-                            match *self {
-                                #(Self::#match_variants => #match_strs.to_string(),)*
+                        impl ToString for #type_name {
+                            fn to_string(&self) -> String {
+                                match *self {
+                                    #(Self::#match_variants => #match_strs.to_string(),)*
+                                }
                             }
                         }
-                    }
-                    impl std::str::FromStr for #type_name {
-                        type Err = &'static str;
+                        impl std::str::FromStr for #type_name {
+                            type Err = &'static str;
 
-                        fn from_str(value: &str) -> Result<Self, &'static str> {
-                            match value {
-                                #(#match_strs => Ok(Self::#match_variants),)*
-                                _ => Err("invalid value"),
+                            fn from_str(value: &str) -> Result<Self, &'static str> {
+                                match value {
+                                    #(#match_strs => Ok(Self::#match_variants),)*
+                                    _ => Err("invalid value"),
+                                }
                             }
                         }
-                    }
-                    impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = &'static str;
+                        impl std::convert::TryFrom<&str> for #type_name {
+                            type Error = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                            fn try_from(value: &str) -> Result<Self, &'static str> {
+                                value.parse()
+                            }
+                        }
+                        impl std::convert::TryFrom<&String> for #type_name {
+                            type Error = &'static str;
+
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
+                    impl std::convert::TryFrom<String> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                        fn try_from(value: String) -> Result<Self, &'static str> {
                             value.parse()
                         }
                     }
@@ -711,6 +718,15 @@ impl TypeEntry {
                         type Error = &'static str;
 
                         fn try_from(value: &String) ->
+                            Result<Self, &'static str>
+                        {
+                            value.parse()
+                        }
+                    }
+                    impl std::convert::TryFrom<String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: String) ->
                             Result<Self, &'static str>
                         {
                             value.parse()
@@ -1094,7 +1110,9 @@ impl TypeEntry {
                     impl std::convert::TryFrom<&str> for #type_name {
                         type Error = &'static str;
 
-                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                        fn try_from(value: &str) ->
+                            Result<Self, &'static str>
+                        {
                             value.parse()
                         }
                     }
@@ -1102,6 +1120,15 @@ impl TypeEntry {
                         type Error = &'static str;
 
                         fn try_from(value: &String) ->
+                            Result<Self, &'static str>
+                        {
+                            value.parse()
+                        }
+                    }
+                    impl std::convert::TryFrom<String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: String) ->
                             Result<Self, &'static str>
                         {
                             value.parse()

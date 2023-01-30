@@ -29,6 +29,12 @@ impl std::convert::TryFrom<&String> for IntOrStr {
         value.parse()
     }
 }
+impl std::convert::TryFrom<String> for IntOrStr {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 impl ToString for IntOrStr {
     fn to_string(&self) -> String {
         match self {
