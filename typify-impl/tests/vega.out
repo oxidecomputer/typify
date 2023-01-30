@@ -2773,7 +2773,7 @@ impl std::convert::TryFrom<String> for BindVariant2Input {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct BindVariant3Input(String);
 impl std::ops::Deref for BindVariant3Input {
     type Target = String;
