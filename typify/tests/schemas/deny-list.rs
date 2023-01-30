@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
@@ -22,7 +22,7 @@ impl std::convert::TryFrom<String> for TestTypeWhereNot {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;

@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct PatternString(String);
 impl std::ops::Deref for PatternString {
     type Target = String;
@@ -38,7 +38,7 @@ impl<'de> serde::Deserialize<'de> for PatternString {
             .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Sub10Primes(u32);
 impl std::ops::Deref for Sub10Primes {
     type Target = u32;

@@ -188,7 +188,7 @@ fn value_for_external_enum(
             VariantDetails::Simple => None,
             VariantDetails::Item(type_id) => {
                 let item = value_for_item(type_space, var_value, type_id, scope);
-                Some(quote! { #scope #type_ident::#var_ident ( #item ) })
+                Some(quote! { #scope #type_ident::#var_ident ( #item ::default() ) })
             }
             VariantDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, var_value, types, scope)?;

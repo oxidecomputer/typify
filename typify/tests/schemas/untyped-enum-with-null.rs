@@ -1,10 +1,14 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TestType {
     pub value: Option<TestTypeValue>,
 }
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize, educe :: Educe,
+)]
+#[educe(Default)]
 pub enum TestTypeValue {
+    #[educe(Default)]
     #[serde(rename = "start")]
     Start,
     #[serde(rename = "middle")]

@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, educe :: Educe)]
+#[educe(Default)]
 #[serde(untagged)]
 pub enum IdOrName {
+    #[educe(Default)]
     Id(uuid::Uuid),
     Name(Name),
 }
@@ -14,7 +16,7 @@ impl ToString for IdOrName {
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct Name(String);
 impl std::ops::Deref for Name {
     type Target = String;
