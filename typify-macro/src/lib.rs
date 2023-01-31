@@ -114,21 +114,11 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
         });
         replace.into_iter().for_each(|(type_name, type_and_impls)| {
-            let type_and_impls = type_and_impls.into_inner();
-            let replace_type = type_and_impls.type_name.to_token_stream();
-            let impls = type_and_impls
-                .impls
-                .into_iter()
-                .map(|it| it.to_token_stream());
-            settings.with_replacement(type_name.to_token_stream(), replace_type, impls);
+            let (replace_type, impls) = type_and_impls.into_inner().into_name_and_impls();
+            settings.with_replacement(type_name.to_token_stream(), replace_type, impls.into_iter());
         });
         convert.into_iter().for_each(|(schema, type_and_impls)| {
-            let type_and_impls = type_and_impls.into_inner();
-            let type_name = type_and_impls.type_name.to_token_stream();
-            let impls = type_and_impls
-                .impls
-                .into_iter()
-                .map(|it| it.to_token_stream());
+            let (type_name, impls) = type_and_impls.into_inner().into_name_and_impls();
             settings.with_conversion(schema, type_name, impls);
         });
 

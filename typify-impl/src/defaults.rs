@@ -616,7 +616,7 @@ mod tests {
 
         let type_entry = TypeEntry {
             details: crate::type_entry::TypeEntryDetails::Box(type_id),
-            derives: Default::default(),
+            extra_derives: Default::default(),
         };
 
         assert!(matches!(

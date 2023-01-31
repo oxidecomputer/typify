@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize)]
 pub struct PatternString(String);

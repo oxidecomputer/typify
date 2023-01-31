@@ -217,11 +217,25 @@ struct TypeSpaceConversion {
 
 // TODO we can currently only address traits for which cycle analysis is not
 // required.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[non_exhaustive]
 pub enum TypeSpaceImpl {
     FromStr,
     Display,
     Default,
+}
+
+impl std::str::FromStr for TypeSpaceImpl {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "FromStr" => Ok(Self::FromStr),
+            "Display" => Ok(Self::Display),
+            "Default" => Ok(Self::Default),
+            _ => Err(format!("{} is not a valid trait specifier", s)),
+        }
+    }
 }
 
 impl TypeSpaceSettings {
@@ -866,6 +880,15 @@ impl<'a> Type<'a> {
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
+    }
+
+    /// Checks if the type has the associated impl.
+    pub fn has_impl(&self, impl_name: TypeSpaceImpl) -> bool {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+        type_entry.has_impl(type_space, impl_name)
     }
 }
 

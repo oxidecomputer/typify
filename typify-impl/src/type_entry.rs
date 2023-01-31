@@ -94,12 +94,13 @@ impl PartialOrd for WrappedValue {
 // TODO This struct needs to go away (again). The derives should go into the
 // generated struct/enum/newtype structs. Same for the impls. Native types will
 // also have impls. Builtin generic types such as Box or Vec will delegate to
-// their subtypes; builtin simple types such as u64 or String have a static
-// list.
+// their subtypes (while recursive, it is necessarily terminating... though I
+// suppose we could memoize it). Builtin simple types such as u64 or String
+// have a static list.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
-    pub derives: BTreeSet<String>,
+    pub extra_derives: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -200,7 +201,7 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
             name,
@@ -213,7 +214,10 @@ impl TypeEntryEnum {
             bespoke_impls: Default::default(),
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 
     pub(crate) fn finalize(&mut self, type_space: &TypeSpace) {
@@ -265,7 +269,7 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
             name,
@@ -276,7 +280,10 @@ impl TypeEntryStruct {
             deny_unknown_fields,
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 }
 
@@ -291,7 +298,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -302,7 +309,10 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::None,
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 
     pub(crate) fn from_metadata_with_enum_values(
@@ -316,7 +326,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -329,7 +339,10 @@ impl TypeEntryNewtype {
             ),
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 
     pub(crate) fn from_metadata_with_deny_values(
@@ -343,7 +356,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -356,7 +369,10 @@ impl TypeEntryNewtype {
             ),
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 
     pub(crate) fn from_metadata_with_string_validation(
@@ -376,7 +392,7 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -391,7 +407,10 @@ impl TypeEntryNewtype {
             },
         });
 
-        TypeEntry { details, derives }
+        TypeEntry {
+            details,
+            extra_derives,
+        }
     }
 }
 
@@ -399,7 +418,7 @@ impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
         Self {
             details,
-            derives: Default::default(),
+            extra_derives: Default::default(),
         }
     }
 }
@@ -409,15 +428,15 @@ impl TypeEntry {
         TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
-                impls: impls.iter().cloned().collect(),
+                impls: impls.to_vec(),
             }),
-            derives: Default::default(),
+            extra_derives: Default::default(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
-            derives: Default::default(),
+            extra_derives: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
@@ -426,7 +445,7 @@ impl TypeEntry {
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
-            derives: Default::default(),
+            extra_derives: Default::default(),
         }
     }
 
@@ -758,7 +777,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         );
 
@@ -864,7 +883,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         )
         .collect::<Vec<_>>();
@@ -1177,7 +1196,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         );
 

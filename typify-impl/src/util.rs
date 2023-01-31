@@ -642,6 +642,8 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     Some(sanitize(&name, Case::Pascal))
 }
 
+/// Check for patches which include potential type renames and additional
+/// derive macros.
 pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
     match type_space.settings.patch.get(&type_name) {
         None => (type_name, Default::default()),
