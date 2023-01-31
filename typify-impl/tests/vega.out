@@ -361,6 +361,46 @@ pub enum AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AlignValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AlignValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -451,6 +491,44 @@ impl std::convert::TryFrom<String> for AlignValueVariant1Subtype1Subtype0Variant
 pub enum AlignValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for AlignValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AlignValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for AlignValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AlignValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AlignValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AlignValueVariant1Subtype1Subtype1 {}
@@ -560,6 +638,48 @@ pub enum AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AnchorValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AnchorValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -651,6 +771,44 @@ pub enum AnchorValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for AnchorValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AnchorValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for AnchorValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AnchorValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AnchorValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AnchorValueVariant1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -708,6 +866,44 @@ pub enum AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AnyValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AnyValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -751,6 +947,44 @@ pub enum AnyValueVariant1Subtype1Subtype0 {
 pub enum AnyValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for AnyValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AnyValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for AnyValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AnyValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for AnyValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AnyValueVariant1Subtype1Subtype1 {}
@@ -815,6 +1049,46 @@ pub enum ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for ArrayValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ArrayValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -858,6 +1132,44 @@ pub enum ArrayValueVariant1Subtype1Subtype0 {
 pub enum ArrayValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for ArrayValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for ArrayValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for ArrayValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ArrayValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for ArrayValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ArrayValueVariant1Subtype1Subtype1 {}
@@ -2191,6 +2503,44 @@ pub enum BaseColorValueVariant0Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for BaseColorValueVariant0Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BaseColorValueVariant0Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for BaseColorValueVariant0Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BaseColorValueVariant0Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BaseColorValueVariant0Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BaseColorValueVariant0Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -2313,6 +2663,50 @@ pub enum BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str>
+    for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BaselineValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BaselineValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -2407,6 +2801,44 @@ impl std::convert::TryFrom<String> for BaselineValueVariant1Subtype1Subtype0Vari
 pub enum BaselineValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for BaselineValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BaselineValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for BaselineValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BaselineValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BaselineValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BaselineValueVariant1Subtype1Subtype1 {}
@@ -2955,6 +3387,46 @@ pub enum BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BlendValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BlendValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -3094,6 +3566,44 @@ pub enum BlendValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for BlendValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BlendValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for BlendValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BlendValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BlendValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BlendValueVariant1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -3157,6 +3667,48 @@ pub enum BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BooleanValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BooleanValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -3200,6 +3752,44 @@ pub enum BooleanValueVariant1Subtype1Subtype0 {
 pub enum BooleanValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for BooleanValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for BooleanValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for BooleanValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for BooleanValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for BooleanValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BooleanValueVariant1Subtype1Subtype1 {}
@@ -3883,6 +4473,44 @@ pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
     Variant0(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1),
 }
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "boolean")]
@@ -4066,6 +4694,44 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVa
 pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
     Variant0(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
@@ -4287,6 +4953,44 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVa
 pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
     Variant0(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
@@ -4513,6 +5217,44 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVa
 pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
     Variant0(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
@@ -4892,6 +5634,44 @@ pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
     Variant0(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1),
 }
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "boolean")]
@@ -5075,6 +5855,44 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVa
 pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
     Variant0(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
@@ -5296,6 +6114,44 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVa
 pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
     Variant0(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
@@ -5522,6 +6378,44 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVa
 pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
     Variant0(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0),
     Variant1(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1),
+}
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
@@ -6337,6 +7231,50 @@ pub enum DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str>
+    for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DirectionValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DirectionValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -6423,6 +7361,44 @@ impl std::convert::TryFrom<String> for DirectionValueVariant1Subtype1Subtype0Var
 pub enum DirectionValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for DirectionValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DirectionValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DirectionValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DirectionValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for DirectionValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DirectionValueVariant1Subtype1Subtype1 {}
@@ -7170,6 +8146,50 @@ pub enum FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str>
+    for FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for FontWeightValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FontWeightValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -7213,6 +8233,44 @@ pub enum FontWeightValueVariant1Subtype1Subtype0 {
 pub enum FontWeightValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for FontWeightValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for FontWeightValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for FontWeightValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for FontWeightValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for FontWeightValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FontWeightValueVariant1Subtype1Subtype1 {}
@@ -12087,6 +13145,44 @@ pub enum NumberModifiersBand {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for NumberModifiersBand {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for NumberModifiersBand {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for NumberModifiersBand {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for NumberModifiersBand {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for NumberModifiersBand {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum NumberModifiersExponent {
@@ -12162,6 +13258,48 @@ pub enum NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for NumberValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NumberValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12205,6 +13343,44 @@ pub enum NumberValueVariant1Subtype1Subtype0 {
 pub enum NumberValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for NumberValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for NumberValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for NumberValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for NumberValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for NumberValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NumberValueVariant1Subtype1Subtype1 {}
@@ -12407,6 +13583,48 @@ pub enum OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for OrientValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrientValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12501,6 +13719,44 @@ impl std::convert::TryFrom<String> for OrientValueVariant1Subtype1Subtype0Varian
 pub enum OrientValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for OrientValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for OrientValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for OrientValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for OrientValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for OrientValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrientValueVariant1Subtype1Subtype1 {}
@@ -14202,6 +15458,47 @@ pub enum ScaleDataVariant2FieldsItemVariant1Item {
     Variant1(f64),
     Variant2(bool),
 }
+impl std::str::FromStr for ScaleDataVariant2FieldsItemVariant1Item {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant2(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for ScaleDataVariant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for ScaleDataVariant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleDataVariant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for ScaleDataVariant2FieldsItemVariant1Item {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+            Self::Variant2(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum ScaleDataVariant2Sort {
@@ -15033,6 +16330,47 @@ pub enum ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
     Variant0(String),
     Variant1(f64),
     Variant2(bool),
+}
+impl std::str::FromStr for ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant2(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for ScaleVariant1RangeVariant3Variant2FieldsItemVariant1Item {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+            Self::Variant2(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, deny_unknown_fields)]
@@ -17293,6 +18631,48 @@ pub enum StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StringValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StringValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -17336,6 +18716,44 @@ pub enum StringValueVariant1Subtype1Subtype0 {
 pub enum StringValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for StringValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for StringValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for StringValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StringValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StringValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StringValueVariant1Subtype1Subtype1 {}
@@ -17447,6 +18865,50 @@ pub enum StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str>
+    for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StrokeCapValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StrokeCapValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -17537,6 +18999,44 @@ impl std::convert::TryFrom<String> for StrokeCapValueVariant1Subtype1Subtype0Var
 pub enum StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StrokeCapValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StrokeCapValueVariant1Subtype1Subtype1 {}
@@ -17648,6 +19148,50 @@ pub enum StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str>
+    for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String>
+    for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String>
+    for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range
+{
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StrokeJoinValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -17739,6 +19283,44 @@ pub enum StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for StrokeJoinValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StrokeJoinValueVariant1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -17820,6 +19402,44 @@ pub enum TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
 }
+impl std::str::FromStr for TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for TextValueVariant0ItemSubtype1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TextValueVariant0ItemSubtype1Subtype1Subtype1 {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -17869,6 +19489,44 @@ pub enum TextValueVariant1Subtype1Subtype0Variant1Value {
 pub enum TextValueVariant1Subtype1Subtype0Variant3Range {
     Variant0(f64),
     Variant1(bool),
+}
+impl std::str::FromStr for TextValueVariant1Subtype1Subtype0Variant3Range {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for TextValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TextValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TextValueVariant1Subtype1Subtype0Variant3Range {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for TextValueVariant1Subtype1Subtype0Variant3Range {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TextValueVariant1Subtype1Subtype1 {}

@@ -15,7 +15,7 @@ use schemars::schema::{
 
 use crate::util::get_type_name;
 
-use crate::{Error, Name, Result, TypeSpace};
+use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
 
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
@@ -551,13 +551,22 @@ impl TypeSpace {
 
             Some("uuid") => {
                 self.uses_uuid = true;
-                Ok((TypeEntry::new_native("uuid::Uuid", &["Display"]), metadata))
+                Ok((
+                    TypeEntry::new_native(
+                        "uuid::Uuid",
+                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    ),
+                    metadata,
+                ))
             }
 
             Some("date") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_native("chrono::Date<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_native(
+                        "chrono::Date<chrono::offset::Utc>",
+                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    ),
                     metadata,
                 ))
             }
@@ -565,21 +574,33 @@ impl TypeSpace {
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
-                    TypeEntry::new_native("chrono::DateTime<chrono::offset::Utc>", &["Display"]),
+                    TypeEntry::new_native(
+                        "chrono::DateTime<chrono::offset::Utc>",
+                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    ),
                     metadata,
                 ))
             }
 
             Some("ip") => Ok((
-                TypeEntry::new_native("std::net::IpAddr", &["Display"]),
+                TypeEntry::new_native(
+                    "std::net::IpAddr",
+                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                ),
                 metadata,
             )),
             Some("ipv4") => Ok((
-                TypeEntry::new_native("std::net::Ipv4Addr", &["Display"]),
+                TypeEntry::new_native(
+                    "std::net::Ipv4Addr",
+                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                ),
                 metadata,
             )),
             Some("ipv6") => Ok((
-                TypeEntry::new_native("std::net::Ipv6Addr", &["Display"]),
+                TypeEntry::new_native(
+                    "std::net::Ipv6Addr",
+                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                ),
                 metadata,
             )),
             Some(unhandled) => {
@@ -1404,7 +1425,8 @@ mod tests {
     use serde_json::json;
 
     use crate::{
-        test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceSettings,
+        test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceImpl,
+        TypeSpaceSettings,
     };
 
     #[track_caller]
@@ -1664,7 +1686,7 @@ mod tests {
                 ..Default::default()
             },
             "not::a::real::library::Uuid",
-            ["Display"].iter(),
+            [TypeSpaceImpl::Display].into_iter(),
         ));
         let type_id = type_space.add_type(&schema.schema.into()).unwrap();
         let typ = type_space.get_type(&type_id).unwrap();

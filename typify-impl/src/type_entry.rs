@@ -12,17 +12,8 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
-    DefaultImpl, Name, Result, TypeId, TypeSpace,
+    DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum TypeEntryImpl {
-    // FromStr,
-    // Display,
-    // Eq,
-    // Hash,
-    // Ord,
-}
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct TypeEntryEnum {
@@ -78,7 +69,7 @@ pub(crate) enum TypeEntryNewtypeConstraints {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct TypeEntryNative {
     pub type_name: String,
-    impls: Vec<String>,
+    impls: Vec<TypeSpaceImpl>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -109,7 +100,6 @@ impl PartialOrd for WrappedValue {
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
     pub derives: BTreeSet<String>,
-    pub impls: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -223,11 +213,7 @@ impl TypeEntryEnum {
             bespoke_impls: Default::default(),
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: Default::default(),
-        }
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn finalize(&mut self, type_space: &TypeSpace) {
@@ -240,11 +226,21 @@ impl TypeEntryEnum {
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
             .then(|| TypeEntryEnumImpl::AllSimpleVariants),
             // Untagged and all variants impl FromStr
-            untagged_newtype_variants(type_space, &self.tag_type, &self.variants, "FromStr")
-                .then(|| TypeEntryEnumImpl::UntaggedFromStr),
+            untagged_newtype_variants(
+                type_space,
+                &self.tag_type,
+                &self.variants,
+                TypeSpaceImpl::FromStr,
+            )
+            .then(|| TypeEntryEnumImpl::UntaggedFromStr),
             // Untagged and all variants impl Display
-            untagged_newtype_variants(type_space, &self.tag_type, &self.variants, "Display")
-                .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+            untagged_newtype_variants(
+                type_space,
+                &self.tag_type,
+                &self.variants,
+                TypeSpaceImpl::Display,
+            )
+            .then(|| TypeEntryEnumImpl::UntaggedDisplay),
         ]
         .into_iter()
         .flatten()
@@ -280,11 +276,7 @@ impl TypeEntryStruct {
             deny_unknown_fields,
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: Default::default(),
-        }
+        TypeEntry { details, derives }
     }
 }
 
@@ -310,11 +302,7 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::None,
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: Default::default(),
-        }
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn from_metadata_with_enum_values(
@@ -341,14 +329,7 @@ impl TypeEntryNewtype {
             ),
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
-        }
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn from_metadata_with_deny_values(
@@ -375,14 +356,7 @@ impl TypeEntryNewtype {
             ),
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
-        }
+        TypeEntry { details, derives }
     }
 
     pub(crate) fn from_metadata_with_string_validation(
@@ -417,50 +391,33 @@ impl TypeEntryNewtype {
             },
         });
 
-        TypeEntry {
-            details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
-        }
+        TypeEntry { details, derives }
     }
 }
 
 impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
-        let impls = match details {
-            TypeEntryDetails::Integer(_) | TypeEntryDetails::String => ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
-            _ => Default::default(),
-        };
         Self {
             details,
             derives: Default::default(),
-            impls,
         }
     }
 }
 
 impl TypeEntry {
-    pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[&str]) -> Self {
+    pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
-                impls: impls.iter().map(ToString::to_string).collect(),
+                impls: impls.iter().cloned().collect(),
             }),
             derives: Default::default(),
-            impls: impls.iter().map(ToString::to_string).collect(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
             derives: Default::default(),
-            impls: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
@@ -470,7 +427,6 @@ impl TypeEntry {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
             derives: Default::default(),
-            impls: Default::default(),
         }
     }
 
@@ -492,24 +448,71 @@ impl TypeEntry {
         }
     }
 
-    pub(crate) fn impls(&self) -> &[String] {
+    pub(crate) fn has_impl<'a>(
+        &'a self,
+        type_space: &'a TypeSpace,
+        impl_name: TypeSpaceImpl,
+    ) -> bool {
         match &self.details {
-            TypeEntryDetails::Enum(_) => &[],
-            TypeEntryDetails::Struct(_) => todo!(),
-            TypeEntryDetails::Newtype(_) => todo!(),
-            TypeEntryDetails::Native(n) => &n.impls,
-            TypeEntryDetails::Option(_) => todo!(),
-            TypeEntryDetails::Box(_) => todo!(),
-            TypeEntryDetails::Array(_) => todo!(),
-            TypeEntryDetails::Map(_) => todo!(),
-            TypeEntryDetails::Set(_) => todo!(),
-            TypeEntryDetails::Tuple(_) => todo!(),
-            TypeEntryDetails::Unit => todo!(),
-            TypeEntryDetails::Boolean => todo!(),
-            TypeEntryDetails::Integer(_) => todo!(),
-            TypeEntryDetails::Float(_) => todo!(),
-            TypeEntryDetails::String => todo!(),
-            TypeEntryDetails::Reference(_) => todo!(),
+            TypeEntryDetails::Enum(details) => match impl_name {
+                TypeSpaceImpl::Default => details.default.is_some(),
+
+                TypeSpaceImpl::FromStr => {
+                    details
+                        .bespoke_impls
+                        .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+                        || details
+                            .bespoke_impls
+                            .contains(&TypeEntryEnumImpl::UntaggedFromStr)
+                }
+                TypeSpaceImpl::Display => {
+                    details
+                        .bespoke_impls
+                        .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+                        || details
+                            .bespoke_impls
+                            .contains(&TypeEntryEnumImpl::UntaggedDisplay)
+                }
+            },
+
+            TypeEntryDetails::Struct(details) => match impl_name {
+                TypeSpaceImpl::Default => details.default.is_some(),
+                _ => false,
+            },
+            TypeEntryDetails::Newtype(details) => match (&details.constraints, impl_name) {
+                (_, TypeSpaceImpl::Default) => details.default.is_some(),
+                (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::FromStr) => true,
+                (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::Display) => true,
+                _ => false,
+            },
+            TypeEntryDetails::Native(details) => details.impls.contains(&impl_name),
+            TypeEntryDetails::Box(type_id) => {
+                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                type_entry.has_impl(type_space, impl_name)
+            }
+
+            TypeEntryDetails::Unit
+            | TypeEntryDetails::Option(_)
+            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Set(_) => {
+                matches!(impl_name, TypeSpaceImpl::Default)
+            }
+
+            TypeEntryDetails::Tuple(type_ids) => {
+                matches!(impl_name, TypeSpaceImpl::Default)
+                    && type_ids.iter().all(|type_id| {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        type_entry.has_impl(type_space, TypeSpaceImpl::Default)
+                    })
+            }
+
+            TypeEntryDetails::Boolean => true,
+            TypeEntryDetails::Integer(_) => true,
+            TypeEntryDetails::Float(_) => true,
+            TypeEntryDetails::String => true,
+
+            TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
 
@@ -628,32 +631,32 @@ impl TypeEntry {
                     .unzip();
 
                 quote! {
-                        impl ToString for #type_name {
-                            fn to_string(&self) -> String {
-                                match *self {
-                                    #(Self::#match_variants => #match_strs.to_string(),)*
-                                }
+                    impl ToString for #type_name {
+                        fn to_string(&self) -> String {
+                            match *self {
+                                #(Self::#match_variants => #match_strs.to_string(),)*
                             }
                         }
-                        impl std::str::FromStr for #type_name {
-                            type Err = &'static str;
+                    }
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
 
-                            fn from_str(value: &str) -> Result<Self, &'static str> {
-                                match value {
-                                    #(#match_strs => Ok(Self::#match_variants),)*
-                                    _ => Err("invalid value"),
-                                }
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                            match value {
+                                #(#match_strs => Ok(Self::#match_variants),)*
+                                _ => Err("invalid value"),
                             }
                         }
-                        impl std::convert::TryFrom<&str> for #type_name {
-                            type Error = &'static str;
+                    }
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
 
-                            fn try_from(value: &str) -> Result<Self, &'static str> {
-                                value.parse()
-                            }
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                            value.parse()
                         }
-                        impl std::convert::TryFrom<&String> for #type_name {
-                            type Error = &'static str;
+                    }
+                    impl std::convert::TryFrom<&String> for #type_name {
+                        type Error = &'static str;
 
                         fn try_from(value: &String) -> Result<Self, &'static str> {
                             value.parse()
@@ -1441,7 +1444,7 @@ fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
     variants: &[Variant],
-    req_impl: &str,
+    req_impl: TypeSpaceImpl,
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
@@ -1455,7 +1458,7 @@ fn untagged_newtype_variants(
                 |type_id| {
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                     // ... and its type has the required impl
-                    type_entry.impls.contains(req_impl)
+                    type_entry.has_impl(type_space, req_impl)
                 },
             )
         })

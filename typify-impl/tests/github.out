@@ -8392,6 +8392,36 @@ pub enum InstallationCreatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
     Variant1(i64),
 }
+impl std::str::FromStr for InstallationCreatedAt {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for InstallationCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for InstallationCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
 impl ToString for InstallationCreatedAt {
     fn to_string(&self) -> String {
         match self {
@@ -10893,6 +10923,36 @@ pub struct InstallationUnsuspendRepositoriesItem {
 pub enum InstallationUpdatedAt {
     Variant0(chrono::DateTime<chrono::offset::Utc>),
     Variant1(i64),
+}
+impl std::str::FromStr for InstallationUpdatedAt {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for InstallationUpdatedAt {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for InstallationUpdatedAt {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for InstallationUpdatedAt {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
 }
 impl ToString for InstallationUpdatedAt {
     fn to_string(&self) -> String {
@@ -19305,6 +19365,36 @@ impl std::convert::TryFrom<String> for RepositoryCreatedAction {
 pub enum RepositoryCreatedAt {
     Variant0(i64),
     Variant1(chrono::DateTime<chrono::offset::Utc>),
+}
+impl std::str::FromStr for RepositoryCreatedAt {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for RepositoryCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for RepositoryCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for RepositoryCreatedAt {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
 }
 impl ToString for RepositoryCreatedAt {
     fn to_string(&self) -> String {

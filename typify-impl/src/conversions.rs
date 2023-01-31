@@ -2,7 +2,7 @@
 
 use schemars::schema::SchemaObject;
 
-use crate::type_entry::TypeEntry;
+use crate::{type_entry::TypeEntry, TypeSpaceImpl};
 
 // TODO Everything about this is inefficient.
 
@@ -12,7 +12,7 @@ pub(crate) struct SchemaCache {
 }
 
 impl SchemaCache {
-    pub fn insert(&mut self, schema: &SchemaObject, type_name: &String, impls: &[&str]) {
+    pub fn insert(&mut self, schema: &SchemaObject, type_name: &String, impls: &[TypeSpaceImpl]) {
         let type_entry = TypeEntry::new_native(type_name, impls);
         self.schemas.push((
             SchemaObject {

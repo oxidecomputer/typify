@@ -205,14 +205,23 @@ pub struct TypeSpacePatch {
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpaceReplace {
     replace_type: String,
-    impls: Vec<String>,
+    impls: Vec<TypeSpaceImpl>,
 }
 
 #[derive(Debug, Clone)]
 struct TypeSpaceConversion {
     schema: schemars::schema::SchemaObject,
     type_name: String,
-    impls: Vec<String>,
+    impls: Vec<TypeSpaceImpl>,
+}
+
+// TODO we can currently only address traits for which cycle analysis is not
+// required.
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TypeSpaceImpl {
+    FromStr,
+    Display,
+    Default,
 }
 
 impl TypeSpaceSettings {
@@ -238,7 +247,7 @@ impl TypeSpaceSettings {
 
     /// Replace a referenced type with a named type. This causes the referenced
     /// type *not* to be generated.
-    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = impl ToString>>(
+    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         type_name: TS,
         replace_type: RS,
@@ -248,7 +257,7 @@ impl TypeSpaceSettings {
             type_name.to_string(),
             TypeSpaceReplace {
                 replace_type: replace_type.to_string(),
-                impls: impls.map(|x| x.to_string()).collect(),
+                impls: impls.collect(),
             },
         );
         self
@@ -266,7 +275,7 @@ impl TypeSpaceSettings {
         self
     }
 
-    pub fn with_conversion<S: ToString, I: Iterator<Item = impl ToString>>(
+    pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
         type_name: S,
@@ -275,7 +284,7 @@ impl TypeSpaceSettings {
         self.convert.push(TypeSpaceConversion {
             schema,
             type_name: type_name.to_string(),
-            impls: impls.map(|x| x.to_string()).collect(),
+            impls: impls.collect(),
         });
         self
     }
@@ -306,11 +315,7 @@ impl TypeSpace {
                  type_name,
                  impls,
              }| {
-                cache.insert(
-                    schema,
-                    type_name,
-                    &impls.iter().map(String::as_str).collect::<Vec<_>>(),
-                );
+                cache.insert(schema, type_name, impls);
             },
         );
 
@@ -379,11 +384,7 @@ impl TypeSpace {
                 Some(replace_type) => {
                     let type_entry = TypeEntry::new_native(
                         replace_type.replace_type.clone(),
-                        &replace_type
-                            .impls
-                            .iter()
-                            .map(String::as_str)
-                            .collect::<Vec<_>>(),
+                        &replace_type.impls.clone(),
                     );
                     self.id_to_entry.insert(type_id, type_entry);
                 }

@@ -3,7 +3,7 @@
 use std::{fs::File, io::BufReader, path::Path};
 
 use schemars::schema::{RootSchema, Schema};
-use typify_impl::{TypeSpace, TypeSpaceSettings};
+use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
 
 #[test]
 fn test_github() {
@@ -60,7 +60,7 @@ fn test_other() {
           }
     };
     let schema = serde_json::from_value(raw_schema).unwrap();
-    settings.with_conversion(schema, "MyEnum", ["FromStr"].into_iter());
+    settings.with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter());
 
     let mut type_space = TypeSpace::new(&settings);
 
