@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize)]
 pub struct PatternString(String);
@@ -44,7 +45,7 @@ impl<'de> serde::Deserialize<'de> for PatternString {
             .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct Sub10Primes(u32);
 impl std::ops::Deref for Sub10Primes {
     type Target = u32;
@@ -60,6 +61,15 @@ impl std::convert::TryFrom<u32> for Sub10Primes {
         } else {
             Ok(Self(value))
         }
+    }
+}
+impl<'de> serde::Deserialize<'de> for Sub10Primes {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(u32::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}

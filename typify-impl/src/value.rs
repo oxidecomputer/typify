@@ -8,7 +8,7 @@ use quote::{format_ident, quote};
 use crate::{
     type_entry::{
         EnumTagType, StructProperty, StructPropertyRename, TypeEntry, TypeEntryDetails,
-        TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
+        TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
     },
     TypeId, TypeSpace,
 };
@@ -119,7 +119,7 @@ impl TypeEntry {
                 value.as_null()?;
                 quote! { () }
             }
-            TypeEntryDetails::BuiltIn(type_name) => {
+            TypeEntryDetails::Native(TypeEntryNative { type_name, .. }) => {
                 // Serialize value to a string... not hard.
                 let text = value.to_string();
                 let type_path = type_name
@@ -438,8 +438,7 @@ mod tests {
 
         let type_entry = TypeEntry {
             details: crate::type_entry::TypeEntryDetails::Box(type_id),
-            derives: Default::default(),
-            impls: Default::default(),
+            extra_derives: Default::default(),
         };
 
         assert_eq!(

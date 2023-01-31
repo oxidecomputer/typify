@@ -1,10 +1,11 @@
+#[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
@@ -22,7 +23,16 @@ impl std::convert::TryFrom<String> for TestTypeWhereNot {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(String::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[derive(Clone, Debug, Serialize)]
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;
@@ -38,6 +48,15 @@ impl std::convert::TryFrom<String> for TestTypeWhyNot {
         } else {
             Ok(Self(value))
         }
+    }
+}
+impl<'de> serde::Deserialize<'de> for TestTypeWhyNot {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(String::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}

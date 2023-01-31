@@ -1,9 +1,40 @@
+#[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
+}
+impl std::str::FromStr for IdOrName {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Id(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Name(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for IdOrName {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for IdOrName {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IdOrName {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
 }
 impl ToString for IdOrName {
     fn to_string(&self) -> String {

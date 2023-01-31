@@ -8,6 +8,7 @@ use quote::quote;
 use schemars::schema::{RootSchema, Schema};
 use serde_json::json;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
+use typify_impl::TypeSpaceImpl;
 
 #[test]
 fn test_schemas() {
@@ -39,7 +40,11 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
 
     let mut type_space = TypeSpace::new(
         TypeSpaceSettings::default()
-            .with_replacement("HandGeneratedType", "String", ["Display"].into_iter())
+            .with_replacement(
+                "HandGeneratedType",
+                "String",
+                [TypeSpaceImpl::Display].into_iter(),
+            )
             .with_patch(
                 "TypeThatNeedsMoreDerives",
                 TypeSpacePatch::default()
@@ -47,7 +52,11 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
                     .with_derive("Eq")
                     .with_derive("PartialEq"),
             )
-            .with_conversion(schema, "serde_json::Value", ["Display"].into_iter()),
+            .with_conversion(
+                schema,
+                "serde_json::Value",
+                [TypeSpaceImpl::Display].into_iter(),
+            ),
     );
     type_space.add_ref_types(root_schema.definitions)?;
 
@@ -67,8 +76,12 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
 
     // Make a file with the generated code.
     let code = quote! {
+        // Some types impl their own Deserialize and fully qualify the name.
+        #[allow(unused_imports)]
         use serde::{Deserialize, Serialize};
+
         #type_space
+
         fn main() {}
     };
     let text = rustfmt_wrapper::rustfmt(code).unwrap();

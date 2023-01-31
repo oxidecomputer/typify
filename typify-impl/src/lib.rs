@@ -10,7 +10,9 @@ use quote::{quote, ToTokens};
 use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
-use type_entry::{TypeEntry, TypeEntryDetails, TypeEntryNewtype, VariantDetails, WrappedValue};
+use type_entry::{
+    TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype, VariantDetails, WrappedValue,
+};
 
 use crate::util::{sanitize, Case};
 
@@ -203,14 +205,37 @@ pub struct TypeSpacePatch {
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpaceReplace {
     replace_type: String,
-    impls: Vec<String>,
+    impls: Vec<TypeSpaceImpl>,
 }
 
 #[derive(Debug, Clone)]
 struct TypeSpaceConversion {
     schema: schemars::schema::SchemaObject,
     type_name: String,
-    impls: Vec<String>,
+    impls: Vec<TypeSpaceImpl>,
+}
+
+// TODO we can currently only address traits for which cycle analysis is not
+// required.
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[non_exhaustive]
+pub enum TypeSpaceImpl {
+    FromStr,
+    Display,
+    Default,
+}
+
+impl std::str::FromStr for TypeSpaceImpl {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "FromStr" => Ok(Self::FromStr),
+            "Display" => Ok(Self::Display),
+            "Default" => Ok(Self::Default),
+            _ => Err(format!("{} is not a valid trait specifier", s)),
+        }
+    }
 }
 
 impl TypeSpaceSettings {
@@ -236,7 +261,7 @@ impl TypeSpaceSettings {
 
     /// Replace a referenced type with a named type. This causes the referenced
     /// type *not* to be generated.
-    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = impl ToString>>(
+    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         type_name: TS,
         replace_type: RS,
@@ -246,7 +271,7 @@ impl TypeSpaceSettings {
             type_name.to_string(),
             TypeSpaceReplace {
                 replace_type: replace_type.to_string(),
-                impls: impls.map(|x| x.to_string()).collect(),
+                impls: impls.collect(),
             },
         );
         self
@@ -264,7 +289,7 @@ impl TypeSpaceSettings {
         self
     }
 
-    pub fn with_conversion<S: ToString, I: Iterator<Item = impl ToString>>(
+    pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
         type_name: S,
@@ -273,7 +298,7 @@ impl TypeSpaceSettings {
         self.convert.push(TypeSpaceConversion {
             schema,
             type_name: type_name.to_string(),
-            impls: impls.map(|x| x.to_string()).collect(),
+            impls: impls.collect(),
         });
         self
     }
@@ -371,11 +396,10 @@ impl TypeSpace {
                 None => self.convert_ref_type(type_name, schema, type_id)?,
 
                 Some(replace_type) => {
-                    let type_entry = TypeEntry {
-                        details: TypeEntryDetails::BuiltIn(replace_type.replace_type.clone()),
-                        derives: Default::default(),
-                        impls: replace_type.impls.iter().map(ToString::to_string).collect(),
-                    };
+                    let type_entry = TypeEntry::new_native(
+                        replace_type.replace_type.clone(),
+                        &replace_type.impls.clone(),
+                    );
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
@@ -388,8 +412,6 @@ impl TypeSpace {
             // order to manipulate it without holding a reference on self.
             let type_id = TypeId(base_id + index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-
-            type_entry.check_defaults(self)?;
 
             // TODO compute appropriate derives, taking care to account for
             // dependency cycles. Currently we're using a more minimal--safe--
@@ -408,6 +430,14 @@ impl TypeSpace {
             self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
 
             // Overwrite the entry regardless of whether we modified it.
+            self.id_to_entry.insert(type_id, type_entry);
+        }
+
+        // Finalize all created types.
+        for index in base_id..self.next_id {
+            let type_id = TypeId(index);
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -584,11 +614,14 @@ impl TypeSpace {
         schema: &Schema,
         name_hint: Option<String>,
     ) -> Result<TypeId> {
+        let base_id = self.next_id;
+
         let name = match name_hint {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        // let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
+        let (mut type_entry, metadata) = self.convert_schema(name, schema).unwrap();
         if let Some(metadata) = metadata {
             match &mut type_entry.details {
                 TypeEntryDetails::Enum(details) => {
@@ -602,10 +635,19 @@ impl TypeSpace {
                 }
                 _ => (),
             }
-            type_entry.check_defaults(self)?;
         }
 
-        Ok(self.assign_type(type_entry))
+        let type_id = self.assign_type(type_entry);
+
+        // Finalize all created types.
+        for index in base_id..self.next_id {
+            let type_id = TypeId(index);
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            type_entry.finalize(self)?;
+            self.id_to_entry.insert(type_id, type_entry);
+        }
+
+        Ok(type_id)
     }
 
     /// Get a type given its ID.
@@ -697,8 +739,11 @@ impl TypeSpace {
             // them to be different and resolve that by renaming or scoping
             // them in some way.
             if let Some(type_id) = self.name_to_id.get(name) {
-                let existing_ty = self.id_to_entry.get(type_id).unwrap();
-                assert_eq!(existing_ty, &ty);
+                // TODO we'd like to verify that the type is structurally the
+                // same, but the types may not be functionally equal. This is a
+                // consequence of types being "finalized" after each type
+                // addition. This further emphasized the need for a more
+                // deliberate, multi-pass approach.
                 type_id.clone()
             } else {
                 let type_id = self.assign();
@@ -824,7 +869,9 @@ impl<'a> Type<'a> {
 
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
@@ -833,6 +880,15 @@ impl<'a> Type<'a> {
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
+    }
+
+    /// Checks if the type has the associated impl.
+    pub fn has_impl(&self, impl_name: TypeSpaceImpl) -> bool {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+        type_entry.has_impl(type_space, impl_name)
     }
 }
 

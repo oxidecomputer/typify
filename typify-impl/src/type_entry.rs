@@ -1,11 +1,10 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::collections::BTreeSet;
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::Metadata;
-
 use syn::Path;
 
 use crate::{
@@ -13,7 +12,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
-    DefaultImpl, Name, TypeId, TypeSpace,
+    DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -25,6 +24,14 @@ pub(crate) struct TypeEntryEnum {
     pub tag_type: EnumTagType,
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
+    pub bespoke_impls: BTreeSet<TypeEntryEnumImpl>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) enum TypeEntryEnumImpl {
+    AllSimpleVariants,
+    UntaggedFromStr,
+    UntaggedDisplay,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -59,6 +66,12 @@ pub(crate) enum TypeEntryNewtypeConstraints {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub(crate) struct TypeEntryNative {
+    pub type_name: String,
+    impls: Vec<TypeSpaceImpl>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct WrappedValue(pub serde_json::Value);
 impl WrappedValue {
@@ -78,11 +91,16 @@ impl PartialOrd for WrappedValue {
     }
 }
 
+// TODO This struct needs to go away (again). The derives should go into the
+// generated struct/enum/newtype structs. Same for the impls. Native types will
+// also have impls. Builtin generic types such as Box or Vec will delegate to
+// their subtypes (while recursive, it is necessarily terminating... though I
+// suppose we could memoize it). Builtin simple types such as u64 or String
+// have a static list.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
-    pub derives: BTreeSet<String>,
-    pub impls: BTreeSet<String>,
+    pub extra_derives: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -91,6 +109,10 @@ pub(crate) enum TypeEntryDetails {
     Struct(TypeEntryStruct),
     Newtype(TypeEntryNewtype),
 
+    /// Native types exported from a well-known crate.
+    Native(TypeEntryNative),
+
+    // Types from core and std.
     Option(TypeId),
     Box(TypeId),
     Array(TypeId),
@@ -98,9 +120,6 @@ pub(crate) enum TypeEntryDetails {
     Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
-    /// Built-in complex types with no type generics such as Uuid
-    BuiltIn(String),
-    /// Boolean
     Boolean,
     /// Integers
     Integer(String),
@@ -182,7 +201,7 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
             name,
@@ -192,13 +211,44 @@ impl TypeEntryEnum {
             tag_type,
             variants,
             deny_unknown_fields,
+            bespoke_impls: Default::default(),
         });
 
         TypeEntry {
             details,
-            derives,
-            impls: Default::default(),
+            extra_derives,
         }
+    }
+
+    pub(crate) fn finalize(&mut self, type_space: &TypeSpace) {
+        self.bespoke_impls = [
+            // Not untagged with all simple variants.
+            (self.tag_type != EnumTagType::Untagged
+                && self
+                    .variants
+                    .iter()
+                    .all(|variant| matches!(variant.details, VariantDetails::Simple)))
+            .then(|| TypeEntryEnumImpl::AllSimpleVariants),
+            // Untagged and all variants impl FromStr
+            untagged_newtype_variants(
+                type_space,
+                &self.tag_type,
+                &self.variants,
+                TypeSpaceImpl::FromStr,
+            )
+            .then(|| TypeEntryEnumImpl::UntaggedFromStr),
+            // Untagged and all variants impl Display
+            untagged_newtype_variants(
+                type_space,
+                &self.tag_type,
+                &self.variants,
+                TypeSpaceImpl::Display,
+            )
+            .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+        ]
+        .into_iter()
+        .flatten()
+        .collect();
     }
 }
 
@@ -219,7 +269,7 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
             name,
@@ -232,8 +282,7 @@ impl TypeEntryStruct {
 
         TypeEntry {
             details,
-            derives,
-            impls: Default::default(),
+            extra_derives,
         }
     }
 }
@@ -249,7 +298,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -262,8 +311,7 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            derives,
-            impls: Default::default(),
+            extra_derives,
         }
     }
 
@@ -278,7 +326,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -293,11 +341,7 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
+            extra_derives,
         }
     }
 
@@ -312,7 +356,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -327,11 +371,7 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
+            extra_derives,
         }
     }
 
@@ -352,7 +392,7 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, derives) = type_patch(type_space, name);
+        let (name, extra_derives) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -369,45 +409,34 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            derives,
-            impls: ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
+            extra_derives,
         }
     }
 }
 
 impl From<TypeEntryDetails> for TypeEntry {
     fn from(details: TypeEntryDetails) -> Self {
-        let impls = match details {
-            TypeEntryDetails::Integer(_) | TypeEntryDetails::String => ["Display", "FromStr"]
-                .into_iter()
-                .map(ToString::to_string)
-                .collect(),
-            _ => Default::default(),
-        };
         Self {
             details,
-            derives: Default::default(),
-            impls,
+            extra_derives: Default::default(),
         }
     }
 }
 
 impl TypeEntry {
-    pub(crate) fn new_builtin<S: ToString>(type_name: S, impls: &[&str]) -> Self {
+    pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
         TypeEntry {
-            details: TypeEntryDetails::BuiltIn(type_name.to_string()),
-            derives: Default::default(),
-            impls: impls.iter().map(ToString::to_string).collect(),
+            details: TypeEntryDetails::Native(TypeEntryNative {
+                type_name: type_name.to_string(),
+                impls: impls.to_vec(),
+            }),
+            extra_derives: Default::default(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
-            derives: Default::default(),
-            impls: Default::default(),
+            extra_derives: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
@@ -416,9 +445,16 @@ impl TypeEntry {
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
-            derives: Default::default(),
-            impls: Default::default(),
+            extra_derives: Default::default(),
         }
+    }
+
+    pub(crate) fn finalize(&mut self, type_space: &mut TypeSpace) -> Result<()> {
+        if let TypeEntryDetails::Enum(enum_details) = &mut self.details {
+            enum_details.finalize(type_space);
+        }
+
+        self.check_defaults(type_space)
     }
 
     pub(crate) fn name(&self) -> Option<&String> {
@@ -428,6 +464,74 @@ impl TypeEntry {
             | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => Some(name),
 
             _ => None,
+        }
+    }
+
+    pub(crate) fn has_impl<'a>(
+        &'a self,
+        type_space: &'a TypeSpace,
+        impl_name: TypeSpaceImpl,
+    ) -> bool {
+        match &self.details {
+            TypeEntryDetails::Enum(details) => match impl_name {
+                TypeSpaceImpl::Default => details.default.is_some(),
+
+                TypeSpaceImpl::FromStr => {
+                    details
+                        .bespoke_impls
+                        .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+                        || details
+                            .bespoke_impls
+                            .contains(&TypeEntryEnumImpl::UntaggedFromStr)
+                }
+                TypeSpaceImpl::Display => {
+                    details
+                        .bespoke_impls
+                        .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+                        || details
+                            .bespoke_impls
+                            .contains(&TypeEntryEnumImpl::UntaggedDisplay)
+                }
+            },
+
+            TypeEntryDetails::Struct(details) => match impl_name {
+                TypeSpaceImpl::Default => details.default.is_some(),
+                _ => false,
+            },
+            TypeEntryDetails::Newtype(details) => match (&details.constraints, impl_name) {
+                (_, TypeSpaceImpl::Default) => details.default.is_some(),
+                (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::FromStr) => true,
+                (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::Display) => true,
+                _ => false,
+            },
+            TypeEntryDetails::Native(details) => details.impls.contains(&impl_name),
+            TypeEntryDetails::Box(type_id) => {
+                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                type_entry.has_impl(type_space, impl_name)
+            }
+
+            TypeEntryDetails::Unit
+            | TypeEntryDetails::Option(_)
+            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Set(_) => {
+                matches!(impl_name, TypeSpaceImpl::Default)
+            }
+
+            TypeEntryDetails::Tuple(type_ids) => {
+                matches!(impl_name, TypeSpaceImpl::Default)
+                    && type_ids.iter().all(|type_id| {
+                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                        type_entry.has_impl(type_space, TypeSpaceImpl::Default)
+                    })
+            }
+
+            TypeEntryDetails::Boolean => true,
+            TypeEntryDetails::Integer(_) => true,
+            TypeEntryDetails::Float(_) => true,
+            TypeEntryDetails::String => true,
+
+            TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
 
@@ -471,11 +575,13 @@ impl TypeEntry {
             tag_type,
             variants,
             deny_unknown_fields,
+            bespoke_impls,
         } = enum_details;
 
         let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
-        // TODO this is a one-off for some useful traits
+        // TODO this is a one-off for some useful traits; this should move into
+        // the creation of the enum type.
         if variants
             .iter()
             .all(|variant| matches!(variant.details, VariantDetails::Simple))
@@ -528,64 +634,62 @@ impl TypeEntry {
 
         // ToString and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
-        let simple_enum_impl = (tag_type != &EnumTagType::Untagged
-            && variants
-                .iter()
-                .all(|variant| matches!(variant.details, VariantDetails::Simple)))
-        .then(|| {
-            let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
-                .iter()
-                .map(|variant| {
-                    let variant_name = format_ident!("{}", variant.name);
-                    let variant_str = match &variant.rename {
-                        Some(s) => s,
-                        None => &variant.name,
-                    };
-                    (variant_name, variant_str)
-                })
-                .unzip();
+        let simple_enum_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::AllSimpleVariants)
+            .then(|| {
+                let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
+                    .iter()
+                    .map(|variant| {
+                        let variant_name = format_ident!("{}", variant.name);
+                        let variant_str = match &variant.rename {
+                            Some(s) => s,
+                            None => &variant.name,
+                        };
+                        (variant_name, variant_str)
+                    })
+                    .unzip();
 
-            quote! {
-                impl ToString for #type_name {
-                    fn to_string(&self) -> String {
-                        match *self {
-                            #(Self::#match_variants => #match_strs.to_string(),)*
+                quote! {
+                    impl ToString for #type_name {
+                        fn to_string(&self) -> String {
+                            match *self {
+                                #(Self::#match_variants => #match_strs.to_string(),)*
+                            }
+                        }
+                    }
+                    impl std::str::FromStr for #type_name {
+                        type Err = &'static str;
+
+                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                            match value {
+                                #(#match_strs => Ok(Self::#match_variants),)*
+                                _ => Err("invalid value"),
+                            }
+                        }
+                    }
+                    impl std::convert::TryFrom<&str> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                            value.parse()
+                        }
+                    }
+                    impl std::convert::TryFrom<&String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                            value.parse()
+                        }
+                    }
+                    impl std::convert::TryFrom<String> for #type_name {
+                        type Error = &'static str;
+
+                        fn try_from(value: String) -> Result<Self, &'static str> {
+                            value.parse()
                         }
                     }
                 }
-                impl std::str::FromStr for #type_name {
-                    type Err = &'static str;
-
-                    fn from_str(value: &str) -> Result<Self, &'static str> {
-                        match value {
-                            #(#match_strs => Ok(Self::#match_variants),)*
-                            _ => Err("invalid value"),
-                        }
-                    }
-                }
-                impl std::convert::TryFrom<&str> for #type_name {
-                    type Error = &'static str;
-
-                    fn try_from(value: &str) -> Result<Self, &'static str> {
-                        value.parse()
-                    }
-                }
-                impl std::convert::TryFrom<&String> for #type_name {
-                    type Error = &'static str;
-
-                    fn try_from(value: &String) -> Result<Self, &'static str> {
-                        value.parse()
-                    }
-                }
-                impl std::convert::TryFrom<String> for #type_name {
-                    type Error = &'static str;
-
-                    fn try_from(value: String) -> Result<Self, &'static str> {
-                        value.parse()
-                    }
-                }
-            }
-        });
+            });
 
         let default_impl = default.as_ref().map(|value| {
             let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
@@ -598,8 +702,9 @@ impl TypeEntry {
             }
         });
 
-        let untagged_newtype_from_string_impl =
-            untagged_newtype_variants(type_space, tag_type, variants, "FromStr").then(|| {
+        let untagged_newtype_from_string_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::UntaggedFromStr)
+            .then(|| {
                 let variant_name = variants
                     .iter()
                     .map(|variant| format_ident!("{}", variant.name));
@@ -608,9 +713,11 @@ impl TypeEntry {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
 
-                        // Try to parse() into each variant.
-                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                        fn from_str(value: &str) ->
+                            Result<Self, &'static str>
+                        {
                             #(
+                                // Try to parse() into each variant.
                                 if let Ok(v) = value.parse() {
                                     Ok(Self::#variant_name(v))
                                 } else
@@ -650,8 +757,9 @@ impl TypeEntry {
                 }
             });
 
-        let untagged_newtype_to_string_impl =
-            untagged_newtype_variants(type_space, tag_type, variants, "Display").then(|| {
+        let untagged_newtype_to_string_impl = bespoke_impls
+            .contains(&TypeEntryEnumImpl::UntaggedDisplay)
+            .then(|| {
                 let variant_name = variants
                     .iter()
                     .map(|variant| format_ident!("{}", variant.name));
@@ -669,7 +777,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         );
 
@@ -775,7 +883,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         )
         .collect::<Vec<_>>();
@@ -912,17 +1020,35 @@ impl TypeEntry {
             | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
                 let not = matches!(constraints, TypeEntryNewtypeConstraints::EnumValue(_))
                     .then(|| quote! { ! });
+                // Note that string types with enumerated values are converted
+                // into simple enums rather than newtypes so we would not
+                // expect to see a string as the inner type here.
+                assert!(
+                    matches!(constraints, TypeEntryNewtypeConstraints::DenyValue(_))
+                        || !matches!(&sub_type.details, TypeEntryDetails::String)
+                );
+
+                // We're going to impl Deserialize so we can remove it
+                // from the set of derived impls.
+                derive_set.remove("Deserialize");
+
+                // TODO: if a user were to derive schemars::JsonSchema, it
+                // wouldn't be accurate.
 
                 let value_output = enum_values
                     .iter()
                     .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
+                // TODO if the sub_type is a string we could probably impl
+                // TryFrom<&str> as well and FromStr.
+                // TODO maybe we want to handle JsonSchema here
                 Some(quote! {
                     impl std::convert::TryFrom<#sub_type_name> for #type_name {
                         type Error = &'static str;
 
                         fn try_from(
                             value: #sub_type_name
-                        ) -> Result<Self, &'static str> {
+                        ) -> Result<Self, &'static str>
+                        {
                             if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
@@ -930,6 +1056,24 @@ impl TypeEntry {
                             } else {
                                 Ok(Self(value))
                             }
+                        }
+                    }
+
+                    impl<'de> serde::Deserialize<'de> for #type_name {
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> Result<Self, D::Error>
+                        where
+                            D: serde::Deserializer<'de>,
+                        {
+                            Self::try_from(
+                                #sub_type_name::deserialize(deserializer)?,
+                            )
+                            .map_err(|e| {
+                                <D::Error as serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
                         }
                     }
                 })
@@ -971,6 +1115,8 @@ impl TypeEntry {
                 // from the set of derived impls.
                 derive_set.remove("Deserialize");
 
+                // TODO: if a user were to derive schemars::JsonSchema, it
+                // wouldn't be accurate.
                 Some(quote! {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
@@ -1010,9 +1156,11 @@ impl TypeEntry {
                             value.parse()
                         }
                     }
+
                     impl<'de> serde::Deserialize<'de> for #type_name {
-                        fn deserialize<D>(deserializer: D) ->
-                            Result<Self, D::Error>
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> Result<Self, D::Error>
                         where
                             D: serde::Deserializer<'de>,
                         {
@@ -1029,8 +1177,7 @@ impl TypeEntry {
             }
         };
 
-        // If there are no constraints, let folks directly access the
-        // value.
+        // If there are no constraints, let consumers directly access the value.
         let vis = match constraints {
             TypeEntryNewtypeConstraints::None => Some(quote! {pub}),
             _ => None,
@@ -1049,7 +1196,7 @@ impl TypeEntry {
 
         let derives = strings_to_derives(
             derive_set,
-            &self.derives,
+            &self.extra_derives,
             &type_space.settings.extra_derives,
         );
 
@@ -1169,7 +1316,9 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
@@ -1212,7 +1361,7 @@ impl TypeEntry {
             | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
-            | TypeEntryDetails::BuiltIn(_) => {
+            | TypeEntryDetails::Native(_) => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
@@ -1279,7 +1428,9 @@ impl TypeEntry {
                 )
             }
             TypeEntryDetails::Boolean => "bool".to_string(),
-            TypeEntryDetails::BuiltIn(name)
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name: name, ..
+            })
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),
@@ -1312,7 +1463,7 @@ fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
     variants: &[Variant],
-    req_impl: &str,
+    req_impl: TypeSpaceImpl,
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
@@ -1326,7 +1477,7 @@ fn untagged_newtype_variants(
                 |type_id| {
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                     // ... and its type has the required impl
-                    type_entry.impls.contains(req_impl)
+                    type_entry.has_impl(type_space, req_impl)
                 },
             )
         })
