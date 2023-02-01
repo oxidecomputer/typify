@@ -69,7 +69,16 @@ impl TypeSpace {
                         enum_values,
                         ..schema.clone()
                     });
-                    self.convert_option(type_name, metadata, &ss)
+                    // An Option type won't usually get a name--unless one is
+                    // required (in which case we'll generated a newtype
+                    // wrapper to give it a name). In such a case, we invent a
+                    // new name for the inner type; otherwise, the inner type
+                    // can just have this name.
+                    let inner_type_name = match &type_name {
+                        Name::Required(name) => Name::Suggested(format!("{}Inner", name)),
+                        _ => type_name,
+                    };
+                    self.convert_option(inner_type_name, metadata, &ss)
                 } else {
                     // .. otherwise we try again with a simpler type.
                     let new_schema = SchemaObject {
@@ -131,7 +140,12 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                // One could imagine wanting to honor the format field in this
+                // case, perhaps to generate an impl From<T> for Uuid, say that
+                // allowed for fluid conversion from the enum to a type
+                // corresponding to the format string. But that seems uncommon
+                // enough to ignore for the moment.
+                format: _,
                 enum_values: Some(enum_values),
                 const_value: None,
                 subschemas: None,

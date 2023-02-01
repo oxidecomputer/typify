@@ -52,6 +52,18 @@
     },
     "Ipv6Net": {
       "type": "string"
+    },
+    "NullStringEnumWithUnknownFormat": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "a",
+        "b",
+        "c"
+      ],
+      "format": "?"
     }
   }
 }
