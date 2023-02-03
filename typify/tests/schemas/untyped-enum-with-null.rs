@@ -4,6 +4,11 @@ use serde::{Deserialize, Serialize};
 pub struct TestType {
     pub value: Option<TestTypeValue>,
 }
+impl From<&TestType> for TestType {
+    fn from(value: &TestType) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TestTypeValue {
     #[serde(rename = "start")]
@@ -12,6 +17,11 @@ pub enum TestTypeValue {
     Middle,
     #[serde(rename = "end")]
     End,
+}
+impl From<&TestTypeValue> for TestTypeValue {
+    fn from(value: &TestTypeValue) -> Self {
+        value.clone()
+    }
 }
 impl ToString for TestTypeValue {
     fn to_string(&self) -> String {

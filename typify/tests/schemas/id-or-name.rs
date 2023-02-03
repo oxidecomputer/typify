@@ -6,6 +6,11 @@ pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
 }
+impl From<&IdOrName> for IdOrName {
+    fn from(value: &IdOrName) -> Self {
+        value.clone()
+    }
+}
 impl std::str::FromStr for IdOrName {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
@@ -51,6 +56,16 @@ impl std::ops::Deref for Name {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
+    }
+}
+impl From<Name> for String {
+    fn from(value: Name) -> Self {
+        value.0
+    }
+}
+impl From<&Name> for Name {
+    fn from(value: &Name) -> Self {
+        value.clone()
     }
 }
 impl std::str::FromStr for Name {

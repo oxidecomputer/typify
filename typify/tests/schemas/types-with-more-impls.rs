@@ -8,6 +8,16 @@ impl std::ops::Deref for PatternString {
         &self.0
     }
 }
+impl From<PatternString> for String {
+    fn from(value: PatternString) -> Self {
+        value.0
+    }
+}
+impl From<&PatternString> for PatternString {
+    fn from(value: &PatternString) -> Self {
+        value.clone()
+    }
+}
 impl std::str::FromStr for PatternString {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
@@ -51,6 +61,16 @@ impl std::ops::Deref for Sub10Primes {
     type Target = u32;
     fn deref(&self) -> &u32 {
         &self.0
+    }
+}
+impl From<Sub10Primes> for u32 {
+    fn from(value: Sub10Primes) -> Self {
+        value.0
+    }
+}
+impl From<&Sub10Primes> for Sub10Primes {
+    fn from(value: &Sub10Primes) -> Self {
+        value.clone()
     }
 }
 impl std::convert::TryFrom<u32> for Sub10Primes {

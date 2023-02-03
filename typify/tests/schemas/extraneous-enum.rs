@@ -5,12 +5,22 @@ pub struct LetterBox {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub letter: Option<LetterBoxLetter>,
 }
+impl From<&LetterBox> for LetterBox {
+    fn from(value: &LetterBox) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum LetterBoxLetter {
     #[serde(rename = "a")]
     A,
     #[serde(rename = "b")]
     B,
+}
+impl From<&LetterBoxLetter> for LetterBoxLetter {
+    fn from(value: &LetterBoxLetter) -> Self {
+        value.clone()
+    }
 }
 impl ToString for LetterBoxLetter {
     fn to_string(&self) -> String {

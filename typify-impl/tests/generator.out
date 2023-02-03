@@ -5,6 +5,11 @@ mod types {
     pub struct AllTheTraits {
         pub ok: String,
     }
+    impl From<&AllTheTraits> for AllTheTraits {
+        fn from(value: &AllTheTraits) -> Self {
+            value.clone()
+        }
+    }
     impl AllTheTraits {
         pub fn builder() -> builder::AllTheTraits {
             builder::AllTheTraits::default()
@@ -14,6 +19,11 @@ mod types {
     pub struct CompoundType {
         pub value1: String,
         pub value2: u64,
+    }
+    impl From<&CompoundType> for CompoundType {
+        fn from(value: &CompoundType) -> Self {
+            value.clone()
+        }
     }
     impl CompoundType {
         pub fn builder() -> builder::CompoundType {
@@ -27,6 +37,11 @@ mod types {
         #[serde(default = "defaults::pair_b")]
         pub b: StringEnum,
     }
+    impl From<&Pair> for Pair {
+        fn from(value: &Pair) -> Self {
+            value.clone()
+        }
+    }
     impl Pair {
         pub fn builder() -> builder::Pair {
             builder::Pair::default()
@@ -39,6 +54,11 @@ mod types {
         One,
         Two,
         BuckleMyShoe,
+    }
+    impl From<&StringEnum> for StringEnum {
+        fn from(value: &StringEnum) -> Self {
+            value.clone()
+        }
     }
     impl ToString for StringEnum {
         fn to_string(&self) -> String {

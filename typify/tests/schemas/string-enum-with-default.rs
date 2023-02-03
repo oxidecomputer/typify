@@ -9,6 +9,11 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
+impl From<&TestEnum> for TestEnum {
+    fn from(value: &TestEnum) -> Self {
+        value.clone()
+    }
+}
 impl ToString for TestEnum {
     fn to_string(&self) -> String {
         match *self {
