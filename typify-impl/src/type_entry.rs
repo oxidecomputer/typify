@@ -502,12 +502,35 @@ impl TypeEntry {
                 (_, TypeSpaceImpl::Default) => details.default.is_some(),
                 (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::FromStr) => true,
                 (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::Display) => true,
+                (TypeEntryNewtypeConstraints::None, _) => {
+                    // TODO this is a lucky kludge that will need to be removed
+                    // once we have proper handling of reference cycles (i.e.
+                    // as opposed to containment cycles... which we also do not
+                    // handle correctly). In particular output_newtype calls
+                    // this to determine if it should produce a FromStr impl.
+                    // This implementation could be infinitely recursive for a
+                    // type such as this:
+                    //     struct A(Box<A>);
+                    // While this type is useless and unusable, we do--
+                    // basically--support and test this. On such a type, if one
+                    // were to ask `ty.has_impl(TypeSpaceImpl::Default)` it
+                    // would be infinitely recursive. Fortunately the type
+                    // doesn't occur in the wild (we hope) and generation
+                    // doesn't rely on that particular query.
+
+                    let type_entry = type_space.id_to_entry.get(&details.type_id).unwrap();
+                    type_entry.has_impl(type_space, impl_name)
+                }
                 _ => false,
             },
             TypeEntryDetails::Native(details) => details.impls.contains(&impl_name),
             TypeEntryDetails::Box(type_id) => {
-                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                type_entry.has_impl(type_space, impl_name)
+                if impl_name == TypeSpaceImpl::Default {
+                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    type_entry.has_impl(type_space, impl_name)
+                } else {
+                    false
+                }
             }
 
             TypeEntryDetails::Unit
@@ -789,6 +812,12 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
+            impl From<&#type_name> for #type_name {
+                fn from(value: &#type_name) -> Self {
+                    value.clone()
+                }
+            }
+
             #simple_enum_impl
             #default_impl
             #untagged_newtype_from_string_impl
@@ -902,6 +931,12 @@ impl TypeEntry {
                         pub #prop_name: #prop_type,
                     )*
                 }
+
+                impl From<&#type_name> for #type_name {
+                    fn from(value: &#type_name) -> Self {
+                        value.clone()
+                    }
+                }
             },
         );
 
@@ -1010,11 +1045,100 @@ impl TypeEntry {
         });
 
         let type_name = format_ident!("{}", name);
-        let sub_type = type_space.id_to_entry.get(type_id).unwrap();
-        let sub_type_name = sub_type.type_ident(type_space, &None);
+        let inner_type = type_space.id_to_entry.get(type_id).unwrap();
+        let inner_type_name = inner_type.type_ident(type_space, &None);
 
         let constraint_impl = match constraints {
-            TypeEntryNewtypeConstraints::None => None,
+            // In the unconstrained case we proxy impls through the inner type.
+            TypeEntryNewtypeConstraints::None => {
+                let is_str = matches!(inner_type.details, TypeEntryDetails::String);
+
+                let str_impl = is_str.then(|| {
+                    quote! {
+                        impl std::str::FromStr for #type_name {
+                            type Err = std::convert::Infallible;
+
+                            fn from_str(value: &str) ->
+                                Result<Self, Self::Err>
+                            {
+                                Ok(Self(value.to_string()))
+                            }
+                        }
+                    }
+                });
+
+                // TODO see the comment in has_impl related to this case.
+                let from_str_impl = (inner_type.has_impl(type_space, TypeSpaceImpl::FromStr)
+                    && !is_str)
+                    .then(|| {
+                        quote! {
+                            impl std::str::FromStr for #type_name {
+                                type Err = <#inner_type_name as
+                                    std::str::FromStr>::Err;
+
+                                fn from_str(value: &str) ->
+                                    Result<Self, Self::Err>
+                                {
+                                    Ok(Self(value.parse()?))
+                                }
+                            }
+                            impl std::convert::TryFrom<&str> for #type_name {
+                                type Error = <#inner_type_name as
+                                    std::str::FromStr>::Err;
+
+                                fn try_from(value: &str) ->
+                                    Result<Self, Self::Error>
+                                {
+                                    value.parse()
+                                }
+                            }
+                            impl std::convert::TryFrom<&String> for #type_name {
+                                type Error = <#inner_type_name as
+                                    std::str::FromStr>::Err;
+
+                                fn try_from(value: &String) ->
+                                    Result<Self, Self::Error>
+                                {
+                                    value.parse()
+                                }
+                            }
+                            impl std::convert::TryFrom<String> for #type_name {
+                                type Error = <#inner_type_name as
+                                    std::str::FromStr>::Err;
+
+                                fn try_from(value: String) ->
+                                    Result<Self, Self::Error>
+                                {
+                                    value.parse()
+                                }
+                            }
+                        }
+                    });
+
+                let display_impl = inner_type
+                    .has_impl(type_space, TypeSpaceImpl::Display)
+                    .then(|| {
+                        quote! {
+                            impl ToString for #type_name {
+                                fn to_string(&self) -> String {
+                                    self.0.to_string()
+                                }
+                            }
+                        }
+                    });
+
+                quote! {
+                    impl From<#inner_type_name> for #type_name {
+                        fn from(value: #inner_type_name) -> Self {
+                            Self(value)
+                        }
+                    }
+
+                    #str_impl
+                    #from_str_impl
+                    #display_impl
+                }
+            }
 
             TypeEntryNewtypeConstraints::DenyValue(enum_values)
             | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
@@ -1025,7 +1149,7 @@ impl TypeEntry {
                 // expect to see a string as the inner type here.
                 assert!(
                     matches!(constraints, TypeEntryNewtypeConstraints::DenyValue(_))
-                        || !matches!(&sub_type.details, TypeEntryDetails::String)
+                        || !matches!(&inner_type.details, TypeEntryDetails::String)
                 );
 
                 // We're going to impl Deserialize so we can remove it
@@ -1037,16 +1161,17 @@ impl TypeEntry {
 
                 let value_output = enum_values
                     .iter()
-                    .map(|value| sub_type.output_value(type_space, &value.0, &quote! {}));
+                    .map(|value| inner_type.output_value(type_space, &value.0, &quote! {}));
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well and FromStr.
                 // TODO maybe we want to handle JsonSchema here
-                Some(quote! {
-                    impl std::convert::TryFrom<#sub_type_name> for #type_name {
+                quote! {
+                    // This is effectively the constructor for this type.
+                    impl std::convert::TryFrom<#inner_type_name> for #type_name {
                         type Error = &'static str;
 
                         fn try_from(
-                            value: #sub_type_name
+                            value: #inner_type_name
                         ) -> Result<Self, &'static str>
                         {
                             if #not [
@@ -1067,7 +1192,7 @@ impl TypeEntry {
                             D: serde::Deserializer<'de>,
                         {
                             Self::try_from(
-                                #sub_type_name::deserialize(deserializer)?,
+                                #inner_type_name::deserialize(deserializer)?,
                             )
                             .map_err(|e| {
                                 <D::Error as serde::de::Error>::custom(
@@ -1076,7 +1201,7 @@ impl TypeEntry {
                             })
                         }
                     }
-                })
+                }
             }
 
             TypeEntryNewtypeConstraints::String {
@@ -1117,7 +1242,7 @@ impl TypeEntry {
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
-                Some(quote! {
+                quote! {
                     impl std::str::FromStr for #type_name {
                         type Err = &'static str;
 
@@ -1173,7 +1298,7 @@ impl TypeEntry {
                                 })
                         }
                     }
-                })
+                }
             }
         };
 
@@ -1204,12 +1329,24 @@ impl TypeEntry {
             #doc
             #[derive(#(#derives),*)]
             #serde
-            pub struct #type_name(#vis #sub_type_name);
+            pub struct #type_name(#vis #inner_type_name);
 
             impl std::ops::Deref for #type_name {
-                type Target = #sub_type_name;
-                fn deref(&self) -> &#sub_type_name {
+                type Target = #inner_type_name;
+                fn deref(&self) -> &#inner_type_name {
                     &self.0
+                }
+            }
+
+            impl From<#type_name> for #inner_type_name {
+                fn from(value: #type_name) -> Self {
+                    value.0
+                }
+            }
+
+            impl From<&#type_name> for #type_name {
+                fn from(value: &#type_name) -> Self {
+                    value.clone()
                 }
             }
 

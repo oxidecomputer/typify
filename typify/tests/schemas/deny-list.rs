@@ -5,12 +5,27 @@ pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
+impl From<&TestType> for TestType {
+    fn from(value: &TestType) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Debug, Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
+    }
+}
+impl From<TestTypeWhereNot> for String {
+    fn from(value: TestTypeWhereNot) -> Self {
+        value.0
+    }
+}
+impl From<&TestTypeWhereNot> for TestTypeWhereNot {
+    fn from(value: &TestTypeWhereNot) -> Self {
+        value.clone()
     }
 }
 impl std::convert::TryFrom<String> for TestTypeWhereNot {
@@ -38,6 +53,16 @@ impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
+    }
+}
+impl From<TestTypeWhyNot> for String {
+    fn from(value: TestTypeWhyNot) -> Self {
+        value.0
+    }
+}
+impl From<&TestTypeWhyNot> for TestTypeWhyNot {
+    fn from(value: &TestTypeWhyNot) -> Self {
+        value.clone()
     }
 }
 impl std::convert::TryFrom<String> for TestTypeWhyNot {

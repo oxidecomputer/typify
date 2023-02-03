@@ -11,7 +11,8 @@ use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{
-    TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype, VariantDetails, WrappedValue,
+    StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
+    VariantDetails, WrappedValue,
 };
 
 use crate::util::{sanitize, Case};
@@ -89,6 +90,13 @@ pub enum TypeEnumVariant<'a> {
 /// Struct type details.
 pub struct TypeStruct<'a> {
     details: &'a type_entry::TypeEntryStruct,
+}
+
+pub struct TypeStructPropInfo<'a> {
+    pub name: &'a str,
+    pub description: Option<&'a str>,
+    pub required: bool,
+    pub type_id: TypeId,
 }
 
 /// Newtype details.
@@ -921,6 +929,18 @@ impl<'a> TypeStruct<'a> {
             .properties
             .iter()
             .map(move |prop| (prop.name.as_str(), prop.type_id.clone()))
+    }
+
+    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo> {
+        self.details
+            .properties
+            .iter()
+            .map(move |prop| TypeStructPropInfo {
+                name: prop.name.as_str(),
+                description: prop.description.as_deref(),
+                required: matches!(&prop.state, StructPropertyState::Required),
+                type_id: prop.type_id.clone(),
+            })
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
@@ -1611,6 +1611,12 @@ mod tests {
                 Ok(u32),
                 Err(String),
             }
+
+            impl From<&ResultX> for ResultX {
+                fn from(value: &ResultX) -> Self {
+                    value.clone()
+                }
+            }
         };
         assert_eq!(actual.to_string(), expected.to_string());
     }
@@ -1637,6 +1643,12 @@ mod tests {
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
+            }
+
+            impl From<&ResultX> for ResultX {
+                fn from(value: &ResultX) -> Self {
+                    value.clone()
+                }
             }
         };
         assert_eq!(actual.to_string(), expected.to_string());

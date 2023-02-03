@@ -7,6 +7,11 @@ pub struct TestBed {
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
+impl From<&TestBed> for TestBed {
+    fn from(value: &TestBed) -> Self {
+        value.clone()
+    }
+}
 mod defaults {
     pub(super) fn test_bed_any() -> Vec<serde_json::Value> {
         vec![
