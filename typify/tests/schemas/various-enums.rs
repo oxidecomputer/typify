@@ -125,6 +125,21 @@ impl std::ops::Deref for NullStringEnumWithUnknownFormat {
         &self.0
     }
 }
+impl From<NullStringEnumWithUnknownFormat> for Option<NullStringEnumWithUnknownFormatInner> {
+    fn from(value: NullStringEnumWithUnknownFormat) -> Self {
+        value.0
+    }
+}
+impl From<&NullStringEnumWithUnknownFormat> for NullStringEnumWithUnknownFormat {
+    fn from(value: &NullStringEnumWithUnknownFormat) -> Self {
+        value.clone()
+    }
+}
+impl From<Option<NullStringEnumWithUnknownFormatInner>> for NullStringEnumWithUnknownFormat {
+    fn from(value: Option<NullStringEnumWithUnknownFormatInner>) -> Self {
+        Self(value)
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "a")]
@@ -133,6 +148,11 @@ pub enum NullStringEnumWithUnknownFormatInner {
     B,
     #[serde(rename = "c")]
     C,
+}
+impl From<&NullStringEnumWithUnknownFormatInner> for NullStringEnumWithUnknownFormatInner {
+    fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
+        value.clone()
+    }
 }
 impl ToString for NullStringEnumWithUnknownFormatInner {
     fn to_string(&self) -> String {
