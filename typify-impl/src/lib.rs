@@ -628,24 +628,7 @@ impl TypeSpace {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        // let (mut type_entry, metadata) = self.convert_schema(name, schema)?;
-        let (mut type_entry, metadata) = self.convert_schema(name, schema).unwrap();
-        if let Some(metadata) = metadata {
-            match &mut type_entry.details {
-                TypeEntryDetails::Enum(details) => {
-                    details.default = metadata.default.clone().map(WrappedValue::new)
-                }
-                TypeEntryDetails::Struct(details) => {
-                    details.default = metadata.default.clone().map(WrappedValue::new)
-                }
-                TypeEntryDetails::Newtype(details) => {
-                    details.default = metadata.default.clone().map(WrappedValue::new)
-                }
-                _ => (),
-            }
-        }
-
-        let type_id = self.assign_type(type_entry);
+        let (type_id, _) = self.id_for_schema(name, schema)?;
 
         // Finalize all created types.
         for index in base_id..self.next_id {
@@ -778,8 +761,23 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
-        let (ty, metadata) = self.convert_schema(type_name, schema)?;
-        let type_id = self.assign_type(ty);
+        let (mut type_entry, metadata) = self.convert_schema(type_name, schema)?;
+        if let Some(metadata) = metadata {
+            let default = metadata.default.clone().map(WrappedValue::new);
+            match &mut type_entry.details {
+                TypeEntryDetails::Enum(details) => {
+                    details.default = default;
+                }
+                TypeEntryDetails::Struct(details) => {
+                    details.default = default;
+                }
+                TypeEntryDetails::Newtype(details) => {
+                    details.default = default;
+                }
+                _ => (),
+            }
+        }
+        let type_id = self.assign_type(type_entry);
         Ok((type_id, metadata))
     }
 

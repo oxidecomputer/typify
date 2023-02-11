@@ -70,6 +70,11 @@ impl From<&AggregateTransformDrop> for AggregateTransformDrop {
         value.clone()
     }
 }
+impl Default for AggregateTransformDrop {
+    fn default() -> Self {
+        AggregateTransformDrop::Variant0(true)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum AggregateTransformFields {
@@ -1729,6 +1734,11 @@ impl std::convert::TryFrom<String> for AutosizeVariant0 {
         value.parse()
     }
 }
+impl Default for AutosizeVariant0 {
+    fn default() -> Self {
+        AutosizeVariant0::Pad
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AutosizeVariant1Contains {
     #[serde(rename = "content")]
@@ -1835,6 +1845,11 @@ impl std::convert::TryFrom<String> for AutosizeVariant1Type {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
+    }
+}
+impl Default for AutosizeVariant1Type {
+    fn default() -> Self {
+        AutosizeVariant1Type::Pad
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -3915,6 +3930,14 @@ impl From<&BinTransformAs> for BinTransformAs {
         value.clone()
     }
 }
+impl Default for BinTransformAs {
+    fn default() -> Self {
+        BinTransformAs::Variant0(
+            BinTransformAsVariant0::Variant0("bin0".to_string()),
+            BinTransformAsVariant0::Variant0("bin1".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BinTransformAsVariant0 {
@@ -3937,6 +3960,11 @@ impl From<&BinTransformBase> for BinTransformBase {
         value.clone()
     }
 }
+impl Default for BinTransformBase {
+    fn default() -> Self {
+        BinTransformBase::Variant0(10_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BinTransformDivide {
@@ -3946,6 +3974,14 @@ pub enum BinTransformDivide {
 impl From<&BinTransformDivide> for BinTransformDivide {
     fn from(value: &BinTransformDivide) -> Self {
         value.clone()
+    }
+}
+impl Default for BinTransformDivide {
+    fn default() -> Self {
+        BinTransformDivide::Variant0(vec![
+            BinTransformDivideVariant0Item::Variant0(5_f64),
+            BinTransformDivideVariant0Item::Variant0(2_f64),
+        ])
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -4004,6 +4040,11 @@ impl From<&BinTransformInterval> for BinTransformInterval {
         value.clone()
     }
 }
+impl Default for BinTransformInterval {
+    fn default() -> Self {
+        BinTransformInterval::Variant0(true)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BinTransformMaxbins {
@@ -4013,6 +4054,11 @@ pub enum BinTransformMaxbins {
 impl From<&BinTransformMaxbins> for BinTransformMaxbins {
     fn from(value: &BinTransformMaxbins) -> Self {
         value.clone()
+    }
+}
+impl Default for BinTransformMaxbins {
+    fn default() -> Self {
+        BinTransformMaxbins::Variant0(20_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -4046,6 +4092,11 @@ pub enum BinTransformNice {
 impl From<&BinTransformNice> for BinTransformNice {
     fn from(value: &BinTransformNice) -> Self {
         value.clone()
+    }
+}
+impl Default for BinTransformNice {
+    fn default() -> Self {
+        BinTransformNice::Variant0(true)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -5418,6 +5469,11 @@ impl From<&ContourTransformSmooth> for ContourTransformSmooth {
         value.clone()
     }
 }
+impl Default for ContourTransformSmooth {
+    fn default() -> Self {
+        ContourTransformSmooth::Variant0(true)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ContourTransformThresholds {
@@ -5578,6 +5634,14 @@ impl From<&CountpatternTransformAs> for CountpatternTransformAs {
         value.clone()
     }
 }
+impl Default for CountpatternTransformAs {
+    fn default() -> Self {
+        CountpatternTransformAs::Variant0(
+            CountpatternTransformAsVariant0::Variant0("text".to_string()),
+            CountpatternTransformAsVariant0::Variant0("count".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CountpatternTransformAsVariant0 {
@@ -5598,6 +5662,11 @@ pub enum CountpatternTransformCase {
 impl From<&CountpatternTransformCase> for CountpatternTransformCase {
     fn from(value: &CountpatternTransformCase) -> Self {
         value.clone()
+    }
+}
+impl Default for CountpatternTransformCase {
+    fn default() -> Self {
+        CountpatternTransformCase::Variant0(CountpatternTransformCaseVariant0::Mixed)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -5673,6 +5742,11 @@ pub enum CountpatternTransformPattern {
 impl From<&CountpatternTransformPattern> for CountpatternTransformPattern {
     fn from(value: &CountpatternTransformPattern) -> Self {
         value.clone()
+    }
+}
+impl Default for CountpatternTransformPattern {
+    fn default() -> Self {
+        CountpatternTransformPattern::Variant0("[\\w\"]+".to_string())
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -5756,6 +5830,14 @@ pub enum CrossTransformAs {
 impl From<&CrossTransformAs> for CrossTransformAs {
     fn from(value: &CrossTransformAs) -> Self {
         value.clone()
+    }
+}
+impl Default for CrossTransformAs {
+    fn default() -> Self {
+        CrossTransformAs::Variant0(
+            CrossTransformAsVariant0::Variant0("a".to_string()),
+            CrossTransformAsVariant0::Variant0("b".to_string()),
+        )
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -8782,6 +8864,14 @@ impl From<&DensityTransformAs> for DensityTransformAs {
         value.clone()
     }
 }
+impl Default for DensityTransformAs {
+    fn default() -> Self {
+        DensityTransformAs::Variant0(vec![
+            DensityTransformAsVariant0Item::Variant0("value".to_string()),
+            DensityTransformAsVariant0Item::Variant0("density".to_string()),
+        ])
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformAsVariant0Item {
@@ -8908,6 +8998,11 @@ impl From<&DensityTransformDistributionVariant0Stdev>
         value.clone()
     }
 }
+impl Default for DensityTransformDistributionVariant0Stdev {
+    fn default() -> Self {
+        DensityTransformDistributionVariant0Stdev::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DensityTransformDistributionVariant1Function {
     #[serde(rename = "lognormal")]
@@ -8978,6 +9073,11 @@ impl From<&DensityTransformDistributionVariant1Stdev>
         value.clone()
     }
 }
+impl Default for DensityTransformDistributionVariant1Stdev {
+    fn default() -> Self {
+        DensityTransformDistributionVariant1Stdev::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DensityTransformDistributionVariant2Function {
     #[serde(rename = "uniform")]
@@ -9033,6 +9133,11 @@ pub enum DensityTransformDistributionVariant2Max {
 impl From<&DensityTransformDistributionVariant2Max> for DensityTransformDistributionVariant2Max {
     fn from(value: &DensityTransformDistributionVariant2Max) -> Self {
         value.clone()
+    }
+}
+impl Default for DensityTransformDistributionVariant2Max {
+    fn default() -> Self {
+        DensityTransformDistributionVariant2Max::Variant0(1_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -9240,6 +9345,11 @@ impl From<&DensityTransformMaxsteps> for DensityTransformMaxsteps {
         value.clone()
     }
 }
+impl Default for DensityTransformMaxsteps {
+    fn default() -> Self {
+        DensityTransformMaxsteps::Variant0(200_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformMethod {
@@ -9251,6 +9361,11 @@ impl From<&DensityTransformMethod> for DensityTransformMethod {
         value.clone()
     }
 }
+impl Default for DensityTransformMethod {
+    fn default() -> Self {
+        DensityTransformMethod::Variant0("pdf".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformMinsteps {
@@ -9260,6 +9375,11 @@ pub enum DensityTransformMinsteps {
 impl From<&DensityTransformMinsteps> for DensityTransformMinsteps {
     fn from(value: &DensityTransformMinsteps) -> Self {
         value.clone()
+    }
+}
+impl Default for DensityTransformMinsteps {
+    fn default() -> Self {
+        DensityTransformMinsteps::Variant0(25_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -9731,6 +9851,11 @@ pub enum DotbinTransformAs {
 impl From<&DotbinTransformAs> for DotbinTransformAs {
     fn from(value: &DotbinTransformAs) -> Self {
         value.clone()
+    }
+}
+impl Default for DotbinTransformAs {
+    fn default() -> Self {
+        DotbinTransformAs::Variant0("bin".to_string())
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -10543,6 +10668,14 @@ impl From<&FoldTransformAs> for FoldTransformAs {
         value.clone()
     }
 }
+impl Default for FoldTransformAs {
+    fn default() -> Self {
+        FoldTransformAs::Variant0(
+            FoldTransformAsVariant0::Variant0("key".to_string()),
+            FoldTransformAsVariant0::Variant0("value".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum FoldTransformAsVariant0 {
@@ -10947,6 +11080,11 @@ impl From<&ForceTransformAlpha> for ForceTransformAlpha {
         value.clone()
     }
 }
+impl Default for ForceTransformAlpha {
+    fn default() -> Self {
+        ForceTransformAlpha::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformAlphaMin {
@@ -10956,6 +11094,11 @@ pub enum ForceTransformAlphaMin {
 impl From<&ForceTransformAlphaMin> for ForceTransformAlphaMin {
     fn from(value: &ForceTransformAlphaMin) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformAlphaMin {
+    fn default() -> Self {
+        ForceTransformAlphaMin::Variant0(0.001_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -10978,6 +11121,16 @@ pub enum ForceTransformAs {
 impl From<&ForceTransformAs> for ForceTransformAs {
     fn from(value: &ForceTransformAs) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformAs {
+    fn default() -> Self {
+        ForceTransformAs::Variant0(vec![
+            ForceTransformAsVariant0Item::Variant0("x".to_string()),
+            ForceTransformAsVariant0Item::Variant0("y".to_string()),
+            ForceTransformAsVariant0Item::Variant0("vx".to_string()),
+            ForceTransformAsVariant0Item::Variant0("vy".to_string()),
+        ])
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11184,6 +11337,11 @@ impl From<&ForceTransformForcesItemVariant1Iterations>
         value.clone()
     }
 }
+impl Default for ForceTransformForcesItemVariant1Iterations {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant1Iterations::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant1Radius {
@@ -11206,6 +11364,11 @@ pub enum ForceTransformForcesItemVariant1Strength {
 impl From<&ForceTransformForcesItemVariant1Strength> for ForceTransformForcesItemVariant1Strength {
     fn from(value: &ForceTransformForcesItemVariant1Strength) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemVariant1Strength {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant1Strength::Variant0(0.7_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11232,6 +11395,11 @@ impl From<&ForceTransformForcesItemVariant2DistanceMin>
 {
     fn from(value: &ForceTransformForcesItemVariant2DistanceMin) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemVariant2DistanceMin {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant2DistanceMin::Variant0(1_f64)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -11289,6 +11457,11 @@ impl From<&ForceTransformForcesItemVariant2Strength> for ForceTransformForcesIte
         value.clone()
     }
 }
+impl Default for ForceTransformForcesItemVariant2Strength {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant2Strength::Variant0(-30_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant2Theta {
@@ -11298,6 +11471,11 @@ pub enum ForceTransformForcesItemVariant2Theta {
 impl From<&ForceTransformForcesItemVariant2Theta> for ForceTransformForcesItemVariant2Theta {
     fn from(value: &ForceTransformForcesItemVariant2Theta) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemVariant2Theta {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant2Theta::Variant0(0.9_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11311,6 +11489,11 @@ pub enum ForceTransformForcesItemVariant3Distance {
 impl From<&ForceTransformForcesItemVariant3Distance> for ForceTransformForcesItemVariant3Distance {
     fn from(value: &ForceTransformForcesItemVariant3Distance) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemVariant3Distance {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant3Distance::Variant0(30_f64)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -11382,6 +11565,11 @@ impl From<&ForceTransformForcesItemVariant3Iterations>
         value.clone()
     }
 }
+impl Default for ForceTransformForcesItemVariant3Iterations {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant3Iterations::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant3Strength {
@@ -11448,6 +11636,11 @@ pub enum ForceTransformForcesItemVariant4Strength {
 impl From<&ForceTransformForcesItemVariant4Strength> for ForceTransformForcesItemVariant4Strength {
     fn from(value: &ForceTransformForcesItemVariant4Strength) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemVariant4Strength {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant4Strength::Variant0(0.1_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11517,6 +11710,11 @@ impl From<&ForceTransformForcesItemVariant5Strength> for ForceTransformForcesIte
         value.clone()
     }
 }
+impl Default for ForceTransformForcesItemVariant5Strength {
+    fn default() -> Self {
+        ForceTransformForcesItemVariant5Strength::Variant0(0.1_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ForceTransformForcesItemVariant5Y {
@@ -11538,6 +11736,11 @@ pub enum ForceTransformIterations {
 impl From<&ForceTransformIterations> for ForceTransformIterations {
     fn from(value: &ForceTransformIterations) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformIterations {
+    fn default() -> Self {
+        ForceTransformIterations::Variant0(300_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11615,6 +11818,11 @@ pub enum ForceTransformVelocityDecay {
 impl From<&ForceTransformVelocityDecay> for ForceTransformVelocityDecay {
     fn from(value: &ForceTransformVelocityDecay) -> Self {
         value.clone()
+    }
+}
+impl Default for ForceTransformVelocityDecay {
+    fn default() -> Self {
+        ForceTransformVelocityDecay::Variant0(0.4_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -11847,6 +12055,11 @@ impl From<&GeopathTransformAs> for GeopathTransformAs {
         value.clone()
     }
 }
+impl Default for GeopathTransformAs {
+    fn default() -> Self {
+        GeopathTransformAs::Variant0("path".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GeopathTransformField {
@@ -11942,6 +12155,14 @@ pub enum GeopointTransformAs {
 impl From<&GeopointTransformAs> for GeopointTransformAs {
     fn from(value: &GeopointTransformAs) -> Self {
         value.clone()
+    }
+}
+impl Default for GeopointTransformAs {
+    fn default() -> Self {
+        GeopointTransformAs::Variant0(
+            GeopointTransformAsVariant0::Variant0("x".to_string()),
+            GeopointTransformAsVariant0::Variant0("y".to_string()),
+        )
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12061,6 +12282,11 @@ impl From<&GeoshapeTransformAs> for GeoshapeTransformAs {
         value.clone()
     }
 }
+impl Default for GeoshapeTransformAs {
+    fn default() -> Self {
+        GeoshapeTransformAs::Variant0("shape".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GeoshapeTransformField {
@@ -12071,6 +12297,13 @@ pub enum GeoshapeTransformField {
 impl From<&GeoshapeTransformField> for GeoshapeTransformField {
     fn from(value: &GeoshapeTransformField) -> Self {
         value.clone()
+    }
+}
+impl Default for GeoshapeTransformField {
+    fn default() -> Self {
+        GeoshapeTransformField::ScaleField(ScaleField(StringOrSignal::Variant0(
+            "datum".to_string(),
+        )))
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12249,6 +12482,11 @@ impl From<&GraticuleTransformPrecision> for GraticuleTransformPrecision {
         value.clone()
     }
 }
+impl Default for GraticuleTransformPrecision {
+    fn default() -> Self {
+        GraticuleTransformPrecision::Variant0(2.5_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformStep {
@@ -12277,6 +12515,14 @@ impl From<&GraticuleTransformStepMajor> for GraticuleTransformStepMajor {
         value.clone()
     }
 }
+impl Default for GraticuleTransformStepMajor {
+    fn default() -> Self {
+        GraticuleTransformStepMajor::Variant0(
+            GraticuleTransformStepMajorVariant0::Variant0(90_f64),
+            GraticuleTransformStepMajorVariant0::Variant0(360_f64),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformStepMajorVariant0 {
@@ -12300,6 +12546,14 @@ pub enum GraticuleTransformStepMinor {
 impl From<&GraticuleTransformStepMinor> for GraticuleTransformStepMinor {
     fn from(value: &GraticuleTransformStepMinor) -> Self {
         value.clone()
+    }
+}
+impl Default for GraticuleTransformStepMinor {
+    fn default() -> Self {
+        GraticuleTransformStepMinor::Variant0(
+            GraticuleTransformStepMinorVariant0::Variant0(10_f64),
+            GraticuleTransformStepMinorVariant0::Variant0(10_f64),
+        )
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12417,6 +12671,11 @@ impl From<&HeatmapTransformAs> for HeatmapTransformAs {
         value.clone()
     }
 }
+impl Default for HeatmapTransformAs {
+    fn default() -> Self {
+        HeatmapTransformAs::Variant0("image".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum HeatmapTransformColor {
@@ -12464,6 +12723,11 @@ pub enum HeatmapTransformResolve {
 impl From<&HeatmapTransformResolve> for HeatmapTransformResolve {
     fn from(value: &HeatmapTransformResolve) -> Self {
         value.clone()
+    }
+}
+impl Default for HeatmapTransformResolve {
+    fn default() -> Self {
+        HeatmapTransformResolve::Variant0(HeatmapTransformResolveVariant0::Independent)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -12720,6 +12984,11 @@ impl From<&ImputeTransformMethod> for ImputeTransformMethod {
         value.clone()
     }
 }
+impl Default for ImputeTransformMethod {
+    fn default() -> Self {
+        ImputeTransformMethod::Variant0(ImputeTransformMethodVariant0::Value)
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ImputeTransformMethodVariant0 {
     #[serde(rename = "value")]
@@ -12869,6 +13138,11 @@ impl From<&IsocontourTransformAs> for IsocontourTransformAs {
         value.clone()
     }
 }
+impl Default for IsocontourTransformAs {
+    fn default() -> Self {
+        IsocontourTransformAs::Variant0("contour".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IsocontourTransformField {
@@ -12912,6 +13186,11 @@ pub enum IsocontourTransformResolve {
 impl From<&IsocontourTransformResolve> for IsocontourTransformResolve {
     fn from(value: &IsocontourTransformResolve) -> Self {
         value.clone()
+    }
+}
+impl Default for IsocontourTransformResolve {
+    fn default() -> Self {
+        IsocontourTransformResolve::Variant0(IsocontourTransformResolveVariant0::Independent)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -12984,6 +13263,11 @@ pub enum IsocontourTransformSmooth {
 impl From<&IsocontourTransformSmooth> for IsocontourTransformSmooth {
     fn from(value: &IsocontourTransformSmooth) -> Self {
         value.clone()
+    }
+}
+impl Default for IsocontourTransformSmooth {
+    fn default() -> Self {
+        IsocontourTransformSmooth::Variant0(true)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -13087,6 +13371,11 @@ pub enum IsocontourTransformZero {
 impl From<&IsocontourTransformZero> for IsocontourTransformZero {
     fn from(value: &IsocontourTransformZero) -> Self {
         value.clone()
+    }
+}
+impl Default for IsocontourTransformZero {
+    fn default() -> Self {
+        IsocontourTransformZero::Variant0(true)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -13439,6 +13728,11 @@ impl From<&Kde2dTransformAs> for Kde2dTransformAs {
         value.clone()
     }
 }
+impl Default for Kde2dTransformAs {
+    fn default() -> Self {
+        Kde2dTransformAs::Variant0("grid".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum Kde2dTransformBandwidth {
@@ -13656,6 +13950,14 @@ impl From<&KdeTransformAs> for KdeTransformAs {
         value.clone()
     }
 }
+impl Default for KdeTransformAs {
+    fn default() -> Self {
+        KdeTransformAs::Variant0(vec![
+            KdeTransformAsVariant0Item::Variant0("value".to_string()),
+            KdeTransformAsVariant0Item::Variant0("density".to_string()),
+        ])
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum KdeTransformAsVariant0Item {
@@ -13768,6 +14070,11 @@ impl From<&KdeTransformMaxsteps> for KdeTransformMaxsteps {
         value.clone()
     }
 }
+impl Default for KdeTransformMaxsteps {
+    fn default() -> Self {
+        KdeTransformMaxsteps::Variant0(200_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum KdeTransformMinsteps {
@@ -13779,6 +14086,11 @@ impl From<&KdeTransformMinsteps> for KdeTransformMinsteps {
         value.clone()
     }
 }
+impl Default for KdeTransformMinsteps {
+    fn default() -> Self {
+        KdeTransformMinsteps::Variant0(25_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum KdeTransformResolve {
@@ -13788,6 +14100,11 @@ pub enum KdeTransformResolve {
 impl From<&KdeTransformResolve> for KdeTransformResolve {
     fn from(value: &KdeTransformResolve) -> Self {
         value.clone()
+    }
+}
+impl Default for KdeTransformResolve {
+    fn default() -> Self {
+        KdeTransformResolve::Variant0(KdeTransformResolveVariant0::Independent)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -14008,6 +14325,20 @@ impl From<&LabelTransformAnchor> for LabelTransformAnchor {
         value.clone()
     }
 }
+impl Default for LabelTransformAnchor {
+    fn default() -> Self {
+        LabelTransformAnchor::Variant0(vec![
+            LabelTransformAnchorVariant0Item::Variant0("top-left".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("left".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("bottom-left".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("top".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("bottom".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("top-right".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("right".to_string()),
+            LabelTransformAnchorVariant0Item::Variant0("bottom-right".to_string()),
+        ])
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformAnchorVariant0Item {
@@ -14036,6 +14367,17 @@ impl From<&LabelTransformAs> for LabelTransformAs {
         value.clone()
     }
 }
+impl Default for LabelTransformAs {
+    fn default() -> Self {
+        LabelTransformAs::Variant0(
+            LabelTransformAsVariant0::Variant0("x".to_string()),
+            LabelTransformAsVariant0::Variant0("y".to_string()),
+            LabelTransformAsVariant0::Variant0("opacity".to_string()),
+            LabelTransformAsVariant0::Variant0("align".to_string()),
+            LabelTransformAsVariant0::Variant0("baseline".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformAsVariant0 {
@@ -14056,6 +14398,11 @@ pub enum LabelTransformAvoidBaseMark {
 impl From<&LabelTransformAvoidBaseMark> for LabelTransformAvoidBaseMark {
     fn from(value: &LabelTransformAvoidBaseMark) -> Self {
         value.clone()
+    }
+}
+impl Default for LabelTransformAvoidBaseMark {
+    fn default() -> Self {
+        LabelTransformAvoidBaseMark::Variant0(true)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -14080,6 +14427,11 @@ impl From<&LabelTransformLineAnchor> for LabelTransformLineAnchor {
         value.clone()
     }
 }
+impl Default for LabelTransformLineAnchor {
+    fn default() -> Self {
+        LabelTransformLineAnchor::Variant0("end".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformMarkIndex {
@@ -14102,6 +14454,11 @@ impl From<&LabelTransformMethod> for LabelTransformMethod {
         value.clone()
     }
 }
+impl Default for LabelTransformMethod {
+    fn default() -> Self {
+        LabelTransformMethod::Variant0("naive".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformOffset {
@@ -14111,6 +14468,11 @@ pub enum LabelTransformOffset {
 impl From<&LabelTransformOffset> for LabelTransformOffset {
     fn from(value: &LabelTransformOffset) -> Self {
         value.clone()
+    }
+}
+impl Default for LabelTransformOffset {
+    fn default() -> Self {
+        LabelTransformOffset::Variant0(vec![LabelTransformOffsetVariant0Item::Variant0(1_f64)])
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -15818,6 +16180,11 @@ impl std::convert::TryFrom<String> for LegendSubtype0OrientVariant0 {
         value.parse()
     }
 }
+impl Default for LegendSubtype0OrientVariant0 {
+    fn default() -> Self {
+        LegendSubtype0OrientVariant0::Right
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LegendSubtype0Padding {
@@ -16479,6 +16846,11 @@ impl From<&LinkpathTransformAs> for LinkpathTransformAs {
         value.clone()
     }
 }
+impl Default for LinkpathTransformAs {
+    fn default() -> Self {
+        LinkpathTransformAs::Variant0("path".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LinkpathTransformOrient {
@@ -16488,6 +16860,11 @@ pub enum LinkpathTransformOrient {
 impl From<&LinkpathTransformOrient> for LinkpathTransformOrient {
     fn from(value: &LinkpathTransformOrient) -> Self {
         value.clone()
+    }
+}
+impl Default for LinkpathTransformOrient {
+    fn default() -> Self {
+        LinkpathTransformOrient::Variant0(LinkpathTransformOrientVariant0::Vertical)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -16551,6 +16928,11 @@ pub enum LinkpathTransformShape {
 impl From<&LinkpathTransformShape> for LinkpathTransformShape {
     fn from(value: &LinkpathTransformShape) -> Self {
         value.clone()
+    }
+}
+impl Default for LinkpathTransformShape {
+    fn default() -> Self {
+        LinkpathTransformShape::Variant0(LinkpathTransformShapeVariant0::Line)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -16625,6 +17007,13 @@ impl From<&LinkpathTransformSourceX> for LinkpathTransformSourceX {
         value.clone()
     }
 }
+impl Default for LinkpathTransformSourceX {
+    fn default() -> Self {
+        LinkpathTransformSourceX::ScaleField(ScaleField(StringOrSignal::Variant0(
+            "source.x".to_string(),
+        )))
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LinkpathTransformSourceY {
@@ -16635,6 +17024,13 @@ pub enum LinkpathTransformSourceY {
 impl From<&LinkpathTransformSourceY> for LinkpathTransformSourceY {
     fn from(value: &LinkpathTransformSourceY) -> Self {
         value.clone()
+    }
+}
+impl Default for LinkpathTransformSourceY {
+    fn default() -> Self {
+        LinkpathTransformSourceY::ScaleField(ScaleField(StringOrSignal::Variant0(
+            "source.y".to_string(),
+        )))
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -16649,6 +17045,13 @@ impl From<&LinkpathTransformTargetX> for LinkpathTransformTargetX {
         value.clone()
     }
 }
+impl Default for LinkpathTransformTargetX {
+    fn default() -> Self {
+        LinkpathTransformTargetX::ScaleField(ScaleField(StringOrSignal::Variant0(
+            "target.x".to_string(),
+        )))
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LinkpathTransformTargetY {
@@ -16659,6 +17062,13 @@ pub enum LinkpathTransformTargetY {
 impl From<&LinkpathTransformTargetY> for LinkpathTransformTargetY {
     fn from(value: &LinkpathTransformTargetY) -> Self {
         value.clone()
+    }
+}
+impl Default for LinkpathTransformTargetY {
+    fn default() -> Self {
+        LinkpathTransformTargetY::ScaleField(ScaleField(StringOrSignal::Variant0(
+            "target.y".to_string(),
+        )))
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -16769,6 +17179,11 @@ pub enum LoessTransformBandwidth {
 impl From<&LoessTransformBandwidth> for LoessTransformBandwidth {
     fn from(value: &LoessTransformBandwidth) -> Self {
         value.clone()
+    }
+}
+impl Default for LoessTransformBandwidth {
+    fn default() -> Self {
+        LoessTransformBandwidth::Variant0(0.3_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18340,6 +18755,17 @@ impl From<&PackTransformAs> for PackTransformAs {
         value.clone()
     }
 }
+impl Default for PackTransformAs {
+    fn default() -> Self {
+        PackTransformAs::Variant0(
+            PackTransformAsVariant0::Variant0("x".to_string()),
+            PackTransformAsVariant0::Variant0("y".to_string()),
+            PackTransformAsVariant0::Variant0("r".to_string()),
+            PackTransformAsVariant0::Variant0("depth".to_string()),
+            PackTransformAsVariant0::Variant0("children".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PackTransformAsVariant0 {
@@ -18528,6 +18954,18 @@ impl From<&PartitionTransformAs> for PartitionTransformAs {
         value.clone()
     }
 }
+impl Default for PartitionTransformAs {
+    fn default() -> Self {
+        PartitionTransformAs::Variant0(
+            PartitionTransformAsVariant0::Variant0("x0".to_string()),
+            PartitionTransformAsVariant0::Variant0("y0".to_string()),
+            PartitionTransformAsVariant0::Variant0("x1".to_string()),
+            PartitionTransformAsVariant0::Variant0("y1".to_string()),
+            PartitionTransformAsVariant0::Variant0("depth".to_string()),
+            PartitionTransformAsVariant0::Variant0("children".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PartitionTransformAsVariant0 {
@@ -18680,6 +19118,14 @@ impl From<&PieTransformAs> for PieTransformAs {
         value.clone()
     }
 }
+impl Default for PieTransformAs {
+    fn default() -> Self {
+        PieTransformAs::Variant0(
+            PieTransformAsVariant0::Variant0("startAngle".to_string()),
+            PieTransformAsVariant0::Variant0("endAngle".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PieTransformAsVariant0 {
@@ -18700,6 +19146,11 @@ pub enum PieTransformEndAngle {
 impl From<&PieTransformEndAngle> for PieTransformEndAngle {
     fn from(value: &PieTransformEndAngle) -> Self {
         value.clone()
+    }
+}
+impl Default for PieTransformEndAngle {
+    fn default() -> Self {
+        PieTransformEndAngle::Variant0(6.283185307179586_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -18870,6 +19321,11 @@ pub enum PivotTransformOp {
 impl From<&PivotTransformOp> for PivotTransformOp {
     fn from(value: &PivotTransformOp) -> Self {
         value.clone()
+    }
+}
+impl Default for PivotTransformOp {
+    fn default() -> Self {
+        PivotTransformOp::Variant0(PivotTransformOpVariant0::Sum)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -19357,6 +19813,14 @@ impl From<&QuantileTransformAs> for QuantileTransformAs {
         value.clone()
     }
 }
+impl Default for QuantileTransformAs {
+    fn default() -> Self {
+        QuantileTransformAs::Variant0(vec![
+            QuantileTransformAsVariant0Item::Variant0("prob".to_string()),
+            QuantileTransformAsVariant0Item::Variant0("value".to_string()),
+        ])
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum QuantileTransformAsVariant0Item {
@@ -19434,6 +19898,11 @@ pub enum QuantileTransformStep {
 impl From<&QuantileTransformStep> for QuantileTransformStep {
     fn from(value: &QuantileTransformStep) -> Self {
         value.clone()
+    }
+}
+impl Default for QuantileTransformStep {
+    fn default() -> Self {
+        QuantileTransformStep::Variant0(0.01_f64)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -19657,6 +20126,11 @@ impl From<&RegressionTransformMethod> for RegressionTransformMethod {
         value.clone()
     }
 }
+impl Default for RegressionTransformMethod {
+    fn default() -> Self {
+        RegressionTransformMethod::Variant0("linear".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum RegressionTransformOrder {
@@ -19666,6 +20140,11 @@ pub enum RegressionTransformOrder {
 impl From<&RegressionTransformOrder> for RegressionTransformOrder {
     fn from(value: &RegressionTransformOrder) -> Self {
         value.clone()
+    }
+}
+impl Default for RegressionTransformOrder {
+    fn default() -> Self {
+        RegressionTransformOrder::Variant0(3_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -19851,6 +20330,11 @@ pub enum SampleTransformSize {
 impl From<&SampleTransformSize> for SampleTransformSize {
     fn from(value: &SampleTransformSize) -> Self {
         value.clone()
+    }
+}
+impl Default for SampleTransformSize {
+    fn default() -> Self {
+        SampleTransformSize::Variant0(1000_f64)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -23857,6 +24341,11 @@ impl From<&SequenceTransformAs> for SequenceTransformAs {
         value.clone()
     }
 }
+impl Default for SequenceTransformAs {
+    fn default() -> Self {
+        SequenceTransformAs::Variant0("data".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum SequenceTransformStart {
@@ -23877,6 +24366,11 @@ pub enum SequenceTransformStep {
 impl From<&SequenceTransformStep> for SequenceTransformStep {
     fn from(value: &SequenceTransformStep) -> Self {
         value.clone()
+    }
+}
+impl Default for SequenceTransformStep {
+    fn default() -> Self {
+        SequenceTransformStep::Variant0(1_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -24168,6 +24662,14 @@ impl From<&StackTransformAs> for StackTransformAs {
         value.clone()
     }
 }
+impl Default for StackTransformAs {
+    fn default() -> Self {
+        StackTransformAs::Variant0(
+            StackTransformAsVariant0::Variant0("y0".to_string()),
+            StackTransformAsVariant0::Variant0("y1".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum StackTransformAsVariant0 {
@@ -24223,6 +24725,11 @@ pub enum StackTransformOffset {
 impl From<&StackTransformOffset> for StackTransformOffset {
     fn from(value: &StackTransformOffset) -> Self {
         value.clone()
+    }
+}
+impl Default for StackTransformOffset {
+    fn default() -> Self {
+        StackTransformOffset::Variant0(StackTransformOffsetVariant0::Zero)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -26145,6 +26652,14 @@ impl From<&TimeunitTransformAs> for TimeunitTransformAs {
         value.clone()
     }
 }
+impl Default for TimeunitTransformAs {
+    fn default() -> Self {
+        TimeunitTransformAs::Variant0(
+            TimeunitTransformAsVariant0::Variant0("unit0".to_string()),
+            TimeunitTransformAsVariant0::Variant0("unit1".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TimeunitTransformAsVariant0 {
@@ -26201,6 +26716,11 @@ impl From<&TimeunitTransformInterval> for TimeunitTransformInterval {
         value.clone()
     }
 }
+impl Default for TimeunitTransformInterval {
+    fn default() -> Self {
+        TimeunitTransformInterval::Variant0(true)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TimeunitTransformMaxbins {
@@ -26210,6 +26730,11 @@ pub enum TimeunitTransformMaxbins {
 impl From<&TimeunitTransformMaxbins> for TimeunitTransformMaxbins {
     fn from(value: &TimeunitTransformMaxbins) -> Self {
         value.clone()
+    }
+}
+impl Default for TimeunitTransformMaxbins {
+    fn default() -> Self {
+        TimeunitTransformMaxbins::Variant0(40_f64)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -26223,6 +26748,11 @@ impl From<&TimeunitTransformStep> for TimeunitTransformStep {
         value.clone()
     }
 }
+impl Default for TimeunitTransformStep {
+    fn default() -> Self {
+        TimeunitTransformStep::Variant0(1_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TimeunitTransformTimezone {
@@ -26232,6 +26762,11 @@ pub enum TimeunitTransformTimezone {
 impl From<&TimeunitTransformTimezone> for TimeunitTransformTimezone {
     fn from(value: &TimeunitTransformTimezone) -> Self {
         value.clone()
+    }
+}
+impl Default for TimeunitTransformTimezone {
+    fn default() -> Self {
+        TimeunitTransformTimezone::Variant0(TimeunitTransformTimezoneVariant0::Local)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -27032,6 +27567,11 @@ impl std::convert::TryFrom<String> for TitleVariant1OrientVariant0 {
         value.parse()
     }
 }
+impl Default for TitleVariant1OrientVariant0 {
+    fn default() -> Self {
+        TitleVariant1OrientVariant0::Top
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TitleVariant1SubtitleColor {
@@ -27241,6 +27781,16 @@ impl From<&TreeTransformAs> for TreeTransformAs {
         value.clone()
     }
 }
+impl Default for TreeTransformAs {
+    fn default() -> Self {
+        TreeTransformAs::Variant0(
+            TreeTransformAsVariant0::Variant0("x".to_string()),
+            TreeTransformAsVariant0::Variant0("y".to_string()),
+            TreeTransformAsVariant0::Variant0("depth".to_string()),
+            TreeTransformAsVariant0::Variant0("children".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreeTransformAsVariant0 {
@@ -27273,6 +27823,11 @@ pub enum TreeTransformMethod {
 impl From<&TreeTransformMethod> for TreeTransformMethod {
     fn from(value: &TreeTransformMethod) -> Self {
         value.clone()
+    }
+}
+impl Default for TreeTransformMethod {
+    fn default() -> Self {
+        TreeTransformMethod::Variant0(TreeTransformMethodVariant0::Tidy)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -27354,6 +27909,11 @@ pub enum TreeTransformSeparation {
 impl From<&TreeTransformSeparation> for TreeTransformSeparation {
     fn from(value: &TreeTransformSeparation) -> Self {
         value.clone()
+    }
+}
+impl Default for TreeTransformSeparation {
+    fn default() -> Self {
+        TreeTransformSeparation::Variant0(true)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -27562,6 +28122,18 @@ impl From<&TreemapTransformAs> for TreemapTransformAs {
         value.clone()
     }
 }
+impl Default for TreemapTransformAs {
+    fn default() -> Self {
+        TreemapTransformAs::Variant0(
+            TreemapTransformAsVariant0::Variant0("x0".to_string()),
+            TreemapTransformAsVariant0::Variant0("y0".to_string()),
+            TreemapTransformAsVariant0::Variant0("x1".to_string()),
+            TreemapTransformAsVariant0::Variant0("y1".to_string()),
+            TreemapTransformAsVariant0::Variant0("depth".to_string()),
+            TreemapTransformAsVariant0::Variant0("children".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreemapTransformAsVariant0 {
@@ -27594,6 +28166,11 @@ pub enum TreemapTransformMethod {
 impl From<&TreemapTransformMethod> for TreemapTransformMethod {
     fn from(value: &TreemapTransformMethod) -> Self {
         value.clone()
+    }
+}
+impl Default for TreemapTransformMethod {
+    fn default() -> Self {
+        TreemapTransformMethod::Variant0(TreemapTransformMethodVariant0::Squarify)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -27748,6 +28325,11 @@ impl From<&TreemapTransformRatio> for TreemapTransformRatio {
         value.clone()
     }
 }
+impl Default for TreemapTransformRatio {
+    fn default() -> Self {
+        TreemapTransformRatio::Variant0(1.618033988749895_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreemapTransformRound {
@@ -27857,6 +28439,11 @@ impl From<&VoronoiTransformAs> for VoronoiTransformAs {
         value.clone()
     }
 }
+impl Default for VoronoiTransformAs {
+    fn default() -> Self {
+        VoronoiTransformAs::Variant0("path".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum VoronoiTransformExtent {
@@ -27866,6 +28453,14 @@ pub enum VoronoiTransformExtent {
 impl From<&VoronoiTransformExtent> for VoronoiTransformExtent {
     fn from(value: &VoronoiTransformExtent) -> Self {
         value.clone()
+    }
+}
+impl Default for VoronoiTransformExtent {
+    fn default() -> Self {
+        VoronoiTransformExtent::Variant0(
+            serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
+            serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
+        )
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -28047,6 +28642,14 @@ pub enum WindowTransformFrame {
 impl From<&WindowTransformFrame> for WindowTransformFrame {
     fn from(value: &WindowTransformFrame) -> Self {
         value.clone()
+    }
+}
+impl Default for WindowTransformFrame {
+    fn default() -> Self {
+        WindowTransformFrame::Variant0(
+            WindowTransformFrameVariant0::Variant2,
+            WindowTransformFrameVariant0::Variant0(0_f64),
+        )
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -28438,6 +29041,19 @@ impl From<&WordcloudTransformAs> for WordcloudTransformAs {
         value.clone()
     }
 }
+impl Default for WordcloudTransformAs {
+    fn default() -> Self {
+        WordcloudTransformAs::Variant0(
+            WordcloudTransformAsVariant0::Variant0("x".to_string()),
+            WordcloudTransformAsVariant0::Variant0("y".to_string()),
+            WordcloudTransformAsVariant0::Variant0("font".to_string()),
+            WordcloudTransformAsVariant0::Variant0("fontSize".to_string()),
+            WordcloudTransformAsVariant0::Variant0("fontStyle".to_string()),
+            WordcloudTransformAsVariant0::Variant0("fontWeight".to_string()),
+            WordcloudTransformAsVariant0::Variant0("angle".to_string()),
+        )
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformAsVariant0 {
@@ -28462,6 +29078,11 @@ impl From<&WordcloudTransformFont> for WordcloudTransformFont {
         value.clone()
     }
 }
+impl Default for WordcloudTransformFont {
+    fn default() -> Self {
+        WordcloudTransformFont::Variant0("sans-serif".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformFontSize {
@@ -28475,6 +29096,11 @@ impl From<&WordcloudTransformFontSize> for WordcloudTransformFontSize {
         value.clone()
     }
 }
+impl Default for WordcloudTransformFontSize {
+    fn default() -> Self {
+        WordcloudTransformFontSize::Variant0(14_f64)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformFontSizeRange {
@@ -28485,6 +29111,14 @@ pub enum WordcloudTransformFontSizeRange {
 impl From<&WordcloudTransformFontSizeRange> for WordcloudTransformFontSizeRange {
     fn from(value: &WordcloudTransformFontSizeRange) -> Self {
         value.clone()
+    }
+}
+impl Default for WordcloudTransformFontSizeRange {
+    fn default() -> Self {
+        WordcloudTransformFontSizeRange::Variant0(vec![
+            WordcloudTransformFontSizeRangeVariant0Item::Variant0(10_f64),
+            WordcloudTransformFontSizeRangeVariant0Item::Variant0(50_f64),
+        ])
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -28513,6 +29147,11 @@ impl From<&WordcloudTransformFontStyle> for WordcloudTransformFontStyle {
         value.clone()
     }
 }
+impl Default for WordcloudTransformFontStyle {
+    fn default() -> Self {
+        WordcloudTransformFontStyle::Variant0("normal".to_string())
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformFontWeight {
@@ -28524,6 +29163,11 @@ pub enum WordcloudTransformFontWeight {
 impl From<&WordcloudTransformFontWeight> for WordcloudTransformFontWeight {
     fn from(value: &WordcloudTransformFontWeight) -> Self {
         value.clone()
+    }
+}
+impl Default for WordcloudTransformFontWeight {
+    fn default() -> Self {
+        WordcloudTransformFontWeight::Variant0("normal".to_string())
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]

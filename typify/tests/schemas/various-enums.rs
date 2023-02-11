@@ -1,5 +1,123 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum AlternativeEnum {
+    Choice1,
+    Choice2,
+    Choice3,
+}
+impl From<&AlternativeEnum> for AlternativeEnum {
+    fn from(value: &AlternativeEnum) -> Self {
+        value.clone()
+    }
+}
+impl ToString for AlternativeEnum {
+    fn to_string(&self) -> String {
+        match *self {
+            Self::Choice1 => "Choice1".to_string(),
+            Self::Choice2 => "Choice2".to_string(),
+            Self::Choice3 => "Choice3".to_string(),
+        }
+    }
+}
+impl std::str::FromStr for AlternativeEnum {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        match value {
+            "Choice1" => Ok(Self::Choice1),
+            "Choice2" => Ok(Self::Choice2),
+            "Choice3" => Ok(Self::Choice3),
+            _ => Err("invalid value"),
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for AlternativeEnum {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for AlternativeEnum {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for AlternativeEnum {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl Default for AlternativeEnum {
+    fn default() -> Self {
+        AlternativeEnum::Choice2
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DiskAttachment {
+    pub alternate: AlternativeEnum,
+    pub state: DiskAttachmentState,
+}
+impl From<&DiskAttachment> for DiskAttachment {
+    fn from(value: &DiskAttachment) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum DiskAttachmentState {
+    Detached,
+    Destroyed,
+    Faulted,
+}
+impl From<&DiskAttachmentState> for DiskAttachmentState {
+    fn from(value: &DiskAttachmentState) -> Self {
+        value.clone()
+    }
+}
+impl ToString for DiskAttachmentState {
+    fn to_string(&self) -> String {
+        match *self {
+            Self::Detached => "Detached".to_string(),
+            Self::Destroyed => "Destroyed".to_string(),
+            Self::Faulted => "Faulted".to_string(),
+        }
+    }
+}
+impl std::str::FromStr for DiskAttachmentState {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        match value {
+            "Detached" => Ok(Self::Detached),
+            "Destroyed" => Ok(Self::Destroyed),
+            "Faulted" => Ok(Self::Faulted),
+            _ => Err("invalid value"),
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for DiskAttachmentState {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for DiskAttachmentState {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for DiskAttachmentState {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl Default for DiskAttachmentState {
+    fn default() -> Self {
+        DiskAttachmentState::Detached
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IpNet {
