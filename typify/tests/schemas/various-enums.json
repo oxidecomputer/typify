@@ -64,6 +64,36 @@
         "c"
       ],
       "format": "?"
+    },
+    "AlternativeEnum": {
+      "type": "string",
+      "default": "Choice2",
+      "enum": [
+        "Choice1",
+        "Choice2",
+        "Choice3"
+      ]
+    },
+    "DiskAttachment": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "Detached",
+            "Destroyed",
+            "Faulted"
+          ],
+          "default": "Detached"
+        },
+        "alternate": {
+          "$ref": "#/components/schemas/AlternativeEnum"
+        }
+      },
+      "required": [
+        "state",
+        "alternate"
+      ]
     }
   }
 }
