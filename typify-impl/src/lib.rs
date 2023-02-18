@@ -384,12 +384,7 @@ impl TypeSpace {
         // previous step because each type may create additional types. This
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
-        for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
-            let type_name = match ref_name.rfind('/') {
-                Some(idx) => &ref_name[idx..],
-                None => &ref_name,
-            };
-
+        for (index, (type_name, schema)) in definitions.into_iter().enumerate() {
             info!(
                 "converting type: {} with schema {}",
                 type_name,
@@ -399,9 +394,9 @@ impl TypeSpace {
             // Check for manually replaced types. Proceed with type conversion
             // if there is none; use the specified type if there is.
             let type_id = TypeId(base_id + index as u64);
-            let check_name = sanitize(type_name, Case::Pascal);
+            let check_name = sanitize(&type_name, Case::Pascal);
             match self.settings.replace.get(&check_name) {
-                None => self.convert_ref_type(type_name, schema, type_id)?,
+                None => self.convert_ref_type(&type_name, schema, type_id)?,
 
                 Some(replace_type) => {
                     let type_entry = TypeEntry::new_native(

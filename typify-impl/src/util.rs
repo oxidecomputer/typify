@@ -483,7 +483,7 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
-pub(crate) fn ref_key(ref_name: &String) -> &str {
+pub(crate) fn ref_key(ref_name: &str) -> &str {
     match ref_name.rfind('/') {
         Some(idx) => &ref_name[idx + 1..],
         None => ref_name,

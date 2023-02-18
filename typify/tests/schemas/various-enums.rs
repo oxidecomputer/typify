@@ -55,6 +55,17 @@ impl Default for AlternativeEnum {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct AnimationSpecification {
+    #[serde(flatten)]
+    pub extra: std::collections::HashMap<String, String>,
+}
+impl From<&AnimationSpecification> for AnimationSpecification {
+    fn from(value: &AnimationSpecification) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
@@ -233,6 +244,17 @@ impl std::str::FromStr for Ipv6Net {
 impl ToString for Ipv6Net {
     fn to_string(&self) -> String {
         self.0.to_string()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum JankNames {
+    Variant0(String),
+    Variant1(AnimationSpecification),
+}
+impl From<&JankNames> for JankNames {
+    fn from(value: &JankNames) -> Self {
+        value.clone()
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -94,6 +94,23 @@
         "state",
         "alternate"
       ]
+    },
+    "JankNames": {
+      "anyOf": [
+        {
+          "title": "Animation Specification",
+          "type": "string"
+        },
+        {
+          "title": "Animation Specification",
+          "type": "object",
+          "maxProperties": 1,
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
     }
   }
 }
