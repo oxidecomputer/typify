@@ -743,6 +743,11 @@ impl TypeSpace {
                     }
                     (Some(name), Some(prefix)) => {
                         common_prefix = Some(get_common_prefix(name, prefix));
+                        // If the common prefix is the whole name, we can't use
+                        // these names.
+                        if common_prefix.as_ref() == Some(name) {
+                            names_from_variants = false;
+                        }
                     }
                 }
 
@@ -764,6 +769,7 @@ impl TypeSpace {
                 } else {
                     format!("Variant{}", idx)
                 };
+                assert!(!name.is_empty());
                 Variant {
                     name,
                     rename: None,

@@ -49,6 +49,55 @@ impl ToString for IdOrName {
         }
     }
 }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum IdOrNameRedundant {
+    Variant0(uuid::Uuid),
+    Variant1(Name),
+}
+impl From<&IdOrNameRedundant> for IdOrNameRedundant {
+    fn from(value: &IdOrNameRedundant) -> Self {
+        value.clone()
+    }
+}
+impl std::str::FromStr for IdOrNameRedundant {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::Variant0(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::Variant1(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for IdOrNameRedundant {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for IdOrNameRedundant {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for IdOrNameRedundant {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for IdOrNameRedundant {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Variant0(x) => x.to_string(),
+            Self::Variant1(x) => x.to_string(),
+        }
+    }
+}
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
 #[derive(Clone, Debug, Serialize)]
 pub struct Name(String);

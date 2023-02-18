@@ -6,7 +6,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, none_or_single, recase, Case, StringValidator};
+use crate::util::{all_mutually_exclusive, none_or_single, recase, ref_key, Case, StringValidator};
 use log::info;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -329,6 +329,32 @@ impl TypeSpace {
                 reference: Some(reference),
                 extensions: _,
             } => self.convert_reference(metadata, reference),
+
+            // Accept references that... for some reason... include the type.
+            // TODO this could be generalized to validate any redundant
+            // validation here or could be used to compute a new, more
+            // constrained type.
+            SchemaObject {
+                metadata,
+                instance_type,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: Some(reference),
+                extensions: _,
+            } => {
+                let ref_schema = self.definitions.get(ref_key(reference)).unwrap();
+                assert!(matches!(ref_schema, Schema::Object(SchemaObject {
+                        instance_type: it, ..
+                    }) if instance_type == it));
+
+                self.convert_reference(metadata, reference)
+            }
 
             // Enum of a single, known, non-String type (strings above).
             SchemaObject {
@@ -910,10 +936,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let key = match ref_name.rfind('/') {
-            Some(idx) => &ref_name[idx + 1..],
-            None => ref_name,
-        };
+        let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
             .get(key)
