@@ -228,7 +228,7 @@ impl TypeEntryEnum {
                     .variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
-            .then(|| TypeEntryEnumImpl::AllSimpleVariants),
+            .then_some(TypeEntryEnumImpl::AllSimpleVariants),
             // Untagged and all variants impl FromStr
             untagged_newtype_variants(
                 type_space,
@@ -236,7 +236,7 @@ impl TypeEntryEnum {
                 &self.variants,
                 TypeSpaceImpl::FromStr,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedFromStr),
+            .then_some(TypeEntryEnumImpl::UntaggedFromStr),
             // Untagged and all variants impl Display
             untagged_newtype_variants(
                 type_space,
@@ -244,7 +244,7 @@ impl TypeEntryEnum {
                 &self.variants,
                 TypeSpaceImpl::Display,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+            .then_some(TypeEntryEnumImpl::UntaggedDisplay),
         ]
         .into_iter()
         .flatten()
