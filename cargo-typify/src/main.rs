@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, path::PathBuf};
+use std::path::PathBuf;
 
 use clap::Parser;
 
