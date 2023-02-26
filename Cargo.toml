@@ -9,6 +9,9 @@ members = [
 	"example-macro",
 ]
 
+[workspace.dependencies]
+schemars = "0.8.11"
+
 #[patch.crates-io]
 #serde_tokenstream = { path = "../serde_tokenstream" }
 
