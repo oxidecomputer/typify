@@ -6,9 +6,9 @@ edition = "2021"
 
 [dependencies]
 serde = "1.0"
-serde_json = "1.0.93"
+serde_json = "1.0.94"
 
 [build-dependencies]
 schemars = "0.8"
-serde_json = "1.0.93"
+serde_json = "1.0.94"
 typify = { path = "../typify" }
