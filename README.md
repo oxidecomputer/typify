@@ -32,7 +32,7 @@ as a `uuid::Uuid` (which requires the `uuid` crate be included as a dependency).
 JSON Schema arrays can turn into one of three Rust types `Vec<T>`,
 `HashSet<T>`, and tuples depending on the schema properties. An array may have
 a fixed length that matches a fixed list of item types; this is well
-represented by a Rust tuples. The distintion between `Vec<T>` and `HashSet<T>`
+represented by a Rust tuples. The distinction between `Vec<T>` and `HashSet<T>`
 is only if the schema's `uniqueItems` field is `false` or `true` respectively.
 
 ### Objects

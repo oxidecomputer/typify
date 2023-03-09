@@ -880,7 +880,7 @@ mod tests {
             type_entry.validate_value(
                 &type_space,
                 &json!({
-                    "targ": "A"
+                    "not-tag": "A"
                 })
             ),
             Err(_),
