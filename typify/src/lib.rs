@@ -167,5 +167,5 @@ pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::TypeStruct;
 pub use typify_impl::TypeStructPropInfo;
-
+#[cfg(feature = "macro")]
 pub use typify_macro::import_types;
