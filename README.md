@@ -71,6 +71,19 @@ There are some known areas where we'd like to improve:
 
 Bounded numbers aren't very well handled. Consider, for example, the schema:
 
+
+```json
+{
+    "type": "number",
+    "minimum": 1.0,
+    "maximum": 6.0
+}
+```
+
+The resulting types won't enforce those value constraints.
+
+And integers are not supported.  The following will panick:
+
 ```json
 {
     "type": "integer",
@@ -78,8 +91,6 @@ Bounded numbers aren't very well handled. Consider, for example, the schema:
     "maximum": 6
 }
 ```
-
-The resulting types won't enforce those value constraints.
 
 ### Configurable dependencies
 
