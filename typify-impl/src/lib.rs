@@ -507,7 +507,7 @@ impl TypeSpace {
     /// While we aren't yet handling the general case of type containment
     /// cycles, it's not that bad to look at trivial cycles such as:
     ///
-    ///   1) A type refering to itself: A -> A
+    ///   1) A type referring to itself: A -> A
     ///   2) A type optionally referring to itself: A -> Option<A>
     ///   3) An enum variant referring to itself, either optionally or directly
     ///   
@@ -898,7 +898,7 @@ impl<'a> TypeEnum<'a> {
         self.details.variants.iter().map(move |variant| {
             let v = match &variant.details {
                 type_entry::VariantDetails::Simple => TypeEnumVariant::Simple,
-                // The disctinction between a lone item variant and a tuple
+                // The distinction between a lone item variant and a tuple
                 // variant with a single item is only relevant internally.
                 type_entry::VariantDetails::Item(type_id) => {
                     TypeEnumVariant::Tuple(vec![type_id.clone()])

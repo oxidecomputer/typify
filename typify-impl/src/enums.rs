@@ -647,7 +647,7 @@ impl TypeSpace {
             let sub_type_name = match type_name {
                 // If the type name is known (required) we append the name of
                 // the content (i.e. the struct member); because this type is
-                // required (i.e. a named reference) it will be genetated as a
+                // required (i.e. a named reference) it will be generated as a
                 // struct as well. This naming ensures that any inferred
                 // subtypes match between ths variant and the independent
                 // struct type.
