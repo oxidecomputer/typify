@@ -2,6 +2,7 @@ use std::path::Path;
 
 use assert_fs::prelude::*;
 use expectorate::assert_contents;
+use predicates::prelude::predicate;
 use tempdir::TempDir;
 
 #[test]
@@ -24,6 +25,26 @@ fn test_simple() {
         concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
         &content,
     );
+}
+
+#[test]
+fn test_simple_stdout() {
+    use assert_cmd::Command;
+
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
+
+    let expected = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/outputs/simple.rs"
+    ))
+    .unwrap();
+
+    cmd.args([input])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(expected));
 }
 
 #[test]
