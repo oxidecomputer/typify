@@ -10,7 +10,6 @@ use typify::{TypeSpace, TypeSpaceSettings};
 #[command(author, version, about)]
 pub struct Args {
     /// The input file to read from
-    #[arg(short, long)]
     pub input: PathBuf,
 
     /// The output file to write to. If not specified, the output will be written to stdout
