@@ -48,11 +48,14 @@ fn main() -> Result<()> {
             })?;
     }
 
-    let contents = format!(
-        "{}\n{}",
-        "use serde::{Deserialize, Serialize};",
-        type_space.to_string()
-    );
+    let intro = "#![allow(clippy::redundant_closure_call)]
+#![allow(clippy::needless_lifetimes)]
+#![allow(clippy::match_single_binding)]
+#![allow(clippy::clone_on_copy)]
+
+use serde::{Deserialize, Serialize};";
+
+    let contents = format!("{intro}\n{}", type_space.to_string());
 
     if let Some(output_path) = &args.output {
         std::fs::write(output_path, contents).wrap_err_with(|| {
