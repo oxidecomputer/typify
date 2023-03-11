@@ -291,7 +291,7 @@ impl SynCompare for Type {
             (Type::Tuple(a), Type::Tuple(b)) => a.syn_cmp(b, false),
             (Type::Path(a), Type::Path(b)) => a.syn_cmp(b, false),
             _ => Err(format!(
-                "unexpected or mistmatched type pair: {:?} {:?}",
+                "unexpected or mismatched type pair: {:?} {:?}",
                 self, other
             )),
         }

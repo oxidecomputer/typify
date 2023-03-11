@@ -665,7 +665,7 @@ impl TypeSpace {
         // types should exclusively be "string" making null invalid. We
         // intentionally handle instance types of ["string", "null"] prior to
         // this case and strip out the null in both enum values and instance
-        // type. Nevertheless, we do our best to interpret even somewhat janky
+        // type. Nevertheless, we do our best to interpret even incorrect
         // JSON schema.
         let mut has_null = false;
 
@@ -1572,7 +1572,7 @@ mod tests {
         #[allow(dead_code)]
         enum A {
             Variant0(u64),
-            Varant1 {
+            Variant1 {
                 a: u64,
                 b: Vec<A>,
                 rop: Option<Box<A>>,
