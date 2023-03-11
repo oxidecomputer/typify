@@ -6,7 +6,7 @@ use color_eyre::eyre::{Context, Result};
 use schemars::schema::Schema;
 use typify::{TypeSpace, TypeSpaceSettings};
 
-/// A CLI for the `typify` crate. Which allows conversion of JSON Schema files to Rust types
+/// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
