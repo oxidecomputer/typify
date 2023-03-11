@@ -5,7 +5,7 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, ExtraDerive, Serialize)]
+#[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Fruit(pub std::collections::HashMap<String, serde_json::Value>);
 impl std::ops::Deref for Fruit {
     type Target = std::collections::HashMap<String, serde_json::Value>;
@@ -28,7 +28,7 @@ impl From<std::collections::HashMap<String, serde_json::Value>> for Fruit {
         Self(value)
     }
 }
-#[derive(Clone, Debug, Deserialize, ExtraDerive, Serialize)]
+#[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 #[serde(untagged)]
 pub enum FruitOrVeg {
     Veg(Veggie),
@@ -39,7 +39,7 @@ impl From<&FruitOrVeg> for FruitOrVeg {
         value.clone()
     }
 }
-#[derive(Clone, Debug, Deserialize, ExtraDerive, Serialize)]
+#[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
     #[serde(rename = "veggieLike")]
@@ -54,7 +54,7 @@ impl From<&Veggie> for Veggie {
     }
 }
 #[doc = "A representation of a person, company, organization, or place"]
-#[derive(Clone, Debug, Deserialize, ExtraDerive, Serialize)]
+#[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub fruits: Vec<String>,

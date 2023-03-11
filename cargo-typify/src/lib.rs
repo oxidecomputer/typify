@@ -18,7 +18,7 @@ pub struct Args {
 
     /// Add an additional derive macro to apply to all defined types.
     #[arg(short, long)]
-    pub additional_derive: Option<String>,
+    pub additional_derives: Vec<String>,
 
     /// The output file to write to. If not specified, the output will be written to stdout
     #[arg(short, long)]
@@ -35,7 +35,7 @@ pub fn convert(args: &Args) -> Result<String> {
     let mut settings = &mut TypeSpaceSettings::default();
     settings = settings.with_struct_builder(args.builder);
 
-    if let Some(derive) = &args.additional_derive {
+    for derive in &args.additional_derives {
         settings = settings.with_derive(derive.clone());
     }
 
@@ -75,6 +75,8 @@ use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod tests {
+    use std::vec;
+
     use super::*;
 
     use expectorate::assert_contents;
@@ -86,7 +88,7 @@ mod tests {
             input: input.into(),
             output: None,
             builder: false,
-            additional_derive: None,
+            additional_derives: vec![],
         };
 
         let contents = convert(&args).unwrap();
@@ -104,7 +106,7 @@ mod tests {
             input: input.into(),
             output: None,
             builder: true,
-            additional_derive: None,
+            additional_derives: vec![],
         };
 
         let contents = convert(&args).unwrap();
