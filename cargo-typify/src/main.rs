@@ -50,9 +50,12 @@ fn convert(args: &Args) -> Result<String> {
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
-use serde::{Deserialize, Serialize};";
+use serde::{Deserialize, Serialize};
+";
 
     let contents = format!("{intro}\n{}", type_space.to_string());
+
+    let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 
     Ok(contents)
 }

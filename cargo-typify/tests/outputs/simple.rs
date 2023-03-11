@@ -4,6 +4,7 @@
 #![allow(clippy::clone_on_copy)]
 
 use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Fruit(pub std::collections::HashMap<String, serde_json::Value>);
 impl std::ops::Deref for Fruit {
