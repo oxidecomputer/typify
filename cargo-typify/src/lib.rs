@@ -16,6 +16,10 @@ pub struct Args {
     #[arg(short, long, default_value = "false")]
     pub builder: bool,
 
+    /// Add an additional derive macro to apply to all defined types.
+    #[arg(short, long)]
+    pub additional_derive: Option<String>,
+
     /// The output file to write to. If not specified, the output will be written to stdout
     #[arg(short, long)]
     pub output: Option<PathBuf>,
@@ -28,8 +32,12 @@ pub fn convert(args: &Args) -> Result<String> {
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
         .wrap_err("Failed to parse input file as JSON Schema")?;
 
-    let mut settings = TypeSpaceSettings::default();
-    let settings = settings.with_struct_builder(args.builder);
+    let mut settings = &mut TypeSpaceSettings::default();
+    settings = settings.with_struct_builder(args.builder);
+
+    if let Some(derive) = &args.additional_derive {
+        settings = settings.with_derive(derive.clone());
+    }
 
     let mut type_space = TypeSpace::new(settings);
     type_space
@@ -78,6 +86,7 @@ mod tests {
             input: input.into(),
             output: None,
             builder: false,
+            additional_derive: None,
         };
 
         let contents = convert(&args).unwrap();
@@ -95,6 +104,7 @@ mod tests {
             input: input.into(),
             output: None,
             builder: true,
+            additional_derive: None,
         };
 
         let contents = convert(&args).unwrap();

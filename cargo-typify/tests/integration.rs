@@ -73,3 +73,31 @@ fn test_builder() {
         &content,
     );
 }
+
+#[test]
+fn test_derive() {
+    use assert_cmd::Command;
+
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let temp = TempDir::new("cargo-typify").unwrap();
+    let output_file = temp.path().join("output.rs");
+
+    let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
+    cmd.args([
+        input,
+        "--additional-derive",
+        "ExtraDerive",
+        "--output",
+        output_file.to_str().unwrap(),
+    ])
+    .assert()
+    .success();
+
+    let content = std::fs::read_to_string(output_file).unwrap();
+
+    assert_contents(
+        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+        &content,
+    );
+}
