@@ -9,4 +9,4 @@ typify = { version = "0.0.11-dev", path = "../typify" }
 clap = { version = "4.1.6", features = ["derive"] }
 color-eyre = "0.6"
 serde_json = "1.0.93"
-schemars = { workspace = true }
+schemars = "0.8.11"
