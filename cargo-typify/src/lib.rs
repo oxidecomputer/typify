@@ -59,7 +59,6 @@ pub fn convert(args: &Args) -> Result<String> {
         let base_title = base_title.to_string();
 
         type_space
-            // TODO: Fix this to use add_type_with_name
             .add_type(&Schema::Object(schema.schema))
             .wrap_err_with(|| {
                 format!("Could not add the top level type `{base_title}` to the type space")
