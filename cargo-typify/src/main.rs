@@ -19,11 +19,7 @@ struct Args {
     output: Option<PathBuf>,
 }
 
-fn main() -> Result<()> {
-    color_eyre::install()?;
-
-    let args = Args::parse();
-
+fn convert(args: &Args) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
         .wrap_err_with(|| format!("Failed to open input file: {}", &args.input.display()))?;
 
@@ -42,6 +38,7 @@ fn main() -> Result<()> {
         let base_title = base_title.to_string();
 
         type_space
+            // TODO: Fix this to use add_type_with_name
             .add_type(&Schema::Object(schema.schema))
             .wrap_err_with(|| {
                 format!("Could not add the top level type `{base_title}` to the type space")
@@ -57,6 +54,16 @@ use serde::{Deserialize, Serialize};";
 
     let contents = format!("{intro}\n{}", type_space.to_string());
 
+    Ok(contents)
+}
+
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
+    let args = Args::parse();
+
+    let contents = convert(&args).wrap_err("Failed to convert JSON Schema to Rust code")?;
+
     if let Some(output_path) = &args.output {
         std::fs::write(output_path, contents).wrap_err_with(|| {
             format!("Failed to write output to file: {}", output_path.display())
@@ -66,4 +73,27 @@ use serde::{Deserialize, Serialize};";
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use expectorate::assert_contents;
+
+    use super::*;
+
+    #[test]
+    fn test_convert() {
+        let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+        let args = Args {
+            input: input.into(),
+            output: None,
+        };
+
+        let contents = convert(&args).unwrap();
+
+        assert_contents(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+            &contents,
+        );
+    }
 }
