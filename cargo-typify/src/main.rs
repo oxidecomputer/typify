@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use cargo_typify::{convert, Args};
 use clap::Parser;
 
