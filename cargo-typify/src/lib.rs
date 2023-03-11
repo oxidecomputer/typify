@@ -12,6 +12,10 @@ pub struct Args {
     /// The input file to read from
     pub input: PathBuf,
 
+    /// Whether to include a builder-style interface
+    #[arg(short, long, default_value = "false")]
+    pub builder: bool,
+
     /// The output file to write to. If not specified, the output will be written to stdout
     #[arg(short, long)]
     pub output: Option<PathBuf>,
@@ -24,7 +28,10 @@ pub fn convert(args: &Args) -> Result<String> {
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
         .wrap_err("Failed to parse input file as JSON Schema")?;
 
-    let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
+    let mut settings = TypeSpaceSettings::default();
+    let settings = settings.with_struct_builder(args.builder);
+
+    let mut type_space = TypeSpace::new(settings);
     type_space
         .add_ref_types(schema.definitions)
         .wrap_err("Could not add ref types from the 'definitions' field in the JSON Schema")?;
@@ -70,12 +77,30 @@ mod tests {
         let args = Args {
             input: input.into(),
             output: None,
+            builder: false,
         };
 
         let contents = convert(&args).unwrap();
 
         assert_contents(
             concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+            &contents,
+        );
+    }
+
+    #[test]
+    fn test_builder() {
+        let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+        let args = Args {
+            input: input.into(),
+            output: None,
+            builder: true,
+        };
+
+        let contents = convert(&args).unwrap();
+
+        assert_contents(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
             &contents,
         );
     }
