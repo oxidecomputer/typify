@@ -8,6 +8,29 @@ fn test_simple() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
     let temp = TempDir::new("cargo-typify").unwrap();
+    let input_file = temp.path().join("simple.json");
+    std::fs::copy(input, &input_file).unwrap();
+
+    let output_file = temp.path().join("simple.rs");
+
+    let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
+    cmd.args([input_file]).assert().success();
+
+    let content = std::fs::read_to_string(output_file).unwrap();
+
+    assert_contents(
+        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+        &content,
+    );
+}
+
+#[test]
+fn test_simple_output() {
+    use assert_cmd::Command;
+
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
@@ -37,7 +60,10 @@ fn test_simple_stdout() {
     ))
     .unwrap();
 
-    cmd.args([input]).assert().success().stdout(expected);
+    cmd.args([input, "--output", "-"])
+        .assert()
+        .success()
+        .stdout(expected);
 }
 
 #[test]

@@ -24,7 +24,10 @@ pub struct Args {
     #[arg(short, long)]
     pub type_mod: Option<String>,
 
-    /// The output file to write to. If not specified, the output will be written to stdout
+    /// The output file to write to. If not specified, the input file name will be used with a
+    /// `.rs` extension.
+    /// 
+    /// If `-` is specified, the output will be written to stdout.
     #[arg(short, long)]
     pub output: Option<PathBuf>,
 }
