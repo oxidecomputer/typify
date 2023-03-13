@@ -21,7 +21,7 @@ typify-impl = { version = "0.0.11-dev", path = "../typify-impl" }
 [dev-dependencies]
 expectorate = "1.0.6"
 glob = "0.3.1"
-quote = "1.0.23"
+quote = "1.0.24"
 regress = "0.5.0"
 rustfmt-wrapper = "0.2.0"
 schemars = "0.8.12"
