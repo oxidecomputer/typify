@@ -1,14 +1,22 @@
 use std::path::PathBuf;
 
-use cargo_typify::{convert, Args};
+use cargo_typify::{convert, CliArgs};
 use clap::Parser;
 
 use color_eyre::eyre::{Context, Result};
 
+#[derive(Parser)] // requires `derive` feature
+#[command(name = "cargo")]
+#[command(bin_name = "cargo")]
+enum CargoCli {
+    Typify(CliArgs),
+}
+
 fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let args = Args::parse();
+    let cli = CargoCli::parse();
+    let CargoCli::Typify(args) = cli;
 
     let contents = convert(&args).wrap_err("Failed to convert JSON Schema to Rust code")?;
 
@@ -23,7 +31,6 @@ fn main() -> Result<()> {
         None => {
             let mut output = args.input.clone();
             output.set_extension("rs");
-            dbg!(&output);
             Some(output)
         }
     };

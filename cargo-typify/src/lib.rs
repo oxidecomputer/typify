@@ -1,14 +1,14 @@
 use std::path::PathBuf;
 
-use clap::Parser;
+use clap::Args;
 use color_eyre::eyre::{Context, Result};
 use schemars::schema::Schema;
 use typify::{TypeSpace, TypeSpaceSettings};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
-#[derive(Parser, Debug)]
+#[derive(Args)]
 #[command(author, version, about)]
-pub struct Args {
+pub struct CliArgs {
     /// The input file to read from
     pub input: PathBuf,
 
@@ -28,7 +28,7 @@ pub struct Args {
     pub output: Option<PathBuf>,
 }
 
-pub fn convert(args: &Args) -> Result<String> {
+pub fn convert(args: &CliArgs) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
         .wrap_err_with(|| format!("Failed to open input file: {}", &args.input.display()))?;
 
@@ -86,7 +86,7 @@ mod tests {
     #[test]
     fn test_simple() {
         let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
-        let args = Args {
+        let args = CliArgs {
             input: input.into(),
             output: None,
             builder: false,
@@ -104,7 +104,7 @@ mod tests {
     #[test]
     fn test_builder() {
         let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
-        let args = Args {
+        let args = CliArgs {
             input: input.into(),
             output: None,
             builder: true,

@@ -1,6 +1,6 @@
 A CLI for the `typify` crate that converts JSON Schema files to Rust code
 
-Usage: cargo-typify [OPTIONS] <INPUT>
+Usage: cargo typify [OPTIONS] <INPUT>
 
 Arguments:
   <INPUT>

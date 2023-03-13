@@ -14,7 +14,9 @@ fn test_simple() {
     let output_file = temp.path().join("simple.rs");
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
-    cmd.args([input_file]).assert().success();
+    cmd.args(["typify", input_file.to_str().unwrap()])
+        .assert()
+        .success();
 
     let content = std::fs::read_to_string(output_file).unwrap();
 
@@ -34,7 +36,7 @@ fn test_simple_output() {
     let output_file = temp.path().join("output.rs");
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
-    cmd.args([input, "--output", output_file.to_str().unwrap()])
+    cmd.args(["typify", input, "--output", output_file.to_str().unwrap()])
         .assert()
         .success();
 
@@ -60,7 +62,7 @@ fn test_simple_stdout() {
     ))
     .unwrap();
 
-    cmd.args([input, "--output", "-"])
+    cmd.args(["typify", input, "--output", "-"])
         .assert()
         .success()
         .stdout(expected);
@@ -77,6 +79,7 @@ fn test_builder() {
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
     cmd.args([
+        "typify",
         input,
         "--builder",
         "--output",
@@ -104,6 +107,7 @@ fn test_derive() {
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
     cmd.args([
+        "typify",
         input,
         "--additional-derives",
         "ExtraDerive",
@@ -132,6 +136,7 @@ fn test_multi_derive() {
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
     cmd.args([
+        "typify",
         input,
         "--additional-derives",
         "ExtraDerive",
@@ -156,7 +161,7 @@ fn test_help() {
     use assert_cmd::Command;
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
-    cmd.args(["--help"]).assert().success();
+    cmd.args(["typify", "--help"]).assert().success();
 
     let expected = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
