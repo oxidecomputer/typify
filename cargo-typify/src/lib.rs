@@ -20,13 +20,9 @@ pub struct Args {
     #[arg(short, long)]
     pub additional_derives: Vec<String>,
 
-    /// Set the name of the path prefix for types defined
-    #[arg(short, long)]
-    pub type_mod: Option<String>,
-
     /// The output file to write to. If not specified, the input file name will be used with a
     /// `.rs` extension.
-    /// 
+    ///
     /// If `-` is specified, the output will be written to stdout.
     #[arg(short, long)]
     pub output: Option<PathBuf>,
@@ -44,10 +40,6 @@ pub fn convert(args: &Args) -> Result<String> {
 
     for derive in &args.additional_derives {
         settings = settings.with_derive(derive.clone());
-    }
-
-    if let Some(type_mod) = &args.type_mod {
-        settings = settings.with_type_mod(type_mod.clone());
     }
 
     let mut type_space = TypeSpace::new(settings);
@@ -99,7 +91,6 @@ mod tests {
             output: None,
             builder: false,
             additional_derives: vec![],
-            type_mod: None,
         };
 
         let contents = convert(&args).unwrap();
@@ -118,7 +109,6 @@ mod tests {
             output: None,
             builder: true,
             additional_derives: vec![],
-            type_mod: None,
         };
 
         let contents = convert(&args).unwrap();
