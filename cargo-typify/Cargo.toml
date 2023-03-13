@@ -17,5 +17,4 @@ rustfmt-wrapper = "0.2.0"
 [dev-dependencies]
 assert_cmd = "2.0.8"
 expectorate = "1.0.6"
-predicates = "2.1.5"
 tempdir = "0.3.7"

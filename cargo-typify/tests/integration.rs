@@ -1,8 +1,4 @@
-use std::path::Path;
-
-use assert_fs::prelude::*;
 use expectorate::assert_contents;
-use predicates::prelude::predicate;
 use tempdir::TempDir;
 
 #[test]
@@ -41,10 +37,7 @@ fn test_simple_stdout() {
     ))
     .unwrap();
 
-    cmd.args([input])
-        .assert()
-        .success()
-        .stdout(predicate::str::contains(expected));
+    cmd.args([input]).assert().success().stdout(expected);
 }
 
 #[test]
@@ -160,4 +153,20 @@ fn test_type_mod() {
         concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/type_mod.rs"),
         &content,
     );
+}
+
+#[test]
+fn test_help() {
+    use assert_cmd::Command;
+
+    let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
+    cmd.args(["--help"]).assert().success();
+
+    let expected = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/outputs/help.txt"
+    ))
+    .unwrap();
+
+    cmd.args(["--help"]).assert().success().stdout(expected);
 }
