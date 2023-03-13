@@ -202,20 +202,22 @@ pub struct TypeSpaceSettings {
     convert: Vec<TypeSpaceConversion>,
 }
 
-/// Per-type modifications.
+/// Contains a set of modifications that may be applied to an existing type.
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
 }
 
-/// By-name replacements
+/// Contains the attributes of a replacement of an existing type.
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpaceReplace {
     replace_type: String,
     impls: Vec<TypeSpaceImpl>,
 }
 
+/// Defines a schema which will be replaced, and the attributes of the
+/// replacement.
 #[derive(Debug, Clone)]
 struct TypeSpaceConversion {
     schema: schemars::schema::SchemaObject,
@@ -268,7 +270,8 @@ impl TypeSpaceSettings {
     }
 
     /// Replace a referenced type with a named type. This causes the referenced
-    /// type *not* to be generated.
+    /// type *not* to be generated. If the same `type_name` is specified multiple times,
+    /// the last one is honored.
     pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         type_name: TS,
@@ -287,7 +290,8 @@ impl TypeSpaceSettings {
 
     /// Modify a type with the given name. Note that specifying a type not
     /// created by the input JSON schema does **not** result in an error and is
-    /// silently ignored.
+    /// silently ignored. If the same `type_name` is specified multiple times,
+    /// the last one is honored.
     pub fn with_patch<S: ToString>(
         &mut self,
         type_name: S,
@@ -297,6 +301,11 @@ impl TypeSpaceSettings {
         self
     }
 
+    /// Replace a given schema with a named type. The given schema must precisely
+    /// match the schema from the input, including fields such as `description`.
+    /// Typical usage is to map a schema definition to a builtin type or type
+    /// provided by a crate, such as `'rust_decimal::Decimal'`. If the same schema
+    /// is specified multiple times, the first one is honored.
     pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
@@ -319,7 +328,7 @@ impl TypeSpacePatch {
         self
     }
 
-    /// Specify extra derives to apply to the patched type.
+    /// Specify an additional derive to apply to the patched type.
     pub fn with_derive<S: ToString>(&mut self, derive: S) -> &mut Self {
         self.derives.push(derive.to_string());
         self
