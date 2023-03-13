@@ -26,7 +26,6 @@ fn test_github() {
     expectorate::assert_contents("tests/github.out", fmt.as_str());
 }
 
-// #[ignore]
 #[test]
 fn test_other() {
     let mut settings = TypeSpaceSettings::default();
