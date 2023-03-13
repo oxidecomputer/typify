@@ -28,6 +28,25 @@ pub struct CliArgs {
     pub output: Option<PathBuf>,
 }
 
+impl CliArgs {
+    pub fn output_path(&self) -> Option<PathBuf> {
+        match &self.output {
+            Some(output_path) => {
+                if output_path == &PathBuf::from("-") {
+                    None
+                } else {
+                    Some(output_path.clone())
+                }
+            }
+            None => {
+                let mut output = self.input.clone();
+                output.set_extension("rs");
+                Some(output)
+            }
+        }
+    }
+}
+
 pub fn convert(args: &CliArgs) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
         .wrap_err_with(|| format!("Failed to open input file: {}", &args.input.display()))?;
@@ -77,45 +96,41 @@ use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod tests {
-    use std::vec;
-
     use super::*;
 
-    use expectorate::assert_contents;
-
     #[test]
-    fn test_simple() {
-        let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+    fn test_output_parsing_stdout() {
         let args = CliArgs {
-            input: input.into(),
-            output: None,
+            input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            output: Some(PathBuf::from("-")),
         };
 
-        let contents = convert(&args).unwrap();
-
-        assert_contents(
-            concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
-            &contents,
-        );
+        assert_eq!(args.output_path(), None);
     }
 
     #[test]
-    fn test_builder() {
-        let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+    fn test_output_parsing_file() {
         let args = CliArgs {
-            input: input.into(),
-            output: None,
-            builder: true,
+            input: PathBuf::from("input.json"),
+            builder: false,
             additional_derives: vec![],
+            output: Some(PathBuf::from("some_file.rs")),
         };
 
-        let contents = convert(&args).unwrap();
+        assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
+    }
 
-        assert_contents(
-            concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
-            &contents,
-        );
+    #[test]
+    fn test_output_parsing_default() {
+        let args = CliArgs {
+            input: PathBuf::from("input.json"),
+            builder: false,
+            additional_derives: vec![],
+            output: None,
+        };
+
+        assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
     }
 }

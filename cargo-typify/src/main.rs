@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use cargo_typify::{convert, CliArgs};
 use clap::Parser;
 
@@ -20,20 +18,7 @@ fn main() -> Result<()> {
 
     let contents = convert(&args).wrap_err("Failed to convert JSON Schema to Rust code")?;
 
-    let output_path = match &args.output {
-        Some(output_path) => {
-            if output_path == &PathBuf::from("-") {
-                None
-            } else {
-                Some(output_path.clone())
-            }
-        }
-        None => {
-            let mut output = args.input.clone();
-            output.set_extension("rs");
-            Some(output)
-        }
-    };
+    let output_path = args.output_path();
 
     if let Some(output_path) = &output_path {
         std::fs::write(output_path, contents).wrap_err_with(|| {
