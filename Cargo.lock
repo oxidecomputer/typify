@@ -101,6 +101,7 @@ dependencies = [
  "clap",
  "color-eyre",
  "expectorate",
+ "newline-converter",
  "rustfmt-wrapper",
  "schemars",
  "serde_json",

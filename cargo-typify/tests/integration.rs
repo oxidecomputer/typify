@@ -1,4 +1,5 @@
 use expectorate::assert_contents;
+use newline_converter::{dos2unix, unix2dos};
 use tempdir::TempDir;
 
 #[test]
@@ -62,10 +63,18 @@ fn test_positional_stdout() {
     ))
     .unwrap();
 
-    cmd.args(["typify", input, "--positional", "--output", "-"])
-        .assert()
-        .success()
-        .stdout(expected);
+    let expected = dos2unix(&expected);
+
+    let output = cmd
+        .args(["typify", input, "--positional", "--output", "-"])
+        .output()
+        .unwrap();
+
+    let output_stdout = String::from_utf8(output.stdout).unwrap();
+    let actual = dos2unix(&output_stdout);
+
+    assert!(output.status.success());
+    assert_eq!(actual, expected);
 }
 
 #[test]
@@ -163,7 +172,6 @@ fn test_help() {
     use assert_cmd::Command;
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
-    cmd.args(["typify", "--help"]).assert().success();
 
     let expected = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -171,5 +179,13 @@ fn test_help() {
     ))
     .unwrap();
 
-    cmd.args(["--help"]).assert().success().stdout(expected);
+    let expected = dos2unix(&expected);
+
+    let output = cmd.args(["typify", "--help"]).output().unwrap();
+
+    let output_stdout = String::from_utf8(output.stdout).unwrap();
+    let actual = dos2unix(&output_stdout);
+
+    assert!(output.status.success());
+    assert_eq!(actual, expected);
 }
