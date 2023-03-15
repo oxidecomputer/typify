@@ -860,16 +860,49 @@ impl TypeSpace {
     // TODO deal with metadata and format
     fn convert_number<'a>(
         &self,
-        _metadata: &'a Option<Box<Metadata>>,
+        metadata: &'a Option<Box<Metadata>>,
         validation: &Option<Box<schemars::schema::NumberValidation>>,
         _format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if let Some(validation) = validation {
-            assert!(validation.multiple_of.is_none());
-            assert!(validation.maximum.is_none());
-            assert!(validation.exclusive_maximum.is_none());
-            assert!(validation.minimum.is_none());
-            assert!(validation.exclusive_minimum.is_none());
+        if cfg!(feature = "strict") {
+            if let Some(validation) = validation {
+                if validation.multiple_of.is_some() {
+                    todo!(
+                        "multiple_of {} not supported in {:?}",
+                        validation.multiple_of.unwrap(),
+                        metadata
+                    );
+                }
+                if validation.maximum.is_some() {
+                    todo!(
+                        "maximum {} not supported in {:?}",
+                        validation.maximum.unwrap(),
+                        metadata
+                    );
+                }
+
+                if validation.exclusive_maximum.is_some() {
+                    todo!(
+                        "exclusive_maximum {} not supported in {:?}",
+                        validation.exclusive_maximum.unwrap(),
+                        metadata
+                    );
+                }
+                if validation.minimum.is_some() {
+                    todo!(
+                        "minimum {} not supported in {:?}",
+                        validation.minimum.unwrap(),
+                        metadata
+                    );
+                }
+                if validation.exclusive_minimum.is_some() {
+                    todo!(
+                        "exclusive_minimum {} not supported in {:?}",
+                        validation.exclusive_minimum.unwrap(),
+                        metadata
+                    );
+                }
+            }
         }
 
         Ok((TypeEntry::new_float("f64"), &None))

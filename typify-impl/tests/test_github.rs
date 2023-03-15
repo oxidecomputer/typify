@@ -3,6 +3,7 @@
 use std::{fs::File, io::BufReader, path::Path};
 
 use schemars::schema::{RootSchema, Schema};
+#[allow(unused_imports)]
 use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
 
 #[test]
@@ -26,6 +27,7 @@ fn test_github() {
     expectorate::assert_contents("tests/github.out", fmt.as_str());
 }
 
+#[cfg(not(feature = "strict"))]
 #[test]
 fn test_other() {
     let mut settings = TypeSpaceSettings::default();
@@ -70,6 +72,9 @@ fn test_other() {
     let mut schema: RootSchema = serde_json::from_reader(reader).unwrap();
     schema.schema.metadata().title = Some("Everything".to_string());
 
+    if cfg!(feature = "strict") {
+        return;
+    }
     type_space.add_ref_types(schema.definitions).unwrap();
     type_space.add_type(&Schema::Object(schema.schema)).unwrap();
 

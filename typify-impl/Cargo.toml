@@ -8,6 +8,9 @@ description = "typify backend implementation"
 repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
+[features]
+strict = []
+
 [dependencies]
 heck = "0.4.1"
 log = "0.4"

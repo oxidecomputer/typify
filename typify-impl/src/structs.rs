@@ -25,10 +25,36 @@ impl TypeSpace {
         validation: &ObjectValidation,
     ) -> Result<(Vec<StructProperty>, bool)> {
         // These are the fields we don't currently handle
-        //assert!(validation.max_properties.is_none());
-        //assert!(validation.min_properties.is_none());
-        //assert!(validation.pattern_properties.is_empty());
-        //assert!(validation.property_names.is_none());
+        if cfg!(feature = "strict") {
+            if validation.max_properties.is_some() {
+                todo!(
+                    "max_properties {} not supported in {:?}",
+                    validation.max_properties.unwrap(),
+                    type_name
+                );
+            };
+            if validation.min_properties.is_some() {
+                todo!(
+                    "min_properties {} not supported in {:?}",
+                    validation.min_properties.unwrap(),
+                    type_name
+                );
+            }
+            if !validation.pattern_properties.is_empty() {
+                todo!(
+                    "pattern_properties {:?} not supported in {:?}",
+                    validation.pattern_properties,
+                    type_name
+                );
+            }
+            if validation.property_names.is_some() {
+                todo!(
+                    "property_names {:?} not supported in {:?}",
+                    validation.property_names,
+                    type_name
+                );
+            }
+        }
 
         let mut properties = validation
             .properties

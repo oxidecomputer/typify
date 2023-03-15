@@ -14,7 +14,12 @@ use typify_impl::TypeSpaceImpl;
 fn test_schemas() {
     // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
-        validate_schema(entry.unwrap()).unwrap();
+        let entry = entry.unwrap();
+        if cfg!(feature = "strict") && entry.to_str().unwrap().ends_with("various-enums.json") {
+            continue;
+        }
+        eprintln!("validating {} ...", entry.display());
+        validate_schema(entry).unwrap();
     }
 
     // Make sure it all compiles.
