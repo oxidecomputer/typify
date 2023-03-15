@@ -21,13 +21,13 @@ fn test_simple() {
     let content = std::fs::read_to_string(output_file).unwrap();
 
     assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
         &content,
     );
 }
 
 #[test]
-fn test_simple_output() {
+fn test_default_output() {
     use assert_cmd::Command;
 
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
@@ -43,13 +43,13 @@ fn test_simple_output() {
     let content = std::fs::read_to_string(output_file).unwrap();
 
     assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/simple.rs"),
+        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
         &content,
     );
 }
 
 #[test]
-fn test_simple_stdout() {
+fn test_positional_stdout() {
     use assert_cmd::Command;
 
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
@@ -58,11 +58,11 @@ fn test_simple_stdout() {
 
     let expected = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/tests/outputs/simple.rs"
+        "/tests/outputs/positional.rs"
     ))
     .unwrap();
 
-    cmd.args(["typify", input, "--output", "-"])
+    cmd.args(["typify", input, "--positional", "--output", "-"])
         .assert()
         .success()
         .stdout(expected);
@@ -109,6 +109,7 @@ fn test_derive() {
     cmd.args([
         "typify",
         input,
+        "--positional",
         "--additional-derives",
         "ExtraDerive",
         "--output",
@@ -138,6 +139,7 @@ fn test_multi_derive() {
     cmd.args([
         "typify",
         input,
+        "--positional",
         "--additional-derives",
         "ExtraDerive",
         "--additional-derives",

@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use clap::Args;
+use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
 use schemars::schema::Schema;
 use typify::{TypeSpace, TypeSpaceSettings};
@@ -8,13 +8,21 @@ use typify::{TypeSpace, TypeSpaceSettings};
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
 #[command(author, version, about)]
+#[command(group(
+    ArgGroup::new("build")
+        .args(["builder", "positional"]),
+))]
 pub struct CliArgs {
     /// The input file to read from
     pub input: PathBuf,
 
-    /// Whether to include a builder-style interface
-    #[arg(short, long, default_value = "false")]
+    /// Whether to include a builder-style interface, this is the default.
+    #[arg(short, long, default_value = "false", group = "build")]
     pub builder: bool,
+
+    /// Inverse of `--builder`. When set the builder-style interface will not be included.
+    #[arg(short, long, default_value = "false", group = "build")]
+    pub positional: bool,
 
     /// Add an additional derive macro to apply to all defined types.
     #[arg(short, long)]
@@ -45,6 +53,10 @@ impl CliArgs {
             }
         }
     }
+
+    pub fn use_builder(&self) -> bool {
+        !self.positional
+    }
 }
 
 pub fn convert(args: &CliArgs) -> Result<String> {
@@ -55,7 +67,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         .wrap_err("Failed to parse input file as JSON Schema")?;
 
     let mut settings = &mut TypeSpaceSettings::default();
-    settings = settings.with_struct_builder(args.builder);
+    settings = settings.with_struct_builder(args.use_builder());
 
     for derive in &args.additional_derives {
         settings = settings.with_derive(derive.clone());
@@ -105,6 +117,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("-")),
+            positional: false,
         };
 
         assert_eq!(args.output_path(), None);
@@ -117,6 +130,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("some_file.rs")),
+            positional: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -129,8 +143,48 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: None,
+            positional: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
+    }
+
+    #[test]
+    fn test_builder_as_default_style() {
+        let args = CliArgs {
+            input: PathBuf::from("input.json"),
+            builder: false,
+            additional_derives: vec![],
+            output: None,
+            positional: false,
+        };
+
+        assert!(args.use_builder());
+    }
+
+    #[test]
+    fn test_positional_builder() {
+        let args = CliArgs {
+            input: PathBuf::from("input.json"),
+            builder: false,
+            additional_derives: vec![],
+            output: None,
+            positional: true,
+        };
+
+        assert!(!args.use_builder());
+    }
+
+    #[test]
+    fn test_builder_opt_in() {
+        let args = CliArgs {
+            input: PathBuf::from("input.json"),
+            builder: true,
+            additional_derives: vec![],
+            output: None,
+            positional: false,
+        };
+
+        assert!(args.use_builder());
     }
 }
