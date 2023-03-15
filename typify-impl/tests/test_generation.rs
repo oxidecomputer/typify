@@ -116,7 +116,7 @@ fn test_generation() {
 
     expectorate::assert_contents("tests/generator.rustfmt.out", fmt.as_str());
 
-    let fmt = prettyplease::unparse(&syn::parse_file(&file.to_string()).unwrap());
+    let fmt = prettyplease::unparse(&syn::parse2::<syn::File>(file).unwrap());
 
     expectorate::assert_contents("tests/generator.prettyplease.out", fmt.as_str());
 }

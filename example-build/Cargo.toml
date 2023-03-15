@@ -9,6 +9,8 @@ serde = "1.0"
 serde_json = "1.0.94"
 
 [build-dependencies]
+prettyplease = "0.1"
 schemars = "0.8"
 serde_json = "1.0.94"
+syn = "1"
 typify = { path = "../typify" }

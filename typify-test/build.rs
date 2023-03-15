@@ -109,7 +109,7 @@ fn main() {
     let contents = format!(
         "{}\n{}",
         "use serde::{Deserialize, Serialize};",
-        type_space.to_string()
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
     );
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();

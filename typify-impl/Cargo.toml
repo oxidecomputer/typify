@@ -8,19 +8,12 @@ description = "typify backend implementation"
 repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
-[features]
-default = []
-rustfmt = ["dep:rustfmt-wrapper"]
-prettyplease = ["dep:prettyplease"]
-
 [dependencies]
 heck = "0.4.1"
 log = "0.4"
-prettyplease = { version = "0.1", optional = true }
 proc-macro2 = "1.0"
 quote = "1.0"
 regress = "0.5.0"
-rustfmt-wrapper = { version = "0.2", optional = true }
 schemars = "0.8.12"
 serde_json = "1.0"
 syn = { version = "1.0", features = ["full"] }

@@ -1,8 +1,5 @@
 // Copyright 2023 Oxide Computer Company
 
-#[cfg(all(feature = "rustfmt", feature = "prettyplease"))]
-compile_error!("Either feature `rustfmt` or `prettyplease` can be enabled");
-
 use std::collections::{BTreeMap, BTreeSet};
 
 use conversions::SchemaCache;
@@ -10,8 +7,6 @@ use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-#[cfg(feature = "rustfmt")]
-use rustfmt_wrapper::rustfmt;
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{
@@ -802,24 +797,6 @@ impl TypeSpace {
     /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.
     fn id_to_box(&mut self, id: &TypeId) -> TypeId {
         self.assign_type(TypeEntryDetails::Box(id.clone()).into())
-    }
-}
-
-impl ToString for TypeSpace {
-    #[cfg(feature = "rustfmt")]
-    fn to_string(&self) -> String {
-        rustfmt(self.to_stream().to_string()).unwrap()
-    }
-
-    #[cfg(feature = "prettyplease")]
-    fn to_string(&self) -> String {
-        let file = syn::parse_file(&self.to_stream().to_string()).unwrap();
-        prettyplease::unparse(&file)
-    }
-
-    #[cfg(not(any(feature = "rustfmt", feature = "prettyplease")))]
-    fn to_string(&self) -> String {
-        self.to_stream().to_string()
     }
 }
 
