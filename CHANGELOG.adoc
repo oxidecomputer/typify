@@ -20,17 +20,17 @@ pretty printing method of choice. Users can use the `ToTokens` implementation of
 
 Before:
 [source,rust]
----
+----
 let typespace = TypeSpace::default();
 typespace.to_string()
----
+----
 
 After:
 [source,rust]
----
+----
 let typespace = TypeSpace::default();
 typespace.to_stream().to_string()
----
+----
 
 https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
 
