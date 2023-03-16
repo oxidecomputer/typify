@@ -4,6 +4,7 @@ members = [
 	"typify-impl",
 	"typify-macro",
 	"typify-test",
+	"cargo-typify",
 	"example-build",
 	"example-macro",
 ]
