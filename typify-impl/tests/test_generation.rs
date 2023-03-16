@@ -108,15 +108,7 @@ fn test_generation() {
         }
     };
 
-    let fmt = file.to_string();
-
-    expectorate::assert_contents("tests/generator.out", fmt.as_str());
-
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 
     expectorate::assert_contents("tests/generator.rustfmt.out", fmt.as_str());
-
-    let fmt = prettyplease::unparse(&syn::parse2::<syn::File>(file).unwrap());
-
-    expectorate::assert_contents("tests/generator.prettyplease.out", fmt.as_str());
 }
