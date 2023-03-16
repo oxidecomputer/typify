@@ -110,5 +110,5 @@ fn test_generation() {
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 
-    expectorate::assert_contents("tests/generator.rustfmt.out", fmt.as_str());
+    expectorate::assert_contents("tests/generator.out", fmt.as_str());
 }
