@@ -1,0 +1,21 @@
+[package]
+name = "cargo-typify"
+version = "0.0.11-dev"
+edition = "2021"
+
+default-run = "cargo-typify"
+
+[dependencies]
+typify = { version = "0.0.11-dev", path = "../typify" }
+
+clap = { version = "4.1.6", features = ["derive"] }
+color-eyre = "0.6"
+serde_json = "1.0.93"
+schemars = "0.8.12"
+rustfmt-wrapper = "0.2.0"
+
+[dev-dependencies]
+assert_cmd = "2.0.8"
+expectorate = "1.0.6"
+newline-converter = "0.2.2"
+tempdir = "0.3.7"

@@ -1,0 +1,28 @@
+A CLI for the `typify` crate that converts JSON Schema files to Rust code
+
+Usage: cargo typify [OPTIONS] <INPUT>
+
+Arguments:
+  <INPUT>
+          The input file to read from
+
+Options:
+  -b, --builder
+          Whether to include a builder-style interface, this is the default
+
+  -p, --positional
+          Inverse of `--builder`. When set the builder-style interface will not be included
+
+  -a, --additional-derives <ADDITIONAL_DERIVES>
+          Add an additional derive macro to apply to all defined types
+
+  -o, --output <OUTPUT>
+          The output file to write to. If not specified, the input file name will be used with a `.rs` extension.
+          
+          If `-` is specified, the output will be written to stdout.
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
