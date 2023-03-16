@@ -1,5 +1,5 @@
 use expectorate::assert_contents;
-use newline_converter::{dos2unix, unix2dos};
+use newline_converter::dos2unix;
 use tempdir::TempDir;
 
 #[test]

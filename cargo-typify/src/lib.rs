@@ -99,7 +99,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 use serde::{Deserialize, Serialize};
 ";
 
-    let contents = format!("{intro}\n{}", type_space.to_string());
+    let contents = format!("{intro}\n{}", type_space.to_stream().to_string());
 
     let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 
