@@ -14,5 +14,4 @@ ipnetwork = { version = "0.20.0", features = ["schemars"] }
 rustfmt-wrapper = "0.2"
 schemars = "0.8.12"
 serde = "1.0.155"
-syn = "1"
 typify = { path = "../typify" }

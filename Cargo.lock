@@ -1081,7 +1081,6 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn",
  "typify",
 ]
 
