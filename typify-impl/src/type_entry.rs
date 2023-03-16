@@ -1,6 +1,6 @@
 // Copyright 2023 Oxide Computer Company
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
@@ -228,23 +228,23 @@ impl TypeEntryEnum {
                     .variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
-            .then(|| TypeEntryEnumImpl::AllSimpleVariants),
-            // Untagged and all variants impl FromStr
+            .then_some(TypeEntryEnumImpl::AllSimpleVariants),
+            // Untagged and all variants impl FromStr.
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::FromStr,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedFromStr),
-            // Untagged and all variants impl Display
+            .then_some(TypeEntryEnumImpl::UntaggedFromStr),
+            // Untagged and all variants impl Display.
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::Display,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+            .then_some(TypeEntryEnumImpl::UntaggedDisplay),
         ]
         .into_iter()
         .flatten()
@@ -798,6 +798,94 @@ impl TypeEntry {
                 }
             });
 
+        let convenience_from = {
+            // Build a map whose key is the type ID or type IDs of the Item and
+            // Tuple variants, and whose value is a tuple of the original index
+            // and the variant itself. Any key that is seen multiple times has
+            // a value of None.
+            let unique_variants =
+                variants
+                    .iter()
+                    .enumerate()
+                    .fold(BTreeMap::new(), |mut map, (index, variant)| {
+                        let key = match &variant.details {
+                            VariantDetails::Item(type_id) => vec![type_id],
+                            VariantDetails::Tuple(type_ids) => type_ids.iter().collect(),
+                            _ => return map,
+                        };
+
+                        map.entry(key)
+                            .and_modify(|v| *v = None)
+                            .or_insert(Some((index, variant)));
+                        map
+                    });
+
+            // Remove any variants that are duplicates (i.e. the value is None)
+            // with the flatten(). Then order a new map according to the
+            // original order of variants. The allows for the order to be
+            // stable and for impl blocks to appear in the same order as their
+            // corresponding variants.
+            let ordered_variants = unique_variants
+                .into_values()
+                .flatten()
+                .collect::<BTreeMap<_, _>>();
+
+            // Generate a `From<VariantType>` impl block that converts the type
+            // into the appropriate variant of the enum.
+            let variant_from =
+                ordered_variants
+                    .into_values()
+                    .map(|variant| match &variant.details {
+                        VariantDetails::Item(type_id) => {
+                            let variant_type = type_space.id_to_entry.get(type_id).unwrap();
+
+                            // TODO Strings might conflict with the way we're
+                            // dealing with TryFrom<String> right now.
+                            (variant_type.details != TypeEntryDetails::String).then(|| {
+                                let variant_type_ident = variant_type.type_ident(type_space, &None);
+                                let variant_name = format_ident!("{}", variant.name);
+                                quote! {
+                                    impl From<#variant_type_ident> for #type_name {
+                                        fn from(value: #variant_type_ident)
+                                            -> Self
+                                        {
+                                            Self::#variant_name(value)
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                        VariantDetails::Tuple(type_ids) => {
+                            let variant_type_idents = type_ids.iter().map(|type_id| {
+                                type_space
+                                    .id_to_entry
+                                    .get(type_id)
+                                    .unwrap()
+                                    .type_ident(type_space, &None)
+                            });
+                            let variant_type_ident = quote! {
+                                ( #(#variant_type_idents),* )
+                            };
+                            let variant_name = format_ident!("{}", variant.name);
+                            let ii = (0..type_ids.len()).map(syn::Index::from);
+                            Some(quote! {
+                                impl From<#variant_type_ident> for #type_name {
+                                    fn from(value: #variant_type_ident) -> Self {
+                                        Self::#variant_name(
+                                            #( value.#ii, )*
+                                        )
+                                    }
+                                }
+                            })
+                        }
+                        _ => None,
+                    });
+
+            quote! {
+                #( #variant_from )*
+            }
+        };
+
         let derives = strings_to_derives(
             derive_set,
             &self.extra_derives,
@@ -822,6 +910,7 @@ impl TypeEntry {
             #default_impl
             #untagged_newtype_from_string_impl
             #untagged_newtype_to_string_impl
+            #convenience_from
         };
         output.add_item(OutputSpaceMod::Crate, name, item);
     }

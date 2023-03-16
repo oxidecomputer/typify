@@ -41,7 +41,7 @@
           "title": "V6",
           "allOf": [
             {
-              "$ref": "#/components/schemas/Ipv4Net"
+              "$ref": "#/components/schemas/Ipv6Net"
             }
           ]
         }

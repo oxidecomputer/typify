@@ -9481,6 +9481,281 @@ impl From<&Everything> for Everything {
         value.clone()
     }
 }
+impl From<BranchProtectionRuleEvent> for Everything {
+    fn from(value: BranchProtectionRuleEvent) -> Self {
+        Self::BranchProtectionRuleEvent(value)
+    }
+}
+impl From<CheckRunEvent> for Everything {
+    fn from(value: CheckRunEvent) -> Self {
+        Self::CheckRunEvent(value)
+    }
+}
+impl From<CheckSuiteEvent> for Everything {
+    fn from(value: CheckSuiteEvent) -> Self {
+        Self::CheckSuiteEvent(value)
+    }
+}
+impl From<CodeScanningAlertEvent> for Everything {
+    fn from(value: CodeScanningAlertEvent) -> Self {
+        Self::CodeScanningAlertEvent(value)
+    }
+}
+impl From<CommitCommentEvent> for Everything {
+    fn from(value: CommitCommentEvent) -> Self {
+        Self::CommitCommentEvent(value)
+    }
+}
+impl From<ContentReferenceEvent> for Everything {
+    fn from(value: ContentReferenceEvent) -> Self {
+        Self::ContentReferenceEvent(value)
+    }
+}
+impl From<CreateEvent> for Everything {
+    fn from(value: CreateEvent) -> Self {
+        Self::CreateEvent(value)
+    }
+}
+impl From<DeleteEvent> for Everything {
+    fn from(value: DeleteEvent) -> Self {
+        Self::DeleteEvent(value)
+    }
+}
+impl From<DeployKeyEvent> for Everything {
+    fn from(value: DeployKeyEvent) -> Self {
+        Self::DeployKeyEvent(value)
+    }
+}
+impl From<DeploymentEvent> for Everything {
+    fn from(value: DeploymentEvent) -> Self {
+        Self::DeploymentEvent(value)
+    }
+}
+impl From<DeploymentStatusEvent> for Everything {
+    fn from(value: DeploymentStatusEvent) -> Self {
+        Self::DeploymentStatusEvent(value)
+    }
+}
+impl From<DiscussionEvent> for Everything {
+    fn from(value: DiscussionEvent) -> Self {
+        Self::DiscussionEvent(value)
+    }
+}
+impl From<DiscussionCommentEvent> for Everything {
+    fn from(value: DiscussionCommentEvent) -> Self {
+        Self::DiscussionCommentEvent(value)
+    }
+}
+impl From<ForkEvent> for Everything {
+    fn from(value: ForkEvent) -> Self {
+        Self::ForkEvent(value)
+    }
+}
+impl From<GithubAppAuthorizationEvent> for Everything {
+    fn from(value: GithubAppAuthorizationEvent) -> Self {
+        Self::GithubAppAuthorizationEvent(value)
+    }
+}
+impl From<GollumEvent> for Everything {
+    fn from(value: GollumEvent) -> Self {
+        Self::GollumEvent(value)
+    }
+}
+impl From<InstallationEvent> for Everything {
+    fn from(value: InstallationEvent) -> Self {
+        Self::InstallationEvent(value)
+    }
+}
+impl From<InstallationRepositoriesEvent> for Everything {
+    fn from(value: InstallationRepositoriesEvent) -> Self {
+        Self::InstallationRepositoriesEvent(value)
+    }
+}
+impl From<IssueCommentEvent> for Everything {
+    fn from(value: IssueCommentEvent) -> Self {
+        Self::IssueCommentEvent(value)
+    }
+}
+impl From<IssuesEvent> for Everything {
+    fn from(value: IssuesEvent) -> Self {
+        Self::IssuesEvent(value)
+    }
+}
+impl From<LabelEvent> for Everything {
+    fn from(value: LabelEvent) -> Self {
+        Self::LabelEvent(value)
+    }
+}
+impl From<MarketplacePurchaseEvent> for Everything {
+    fn from(value: MarketplacePurchaseEvent) -> Self {
+        Self::MarketplacePurchaseEvent(value)
+    }
+}
+impl From<MemberEvent> for Everything {
+    fn from(value: MemberEvent) -> Self {
+        Self::MemberEvent(value)
+    }
+}
+impl From<MembershipEvent> for Everything {
+    fn from(value: MembershipEvent) -> Self {
+        Self::MembershipEvent(value)
+    }
+}
+impl From<MetaEvent> for Everything {
+    fn from(value: MetaEvent) -> Self {
+        Self::MetaEvent(value)
+    }
+}
+impl From<MilestoneEvent> for Everything {
+    fn from(value: MilestoneEvent) -> Self {
+        Self::MilestoneEvent(value)
+    }
+}
+impl From<OrgBlockEvent> for Everything {
+    fn from(value: OrgBlockEvent) -> Self {
+        Self::OrgBlockEvent(value)
+    }
+}
+impl From<OrganizationEvent> for Everything {
+    fn from(value: OrganizationEvent) -> Self {
+        Self::OrganizationEvent(value)
+    }
+}
+impl From<PackageEvent> for Everything {
+    fn from(value: PackageEvent) -> Self {
+        Self::PackageEvent(value)
+    }
+}
+impl From<PageBuildEvent> for Everything {
+    fn from(value: PageBuildEvent) -> Self {
+        Self::PageBuildEvent(value)
+    }
+}
+impl From<PingEvent> for Everything {
+    fn from(value: PingEvent) -> Self {
+        Self::PingEvent(value)
+    }
+}
+impl From<ProjectEvent> for Everything {
+    fn from(value: ProjectEvent) -> Self {
+        Self::ProjectEvent(value)
+    }
+}
+impl From<ProjectCardEvent> for Everything {
+    fn from(value: ProjectCardEvent) -> Self {
+        Self::ProjectCardEvent(value)
+    }
+}
+impl From<ProjectColumnEvent> for Everything {
+    fn from(value: ProjectColumnEvent) -> Self {
+        Self::ProjectColumnEvent(value)
+    }
+}
+impl From<PublicEvent> for Everything {
+    fn from(value: PublicEvent) -> Self {
+        Self::PublicEvent(value)
+    }
+}
+impl From<PullRequestEvent> for Everything {
+    fn from(value: PullRequestEvent) -> Self {
+        Self::PullRequestEvent(value)
+    }
+}
+impl From<PullRequestReviewEvent> for Everything {
+    fn from(value: PullRequestReviewEvent) -> Self {
+        Self::PullRequestReviewEvent(value)
+    }
+}
+impl From<PullRequestReviewCommentEvent> for Everything {
+    fn from(value: PullRequestReviewCommentEvent) -> Self {
+        Self::PullRequestReviewCommentEvent(value)
+    }
+}
+impl From<PushEvent> for Everything {
+    fn from(value: PushEvent) -> Self {
+        Self::PushEvent(value)
+    }
+}
+impl From<ReleaseEvent> for Everything {
+    fn from(value: ReleaseEvent) -> Self {
+        Self::ReleaseEvent(value)
+    }
+}
+impl From<RepositoryEvent> for Everything {
+    fn from(value: RepositoryEvent) -> Self {
+        Self::RepositoryEvent(value)
+    }
+}
+impl From<RepositoryDispatchEvent> for Everything {
+    fn from(value: RepositoryDispatchEvent) -> Self {
+        Self::RepositoryDispatchEvent(value)
+    }
+}
+impl From<RepositoryImportEvent> for Everything {
+    fn from(value: RepositoryImportEvent) -> Self {
+        Self::RepositoryImportEvent(value)
+    }
+}
+impl From<RepositoryVulnerabilityAlertEvent> for Everything {
+    fn from(value: RepositoryVulnerabilityAlertEvent) -> Self {
+        Self::RepositoryVulnerabilityAlertEvent(value)
+    }
+}
+impl From<SecretScanningAlertEvent> for Everything {
+    fn from(value: SecretScanningAlertEvent) -> Self {
+        Self::SecretScanningAlertEvent(value)
+    }
+}
+impl From<SecurityAdvisoryEvent> for Everything {
+    fn from(value: SecurityAdvisoryEvent) -> Self {
+        Self::SecurityAdvisoryEvent(value)
+    }
+}
+impl From<SponsorshipEvent> for Everything {
+    fn from(value: SponsorshipEvent) -> Self {
+        Self::SponsorshipEvent(value)
+    }
+}
+impl From<StarEvent> for Everything {
+    fn from(value: StarEvent) -> Self {
+        Self::StarEvent(value)
+    }
+}
+impl From<StatusEvent> for Everything {
+    fn from(value: StatusEvent) -> Self {
+        Self::StatusEvent(value)
+    }
+}
+impl From<TeamEvent> for Everything {
+    fn from(value: TeamEvent) -> Self {
+        Self::TeamEvent(value)
+    }
+}
+impl From<TeamAddEvent> for Everything {
+    fn from(value: TeamAddEvent) -> Self {
+        Self::TeamAddEvent(value)
+    }
+}
+impl From<WatchEvent> for Everything {
+    fn from(value: WatchEvent) -> Self {
+        Self::WatchEvent(value)
+    }
+}
+impl From<WorkflowDispatchEvent> for Everything {
+    fn from(value: WorkflowDispatchEvent) -> Self {
+        Self::WorkflowDispatchEvent(value)
+    }
+}
+impl From<WorkflowJobEvent> for Everything {
+    fn from(value: WorkflowJobEvent) -> Self {
+        Self::WorkflowJobEvent(value)
+    }
+}
+impl From<WorkflowRunEvent> for Everything {
+    fn from(value: WorkflowRunEvent) -> Self {
+        Self::WorkflowRunEvent(value)
+    }
+}
 #[doc = "A user forks a repository."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -9509,6 +9784,11 @@ pub enum GithubAppAuthorizationEvent {
 impl From<&GithubAppAuthorizationEvent> for GithubAppAuthorizationEvent {
     fn from(value: &GithubAppAuthorizationEvent) -> Self {
         value.clone()
+    }
+}
+impl From<User> for GithubAppAuthorizationEvent {
+    fn from(value: User) -> Self {
+        Self::Revoked(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -9828,6 +10108,16 @@ impl ToString for InstallationCreatedAt {
             Self::Variant0(x) => x.to_string(),
             Self::Variant1(x) => x.to_string(),
         }
+    }
+}
+impl From<chrono::DateTime<chrono::offset::Utc>> for InstallationCreatedAt {
+    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<i64> for InstallationCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Variant1(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12726,6 +13016,16 @@ impl ToString for InstallationUpdatedAt {
             Self::Variant0(x) => x.to_string(),
             Self::Variant1(x) => x.to_string(),
         }
+    }
+}
+impl From<chrono::DateTime<chrono::offset::Utc>> for InstallationUpdatedAt {
+    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<i64> for InstallationUpdatedAt {
+    fn from(value: i64) -> Self {
+        Self::Variant1(value)
     }
 }
 #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
@@ -15928,6 +16228,11 @@ pub enum MembershipRemovedTeam {
 impl From<&MembershipRemovedTeam> for MembershipRemovedTeam {
     fn from(value: &MembershipRemovedTeam) -> Self {
         value.clone()
+    }
+}
+impl From<Team> for MembershipRemovedTeam {
+    fn from(value: Team) -> Self {
+        Self::Variant0(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -19537,6 +19842,91 @@ impl From<&PullRequestEvent> for PullRequestEvent {
         value.clone()
     }
 }
+impl From<PullRequestAssigned> for PullRequestEvent {
+    fn from(value: PullRequestAssigned) -> Self {
+        Self::Assigned(value)
+    }
+}
+impl From<PullRequestAutoMergeDisabled> for PullRequestEvent {
+    fn from(value: PullRequestAutoMergeDisabled) -> Self {
+        Self::AutoMergeDisabled(value)
+    }
+}
+impl From<PullRequestAutoMergeEnabled> for PullRequestEvent {
+    fn from(value: PullRequestAutoMergeEnabled) -> Self {
+        Self::AutoMergeEnabled(value)
+    }
+}
+impl From<PullRequestClosed> for PullRequestEvent {
+    fn from(value: PullRequestClosed) -> Self {
+        Self::Closed(value)
+    }
+}
+impl From<PullRequestConvertedToDraft> for PullRequestEvent {
+    fn from(value: PullRequestConvertedToDraft) -> Self {
+        Self::ConvertedToDraft(value)
+    }
+}
+impl From<PullRequestEdited> for PullRequestEvent {
+    fn from(value: PullRequestEdited) -> Self {
+        Self::Edited(value)
+    }
+}
+impl From<PullRequestLabeled> for PullRequestEvent {
+    fn from(value: PullRequestLabeled) -> Self {
+        Self::Labeled(value)
+    }
+}
+impl From<PullRequestLocked> for PullRequestEvent {
+    fn from(value: PullRequestLocked) -> Self {
+        Self::Locked(value)
+    }
+}
+impl From<PullRequestOpened> for PullRequestEvent {
+    fn from(value: PullRequestOpened) -> Self {
+        Self::Opened(value)
+    }
+}
+impl From<PullRequestReadyForReview> for PullRequestEvent {
+    fn from(value: PullRequestReadyForReview) -> Self {
+        Self::ReadyForReview(value)
+    }
+}
+impl From<PullRequestReopened> for PullRequestEvent {
+    fn from(value: PullRequestReopened) -> Self {
+        Self::Reopened(value)
+    }
+}
+impl From<PullRequestReviewRequestRemoved> for PullRequestEvent {
+    fn from(value: PullRequestReviewRequestRemoved) -> Self {
+        Self::ReviewRequestRemoved(value)
+    }
+}
+impl From<PullRequestReviewRequested> for PullRequestEvent {
+    fn from(value: PullRequestReviewRequested) -> Self {
+        Self::ReviewRequested(value)
+    }
+}
+impl From<PullRequestSynchronize> for PullRequestEvent {
+    fn from(value: PullRequestSynchronize) -> Self {
+        Self::Synchronize(value)
+    }
+}
+impl From<PullRequestUnassigned> for PullRequestEvent {
+    fn from(value: PullRequestUnassigned) -> Self {
+        Self::Unassigned(value)
+    }
+}
+impl From<PullRequestUnlabeled> for PullRequestEvent {
+    fn from(value: PullRequestUnlabeled) -> Self {
+        Self::Unlabeled(value)
+    }
+}
+impl From<PullRequestUnlocked> for PullRequestEvent {
+    fn from(value: PullRequestUnlocked) -> Self {
+        Self::Unlocked(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestHead {
@@ -19897,6 +20287,16 @@ impl From<&PullRequestRequestedReviewersItem> for PullRequestRequestedReviewersI
         value.clone()
     }
 }
+impl From<User> for PullRequestRequestedReviewersItem {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+impl From<Team> for PullRequestRequestedReviewersItem {
+    fn from(value: Team) -> Self {
+        Self::Team(value)
+    }
+}
 #[doc = "The [comment](https://docs.github.com/en/rest/reference/pulls#comments) itself."]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -20191,6 +20591,16 @@ impl From<&PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>
         value.clone()
     }
 }
+impl From<User> for PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+impl From<Team> for PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem {
+    fn from(value: Team) -> Self {
+        Self::Team(value)
+    }
+}
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PullRequestReviewCommentCreatedPullRequestState {
     #[serde(rename = "open")]
@@ -20476,6 +20886,16 @@ impl From<&PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem>
 {
     fn from(value: &PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem) -> Self {
         value.clone()
+    }
+}
+impl From<User> for PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+impl From<Team> for PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem {
+    fn from(value: Team) -> Self {
+        Self::Team(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -20789,6 +21209,16 @@ impl From<&PullRequestReviewCommentEditedPullRequestRequestedReviewersItem>
 {
     fn from(value: &PullRequestReviewCommentEditedPullRequestRequestedReviewersItem) -> Self {
         value.clone()
+    }
+}
+impl From<User> for PullRequestReviewCommentEditedPullRequestRequestedReviewersItem {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+impl From<Team> for PullRequestReviewCommentEditedPullRequestRequestedReviewersItem {
+    fn from(value: Team) -> Self {
+        Self::Team(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -22947,6 +23377,16 @@ impl ToString for RepositoryCreatedAt {
         }
     }
 }
+impl From<i64> for RepositoryCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<chrono::DateTime<chrono::offset::Utc>> for RepositoryCreatedAt {
+    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+        Self::Variant1(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryDeleted {
@@ -23568,6 +24008,16 @@ pub enum RepositoryPushedAt {
 impl From<&RepositoryPushedAt> for RepositoryPushedAt {
     fn from(value: &RepositoryPushedAt) -> Self {
         value.clone()
+    }
+}
+impl From<i64> for RepositoryPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<chrono::DateTime<chrono::offset::Utc>> for RepositoryPushedAt {
+    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+        Self::Variant1(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -24458,6 +24908,26 @@ impl From<&SecurityAdvisoryEvent> for SecurityAdvisoryEvent {
         value.clone()
     }
 }
+impl From<SecurityAdvisoryPerformedSecurityAdvisory> for SecurityAdvisoryEvent {
+    fn from(value: SecurityAdvisoryPerformedSecurityAdvisory) -> Self {
+        Self::Performed(value)
+    }
+}
+impl From<SecurityAdvisoryPublishedSecurityAdvisory> for SecurityAdvisoryEvent {
+    fn from(value: SecurityAdvisoryPublishedSecurityAdvisory) -> Self {
+        Self::Published(value)
+    }
+}
+impl From<SecurityAdvisoryUpdatedSecurityAdvisory> for SecurityAdvisoryEvent {
+    fn from(value: SecurityAdvisoryUpdatedSecurityAdvisory) -> Self {
+        Self::Updated(value)
+    }
+}
+impl From<SecurityAdvisoryWithdrawnSecurityAdvisory> for SecurityAdvisoryEvent {
+    fn from(value: SecurityAdvisoryWithdrawnSecurityAdvisory) -> Self {
+        Self::Withdrawn(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformed {
@@ -25311,6 +25781,16 @@ pub enum SimplePullRequestRequestedReviewersItem {
 impl From<&SimplePullRequestRequestedReviewersItem> for SimplePullRequestRequestedReviewersItem {
     fn from(value: &SimplePullRequestRequestedReviewersItem) -> Self {
         value.clone()
+    }
+}
+impl From<User> for SimplePullRequestRequestedReviewersItem {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+impl From<Team> for SimplePullRequestRequestedReviewersItem {
+    fn from(value: Team) -> Self {
+        Self::Team(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -27170,6 +27650,16 @@ pub enum WebhookEvents {
 impl From<&WebhookEvents> for WebhookEvents {
     fn from(value: &WebhookEvents) -> Self {
         value.clone()
+    }
+}
+impl From<Vec<WebhookEventsVariant0Item>> for WebhookEvents {
+    fn from(value: Vec<WebhookEventsVariant0Item>) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<Vec<String>> for WebhookEvents {
+    fn from(value: Vec<String>) -> Self {
+        Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]

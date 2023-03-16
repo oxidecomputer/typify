@@ -133,7 +133,7 @@ impl Default for DiskAttachmentState {
 #[serde(untagged)]
 pub enum IpNet {
     V4(Ipv4Net),
-    V6(Ipv4Net),
+    V6(Ipv6Net),
 }
 impl From<&IpNet> for IpNet {
     fn from(value: &IpNet) -> Self {
@@ -176,6 +176,16 @@ impl ToString for IpNet {
             Self::V4(x) => x.to_string(),
             Self::V6(x) => x.to_string(),
         }
+    }
+}
+impl From<Ipv4Net> for IpNet {
+    fn from(value: Ipv4Net) -> Self {
+        Self::V4(value)
+    }
+}
+impl From<Ipv6Net> for IpNet {
+    fn from(value: Ipv6Net) -> Self {
+        Self::V6(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -255,6 +265,11 @@ pub enum JankNames {
 impl From<&JankNames> for JankNames {
     fn from(value: &JankNames) -> Self {
         value.clone()
+    }
+}
+impl From<AnimationSpecification> for JankNames {
+    fn from(value: AnimationSpecification) -> Self {
+        Self::Variant1(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]

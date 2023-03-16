@@ -1,5 +1,5 @@
 use expectorate::assert_contents;
-use newline_converter::{dos2unix, unix2dos};
+use newline_converter::dos2unix;
 use tempdir::TempDir;
 
 #[test]
@@ -19,12 +19,9 @@ fn test_simple() {
         .assert()
         .success();
 
-    let content = std::fs::read_to_string(output_file).unwrap();
+    let actual = std::fs::read_to_string(output_file).unwrap();
 
-    assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
-        &content,
-    );
+    assert_contents("tests/outputs/builder.rs", &actual);
 }
 
 #[test]
@@ -43,10 +40,7 @@ fn test_default_output() {
 
     let content = std::fs::read_to_string(output_file).unwrap();
 
-    assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
-        &content,
-    );
+    assert_contents("tests/outputs/builder.rs", &content);
 }
 
 #[test]
@@ -57,14 +51,6 @@ fn test_positional_stdout() {
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
 
-    let expected = std::fs::read_to_string(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/tests/outputs/positional.rs"
-    ))
-    .unwrap();
-
-    let expected = dos2unix(&expected);
-
     let output = cmd
         .args(["typify", input, "--positional", "--output", "-"])
         .output()
@@ -74,7 +60,7 @@ fn test_positional_stdout() {
     let actual = dos2unix(&output_stdout);
 
     assert!(output.status.success());
-    assert_eq!(actual, expected);
+    assert_contents("tests/outputs/positional.rs", &actual);
 }
 
 #[test]
@@ -97,12 +83,9 @@ fn test_builder() {
     .assert()
     .success();
 
-    let content = std::fs::read_to_string(output_file).unwrap();
+    let actual = std::fs::read_to_string(output_file).unwrap();
 
-    assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/builder.rs"),
-        &content,
-    );
+    assert_contents("tests/outputs/builder.rs", &actual);
 }
 
 #[test]
@@ -127,12 +110,9 @@ fn test_derive() {
     .assert()
     .success();
 
-    let content = std::fs::read_to_string(output_file).unwrap();
+    let actual = std::fs::read_to_string(output_file).unwrap();
 
-    assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/derive.rs"),
-        &content,
-    );
+    assert_contents("tests/outputs/derive.rs", &actual);
 }
 
 #[test]
@@ -159,12 +139,9 @@ fn test_multi_derive() {
     .assert()
     .success();
 
-    let content = std::fs::read_to_string(output_file).unwrap();
+    let actual = std::fs::read_to_string(output_file).unwrap();
 
-    assert_contents(
-        concat!(env!("CARGO_MANIFEST_DIR"), "/tests/outputs/multi_derive.rs"),
-        &content,
-    );
+    assert_contents("tests/outputs/multi_derive.rs", &actual);
 }
 
 #[test]
@@ -173,19 +150,11 @@ fn test_help() {
 
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
 
-    let expected = std::fs::read_to_string(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/tests/outputs/help.txt"
-    ))
-    .unwrap();
-
-    let expected = dos2unix(&expected);
-
     let output = cmd.args(["typify", "--help"]).output().unwrap();
 
     let output_stdout = String::from_utf8(output.stdout).unwrap();
     let actual = dos2unix(&output_stdout);
 
     assert!(output.status.success());
-    assert_eq!(actual, expected);
+    assert_contents("tests/outputs/help.txt", &actual);
 }
