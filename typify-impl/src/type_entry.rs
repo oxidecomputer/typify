@@ -127,6 +127,8 @@ pub(crate) enum TypeEntryDetails {
     Float(String),
     /// Strings... which we handle a little specially.
     String,
+    /// serde_json::Value which we also handle specially.
+    JsonValue,
 
     /// While these types won't very make their way out to the user, we need
     /// reference types in particular to represent simple type aliases between
@@ -532,6 +534,8 @@ impl TypeEntry {
                     false
                 }
             }
+
+            TypeEntryDetails::JsonValue => false,
 
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
@@ -1421,10 +1425,14 @@ impl TypeEntry {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(type_id)
-                    .expect("unresolved type id for map")
-                    .type_ident(type_space, type_mod);
+                    .expect("unresolved type id for map");
 
-                quote! { std::collections::HashMap<String, #inner_ty> }
+                let inner_ident = inner_ty.type_ident(type_space, type_mod);
+                if inner_ty.details == TypeEntryDetails::JsonValue {
+                    quote! { serde_json::Map<String, #inner_ident> }
+                } else {
+                    quote! { std::collections::HashMap<String, #inner_ident> }
+                }
             }
 
             TypeEntryDetails::Set(id) => {
@@ -1453,6 +1461,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
+            TypeEntryDetails::JsonValue => quote! { serde_json::Value },
             TypeEntryDetails::Native(TypeEntryNative {
                 type_name: name, ..
             })
@@ -1468,6 +1477,7 @@ impl TypeEntry {
     pub(crate) fn type_parameter_ident(
         &self,
         type_space: &TypeSpace,
+
         lifetime_name: Option<&str>,
     ) -> TokenStream {
         let lifetime = lifetime_name.map(|s| {
@@ -1481,16 +1491,15 @@ impl TypeEntry {
         match &self.details {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
-            TypeEntryDetails::Enum(TypeEntryEnum{ variants, .. })
-                // TODO we should probably cache this rather than iterating
-                // every time. We'll know it when the enum is constructed.
+            // TODO we should probably cache this rather than iterating
+            // every time. We'll know it when the enum is constructed.
+            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. })
                 if variants
                     .iter()
-                    .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
+                    .all(|variant| matches!(&variant.details, VariantDetails::Simple)) =>
             {
                 self.type_ident(type_space, &type_space.settings.type_mod)
             }
-
             TypeEntryDetails::Enum(_)
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
@@ -1498,13 +1507,13 @@ impl TypeEntry {
             | TypeEntryDetails::Map(_)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
-            | TypeEntryDetails::Native(_) => {
+            | TypeEntryDetails::Native(_)
+            | TypeEntryDetails::JsonValue => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
                 }
             }
-
             TypeEntryDetails::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
@@ -1530,8 +1539,10 @@ impl TypeEntry {
 
                 quote! { ( #(#type_streams),* ) }
             }
-
-            TypeEntryDetails::Unit | TypeEntryDetails::Boolean|TypeEntryDetails::Integer(_) | TypeEntryDetails::Float(_) => {
+            TypeEntryDetails::Unit
+            | TypeEntryDetails::Boolean
+            | TypeEntryDetails::Integer(_)
+            | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, &type_space.settings.type_mod)
             }
             TypeEntryDetails::String => quote! { & #lifetime str },
@@ -1571,6 +1582,8 @@ impl TypeEntry {
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),
+
+            TypeEntryDetails::JsonValue => "json value".to_string(),
 
             TypeEntryDetails::Reference(_) => unreachable!(),
         }

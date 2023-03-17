@@ -6,14 +6,14 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
-pub struct Fruit(pub std::collections::HashMap<String, serde_json::Value>);
+pub struct Fruit(pub serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for Fruit {
-    type Target = std::collections::HashMap<String, serde_json::Value>;
-    fn deref(&self) -> &std::collections::HashMap<String, serde_json::Value> {
+    type Target = serde_json::Map<String, serde_json::Value>;
+    fn deref(&self) -> &serde_json::Map<String, serde_json::Value> {
         &self.0
     }
 }
-impl From<Fruit> for std::collections::HashMap<String, serde_json::Value> {
+impl From<Fruit> for serde_json::Map<String, serde_json::Value> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -23,8 +23,8 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<String, serde_json::Value>> for Fruit {
-    fn from(value: std::collections::HashMap<String, serde_json::Value>) -> Self {
+impl From<serde_json::Map<String, serde_json::Value>> for Fruit {
+    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
         Self(value)
     }
 }

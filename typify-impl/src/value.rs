@@ -133,6 +133,12 @@ impl TypeEntry {
                     serde_json::from_str::< #( #type_path )::* >(#text).unwrap()
                 }
             }
+            TypeEntryDetails::JsonValue => {
+                let text = value.to_string();
+                quote! {
+                    serde_json::from_str::<serde_json::Value>(#text).unwrap()
+                }
+            }
             TypeEntryDetails::Boolean => {
                 let v = value.as_bool()?;
                 quote! { #v }
