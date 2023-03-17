@@ -3,17 +3,18 @@
 Typify compiles JSON Schema documents into Rust types. It can be used in one of
 three ways:
 
-- via the macro `import_types!("types.json")` to generate Rust types directly
-in your program
+- via the macro `import_types!("types.json")` to generate Rust types directly in
+  your program
 
 - via a builder interface to generate Rust types in `build.rs`
 
 - or via the builder functions to generate persistent files e.g. when building
-API bindings.
+  API bindings.
 
 ## JSON Schema → Rust types
 
-Typify translates JSON Schema types in a few different ways depending on some basic properties of the schema:
+Typify translates JSON Schema types in a few different ways depending on some
+basic properties of the schema:
 
 ### Built-in types
 
@@ -23,17 +24,17 @@ appropriate built-in type based on type attributes. For example, a JSON Schema
 might specify a maximum and/or minimum that indicates the appropriate integral
 type to use.
 
-String schemas that include a `format` are represented with the appropriate
-Rust type. For example `{ "type": "string", "format": "uuid" }` is represented
-as a `uuid::Uuid` (which requires the `uuid` crate be included as a dependency).
+String schemas that include a `format` are represented with the appropriate Rust
+type. For example `{ "type": "string", "format": "uuid" }` is represented as a
+`uuid::Uuid` (which requires the `uuid` crate be included as a dependency).
 
 ### Arrays
 
-JSON Schema arrays can turn into one of three Rust types `Vec<T>`,
-`HashSet<T>`, and tuples depending on the schema properties. An array may have
-a fixed length that matches a fixed list of item types; this is well
-represented by a Rust tuples. The distinction between `Vec<T>` and `HashSet<T>`
-is only if the schema's `uniqueItems` field is `false` or `true` respectively.
+JSON Schema arrays can turn into one of three Rust types `Vec<T>`, `HashSet<T>`,
+and tuples depending on the schema properties. An array may have a fixed length
+that matches a fixed list of item types; this is well represented by a Rust
+tuples. The distinction between `Vec<T>` and `HashSet<T>` is only if the
+schema's `uniqueItems` field is `false` or `true` respectively.
 
 ### Objects
 
@@ -49,13 +50,42 @@ simply get the `#[serde(default)]` attribute (so you won't see e.g.
 
 ### OneOf
 
-The `OneOf` construct maps to a Rust enum. Typify maps this to the various [serde enum types](https://serde.rs/enum-representations.html).
+The `OneOf` construct maps to a Rust enum. Typify maps this to the various
+[serde enum types](https://serde.rs/enum-representations.html).
 
 ### AnyOf / AllOf
 
 The `anyOf` and `allOf` constructs are a little trickier to handle, but (in
 general) Typify models these as structs where each member is decorated with the
 `#[serde(flatten)]` attribute (with `Option` wrappers in the case of `anyOf`).
+
+## Formatting
+
+By default Typify's generated code is not formatted. If formatted code is
+preferred, crates like [rustfmt-wrapper](https://docs.rs/rustfmt-wrapper) and
+[prettyplease](https://docs.rs/prettyplease) can be used to format the generated
+code before writing it to a file.
+
+The examples below show different ways to convert a `TypeSpace` to a string
+(`typespace` is a `typify::TypeSpace`).
+
+### No formatting
+
+```rust
+typespace.to_stream().to_string()
+```
+
+### Rustfmt
+
+```rust
+rustfmt_wrapper::rustfmt(typespace.to_stream().to_string())?
+```
+
+### Prettyplease
+
+```rust
+prettyplease::unparse(&syn::parse2::<syn::File>(typespace.to_stream())?)
+```
 
 ## WIP
 
@@ -73,9 +103,9 @@ Bounded numbers aren't very well handled. Consider, for example, the schema:
 
 ```json
 {
-    "type": "integer",
-    "minimum": 1,
-    "maximum": 6
+  "type": "integer",
+  "minimum": 1,
+  "maximum": 6
 }
 ```
 
@@ -98,4 +128,5 @@ struct A {
     a: Box<A>,
 }
 ```
+
 .. but it does not support more complex cycles such as A -> B -> A.
