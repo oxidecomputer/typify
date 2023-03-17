@@ -472,10 +472,23 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(_)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Map(type_id)) => {
             serde_options.push(quote! { default });
-            serde_options
-                .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
+
+            let inner_ty = type_space
+                .id_to_entry
+                .get(type_id)
+                .expect("unresolved type id for map");
+
+            if inner_ty.details == TypeEntryDetails::JsonValue {
+                serde_options.push(quote! {
+                    skip_serializing_if = "serde_json::Map::is_empty"
+                });
+            } else {
+                serde_options.push(quote! {
+                    skip_serializing_if = "std::collections::HashMap::is_empty"
+                });
+            }
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, _) => {
@@ -615,7 +628,7 @@ mod tests {
     #[derive(Serialize, JsonSchema, Schema)]
     struct SomeMaps {
         strings: std::collections::HashMap<String, String>,
-        things: std::collections::HashMap<String, serde_json::Value>,
+        things: serde_json::Map<String, serde_json::Value>,
     }
 
     #[test]
@@ -660,9 +673,6 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
         let output = ty.type_name(&type_space).replace(" ", "");
-        assert_eq!(
-            output,
-            "std::collections::HashMap<String,serde_json::Value>"
-        );
+        assert_eq!(output, "serde_json::Map<String,serde_json::Value>");
     }
 }

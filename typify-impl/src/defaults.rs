@@ -244,8 +244,7 @@ impl TypeEntry {
                 // this Value is not valid for this built-in type.
                 Ok(DefaultKind::Specific)
             }
-            // TODO think about this case
-            TypeEntryDetails::JsonValue => todo!(),
+            TypeEntryDetails::JsonValue => Ok(DefaultKind::Specific),
             TypeEntryDetails::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(DefaultKind::Intrinsic),
                 serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),

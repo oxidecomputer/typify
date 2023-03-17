@@ -54,7 +54,7 @@ impl ToString for IntOrStr {
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(std::collections::HashMap<String, serde_json::Value>),
+    Object(serde_json::Map<String, serde_json::Value>),
     Array(Vec<serde_json::Value>),
     String(String),
     Integer(i64),
