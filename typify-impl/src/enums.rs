@@ -1623,6 +1623,12 @@ mod tests {
                     value.clone()
                 }
             }
+
+            impl From<u32> for ResultX {
+                fn from(value: u32) -> Self {
+                    Self::Ok(value)
+                }
+            }
         };
         assert_eq!(actual.to_string(), expected.to_string());
     }
@@ -1654,6 +1660,12 @@ mod tests {
             impl From<&ResultX> for ResultX {
                 fn from(value: &ResultX) -> Self {
                     value.clone()
+                }
+            }
+
+            impl From<u32> for ResultX {
+                fn from(value: u32) -> Self {
+                    Self::Ok(value)
                 }
             }
         };

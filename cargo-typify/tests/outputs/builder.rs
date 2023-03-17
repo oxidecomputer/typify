@@ -39,6 +39,16 @@ impl From<&FruitOrVeg> for FruitOrVeg {
         value.clone()
     }
 }
+impl From<Veggie> for FruitOrVeg {
+    fn from(value: Veggie) -> Self {
+        Self::Veg(value)
+    }
+}
+impl From<Fruit> for FruitOrVeg {
+    fn from(value: Fruit) -> Self {
+        Self::Fruit(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]

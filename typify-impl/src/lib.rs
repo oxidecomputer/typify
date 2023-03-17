@@ -104,7 +104,7 @@ pub struct TypeNewtype<'a> {
 }
 
 /// Type identifier returned from type creation and used to lookup types.
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub struct TypeId(u64);
 
 #[derive(Debug, Clone, PartialEq)]

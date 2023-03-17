@@ -49,6 +49,16 @@ impl ToString for IdOrName {
         }
     }
 }
+impl From<uuid::Uuid> for IdOrName {
+    fn from(value: uuid::Uuid) -> Self {
+        Self::Id(value)
+    }
+}
+impl From<Name> for IdOrName {
+    fn from(value: Name) -> Self {
+        Self::Name(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
@@ -96,6 +106,16 @@ impl ToString for IdOrNameRedundant {
             Self::Variant0(x) => x.to_string(),
             Self::Variant1(x) => x.to_string(),
         }
+    }
+}
+impl From<uuid::Uuid> for IdOrNameRedundant {
+    fn from(value: uuid::Uuid) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<Name> for IdOrNameRedundant {
+    fn from(value: Name) -> Self {
+        Self::Variant1(value)
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
