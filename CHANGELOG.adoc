@@ -13,6 +13,25 @@
 
 == Unreleased changes (release date TBD)
 
+Breaking change: this release removes the `ToString` implementation for
+`TypeSpace` and the `rustfmt-wrapper` dependency. This allows users to use a
+pretty printing method of choice. Users can use the `ToTokens` implementation of
+`TypeSpace`:
+
+Before:
+[source,rust]
+----
+let typespace = TypeSpace::default();
+typespace.to_string()
+----
+
+After:
+[source,rust]
+----
+let typespace = TypeSpace::default();
+typespace.to_stream().to_string()
+----
+
 https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
 
 * Allow per-type renames and derive macro applications (#131)

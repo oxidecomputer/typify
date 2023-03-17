@@ -253,9 +253,11 @@ dependencies = [
 name = "example-build"
 version = "0.0.0"
 dependencies = [
+ "prettyplease",
  "schemars",
  "serde",
  "serde_json",
+ "syn",
  "typify",
 ]
 
@@ -535,6 +537,16 @@ checksum = "54ff541861505aabf6ea722d2131ee980b8276e10a1297b94e896dd8b621850d"
 dependencies = [
  "predicates-core",
  "termtree",
+]
+
+[[package]]
+name = "prettyplease"
+version = "0.1.25"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c8646e95016a7a6c4adea95bafa8a16baab64b583356217f2c85db4a39d9a86"
+dependencies = [
+ "proc-macro2",
+ "syn",
 ]
 
 [[package]]
@@ -1074,10 +1086,12 @@ name = "typify-test"
 version = "0.0.0"
 dependencies = [
  "ipnetwork",
+ "prettyplease",
  "regress",
  "schemars",
  "serde",
  "serde_json",
+ "syn",
  "typify",
 ]
 
