@@ -861,9 +861,11 @@ impl TypeSpace {
     fn convert_number<'a>(
         &self,
         _metadata: &'a Option<Box<Metadata>>,
-        validation: &Option<Box<schemars::schema::NumberValidation>>,
+        _validation: &Option<Box<schemars::schema::NumberValidation>>,
         _format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        /*
+        See https://github.com/oxidecomputer/typify/issues/169
         if let Some(validation) = validation {
             assert!(validation.multiple_of.is_none());
             assert!(validation.maximum.is_none());
@@ -871,6 +873,7 @@ impl TypeSpace {
             assert!(validation.minimum.is_none());
             assert!(validation.exclusive_minimum.is_none());
         }
+        */
 
         Ok((TypeEntry::new_float("f64"), &None))
     }
