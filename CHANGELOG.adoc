@@ -13,6 +13,10 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.0.11\...HEAD[Full list of commits]
+
+== 0.0.11 (released 2023-03-18)
+
 This is a big update with many, many changes to code generation, and many more
 JSON schema structures well-handled. Among the many changes:
 
@@ -41,7 +45,7 @@ Consumers can now affect how code is generated in several ways:
 * specifying a replacement type by schema pattern
 
 
-https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.10\...v0.0.11[Full list of commits]
 
 * Allow per-type renames and derive macro applications (#131)
 * `ToString` implementations for untagged enums with trivial newtype variants (#145)
