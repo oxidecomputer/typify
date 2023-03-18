@@ -130,6 +130,14 @@ mod builder {
             })
         }
     }
+    impl From<super::Veggie> for Veggie {
+        fn from(value: super::Veggie) -> Self {
+            Self {
+                veggie_like: Ok(value.veggie_like),
+                veggie_name: Ok(value.veggie_name),
+            }
+        }
+    }
     pub struct Veggies {
         fruits: Result<Vec<String>, String>,
         vegetables: Result<Vec<super::Veggie>, String>,
@@ -171,6 +179,14 @@ mod builder {
                 fruits: value.fruits?,
                 vegetables: value.vegetables?,
             })
+        }
+    }
+    impl From<super::Veggies> for Veggies {
+        fn from(value: super::Veggies) -> Self {
+            Self {
+                fruits: Ok(value.fruits),
+                vegetables: Ok(value.vegetables),
+            }
         }
     }
 }
