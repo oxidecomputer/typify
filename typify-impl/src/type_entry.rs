@@ -1092,7 +1092,10 @@ impl TypeEntry {
                         )*
                     }
 
-                    impl std::convert::TryFrom<#type_name> for super::#type_name {
+                    // This is how the item is built.
+                    impl std::convert::TryFrom<#type_name>
+                        for super::#type_name
+                    {
                         type Error = String;
 
                         fn try_from(value: #type_name)
@@ -1103,6 +1106,17 @@ impl TypeEntry {
                                     #prop_name: value.#prop_name?,
                                 )*
                             })
+                        }
+                    }
+
+                    // Construct a builder from the item.
+                    impl From<super::#type_name> for #type_name {
+                        fn from(value: super::#type_name) -> Self {
+                            Self {
+                                #(
+                                    #prop_name: Ok(value.#prop_name),
+                                )*
+                            }
                         }
                     }
                 },
