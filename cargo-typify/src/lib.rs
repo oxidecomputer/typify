@@ -10,7 +10,7 @@ use typify::{TypeSpace, TypeSpaceSettings};
 #[command(author, version, about)]
 #[command(group(
     ArgGroup::new("build")
-        .args(["builder", "positional"]),
+        .args(["builder", "no_builder"]),
 ))]
 pub struct CliArgs {
     /// The input file to read from
@@ -21,11 +21,11 @@ pub struct CliArgs {
     pub builder: bool,
 
     /// Inverse of `--builder`. When set the builder-style interface will not be included.
-    #[arg(short, long, default_value = "false", group = "build")]
-    pub positional: bool,
+    #[arg(short = 'B', long, default_value = "false", group = "build")]
+    pub no_builder: bool,
 
     /// Add an additional derive macro to apply to all defined types.
-    #[arg(short, long)]
+    #[arg(short, long = "additional-derive", value_name = "derive")]
     pub additional_derives: Vec<String>,
 
     /// The output file to write to. If not specified, the input file name will be used with a
@@ -55,7 +55,7 @@ impl CliArgs {
     }
 
     pub fn use_builder(&self) -> bool {
-        !self.positional
+        !self.no_builder
     }
 }
 
@@ -117,7 +117,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("-")),
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), None);
@@ -130,7 +130,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("some_file.rs")),
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -143,7 +143,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -156,20 +156,20 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert!(args.use_builder());
     }
 
     #[test]
-    fn test_positional_builder() {
+    fn test_no_builder() {
         let args = CliArgs {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: true,
+            no_builder: true,
         };
 
         assert!(!args.use_builder());
@@ -182,7 +182,7 @@ mod tests {
             builder: true,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert!(args.use_builder());

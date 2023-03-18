@@ -1,4 +1,4 @@
-A CLI for the `typify` crate that converts JSON Schema files to Rust code
+cargo command to generate Rust code from a JSON Schema
 
 Usage: cargo typify [OPTIONS] <INPUT>
 
@@ -10,10 +10,10 @@ Options:
   -b, --builder
           Whether to include a builder-style interface, this is the default
 
-  -p, --positional
+  -B, --no-builder
           Inverse of `--builder`. When set the builder-style interface will not be included
 
-  -a, --additional-derives <ADDITIONAL_DERIVES>
+  -a, --additional-derive <derive>
           Add an additional derive macro to apply to all defined types
 
   -o, --output <OUTPUT>

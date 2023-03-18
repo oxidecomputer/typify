@@ -1,7 +1,6 @@
 [package]
 name = "typify-test"
 version = "0.0.0"
-authors = ["Adam H. Leventhal <ahl@oxidecomputer.com>"]
 edition = "2021"
 
 [dependencies]

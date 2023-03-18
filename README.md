@@ -1,15 +1,21 @@
 # Typify
 
 Typify compiles JSON Schema documents into Rust types. It can be used in one of
-three ways:
+several ways:
 
 - via the macro `import_types!("types.json")` to generate Rust types directly in
   your program
 
-- via a builder interface to generate Rust types in `build.rs`
+- via a builder interface to generate Rust types in `build.rs` or `xtask`
 
-- or via the builder functions to generate persistent files e.g. when building
-  API bindings.
+- via the builder functions to generate persistent files e.g. when building
+  API bindings
+
+- using the [`cargo typify`](./cargo-typify/README.md) command
+
+**If generation fails or is lousy**: Please file an issue and include the JSON
+Schema and Rust output (if there is any). Use `cargo typify` command to
+generate code from the command-line.
 
 ## JSON Schema → Rust types
 
@@ -69,22 +75,32 @@ code before writing it to a file.
 The examples below show different ways to convert a `TypeSpace` to a string
 (`typespace` is a `typify::TypeSpace`).
 
-### No formatting
 
-```rust
-typespace.to_stream().to_string()
-```
+### `rustfmt`
 
-### Rustfmt
+Best for generation of code that might be checked in alongside hand-written
+code such as in the case of an `xtask` or stand-alone code generator (list
+`cargo-typify`).
 
 ```rust
 rustfmt_wrapper::rustfmt(typespace.to_stream().to_string())?
 ```
 
-### Prettyplease
+### `prettyplease`
+
+Best for `build.rs` scripts where transitive dependencies might not have
+`rustfmt` installed so should be self-contained.
 
 ```rust
 prettyplease::unparse(&syn::parse2::<syn::File>(typespace.to_stream())?)
+```
+
+### No formatting
+
+If no human will ever see the code (and this is almost never the case).
+
+```rust
+typespace.to_stream().to_string()
 ```
 
 ## WIP
