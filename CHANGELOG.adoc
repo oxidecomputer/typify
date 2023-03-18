@@ -13,24 +13,33 @@
 
 == Unreleased changes (release date TBD)
 
-Breaking change: this release removes the `ToString` implementation for
-`TypeSpace` and the `rustfmt-wrapper` dependency. This allows users to use a
-pretty printing method of choice. Users can use the `ToTokens` implementation of
-`TypeSpace`:
+This is a big update with many, many changes to code generation, and many more
+JSON schema structures well-handled. Among the many changes:
 
-Before:
-[source,rust]
-----
-let typespace = TypeSpace::default();
-typespace.to_string()
-----
+* Generate a `ToString` impl for untagged enums with trivial variants (#145)
+* Allow conversion overrides by specifying a schema (#155)
+* Handle untyped enums that contain nulls (#167)
+* Handle `not` schemas for enumerated values (#168)
+* Improve generated code for FromStr and TryFrom impls (#174)
+* Handle format specifiers for enumerated strings (#188)
 
-After:
-[source,rust]
-----
-let typespace = TypeSpace::default();
-typespace.to_stream().to_string()
-----
+=== *Breaking*: The removal of `TypeSpace::to_string()`
+
+Previously all transitive consumers required the presence of `rustfmt`. In this
+version we leave formatting to the consumer. See link:README.md#formatting[the formatting section of the README] for details on formatting.
+
+=== CLI
+
+This version adds the `cargo-typify` crate for stand-alone code generation.
+
+=== Augmented Generation
+
+Consumers can now affect how code is generated in several ways:
+* adding derive macros to all generated types
+* modifying specific types by name to rename them or add derive macros
+* specifying a replacement type by name
+* specifying a replacement type by schema pattern
+
 
 https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
 
