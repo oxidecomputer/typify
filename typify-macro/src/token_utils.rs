@@ -6,7 +6,7 @@ use quote::ToTokens;
 use syn::{
     parse::Parse,
     punctuated::Punctuated,
-    token::{Add, Colon},
+    token::{Colon, Plus},
     Ident, Path, Token, TraitBoundModifier,
 };
 use typify_impl::TypeSpaceImpl;
@@ -15,7 +15,7 @@ use typify_impl::TypeSpaceImpl;
 pub struct TypeAndImpls {
     pub type_name: Path,
     pub colon_token: Option<Colon>,
-    pub impls: Punctuated<ImplTrait, Add>,
+    pub impls: Punctuated<ImplTrait, Plus>,
 }
 
 impl TypeAndImpls {
