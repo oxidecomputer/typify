@@ -735,26 +735,26 @@ dependencies = [
 
 [[package]]
 name = "schema"
-version = "0.0.1"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c264b3fd73f2b0b7360f7ae10779dbcb3a3d0f2b1326347c16cd4da32a0db43"
+checksum = "96422023a2fbf8c618a005a24bcbe01d1f3159e5ea7c8881120fa25227e39a2c"
 dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 1.0.109",
+ "syn 2.0.3",
 ]
 
 [[package]]
 name = "schema-derive"
-version = "0.0.1"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c5081f42984166c05c533e4ae3a75e8c1f973071be7ef442912d7f83fc9e762"
+checksum = "325e57fb235cb8b19d922a8d28c5d22d705b8fe41a27cc6c189b851e0d1cba6f"
 dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 1.0.109",
+ "syn 2.0.3",
 ]
 
 [[package]]
@@ -844,13 +844,14 @@ dependencies = [
 
 [[package]]
 name = "serde_tokenstream"
-version = "0.1.7"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "797ba1d80299b264f3aac68ab5d12e5825a561749db4df7cd7c8083900c5d4e9"
+checksum = "8a00ffd23fd882d096f09fcaae2a9de8329a328628e86027e049ee051dc1621f"
 dependencies = [
  "proc-macro2",
+ "quote",
  "serde",
- "syn 1.0.109",
+ "syn 2.0.3",
 ]
 
 [[package]]
@@ -1078,7 +1079,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 1.0.109",
+ "syn 2.0.3",
  "thiserror",
  "unicode-ident",
  "uuid",
@@ -1094,7 +1095,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 1.0.109",
+ "syn 2.0.3",
  "typify-impl",
 ]
 
