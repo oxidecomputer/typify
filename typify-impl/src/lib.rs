@@ -6,7 +6,7 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, Schema};
 use thiserror::Error;
 use type_entry::{
@@ -893,6 +893,35 @@ impl<'a> Type<'a> {
         } = self;
         type_entry.has_impl(type_space, impl_name)
     }
+
+    /// Provides the the type identifier for the builder if one exists.
+    pub fn builder(&self) -> Option<TokenStream> {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+
+        if !type_space.settings.struct_builder {
+            return None;
+        }
+
+        match &type_entry.details {
+            TypeEntryDetails::Struct(type_entry::TypeEntryStruct { name, .. }) => {
+                match &type_space.settings.type_mod {
+                    Some(type_mod) => {
+                        let type_mod = format_ident!("{}", type_mod);
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { #type_mod :: builder :: #type_name })
+                    }
+                    None => {
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { builder :: #type_name })
+                    }
+                }
+            }
+            _ => None,
+        }
+    }
 }
 
 impl<'a> TypeEnum<'a> {
@@ -1133,5 +1162,14 @@ mod tests {
         }
 
         validate_output::<Things>();
+    }
+
+    #[test]
+    fn test_builder_name() {
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        struct Test {
+            x: u32,
+        }
     }
 }
