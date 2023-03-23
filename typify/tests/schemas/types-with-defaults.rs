@@ -12,7 +12,7 @@ impl From<&TestBed> for TestBed {
         value.clone()
     }
 }
-mod defaults {
+pub mod defaults {
     pub(super) fn test_bed_any() -> Vec<serde_json::Value> {
         vec![
             serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),

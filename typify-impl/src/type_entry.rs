@@ -1062,6 +1062,7 @@ impl TypeEntry {
                 OutputSpaceMod::Builder,
                 name,
                 quote! {
+                    #[derive(Clone, Debug)]
                     pub struct #type_name {
                         #(
                             #prop_name: Result<#prop_type_scoped, String>,

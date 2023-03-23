@@ -86,7 +86,8 @@ impl Veggies {
         builder::Veggies::default()
     }
 }
-mod builder {
+pub mod builder {
+    #[derive(Clone, Debug)]
     pub struct Veggie {
         veggie_like: Result<bool, String>,
         veggie_name: Result<String, String>,
@@ -138,6 +139,7 @@ mod builder {
             }
         }
     }
+    #[derive(Clone, Debug)]
     pub struct Veggies {
         fruits: Result<Vec<String>, String>,
         vegetables: Result<Vec<super::Veggie>, String>,
