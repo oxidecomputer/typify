@@ -263,7 +263,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 1.0.109",
+ "syn 2.0.3",
  "typify",
 ]
 
@@ -1109,7 +1109,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 1.0.109",
+ "syn 2.0.3",
  "typify",
 ]
 
