@@ -138,7 +138,9 @@ impl TypeEntry {
                 quote! { #v }
             }
             TypeEntryDetails::Integer(type_name) | TypeEntryDetails::Float(type_name) => {
-                value.is_number().then(|| ())?;
+                if !value.is_number() {
+                    return None;
+                }
                 let val = match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name))
                 {
                     Ok(v) => v,
@@ -174,7 +176,9 @@ fn value_for_external_enum(
         Some(quote! { #scope #type_ident::#var_ident })
     } else {
         let map = value.as_object()?;
-        (map.len() == 1).then(|| ())?;
+        if map.len() != 1 {
+            return None;
+        }
 
         let (name, var_value) = map.iter().next()?;
 
@@ -328,7 +332,9 @@ fn value_for_tuple(
     scope: &TokenStream,
 ) -> Option<Vec<TokenStream>> {
     let arr = value.as_array()?;
-    (arr.len() == types.len()).then(|| ())?;
+    if arr.len() != types.len() {
+        return None;
+    }
     types
         .iter()
         .zip(arr)

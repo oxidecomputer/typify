@@ -1,8 +1,9 @@
+// Copyright 2023 Oxide Computer Company
+
 use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
-use schemars::schema::Schema;
 use typify::{TypeSpace, TypeSpaceSettings};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
@@ -75,21 +76,8 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 
     let mut type_space = TypeSpace::new(settings);
     type_space
-        .add_ref_types(schema.definitions)
-        .wrap_err("Could not add ref types from the 'definitions' field in the JSON Schema")?;
-
-    let base_type = &schema.schema;
-
-    // Only convert the top-level type if it has a name
-    if let Some(base_title) = &(|| base_type.metadata.as_ref()?.title.as_ref())() {
-        let base_title = base_title.to_string();
-
-        type_space
-            .add_type(&Schema::Object(schema.schema))
-            .wrap_err_with(|| {
-                format!("Could not add the top level type `{base_title}` to the type space")
-            })?;
-    }
+        .add_root_schema(schema)
+        .wrap_err("Schema conversion failed")?;
 
     let intro = "#![allow(clippy::redundant_closure_call)]
 #![allow(clippy::needless_lifetimes)]
@@ -99,7 +87,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 use serde::{Deserialize, Serialize};
 ";
 
-    let contents = format!("{intro}\n{}", type_space.to_stream().to_string());
+    let contents = format!("{intro}\n{}", type_space.to_stream());
 
     let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 
