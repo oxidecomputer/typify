@@ -5,7 +5,7 @@ use std::{error::Error, fs::File, io::BufReader};
 use expectorate::assert_contents;
 use glob::glob;
 use quote::quote;
-use schemars::schema::{RootSchema, Schema};
+use schemars::schema::RootSchema;
 use serde_json::json;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
@@ -25,7 +25,7 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     let mut out_path = path.clone();
     out_path.set_extension("rs");
 
-    let file = File::open(path.clone())?;
+    let file = File::open(path)?;
     let reader = BufReader::new(file);
 
     // Read the JSON contents of the file as an instance of `User`.
@@ -58,21 +58,7 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
                 [TypeSpaceImpl::Display].into_iter(),
             ),
     );
-    type_space.add_ref_types(root_schema.definitions)?;
-
-    let base_type = &root_schema.schema;
-
-    // Only convert the top-level type if it has a name
-    if base_type
-        .metadata
-        .as_ref()
-        .and_then(|m| m.title.as_ref())
-        .is_some()
-    {
-        let _ = type_space
-            .add_type(&Schema::Object(root_schema.schema))
-            .unwrap();
-    }
+    type_space.add_root_schema(root_schema)?;
 
     // Make a file with the generated code.
     let code = quote! {
@@ -84,7 +70,7 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
 
         fn main() {}
     };
-    let text = rustfmt_wrapper::rustfmt(code).unwrap();
+    let text = rustfmt_wrapper::rustfmt(code)?;
     assert_contents(out_path, &text);
 
     Ok(())
