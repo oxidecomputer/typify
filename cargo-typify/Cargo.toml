@@ -21,7 +21,7 @@ schemars = "0.8.12"
 rustfmt-wrapper = "0.2.0"
 
 [dev-dependencies]
-assert_cmd = "2.0.8"
+assert_cmd = "2.0.10"
 expectorate = "1.0.6"
 newline-converter = "0.2.2"
 tempdir = "0.3.7"
