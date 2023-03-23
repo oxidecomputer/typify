@@ -127,17 +127,6 @@ where
 {
     fn add(type_space: &mut TypeSpace) {
         let schema = schemars::schema_for!(T);
-        type_space.add_ref_types(schema.definitions).unwrap();
-
-        let base_type = &schema.schema;
-        // Only convert the top-level type if it has a name
-        if base_type
-            .metadata
-            .as_ref()
-            .and_then(|m| m.title.as_ref())
-            .is_some()
-        {
-            let _ = type_space.add_type(&Schema::Object(schema.schema)).unwrap();
-        }
+        let _ = type_space.add_root_schema(schema).unwrap();
     }
 }

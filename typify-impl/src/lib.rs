@@ -6,8 +6,8 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
-use schemars::schema::{Metadata, Schema};
+use quote::ToTokens;
+use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -644,6 +644,20 @@ impl TypeSpace {
         Ok(type_id)
     }
 
+    /// Add all the types contained within a RootSchema including any
+    /// referenced types and the top-level type (if there is one and it has a
+    /// title).
+    pub fn add_root_schema(&mut self, schema: RootSchema) -> Result<Option<TypeId>> {
+        self.add_ref_types(schema.definitions)?;
+
+        // Only convert the top-level type if it has a name
+        if (|| schema.schema.metadata.as_ref()?.title.as_ref())().is_some() {
+            self.add_type(&Schema::Object(schema.schema)).map(Some)
+        } else {
+            Ok(None)
+        }
+    }
+
     /// Get a type given its ID.
     pub fn get_type(&self, type_id: &TypeId) -> Result<Type> {
         let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
@@ -678,19 +692,6 @@ impl TypeSpace {
         })
     }
 
-    /// Common code, shared by types.
-    pub fn common_code(&self) -> TokenStream {
-        if self.defaults.is_empty() {
-            quote! {}
-        } else {
-            let fns = self.defaults.iter().map(TokenStream::from);
-            quote! {
-                mod defaults {
-                    #(#fns)*
-                }
-            }
-        }
-    }
     /// All code for processed types.
     pub fn to_stream(&self) -> TokenStream {
         let mut output = OutputSpace::default();

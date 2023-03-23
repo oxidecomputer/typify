@@ -352,9 +352,9 @@ impl TypeSpace {
 
     /// This handles the case where an allOf is used to denote constraints.
     /// Currently we just look for a referenced type, which may be "closed"
-    /// (i.e. no unknown types permitted) and an explicit type. The latter must
-    /// be a subset of the former and compatible from the perspective of JSON
-    /// Schema validation (that is to say, it must be "open" or must fully
+    /// (i.e. no unknown fields permitted) and an explicit type. The latter
+    /// must be a subset of the former and compatible from the perspective of
+    /// JSON Schema validation (that is to say, it must be "open" or must fully
     /// cover the named type).
     ///
     /// ```text
@@ -391,23 +391,20 @@ impl TypeSpace {
 
         // We required exactly one named subschema and at least one unnamed
         // subschema.
-        if unnamed.len() != 1 && !named.is_empty() {
+        if named.len() != 1 || unnamed.is_empty() {
             return None;
         }
 
         let (named_schema, _) = named.first()?;
-
         let (_, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
 
-        if validation.additional_properties.as_ref().map(Box::as_ref) != Some(&Schema::Bool(false))
+        // We need all unnamed schemas to be a subset of the named schema.
+        if !unnamed
+            .into_iter()
+            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
         {
             return None;
         }
-
-        unnamed
-            .into_iter()
-            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
-            .then_some(())?;
 
         let (type_entry, _) = self.convert_schema(type_name, named_schema).ok()?;
         Some(type_entry)

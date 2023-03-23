@@ -1425,11 +1425,11 @@ impl TypeSpace {
         }
     }
 
-    pub(crate) fn convert_option<'a, 'b>(
+    pub(crate) fn convert_option<'a>(
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        schema: &'b Schema,
+        schema: &'_ Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let (ty, _) = self.convert_schema(type_name, schema)?;
         let ty = self.type_to_option(ty);

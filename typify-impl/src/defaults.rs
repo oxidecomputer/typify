@@ -341,7 +341,9 @@ pub(crate) fn validate_default_for_external_enum(
         Some(DefaultKind::Specific)
     } else {
         let map = default.as_object()?;
-        (map.len() == 1).then(|| ())?;
+        if map.len() != 1 {
+            return None;
+        }
 
         let (name, value) = map.iter().next()?;
 
@@ -462,7 +464,9 @@ fn validate_default_tuple(
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
     let arr = default.as_array()?;
-    (arr.len() == types.len()).then_some(())?;
+    if arr.len() != types.len() {
+        return None;
+    }
 
     types
         .iter()
