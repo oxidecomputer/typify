@@ -6,7 +6,7 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::ToTokens;
+use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{
@@ -894,6 +894,35 @@ impl<'a> Type<'a> {
         } = self;
         type_entry.has_impl(type_space, impl_name)
     }
+
+    /// Provides the the type identifier for the builder if one exists.
+    pub fn builder(&self) -> Option<TokenStream> {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+
+        if !type_space.settings.struct_builder {
+            return None;
+        }
+
+        match &type_entry.details {
+            TypeEntryDetails::Struct(type_entry::TypeEntryStruct { name, .. }) => {
+                match &type_space.settings.type_mod {
+                    Some(type_mod) => {
+                        let type_mod = format_ident!("{}", type_mod);
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { #type_mod :: builder :: #type_name })
+                    }
+                    None => {
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { builder :: #type_name })
+                    }
+                }
+            }
+            _ => None,
+        }
+    }
 }
 
 impl<'a> TypeEnum<'a> {
@@ -958,7 +987,7 @@ mod tests {
         output::OutputSpace,
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
-        Name, TypeEntryDetails, TypeSpace,
+        Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
     };
 
     #[allow(dead_code)]
@@ -1134,5 +1163,61 @@ mod tests {
         }
 
         validate_output::<Things>();
+    }
+
+    #[test]
+    fn test_builder_name() {
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        struct TestStruct {
+            x: u32,
+        }
+
+        let mut type_space = TypeSpace::default();
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert!(ty.builder().is_none());
+
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("builder :: TestStruct".to_string())
+        );
+
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("types :: builder :: TestStruct".to_string())
+        );
+
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        enum TestEnum {
+            X,
+            Y,
+        }
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestEnum);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+        assert!(ty.builder().is_none());
     }
 }
