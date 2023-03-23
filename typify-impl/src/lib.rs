@@ -6,7 +6,7 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::ToTokens;
+use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{
@@ -987,7 +987,7 @@ mod tests {
         output::OutputSpace,
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
-        Name, TypeEntryDetails, TypeSpace,
+        Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
     };
 
     #[allow(dead_code)]
@@ -1169,8 +1169,55 @@ mod tests {
     fn test_builder_name() {
         #[allow(dead_code)]
         #[derive(JsonSchema)]
-        struct Test {
+        struct TestStruct {
             x: u32,
         }
+
+        let mut type_space = TypeSpace::default();
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert!(ty.builder().is_none());
+
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("builder :: TestStruct".to_string())
+        );
+
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("types :: builder :: TestStruct".to_string())
+        );
+
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        enum TestEnum {
+            X,
+            Y,
+        }
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestEnum);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+        assert!(ty.builder().is_none());
     }
 }
