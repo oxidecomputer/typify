@@ -28899,7 +28899,7 @@ impl std::convert::TryFrom<String> for WorkflowStepInProgressStatus {
         value.parse()
     }
 }
-mod defaults {
+pub mod defaults {
     pub(super) fn default_bool<const V: bool>() -> bool {
         V
     }

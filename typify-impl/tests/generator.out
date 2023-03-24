@@ -98,7 +98,8 @@ mod types {
             value.parse()
         }
     }
-    mod builder {
+    pub mod builder {
+        #[derive(Clone, Debug)]
         pub struct AllTheTraits {
             ok: Result<String, String>,
         }
@@ -132,6 +133,7 @@ mod types {
                 Self { ok: Ok(value.ok) }
             }
         }
+        #[derive(Clone, Debug)]
         pub struct CompoundType {
             value1: Result<String, String>,
             value2: Result<u64, String>,
@@ -183,6 +185,7 @@ mod types {
                 }
             }
         }
+        #[derive(Clone, Debug)]
         pub struct Pair {
             a: Result<super::StringEnum, String>,
             b: Result<super::StringEnum, String>,
@@ -235,7 +238,7 @@ mod types {
             }
         }
     }
-    mod defaults {
+    pub mod defaults {
         pub(super) fn pair_a() -> super::StringEnum {
             super::StringEnum::One
         }
