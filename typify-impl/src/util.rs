@@ -125,7 +125,7 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 if_schema: None,
                 then_schema: None,
                 else_schema: None,
-            } => s.iter().all(|sub| schemas_mutually_exclusive(sub, b)),
+            } => s.iter().all(|sub| schemas_mutually_exclusive(sub, other)),
 
             // For a not, they're mutually exclusive if they *do* match.
             SubschemaValidation {
