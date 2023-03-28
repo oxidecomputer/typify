@@ -715,7 +715,11 @@ impl StringValidator {
 
 #[cfg(test)]
 mod tests {
-    use schemars::{schema::StringValidation, schema_for, JsonSchema, gen::{SchemaGenerator, SchemaSettings}};
+    use schemars::{
+        gen::{SchemaGenerator, SchemaSettings},
+        schema::StringValidation,
+        schema_for, JsonSchema,
+    };
 
     use crate::util::{sanitize, schemas_mutually_exclusive, Case};
 
