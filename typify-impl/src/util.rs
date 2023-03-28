@@ -715,7 +715,7 @@ impl StringValidator {
 
 #[cfg(test)]
 mod tests {
-    use schemars::{schema::StringValidation, schema_for, JsonSchema};
+    use schemars::{schema::StringValidation, schema_for, JsonSchema, gen::{SchemaGenerator, SchemaSettings}};
 
     use crate::util::{sanitize, schemas_mutually_exclusive, Case};
 
@@ -742,6 +742,35 @@ mod tests {
 
         assert!(!schemas_mutually_exclusive(&a, &b));
         assert!(!schemas_mutually_exclusive(&b, &a));
+    }
+
+    #[test]
+    fn test_non_exclusive_oneof_subschema() {
+        #![allow(dead_code)]
+
+        #[derive(JsonSchema)]
+        enum A {
+            B(B),
+            C(C)
+        }
+
+        #[derive(JsonSchema)]
+        enum B {
+            B
+        }
+
+        #[derive(JsonSchema)]
+        enum C {
+            C
+        }
+
+        let mut settings = SchemaSettings::default();
+        settings.inline_subschemas = true;
+        let gen = SchemaGenerator::new(settings);
+
+        let a = gen.into_root_schema_for::<Vec<A>>().schema.into();
+
+        assert!(!schemas_mutually_exclusive(&a, &a));
     }
 
     #[test]
