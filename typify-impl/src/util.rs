@@ -750,18 +750,8 @@ mod tests {
 
         #[derive(JsonSchema)]
         enum A {
-            B(B),
-            C(C)
-        }
-
-        #[derive(JsonSchema)]
-        enum B {
-            B
-        }
-
-        #[derive(JsonSchema)]
-        enum C {
-            C
+            B(i32),
+            C(i64),
         }
 
         let mut settings = SchemaSettings::default();
