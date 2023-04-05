@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "object-bs": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        }
+      },
+      "multipleOf": 100,
+      "maxItems": 100,
+      "maxLength": 100
+    },
+    "array-bs": {
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      },
+      "multipleOf": 100,
+      "maxLength": 100,
+      "properties": {
+        "ok": {}
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "integer-bs": {
+      "type": "integer",
+      "minimum": 0,
+      "maxLength": 100,
+      "properties": {
+        "ok": {}
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
