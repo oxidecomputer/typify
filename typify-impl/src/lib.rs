@@ -651,8 +651,9 @@ impl TypeSpace {
         self.add_ref_types(schema.definitions)?;
 
         // Only convert the top-level type if it has a name
-        if (|| schema.schema.metadata.as_ref()?.title.as_ref())().is_some() {
-            self.add_type(&Schema::Object(schema.schema)).map(Some)
+        if let Some(type_name) = (|| schema.schema.metadata.as_ref()?.title.as_ref().cloned())() {
+            self.add_type_with_name(&Schema::Object(schema.schema), Some(type_name))
+                .map(Some)
         } else {
             Ok(None)
         }
