@@ -108,7 +108,7 @@ dependencies = [
  "clap",
  "color-eyre",
  "expectorate",
- "newline-converter",
+ "newline-converter 0.3.0",
  "rustfmt-wrapper",
  "schemars",
  "serde_json",
@@ -289,7 +289,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74a483344b06e0a8183209bdf1c2e23b834d04dcdec591d2f617cc60b6c1298b"
 dependencies = [
  "console",
- "newline-converter",
+ "newline-converter 0.2.2",
  "similar",
 ]
 
@@ -472,6 +472,15 @@ name = "newline-converter"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f71d09d5c87634207f894c6b31b6a2b2c64ea3bdcf71bd5599fdbbe1600c00f"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
+name = "newline-converter"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47b6b097ecb1cbfed438542d16e84fd7ad9b0c76c8a65b7f9039212a3d14dc7f"
 dependencies = [
  "unicode-segmentation",
 ]
