@@ -201,7 +201,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -324,7 +324,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.13",
+ "syn 2.0.15",
  "typify",
 ]
 
@@ -614,7 +614,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ceca8aaf45b5c46ec7ed39fff75f57290368c1846d33d24a122ca81416ab058"
 dependencies = [
  "proc-macro2",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -780,7 +780,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -792,7 +792,7 @@ dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -855,7 +855,7 @@ checksum = "291a097c63d8497e00160b166a967a4a79c64f3facdd01cbd7502231688d77df"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -889,7 +889,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -926,9 +926,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.13"
+version = "2.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c9da457c5285ac1f936ebd076af6dac17a61cfe7826f2076b4d015cf47bc8ec"
+checksum = "a34fcf3e8b60f57e6a14301a2e916d323af98b0ea63c599441eec8558660c822"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -991,7 +991,7 @@ checksum = "f9456a42c5b0d803c8cd86e73dd7cc9edd429499f37a3550d286d5e86720569f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.13",
+ "syn 2.0.15",
 ]
 
 [[package]]
@@ -1117,7 +1117,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.13",
+ "syn 2.0.15",
  "thiserror",
  "unicode-ident",
  "uuid",
@@ -1133,7 +1133,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 2.0.13",
+ "syn 2.0.15",
  "typify-impl",
 ]
 
@@ -1147,7 +1147,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.13",
+ "syn 2.0.15",
  "typify",
 ]
 
