@@ -115,9 +115,9 @@ impl TypeSpace {
                             .collect()
                     }
 
-                    // Objects must have a single required member. The type of
-                    // that lone member determines the type associated with the
-                    // variant.
+                    // Objects must have a single property, and that property
+                    // must be required. The type of that lone property
+                    // determines the type associated with the variant.
                     Schema::Object(SchemaObject {
                         metadata,
                         instance_type: Some(SingleOrVec::Single(single)),
@@ -386,39 +386,42 @@ impl TypeSpace {
         metadata: &Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
-        // All subschemas must be objects and all objects must have a *fixed-value*
-        // required property in common. To detect this, we look at all such
-        // properties along with the specific values.
+        // All subschemas must be objects and all objects must have a
+        // required, *fixed-value* property in common. To detect this, we look
+        // at all such properties along with the specific values.
         let constant_value_properties_sets = subschemas
             .iter()
             .map(
                 |schema| match get_object(type_name.clone(), schema, &self.definitions) {
-                    None => BTreeMap::<String, BTreeSet<String>>::new(),
                     Some((_, _, validation)) => {
                         validation
                             .properties
                             .iter()
+                            .filter(|(prop_name, _)| validation.required.contains(*prop_name))
                             .filter_map(|(prop_name, prop_type)| {
                                 constant_string_value(prop_type).map(|value| {
-                                    // Tuple with the name and a set with a single value
-                                    (
-                                        prop_name.clone(),
-                                        [value.to_string()].iter().cloned().collect(),
-                                    )
+                                    // Tuple consisting of the name and a set
+                                    // with a single value
+                                    (prop_name.clone(), BTreeSet::from([value.to_string()]))
                                 })
                             })
                             .collect()
                     }
+
+                    // For non-objects, there are no such properties; return
+                    // the empty set. Note that in the next pass this will
+                    // result in a None value and exiting the outer function.
+                    None => BTreeMap::new(),
                 },
             )
             // Reduce these sets down to those A. that are common among all
-            // subschemas and B. for which the values for each is unique.
+            // subschemas and B. for which the values are unique.
             .reduce(|a, b| {
                 a.into_iter()
                     .filter_map(|(prop, mut a_values)| match b.get(&prop) {
-                        // If the values are non-disjoint it means that there are
-                        // two subschemas that have constant values for a given
-                        // property but that those values are identical.
+                        // If the values are non-disjoint it means that there
+                        // are two subschemas that have constant values for a
+                        // given property but that those values are identical.
                         Some(b_values) if a_values.is_disjoint(b_values) => {
                             a_values.extend(b_values.iter().cloned());
                             Some((prop, a_values))
@@ -444,22 +447,24 @@ impl TypeSpace {
             .map(|schema| {
                 // We've already validated this; we just need to pluck out the
                 // pieces we need to construct the variant.
-                match get_object(type_name.clone(), schema, &self.definitions) {
-                    None => unreachable!(),
-                    Some((sub_type_name, metadata, validation)) => {
-                        match validation.additional_properties.as_ref().map(Box::as_ref) {
-                            Some(Schema::Bool(false)) => {
-                                deny_unknown_fields = true;
-                            }
-                            None => {}
-                            _ => unreachable!(),
-                        }
-                        // Release our borrow of self.
-                        let validation = validation.clone();
-                        let metadata = metadata.clone();
-                        Ok(self.internal_variant(sub_type_name, &metadata, &validation, tag)?)
+                let Some((sub_type_name, metadata, validation)) =
+                    get_object(type_name.clone(), schema, &self.definitions)
+                else {
+                    unreachable!();
+                };
+
+                match validation.additional_properties.as_ref().map(Box::as_ref) {
+                    Some(Schema::Bool(false)) => {
+                        deny_unknown_fields = true;
                     }
+                    None => (),
+                    _ => unreachable!(),
                 }
+
+                // Release our borrow of self.
+                let validation = validation.clone();
+                let metadata = metadata.clone();
+                self.internal_variant(sub_type_name, &metadata, &validation, tag)
             })
             .collect::<Result<Vec<_>>>()
             .ok()?;
@@ -718,6 +723,10 @@ impl TypeSpace {
         let mut deny_unknown_fields = false;
 
         // Gather the variant details along with an Option of its "good" name.
+        // TODO we should split this into two passes: a naming pass, and a pass
+        // to generate the variants. We use the variant name as a context
+        // extension to inform the name of types at the variant so we should
+        // wait to see the names we come up with.
         let variant_details = subschemas
             .iter()
             .enumerate()
@@ -825,27 +834,27 @@ pub(crate) fn get_object<'a>(
         }
 
         // References
-        Schema::Object(SchemaObject {
-            metadata: None,
-            instance_type: None,
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: None,
-            object: None,
-            reference: Some(ref_name),
-            extensions: _,
-        }) => {
-            let ref_key = ref_key(ref_name);
-            get_object(
-                Name::Required(ref_key.to_string()),
-                definitions.get(ref_key).unwrap(),
-                definitions,
-            )
-        }
+        // Schema::Object(SchemaObject {
+        //     metadata: None,
+        //     instance_type: None,
+        //     format: None,
+        //     enum_values: None,
+        //     const_value: None,
+        //     subschemas: None,
+        //     number: None,
+        //     string: None,
+        //     array: None,
+        //     object: None,
+        //     reference: Some(ref_name),
+        //     extensions: _,
+        // }) => {
+        //     let ref_key = ref_key(ref_name);
+        //     get_object(
+        //         Name::Required(ref_key.to_string()),
+        //         definitions.get(ref_key).unwrap(),
+        //         definitions,
+        //     )
+        // }
 
         // Trivial (n == 1) subschemas
         Schema::Object(SchemaObject {

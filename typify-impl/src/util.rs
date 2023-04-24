@@ -534,10 +534,14 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             let idx = reference.rfind('/')?;
             Some(reference[idx + 1..].to_string())
         }
+
+        // TODO this is a little questionable and applies with more or less
+        // validity for the various call-sites of this function.
         Schema::Object(SchemaObject {
             metadata: Some(metadata),
             ..
         }) if metadata.as_ref().title.is_some() => Some(metadata.as_ref().title.as_ref()?.clone()),
+
         Schema::Object(SchemaObject {
             metadata: _,
             instance_type: _,

@@ -396,7 +396,9 @@ impl TypeSpace {
         }
 
         let (named_schema, _) = named.first()?;
-        let (_, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
+        let (a_name, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
+
+        assert!(matches!(a_name, Name::Required(_)));
 
         // We need all unnamed schemas to be a subset of the named schema.
         if !unnamed
