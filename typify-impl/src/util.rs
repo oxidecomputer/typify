@@ -1,6 +1,6 @@
 // Copyright 2022 Oxide Computer Company
 
-use std::collections::{BTreeSet, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -515,6 +515,7 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
     }
 }
 
+/// Determine if a schema has a name (potentially).
 pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
     let raw_name = match schema {
         Schema::Object(SchemaObject {
@@ -535,8 +536,6 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             Some(reference[idx + 1..].to_string())
         }
 
-        // TODO this is a little questionable and applies with more or less
-        // validity for the various call-sites of this function.
         Schema::Object(SchemaObject {
             metadata: Some(metadata),
             ..
@@ -555,40 +554,190 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             object: None,
             reference: None,
             extensions: _,
-        }) => match subschemas.as_ref() {
-            SubschemaValidation {
-                all_of: Some(subschemas),
-                any_of: None,
-                one_of: None,
-                not: None,
-                if_schema: None,
-                then_schema: None,
-                else_schema: None,
-            }
-            | SubschemaValidation {
-                all_of: None,
-                any_of: Some(subschemas),
-                one_of: None,
-                not: None,
-                if_schema: None,
-                then_schema: None,
-                else_schema: None,
-            }
-            | SubschemaValidation {
-                all_of: None,
-                any_of: None,
-                one_of: Some(subschemas),
-                not: None,
-                if_schema: None,
-                then_schema: None,
-                else_schema: None,
-            } if subschemas.len() == 1 => schema_is_named(subschemas.first()?),
-            _ => None,
-        },
+        }) => singleton_subschema(subschemas).and_then(schema_is_named),
+
         _ => None,
     }?;
 
     Some(sanitize(&raw_name, Case::Pascal))
+}
+
+/// Return the object data or None if it's not an object (or doesn't conform to
+/// the objects we know how to handle).
+pub(crate) fn get_object(schema: &Schema) -> Option<(&Option<Box<Metadata>>, &ObjectValidation)> {
+    match schema {
+        // Objects
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: Some(validation),
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::Object
+            && schema_none_or_false(&validation.additional_properties)
+            && validation.max_properties.is_none()
+            && validation.min_properties.is_none()
+            && validation.pattern_properties.is_empty()
+            && validation.property_names.is_none() =>
+        {
+            Some((metadata, validation.as_ref()))
+        }
+
+        // Trivial (n == 1) subschemas
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: _,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: Some(subschemas),
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => singleton_subschema(subschemas).and_then(|sub_schema| {
+            get_object(sub_schema).map(|(m, validation)| match m {
+                Some(_) => (metadata, validation),
+                None => (&None, validation),
+            })
+        }),
+
+        // None if the schema doesn't match the shape we expect.
+        _ => None,
+    }
+}
+/// Return the object data or None if it's not an object (or doesn't conform to
+/// the objects we know how to handle). Follow references if we find them.
+pub(crate) fn get_object_ref<'a>(
+    type_name: Name,
+    schema: &'a Schema,
+    definitions: &'a BTreeMap<String, Schema>,
+) -> Option<(Name, &'a Option<Box<Metadata>>, &'a ObjectValidation)> {
+    match schema {
+        // Objects
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: Some(validation),
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::Object
+            && schema_none_or_false(&validation.additional_properties)
+            && validation.max_properties.is_none()
+            && validation.min_properties.is_none()
+            && validation.pattern_properties.is_empty()
+            && validation.property_names.is_none() =>
+        {
+            Some((type_name, metadata, validation.as_ref()))
+        }
+
+        // References
+        Schema::Object(SchemaObject {
+            metadata: None,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: Some(ref_name),
+            extensions: _,
+        }) => {
+            let ref_key = ref_key(ref_name);
+            get_object_ref(
+                Name::Required(ref_key.to_string()),
+                definitions.get(ref_key).unwrap(),
+                definitions,
+            )
+        }
+
+        // Trivial (n == 1) subschemas
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: _,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: Some(subschemas),
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => singleton_subschema(subschemas).and_then(|sub_schema| {
+            get_object_ref(type_name, sub_schema, definitions).map(
+                |(name, m, validation)| match m {
+                    Some(_) => (name, metadata, validation),
+                    None => (name, &None, validation),
+                },
+            )
+        }),
+
+        // None if the schema doesn't match the shape we expect.
+        _ => None,
+    }
+}
+
+// We infer from a Some(Schema::Bool(false)) or None value that either nothing
+// or nothing of importance is in the additional properties.
+fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
+    matches!(
+        additional_properties.as_ref().map(Box::as_ref),
+        None | Some(Schema::Bool(false))
+    )
+}
+
+pub(crate) fn singleton_subschema(subschemas: &SubschemaValidation) -> Option<&Schema> {
+    match subschemas {
+        SubschemaValidation {
+            all_of: Some(subschemas),
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }
+        | SubschemaValidation {
+            all_of: None,
+            any_of: Some(subschemas),
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }
+        | SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: Some(subschemas),
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } if subschemas.len() == 1 => subschemas.first(),
+        _ => None,
+    }
 }
 
 pub(crate) enum Case {
