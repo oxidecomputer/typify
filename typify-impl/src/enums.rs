@@ -56,7 +56,7 @@ impl TypeSpace {
     pub(crate) fn maybe_externally_tagged_enum(
         &mut self,
         type_name: Name,
-        metadata: &Option<Box<schemars::schema::Metadata>>,
+        enum_metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
         enum ProtoVariant<'a> {
@@ -93,10 +93,10 @@ impl TypeSpace {
                         enum_values: Some(values),
                         const_value: None,
                         subschemas: None,
-                        number: None,
-                        string: None,
-                        array: None,
-                        object: None,
+                        number: _,
+                        string: _,
+                        array: _,
+                        object: _,
                         reference: None,
                         extensions: _,
                     }) if single.as_ref() == &InstanceType::String => {
@@ -113,57 +113,40 @@ impl TypeSpace {
                             })
                             .collect()
                     }
-
-                    // Objects must have a single property, and that property
-                    // must be required. The type of that lone property
-                    // determines the type associated with the variant.
-                    Schema::Object(SchemaObject {
-                        metadata,
-                        instance_type: Some(SingleOrVec::Single(single)),
-                        format: None,
-                        enum_values: None,
-                        const_value: None,
-                        subschemas: None,
-                        number: None,
-                        string: None,
-                        array: None,
-                        object: Some(validation),
-                        reference: None,
-                        extensions: _,
-                    }) if single.as_ref() == &InstanceType::Object => {
-                        if let ObjectValidation {
-                            max_properties: None,
-                            min_properties: None,
-                            required,
-                            properties,
-                            pattern_properties,
-                            additional_properties: _,
-                            property_names: None,
-                        } = validation.as_ref()
+                    other => match get_object(other) {
+                        // Objects must have a single property, and that
+                        // property must be required. The type of that lone
+                        // property determines the type associated with the
+                        // variant.
+                        Some((
+                            metadata,
+                            ObjectValidation {
+                                max_properties: None,
+                                min_properties: None,
+                                required,
+                                properties,
+                                pattern_properties,
+                                additional_properties: _,
+                                property_names: None,
+                            },
+                        )) if required.len() == 1
+                            && properties.len() == 1
+                            && pattern_properties.is_empty() =>
                         {
-                            if required.len() == 1
-                                && properties.len() == 1
-                                && pattern_properties.is_empty()
-                            {
-                                let (prop_name, prop_type) = properties.iter().next().unwrap();
-                                // If required and properties both have length 1
-                                // then this must be true for a well-constructed
-                                // schema.
-                                assert!(required.contains(prop_name));
+                            let (prop_name, prop_type) = properties.first_key_value().unwrap();
+                            // If required and properties both have length 1
+                            // then the following must be true for a
+                            // well-constructed schema.
+                            assert!(required.contains(prop_name));
 
-                                Some(vec![ProtoVariant::Typed {
-                                    name: prop_name,
-                                    schema: prop_type,
-                                    description: metadata_description(metadata),
-                                }])
-                            } else {
-                                None
-                            }
-                        } else {
-                            None
+                            Some(vec![ProtoVariant::Typed {
+                                name: prop_name,
+                                schema: prop_type,
+                                description: metadata_description(metadata),
+                            }])
                         }
-                    }
-                    _ => None,
+                        _ => None,
+                    },
                 }
             })
             .flat_map(|x| match x {
@@ -227,7 +210,7 @@ impl TypeSpace {
         Some(TypeEntryEnum::from_metadata(
             self,
             type_name,
-            metadata,
+            enum_metadata,
             EnumTagType::External,
             variants,
             deny_unknown_fields,
@@ -458,9 +441,6 @@ impl TypeSpace {
                     _ => unreachable!(),
                 }
 
-                // Release our borrow of self.
-                // let validation = validation.clone();
-                // let metadata = metadata.clone();
                 self.internal_variant(type_name.clone(), metadata, validation, tag)
             })
             .collect::<Result<Vec<_>>>()

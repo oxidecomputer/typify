@@ -566,10 +566,33 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
 /// the objects we know how to handle).
 pub(crate) fn get_object(schema: &Schema) -> Option<(&Option<Box<Metadata>>, &ObjectValidation)> {
     match schema {
-        // Objects
+        // Object
         Schema::Object(SchemaObject {
             metadata,
             instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: _,
+            string: _,
+            array: _,
+            object: Some(validation),
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::Object
+            && schema_none_or_false(&validation.additional_properties)
+            && validation.max_properties.is_none()
+            && validation.min_properties.is_none()
+            && validation.pattern_properties.is_empty()
+            && validation.property_names.is_none() =>
+        {
+            Some((metadata, validation.as_ref()))
+        }
+        // Object with no explicit type (but the proper validation)
+        Schema::Object(SchemaObject {
+            metadata,
+            instance_type: None,
             format: None,
             enum_values: None,
             const_value: None,
@@ -580,8 +603,7 @@ pub(crate) fn get_object(schema: &Schema) -> Option<(&Option<Box<Metadata>>, &Ob
             object: Some(validation),
             reference: None,
             extensions: _,
-        }) if single.as_ref() == &InstanceType::Object
-            && schema_none_or_false(&validation.additional_properties)
+        }) if schema_none_or_false(&validation.additional_properties)
             && validation.max_properties.is_none()
             && validation.min_properties.is_none()
             && validation.pattern_properties.is_empty()

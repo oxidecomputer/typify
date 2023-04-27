@@ -645,14 +645,15 @@ impl TypeEntry {
             .collect::<Vec<_>>();
 
         // It should not be possible to construct an untagged enum
-        // with more than one simple variants--it would not be usable.
-        if variants
-            .iter()
-            .filter(|variant| matches!(variant.details, VariantDetails::Simple))
-            .count()
-            > 1
-        {
-            assert!(tag_type != &EnumTagType::Untagged);
+        // with more than one simple variant--it would not be usable.
+        if tag_type == &EnumTagType::Untagged {
+            assert!(
+                variants
+                    .iter()
+                    .filter(|variant| matches!(variant.details, VariantDetails::Simple))
+                    .count()
+                    <= 1
+            )
         }
 
         // ToString and FromStr impls for enums that are made exclusively of

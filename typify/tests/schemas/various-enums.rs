@@ -348,14 +348,20 @@ impl std::convert::TryFrom<String> for NullStringEnumWithUnknownFormatInner {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
 pub enum OneOfTypes {
-    Variant0 { bar: i64 },
-    Variant1 { foo: String },
+    #[serde(rename = "bar")]
+    Bar(i64),
+    #[serde(rename = "foo")]
+    Foo(String),
 }
 impl From<&OneOfTypes> for OneOfTypes {
     fn from(value: &OneOfTypes) -> Self {
         value.clone()
+    }
+}
+impl From<i64> for OneOfTypes {
+    fn from(value: i64) -> Self {
+        Self::Bar(value)
     }
 }
 fn main() {}
