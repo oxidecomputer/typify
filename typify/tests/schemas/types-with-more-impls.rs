@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct PatternString(String);
 impl std::ops::Deref for PatternString {
     type Target = String;

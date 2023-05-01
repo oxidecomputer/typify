@@ -525,7 +525,7 @@ impl TypeSpace {
                             InstanceType::Null => ("Null", None),
                             InstanceType::Boolean => ("Boolean", Some(TypeEntry::new_boolean())),
                             InstanceType::Object => {
-                                let (ty, _) = self.make_map(None, &None)?;
+                                let (ty, _) = self.make_map(None, &None, &None)?;
                                 ("Object", Some(ty))
                             }
                             InstanceType::Array => {
@@ -920,16 +920,20 @@ impl TypeSpace {
                 properties,
                 pattern_properties,
                 additional_properties,
-                property_names: None,
+                property_names,
             }) if required.is_empty()
                 && properties.is_empty()
                 && pattern_properties.is_empty()
                 && additional_properties.as_ref().map(AsRef::as_ref)
                     != Some(&Schema::Bool(false)) =>
             {
-                self.make_map(type_name.into_option(), additional_properties)
+                self.make_map(
+                    type_name.into_option(),
+                    property_names,
+                    additional_properties,
+                )
             }
-            None => self.make_map(type_name.into_option(), &None),
+            None => self.make_map(type_name.into_option(), &None, &None),
 
             // The typical case
             Some(validation) => {

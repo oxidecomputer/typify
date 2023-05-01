@@ -188,14 +188,19 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Map(type_id) => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 if let serde_json::Value::Object(m) = default {
                     if m.is_empty() {
                         Ok(DefaultKind::Intrinsic)
                     } else {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        for (_, value) in m {
-                            let _ = type_entry.validate_value(type_space, value)?;
+                        let key_ty = type_space.id_to_entry.get(key_id).unwrap();
+                        let value_ty = type_space.id_to_entry.get(value_id).unwrap();
+                        for (key, value) in m {
+                            let _ = key_ty.validate_value(
+                                type_space,
+                                &serde_json::Value::String(key.clone()),
+                            )?;
+                            let _ = value_ty.validate_value(type_space, value)?;
                         }
                         Ok(DefaultKind::Specific)
                     }
@@ -569,7 +574,9 @@ fn all_props<'a>(
                 }
             }
 
-            TypeEntryDetails::Map(type_id) => return vec![(None, type_id, false)],
+            // TODO Rather than an option, this should probably be something
+            // that lets us say "explicit name" or "type to validate against"
+            TypeEntryDetails::Map(_, value_id) => return vec![(None, value_id, false)],
             _ => unreachable!(),
         };
 

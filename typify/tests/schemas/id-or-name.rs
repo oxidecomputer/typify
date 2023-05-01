@@ -177,7 +177,7 @@ impl From<IdOrYoloYolo> for IdOrYolo {
         Self::Yolo(value)
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct IdOrYoloYolo(String);
 impl std::ops::Deref for IdOrYoloYolo {
     type Target = String;
@@ -233,7 +233,7 @@ impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Name(String);
 impl std::ops::Deref for Name {
     type Target = String;

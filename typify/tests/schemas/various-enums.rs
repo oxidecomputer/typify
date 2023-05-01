@@ -188,7 +188,7 @@ impl From<Ipv6Net> for IpNet {
         Self::V6(value)
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Ipv4Net(pub String);
 impl std::ops::Deref for Ipv4Net {
     type Target = String;
@@ -222,7 +222,7 @@ impl ToString for Ipv4Net {
         self.0.to_string()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Ipv6Net(pub String);
 impl std::ops::Deref for Ipv6Net {
     type Target = String;
