@@ -1008,7 +1008,7 @@ impl TypeSpace {
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        subschemas: &[Schema],
+        subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"}
         // for Option. We match this here because the mutual exclusion check
@@ -1095,7 +1095,7 @@ impl TypeSpace {
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
-        subschemas: &[Schema],
+        subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)

@@ -8,13 +8,12 @@ use schemars::schema::{
 };
 
 use crate::{
-    enums::get_object,
     output::{OutputSpace, OutputSpaceMod},
     type_entry::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
         WrappedValue,
     },
-    util::{get_type_name, metadata_description, recase, schema_is_named, Case},
+    util::{get_object_ref, get_type_name, metadata_description, recase, schema_is_named, Case},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
@@ -383,6 +382,10 @@ impl TypeSpace {
         let mut named = Vec::new();
         let mut unnamed = Vec::new();
         for schema in subschemas {
+            // TODO this might not be quite right since this will be true for
+            // schemas that have a title; we may want to look only for types
+            // with a mandatory name. Types with a title (optional name) are
+            // reasonable to inline generally.
             match schema_is_named(schema) {
                 Some(name) => named.push((schema, name)),
                 None => unnamed.push(schema),
@@ -396,7 +399,10 @@ impl TypeSpace {
         }
 
         let (named_schema, _) = named.first()?;
-        let (_, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
+        let (a_name, _, validation) =
+            get_object_ref(Name::Unknown, named_schema, &self.definitions)?;
+
+        assert!(matches!(a_name, Name::Required(_)));
 
         // We need all unnamed schemas to be a subset of the named schema.
         if !unnamed
