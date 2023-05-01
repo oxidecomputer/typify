@@ -1273,9 +1273,9 @@ impl TypeSpace {
             // Arrays and sets.
             ArrayValidation {
                 items: Some(SingleOrVec::Single(item)),
-                additional_items: None,
-                max_items: _, // TODO enforce size limitations
-                min_items: _, // TODO enforce size limitations
+                additional_items: _, // By spec: ignored for single items
+                max_items: _,        // TODO enforce size limitations
+                min_items: _,        // TODO enforce size limitations
                 unique_items,
                 contains: None,
             } => {
