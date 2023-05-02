@@ -5484,7 +5484,7 @@ impl std::convert::TryFrom<String> for BindVariant2Input {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct BindVariant3Input(String);
 impl std::ops::Deref for BindVariant3Input {
     type Target = String;
@@ -7596,7 +7596,7 @@ pub enum DataVariant2FormatVariant0Subtype0Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra,
+            DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -7666,18 +7666,18 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype0ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
-    Variant0(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
+    Variant0(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -7689,25 +7689,25 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -7715,22 +7715,22 @@ impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -7740,14 +7740,14 @@ pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -7757,7 +7757,7 @@ impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -7770,7 +7770,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -7778,7 +7778,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -7786,34 +7786,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -7827,7 +7827,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -7835,7 +7835,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -7843,7 +7843,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -7851,7 +7851,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -7887,7 +7887,7 @@ pub enum DataVariant2FormatVariant0Subtype1Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra,
+            DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -7957,18 +7957,18 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
-    Variant0(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
+    Variant0(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -7980,25 +7980,25 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -8006,22 +8006,22 @@ impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -8031,14 +8031,14 @@ pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -8048,7 +8048,7 @@ impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -8061,7 +8061,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8069,7 +8069,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8077,34 +8077,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -8118,7 +8118,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8126,7 +8126,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8134,7 +8134,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -8142,7 +8142,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -8220,7 +8220,7 @@ pub enum DataVariant2FormatVariant0Subtype2Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra,
+            DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -8290,18 +8290,18 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
-    Variant0(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
+    Variant0(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -8313,25 +8313,25 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -8339,22 +8339,22 @@ impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -8364,14 +8364,14 @@ pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -8381,7 +8381,7 @@ impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -8394,7 +8394,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8402,7 +8402,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8410,34 +8410,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -8451,7 +8451,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8459,7 +8459,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8467,7 +8467,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -8475,7 +8475,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -8558,7 +8558,7 @@ pub enum DataVariant2FormatVariant0Subtype3Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra,
+            DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -8628,18 +8628,18 @@ impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
-    Variant0(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
+    Variant0(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -8651,25 +8651,25 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -8677,22 +8677,22 @@ impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -8702,14 +8702,14 @@ pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -8719,7 +8719,7 @@ impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -8732,7 +8732,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8740,7 +8740,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8748,34 +8748,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1>
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -8789,7 +8789,7 @@ impl std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -8797,7 +8797,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -8805,7 +8805,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -8813,7 +8813,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant2FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -9094,7 +9094,7 @@ pub enum DataVariant3FormatVariant0Subtype0Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra,
+            DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -9164,18 +9164,18 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype0ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
-    Variant0(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
+    Variant0(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -9187,25 +9187,25 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
+impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -9213,22 +9213,22 @@ impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -9238,14 +9238,14 @@ pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -9255,7 +9255,7 @@ impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -9268,7 +9268,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9276,7 +9276,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9284,34 +9284,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -9325,7 +9325,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9333,7 +9333,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9341,7 +9341,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -9349,7 +9349,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype0ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -9385,7 +9385,7 @@ pub enum DataVariant3FormatVariant0Subtype1Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra,
+            DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -9455,18 +9455,18 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
-    Variant0(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
+    Variant0(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -9478,25 +9478,25 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
+impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -9504,22 +9504,22 @@ impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -9529,14 +9529,14 @@ pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -9546,7 +9546,7 @@ impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -9559,7 +9559,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9567,7 +9567,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9575,34 +9575,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -9616,7 +9616,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9624,7 +9624,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9632,7 +9632,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -9640,7 +9640,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype1ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -9718,7 +9718,7 @@ pub enum DataVariant3FormatVariant0Subtype2Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra,
+            DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -9788,18 +9788,18 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
-    Variant0(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
+    Variant0(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -9811,25 +9811,25 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
+impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -9837,22 +9837,22 @@ impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -9862,14 +9862,14 @@ pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -9879,7 +9879,7 @@ impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -9892,7 +9892,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9900,7 +9900,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9908,34 +9908,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -9949,7 +9949,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -9957,7 +9957,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -9965,7 +9965,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -9973,7 +9973,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype2ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -10056,7 +10056,7 @@ pub enum DataVariant3FormatVariant0Subtype3Parse {
         #[serde(flatten)]
         extra: std::collections::HashMap<
             String,
-            DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra,
+            DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue,
         >,
     },
     Variant2(SignalRef),
@@ -10126,18 +10126,18 @@ impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVa
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
-    Variant0(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1),
+pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
+    Variant0(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0),
+    Variant1(DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1),
 }
-impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if let Ok(v) = value.parse() {
@@ -10149,25 +10149,25 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraE
         }
     }
 }
-impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<&String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl std::convert::TryFrom<String> for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
+impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue {
     fn to_string(&self) -> String {
         match self {
             Self::Variant0(x) => x.to_string(),
@@ -10175,22 +10175,22 @@ impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra {
         }
     }
 }
-impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtra
+impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValue
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -10200,14 +10200,14 @@ pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0) -> Self {
         value.clone()
     }
 }
-impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     fn to_string(&self) -> String {
         match *self {
             Self::Boolean => "boolean".to_string(),
@@ -10217,7 +10217,7 @@ impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVaria
         }
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         match value {
@@ -10230,7 +10230,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -10238,7 +10238,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -10246,34 +10246,34 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant0
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant0
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Serialize)]
-pub struct DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1(String);
-impl std::ops::Deref for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1(String);
+impl std::ops::Deref for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1 {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1> for String {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+impl From<DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1> for String {
+    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         value.0
     }
 }
-impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1>
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
-    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1) -> Self {
+    fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1 {
+impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1 {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
         if regress::Regex::new("^(date|utc):.*$")
@@ -10287,7 +10287,7 @@ impl std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraE
     }
 }
 impl std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
@@ -10295,7 +10295,7 @@ impl std::convert::TryFrom<&str>
     }
 }
 impl std::convert::TryFrom<&String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: &String) -> Result<Self, &'static str> {
@@ -10303,7 +10303,7 @@ impl std::convert::TryFrom<&String>
     }
 }
 impl std::convert::TryFrom<String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -10311,7 +10311,7 @@ impl std::convert::TryFrom<String>
     }
 }
 impl<'de> serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraExtraVariant1
+    for DataVariant3FormatVariant0Subtype3ParseVariant1ExtraValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -11989,7 +11989,7 @@ impl std::convert::TryFrom<String> for DotbinTransformType {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Element(pub String);
 impl std::ops::Deref for Element {
     type Target = String;
@@ -12306,7 +12306,7 @@ impl From<&Expr> for Expr {
         value.clone()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct ExprString(pub String);
 impl std::ops::Deref for ExprString {
     type Target = String;
@@ -21965,7 +21965,7 @@ impl From<&MarkVisual> for MarkVisual {
         value.clone()
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct MarkVisualType(String);
 impl std::ops::Deref for MarkVisualType {
     type Target = String;
@@ -22019,7 +22019,7 @@ impl From<BooleanOrSignal> for Markclip {
         Self::Variant0(value)
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Marktype(pub String);
 impl std::ops::Deref for Marktype {
     type Target = String;
@@ -30985,7 +30985,7 @@ impl From<MarkVisual> for ScopeMarksItem {
         Self::Visual(value)
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Selector(pub String);
 impl std::ops::Deref for Selector {
     type Target = String;
@@ -31215,7 +31215,7 @@ impl From<&Signal> for Signal {
         value.clone()
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct SignalName(String);
 impl std::ops::Deref for SignalName {
     type Target = String;

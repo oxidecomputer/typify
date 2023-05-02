@@ -64,7 +64,7 @@ pub enum TypeDetails<'a> {
 
     Option(TypeId),
     Array(TypeId),
-    Map(TypeId),
+    Map(TypeId, TypeId),
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
@@ -605,7 +605,7 @@ impl TypeSpace {
             // Containers that can be size 0 are *not* cyclic references for that type
             TypeEntryDetails::Array(_) => {}
             TypeEntryDetails::Set(_) => {}
-            TypeEntryDetails::Map(_) => {}
+            TypeEntryDetails::Map(..) => {}
 
             // Everything else can be ignored
             _ => {}
@@ -867,7 +867,9 @@ impl<'a> Type<'a> {
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
             TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
-            TypeEntryDetails::Map(type_id) => TypeDetails::Map(type_id.clone()),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                TypeDetails::Map(key_id.clone(), value_id.clone())
+            }
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),

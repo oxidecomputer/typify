@@ -83,7 +83,11 @@ impl TypeSpace {
             // Only particular additional properties are allowed.
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
-                let (map_type, _) = self.make_map(sub_type_name, additional_properties)?;
+                let (map_type, _) = self.make_map(
+                    sub_type_name,
+                    &validation.property_names,
+                    additional_properties,
+                )?;
                 let map_type_id = self.assign_type(map_type);
                 let extra_prop = StructProperty {
                     name: "extra".to_string(),
@@ -167,21 +171,33 @@ impl TypeSpace {
     pub(crate) fn make_map<'a>(
         &mut self,
         type_name: Option<String>,
+        property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let (type_id, _) = match additional_properties {
-            Some(schema) => {
-                let sub_type_name = match type_name {
-                    Some(name) => Name::Suggested(format!("{}Extra", name)),
+        let key_id = match property_names {
+            Some(key_schema) => {
+                let key_type_name = match &type_name {
+                    Some(name) => Name::Suggested(format!("{}Key", name)),
                     None => Name::Unknown,
                 };
-                self.id_for_schema(sub_type_name, schema)?
+                self.id_for_schema(key_type_name, key_schema)?.0
+            }
+            None => self.assign_type(TypeEntryDetails::String.into()),
+        };
+
+        let (value_id, _) = match additional_properties {
+            Some(value_schema) => {
+                let value_type_name = match &type_name {
+                    Some(name) => Name::Suggested(format!("{}Value", name)),
+                    None => Name::Unknown,
+                };
+                self.id_for_schema(value_type_name, value_schema)?
             }
 
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok((TypeEntryDetails::Map(type_id).into(), &None))
+        Ok((TypeEntryDetails::Map(key_id, value_id).into(), &None))
     }
 
     /// This is used by both any-of and all-of subschema processing. This
@@ -475,7 +491,7 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(_)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Map(..)) => {
             serde_options.push(quote! { default });
             serde_options
                 .push(quote! { skip_serializing_if = "std::collections::HashMap::is_empty" });
@@ -533,7 +549,7 @@ fn has_default(
         // No default specified.
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Array(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
@@ -546,7 +562,7 @@ fn has_default(
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}
-        (Some(TypeEntryDetails::Map(_)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
+        (Some(TypeEntryDetails::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: false

@@ -95,13 +95,21 @@ impl TypeEntry {
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
-            TypeEntryDetails::Map(type_id) => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 let obj = value.as_object()?;
-                let inner = type_space.id_to_entry.get(type_id).unwrap();
+                let key_ty = type_space.id_to_entry.get(key_id).unwrap();
+                let value_ty = type_space.id_to_entry.get(value_id).unwrap();
                 let kvs = obj
                     .iter()
-                    .map(|(name, obj_value)| {
-                        Some((name, inner.output_value(type_space, obj_value, scope)?))
+                    .map(|(obj_key, obj_value)| {
+                        Some((
+                            key_ty.output_value(
+                                type_space,
+                                &serde_json::Value::String(obj_key.clone()),
+                                scope,
+                            )?,
+                            value_ty.output_value(type_space, obj_value, scope)?,
+                        ))
                     })
                     .collect::<Option<Vec<_>>>()?;
                 let (keys, values): (Vec<_>, Vec<_>) = kvs.into_iter().unzip();
@@ -395,7 +403,7 @@ fn value_for_struct_props(
             match &type_entry.details {
                 TypeEntryDetails::Struct(_)
                 | TypeEntryDetails::Option(_)
-                | TypeEntryDetails::Map(_) => (),
+                | TypeEntryDetails::Map(..) => (),
                 _ => unreachable!(),
             }
 
@@ -495,7 +503,7 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!({"a": 1, "b": 2}), &quote! {})
                 .map(|x| x.to_string()),
-            Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
+            Some(r#"[("a" . to_string () , 1_u32) , ("b" . to_string () , 2_u32)] . into_iter () . collect ()"#.to_string()),
         );
     }
 

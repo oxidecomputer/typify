@@ -116,7 +116,7 @@ pub(crate) enum TypeEntryDetails {
     Option(TypeId),
     Box(TypeId),
     Array(TypeId),
-    Map(TypeId),
+    Map(TypeId, TypeId),
     Set(TypeId),
     Tuple(Vec<TypeId>),
     Unit,
@@ -536,7 +536,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
             }
@@ -1153,11 +1153,17 @@ impl TypeEntry {
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
         let inner_type_name = inner_type.type_ident(type_space, &None);
 
+        let is_str = matches!(inner_type.details, TypeEntryDetails::String);
+
+        // If this is just a wrapper around a string, we can derive some more
+        // useful traits.
+        if is_str {
+            derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+        }
+
         let constraint_impl = match constraints {
             // In the unconstrained case we proxy impls through the inner type.
             TypeEntryNewtypeConstraints::None => {
-                let is_str = matches!(inner_type.details, TypeEntryDetails::String);
-
                 let str_impl = is_str.then(|| {
                     quote! {
                         impl std::str::FromStr for #type_name {
@@ -1522,14 +1528,19 @@ impl TypeEntry {
                 quote! { Vec<#item> }
             }
 
-            TypeEntryDetails::Map(type_id) => {
-                let inner_ty = type_space
+            TypeEntryDetails::Map(key_id, value_id) => {
+                let key_ty = type_space
                     .id_to_entry
-                    .get(type_id)
-                    .expect("unresolved type id for map")
+                    .get(key_id)
+                    .expect("unresolved type id for map key")
+                    .type_ident(type_space, type_mod);
+                let value_ty = type_space
+                    .id_to_entry
+                    .get(value_id)
+                    .expect("unresolved type id for map valuevalue_id")
                     .type_ident(type_space, type_mod);
 
-                quote! { std::collections::HashMap<String, #inner_ty> }
+                quote! { std::collections::HashMap<#key_ty, #value_ty> }
             }
 
             TypeEntryDetails::Set(id) => {
@@ -1600,7 +1611,7 @@ impl TypeEntry {
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
             | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Native(_) => {
@@ -1656,7 +1667,9 @@ impl TypeEntry {
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
-            TypeEntryDetails::Map(type_id) => format!("map {}", type_id.0),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                format!("map {} {}", key_id.0, value_id.0)
+            }
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
             TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {
