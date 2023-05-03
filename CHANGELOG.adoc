@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.11\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.12\...HEAD[Full list of commits]
+
+== 0.0.12 (released 2023-05-03)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.11\...v0.0.12[Full list of commits]
 
 == 0.0.11 (released 2023-03-18)
 

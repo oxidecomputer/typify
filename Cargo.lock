@@ -151,7 +151,7 @@ dependencies = [
 
 [[package]]
 name = "cargo-typify"
-version = "0.0.12-dev"
+version = "0.0.12"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -1076,7 +1076,7 @@ dependencies = [
 
 [[package]]
 name = "typify"
-version = "0.0.12-dev"
+version = "0.0.12"
 dependencies = [
  "expectorate",
  "glob",
@@ -1094,7 +1094,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.0.12-dev"
+version = "0.0.12"
 dependencies = [
  "expectorate",
  "heck",
@@ -1116,7 +1116,7 @@ dependencies = [
 
 [[package]]
 name = "typify-macro"
-version = "0.0.12-dev"
+version = "0.0.12"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -1,6 +1,6 @@
 [package]
 name = "typify-impl"
-version = "0.0.12-dev"
+version = "0.0.12"
 edition = "2021"
 license = "Apache-2.0"
 description = "typify backend implementation"
