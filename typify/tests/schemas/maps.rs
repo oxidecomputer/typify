@@ -1,0 +1,94 @@
+#[allow(unused_imports)]
+use serde::{Deserialize, Serialize};
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct Eh(pub String);
+impl std::ops::Deref for Eh {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<Eh> for String {
+    fn from(value: Eh) -> Self {
+        value.0
+    }
+}
+impl From<&Eh> for Eh {
+    fn from(value: &Eh) -> Self {
+        value.clone()
+    }
+}
+impl From<String> for Eh {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+impl std::str::FromStr for Eh {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ToString for Eh {
+    fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapWithKeys(pub std::collections::HashMap<Eh, Value>);
+impl std::ops::Deref for MapWithKeys {
+    type Target = std::collections::HashMap<Eh, Value>;
+    fn deref(&self) -> &std::collections::HashMap<Eh, Value> {
+        &self.0
+    }
+}
+impl From<MapWithKeys> for std::collections::HashMap<Eh, Value> {
+    fn from(value: MapWithKeys) -> Self {
+        value.0
+    }
+}
+impl From<&MapWithKeys> for MapWithKeys {
+    fn from(value: &MapWithKeys) -> Self {
+        value.clone()
+    }
+}
+impl From<std::collections::HashMap<Eh, Value>> for MapWithKeys {
+    fn from(value: std::collections::HashMap<Eh, Value>) -> Self {
+        Self(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct Value(pub String);
+impl std::ops::Deref for Value {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<Value> for String {
+    fn from(value: Value) -> Self {
+        value.0
+    }
+}
+impl From<&Value> for Value {
+    fn from(value: &Value) -> Self {
+        value.clone()
+    }
+}
+impl From<String> for Value {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+impl std::str::FromStr for Value {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ToString for Value {
+    fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
+fn main() {}

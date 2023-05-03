@@ -1,0 +1,22 @@
+{
+  "$comment": "validate maps, in particular those with constrained string keys",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "MapWithKeys": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Value"
+      },
+      "propertyNames": {
+        "$ref": "#/definitions/Eh"
+      }
+    },
+    "Value": {
+      "type": "string"
+    },
+    "Eh": {
+      "type": "string",
+      "format": "^a*$"
+    }
+  }
+}
