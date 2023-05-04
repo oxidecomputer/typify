@@ -319,7 +319,14 @@ impl TypeEntry {
             let n = self.type_ident(type_space, &Some("super".to_string()));
             let value = self
                 .output_value(type_space, default, &quote! { super:: })
-                .unwrap();
+                .unwrap_or_else(|| {
+                    panic!(
+                        "{}\nvalue: {}\ntype: {:#?}",
+                        "The default value could not be rendered for this type",
+                        serde_json::to_string_pretty(default).unwrap(),
+                        self,
+                    )
+                });
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {
