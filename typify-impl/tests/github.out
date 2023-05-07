@@ -26903,7 +26903,7 @@ impl std::convert::TryFrom<String> for WatchStartedAction {
 #[serde(untagged)]
 pub enum WebhookEvents {
     Variant0(Vec<WebhookEventsVariant0Item>),
-    Variant1(Vec<String>),
+    Variant1((String,)),
 }
 impl From<&WebhookEvents> for WebhookEvents {
     fn from(value: &WebhookEvents) -> Self {
@@ -26915,9 +26915,9 @@ impl From<Vec<WebhookEventsVariant0Item>> for WebhookEvents {
         Self::Variant0(value)
     }
 }
-impl From<Vec<String>> for WebhookEvents {
-    fn from(value: Vec<String>) -> Self {
-        Self::Variant1(value)
+impl From<(String,)> for WebhookEvents {
+    fn from(value: (String,)) -> Self {
+        Self::Variant1(value.0)
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]

@@ -804,6 +804,8 @@ impl TypeEntry {
             // Tuple variants, and whose value is a tuple of the original index
             // and the variant itself. Any key that is seen multiple times has
             // a value of None.
+            // TODO this requires more consideration to handle single-item
+            // tuples.
             let unique_variants =
                 variants
                     .iter()
@@ -864,8 +866,12 @@ impl TypeEntry {
                                     .unwrap()
                                     .type_ident(type_space, &None)
                             });
-                            let variant_type_ident = quote! {
-                                ( #(#variant_type_idents),* )
+                            let variant_type_ident = if type_ids.len() != 1 {
+                                quote! { ( #(#variant_type_idents),* ) }
+                            } else {
+                                // A single-item tuple requires a trailing
+                                // comma.
+                                quote! { ( #(#variant_type_idents,)* ) }
                             };
                             let variant_name = format_ident!("{}", variant.name);
                             let ii = (0..type_ids.len()).map(syn::Index::from);
@@ -1563,7 +1569,12 @@ impl TypeEntry {
                         .type_ident(type_space, type_mod)
                 });
 
-                quote! { ( #(#type_streams),* ) }
+                if items.len() != 1 {
+                    quote! { ( #(#type_streams),* ) }
+                } else {
+                    // A single-item tuple requires a trailing comma.
+                    quote! { ( #(#type_streams,)* ) }
+                }
             }
 
             TypeEntryDetails::Unit => quote! { () },
@@ -1597,9 +1608,10 @@ impl TypeEntry {
         match &self.details {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
-            TypeEntryDetails::Enum(TypeEntryEnum{ variants, .. })
-                // TODO we should probably cache this rather than iterating
-                // every time. We'll know it when the enum is constructed.
+            // TODO we should probably cache "simpleness" of all variants
+            // rather than iterating every time. We'll know it when the enum is
+            // constructed.
+            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. })
                 if variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
@@ -1644,10 +1656,20 @@ impl TypeEntry {
                         .type_parameter_ident(type_space, lifetime_name)
                 });
 
-                quote! { ( #(#type_streams),* ) }
+                if items.len() != 1 {
+                    quote! { ( #(#type_streams),* ) }
+                } else {
+                    // Single-element tuples require special handling. In
+                    // particular, they must have a trailing comma or else are
+                    // treated as extraneously parenthesized types.
+                    quote! { ( #(#type_streams,)* ) }
+                }
             }
 
-            TypeEntryDetails::Unit | TypeEntryDetails::Boolean|TypeEntryDetails::Integer(_) | TypeEntryDetails::Float(_) => {
+            TypeEntryDetails::Unit
+            | TypeEntryDetails::Boolean
+            | TypeEntryDetails::Integer(_)
+            | TypeEntryDetails::Float(_) => {
                 self.type_ident(type_space, &type_space.settings.type_mod)
             }
             TypeEntryDetails::String => quote! { & #lifetime str },

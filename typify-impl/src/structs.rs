@@ -80,7 +80,10 @@ impl TypeSpace {
             }
             None => false,
 
-            // Only particular additional properties are allowed.
+            // Only particular additional properties are allowed. Note that
+            // #[serde(deny_unknown_fields)] is incompatible with
+            // #[serde(flatten)] so we allow them even though that doesn't seem
+            // quite right.
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
                 let (map_type, _) = self.make_map(
@@ -98,7 +101,7 @@ impl TypeSpace {
                 };
 
                 properties.push(extra_prop);
-                true
+                false
             }
         };
 
@@ -330,7 +333,7 @@ impl TypeSpace {
             _ => None,
         }?;
         let tmp_type_name = get_type_name(&type_name, metadata);
-        let (unnamed_properties, deny) = self.struct_members(tmp_type_name, validation).ok()?;
+        let (unnamed_properties, _) = self.struct_members(tmp_type_name, validation).ok()?;
 
         let named_properties = named
             .iter()
@@ -361,7 +364,9 @@ impl TypeSpace {
                 .into_iter()
                 .chain(unnamed_properties.into_iter())
                 .collect(),
-            deny,
+            // Note that #[serde(deny_unknown_fields)] is incompatible with
+            // #[serde(flatten)] which we use for the superclass(es).
+            false,
         ))
     }
 

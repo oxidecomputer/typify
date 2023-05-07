@@ -914,8 +914,8 @@ impl TypeSpace {
             // Maps have an empty properties set, and a non-null schema for the
             // additional_properties field.
             Some(ObjectValidation {
-                max_properties: None,
-                min_properties: None,
+                max_properties: _,
+                min_properties: _,
                 required,
                 properties,
                 pattern_properties,
@@ -1258,18 +1258,48 @@ impl TypeSpace {
         match validation {
             // A tuple.
             ArrayValidation {
-                items: Some(SingleOrVec::Vec(items)),
-                additional_items: None,
+                items,
+                additional_items,
                 max_items: Some(max_items),
                 min_items: Some(min_items),
                 unique_items: None,
                 contains: None,
-            } if max_items == min_items && *max_items as usize == items.len() => {
-                // TODO probably should not use Name::Unknown
-                let types = items
-                    .iter()
-                    .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
-                    .collect::<Result<Vec<_>>>()?;
+            } if max_items == min_items && *max_items >= 1 => {
+                let types = match items {
+                    Some(SingleOrVec::Vec(items)) if items.len() < *max_items as usize => {
+                        let rest_name = type_name.append("additional");
+                        let rest_id = if let Some(rest_schema) = additional_items {
+                            self.id_for_schema(rest_name, rest_schema)?.0
+                        } else {
+                            self.id_for_schema(rest_name, &Schema::Bool(true))?.0
+                        };
+                        let start = items.iter().enumerate().map(|(ii, item_schema)| {
+                            let item_name = type_name.append(&format!("item{}", ii));
+                            Ok(self.id_for_schema(item_name, item_schema)?.0)
+                        });
+                        let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
+                        start.chain(rest).collect::<Result<Vec<_>>>()?
+                    }
+                    Some(SingleOrVec::Vec(items)) => items
+                        .iter()
+                        .take(*max_items as usize)
+                        .enumerate()
+                        .map(|(ii, item_schema)| {
+                            let item_name = type_name.append(&format!("item{}", ii));
+                            Ok(self.id_for_schema(item_name, item_schema)?.0)
+                        })
+                        .collect::<Result<Vec<_>>>()?,
+                    Some(SingleOrVec::Single(item_schema)) => {
+                        let item_id = self.id_for_schema(type_name.append("item"), item_schema)?.0;
+                        (0..*max_items).map(|_| item_id.clone()).collect::<Vec<_>>()
+                    }
+                    None => {
+                        let any_id = self
+                            .id_for_schema(type_name.append("item"), &Schema::Bool(true))?
+                            .0;
+                        (0..*max_items).map(|_| any_id.clone()).collect::<Vec<_>>()
+                    }
+                };
 
                 Ok((TypeEntryDetails::Tuple(types).into(), metadata))
             }

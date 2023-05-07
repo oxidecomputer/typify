@@ -6,16 +6,19 @@ use heck::{ToKebabCase, ToPascalCase};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use schemars::schema::{
-    ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
+    InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
 };
 
 use crate::{
     output::OutputSpace,
     structs::generate_serde_attr,
-    type_entry::{EnumTagType, TypeEntry, TypeEntryEnum, Variant, VariantDetails},
+    type_entry::{
+        EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryStruct, Variant,
+        VariantDetails,
+    },
     util::{
         constant_string_value, get_object, get_type_name, metadata_description,
-        metadata_title_and_description, none_or_single, recase, schema_is_named, Case,
+        metadata_title_and_description, recase, schema_is_named, Case,
     },
     Name, Result, TypeSpace,
 };
@@ -217,145 +220,49 @@ impl TypeSpace {
         ))
     }
 
+    /// Return the variant details and a bool indicating if the schema denies
+    /// unknown fields.
     fn external_variant(
         &mut self,
         prop_type_name: Name,
         variant_schema: &Schema,
     ) -> Result<(VariantDetails, bool)> {
-        // Arrays (tuples) must have a fixed size (max_items == min_items).
-        //
-        // Per the JSON Schema specification, if the array.items is an array
-        // (rather than a single element), then:
-        //   'validation succeeds if each element of the instance validates
-        //   against the schema at the same position, if any.'
-        //
-        // Accordingly we require that either the length of the items array
-        // match the fixed size (max_items) or that there's a single type. Note
-        // that array.additionalItems is irrelevant due to this portion of the
-        // spec:
-        //   'If "items" is present, and its annotation result is a number,
-        //   validation succeeds if every instance element at an index greater
-        //   than that number validates against "additionalItems".'
-        //
-        // We could conceivably treat single-item, fixed-size arrays as their
-        // own type rather than a tuple variant, but since we don't yet handle
-        // that conversion this allows for a tighter match such a schema.
-        //
-        // Note that this is not part of the match below due to the nested
-        // conditions and destructuring.
-        if let Schema::Object(SchemaObject {
-            metadata: _,
-            instance_type: Some(SingleOrVec::Single(single)),
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: Some(validation),
-            object: None,
-            reference: None,
-            extensions: _,
-        }) = variant_schema
-        {
-            if single.as_ref() == &InstanceType::Array {
-                if let ArrayValidation {
-                    items: Some(SingleOrVec::Vec(items)),
-                    additional_items: _, // irrelevant; see above
-                    max_items: Some(max_items),
-                    min_items: Some(min_items),
-                    unique_items: None,
-                    contains: None,
-                } = validation.as_ref()
-                {
-                    if *max_items >= 2 && max_items == min_items && *max_items == items.len() as u32
-                    {
-                        let details = VariantDetails::Tuple(
-                            items
-                                .iter()
-                                .map(|item_type| {
-                                    let (ty, _) =
-                                        self.id_for_schema(prop_type_name.clone(), item_type)?;
-                                    Ok(ty)
-                                })
-                                .collect::<Result<Vec<_>>>()?,
-                        );
-                        return Ok((details, false));
-                    }
-                }
-                if let ArrayValidation {
-                    items: Some(SingleOrVec::Single(item)),
-                    additional_items: None,
-                    max_items: Some(max_items),
-                    min_items: Some(min_items),
-                    unique_items: None,
-                    contains: None,
-                } = validation.as_ref()
-                {
-                    if *max_items >= 2 && max_items == min_items {
-                        let (ty, _) = self.id_for_schema(prop_type_name.clone(), item).unwrap();
-                        let details =
-                            VariantDetails::Tuple((0..*max_items).map(|_| ty.clone()).collect());
-                        return Ok((details, false));
-                    }
-                }
+        let (ty, _) = self.convert_schema(prop_type_name, variant_schema)?;
+
+        match ty {
+            TypeEntry {
+                details: TypeEntryDetails::Tuple(types),
+                ..
+            } => {
+                let details = VariantDetails::Tuple(types);
+                Ok((details, false))
             }
-        }
-
-        match variant_schema {
-            // Null instance type equates to a simple variant
-            Schema::Object(SchemaObject {
-                metadata: None,
-                instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
-                enum_values: None,
-                const_value: None,
-                subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: None,
-                reference: None,
-                extensions: _,
-            }) if single.as_ref() == &InstanceType::Null => Ok((VariantDetails::Simple, false)),
-
-            // Anonymous (i.e. those where metadata.title is None) structs are
-            // embedded within the variant as the struct type.
-            Schema::Object(SchemaObject {
-                metadata,
-                instance_type,
-                format: None,
-                enum_values: None,
-                const_value: None,
-                subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: Some(validation),
-                reference: None,
-                extensions: _,
-            }) if none_or_single(instance_type, &InstanceType::Object)
-                && metadata
-                    .as_ref()
-                    .map(|m| m.as_ref().title.as_ref())
-                    .is_none() =>
-            {
-                let tmp_type_name = match prop_type_name {
-                    Name::Required(name) | Name::Suggested(name) => Some(name),
-                    Name::Unknown => None,
-                };
-                let (properties, deny) = self.struct_members(tmp_type_name, validation)?;
-                Ok((VariantDetails::Struct(properties), deny))
+            TypeEntry {
+                details: TypeEntryDetails::Unit,
+                ..
+            } => {
+                let details = VariantDetails::Simple;
+                Ok((details, false))
+            }
+            TypeEntry {
+                details:
+                    TypeEntryDetails::Struct(TypeEntryStruct {
+                        name: _,
+                        rename: _,
+                        description: _,
+                        default: _, // TODO arguably we should look at this
+                        properties,
+                        deny_unknown_fields,
+                    }),
+                ..
+            } => {
+                let details = VariantDetails::Struct(properties);
+                Ok((details, deny_unknown_fields))
             }
 
-            // Otherwise we create a single-element tuple variant with the given type.
-            prop_type => {
-                let (type_id, _) = self.id_for_schema(prop_type_name, prop_type)?;
-                // TODO We'd ideally look at the type itself to determine if
-                // they represent a "closed" struct in which case we'd return
-                // "true". However these may be yet-unresolved references so to
-                // do this properly we'd need to go through the JSON schema
-                // itself rather than our intermediate representation.
+            ty => {
+                let type_id = self.assign_type(ty);
+
                 let details = VariantDetails::Item(type_id);
                 Ok((details, false))
             }
@@ -828,10 +735,22 @@ pub(crate) fn output_variant(
                     .type_ident(type_space, &None)
             });
 
-            quote! {
-                #doc
-                #serde
-                #name(#(#types),*),
+            if tuple.len() != 1 {
+                quote! {
+                    #doc
+                    #serde
+                    #name(#(#types),*),
+                }
+            } else {
+                // A tuple variant with a single element requires special
+                // handling lest its "tuple-ness" be lost. This is important to
+                // ensure correct serialization and deserialization behavior.
+                // Note in particular the extra parentheses and trailing comma.
+                quote! {
+                    #doc
+                    #serde
+                    #name((#(#types,)*)),
+                }
             }
         }
 
