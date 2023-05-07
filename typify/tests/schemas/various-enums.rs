@@ -55,17 +55,6 @@ impl Default for AlternativeEnum {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct AnimationSpecification {
-    #[serde(flatten)]
-    pub extra: std::collections::HashMap<String, String>,
-}
-impl From<&AnimationSpecification> for AnimationSpecification {
-    fn from(value: &AnimationSpecification) -> Self {
-        value.clone()
-    }
-}
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
@@ -260,16 +249,22 @@ impl ToString for Ipv6Net {
 #[serde(untagged)]
 pub enum JankNames {
     Variant0(String),
-    Variant1(AnimationSpecification),
+    Variant1(std::collections::HashMap<String, String>),
+    Variant2(std::collections::HashMap<String, i64>),
 }
 impl From<&JankNames> for JankNames {
     fn from(value: &JankNames) -> Self {
         value.clone()
     }
 }
-impl From<AnimationSpecification> for JankNames {
-    fn from(value: AnimationSpecification) -> Self {
+impl From<std::collections::HashMap<String, String>> for JankNames {
+    fn from(value: std::collections::HashMap<String, String>) -> Self {
         Self::Variant1(value)
+    }
+}
+impl From<std::collections::HashMap<String, i64>> for JankNames {
+    fn from(value: std::collections::HashMap<String, i64>) -> Self {
+        Self::Variant2(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -362,6 +357,155 @@ impl From<&OneOfTypes> for OneOfTypes {
 impl From<i64> for OneOfTypes {
     fn from(value: i64) -> Self {
         Self::Bar(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct ReferenceDef(pub String);
+impl std::ops::Deref for ReferenceDef {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<ReferenceDef> for String {
+    fn from(value: ReferenceDef) -> Self {
+        value.0
+    }
+}
+impl From<&ReferenceDef> for ReferenceDef {
+    fn from(value: &ReferenceDef) -> Self {
+        value.clone()
+    }
+}
+impl From<String> for ReferenceDef {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+impl std::str::FromStr for ReferenceDef {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ToString for ReferenceDef {
+    fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
+#[doc = "issue 280"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum References {
+    Variant0(Vec<String>),
+    Variant1(std::collections::HashMap<String, ReferencesVariant1Value>),
+}
+impl From<&References> for References {
+    fn from(value: &References) -> Self {
+        value.clone()
+    }
+}
+impl From<Vec<String>> for References {
+    fn from(value: Vec<String>) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<std::collections::HashMap<String, ReferencesVariant1Value>> for References {
+    fn from(value: std::collections::HashMap<String, ReferencesVariant1Value>) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ReferencesVariant1Value {
+    StringVersion(StringVersion),
+    ReferenceDef(ReferenceDef),
+}
+impl From<&ReferencesVariant1Value> for ReferencesVariant1Value {
+    fn from(value: &ReferencesVariant1Value) -> Self {
+        value.clone()
+    }
+}
+impl std::str::FromStr for ReferencesVariant1Value {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        if let Ok(v) = value.parse() {
+            Ok(Self::StringVersion(v))
+        } else if let Ok(v) = value.parse() {
+            Ok(Self::ReferenceDef(v))
+        } else {
+            Err("string conversion failed for all variants")
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for ReferencesVariant1Value {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for ReferencesVariant1Value {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for ReferencesVariant1Value {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl ToString for ReferencesVariant1Value {
+    fn to_string(&self) -> String {
+        match self {
+            Self::StringVersion(x) => x.to_string(),
+            Self::ReferenceDef(x) => x.to_string(),
+        }
+    }
+}
+impl From<StringVersion> for ReferencesVariant1Value {
+    fn from(value: StringVersion) -> Self {
+        Self::StringVersion(value)
+    }
+}
+impl From<ReferenceDef> for ReferencesVariant1Value {
+    fn from(value: ReferenceDef) -> Self {
+        Self::ReferenceDef(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct StringVersion(pub String);
+impl std::ops::Deref for StringVersion {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<StringVersion> for String {
+    fn from(value: StringVersion) -> Self {
+        value.0
+    }
+}
+impl From<&StringVersion> for StringVersion {
+    fn from(value: &StringVersion) -> Self {
+        value.clone()
+    }
+}
+impl From<String> for StringVersion {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+impl std::str::FromStr for StringVersion {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ToString for StringVersion {
+    fn to_string(&self) -> String {
+        self.0.to_string()
     }
 }
 fn main() {}

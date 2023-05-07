@@ -96,7 +96,7 @@
       ]
     },
     "JankNames": {
-      "anyOf": [
+      "oneOf": [
         {
           "title": "Animation Specification",
           "type": "string"
@@ -109,8 +109,47 @@
           "additionalProperties": {
             "type": "string"
           }
+        },
+        {
+          "type": "object",
+          "maxProperties": 2,
+          "minProperties": 2,
+          "additionalProperties": {
+            "type": "integer"
+          }
         }
       ]
+    },
+    "References": {
+      "description": "issue 280",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$comment": "Mapping of mod name to the desired version",
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/StringVersion"
+              },
+              {
+                "$ref": "#/definitions/ReferenceDef"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "StringVersion": {
+      "type": "string"
+    },
+    "ReferenceDef": {
+      "type": "string"
     }
   }
 }

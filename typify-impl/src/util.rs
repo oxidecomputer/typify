@@ -832,17 +832,6 @@ pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, 
     }
 }
 
-pub(crate) fn none_or_single<T>(test: &Option<SingleOrVec<T>>, value: &T) -> bool
-where
-    T: Eq,
-{
-    match test {
-        None => true,
-        Some(SingleOrVec::Single(single)) if single.as_ref() == value => true,
-        _ => false,
-    }
-}
-
 pub(crate) struct StringValidator {
     max_length: Option<u32>,
     min_length: Option<u32>,
