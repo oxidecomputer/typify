@@ -118,6 +118,7 @@ pub(crate) enum TypeEntryDetails {
     Vec(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
+    Array(TypeId, usize),
     Tuple(Vec<TypeId>),
     Unit,
     Boolean,
@@ -536,17 +537,29 @@ impl TypeEntry {
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Vec(_)
-            | TypeEntryDetails::Map(..)
+            | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
             }
 
             TypeEntryDetails::Tuple(type_ids) => {
+                // Default is implemented for tuples of up to 12 items long.
                 matches!(impl_name, TypeSpaceImpl::Default)
+                    && type_ids.len() <= 12
                     && type_ids.iter().all(|type_id| {
                         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                         type_entry.has_impl(type_space, TypeSpaceImpl::Default)
                     })
+            }
+
+            TypeEntryDetails::Array(item_id, length) => {
+                // Default is implemented for arrays of up to length 32.
+                if *length <= 32 && impl_name == TypeSpaceImpl::Default {
+                    let type_entry = type_space.id_to_entry.get(item_id).unwrap();
+                    type_entry.has_impl(type_space, impl_name)
+                } else {
+                    false
+                }
             }
 
             TypeEntryDetails::Boolean => true,
@@ -1561,7 +1574,7 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Tuple(items) => {
-                let type_streams = items.iter().map(|item| {
+                let type_idents = items.iter().map(|item| {
                     type_space
                         .id_to_entry
                         .get(item)
@@ -1570,11 +1583,21 @@ impl TypeEntry {
                 });
 
                 if items.len() != 1 {
-                    quote! { ( #(#type_streams),* ) }
+                    quote! { ( #(#type_idents),* ) }
                 } else {
                     // A single-item tuple requires a trailing comma.
-                    quote! { ( #(#type_streams,)* ) }
+                    quote! { ( #(#type_idents,)* ) }
                 }
+            }
+
+            TypeEntryDetails::Array(item_id, length) => {
+                let item_ty = type_space
+                    .id_to_entry
+                    .get(item_id)
+                    .expect("unresolved type id for array");
+                let item_ident = item_ty.type_ident(type_space, type_mod);
+
+                quote! { [#item_ident; #length]}
             }
 
             TypeEntryDetails::Unit => quote! { () },
@@ -1626,7 +1649,8 @@ impl TypeEntry {
             | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
-            | TypeEntryDetails::Native(_) => {
+            | TypeEntryDetails::Native(_)
+            | TypeEntryDetails::Array(..) => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
@@ -1688,7 +1712,7 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
-            TypeEntryDetails::Vec(type_id) => format!("array {}", type_id.0),
+            TypeEntryDetails::Vec(type_id) => format!("vec {}", type_id.0),
             TypeEntryDetails::Map(key_id, value_id) => {
                 format!("map {} {}", key_id.0, value_id.0)
             }
@@ -1703,6 +1727,9 @@ impl TypeEntry {
                         .collect::<Vec<String>>()
                         .join(", ")
                 )
+            }
+            TypeEntryDetails::Array(type_id, length) => {
+                format!("array {}; {}", type_id.0, length)
             }
             TypeEntryDetails::Boolean => "bool".to_string(),
             TypeEntryDetails::Native(TypeEntryNative {

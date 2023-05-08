@@ -123,6 +123,15 @@ impl TypeEntry {
                 let tup = value_for_tuple(type_space, value, types, scope)?;
                 quote! { ( #( #tup ),* )}
             }
+            TypeEntryDetails::Array(type_id, _) => {
+                let arr = value.as_array()?;
+                let inner = type_space.id_to_entry.get(type_id).unwrap();
+                let values = arr
+                    .iter()
+                    .map(|arr_value| inner.output_value(type_space, arr_value, scope))
+                    .collect::<Option<Vec<_>>>()?;
+                quote! { [#(#values),*] }
+            }
             TypeEntryDetails::Unit => {
                 value.as_null()?;
                 quote! { () }

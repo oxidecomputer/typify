@@ -14,7 +14,7 @@
         }
       ]
     },
-    "simpler-two-tuple": {
+    "simple-two-array": {
       "type": "array",
       "minItems": 2,
       "maxItems": 2,
@@ -51,7 +51,7 @@
         "type": "string"
       }
     },
-    "yolo-two-tuple": {
+    "yolo-two-array": {
       "type": "array",
       "minItems": 2,
       "maxItems": 2,

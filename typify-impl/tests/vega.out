@@ -4122,9 +4122,9 @@ pub enum BaseColorValue {
         count: Option<f64>,
         gradient: Field,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        start: Option<(f64, f64)>,
+        start: Option<[f64; 2usize]>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        stop: Option<(f64, f64)>,
+        stop: Option<[f64; 2usize]>,
     },
     Variant4 {
         color: BaseColorValueVariant4Color,
@@ -4780,7 +4780,7 @@ impl From<SignalRef> for BinTransformAnchor {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BinTransformAs {
-    Variant0(BinTransformAsVariant0Item, BinTransformAsVariant0Item),
+    Variant0([BinTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&BinTransformAs> for BinTransformAs {
@@ -4790,15 +4790,15 @@ impl From<&BinTransformAs> for BinTransformAs {
 }
 impl Default for BinTransformAs {
     fn default() -> Self {
-        BinTransformAs::Variant0(
+        BinTransformAs::Variant0([
             BinTransformAsVariant0Item::Variant0("bin0".to_string()),
             BinTransformAsVariant0Item::Variant0("bin1".to_string()),
-        )
+        ])
     }
 }
-impl From<(BinTransformAsVariant0Item, BinTransformAsVariant0Item)> for BinTransformAs {
-    fn from(value: (BinTransformAsVariant0Item, BinTransformAsVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[BinTransformAsVariant0Item; 2usize]> for BinTransformAs {
+    fn from(value: [BinTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for BinTransformAs {
@@ -4901,10 +4901,7 @@ impl From<SignalRef> for BinTransformDivideVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum BinTransformExtent {
-    Variant0(
-        BinTransformExtentVariant0Item,
-        BinTransformExtentVariant0Item,
-    ),
+    Variant0([BinTransformExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&BinTransformExtent> for BinTransformExtent {
@@ -4912,19 +4909,9 @@ impl From<&BinTransformExtent> for BinTransformExtent {
         value.clone()
     }
 }
-impl
-    From<(
-        BinTransformExtentVariant0Item,
-        BinTransformExtentVariant0Item,
-    )> for BinTransformExtent
-{
-    fn from(
-        value: (
-            BinTransformExtentVariant0Item,
-            BinTransformExtentVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[BinTransformExtentVariant0Item; 2usize]> for BinTransformExtent {
+    fn from(value: [BinTransformExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for BinTransformExtent {
@@ -6611,10 +6598,7 @@ impl From<SignalRef> for ContourTransformNice {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ContourTransformSize {
-    Variant0(
-        ContourTransformSizeVariant0Item,
-        ContourTransformSizeVariant0Item,
-    ),
+    Variant0([ContourTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ContourTransformSize> for ContourTransformSize {
@@ -6622,19 +6606,9 @@ impl From<&ContourTransformSize> for ContourTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        ContourTransformSizeVariant0Item,
-        ContourTransformSizeVariant0Item,
-    )> for ContourTransformSize
-{
-    fn from(
-        value: (
-            ContourTransformSizeVariant0Item,
-            ContourTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[ContourTransformSizeVariant0Item; 2usize]> for ContourTransformSize {
+    fn from(value: [ContourTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ContourTransformSize {
@@ -6923,10 +6897,7 @@ impl From<&CountpatternTransform> for CountpatternTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CountpatternTransformAs {
-    Variant0(
-        CountpatternTransformAsVariant0Item,
-        CountpatternTransformAsVariant0Item,
-    ),
+    Variant0([CountpatternTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&CountpatternTransformAs> for CountpatternTransformAs {
@@ -6936,25 +6907,15 @@ impl From<&CountpatternTransformAs> for CountpatternTransformAs {
 }
 impl Default for CountpatternTransformAs {
     fn default() -> Self {
-        CountpatternTransformAs::Variant0(
+        CountpatternTransformAs::Variant0([
             CountpatternTransformAsVariant0Item::Variant0("text".to_string()),
             CountpatternTransformAsVariant0Item::Variant0("count".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        CountpatternTransformAsVariant0Item,
-        CountpatternTransformAsVariant0Item,
-    )> for CountpatternTransformAs
-{
-    fn from(
-        value: (
-            CountpatternTransformAsVariant0Item,
-            CountpatternTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[CountpatternTransformAsVariant0Item; 2usize]> for CountpatternTransformAs {
+    fn from(value: [CountpatternTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for CountpatternTransformAs {
@@ -7184,7 +7145,7 @@ impl From<&CrossTransform> for CrossTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CrossTransformAs {
-    Variant0(CrossTransformAsVariant0Item, CrossTransformAsVariant0Item),
+    Variant0([CrossTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&CrossTransformAs> for CrossTransformAs {
@@ -7194,15 +7155,15 @@ impl From<&CrossTransformAs> for CrossTransformAs {
 }
 impl Default for CrossTransformAs {
     fn default() -> Self {
-        CrossTransformAs::Variant0(
+        CrossTransformAs::Variant0([
             CrossTransformAsVariant0Item::Variant0("a".to_string()),
             CrossTransformAsVariant0Item::Variant0("b".to_string()),
-        )
+        ])
     }
 }
-impl From<(CrossTransformAsVariant0Item, CrossTransformAsVariant0Item)> for CrossTransformAs {
-    fn from(value: (CrossTransformAsVariant0Item, CrossTransformAsVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[CrossTransformAsVariant0Item; 2usize]> for CrossTransformAs {
+    fn from(value: [CrossTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for CrossTransformAs {
@@ -11089,10 +11050,7 @@ impl From<SignalRef> for DensityTransformDistributionVariant4WeightsVariant0Item
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DensityTransformExtent {
-    Variant0(
-        DensityTransformExtentVariant0Item,
-        DensityTransformExtentVariant0Item,
-    ),
+    Variant0([DensityTransformExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&DensityTransformExtent> for DensityTransformExtent {
@@ -11100,19 +11058,9 @@ impl From<&DensityTransformExtent> for DensityTransformExtent {
         value.clone()
     }
 }
-impl
-    From<(
-        DensityTransformExtentVariant0Item,
-        DensityTransformExtentVariant0Item,
-    )> for DensityTransformExtent
-{
-    fn from(
-        value: (
-            DensityTransformExtentVariant0Item,
-            DensityTransformExtentVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[DensityTransformExtentVariant0Item; 2usize]> for DensityTransformExtent {
+    fn from(value: [DensityTransformExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for DensityTransformExtent {
@@ -12665,7 +12613,7 @@ impl From<&FoldTransform> for FoldTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum FoldTransformAs {
-    Variant0(FoldTransformAsVariant0Item, FoldTransformAsVariant0Item),
+    Variant0([FoldTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&FoldTransformAs> for FoldTransformAs {
@@ -12675,15 +12623,15 @@ impl From<&FoldTransformAs> for FoldTransformAs {
 }
 impl Default for FoldTransformAs {
     fn default() -> Self {
-        FoldTransformAs::Variant0(
+        FoldTransformAs::Variant0([
             FoldTransformAsVariant0Item::Variant0("key".to_string()),
             FoldTransformAsVariant0Item::Variant0("value".to_string()),
-        )
+        ])
     }
 }
-impl From<(FoldTransformAsVariant0Item, FoldTransformAsVariant0Item)> for FoldTransformAs {
-    fn from(value: (FoldTransformAsVariant0Item, FoldTransformAsVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[FoldTransformAsVariant0Item; 2usize]> for FoldTransformAs {
+    fn from(value: [FoldTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for FoldTransformAs {
@@ -14328,10 +14276,7 @@ impl From<&GeojsonTransform> for GeojsonTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GeojsonTransformFields {
-    Variant0(
-        GeojsonTransformFieldsVariant0Item,
-        GeojsonTransformFieldsVariant0Item,
-    ),
+    Variant0([GeojsonTransformFieldsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GeojsonTransformFields> for GeojsonTransformFields {
@@ -14339,19 +14284,9 @@ impl From<&GeojsonTransformFields> for GeojsonTransformFields {
         value.clone()
     }
 }
-impl
-    From<(
-        GeojsonTransformFieldsVariant0Item,
-        GeojsonTransformFieldsVariant0Item,
-    )> for GeojsonTransformFields
-{
-    fn from(
-        value: (
-            GeojsonTransformFieldsVariant0Item,
-            GeojsonTransformFieldsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GeojsonTransformFieldsVariant0Item; 2usize]> for GeojsonTransformFields {
+    fn from(value: [GeojsonTransformFieldsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GeojsonTransformFields {
@@ -14627,10 +14562,7 @@ impl From<&GeopointTransform> for GeopointTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GeopointTransformAs {
-    Variant0(
-        GeopointTransformAsVariant0Item,
-        GeopointTransformAsVariant0Item,
-    ),
+    Variant0([GeopointTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GeopointTransformAs> for GeopointTransformAs {
@@ -14640,25 +14572,15 @@ impl From<&GeopointTransformAs> for GeopointTransformAs {
 }
 impl Default for GeopointTransformAs {
     fn default() -> Self {
-        GeopointTransformAs::Variant0(
+        GeopointTransformAs::Variant0([
             GeopointTransformAsVariant0Item::Variant0("x".to_string()),
             GeopointTransformAsVariant0Item::Variant0("y".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        GeopointTransformAsVariant0Item,
-        GeopointTransformAsVariant0Item,
-    )> for GeopointTransformAs
-{
-    fn from(
-        value: (
-            GeopointTransformAsVariant0Item,
-            GeopointTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GeopointTransformAsVariant0Item; 2usize]> for GeopointTransformAs {
+    fn from(value: [GeopointTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GeopointTransformAs {
@@ -14685,10 +14607,7 @@ impl From<SignalRef> for GeopointTransformAsVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GeopointTransformFields {
-    Variant0(
-        GeopointTransformFieldsVariant0Item,
-        GeopointTransformFieldsVariant0Item,
-    ),
+    Variant0([GeopointTransformFieldsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GeopointTransformFields> for GeopointTransformFields {
@@ -14696,19 +14615,9 @@ impl From<&GeopointTransformFields> for GeopointTransformFields {
         value.clone()
     }
 }
-impl
-    From<(
-        GeopointTransformFieldsVariant0Item,
-        GeopointTransformFieldsVariant0Item,
-    )> for GeopointTransformFields
-{
-    fn from(
-        value: (
-            GeopointTransformFieldsVariant0Item,
-            GeopointTransformFieldsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GeopointTransformFieldsVariant0Item; 2usize]> for GeopointTransformFields {
+    fn from(value: [GeopointTransformFieldsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GeopointTransformFields {
@@ -15022,7 +14931,7 @@ impl From<&GraticuleTransform> for GraticuleTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformExtent {
-    Variant0(serde_json::Value, serde_json::Value),
+    Variant0([serde_json::Value; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformExtent> for GraticuleTransformExtent {
@@ -15030,9 +14939,9 @@ impl From<&GraticuleTransformExtent> for GraticuleTransformExtent {
         value.clone()
     }
 }
-impl From<(serde_json::Value, serde_json::Value)> for GraticuleTransformExtent {
-    fn from(value: (serde_json::Value, serde_json::Value)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[serde_json::Value; 2usize]> for GraticuleTransformExtent {
+    fn from(value: [serde_json::Value; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformExtent {
@@ -15043,7 +14952,7 @@ impl From<SignalRef> for GraticuleTransformExtent {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformExtentMajor {
-    Variant0(serde_json::Value, serde_json::Value),
+    Variant0([serde_json::Value; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformExtentMajor> for GraticuleTransformExtentMajor {
@@ -15051,9 +14960,9 @@ impl From<&GraticuleTransformExtentMajor> for GraticuleTransformExtentMajor {
         value.clone()
     }
 }
-impl From<(serde_json::Value, serde_json::Value)> for GraticuleTransformExtentMajor {
-    fn from(value: (serde_json::Value, serde_json::Value)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[serde_json::Value; 2usize]> for GraticuleTransformExtentMajor {
+    fn from(value: [serde_json::Value; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformExtentMajor {
@@ -15064,7 +14973,7 @@ impl From<SignalRef> for GraticuleTransformExtentMajor {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformExtentMinor {
-    Variant0(serde_json::Value, serde_json::Value),
+    Variant0([serde_json::Value; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformExtentMinor> for GraticuleTransformExtentMinor {
@@ -15072,9 +14981,9 @@ impl From<&GraticuleTransformExtentMinor> for GraticuleTransformExtentMinor {
         value.clone()
     }
 }
-impl From<(serde_json::Value, serde_json::Value)> for GraticuleTransformExtentMinor {
-    fn from(value: (serde_json::Value, serde_json::Value)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[serde_json::Value; 2usize]> for GraticuleTransformExtentMinor {
+    fn from(value: [serde_json::Value; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformExtentMinor {
@@ -15111,10 +15020,7 @@ impl From<SignalRef> for GraticuleTransformPrecision {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformStep {
-    Variant0(
-        GraticuleTransformStepVariant0Item,
-        GraticuleTransformStepVariant0Item,
-    ),
+    Variant0([GraticuleTransformStepVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformStep> for GraticuleTransformStep {
@@ -15122,19 +15028,9 @@ impl From<&GraticuleTransformStep> for GraticuleTransformStep {
         value.clone()
     }
 }
-impl
-    From<(
-        GraticuleTransformStepVariant0Item,
-        GraticuleTransformStepVariant0Item,
-    )> for GraticuleTransformStep
-{
-    fn from(
-        value: (
-            GraticuleTransformStepVariant0Item,
-            GraticuleTransformStepVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GraticuleTransformStepVariant0Item; 2usize]> for GraticuleTransformStep {
+    fn from(value: [GraticuleTransformStepVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformStep {
@@ -15145,10 +15041,7 @@ impl From<SignalRef> for GraticuleTransformStep {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformStepMajor {
-    Variant0(
-        GraticuleTransformStepMajorVariant0Item,
-        GraticuleTransformStepMajorVariant0Item,
-    ),
+    Variant0([GraticuleTransformStepMajorVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformStepMajor> for GraticuleTransformStepMajor {
@@ -15158,25 +15051,15 @@ impl From<&GraticuleTransformStepMajor> for GraticuleTransformStepMajor {
 }
 impl Default for GraticuleTransformStepMajor {
     fn default() -> Self {
-        GraticuleTransformStepMajor::Variant0(
+        GraticuleTransformStepMajor::Variant0([
             GraticuleTransformStepMajorVariant0Item::Variant0(90_f64),
             GraticuleTransformStepMajorVariant0Item::Variant0(360_f64),
-        )
+        ])
     }
 }
-impl
-    From<(
-        GraticuleTransformStepMajorVariant0Item,
-        GraticuleTransformStepMajorVariant0Item,
-    )> for GraticuleTransformStepMajor
-{
-    fn from(
-        value: (
-            GraticuleTransformStepMajorVariant0Item,
-            GraticuleTransformStepMajorVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GraticuleTransformStepMajorVariant0Item; 2usize]> for GraticuleTransformStepMajor {
+    fn from(value: [GraticuleTransformStepMajorVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformStepMajor {
@@ -15208,10 +15091,7 @@ impl From<SignalRef> for GraticuleTransformStepMajorVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum GraticuleTransformStepMinor {
-    Variant0(
-        GraticuleTransformStepMinorVariant0Item,
-        GraticuleTransformStepMinorVariant0Item,
-    ),
+    Variant0([GraticuleTransformStepMinorVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&GraticuleTransformStepMinor> for GraticuleTransformStepMinor {
@@ -15221,25 +15101,15 @@ impl From<&GraticuleTransformStepMinor> for GraticuleTransformStepMinor {
 }
 impl Default for GraticuleTransformStepMinor {
     fn default() -> Self {
-        GraticuleTransformStepMinor::Variant0(
+        GraticuleTransformStepMinor::Variant0([
             GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
             GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
-        )
+        ])
     }
 }
-impl
-    From<(
-        GraticuleTransformStepMinorVariant0Item,
-        GraticuleTransformStepMinorVariant0Item,
-    )> for GraticuleTransformStepMinor
-{
-    fn from(
-        value: (
-            GraticuleTransformStepMinorVariant0Item,
-            GraticuleTransformStepMinorVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[GraticuleTransformStepMinorVariant0Item; 2usize]> for GraticuleTransformStepMinor {
+    fn from(value: [GraticuleTransformStepMinorVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for GraticuleTransformStepMinor {
@@ -16837,10 +16707,7 @@ impl From<SignalRef> for Kde2dTransformAs {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum Kde2dTransformBandwidth {
-    Variant0(
-        Kde2dTransformBandwidthVariant0Item,
-        Kde2dTransformBandwidthVariant0Item,
-    ),
+    Variant0([Kde2dTransformBandwidthVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&Kde2dTransformBandwidth> for Kde2dTransformBandwidth {
@@ -16848,19 +16715,9 @@ impl From<&Kde2dTransformBandwidth> for Kde2dTransformBandwidth {
         value.clone()
     }
 }
-impl
-    From<(
-        Kde2dTransformBandwidthVariant0Item,
-        Kde2dTransformBandwidthVariant0Item,
-    )> for Kde2dTransformBandwidth
-{
-    fn from(
-        value: (
-            Kde2dTransformBandwidthVariant0Item,
-            Kde2dTransformBandwidthVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[Kde2dTransformBandwidthVariant0Item; 2usize]> for Kde2dTransformBandwidth {
+    fn from(value: [Kde2dTransformBandwidthVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for Kde2dTransformBandwidth {
@@ -16982,10 +16839,7 @@ impl From<Expr> for Kde2dTransformGroupbyVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum Kde2dTransformSize {
-    Variant0(
-        Kde2dTransformSizeVariant0Item,
-        Kde2dTransformSizeVariant0Item,
-    ),
+    Variant0([Kde2dTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&Kde2dTransformSize> for Kde2dTransformSize {
@@ -16993,19 +16847,9 @@ impl From<&Kde2dTransformSize> for Kde2dTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        Kde2dTransformSizeVariant0Item,
-        Kde2dTransformSizeVariant0Item,
-    )> for Kde2dTransformSize
-{
-    fn from(
-        value: (
-            Kde2dTransformSizeVariant0Item,
-            Kde2dTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[Kde2dTransformSizeVariant0Item; 2usize]> for Kde2dTransformSize {
+    fn from(value: [Kde2dTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for Kde2dTransformSize {
@@ -17304,10 +17148,7 @@ impl From<SignalRef> for KdeTransformCumulative {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum KdeTransformExtent {
-    Variant0(
-        KdeTransformExtentVariant0Item,
-        KdeTransformExtentVariant0Item,
-    ),
+    Variant0([KdeTransformExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&KdeTransformExtent> for KdeTransformExtent {
@@ -17315,19 +17156,9 @@ impl From<&KdeTransformExtent> for KdeTransformExtent {
         value.clone()
     }
 }
-impl
-    From<(
-        KdeTransformExtentVariant0Item,
-        KdeTransformExtentVariant0Item,
-    )> for KdeTransformExtent
-{
-    fn from(
-        value: (
-            KdeTransformExtentVariant0Item,
-            KdeTransformExtentVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[KdeTransformExtentVariant0Item; 2usize]> for KdeTransformExtent {
+    fn from(value: [KdeTransformExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for KdeTransformExtent {
@@ -17795,13 +17626,7 @@ impl From<SignalRef> for LabelTransformAnchorVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformAs {
-    Variant0(
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-    ),
+    Variant0([LabelTransformAsVariant0Item; 5usize]),
     Variant1(SignalRef),
 }
 impl From<&LabelTransformAs> for LabelTransformAs {
@@ -17811,34 +17636,18 @@ impl From<&LabelTransformAs> for LabelTransformAs {
 }
 impl Default for LabelTransformAs {
     fn default() -> Self {
-        LabelTransformAs::Variant0(
+        LabelTransformAs::Variant0([
             LabelTransformAsVariant0Item::Variant0("x".to_string()),
             LabelTransformAsVariant0Item::Variant0("y".to_string()),
             LabelTransformAsVariant0Item::Variant0("opacity".to_string()),
             LabelTransformAsVariant0Item::Variant0("align".to_string()),
             LabelTransformAsVariant0Item::Variant0("baseline".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-        LabelTransformAsVariant0Item,
-    )> for LabelTransformAs
-{
-    fn from(
-        value: (
-            LabelTransformAsVariant0Item,
-            LabelTransformAsVariant0Item,
-            LabelTransformAsVariant0Item,
-            LabelTransformAsVariant0Item,
-            LabelTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1, value.2, value.3, value.4)
+impl From<[LabelTransformAsVariant0Item; 5usize]> for LabelTransformAs {
+    fn from(value: [LabelTransformAsVariant0Item; 5usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for LabelTransformAs {
@@ -18044,10 +17853,7 @@ impl From<SignalRef> for LabelTransformPadding {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum LabelTransformSize {
-    Variant0(
-        LabelTransformSizeVariant0Item,
-        LabelTransformSizeVariant0Item,
-    ),
+    Variant0([LabelTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&LabelTransformSize> for LabelTransformSize {
@@ -18055,19 +17861,9 @@ impl From<&LabelTransformSize> for LabelTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        LabelTransformSizeVariant0Item,
-        LabelTransformSizeVariant0Item,
-    )> for LabelTransformSize
-{
-    fn from(
-        value: (
-            LabelTransformSizeVariant0Item,
-            LabelTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[LabelTransformSizeVariant0Item; 2usize]> for LabelTransformSize {
+    fn from(value: [LabelTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for LabelTransformSize {
@@ -23295,13 +23091,7 @@ impl From<&PackTransform> for PackTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PackTransformAs {
-    Variant0(
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-    ),
+    Variant0([PackTransformAsVariant0Item; 5usize]),
     Variant1(SignalRef),
 }
 impl From<&PackTransformAs> for PackTransformAs {
@@ -23311,34 +23101,18 @@ impl From<&PackTransformAs> for PackTransformAs {
 }
 impl Default for PackTransformAs {
     fn default() -> Self {
-        PackTransformAs::Variant0(
+        PackTransformAs::Variant0([
             PackTransformAsVariant0Item::Variant0("x".to_string()),
             PackTransformAsVariant0Item::Variant0("y".to_string()),
             PackTransformAsVariant0Item::Variant0("r".to_string()),
             PackTransformAsVariant0Item::Variant0("depth".to_string()),
             PackTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-        PackTransformAsVariant0Item,
-    )> for PackTransformAs
-{
-    fn from(
-        value: (
-            PackTransformAsVariant0Item,
-            PackTransformAsVariant0Item,
-            PackTransformAsVariant0Item,
-            PackTransformAsVariant0Item,
-            PackTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1, value.2, value.3, value.4)
+impl From<[PackTransformAsVariant0Item; 5usize]> for PackTransformAs {
+    fn from(value: [PackTransformAsVariant0Item; 5usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for PackTransformAs {
@@ -23440,7 +23214,7 @@ impl From<Expr> for PackTransformRadius {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PackTransformSize {
-    Variant0(PackTransformSizeVariant0Item, PackTransformSizeVariant0Item),
+    Variant0([PackTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&PackTransformSize> for PackTransformSize {
@@ -23448,9 +23222,9 @@ impl From<&PackTransformSize> for PackTransformSize {
         value.clone()
     }
 }
-impl From<(PackTransformSizeVariant0Item, PackTransformSizeVariant0Item)> for PackTransformSize {
-    fn from(value: (PackTransformSizeVariant0Item, PackTransformSizeVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[PackTransformSizeVariant0Item; 2usize]> for PackTransformSize {
+    fn from(value: [PackTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for PackTransformSize {
@@ -23594,14 +23368,7 @@ impl From<&PartitionTransform> for PartitionTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PartitionTransformAs {
-    Variant0(
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-    ),
+    Variant0([PartitionTransformAsVariant0Item; 6usize]),
     Variant1(SignalRef),
 }
 impl From<&PartitionTransformAs> for PartitionTransformAs {
@@ -23611,37 +23378,19 @@ impl From<&PartitionTransformAs> for PartitionTransformAs {
 }
 impl Default for PartitionTransformAs {
     fn default() -> Self {
-        PartitionTransformAs::Variant0(
+        PartitionTransformAs::Variant0([
             PartitionTransformAsVariant0Item::Variant0("x0".to_string()),
             PartitionTransformAsVariant0Item::Variant0("y0".to_string()),
             PartitionTransformAsVariant0Item::Variant0("x1".to_string()),
             PartitionTransformAsVariant0Item::Variant0("y1".to_string()),
             PartitionTransformAsVariant0Item::Variant0("depth".to_string()),
             PartitionTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-        PartitionTransformAsVariant0Item,
-    )> for PartitionTransformAs
-{
-    fn from(
-        value: (
-            PartitionTransformAsVariant0Item,
-            PartitionTransformAsVariant0Item,
-            PartitionTransformAsVariant0Item,
-            PartitionTransformAsVariant0Item,
-            PartitionTransformAsVariant0Item,
-            PartitionTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1, value.2, value.3, value.4, value.5)
+impl From<[PartitionTransformAsVariant0Item; 6usize]> for PartitionTransformAs {
+    fn from(value: [PartitionTransformAsVariant0Item; 6usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for PartitionTransformAs {
@@ -23737,10 +23486,7 @@ impl From<SignalRef> for PartitionTransformRound {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PartitionTransformSize {
-    Variant0(
-        PartitionTransformSizeVariant0Item,
-        PartitionTransformSizeVariant0Item,
-    ),
+    Variant0([PartitionTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&PartitionTransformSize> for PartitionTransformSize {
@@ -23748,19 +23494,9 @@ impl From<&PartitionTransformSize> for PartitionTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        PartitionTransformSizeVariant0Item,
-        PartitionTransformSizeVariant0Item,
-    )> for PartitionTransformSize
-{
-    fn from(
-        value: (
-            PartitionTransformSizeVariant0Item,
-            PartitionTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[PartitionTransformSizeVariant0Item; 2usize]> for PartitionTransformSize {
+    fn from(value: [PartitionTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for PartitionTransformSize {
@@ -23863,7 +23599,7 @@ impl From<&PieTransform> for PieTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum PieTransformAs {
-    Variant0(PieTransformAsVariant0Item, PieTransformAsVariant0Item),
+    Variant0([PieTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&PieTransformAs> for PieTransformAs {
@@ -23873,15 +23609,15 @@ impl From<&PieTransformAs> for PieTransformAs {
 }
 impl Default for PieTransformAs {
     fn default() -> Self {
-        PieTransformAs::Variant0(
+        PieTransformAs::Variant0([
             PieTransformAsVariant0Item::Variant0("startAngle".to_string()),
             PieTransformAsVariant0Item::Variant0("endAngle".to_string()),
-        )
+        ])
     }
 }
-impl From<(PieTransformAsVariant0Item, PieTransformAsVariant0Item)> for PieTransformAs {
-    fn from(value: (PieTransformAsVariant0Item, PieTransformAsVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[PieTransformAsVariant0Item; 2usize]> for PieTransformAs {
+    fn from(value: [PieTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for PieTransformAs {
@@ -24616,7 +24352,7 @@ impl From<&Projection> for Projection {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionCenter {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionCenter> for ProjectionCenter {
@@ -24624,9 +24360,9 @@ impl From<&ProjectionCenter> for ProjectionCenter {
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionCenter {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionCenter {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionCenter {
@@ -24637,10 +24373,7 @@ impl From<SignalRef> for ProjectionCenter {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionClipExtent {
-    Variant0(
-        ProjectionClipExtentVariant0Item,
-        ProjectionClipExtentVariant0Item,
-    ),
+    Variant0([ProjectionClipExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionClipExtent> for ProjectionClipExtent {
@@ -24648,19 +24381,9 @@ impl From<&ProjectionClipExtent> for ProjectionClipExtent {
         value.clone()
     }
 }
-impl
-    From<(
-        ProjectionClipExtentVariant0Item,
-        ProjectionClipExtentVariant0Item,
-    )> for ProjectionClipExtent
-{
-    fn from(
-        value: (
-            ProjectionClipExtentVariant0Item,
-            ProjectionClipExtentVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[ProjectionClipExtentVariant0Item; 2usize]> for ProjectionClipExtent {
+    fn from(value: [ProjectionClipExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionClipExtent {
@@ -24671,7 +24394,7 @@ impl From<SignalRef> for ProjectionClipExtent {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionClipExtentVariant0Item {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionClipExtentVariant0Item> for ProjectionClipExtentVariant0Item {
@@ -24679,9 +24402,9 @@ impl From<&ProjectionClipExtentVariant0Item> for ProjectionClipExtentVariant0Ite
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionClipExtentVariant0Item {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionClipExtentVariant0Item {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionClipExtentVariant0Item {
@@ -24692,7 +24415,7 @@ impl From<SignalRef> for ProjectionClipExtentVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionExtent {
-    Variant0(ProjectionExtentVariant0Item, ProjectionExtentVariant0Item),
+    Variant0([ProjectionExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionExtent> for ProjectionExtent {
@@ -24700,9 +24423,9 @@ impl From<&ProjectionExtent> for ProjectionExtent {
         value.clone()
     }
 }
-impl From<(ProjectionExtentVariant0Item, ProjectionExtentVariant0Item)> for ProjectionExtent {
-    fn from(value: (ProjectionExtentVariant0Item, ProjectionExtentVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[ProjectionExtentVariant0Item; 2usize]> for ProjectionExtent {
+    fn from(value: [ProjectionExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionExtent {
@@ -24713,7 +24436,7 @@ impl From<SignalRef> for ProjectionExtent {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionExtentVariant0Item {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionExtentVariant0Item> for ProjectionExtentVariant0Item {
@@ -24721,9 +24444,9 @@ impl From<&ProjectionExtentVariant0Item> for ProjectionExtentVariant0Item {
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionExtentVariant0Item {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionExtentVariant0Item {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionExtentVariant0Item {
@@ -24755,7 +24478,7 @@ impl From<Vec<serde_json::Value>> for ProjectionFit {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionParallels {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionParallels> for ProjectionParallels {
@@ -24763,9 +24486,9 @@ impl From<&ProjectionParallels> for ProjectionParallels {
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionParallels {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionParallels {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionParallels {
@@ -24797,7 +24520,7 @@ impl From<SignalRef> for ProjectionRotate {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionSize {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionSize> for ProjectionSize {
@@ -24805,9 +24528,9 @@ impl From<&ProjectionSize> for ProjectionSize {
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionSize {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionSize {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionSize {
@@ -24818,7 +24541,7 @@ impl From<SignalRef> for ProjectionSize {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionTranslate {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ProjectionTranslate> for ProjectionTranslate {
@@ -24826,9 +24549,9 @@ impl From<&ProjectionTranslate> for ProjectionTranslate {
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ProjectionTranslate {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ProjectionTranslate {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ProjectionTranslate {
@@ -25226,10 +24949,7 @@ impl From<SignalRef> for RegressionTransformAsVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum RegressionTransformExtent {
-    Variant0(
-        RegressionTransformExtentVariant0Item,
-        RegressionTransformExtentVariant0Item,
-    ),
+    Variant0([RegressionTransformExtentVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&RegressionTransformExtent> for RegressionTransformExtent {
@@ -25237,19 +24957,9 @@ impl From<&RegressionTransformExtent> for RegressionTransformExtent {
         value.clone()
     }
 }
-impl
-    From<(
-        RegressionTransformExtentVariant0Item,
-        RegressionTransformExtentVariant0Item,
-    )> for RegressionTransformExtent
-{
-    fn from(
-        value: (
-            RegressionTransformExtentVariant0Item,
-            RegressionTransformExtentVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[RegressionTransformExtentVariant0Item; 2usize]> for RegressionTransformExtent {
+    fn from(value: [RegressionTransformExtentVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for RegressionTransformExtent {
@@ -26874,7 +26584,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant10RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant10RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant10RangeVariant2Extent> for ScaleVariant10RangeVariant2Extent {
@@ -26882,9 +26592,9 @@ impl From<&ScaleVariant10RangeVariant2Extent> for ScaleVariant10RangeVariant2Ext
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant10RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant10RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant10RangeVariant2Extent {
@@ -27233,7 +26943,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant11RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant11RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant11RangeVariant2Extent> for ScaleVariant11RangeVariant2Extent {
@@ -27241,9 +26951,9 @@ impl From<&ScaleVariant11RangeVariant2Extent> for ScaleVariant11RangeVariant2Ext
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant11RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant11RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant11RangeVariant2Extent {
@@ -27571,7 +27281,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant1RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant1RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant1RangeVariant2Extent> for ScaleVariant1RangeVariant2Extent {
@@ -27579,9 +27289,9 @@ impl From<&ScaleVariant1RangeVariant2Extent> for ScaleVariant1RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant1RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant1RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant1RangeVariant2Extent {
@@ -28848,7 +28558,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant4RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant4RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant4RangeVariant2Extent> for ScaleVariant4RangeVariant2Extent {
@@ -28856,9 +28566,9 @@ impl From<&ScaleVariant4RangeVariant2Extent> for ScaleVariant4RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant4RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant4RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant4RangeVariant2Extent {
@@ -29182,7 +28892,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant5RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant5RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant5RangeVariant2Extent> for ScaleVariant5RangeVariant2Extent {
@@ -29190,9 +28900,9 @@ impl From<&ScaleVariant5RangeVariant2Extent> for ScaleVariant5RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant5RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant5RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant5RangeVariant2Extent {
@@ -29512,7 +29222,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant6RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant6RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant6RangeVariant2Extent> for ScaleVariant6RangeVariant2Extent {
@@ -29520,9 +29230,9 @@ impl From<&ScaleVariant6RangeVariant2Extent> for ScaleVariant6RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant6RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant6RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant6RangeVariant2Extent {
@@ -30035,7 +29745,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant7RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant7RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant7RangeVariant2Extent> for ScaleVariant7RangeVariant2Extent {
@@ -30043,9 +29753,9 @@ impl From<&ScaleVariant7RangeVariant2Extent> for ScaleVariant7RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant7RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant7RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant7RangeVariant2Extent {
@@ -30396,7 +30106,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant8RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant8RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant8RangeVariant2Extent> for ScaleVariant8RangeVariant2Extent {
@@ -30404,9 +30114,9 @@ impl From<&ScaleVariant8RangeVariant2Extent> for ScaleVariant8RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant8RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant8RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant8RangeVariant2Extent {
@@ -30761,7 +30471,7 @@ impl From<Vec<NumberOrSignal>> for ScaleVariant9RangeVariant1Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ScaleVariant9RangeVariant2Extent {
-    Variant0(NumberOrSignal, NumberOrSignal),
+    Variant0([NumberOrSignal; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&ScaleVariant9RangeVariant2Extent> for ScaleVariant9RangeVariant2Extent {
@@ -30769,9 +30479,9 @@ impl From<&ScaleVariant9RangeVariant2Extent> for ScaleVariant9RangeVariant2Exten
         value.clone()
     }
 }
-impl From<(NumberOrSignal, NumberOrSignal)> for ScaleVariant9RangeVariant2Extent {
-    fn from(value: (NumberOrSignal, NumberOrSignal)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[NumberOrSignal; 2usize]> for ScaleVariant9RangeVariant2Extent {
+    fn from(value: [NumberOrSignal; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for ScaleVariant9RangeVariant2Extent {
@@ -31336,7 +31046,7 @@ impl From<&StackTransform> for StackTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum StackTransformAs {
-    Variant0(StackTransformAsVariant0Item, StackTransformAsVariant0Item),
+    Variant0([StackTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&StackTransformAs> for StackTransformAs {
@@ -31346,15 +31056,15 @@ impl From<&StackTransformAs> for StackTransformAs {
 }
 impl Default for StackTransformAs {
     fn default() -> Self {
-        StackTransformAs::Variant0(
+        StackTransformAs::Variant0([
             StackTransformAsVariant0Item::Variant0("y0".to_string()),
             StackTransformAsVariant0Item::Variant0("y1".to_string()),
-        )
+        ])
     }
 }
-impl From<(StackTransformAsVariant0Item, StackTransformAsVariant0Item)> for StackTransformAs {
-    fn from(value: (StackTransformAsVariant0Item, StackTransformAsVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[StackTransformAsVariant0Item; 2usize]> for StackTransformAs {
+    fn from(value: [StackTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for StackTransformAs {
@@ -31704,7 +31414,7 @@ impl From<&Stream> for Stream {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StreamSubtype0 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub between: Option<(Stream, Stream)>,
+    pub between: Option<[Stream; 2usize]>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub consume: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33613,10 +33323,7 @@ impl From<&TimeunitTransform> for TimeunitTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TimeunitTransformAs {
-    Variant0(
-        TimeunitTransformAsVariant0Item,
-        TimeunitTransformAsVariant0Item,
-    ),
+    Variant0([TimeunitTransformAsVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&TimeunitTransformAs> for TimeunitTransformAs {
@@ -33626,25 +33333,15 @@ impl From<&TimeunitTransformAs> for TimeunitTransformAs {
 }
 impl Default for TimeunitTransformAs {
     fn default() -> Self {
-        TimeunitTransformAs::Variant0(
+        TimeunitTransformAs::Variant0([
             TimeunitTransformAsVariant0Item::Variant0("unit0".to_string()),
             TimeunitTransformAsVariant0Item::Variant0("unit1".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        TimeunitTransformAsVariant0Item,
-        TimeunitTransformAsVariant0Item,
-    )> for TimeunitTransformAs
-{
-    fn from(
-        value: (
-            TimeunitTransformAsVariant0Item,
-            TimeunitTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[TimeunitTransformAsVariant0Item; 2usize]> for TimeunitTransformAs {
+    fn from(value: [TimeunitTransformAsVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TimeunitTransformAs {
@@ -35450,12 +35147,7 @@ impl From<&TreeTransform> for TreeTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreeTransformAs {
-    Variant0(
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-    ),
+    Variant0([TreeTransformAsVariant0Item; 4usize]),
     Variant1(SignalRef),
 }
 impl From<&TreeTransformAs> for TreeTransformAs {
@@ -35465,31 +35157,17 @@ impl From<&TreeTransformAs> for TreeTransformAs {
 }
 impl Default for TreeTransformAs {
     fn default() -> Self {
-        TreeTransformAs::Variant0(
+        TreeTransformAs::Variant0([
             TreeTransformAsVariant0Item::Variant0("x".to_string()),
             TreeTransformAsVariant0Item::Variant0("y".to_string()),
             TreeTransformAsVariant0Item::Variant0("depth".to_string()),
             TreeTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-        TreeTransformAsVariant0Item,
-    )> for TreeTransformAs
-{
-    fn from(
-        value: (
-            TreeTransformAsVariant0Item,
-            TreeTransformAsVariant0Item,
-            TreeTransformAsVariant0Item,
-            TreeTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1, value.2, value.3)
+impl From<[TreeTransformAsVariant0Item; 4usize]> for TreeTransformAs {
+    fn from(value: [TreeTransformAsVariant0Item; 4usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TreeTransformAs {
@@ -35617,10 +35295,7 @@ impl std::convert::TryFrom<String> for TreeTransformMethodVariant0 {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreeTransformNodeSize {
-    Variant0(
-        TreeTransformNodeSizeVariant0Item,
-        TreeTransformNodeSizeVariant0Item,
-    ),
+    Variant0([TreeTransformNodeSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&TreeTransformNodeSize> for TreeTransformNodeSize {
@@ -35628,19 +35303,9 @@ impl From<&TreeTransformNodeSize> for TreeTransformNodeSize {
         value.clone()
     }
 }
-impl
-    From<(
-        TreeTransformNodeSizeVariant0Item,
-        TreeTransformNodeSizeVariant0Item,
-    )> for TreeTransformNodeSize
-{
-    fn from(
-        value: (
-            TreeTransformNodeSizeVariant0Item,
-            TreeTransformNodeSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[TreeTransformNodeSizeVariant0Item; 2usize]> for TreeTransformNodeSize {
+    fn from(value: [TreeTransformNodeSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TreeTransformNodeSize {
@@ -35698,7 +35363,7 @@ impl From<SignalRef> for TreeTransformSeparation {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreeTransformSize {
-    Variant0(TreeTransformSizeVariant0Item, TreeTransformSizeVariant0Item),
+    Variant0([TreeTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&TreeTransformSize> for TreeTransformSize {
@@ -35706,9 +35371,9 @@ impl From<&TreeTransformSize> for TreeTransformSize {
         value.clone()
     }
 }
-impl From<(TreeTransformSizeVariant0Item, TreeTransformSizeVariant0Item)> for TreeTransformSize {
-    fn from(value: (TreeTransformSizeVariant0Item, TreeTransformSizeVariant0Item)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[TreeTransformSizeVariant0Item; 2usize]> for TreeTransformSize {
+    fn from(value: [TreeTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TreeTransformSize {
@@ -35906,14 +35571,7 @@ impl From<&TreemapTransform> for TreemapTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreemapTransformAs {
-    Variant0(
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-    ),
+    Variant0([TreemapTransformAsVariant0Item; 6usize]),
     Variant1(SignalRef),
 }
 impl From<&TreemapTransformAs> for TreemapTransformAs {
@@ -35923,37 +35581,19 @@ impl From<&TreemapTransformAs> for TreemapTransformAs {
 }
 impl Default for TreemapTransformAs {
     fn default() -> Self {
-        TreemapTransformAs::Variant0(
+        TreemapTransformAs::Variant0([
             TreemapTransformAsVariant0Item::Variant0("x0".to_string()),
             TreemapTransformAsVariant0Item::Variant0("y0".to_string()),
             TreemapTransformAsVariant0Item::Variant0("x1".to_string()),
             TreemapTransformAsVariant0Item::Variant0("y1".to_string()),
             TreemapTransformAsVariant0Item::Variant0("depth".to_string()),
             TreemapTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-        TreemapTransformAsVariant0Item,
-    )> for TreemapTransformAs
-{
-    fn from(
-        value: (
-            TreemapTransformAsVariant0Item,
-            TreemapTransformAsVariant0Item,
-            TreemapTransformAsVariant0Item,
-            TreemapTransformAsVariant0Item,
-            TreemapTransformAsVariant0Item,
-            TreemapTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1, value.2, value.3, value.4, value.5)
+impl From<[TreemapTransformAsVariant0Item; 6usize]> for TreemapTransformAs {
+    fn from(value: [TreemapTransformAsVariant0Item; 6usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TreemapTransformAs {
@@ -36291,10 +35931,7 @@ impl From<SignalRef> for TreemapTransformRound {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum TreemapTransformSize {
-    Variant0(
-        TreemapTransformSizeVariant0Item,
-        TreemapTransformSizeVariant0Item,
-    ),
+    Variant0([TreemapTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&TreemapTransformSize> for TreemapTransformSize {
@@ -36302,19 +35939,9 @@ impl From<&TreemapTransformSize> for TreemapTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        TreemapTransformSizeVariant0Item,
-        TreemapTransformSizeVariant0Item,
-    )> for TreemapTransformSize
-{
-    fn from(
-        value: (
-            TreemapTransformSizeVariant0Item,
-            TreemapTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[TreemapTransformSizeVariant0Item; 2usize]> for TreemapTransformSize {
+    fn from(value: [TreemapTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for TreemapTransformSize {
@@ -36432,7 +36059,7 @@ impl From<SignalRef> for VoronoiTransformAs {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum VoronoiTransformExtent {
-    Variant0(serde_json::Value, serde_json::Value),
+    Variant0([serde_json::Value; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&VoronoiTransformExtent> for VoronoiTransformExtent {
@@ -36442,15 +36069,15 @@ impl From<&VoronoiTransformExtent> for VoronoiTransformExtent {
 }
 impl Default for VoronoiTransformExtent {
     fn default() -> Self {
-        VoronoiTransformExtent::Variant0(
+        VoronoiTransformExtent::Variant0([
             serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
-        )
+        ])
     }
 }
-impl From<(serde_json::Value, serde_json::Value)> for VoronoiTransformExtent {
-    fn from(value: (serde_json::Value, serde_json::Value)) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[serde_json::Value; 2usize]> for VoronoiTransformExtent {
+    fn from(value: [serde_json::Value; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for VoronoiTransformExtent {
@@ -36461,10 +36088,7 @@ impl From<SignalRef> for VoronoiTransformExtent {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum VoronoiTransformSize {
-    Variant0(
-        VoronoiTransformSizeVariant0Item,
-        VoronoiTransformSizeVariant0Item,
-    ),
+    Variant0([VoronoiTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&VoronoiTransformSize> for VoronoiTransformSize {
@@ -36472,19 +36096,9 @@ impl From<&VoronoiTransformSize> for VoronoiTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        VoronoiTransformSizeVariant0Item,
-        VoronoiTransformSizeVariant0Item,
-    )> for VoronoiTransformSize
-{
-    fn from(
-        value: (
-            VoronoiTransformSizeVariant0Item,
-            VoronoiTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[VoronoiTransformSizeVariant0Item; 2usize]> for VoronoiTransformSize {
+    fn from(value: [VoronoiTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for VoronoiTransformSize {
@@ -36734,10 +36348,7 @@ impl From<Expr> for WindowTransformFieldsVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WindowTransformFrame {
-    Variant0(
-        WindowTransformFrameVariant0Item,
-        WindowTransformFrameVariant0Item,
-    ),
+    Variant0([WindowTransformFrameVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&WindowTransformFrame> for WindowTransformFrame {
@@ -36747,25 +36358,15 @@ impl From<&WindowTransformFrame> for WindowTransformFrame {
 }
 impl Default for WindowTransformFrame {
     fn default() -> Self {
-        WindowTransformFrame::Variant0(
+        WindowTransformFrame::Variant0([
             WindowTransformFrameVariant0Item::Variant2,
             WindowTransformFrameVariant0Item::Variant0(0_f64),
-        )
+        ])
     }
 }
-impl
-    From<(
-        WindowTransformFrameVariant0Item,
-        WindowTransformFrameVariant0Item,
-    )> for WindowTransformFrame
-{
-    fn from(
-        value: (
-            WindowTransformFrameVariant0Item,
-            WindowTransformFrameVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[WindowTransformFrameVariant0Item; 2usize]> for WindowTransformFrame {
+    fn from(value: [WindowTransformFrameVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for WindowTransformFrame {
@@ -37231,15 +36832,7 @@ impl From<&WordcloudTransform> for WordcloudTransform {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformAs {
-    Variant0(
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-    ),
+    Variant0([WordcloudTransformAsVariant0Item; 7usize]),
     Variant1(SignalRef),
 }
 impl From<&WordcloudTransformAs> for WordcloudTransformAs {
@@ -37249,7 +36842,7 @@ impl From<&WordcloudTransformAs> for WordcloudTransformAs {
 }
 impl Default for WordcloudTransformAs {
     fn default() -> Self {
-        WordcloudTransformAs::Variant0(
+        WordcloudTransformAs::Variant0([
             WordcloudTransformAsVariant0Item::Variant0("x".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("y".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("font".to_string()),
@@ -37257,34 +36850,12 @@ impl Default for WordcloudTransformAs {
             WordcloudTransformAsVariant0Item::Variant0("fontStyle".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("fontWeight".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("angle".to_string()),
-        )
+        ])
     }
 }
-impl
-    From<(
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-        WordcloudTransformAsVariant0Item,
-    )> for WordcloudTransformAs
-{
-    fn from(
-        value: (
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-            WordcloudTransformAsVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(
-            value.0, value.1, value.2, value.3, value.4, value.5, value.6,
-        )
+impl From<[WordcloudTransformAsVariant0Item; 7usize]> for WordcloudTransformAs {
+    fn from(value: [WordcloudTransformAsVariant0Item; 7usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for WordcloudTransformAs {
@@ -37567,10 +37138,7 @@ impl From<ParamField> for WordcloudTransformRotate {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WordcloudTransformSize {
-    Variant0(
-        WordcloudTransformSizeVariant0Item,
-        WordcloudTransformSizeVariant0Item,
-    ),
+    Variant0([WordcloudTransformSizeVariant0Item; 2usize]),
     Variant1(SignalRef),
 }
 impl From<&WordcloudTransformSize> for WordcloudTransformSize {
@@ -37578,19 +37146,9 @@ impl From<&WordcloudTransformSize> for WordcloudTransformSize {
         value.clone()
     }
 }
-impl
-    From<(
-        WordcloudTransformSizeVariant0Item,
-        WordcloudTransformSizeVariant0Item,
-    )> for WordcloudTransformSize
-{
-    fn from(
-        value: (
-            WordcloudTransformSizeVariant0Item,
-            WordcloudTransformSizeVariant0Item,
-        ),
-    ) -> Self {
-        Self::Variant0(value.0, value.1)
+impl From<[WordcloudTransformSizeVariant0Item; 2usize]> for WordcloudTransformSize {
+    fn from(value: [WordcloudTransformSizeVariant0Item; 2usize]) -> Self {
+        Self::Variant0(value)
     }
 }
 impl From<SignalRef> for WordcloudTransformSize {
@@ -37721,10 +37279,10 @@ pub mod defaults {
         super::AggregateTransformDrop::Variant0(true)
     }
     pub(super) fn bin_transform_as() -> super::BinTransformAs {
-        super::BinTransformAs::Variant0(
+        super::BinTransformAs::Variant0([
             super::BinTransformAsVariant0Item::Variant0("bin0".to_string()),
             super::BinTransformAsVariant0Item::Variant0("bin1".to_string()),
-        )
+        ])
     }
     pub(super) fn bin_transform_base() -> super::BinTransformBase {
         super::BinTransformBase::Variant0(10_f64)
@@ -37748,10 +37306,10 @@ pub mod defaults {
         super::ContourTransformSmooth::Variant0(true)
     }
     pub(super) fn countpattern_transform_as() -> super::CountpatternTransformAs {
-        super::CountpatternTransformAs::Variant0(
+        super::CountpatternTransformAs::Variant0([
             super::CountpatternTransformAsVariant0Item::Variant0("text".to_string()),
             super::CountpatternTransformAsVariant0Item::Variant0("count".to_string()),
-        )
+        ])
     }
     pub(super) fn countpattern_transform_case() -> super::CountpatternTransformCase {
         super::CountpatternTransformCase::Variant0(super::CountpatternTransformCaseVariant0::Mixed)
@@ -37760,10 +37318,10 @@ pub mod defaults {
         super::CountpatternTransformPattern::Variant0("[\\w\"]+".to_string())
     }
     pub(super) fn cross_transform_as() -> super::CrossTransformAs {
-        super::CrossTransformAs::Variant0(
+        super::CrossTransformAs::Variant0([
             super::CrossTransformAsVariant0Item::Variant0("a".to_string()),
             super::CrossTransformAsVariant0Item::Variant0("b".to_string()),
-        )
+        ])
     }
     pub(super) fn density_transform_as() -> super::DensityTransformAs {
         super::DensityTransformAs::Variant0(vec![
@@ -37796,10 +37354,10 @@ pub mod defaults {
         super::DotbinTransformAs::Variant0("bin".to_string())
     }
     pub(super) fn fold_transform_as() -> super::FoldTransformAs {
-        super::FoldTransformAs::Variant0(
+        super::FoldTransformAs::Variant0([
             super::FoldTransformAsVariant0Item::Variant0("key".to_string()),
             super::FoldTransformAsVariant0Item::Variant0("value".to_string()),
-        )
+        ])
     }
     pub(super) fn force_transform_alpha() -> super::ForceTransformAlpha {
         super::ForceTransformAlpha::Variant0(1_f64)
@@ -37861,10 +37419,10 @@ pub mod defaults {
         super::GeopathTransformAs::Variant0("path".to_string())
     }
     pub(super) fn geopoint_transform_as() -> super::GeopointTransformAs {
-        super::GeopointTransformAs::Variant0(
+        super::GeopointTransformAs::Variant0([
             super::GeopointTransformAsVariant0Item::Variant0("x".to_string()),
             super::GeopointTransformAsVariant0Item::Variant0("y".to_string()),
-        )
+        ])
     }
     pub(super) fn geoshape_transform_as() -> super::GeoshapeTransformAs {
         super::GeoshapeTransformAs::Variant0("shape".to_string())
@@ -37878,16 +37436,16 @@ pub mod defaults {
         super::GraticuleTransformPrecision::Variant0(2.5_f64)
     }
     pub(super) fn graticule_transform_step_major() -> super::GraticuleTransformStepMajor {
-        super::GraticuleTransformStepMajor::Variant0(
+        super::GraticuleTransformStepMajor::Variant0([
             super::GraticuleTransformStepMajorVariant0Item::Variant0(90_f64),
             super::GraticuleTransformStepMajorVariant0Item::Variant0(360_f64),
-        )
+        ])
     }
     pub(super) fn graticule_transform_step_minor() -> super::GraticuleTransformStepMinor {
-        super::GraticuleTransformStepMinor::Variant0(
+        super::GraticuleTransformStepMinor::Variant0([
             super::GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
             super::GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
-        )
+        ])
     }
     pub(super) fn heatmap_transform_as() -> super::HeatmapTransformAs {
         super::HeatmapTransformAs::Variant0("image".to_string())
@@ -37945,13 +37503,13 @@ pub mod defaults {
         ])
     }
     pub(super) fn label_transform_as() -> super::LabelTransformAs {
-        super::LabelTransformAs::Variant0(
+        super::LabelTransformAs::Variant0([
             super::LabelTransformAsVariant0Item::Variant0("x".to_string()),
             super::LabelTransformAsVariant0Item::Variant0("y".to_string()),
             super::LabelTransformAsVariant0Item::Variant0("opacity".to_string()),
             super::LabelTransformAsVariant0Item::Variant0("align".to_string()),
             super::LabelTransformAsVariant0Item::Variant0("baseline".to_string()),
-        )
+        ])
     }
     pub(super) fn label_transform_avoid_base_mark() -> super::LabelTransformAvoidBaseMark {
         super::LabelTransformAvoidBaseMark::Variant0(true)
@@ -38000,29 +37558,29 @@ pub mod defaults {
         super::LoessTransformBandwidth::Variant0(0.3_f64)
     }
     pub(super) fn pack_transform_as() -> super::PackTransformAs {
-        super::PackTransformAs::Variant0(
+        super::PackTransformAs::Variant0([
             super::PackTransformAsVariant0Item::Variant0("x".to_string()),
             super::PackTransformAsVariant0Item::Variant0("y".to_string()),
             super::PackTransformAsVariant0Item::Variant0("r".to_string()),
             super::PackTransformAsVariant0Item::Variant0("depth".to_string()),
             super::PackTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
     pub(super) fn partition_transform_as() -> super::PartitionTransformAs {
-        super::PartitionTransformAs::Variant0(
+        super::PartitionTransformAs::Variant0([
             super::PartitionTransformAsVariant0Item::Variant0("x0".to_string()),
             super::PartitionTransformAsVariant0Item::Variant0("y0".to_string()),
             super::PartitionTransformAsVariant0Item::Variant0("x1".to_string()),
             super::PartitionTransformAsVariant0Item::Variant0("y1".to_string()),
             super::PartitionTransformAsVariant0Item::Variant0("depth".to_string()),
             super::PartitionTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
     pub(super) fn pie_transform_as() -> super::PieTransformAs {
-        super::PieTransformAs::Variant0(
+        super::PieTransformAs::Variant0([
             super::PieTransformAsVariant0Item::Variant0("startAngle".to_string()),
             super::PieTransformAsVariant0Item::Variant0("endAngle".to_string()),
-        )
+        ])
     }
     pub(super) fn pie_transform_end_angle() -> super::PieTransformEndAngle {
         super::PieTransformEndAngle::Variant0(6.283185307179586_f64)
@@ -38055,19 +37613,19 @@ pub mod defaults {
         super::SequenceTransformStep::Variant0(1_f64)
     }
     pub(super) fn stack_transform_as() -> super::StackTransformAs {
-        super::StackTransformAs::Variant0(
+        super::StackTransformAs::Variant0([
             super::StackTransformAsVariant0Item::Variant0("y0".to_string()),
             super::StackTransformAsVariant0Item::Variant0("y1".to_string()),
-        )
+        ])
     }
     pub(super) fn stack_transform_offset() -> super::StackTransformOffset {
         super::StackTransformOffset::Variant0(super::StackTransformOffsetVariant0::Zero)
     }
     pub(super) fn timeunit_transform_as() -> super::TimeunitTransformAs {
-        super::TimeunitTransformAs::Variant0(
+        super::TimeunitTransformAs::Variant0([
             super::TimeunitTransformAsVariant0Item::Variant0("unit0".to_string()),
             super::TimeunitTransformAsVariant0Item::Variant0("unit1".to_string()),
-        )
+        ])
     }
     pub(super) fn timeunit_transform_interval() -> super::TimeunitTransformInterval {
         super::TimeunitTransformInterval::Variant0(true)
@@ -38082,12 +37640,12 @@ pub mod defaults {
         super::TimeunitTransformTimezone::Variant0(super::TimeunitTransformTimezoneVariant0::Local)
     }
     pub(super) fn tree_transform_as() -> super::TreeTransformAs {
-        super::TreeTransformAs::Variant0(
+        super::TreeTransformAs::Variant0([
             super::TreeTransformAsVariant0Item::Variant0("x".to_string()),
             super::TreeTransformAsVariant0Item::Variant0("y".to_string()),
             super::TreeTransformAsVariant0Item::Variant0("depth".to_string()),
             super::TreeTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
     pub(super) fn tree_transform_method() -> super::TreeTransformMethod {
         super::TreeTransformMethod::Variant0(super::TreeTransformMethodVariant0::Tidy)
@@ -38096,14 +37654,14 @@ pub mod defaults {
         super::TreeTransformSeparation::Variant0(true)
     }
     pub(super) fn treemap_transform_as() -> super::TreemapTransformAs {
-        super::TreemapTransformAs::Variant0(
+        super::TreemapTransformAs::Variant0([
             super::TreemapTransformAsVariant0Item::Variant0("x0".to_string()),
             super::TreemapTransformAsVariant0Item::Variant0("y0".to_string()),
             super::TreemapTransformAsVariant0Item::Variant0("x1".to_string()),
             super::TreemapTransformAsVariant0Item::Variant0("y1".to_string()),
             super::TreemapTransformAsVariant0Item::Variant0("depth".to_string()),
             super::TreemapTransformAsVariant0Item::Variant0("children".to_string()),
-        )
+        ])
     }
     pub(super) fn treemap_transform_method() -> super::TreemapTransformMethod {
         super::TreemapTransformMethod::Variant0(super::TreemapTransformMethodVariant0::Squarify)
@@ -38115,19 +37673,19 @@ pub mod defaults {
         super::VoronoiTransformAs::Variant0("path".to_string())
     }
     pub(super) fn voronoi_transform_extent() -> super::VoronoiTransformExtent {
-        super::VoronoiTransformExtent::Variant0(
+        super::VoronoiTransformExtent::Variant0([
             serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
-        )
+        ])
     }
     pub(super) fn window_transform_frame() -> super::WindowTransformFrame {
-        super::WindowTransformFrame::Variant0(
+        super::WindowTransformFrame::Variant0([
             super::WindowTransformFrameVariant0Item::Variant2,
             super::WindowTransformFrameVariant0Item::Variant0(0_f64),
-        )
+        ])
     }
     pub(super) fn wordcloud_transform_as() -> super::WordcloudTransformAs {
-        super::WordcloudTransformAs::Variant0(
+        super::WordcloudTransformAs::Variant0([
             super::WordcloudTransformAsVariant0Item::Variant0("x".to_string()),
             super::WordcloudTransformAsVariant0Item::Variant0("y".to_string()),
             super::WordcloudTransformAsVariant0Item::Variant0("font".to_string()),
@@ -38135,7 +37693,7 @@ pub mod defaults {
             super::WordcloudTransformAsVariant0Item::Variant0("fontStyle".to_string()),
             super::WordcloudTransformAsVariant0Item::Variant0("fontWeight".to_string()),
             super::WordcloudTransformAsVariant0Item::Variant0("angle".to_string()),
-        )
+        ])
     }
     pub(super) fn wordcloud_transform_font() -> super::WordcloudTransformFont {
         super::WordcloudTransformFont::Variant0("sans-serif".to_string())

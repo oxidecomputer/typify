@@ -68,6 +68,7 @@ pub enum TypeDetails<'a> {
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
+    Array(TypeId, usize),
     Builtin(&'a str),
 
     Unit,
@@ -873,6 +874,9 @@ impl<'a> Type<'a> {
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
+            TypeEntryDetails::Array(type_id, length) => {
+                TypeDetails::Array(type_id.clone(), *length)
+            }
 
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
