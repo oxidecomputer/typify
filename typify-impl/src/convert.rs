@@ -1255,7 +1255,10 @@ impl TypeSpace {
         validation: &ArrayValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match validation {
-            // A tuple.
+            // Tuples and fixed-length arrays satisfy the condition that the
+            // max and min lengths are equal (and greater than zero). When
+            // the `item` is an array, we produce a tuple; when it is a single
+            // element, we produce a fixed-length array.
             ArrayValidation {
                 items,
                 additional_items,
@@ -1263,23 +1266,26 @@ impl TypeSpace {
                 min_items: Some(min_items),
                 unique_items: None,
                 contains: None,
-            } if max_items == min_items && *max_items >= 1 => {
-                let types = match items {
-                    Some(SingleOrVec::Vec(items)) if items.len() < *max_items as usize => {
-                        let rest_name = type_name.append("additional");
-                        let rest_id = if let Some(rest_schema) = additional_items {
-                            self.id_for_schema(rest_name, rest_schema)?.0
-                        } else {
-                            self.id_for_schema(rest_name, &Schema::Bool(true))?.0
-                        };
-                        let start = items.iter().enumerate().map(|(ii, item_schema)| {
-                            let item_name = type_name.append(&format!("item{}", ii));
-                            Ok(self.id_for_schema(item_name, item_schema)?.0)
-                        });
-                        let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
-                        start.chain(rest).collect::<Result<Vec<_>>>()?
-                    }
-                    Some(SingleOrVec::Vec(items)) => items
+            } if max_items == min_items && *max_items > 0 => match items {
+                // Tuple with fewer types specified than required items.
+                Some(SingleOrVec::Vec(items)) if items.len() < *max_items as usize => {
+                    let rest_name = type_name.append("additional");
+                    let rest_id = if let Some(rest_schema) = additional_items {
+                        self.id_for_schema(rest_name, rest_schema)?.0
+                    } else {
+                        self.id_for_schema(rest_name, &Schema::Bool(true))?.0
+                    };
+                    let start = items.iter().enumerate().map(|(ii, item_schema)| {
+                        let item_name = type_name.append(&format!("item{}", ii));
+                        Ok(self.id_for_schema(item_name, item_schema)?.0)
+                    });
+                    let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
+                    let types = start.chain(rest).collect::<Result<Vec<_>>>()?;
+                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                }
+                // Tuple with at least as many items as required.
+                Some(SingleOrVec::Vec(items)) => {
+                    let types = items
                         .iter()
                         .take(*max_items as usize)
                         .enumerate()
@@ -1287,21 +1293,29 @@ impl TypeSpace {
                             let item_name = type_name.append(&format!("item{}", ii));
                             Ok(self.id_for_schema(item_name, item_schema)?.0)
                         })
-                        .collect::<Result<Vec<_>>>()?,
-                    Some(SingleOrVec::Single(item_schema)) => {
-                        let item_id = self.id_for_schema(type_name.append("item"), item_schema)?.0;
-                        (0..*max_items).map(|_| item_id.clone()).collect::<Vec<_>>()
-                    }
-                    None => {
-                        let any_id = self
-                            .id_for_schema(type_name.append("item"), &Schema::Bool(true))?
-                            .0;
-                        (0..*max_items).map(|_| any_id.clone()).collect::<Vec<_>>()
-                    }
-                };
+                        .collect::<Result<_>>()?;
+                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                }
 
-                Ok((TypeEntryDetails::Tuple(types).into(), metadata))
-            }
+                // Array with a schema for the item.
+                Some(SingleOrVec::Single(item_schema)) => {
+                    let item_id = self.id_for_schema(type_name.append("item"), item_schema)?.0;
+                    Ok((
+                        TypeEntryDetails::Array(item_id, *max_items as usize).into(),
+                        metadata,
+                    ))
+                }
+                // Array with no schema for the item.
+                None => {
+                    let any_id = self
+                        .id_for_schema(type_name.append("item"), &Schema::Bool(true))?
+                        .0;
+                    Ok((
+                        TypeEntryDetails::Array(any_id, *max_items as usize).into(),
+                        metadata,
+                    ))
+                }
+            },
 
             // Arrays and sets.
             ArrayValidation {
@@ -1321,7 +1335,7 @@ impl TypeSpace {
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
                     Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
-                    _ => Ok((TypeEntryDetails::Array(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
                 }
             }
 
@@ -1338,7 +1352,7 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let any = TypeEntry::new_native("serde_json::Value", &[]);
         let type_id = self.assign_type(any);
-        Ok((TypeEntryDetails::Array(type_id).into(), metadata))
+        Ok((TypeEntryDetails::Vec(type_id).into(), metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...

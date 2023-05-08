@@ -491,7 +491,7 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Array(_)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
             DefaultFunction::Default
@@ -553,7 +553,7 @@ fn has_default(
     ) {
         // No default specified.
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Array(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
@@ -563,7 +563,7 @@ fn has_default(
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: []
-        (Some(TypeEntryDetails::Array(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
+        (Some(TypeEntryDetails::Vec(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}

@@ -173,7 +173,7 @@ impl TypeEntry {
             }
             TypeEntryDetails::Box(type_id) => validate_type_id(type_id, type_space, default),
 
-            TypeEntryDetails::Array(type_id) => {
+            TypeEntryDetails::Vec(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -232,6 +232,22 @@ impl TypeEntry {
             }
             TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
                 .ok_or_else(|| Error::invalid_value()),
+
+            TypeEntryDetails::Array(type_id, length) => {
+                let Some(arr) = default.as_array()
+                else {
+                    return Err(Error::invalid_value())
+                };
+                if arr.len() != *length {
+                    return Err(Error::invalid_value());
+                }
+
+                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                for value in arr {
+                    let _ = type_entry.validate_value(type_space, value)?;
+                }
+                Ok(DefaultKind::Specific)
+            }
             TypeEntryDetails::Unit => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
