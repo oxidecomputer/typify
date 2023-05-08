@@ -845,7 +845,6 @@ impl TypeSpace {
                 }
             }),
             (Some(min), None) => formats.iter().rev().find_map(|(_, ty, imin, _)| {
-                println!("{} {} {}", ty, min, imin);
                 if (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
