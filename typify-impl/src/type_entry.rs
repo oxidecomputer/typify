@@ -115,7 +115,7 @@ pub(crate) enum TypeEntryDetails {
     // Types from core and std.
     Option(TypeId),
     Box(TypeId),
-    Array(TypeId),
+    Vec(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
     Tuple(Vec<TypeId>),
@@ -535,7 +535,7 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
-            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Vec(_)
             | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
@@ -1524,7 +1524,7 @@ impl TypeEntry {
                 quote! { Box<#item> }
             }
 
-            TypeEntryDetails::Array(id) => {
+            TypeEntryDetails::Vec(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -1622,7 +1622,7 @@ impl TypeEntry {
             TypeEntryDetails::Enum(_)
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
-            | TypeEntryDetails::Array(_)
+            | TypeEntryDetails::Vec(_)
             | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
@@ -1688,7 +1688,7 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
-            TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
+            TypeEntryDetails::Vec(type_id) => format!("array {}", type_id.0),
             TypeEntryDetails::Map(key_id, value_id) => {
                 format!("map {} {}", key_id.0, value_id.0)
             }

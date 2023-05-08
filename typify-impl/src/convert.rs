@@ -845,7 +845,6 @@ impl TypeSpace {
                 }
             }),
             (Some(min), None) => formats.iter().rev().find_map(|(_, ty, imin, _)| {
-                println!("{} {} {}", ty, min, imin);
                 if (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
@@ -1322,7 +1321,7 @@ impl TypeSpace {
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
                     Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
-                    _ => Ok((TypeEntryDetails::Array(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
                 }
             }
 
@@ -1339,7 +1338,7 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let any = TypeEntry::new_native("serde_json::Value", &[]);
         let type_id = self.assign_type(any);
-        Ok((TypeEntryDetails::Array(type_id).into(), metadata))
+        Ok((TypeEntryDetails::Vec(type_id).into(), metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...

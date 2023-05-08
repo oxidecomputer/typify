@@ -173,7 +173,7 @@ impl TypeEntry {
             }
             TypeEntryDetails::Box(type_id) => validate_type_id(type_id, type_space, default),
 
-            TypeEntryDetails::Array(type_id) => {
+            TypeEntryDetails::Vec(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
                         Ok(DefaultKind::Intrinsic)

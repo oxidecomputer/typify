@@ -63,7 +63,7 @@ pub enum TypeDetails<'a> {
     Newtype(TypeNewtype<'a>),
 
     Option(TypeId),
-    Array(TypeId),
+    Vec(TypeId),
     Map(TypeId, TypeId),
     Set(TypeId),
     Box(TypeId),
@@ -603,7 +603,7 @@ impl TypeSpace {
             }
 
             // Containers that can be size 0 are *not* cyclic references for that type
-            TypeEntryDetails::Array(_) => {}
+            TypeEntryDetails::Vec(_) => {}
             TypeEntryDetails::Set(_) => {}
             TypeEntryDetails::Map(..) => {}
 
@@ -866,7 +866,7 @@ impl<'a> Type<'a> {
 
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
-            TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
+            TypeEntryDetails::Vec(type_id) => TypeDetails::Vec(type_id.clone()),
             TypeEntryDetails::Map(key_id, value_id) => {
                 TypeDetails::Map(key_id.clone(), value_id.clone())
             }

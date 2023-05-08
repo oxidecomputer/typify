@@ -86,7 +86,7 @@ impl TypeEntry {
             }
             // TODO: this should become a HashSet<_> once we figure out the
             // derives more precisely.
-            TypeEntryDetails::Set(type_id) | TypeEntryDetails::Array(type_id) => {
+            TypeEntryDetails::Set(type_id) | TypeEntryDetails::Vec(type_id) => {
                 let arr = value.as_array()?;
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let values = arr
