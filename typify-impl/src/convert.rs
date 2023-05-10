@@ -959,11 +959,14 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if !ref_name.starts_with('#') {
+            panic!("external references are not supported: {}", ref_name);
+        }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
             .get(key)
-            .expect(format!("key {} is missing", key).as_str());
+            .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,
