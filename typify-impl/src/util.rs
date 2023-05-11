@@ -8,7 +8,7 @@ use schemars::schema::{
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{Error, Name, Result, TypeSpace};
+use crate::{Error, Name, RefKey, Result, TypeSpace};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -35,7 +35,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
 
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
-    definitions: &schemars::Map<String, Schema>,
+    definitions: &schemars::Map<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
     // Consider all pairs
@@ -483,14 +483,17 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
-pub(crate) fn ref_key(ref_name: &str) -> &str {
-    match ref_name.rfind('/') {
-        Some(idx) => &ref_name[idx + 1..],
-        None => ref_name,
+pub(crate) fn ref_key(ref_name: &str) -> RefKey {
+    if ref_name == "#" {
+        RefKey::Root
+    } else if let Some(idx) = ref_name.rfind('/') {
+        RefKey::Def(ref_name[idx + 1..].to_string())
+    } else {
+        panic!("expected a '/' in $ref: {}", ref_name)
     }
 }
 
-fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema>) -> &'a Schema {
+fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<RefKey, Schema>) -> &'a Schema {
     match schema {
         Schema::Bool(_) => schema,
         Schema::Object(SchemaObject {
@@ -506,7 +509,7 @@ fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<String, Schema
             object: None,
             reference: Some(ref_name),
             extensions: _,
-        }) => definitions.get(ref_key(ref_name)).unwrap(),
+        }) => definitions.get(&ref_key(ref_name)).unwrap(),
         Schema::Object(SchemaObject {
             reference: None, ..
         }) => schema,
@@ -637,17 +640,17 @@ pub(crate) fn get_object(schema: &Schema) -> Option<(&Option<Box<Metadata>>, &Ob
         _ => None,
     }
 }
+
 /// Return the object data or None if it's not an object (or doesn't conform to
 /// the objects we know how to handle). Follow references if we find them.
 pub(crate) fn get_object_ref<'a>(
-    type_name: Name,
     schema: &'a Schema,
-    definitions: &'a BTreeMap<String, Schema>,
-) -> Option<(Name, &'a Option<Box<Metadata>>, &'a ObjectValidation)> {
+    definitions: &'a BTreeMap<RefKey, Schema>,
+) -> Option<&'a ObjectValidation> {
     match schema {
         // Objects
         Schema::Object(SchemaObject {
-            metadata,
+            metadata: _,
             instance_type: Some(SingleOrVec::Single(single)),
             format: None,
             enum_values: None,
@@ -666,7 +669,7 @@ pub(crate) fn get_object_ref<'a>(
             && validation.pattern_properties.is_empty()
             && validation.property_names.is_none() =>
         {
-            Some((type_name, metadata, validation.as_ref()))
+            Some(validation.as_ref())
         }
 
         // References
@@ -685,16 +688,12 @@ pub(crate) fn get_object_ref<'a>(
             extensions: _,
         }) => {
             let ref_key = ref_key(ref_name);
-            get_object_ref(
-                Name::Required(ref_key.to_string()),
-                definitions.get(ref_key).unwrap(),
-                definitions,
-            )
+            get_object_ref(definitions.get(&ref_key).unwrap(), definitions)
         }
 
         // Trivial (n == 1) subschemas
         Schema::Object(SchemaObject {
-            metadata,
+            metadata: _,
             instance_type: _,
             format: None,
             enum_values: None,
@@ -706,14 +705,8 @@ pub(crate) fn get_object_ref<'a>(
             object: None,
             reference: None,
             extensions: _,
-        }) => singleton_subschema(subschemas).and_then(|sub_schema| {
-            get_object_ref(type_name, sub_schema, definitions).map(
-                |(name, m, validation)| match m {
-                    Some(_) => (name, metadata, validation),
-                    None => (name, &None, validation),
-                },
-            )
-        }),
+        }) => singleton_subschema(subschemas)
+            .and_then(|sub_schema| get_object_ref(sub_schema, definitions)),
 
         // None if the schema doesn't match the shape we expect.
         _ => None,

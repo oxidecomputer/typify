@@ -420,10 +420,7 @@ impl TypeSpace {
         }
 
         let (named_schema, _) = named.first()?;
-        let (a_name, _, validation) =
-            get_object_ref(Name::Unknown, named_schema, &self.definitions)?;
-
-        assert!(matches!(a_name, Name::Required(_)));
+        let validation = get_object_ref(named_schema, &self.definitions)?;
 
         // We need all unnamed schemas to be a subset of the named schema.
         if !unnamed

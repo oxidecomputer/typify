@@ -805,7 +805,7 @@ mod tests {
         output::OutputSpace,
         test_util::{validate_output, validate_output_for_untagged_enm},
         type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
-        Name, TypeEntryDetails, TypeId, TypeSpace, TypeSpaceSettings,
+        Name, RefKey, TypeEntryDetails, TypeId, TypeSpace, TypeSpaceSettings,
     };
 
     #[allow(dead_code)]
@@ -1246,7 +1246,10 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
 
-        let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
+        let type_id = type_space
+            .ref_to_id
+            .get(&RefKey::Def("workflow-step".to_string()))
+            .unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
         match &type_entry.details {
@@ -1342,7 +1345,10 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
 
-        let type_id = type_space.ref_to_id.get("workflow-step").unwrap();
+        let type_id = type_space
+            .ref_to_id
+            .get(&RefKey::Def("workflow-step".to_string()))
+            .unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
         match &type_entry.details {
