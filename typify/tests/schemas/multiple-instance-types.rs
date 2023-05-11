@@ -112,4 +112,23 @@ impl From<serde_json::Value> for SeriouslyAnything {
         Self(value)
     }
 }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum YesNoMaybe {
+    Boolean(bool),
+    Object {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        value: Option<String>,
+    },
+}
+impl From<&YesNoMaybe> for YesNoMaybe {
+    fn from(value: &YesNoMaybe) -> Self {
+        value.clone()
+    }
+}
+impl From<bool> for YesNoMaybe {
+    fn from(value: bool) -> Self {
+        Self::Boolean(value)
+    }
+}
 fn main() {}

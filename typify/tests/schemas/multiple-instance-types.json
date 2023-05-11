@@ -27,6 +27,17 @@
         "string",
         "integer"
       ]
+    },
+    "yes-no-maybe": {
+      "type": [
+        "boolean",
+        "object"
+      ],
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
     }
   }
 }
