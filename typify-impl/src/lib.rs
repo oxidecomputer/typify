@@ -389,10 +389,7 @@ impl TypeSpace {
         I: IntoIterator<Item = (RefKey, Schema)>,
     {
         // Gather up all types to make things a little more convenient.
-        let definitions = type_defs
-            .into_iter()
-            // .map(|(name, schema)| (name.as_ref().to_string(), schema))
-            .collect::<Vec<_>>();
+        let definitions = type_defs.into_iter().collect::<Vec<_>>();
 
         // Assign IDs to reference types before actually converting them. We'll
         // need these in the case of forward (or circular) references.
