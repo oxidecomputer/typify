@@ -1629,7 +1629,6 @@ impl TypeEntry {
     pub(crate) fn type_parameter_ident(
         &self,
         type_space: &TypeSpace,
-
         lifetime_name: Option<&str>,
     ) -> TokenStream {
         let lifetime = lifetime_name.map(|s| {
@@ -1668,6 +1667,7 @@ impl TypeEntry {
                     & #lifetime #ident
                 }
             }
+
             TypeEntryDetails::Option(id) => {
                 let inner_ty = type_space
                     .id_to_entry
@@ -1682,6 +1682,7 @@ impl TypeEntry {
                     _ => quote! { Option<#inner_ident> },
                 }
             }
+
             TypeEntryDetails::Tuple(items) => {
                 let type_streams = items.iter().map(|item| {
                     type_space
