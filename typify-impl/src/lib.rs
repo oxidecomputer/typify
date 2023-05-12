@@ -6,9 +6,8 @@ use conversions::SchemaCache;
 use log::info;
 use output::OutputSpace;
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
-use rustfmt_wrapper::rustfmt;
-use schemars::schema::{Metadata, Schema};
+use quote::{format_ident, quote, ToTokens};
+use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -64,11 +63,12 @@ pub enum TypeDetails<'a> {
     Newtype(TypeNewtype<'a>),
 
     Option(TypeId),
-    Array(TypeId),
-    Map(TypeId),
+    Vec(TypeId),
+    Map(TypeId, TypeId),
     Set(TypeId),
     Box(TypeId),
     Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
+    Array(TypeId, usize),
     Builtin(&'a str),
 
     Unit,
@@ -105,7 +105,7 @@ pub struct TypeNewtype<'a> {
 }
 
 /// Type identifier returned from type creation and used to lookup types.
-#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub struct TypeId(u64);
 
 #[derive(Debug, Clone, PartialEq)]
@@ -604,9 +604,9 @@ impl TypeSpace {
             }
 
             // Containers that can be size 0 are *not* cyclic references for that type
-            TypeEntryDetails::Array(_) => {}
+            TypeEntryDetails::Vec(_) => {}
             TypeEntryDetails::Set(_) => {}
-            TypeEntryDetails::Map(_) => {}
+            TypeEntryDetails::Map(..) => {}
 
             // Everything else can be ignored
             _ => {}
@@ -645,6 +645,21 @@ impl TypeSpace {
         Ok(type_id)
     }
 
+    /// Add all the types contained within a RootSchema including any
+    /// referenced types and the top-level type (if there is one and it has a
+    /// title).
+    pub fn add_root_schema(&mut self, schema: RootSchema) -> Result<Option<TypeId>> {
+        self.add_ref_types(schema.definitions)?;
+
+        // Only convert the top-level type if it has a name
+        if let Some(type_name) = (|| schema.schema.metadata.as_ref()?.title.as_ref().cloned())() {
+            self.add_type_with_name(&Schema::Object(schema.schema), Some(type_name))
+                .map(Some)
+        } else {
+            Ok(None)
+        }
+    }
+
     /// Get a type given its ID.
     pub fn get_type(&self, type_id: &TypeId) -> Result<Type> {
         let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
@@ -679,19 +694,6 @@ impl TypeSpace {
         })
     }
 
-    /// Common code, shared by types.
-    pub fn common_code(&self) -> TokenStream {
-        if self.defaults.is_empty() {
-            quote! {}
-        } else {
-            let fns = self.defaults.iter().map(TokenStream::from);
-            quote! {
-                mod defaults {
-                    #(#fns)*
-                }
-            }
-        }
-    }
     /// All code for processed types.
     pub fn to_stream(&self) -> TokenStream {
         let mut output = OutputSpace::default();
@@ -801,12 +803,6 @@ impl TypeSpace {
     }
 }
 
-impl ToString for TypeSpace {
-    fn to_string(&self) -> String {
-        rustfmt(self.to_stream().to_string()).unwrap()
-    }
-}
-
 impl ToTokens for TypeSpace {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         tokens.extend(self.to_stream())
@@ -871,11 +867,16 @@ impl<'a> Type<'a> {
 
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
-            TypeEntryDetails::Array(type_id) => TypeDetails::Array(type_id.clone()),
-            TypeEntryDetails::Map(type_id) => TypeDetails::Map(type_id.clone()),
+            TypeEntryDetails::Vec(type_id) => TypeDetails::Vec(type_id.clone()),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                TypeDetails::Map(key_id.clone(), value_id.clone())
+            }
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
+            TypeEntryDetails::Array(type_id, length) => {
+                TypeDetails::Array(type_id.clone(), *length)
+            }
 
             // Builtin types
             TypeEntryDetails::Unit => TypeDetails::Unit,
@@ -900,6 +901,35 @@ impl<'a> Type<'a> {
             type_entry,
         } = self;
         type_entry.has_impl(type_space, impl_name)
+    }
+
+    /// Provides the the type identifier for the builder if one exists.
+    pub fn builder(&self) -> Option<TokenStream> {
+        let Type {
+            type_space,
+            type_entry,
+        } = self;
+
+        if !type_space.settings.struct_builder {
+            return None;
+        }
+
+        match &type_entry.details {
+            TypeEntryDetails::Struct(type_entry::TypeEntryStruct { name, .. }) => {
+                match &type_space.settings.type_mod {
+                    Some(type_mod) => {
+                        let type_mod = format_ident!("{}", type_mod);
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { #type_mod :: builder :: #type_name })
+                    }
+                    None => {
+                        let type_name = format_ident!("{}", name);
+                        Some(quote! { builder :: #type_name })
+                    }
+                }
+            }
+            _ => None,
+        }
     }
 }
 
@@ -965,7 +995,7 @@ mod tests {
         output::OutputSpace,
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
-        Name, TypeEntryDetails, TypeSpace,
+        Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
     };
 
     #[allow(dead_code)]
@@ -1141,5 +1171,61 @@ mod tests {
         }
 
         validate_output::<Things>();
+    }
+
+    #[test]
+    fn test_builder_name() {
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        struct TestStruct {
+            x: u32,
+        }
+
+        let mut type_space = TypeSpace::default();
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert!(ty.builder().is_none());
+
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("builder :: TestStruct".to_string())
+        );
+
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestStruct);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+
+        assert_eq!(
+            ty.builder().map(|ts| ts.to_string()),
+            Some("types :: builder :: TestStruct".to_string())
+        );
+
+        #[allow(dead_code)]
+        #[derive(JsonSchema)]
+        enum TestEnum {
+            X,
+            Y,
+        }
+        let mut type_space = TypeSpace::new(
+            TypeSpaceSettings::default()
+                .with_type_mod("types")
+                .with_struct_builder(true),
+        );
+        let schema = schema_for!(TestEnum);
+        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
+        let ty = type_space.get_type(&type_id).unwrap();
+        assert!(ty.builder().is_none());
     }
 }

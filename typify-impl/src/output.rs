@@ -47,12 +47,12 @@ impl OutputSpace {
                 #items
             },
             OutputSpaceMod::Builder => quote! {
-                mod builder {
+                pub mod builder {
                     #items
                 }
             },
             OutputSpaceMod::Defaults => quote! {
-                mod defaults {
+                pub mod defaults {
                     #items
                 }
             },

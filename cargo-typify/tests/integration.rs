@@ -44,7 +44,7 @@ fn test_default_output() {
 }
 
 #[test]
-fn test_positional_stdout() {
+fn test_no_builder_stdout() {
     use assert_cmd::Command;
 
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
@@ -52,7 +52,7 @@ fn test_positional_stdout() {
     let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
 
     let output = cmd
-        .args(["typify", input, "--positional", "--output", "-"])
+        .args(["typify", input, "--no-builder", "--output", "-"])
         .output()
         .unwrap();
 
@@ -60,7 +60,7 @@ fn test_positional_stdout() {
     let actual = dos2unix(&output_stdout);
 
     assert!(output.status.success());
-    assert_contents("tests/outputs/positional.rs", &actual);
+    assert_contents("tests/outputs/no-builder.rs", &actual);
 }
 
 #[test]
@@ -101,8 +101,8 @@ fn test_derive() {
     cmd.args([
         "typify",
         input,
-        "--positional",
-        "--additional-derives",
+        "--no-builder",
+        "--additional-derive",
         "ExtraDerive",
         "--output",
         output_file.to_str().unwrap(),
@@ -128,10 +128,10 @@ fn test_multi_derive() {
     cmd.args([
         "typify",
         input,
-        "--positional",
-        "--additional-derives",
+        "--no-builder",
+        "--additional-derive",
         "ExtraDerive",
-        "--additional-derives",
+        "--additional-derive",
         "AnotherDerive",
         "--output",
         output_file.to_str().unwrap(),

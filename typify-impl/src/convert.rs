@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
 use std::collections::HashSet;
 
@@ -6,7 +6,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, none_or_single, recase, ref_key, Case, StringValidator};
+use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
 use log::info;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -102,10 +102,10 @@ impl TypeSpace {
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
-                number: None,
+                number: _,
                 string,
-                array: None,
-                object: None,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::String => self.convert_string(
@@ -149,10 +149,10 @@ impl TypeSpace {
                 enum_values: Some(enum_values),
                 const_value: None,
                 subschemas: None,
-                number: None,
+                number: _,
                 string,
-                array: None,
-                object: None,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::String => self.convert_enum_string(
@@ -171,9 +171,9 @@ impl TypeSpace {
                 const_value: None,
                 subschemas: None,
                 number: validation,
-                string: None,
-                array: None,
-                object: None,
+                string: _,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Integer => {
@@ -189,9 +189,9 @@ impl TypeSpace {
                 const_value: None,
                 subschemas: None,
                 number: validation,
-                string: None,
-                array: None,
-                object: None,
+                string: _,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Number => {
@@ -206,15 +206,15 @@ impl TypeSpace {
                 enum_values: _,
                 const_value: None,
                 subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: None,
+                number: _,
+                string: _,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Boolean => self.convert_bool(metadata),
 
-            // Structs
+            // Object
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
@@ -222,9 +222,9 @@ impl TypeSpace {
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
-                number: None,
-                string: None,
-                array: None,
+                number: _,
+                string: _,
+                array: _,
                 object: validation,
                 reference: None,
                 extensions: _,
@@ -232,7 +232,7 @@ impl TypeSpace {
                 self.convert_object(type_name, metadata, validation)
             }
 
-            // Structs with the type omitted, but validation present
+            // Object with the type omitted, but validation present
             SchemaObject {
                 metadata,
                 instance_type: None,
@@ -248,10 +248,28 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_object(type_name, metadata, validation),
 
-            // Arrays
+            // Array
             SchemaObject {
                 metadata,
-                instance_type,
+                instance_type: Some(SingleOrVec::Single(single)),
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: _,
+                string: _,
+                array: Some(validation),
+                object: _,
+                reference: None,
+                extensions: _,
+            } if single.as_ref() == &InstanceType::Array => {
+                self.convert_array(type_name, metadata, validation)
+            }
+
+            // Array with the type omitted, but validation present
+            SchemaObject {
+                metadata,
+                instance_type: None,
                 format: None,
                 enum_values: None,
                 const_value: None,
@@ -262,9 +280,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } if none_or_single(instance_type, &InstanceType::Array) => {
-                self.convert_array(type_name, metadata, validation)
-            }
+            } => self.convert_array(type_name, metadata, validation),
 
             // Arrays of anything
             SchemaObject {
@@ -274,10 +290,10 @@ impl TypeSpace {
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
-                number: None,
-                string: None,
+                number: _,
+                string: _,
                 array: None,
-                object: None,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Array => self.convert_array_of_any(metadata),
@@ -306,10 +322,10 @@ impl TypeSpace {
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: None,
+                number: _,
+                string: _,
+                array: _,
+                object: _,
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Null => self.convert_null(metadata),
@@ -509,7 +525,7 @@ impl TypeSpace {
                             InstanceType::Null => ("Null", None),
                             InstanceType::Boolean => ("Boolean", Some(TypeEntry::new_boolean())),
                             InstanceType::Object => {
-                                let (ty, _) = self.make_map(None, &None)?;
+                                let (ty, _) = self.make_map(None, &None, &None)?;
                                 ("Object", Some(ty))
                             }
                             InstanceType::Array => {
@@ -821,22 +837,22 @@ impl TypeSpace {
 
         // See if the value bounds fit within a known type.
         let maybe_type = match (min, max) {
-            (None, Some(max)) => formats.iter().find_map(|(_, ty, _, imax)| {
-                if imax + f64::EPSILON >= max {
+            (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, _, imax)| {
+                if (imax - max).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
-            (Some(min), None) => formats.iter().find_map(|(_, ty, imin, _)| {
-                if imin - f64::EPSILON <= min {
+            (Some(min), None) => formats.iter().rev().find_map(|(_, ty, imin, _)| {
+                if (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
-            (Some(min), Some(max)) => formats.iter().find_map(|(_, ty, imin, imax)| {
-                if imax + f64::EPSILON >= max && imin - f64::EPSILON <= min {
+            (Some(min), Some(max)) => formats.iter().rev().find_map(|(_, ty, imin, imax)| {
+                if (imax - max).abs() <= f64::EPSILON && (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
@@ -861,9 +877,11 @@ impl TypeSpace {
     fn convert_number<'a>(
         &self,
         _metadata: &'a Option<Box<Metadata>>,
-        validation: &Option<Box<schemars::schema::NumberValidation>>,
+        _validation: &Option<Box<schemars::schema::NumberValidation>>,
         _format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        /*
+        See https://github.com/oxidecomputer/typify/issues/169
         if let Some(validation) = validation {
             assert!(validation.multiple_of.is_none());
             assert!(validation.maximum.is_none());
@@ -871,6 +889,7 @@ impl TypeSpace {
             assert!(validation.minimum.is_none());
             assert!(validation.exclusive_minimum.is_none());
         }
+        */
 
         Ok((TypeEntry::new_float("f64"), &None))
     }
@@ -894,22 +913,26 @@ impl TypeSpace {
             // Maps have an empty properties set, and a non-null schema for the
             // additional_properties field.
             Some(ObjectValidation {
-                max_properties: None,
-                min_properties: None,
+                max_properties: _,
+                min_properties: _,
                 required,
                 properties,
                 pattern_properties,
                 additional_properties,
-                property_names: None,
+                property_names,
             }) if required.is_empty()
                 && properties.is_empty()
                 && pattern_properties.is_empty()
                 && additional_properties.as_ref().map(AsRef::as_ref)
                     != Some(&Schema::Bool(false)) =>
             {
-                self.make_map(type_name.into_option(), additional_properties)
+                self.make_map(
+                    type_name.into_option(),
+                    property_names,
+                    additional_properties,
+                )
             }
-            None => self.make_map(type_name.into_option(), &None),
+            None => self.make_map(type_name.into_option(), &None, &None),
 
             // The typical case
             Some(validation) => {
@@ -936,11 +959,14 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if !ref_name.starts_with('#') {
+            panic!("external references are not supported: {}", ref_name);
+        }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
             .get(key)
-            .expect(format!("key {} is missing", key).as_str());
+            .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,
@@ -988,7 +1014,7 @@ impl TypeSpace {
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        subschemas: &[Schema],
+        subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"}
         // for Option. We match this here because the mutual exclusion check
@@ -1075,7 +1101,7 @@ impl TypeSpace {
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
-        subschemas: &[Schema],
+        subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)
@@ -1232,29 +1258,74 @@ impl TypeSpace {
         validation: &ArrayValidation,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match validation {
-            // A tuple.
+            // Tuples and fixed-length arrays satisfy the condition that the
+            // max and min lengths are equal (and greater than zero). When
+            // the `item` is an array, we produce a tuple; when it is a single
+            // element, we produce a fixed-length array.
             ArrayValidation {
-                items: Some(SingleOrVec::Vec(items)),
-                additional_items: None,
+                items,
+                additional_items,
                 max_items: Some(max_items),
                 min_items: Some(min_items),
                 unique_items: None,
                 contains: None,
-            } if max_items == min_items && *max_items as usize == items.len() => {
-                let types = items
-                    .iter()
-                    .map(|schema| Ok(self.id_for_schema(Name::Unknown, schema)?.0))
-                    .collect::<Result<Vec<_>>>()?;
+            } if max_items == min_items && *max_items > 0 => match items {
+                // Tuple with fewer types specified than required items.
+                Some(SingleOrVec::Vec(items)) if items.len() < *max_items as usize => {
+                    let rest_name = type_name.append("additional");
+                    let rest_id = if let Some(rest_schema) = additional_items {
+                        self.id_for_schema(rest_name, rest_schema)?.0
+                    } else {
+                        self.id_for_schema(rest_name, &Schema::Bool(true))?.0
+                    };
+                    let start = items.iter().enumerate().map(|(ii, item_schema)| {
+                        let item_name = type_name.append(&format!("item{}", ii));
+                        Ok(self.id_for_schema(item_name, item_schema)?.0)
+                    });
+                    let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
+                    let types = start.chain(rest).collect::<Result<Vec<_>>>()?;
+                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                }
+                // Tuple with at least as many items as required.
+                Some(SingleOrVec::Vec(items)) => {
+                    let types = items
+                        .iter()
+                        .take(*max_items as usize)
+                        .enumerate()
+                        .map(|(ii, item_schema)| {
+                            let item_name = type_name.append(&format!("item{}", ii));
+                            Ok(self.id_for_schema(item_name, item_schema)?.0)
+                        })
+                        .collect::<Result<_>>()?;
+                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                }
 
-                Ok((TypeEntryDetails::Tuple(types).into(), metadata))
-            }
+                // Array with a schema for the item.
+                Some(SingleOrVec::Single(item_schema)) => {
+                    let item_id = self.id_for_schema(type_name.append("item"), item_schema)?.0;
+                    Ok((
+                        TypeEntryDetails::Array(item_id, *max_items as usize).into(),
+                        metadata,
+                    ))
+                }
+                // Array with no schema for the item.
+                None => {
+                    let any_id = self
+                        .id_for_schema(type_name.append("item"), &Schema::Bool(true))?
+                        .0;
+                    Ok((
+                        TypeEntryDetails::Array(any_id, *max_items as usize).into(),
+                        metadata,
+                    ))
+                }
+            },
 
             // Arrays and sets.
             ArrayValidation {
                 items: Some(SingleOrVec::Single(item)),
-                additional_items: None,
-                max_items: _, // TODO enforce size limitations
-                min_items: _, // TODO enforce size limitations
+                additional_items: _, // By spec: ignored for single items
+                max_items: _,        // TODO enforce size limitations
+                min_items: _,        // TODO enforce size limitations
                 unique_items,
                 contains: None,
             } => {
@@ -1267,7 +1338,7 @@ impl TypeSpace {
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
                     Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
-                    _ => Ok((TypeEntryDetails::Array(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
                 }
             }
 
@@ -1284,7 +1355,7 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
         let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
-        Ok((TypeEntryDetails::Array(type_id).into(), metadata))
+        Ok((TypeEntryDetails::Vec(type_id).into(), metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...
@@ -1422,11 +1493,11 @@ impl TypeSpace {
         }
     }
 
-    pub(crate) fn convert_option<'a, 'b>(
+    pub(crate) fn convert_option<'a>(
         &mut self,
         type_name: Name,
         metadata: &'a Option<Box<Metadata>>,
-        schema: &'b Schema,
+        schema: &'_ Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         let (ty, _) = self.convert_schema(type_name, schema)?;
         let ty = self.type_to_option(ty);

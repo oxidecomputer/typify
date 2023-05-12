@@ -10,7 +10,7 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
@@ -47,7 +47,7 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;

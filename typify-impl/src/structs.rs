@@ -8,13 +8,12 @@ use schemars::schema::{
 };
 
 use crate::{
-    enums::get_object,
     output::{OutputSpace, OutputSpaceMod},
     type_entry::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
         WrappedValue,
     },
-    util::{get_type_name, metadata_description, recase, schema_is_named, Case},
+    util::{get_object_ref, get_type_name, metadata_description, recase, schema_is_named, Case},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
@@ -81,10 +80,17 @@ impl TypeSpace {
             }
             None => false,
 
-            // Only particular additional properties are allowed.
+            // Only particular additional properties are allowed. Note that
+            // #[serde(deny_unknown_fields)] is incompatible with
+            // #[serde(flatten)] so we allow them even though that doesn't seem
+            // quite right.
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
-                let (map_type, _) = self.make_map(sub_type_name, additional_properties)?;
+                let (map_type, _) = self.make_map(
+                    sub_type_name,
+                    &validation.property_names,
+                    additional_properties,
+                )?;
                 let map_type_id = self.assign_type(map_type);
                 let extra_prop = StructProperty {
                     name: "extra".to_string(),
@@ -95,7 +101,7 @@ impl TypeSpace {
                 };
 
                 properties.push(extra_prop);
-                true
+                false
             }
         };
 
@@ -168,21 +174,33 @@ impl TypeSpace {
     pub(crate) fn make_map<'a>(
         &mut self,
         type_name: Option<String>,
+        property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let (type_id, _) = match additional_properties {
-            Some(schema) => {
-                let sub_type_name = match type_name {
-                    Some(name) => Name::Suggested(format!("{}Extra", name)),
+        let key_id = match property_names {
+            Some(key_schema) => {
+                let key_type_name = match &type_name {
+                    Some(name) => Name::Suggested(format!("{}Key", name)),
                     None => Name::Unknown,
                 };
-                self.id_for_schema(sub_type_name, schema)?
+                self.id_for_schema(key_type_name, key_schema)?.0
+            }
+            None => self.assign_type(TypeEntryDetails::String.into()),
+        };
+
+        let (value_id, _) = match additional_properties {
+            Some(value_schema) => {
+                let value_type_name = match &type_name {
+                    Some(name) => Name::Suggested(format!("{}Value", name)),
+                    None => Name::Unknown,
+                };
+                self.id_for_schema(value_type_name, value_schema)?
             }
 
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok((TypeEntryDetails::Map(type_id).into(), &None))
+        Ok((TypeEntryDetails::Map(key_id, value_id).into(), &None))
     }
 
     /// This is used by both any-of and all-of subschema processing. This
@@ -315,7 +333,7 @@ impl TypeSpace {
             _ => None,
         }?;
         let tmp_type_name = get_type_name(&type_name, metadata);
-        let (unnamed_properties, deny) = self.struct_members(tmp_type_name, validation).ok()?;
+        let (unnamed_properties, _) = self.struct_members(tmp_type_name, validation).ok()?;
 
         let named_properties = named
             .iter()
@@ -346,15 +364,17 @@ impl TypeSpace {
                 .into_iter()
                 .chain(unnamed_properties.into_iter())
                 .collect(),
-            deny,
+            // Note that #[serde(deny_unknown_fields)] is incompatible with
+            // #[serde(flatten)] which we use for the superclass(es).
+            false,
         ))
     }
 
     /// This handles the case where an allOf is used to denote constraints.
     /// Currently we just look for a referenced type, which may be "closed"
-    /// (i.e. no unknown types permitted) and an explicit type. The latter must
-    /// be a subset of the former and compatible from the perspective of JSON
-    /// Schema validation (that is to say, it must be "open" or must fully
+    /// (i.e. no unknown fields permitted) and an explicit type. The latter
+    /// must be a subset of the former and compatible from the perspective of
+    /// JSON Schema validation (that is to say, it must be "open" or must fully
     /// cover the named type).
     ///
     /// ```text
@@ -383,6 +403,10 @@ impl TypeSpace {
         let mut named = Vec::new();
         let mut unnamed = Vec::new();
         for schema in subschemas {
+            // TODO this might not be quite right since this will be true for
+            // schemas that have a title; we may want to look only for types
+            // with a mandatory name. Types with a title (optional name) are
+            // reasonable to inline generally.
             match schema_is_named(schema) {
                 Some(name) => named.push((schema, name)),
                 None => unnamed.push(schema),
@@ -391,23 +415,23 @@ impl TypeSpace {
 
         // We required exactly one named subschema and at least one unnamed
         // subschema.
-        if unnamed.len() != 1 && !named.is_empty() {
+        if named.len() != 1 || unnamed.is_empty() {
             return None;
         }
 
         let (named_schema, _) = named.first()?;
+        let (a_name, _, validation) =
+            get_object_ref(Name::Unknown, named_schema, &self.definitions)?;
 
-        let (_, _, validation) = get_object(Name::Unknown, named_schema, &self.definitions)?;
+        assert!(matches!(a_name, Name::Required(_)));
 
-        if validation.additional_properties.as_ref().map(Box::as_ref) != Some(&Schema::Bool(false))
+        // We need all unnamed schemas to be a subset of the named schema.
+        if !unnamed
+            .into_iter()
+            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
         {
             return None;
         }
-
-        unnamed
-            .into_iter()
-            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
-            .then_some(())?;
 
         let (type_entry, _) = self.convert_schema(type_name, named_schema).ok()?;
         Some(type_entry)
@@ -467,20 +491,26 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Array(_)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(type_id)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
             serde_options.push(quote! { default });
 
-            let inner_ty = type_space
+            let key_ty = type_space
                 .id_to_entry
-                .get(type_id)
-                .expect("unresolved type id for map");
+                .get(key_id)
+                .expect("unresolved key type id for map");
+            let value_ty = type_space
+                .id_to_entry
+                .get(value_id)
+                .expect("unresolved value type id for map");
 
-            if inner_ty.details == TypeEntryDetails::JsonValue {
+            if key_ty.details == TypeEntryDetails::String
+                && value_ty.details == TypeEntryDetails::JsonValue
+            {
                 serde_options.push(quote! {
                     skip_serializing_if = "serde_json::Map::is_empty"
                 });
@@ -542,8 +572,8 @@ fn has_default(
     ) {
         // No default specified.
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Array(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
@@ -552,11 +582,11 @@ fn has_default(
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: []
-        (Some(TypeEntryDetails::Array(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
+        (Some(TypeEntryDetails::Vec(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}
-        (Some(TypeEntryDetails::Map(_)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
+        (Some(TypeEntryDetails::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: false

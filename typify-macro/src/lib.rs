@@ -4,7 +4,6 @@ use std::{collections::HashMap, path::Path};
 
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use schemars::schema::Schema;
 use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
@@ -42,9 +41,9 @@ mod token_utils;
 ///   may be used to skip generation of the named type and use a existing Rust
 ///   type.
 ///   
-/// - `convert`: optional map from a JSON schema to a replacement type. This
-///   may be used to skip generation of the schema and use an existing Rust
-///   type.
+/// - `convert`: optional map from a JSON schema type defined in `$defs` to a
+///   replacement type. This may be used to skip generation of the schema and
+///   use an existing Rust type.
 #[proc_macro]
 pub fn import_types(item: TokenStream) -> TokenStream {
     match do_import_types(item) {
@@ -143,20 +142,12 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
     let mut type_space = TypeSpace::new(&settings);
     type_space
-        .add_ref_types(root_schema.definitions)
+        .add_root_schema(root_schema)
         .map_err(|e| into_syn_err(e, schema.span()))?;
-    let base_type = &root_schema.schema;
-    // Only convert the top-level type if it has a name
-    if (|| base_type.metadata.as_ref()?.title.as_ref())().is_some() {
-        let _ = type_space
-            .add_type(&Schema::Object(root_schema.schema))
-            .map_err(|e| into_syn_err(e, schema.span()))?;
-    }
 
-    let types = type_space.to_stream();
     let path_str = path.to_string_lossy();
     let output = quote! {
-        #types
+        #type_space
 
         // Force a rebuild when the given file is modified.
         const _: &str = include_str!(#path_str);

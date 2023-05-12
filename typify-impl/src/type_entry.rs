@@ -1,6 +1,6 @@
 // Copyright 2023 Oxide Computer Company
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
@@ -115,9 +115,10 @@ pub(crate) enum TypeEntryDetails {
     // Types from core and std.
     Option(TypeId),
     Box(TypeId),
-    Array(TypeId),
-    Map(TypeId),
+    Vec(TypeId),
+    Map(TypeId, TypeId),
     Set(TypeId),
+    Array(TypeId, usize),
     Tuple(Vec<TypeId>),
     Unit,
     Boolean,
@@ -230,23 +231,23 @@ impl TypeEntryEnum {
                     .variants
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
-            .then(|| TypeEntryEnumImpl::AllSimpleVariants),
-            // Untagged and all variants impl FromStr
+            .then_some(TypeEntryEnumImpl::AllSimpleVariants),
+            // Untagged and all variants impl FromStr.
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::FromStr,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedFromStr),
-            // Untagged and all variants impl Display
+            .then_some(TypeEntryEnumImpl::UntaggedFromStr),
+            // Untagged and all variants impl Display.
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::Display,
             )
-            .then(|| TypeEntryEnumImpl::UntaggedDisplay),
+            .then_some(TypeEntryEnumImpl::UntaggedDisplay),
         ]
         .into_iter()
         .flatten()
@@ -539,18 +540,30 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
-            | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Vec(_)
+            | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
             }
 
             TypeEntryDetails::Tuple(type_ids) => {
+                // Default is implemented for tuples of up to 12 items long.
                 matches!(impl_name, TypeSpaceImpl::Default)
+                    && type_ids.len() <= 12
                     && type_ids.iter().all(|type_id| {
                         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                         type_entry.has_impl(type_space, TypeSpaceImpl::Default)
                     })
+            }
+
+            TypeEntryDetails::Array(item_id, length) => {
+                // Default is implemented for arrays of up to length 32.
+                if *length <= 32 && impl_name == TypeSpaceImpl::Default {
+                    let type_entry = type_space.id_to_entry.get(item_id).unwrap();
+                    type_entry.has_impl(type_space, impl_name)
+                } else {
+                    false
+                }
             }
 
             TypeEntryDetails::Boolean => true,
@@ -649,14 +662,15 @@ impl TypeEntry {
             .collect::<Vec<_>>();
 
         // It should not be possible to construct an untagged enum
-        // with more than one simple variants--it would not be usable.
-        if variants
-            .iter()
-            .filter(|variant| matches!(variant.details, VariantDetails::Simple))
-            .count()
-            > 1
-        {
-            assert!(tag_type != &EnumTagType::Untagged);
+        // with more than one simple variant--it would not be usable.
+        if tag_type == &EnumTagType::Untagged {
+            assert!(
+                variants
+                    .iter()
+                    .filter(|variant| matches!(variant.details, VariantDetails::Simple))
+                    .count()
+                    <= 1
+            )
         }
 
         // ToString and FromStr impls for enums that are made exclusively of
@@ -802,6 +816,100 @@ impl TypeEntry {
                 }
             });
 
+        let convenience_from = {
+            // Build a map whose key is the type ID or type IDs of the Item and
+            // Tuple variants, and whose value is a tuple of the original index
+            // and the variant itself. Any key that is seen multiple times has
+            // a value of None.
+            // TODO this requires more consideration to handle single-item
+            // tuples.
+            let unique_variants =
+                variants
+                    .iter()
+                    .enumerate()
+                    .fold(BTreeMap::new(), |mut map, (index, variant)| {
+                        let key = match &variant.details {
+                            VariantDetails::Item(type_id) => vec![type_id],
+                            VariantDetails::Tuple(type_ids) => type_ids.iter().collect(),
+                            _ => return map,
+                        };
+
+                        map.entry(key)
+                            .and_modify(|v| *v = None)
+                            .or_insert(Some((index, variant)));
+                        map
+                    });
+
+            // Remove any variants that are duplicates (i.e. the value is None)
+            // with the flatten(). Then order a new map according to the
+            // original order of variants. The allows for the order to be
+            // stable and for impl blocks to appear in the same order as their
+            // corresponding variants.
+            let ordered_variants = unique_variants
+                .into_values()
+                .flatten()
+                .collect::<BTreeMap<_, _>>();
+
+            // Generate a `From<VariantType>` impl block that converts the type
+            // into the appropriate variant of the enum.
+            let variant_from =
+                ordered_variants
+                    .into_values()
+                    .map(|variant| match &variant.details {
+                        VariantDetails::Item(type_id) => {
+                            let variant_type = type_space.id_to_entry.get(type_id).unwrap();
+
+                            // TODO Strings might conflict with the way we're
+                            // dealing with TryFrom<String> right now.
+                            (variant_type.details != TypeEntryDetails::String).then(|| {
+                                let variant_type_ident = variant_type.type_ident(type_space, &None);
+                                let variant_name = format_ident!("{}", variant.name);
+                                quote! {
+                                    impl From<#variant_type_ident> for #type_name {
+                                        fn from(value: #variant_type_ident)
+                                            -> Self
+                                        {
+                                            Self::#variant_name(value)
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                        VariantDetails::Tuple(type_ids) => {
+                            let variant_type_idents = type_ids.iter().map(|type_id| {
+                                type_space
+                                    .id_to_entry
+                                    .get(type_id)
+                                    .unwrap()
+                                    .type_ident(type_space, &None)
+                            });
+                            let variant_type_ident = if type_ids.len() != 1 {
+                                quote! { ( #(#variant_type_idents),* ) }
+                            } else {
+                                // A single-item tuple requires a trailing
+                                // comma.
+                                quote! { ( #(#variant_type_idents,)* ) }
+                            };
+                            let variant_name = format_ident!("{}", variant.name);
+                            let ii = (0..type_ids.len()).map(syn::Index::from);
+                            Some(quote! {
+                                impl From<#variant_type_ident> for #type_name {
+                                    fn from(value: #variant_type_ident) -> Self {
+                                        Self::#variant_name(
+                                            #( value.#ii, )*
+                                        )
+                                    }
+                                }
+                            })
+                        }
+                        _ => None,
+                    });
+
+            quote! {
+                #( #variant_from )*
+            }
+        };
+
         let derives = strings_to_derives(
             derive_set,
             &self.extra_derives,
@@ -826,6 +934,7 @@ impl TypeEntry {
             #default_impl
             #untagged_newtype_from_string_impl
             #untagged_newtype_to_string_impl
+            #convenience_from
         };
         output.add_item(OutputSpaceMod::Crate, name, item);
     }
@@ -977,6 +1086,7 @@ impl TypeEntry {
                 OutputSpaceMod::Builder,
                 name,
                 quote! {
+                    #[derive(Clone, Debug)]
                     pub struct #type_name {
                         #(
                             #prop_name: Result<#prop_type_scoped, String>,
@@ -1007,7 +1117,10 @@ impl TypeEntry {
                         )*
                     }
 
-                    impl std::convert::TryFrom<#type_name> for super::#type_name {
+                    // This is how the item is built.
+                    impl std::convert::TryFrom<#type_name>
+                        for super::#type_name
+                    {
                         type Error = String;
 
                         fn try_from(value: #type_name)
@@ -1018,6 +1131,17 @@ impl TypeEntry {
                                     #prop_name: value.#prop_name?,
                                 )*
                             })
+                        }
+                    }
+
+                    // Construct a builder from the item.
+                    impl From<super::#type_name> for #type_name {
+                        fn from(value: super::#type_name) -> Self {
+                            Self {
+                                #(
+                                    #prop_name: Ok(value.#prop_name),
+                                )*
+                            }
                         }
                     }
                 },
@@ -1052,11 +1176,17 @@ impl TypeEntry {
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
         let inner_type_name = inner_type.type_ident(type_space, &None);
 
+        let is_str = matches!(inner_type.details, TypeEntryDetails::String);
+
+        // If this is just a wrapper around a string, we can derive some more
+        // useful traits.
+        if is_str {
+            derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+        }
+
         let constraint_impl = match constraints {
             // In the unconstrained case we proxy impls through the inner type.
             TypeEntryNewtypeConstraints::None => {
-                let is_str = matches!(inner_type.details, TypeEntryDetails::String);
-
                 let str_impl = is_str.then(|| {
                     quote! {
                         impl std::str::FromStr for #type_name {
@@ -1411,7 +1541,7 @@ impl TypeEntry {
                 quote! { Box<#item> }
             }
 
-            TypeEntryDetails::Array(id) => {
+            TypeEntryDetails::Vec(id) => {
                 let inner_ty = type_space
                     .id_to_entry
                     .get(id)
@@ -1421,17 +1551,24 @@ impl TypeEntry {
                 quote! { Vec<#item> }
             }
 
-            TypeEntryDetails::Map(type_id) => {
-                let inner_ty = type_space
+            TypeEntryDetails::Map(key_id, value_id) => {
+                let key_ty = type_space
                     .id_to_entry
-                    .get(type_id)
-                    .expect("unresolved type id for map");
+                    .get(key_id)
+                    .expect("unresolved type id for map key");
+                let value_ty = type_space
+                    .id_to_entry
+                    .get(value_id)
+                    .expect("unresolved type id for map value");
 
-                let inner_ident = inner_ty.type_ident(type_space, type_mod);
-                if inner_ty.details == TypeEntryDetails::JsonValue {
-                    quote! { serde_json::Map<String, #inner_ident> }
+                if key_ty.details == TypeEntryDetails::String
+                    && value_ty.details == TypeEntryDetails::JsonValue
+                {
+                    quote! { serde_json::Map<String, serde_json::Value> }
                 } else {
-                    quote! { std::collections::HashMap<String, #inner_ident> }
+                    let key_ident = key_ty.type_ident(type_space, type_mod);
+                    let value_ident = value_ty.type_ident(type_space, type_mod);
+                    quote! { std::collections::HashMap<#key_ident, #value_ident> }
                 }
             }
 
@@ -1447,7 +1584,7 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Tuple(items) => {
-                let type_streams = items.iter().map(|item| {
+                let type_idents = items.iter().map(|item| {
                     type_space
                         .id_to_entry
                         .get(item)
@@ -1455,7 +1592,22 @@ impl TypeEntry {
                         .type_ident(type_space, type_mod)
                 });
 
-                quote! { ( #(#type_streams),* ) }
+                if items.len() != 1 {
+                    quote! { ( #(#type_idents),* ) }
+                } else {
+                    // A single-item tuple requires a trailing comma.
+                    quote! { ( #(#type_idents,)* ) }
+                }
+            }
+
+            TypeEntryDetails::Array(item_id, length) => {
+                let item_ty = type_space
+                    .id_to_entry
+                    .get(item_id)
+                    .expect("unresolved type id for array");
+                let item_ident = item_ty.type_ident(type_space, type_mod);
+
+                quote! { [#item_ident; #length]}
             }
 
             TypeEntryDetails::Unit => quote! { () },
@@ -1491,8 +1643,9 @@ impl TypeEntry {
         match &self.details {
             // We special-case enums for which all variants are simple to let
             // them be passed as values rather than as references.
-            // TODO we should probably cache this rather than iterating
-            // every time. We'll know it when the enum is constructed.
+            // TODO we should probably cache "simpleness" of all variants
+            // rather than iterating every time. We'll know it when the enum is
+            // constructed.
             TypeEntryDetails::Enum(TypeEntryEnum { variants, .. })
                 if variants
                     .iter()
@@ -1503,11 +1656,12 @@ impl TypeEntry {
             TypeEntryDetails::Enum(_)
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
-            | TypeEntryDetails::Array(_)
-            | TypeEntryDetails::Map(_)
+            | TypeEntryDetails::Vec(_)
+            | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Native(_)
+            | TypeEntryDetails::Array(..)
             | TypeEntryDetails::JsonValue => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
@@ -1537,8 +1691,16 @@ impl TypeEntry {
                         .type_parameter_ident(type_space, lifetime_name)
                 });
 
-                quote! { ( #(#type_streams),* ) }
+                if items.len() != 1 {
+                    quote! { ( #(#type_streams),* ) }
+                } else {
+                    // Single-element tuples require special handling. In
+                    // particular, they must have a trailing comma or else are
+                    // treated as extraneously parenthesized types.
+                    quote! { ( #(#type_streams,)* ) }
+                }
             }
+
             TypeEntryDetails::Unit
             | TypeEntryDetails::Boolean
             | TypeEntryDetails::Integer(_)
@@ -1561,8 +1723,10 @@ impl TypeEntry {
 
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
-            TypeEntryDetails::Array(type_id) => format!("array {}", type_id.0),
-            TypeEntryDetails::Map(type_id) => format!("map {}", type_id.0),
+            TypeEntryDetails::Vec(type_id) => format!("vec {}", type_id.0),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                format!("map {} {}", key_id.0, value_id.0)
+            }
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
             TypeEntryDetails::Box(type_id) => format!("box {}", type_id.0),
             TypeEntryDetails::Tuple(type_ids) => {
@@ -1574,6 +1738,9 @@ impl TypeEntry {
                         .collect::<Vec<String>>()
                         .join(", ")
                 )
+            }
+            TypeEntryDetails::Array(type_id, length) => {
+                format!("array {}; {}", type_id.0, length)
             }
             TypeEntryDetails::Boolean => "bool".to_string(),
             TypeEntryDetails::Native(TypeEntryNative {

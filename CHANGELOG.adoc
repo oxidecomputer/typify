@@ -13,7 +13,43 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.10\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.12\...HEAD[Full list of commits]
+
+== 0.0.12 (released 2023-05-03)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.11\...v0.0.12[Full list of commits]
+
+== 0.0.11 (released 2023-03-18)
+
+This is a big update with many, many changes to code generation, and many more
+JSON schema structures well-handled. Among the many changes:
+
+* Generate a `ToString` impl for untagged enums with trivial variants (#145)
+* Allow conversion overrides by specifying a schema (#155)
+* Handle untyped enums that contain nulls (#167)
+* Handle `not` schemas for enumerated values (#168)
+* Improve generated code for FromStr and TryFrom impls (#174)
+* Handle format specifiers for enumerated strings (#188)
+
+=== *Breaking*: The removal of `TypeSpace::to_string()`
+
+Previously all transitive consumers required the presence of `rustfmt`. In this
+version we leave formatting to the consumer. See link:README.md#formatting[the formatting section of the README] for details on formatting.
+
+=== CLI
+
+This version adds the `cargo-typify` crate for stand-alone code generation.
+
+=== Augmented Generation
+
+Consumers can now affect how code is generated in several ways:
+* adding derive macros to all generated types
+* modifying specific types by name to rename them or add derive macros
+* specifying a replacement type by name
+* specifying a replacement type by schema pattern
+
+
+https://github.com/oxidecomputer/typify/compare/v0.0.10\...v0.0.11[Full list of commits]
 
 * Allow per-type renames and derive macro applications (#131)
 * `ToString` implementations for untagged enums with trivial newtype variants (#145)

@@ -91,7 +91,7 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
 #[macro_export]
 macro_rules! validate_builtin {
     ($t:ty) => {
-        crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
+        $crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
     };
 }
 
@@ -161,9 +161,9 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
     attrs
         .iter()
         .filter_map(|attr| {
-            let name = attr.path.segments.first()?.ident.to_string();
+            let name = attr.path().segments.first()?.ident.to_string();
             if name == "serde" {
-                let mut iter = attr.tokens.clone().into_iter();
+                let mut iter = attr.clone().to_token_stream().into_iter();
                 if let Some(proc_macro2::TokenTree::Group(group)) = iter.next() {
                     // Serde options have a single item.
                     assert!(iter.next().is_none());
@@ -174,7 +174,13 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
                             .into_iter()
                             .collect::<Vec<_>>()
                             // Split into comma-delimited groups.
-                            .split(|token| matches!(token, proc_macro2::TokenTree::Punct(punct) if punct.as_char() == ','))
+                            .split(|token| {
+                                matches!(
+                                    token,
+                                    proc_macro2::TokenTree::Punct(punct)
+                                        if punct.as_char() == ','
+                                )
+                            })
                             // Join the tokens into a string.
                             .map(|tokens| {
                                 tokens.iter().cloned().collect::<TokenStream>().to_string()

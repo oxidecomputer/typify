@@ -1,8 +1,9 @@
+// Copyright 2023 Oxide Computer Company
+
 use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
-use schemars::schema::Schema;
 use typify::{TypeSpace, TypeSpaceSettings};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
@@ -10,7 +11,7 @@ use typify::{TypeSpace, TypeSpaceSettings};
 #[command(author, version, about)]
 #[command(group(
     ArgGroup::new("build")
-        .args(["builder", "positional"]),
+        .args(["builder", "no_builder"]),
 ))]
 pub struct CliArgs {
     /// The input file to read from
@@ -21,11 +22,11 @@ pub struct CliArgs {
     pub builder: bool,
 
     /// Inverse of `--builder`. When set the builder-style interface will not be included.
-    #[arg(short, long, default_value = "false", group = "build")]
-    pub positional: bool,
+    #[arg(short = 'B', long, default_value = "false", group = "build")]
+    pub no_builder: bool,
 
     /// Add an additional derive macro to apply to all defined types.
-    #[arg(short, long)]
+    #[arg(short, long = "additional-derive", value_name = "derive")]
     pub additional_derives: Vec<String>,
 
     /// The output file to write to. If not specified, the input file name will be used with a
@@ -55,7 +56,7 @@ impl CliArgs {
     }
 
     pub fn use_builder(&self) -> bool {
-        !self.positional
+        !self.no_builder
     }
 }
 
@@ -75,21 +76,8 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 
     let mut type_space = TypeSpace::new(settings);
     type_space
-        .add_ref_types(schema.definitions)
-        .wrap_err("Could not add ref types from the 'definitions' field in the JSON Schema")?;
-
-    let base_type = &schema.schema;
-
-    // Only convert the top-level type if it has a name
-    if let Some(base_title) = &(|| base_type.metadata.as_ref()?.title.as_ref())() {
-        let base_title = base_title.to_string();
-
-        type_space
-            .add_type(&Schema::Object(schema.schema))
-            .wrap_err_with(|| {
-                format!("Could not add the top level type `{base_title}` to the type space")
-            })?;
-    }
+        .add_root_schema(schema)
+        .wrap_err("Schema conversion failed")?;
 
     let intro = "#![allow(clippy::redundant_closure_call)]
 #![allow(clippy::needless_lifetimes)]
@@ -99,7 +87,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 use serde::{Deserialize, Serialize};
 ";
 
-    let contents = format!("{intro}\n{}", type_space.to_string());
+    let contents = format!("{intro}\n{}", type_space.to_stream());
 
     let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 
@@ -117,7 +105,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("-")),
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), None);
@@ -130,7 +118,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: Some(PathBuf::from("some_file.rs")),
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -143,7 +131,7 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -156,20 +144,20 @@ mod tests {
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert!(args.use_builder());
     }
 
     #[test]
-    fn test_positional_builder() {
+    fn test_no_builder() {
         let args = CliArgs {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
             output: None,
-            positional: true,
+            no_builder: true,
         };
 
         assert!(!args.use_builder());
@@ -182,7 +170,7 @@ mod tests {
             builder: true,
             additional_derives: vec![],
             output: None,
-            positional: false,
+            no_builder: false,
         };
 
         assert!(args.use_builder());

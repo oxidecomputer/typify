@@ -39,6 +39,16 @@ impl From<&FruitOrVeg> for FruitOrVeg {
         value.clone()
     }
 }
+impl From<Veggie> for FruitOrVeg {
+    fn from(value: Veggie) -> Self {
+        Self::Veg(value)
+    }
+}
+impl From<Fruit> for FruitOrVeg {
+    fn from(value: Fruit) -> Self {
+        Self::Fruit(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
@@ -76,7 +86,8 @@ impl Veggies {
         builder::Veggies::default()
     }
 }
-mod builder {
+pub mod builder {
+    #[derive(Clone, Debug)]
     pub struct Veggie {
         veggie_like: Result<bool, String>,
         veggie_name: Result<String, String>,
@@ -120,6 +131,15 @@ mod builder {
             })
         }
     }
+    impl From<super::Veggie> for Veggie {
+        fn from(value: super::Veggie) -> Self {
+            Self {
+                veggie_like: Ok(value.veggie_like),
+                veggie_name: Ok(value.veggie_name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
     pub struct Veggies {
         fruits: Result<Vec<String>, String>,
         vegetables: Result<Vec<super::Veggie>, String>,
@@ -161,6 +181,14 @@ mod builder {
                 fruits: value.fruits?,
                 vegetables: value.vegetables?,
             })
+        }
+    }
+    impl From<super::Veggies> for Veggies {
+        fn from(value: super::Veggies) -> Self {
+            Self {
+                fruits: Ok(value.fruits),
+                vegetables: Ok(value.vegetables),
+            }
         }
     }
 }

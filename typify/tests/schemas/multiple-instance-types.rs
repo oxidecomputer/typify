@@ -49,6 +49,11 @@ impl ToString for IntOrStr {
         }
     }
 }
+impl From<i64> for IntOrStr {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum OneOfSeveral {
@@ -62,6 +67,26 @@ pub enum OneOfSeveral {
 impl From<&OneOfSeveral> for OneOfSeveral {
     fn from(value: &OneOfSeveral) -> Self {
         value.clone()
+    }
+}
+impl From<bool> for OneOfSeveral {
+    fn from(value: bool) -> Self {
+        Self::Boolean(value)
+    }
+}
+impl From<serde_json::Map<String, serde_json::Value>> for OneOfSeveral {
+    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
+        Self::Object(value)
+    }
+}
+impl From<Vec<serde_json::Value>> for OneOfSeveral {
+    fn from(value: Vec<serde_json::Value>) -> Self {
+        Self::Array(value)
+    }
+}
+impl From<i64> for OneOfSeveral {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -86,7 +86,7 @@ impl TypeEntry {
             }
             // TODO: this should become a HashSet<_> once we figure out the
             // derives more precisely.
-            TypeEntryDetails::Set(type_id) | TypeEntryDetails::Array(type_id) => {
+            TypeEntryDetails::Set(type_id) | TypeEntryDetails::Vec(type_id) => {
                 let arr = value.as_array()?;
                 let inner = type_space.id_to_entry.get(type_id).unwrap();
                 let values = arr
@@ -95,13 +95,21 @@ impl TypeEntry {
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
-            TypeEntryDetails::Map(type_id) => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 let obj = value.as_object()?;
-                let inner = type_space.id_to_entry.get(type_id).unwrap();
+                let key_ty = type_space.id_to_entry.get(key_id).unwrap();
+                let value_ty = type_space.id_to_entry.get(value_id).unwrap();
                 let kvs = obj
                     .iter()
-                    .map(|(name, obj_value)| {
-                        Some((name, inner.output_value(type_space, obj_value, scope)?))
+                    .map(|(obj_key, obj_value)| {
+                        Some((
+                            key_ty.output_value(
+                                type_space,
+                                &serde_json::Value::String(obj_key.clone()),
+                                scope,
+                            )?,
+                            value_ty.output_value(type_space, obj_value, scope)?,
+                        ))
                     })
                     .collect::<Option<Vec<_>>>()?;
                 let (keys, values): (Vec<_>, Vec<_>) = kvs.into_iter().unzip();
@@ -114,6 +122,15 @@ impl TypeEntry {
             TypeEntryDetails::Tuple(types) => {
                 let tup = value_for_tuple(type_space, value, types, scope)?;
                 quote! { ( #( #tup ),* )}
+            }
+            TypeEntryDetails::Array(type_id, _) => {
+                let arr = value.as_array()?;
+                let inner = type_space.id_to_entry.get(type_id).unwrap();
+                let values = arr
+                    .iter()
+                    .map(|arr_value| inner.output_value(type_space, arr_value, scope))
+                    .collect::<Option<Vec<_>>>()?;
+                quote! { [#(#values),*] }
             }
             TypeEntryDetails::Unit => {
                 value.as_null()?;
@@ -144,7 +161,9 @@ impl TypeEntry {
                 quote! { #v }
             }
             TypeEntryDetails::Integer(type_name) | TypeEntryDetails::Float(type_name) => {
-                value.is_number().then(|| ())?;
+                if !value.is_number() {
+                    return None;
+                }
                 let val = match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name))
                 {
                     Ok(v) => v,
@@ -180,7 +199,9 @@ fn value_for_external_enum(
         Some(quote! { #scope #type_ident::#var_ident })
     } else {
         let map = value.as_object()?;
-        (map.len() == 1).then(|| ())?;
+        if map.len() != 1 {
+            return None;
+        }
 
         let (name, var_value) = map.iter().next()?;
 
@@ -334,7 +355,9 @@ fn value_for_tuple(
     scope: &TokenStream,
 ) -> Option<Vec<TokenStream>> {
     let arr = value.as_array()?;
-    (arr.len() == types.len()).then(|| ())?;
+    if arr.len() != types.len() {
+        return None;
+    }
     types
         .iter()
         .zip(arr)
@@ -395,7 +418,7 @@ fn value_for_struct_props(
             match &type_entry.details {
                 TypeEntryDetails::Struct(_)
                 | TypeEntryDetails::Option(_)
-                | TypeEntryDetails::Map(_) => (),
+                | TypeEntryDetails::Map(..) => (),
                 _ => unreachable!(),
             }
 
@@ -495,7 +518,7 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!({"a": 1, "b": 2}), &quote! {})
                 .map(|x| x.to_string()),
-            Some(r#"[("a" , 1_u32) , ("b" , 2_u32)] . into_iter () . collect ()"#.to_string()),
+            Some(r#"[("a" . to_string () , 1_u32) , ("b" . to_string () , 2_u32)] . into_iter () . collect ()"#.to_string()),
         );
     }
 

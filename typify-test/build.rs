@@ -109,7 +109,7 @@ fn main() {
     let contents = format!(
         "{}\n{}",
         "use serde::{Deserialize, Serialize};",
-        type_space.to_string()
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
     );
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
@@ -127,17 +127,6 @@ where
 {
     fn add(type_space: &mut TypeSpace) {
         let schema = schemars::schema_for!(T);
-        type_space.add_ref_types(schema.definitions).unwrap();
-
-        let base_type = &schema.schema;
-        // Only convert the top-level type if it has a name
-        if base_type
-            .metadata
-            .as_ref()
-            .and_then(|m| m.title.as_ref())
-            .is_some()
-        {
-            let _ = type_space.add_type(&Schema::Object(schema.schema)).unwrap();
-        }
+        let _ = type_space.add_root_schema(schema).unwrap();
     }
 }

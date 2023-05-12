@@ -173,7 +173,7 @@ impl TypeEntry {
             }
             TypeEntryDetails::Box(type_id) => validate_type_id(type_id, type_space, default),
 
-            TypeEntryDetails::Array(type_id) => {
+            TypeEntryDetails::Vec(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -188,14 +188,19 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Map(type_id) => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 if let serde_json::Value::Object(m) = default {
                     if m.is_empty() {
                         Ok(DefaultKind::Intrinsic)
                     } else {
-                        let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                        for (_, value) in m {
-                            let _ = type_entry.validate_value(type_space, value)?;
+                        let key_ty = type_space.id_to_entry.get(key_id).unwrap();
+                        let value_ty = type_space.id_to_entry.get(value_id).unwrap();
+                        for (key, value) in m {
+                            let _ = key_ty.validate_value(
+                                type_space,
+                                &serde_json::Value::String(key.clone()),
+                            )?;
+                            let _ = value_ty.validate_value(type_space, value)?;
                         }
                         Ok(DefaultKind::Specific)
                     }
@@ -227,6 +232,22 @@ impl TypeEntry {
             }
             TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
                 .ok_or_else(|| Error::invalid_value()),
+
+            TypeEntryDetails::Array(type_id, length) => {
+                let Some(arr) = default.as_array()
+                else {
+                    return Err(Error::invalid_value())
+                };
+                if arr.len() != *length {
+                    return Err(Error::invalid_value());
+                }
+
+                let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                for value in arr {
+                    let _ = type_entry.validate_value(type_space, value)?;
+                }
+                Ok(DefaultKind::Specific)
+            }
             TypeEntryDetails::Unit => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
@@ -315,7 +336,14 @@ impl TypeEntry {
             let n = self.type_ident(type_space, &Some("super".to_string()));
             let value = self
                 .output_value(type_space, default, &quote! { super:: })
-                .unwrap();
+                .unwrap_or_else(|| {
+                    panic!(
+                        "{}\nvalue: {}\ntype: {:#?}",
+                        "The default value could not be rendered for this type",
+                        serde_json::to_string_pretty(default).unwrap(),
+                        self,
+                    )
+                });
             let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {
@@ -342,7 +370,9 @@ pub(crate) fn validate_default_for_external_enum(
         Some(DefaultKind::Specific)
     } else {
         let map = default.as_object()?;
-        (map.len() == 1).then(|| ())?;
+        if map.len() != 1 {
+            return None;
+        }
 
         let (name, value) = map.iter().next()?;
 
@@ -463,7 +493,9 @@ fn validate_default_tuple(
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
     let arr = default.as_array()?;
-    (arr.len() == types.len()).then_some(())?;
+    if arr.len() != types.len() {
+        return None;
+    }
 
     types
         .iter()
@@ -566,7 +598,9 @@ fn all_props<'a>(
                 }
             }
 
-            TypeEntryDetails::Map(type_id) => return vec![(None, type_id, false)],
+            // TODO Rather than an option, this should probably be something
+            // that lets us say "explicit name" or "type to validate against"
+            TypeEntryDetails::Map(_, value_id) => return vec![(None, value_id, false)],
             _ => unreachable!(),
         };
 

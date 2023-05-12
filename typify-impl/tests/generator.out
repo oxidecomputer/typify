@@ -98,7 +98,8 @@ mod types {
             value.parse()
         }
     }
-    mod builder {
+    pub mod builder {
+        #[derive(Clone, Debug)]
         pub struct AllTheTraits {
             ok: Result<String, String>,
         }
@@ -127,6 +128,12 @@ mod types {
                 Ok(Self { ok: value.ok? })
             }
         }
+        impl From<super::AllTheTraits> for AllTheTraits {
+            fn from(value: super::AllTheTraits) -> Self {
+                Self { ok: Ok(value.ok) }
+            }
+        }
+        #[derive(Clone, Debug)]
         pub struct CompoundType {
             value1: Result<String, String>,
             value2: Result<u64, String>,
@@ -170,6 +177,15 @@ mod types {
                 })
             }
         }
+        impl From<super::CompoundType> for CompoundType {
+            fn from(value: super::CompoundType) -> Self {
+                Self {
+                    value1: Ok(value.value1),
+                    value2: Ok(value.value2),
+                }
+            }
+        }
+        #[derive(Clone, Debug)]
         pub struct Pair {
             a: Result<super::StringEnum, String>,
             b: Result<super::StringEnum, String>,
@@ -213,8 +229,16 @@ mod types {
                 })
             }
         }
+        impl From<super::Pair> for Pair {
+            fn from(value: super::Pair) -> Self {
+                Self {
+                    a: Ok(value.a),
+                    b: Ok(value.b),
+                }
+            }
+        }
     }
-    mod defaults {
+    pub mod defaults {
         pub(super) fn pair_a() -> super::StringEnum {
             super::StringEnum::One
         }
