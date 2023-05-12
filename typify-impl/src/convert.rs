@@ -1,6 +1,6 @@
 // Copyright 2023 Oxide Computer Company
 
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
@@ -500,66 +500,126 @@ impl TypeSpace {
                 Ok((type_entry, metadata))
             }
 
-            // If we have a simple type--complicated only by accepting multiple
-            // types (none duplicated)--we can create an enum; note that the
-            // case of a 2-type list with one of them Null is already handled
-            // above (and rendered into an Option).
+            // Turn schemas with multiple types into an untagged enum labeled
+            // according to the given type. We associate any validation with
+            // the appropriate type. Note that the case of a 2-type list with
+            // one of them Null is already handled more specifically above (and
+            // rendered into an Option type).
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Vec(instance_types)),
-                format: None,
+                format,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: None,
+                number,
+                string,
+                array,
+                object,
                 reference: None,
                 extensions: _,
-            } if instance_types.len() == instance_types.iter().collect::<HashSet<_>>().len() => {
-                let variants = instance_types
-                    .iter()
+            } => {
+                // Eliminate duplicates (they hold no significance).
+                let unique_types = instance_types.iter().collect::<BTreeSet<_>>();
+
+                // Massage the data into labeled subschemas with the following
+                // format:
+                //
+                // {
+                //     "title": <instance type name>,
+                //     "allOf": [
+                //         {
+                //             "type": <instance type>,
+                //             <validation relevant to the type>
+                //         }
+                //     ]
+                // }
+                //
+                // We can then take these and construct an untagged enum. The
+                // outer "allOf" schema lets name the variant.
+                //
+                // Note that we *could* simply copy the full schema, trusting
+                // recursive calls to pull out the appropriate components...
+                // but why do tomorrow what we could easily to today?
+                let subschemas = unique_types
+                    .into_iter()
                     .map(|it| {
-                        let (name, maybe_ty) = match it {
-                            InstanceType::Null => ("Null", None),
-                            InstanceType::Boolean => ("Boolean", Some(TypeEntry::new_boolean())),
-                            InstanceType::Object => {
-                                let (ty, _) = self.make_map(None, &None, &None)?;
-                                ("Object", Some(ty))
-                            }
-                            InstanceType::Array => {
-                                let (ty, _) = self.convert_array_of_any(&None)?;
-                                ("Array", Some(ty))
-                            }
-                            InstanceType::Number => ("Number", Some(TypeEntry::new_float("f64"))),
-                            InstanceType::String => {
-                                ("String", Some(TypeEntry::from(TypeEntryDetails::String)))
-                            }
-                            InstanceType::Integer => {
-                                ("Integer", Some(TypeEntry::new_integer("i64")))
-                            }
+                        let instance_type = Some(SingleOrVec::Single(Box::new(*it)));
+                        let (label, inner_schema) = match it {
+                            InstanceType::Null => (
+                                "null",
+                                SchemaObject {
+                                    instance_type,
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::Boolean => (
+                                "boolean",
+                                SchemaObject {
+                                    instance_type,
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::Object => (
+                                "object",
+                                SchemaObject {
+                                    instance_type,
+                                    object: object.clone(),
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::Array => (
+                                "array",
+                                SchemaObject {
+                                    instance_type,
+                                    array: array.clone(),
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::Number => (
+                                "number",
+                                SchemaObject {
+                                    instance_type,
+                                    format: format.clone(),
+                                    number: number.clone(),
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::String => (
+                                "string",
+                                SchemaObject {
+                                    instance_type,
+                                    format: format.clone(),
+                                    string: string.clone(),
+                                    ..Default::default()
+                                },
+                            ),
+                            InstanceType::Integer => (
+                                "integer",
+                                SchemaObject {
+                                    instance_type,
+                                    format: format.clone(),
+                                    number: number.clone(),
+                                    ..Default::default()
+                                },
+                            ),
                         };
-                        let details = match maybe_ty {
-                            Some(ty) => VariantDetails::Item(self.assign_type(ty)),
-                            None => VariantDetails::Simple,
-                        };
-                        Ok(Variant {
-                            name: name.to_string(),
-                            rename: None,
-                            description: None,
-                            details,
+                        // Make the wrapping schema.
+                        Schema::Object(SchemaObject {
+                            metadata: Some(Box::new(Metadata {
+                                title: Some(label.to_string()),
+                                ..Default::default()
+                            })),
+                            subschemas: Some(Box::new(SubschemaValidation {
+                                all_of: Some(vec![inner_schema.into()]),
+                                ..Default::default()
+                            })),
+                            ..Default::default()
                         })
                     })
-                    .collect::<Result<_>>()?;
-                let type_entry = TypeEntryEnum::from_metadata(
-                    self,
-                    type_name,
-                    metadata,
-                    EnumTagType::Untagged,
-                    variants,
-                    false,
-                );
+                    .collect::<Vec<_>>();
+
+                let type_entry = self.untagged_enum(type_name, metadata, &subschemas)?;
                 Ok((type_entry, metadata))
             }
 
@@ -1207,7 +1267,7 @@ impl TypeSpace {
                             panic!("unhandled type for `not` construction: {}", v)
                         }
                     })
-                    .collect::<HashSet<_>>();
+                    .collect::<BTreeSet<_>>();
 
                 match (instance_types.len(), instance_types.iter().next()) {
                     (1, Some(instance_type)) => {
@@ -1438,7 +1498,7 @@ impl TypeSpace {
                 serde_json::Value::Array(_) => InstanceType::Array,
                 serde_json::Value::Object(_) => InstanceType::Object,
             })
-            .collect::<HashSet<_>>();
+            .collect::<BTreeSet<_>>();
 
         let has_null = instance_types.remove(&InstanceType::Null);
 
