@@ -1413,8 +1413,8 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let any = TypeEntry::new_native("serde_json::Value", &[]);
-        let type_id = self.assign_type(any);
+        self.uses_serde_json = true;
+        let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
         Ok((TypeEntryDetails::Vec(type_id).into(), metadata))
     }
 
@@ -1431,7 +1431,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((TypeEntry::new_native("serde_json::Value", &[]), metadata))
+        Ok((TypeEntryDetails::JsonValue.into(), metadata))
     }
 
     fn convert_typed_enum<'a>(

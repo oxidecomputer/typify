@@ -22843,7 +22843,7 @@ impl From<RepositoryDispatchOnDemandTest> for RepositoryDispatchEvent {
 pub struct RepositoryDispatchOnDemandTest {
     pub action: RepositoryDispatchOnDemandTestAction,
     pub branch: String,
-    pub client_payload: std::collections::HashMap<String, serde_json::Value>,
+    pub client_payload: serde_json::Map<String, serde_json::Value>,
     pub installation: InstallationLite,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub organization: Option<Organization>,
@@ -27170,7 +27170,7 @@ impl From<&Workflow> for Workflow {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowDispatchEvent {
-    pub inputs: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub inputs: Option<serde_json::Map<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub installation: Option<InstallationLite>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

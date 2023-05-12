@@ -926,6 +926,7 @@ impl<'a> Type<'a> {
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
             TypeEntryDetails::String => TypeDetails::String,
+            TypeEntryDetails::JsonValue => TypeDetails::Builtin("serde_json::Value"),
 
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),

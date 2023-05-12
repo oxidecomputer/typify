@@ -12128,8 +12128,8 @@ pub struct EverythingSubtype1 {
     pub autosize: Option<Autosize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<Background>,
-    #[serde(default, skip_serializing_if = "std::collections::HashMap::is_empty")]
-    pub config: std::collections::HashMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
+    pub config: serde_json::Map<String, serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -24457,7 +24457,7 @@ impl From<SignalRef> for ProjectionExtentVariant0Item {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ProjectionFit {
-    Variant0(std::collections::HashMap<String, serde_json::Value>),
+    Variant0(serde_json::Map<String, serde_json::Value>),
     Variant1(Vec<serde_json::Value>),
 }
 impl From<&ProjectionFit> for ProjectionFit {
@@ -24465,8 +24465,8 @@ impl From<&ProjectionFit> for ProjectionFit {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<String, serde_json::Value>> for ProjectionFit {
-    fn from(value: std::collections::HashMap<String, serde_json::Value>) -> Self {
+impl From<serde_json::Map<String, serde_json::Value>> for ProjectionFit {
+    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -30595,8 +30595,8 @@ pub struct Scope {
     pub signals: Vec<Signal>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<Title>,
-    #[serde(default, skip_serializing_if = "std::collections::HashMap::is_empty")]
-    pub usermeta: std::collections::HashMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
+    pub usermeta: serde_json::Map<String, serde_json::Value>,
 }
 impl From<&Scope> for Scope {
     fn from(value: &Scope) -> Self {

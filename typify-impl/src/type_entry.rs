@@ -128,6 +128,8 @@ pub(crate) enum TypeEntryDetails {
     Float(String),
     /// Strings... which we handle a little specially.
     String,
+    /// serde_json::Value which we also handle specially.
+    JsonValue,
 
     /// While these types won't very make their way out to the user, we need
     /// reference types in particular to represent simple type aliases between
@@ -533,6 +535,8 @@ impl TypeEntry {
                     false
                 }
             }
+
+            TypeEntryDetails::JsonValue => false,
 
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
@@ -1551,15 +1555,21 @@ impl TypeEntry {
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
-                    .expect("unresolved type id for map key")
-                    .type_ident(type_space, type_mod);
+                    .expect("unresolved type id for map key");
                 let value_ty = type_space
                     .id_to_entry
                     .get(value_id)
-                    .expect("unresolved type id for map valuevalue_id")
-                    .type_ident(type_space, type_mod);
+                    .expect("unresolved type id for map value");
 
-                quote! { std::collections::HashMap<#key_ty, #value_ty> }
+                if key_ty.details == TypeEntryDetails::String
+                    && value_ty.details == TypeEntryDetails::JsonValue
+                {
+                    quote! { serde_json::Map<String, serde_json::Value> }
+                } else {
+                    let key_ident = key_ty.type_ident(type_space, type_mod);
+                    let value_ident = value_ty.type_ident(type_space, type_mod);
+                    quote! { std::collections::HashMap<#key_ident, #value_ident> }
+                }
             }
 
             TypeEntryDetails::Set(id) => {
@@ -1603,6 +1613,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
+            TypeEntryDetails::JsonValue => quote! { serde_json::Value },
             TypeEntryDetails::Native(TypeEntryNative {
                 type_name: name, ..
             })
@@ -1637,11 +1648,10 @@ impl TypeEntry {
             TypeEntryDetails::Enum(TypeEntryEnum { variants, .. })
                 if variants
                     .iter()
-                    .all(|variant| matches!(variant.details, VariantDetails::Simple)) =>
+                    .all(|variant| matches!(&variant.details, VariantDetails::Simple)) =>
             {
                 self.type_ident(type_space, &type_space.settings.type_mod)
             }
-
             TypeEntryDetails::Enum(_)
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
@@ -1650,7 +1660,8 @@ impl TypeEntry {
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Native(_)
-            | TypeEntryDetails::Array(..) => {
+            | TypeEntryDetails::Array(..)
+            | TypeEntryDetails::JsonValue => {
                 let ident = self.type_ident(type_space, &type_space.settings.type_mod);
                 quote! {
                     & #lifetime #ident
@@ -1671,6 +1682,7 @@ impl TypeEntry {
                     _ => quote! { Option<#inner_ident> },
                 }
             }
+
             TypeEntryDetails::Tuple(items) => {
                 let type_streams = items.iter().map(|item| {
                     type_space
@@ -1738,6 +1750,8 @@ impl TypeEntry {
             | TypeEntryDetails::Integer(name)
             | TypeEntryDetails::Float(name) => name.clone(),
             TypeEntryDetails::String => "string".to_string(),
+
+            TypeEntryDetails::JsonValue => "json value".to_string(),
 
             TypeEntryDetails::Reference(_) => unreachable!(),
         }

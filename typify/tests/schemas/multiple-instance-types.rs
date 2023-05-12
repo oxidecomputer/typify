@@ -59,7 +59,7 @@ impl From<i64> for IntOrStr {
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(std::collections::HashMap<String, serde_json::Value>),
+    Object(serde_json::Map<String, serde_json::Value>),
     Array(Vec<serde_json::Value>),
     String(String),
     Integer(i64),
@@ -74,8 +74,8 @@ impl From<bool> for OneOfSeveral {
         Self::Boolean(value)
     }
 }
-impl From<std::collections::HashMap<String, serde_json::Value>> for OneOfSeveral {
-    fn from(value: std::collections::HashMap<String, serde_json::Value>) -> Self {
+impl From<serde_json::Map<String, serde_json::Value>> for OneOfSeveral {
+    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
         Self::Object(value)
     }
 }
