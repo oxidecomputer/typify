@@ -12,7 +12,7 @@ use syn::{
     FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::{output::OutputSpace, Name, TypeId, TypeSpace};
+use crate::{output::OutputSpace, Name, RefKey, TypeId, TypeSpace};
 
 pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let schema = schema_for!(T);
@@ -33,17 +33,18 @@ pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     // In some situations, `schema_for!(T)` may actually give us two copies
     // of the type: one in the definitions and one in the schema. This will
     // occur in particular for cyclic types i.e. those for which the type
-    // itself is a reference.
+    // itself is a reference. This is arguably a bug in schemars.
     //
     // If we have converted the type already, use that, otherwise convert
     // schema object
-    let type_id = if let Some(already_type_id) = type_space.ref_to_id.get(&name) {
-        already_type_id.clone()
-    } else {
-        type_space
-            .add_type_with_name(&schema.schema.into(), Some(name.to_string()))
-            .unwrap()
-    };
+    let type_id =
+        if let Some(already_type_id) = type_space.ref_to_id.get(&RefKey::Def(name.clone())) {
+            already_type_id.clone()
+        } else {
+            type_space
+                .add_type_with_name(&schema.schema.into(), Some(name.clone()))
+                .unwrap()
+        };
 
     (type_space, type_id)
 }

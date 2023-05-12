@@ -1,0 +1,17 @@
+{
+  "$comment": "validate references to the whole",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "node",
+  "type": "object",
+  "properties": {
+    "value": {
+      "type": "integer"
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "$ref": "#"
+      }
+    }
+  }
+}

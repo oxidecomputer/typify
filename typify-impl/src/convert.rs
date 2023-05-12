@@ -364,7 +364,7 @@ impl TypeSpace {
                 reference: Some(reference),
                 extensions: _,
             } => {
-                let ref_schema = self.definitions.get(ref_key(reference)).unwrap();
+                let ref_schema = self.definitions.get(&ref_key(reference)).unwrap();
                 assert!(matches!(ref_schema, Schema::Object(SchemaObject {
                         instance_type: it, ..
                     }) if instance_type == it));
@@ -1025,7 +1025,7 @@ impl TypeSpace {
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
-            .get(key)
+            .get(&key)
             .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),

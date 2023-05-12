@@ -133,6 +133,12 @@ impl Name {
     }
 }
 
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub(crate) enum RefKey {
+    Root,
+    Def(String),
+}
+
 /// A collection of types.
 #[derive(Debug)]
 pub struct TypeSpace {
@@ -142,13 +148,13 @@ pub struct TypeSpace {
     // e.g. to do `all_mutually_exclusive`. In the future, we could obviate the
     // need this by keeping a single Map of referenced types whose value was an
     // enum of a "raw" or a "converted" schema.
-    definitions: BTreeMap<String, Schema>,
+    definitions: BTreeMap<RefKey, Schema>,
 
     id_to_entry: BTreeMap<TypeId, TypeEntry>,
     type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
-    ref_to_id: BTreeMap<String, TypeId>,
+    ref_to_id: BTreeMap<RefKey, TypeId>,
 
     uses_chrono: bool,
     uses_uuid: bool,
@@ -371,11 +377,19 @@ impl TypeSpace {
         I: IntoIterator<Item = (S, Schema)>,
         S: AsRef<str>,
     {
+        self.add_ref_types_impl(
+            type_defs
+                .into_iter()
+                .map(|(key, schema)| (RefKey::Def(key.as_ref().to_string()), schema)),
+        )
+    }
+
+    fn add_ref_types_impl<I>(&mut self, type_defs: I) -> Result<()>
+    where
+        I: IntoIterator<Item = (RefKey, Schema)>,
+    {
         // Gather up all types to make things a little more convenient.
-        let definitions = type_defs
-            .into_iter()
-            .map(|(name, schema)| (name.as_ref().to_string(), schema))
-            .collect::<Vec<(String, Schema)>>();
+        let definitions = type_defs.into_iter().collect::<Vec<_>>();
 
         // Assign IDs to reference types before actually converting them. We'll
         // need these in the case of forward (or circular) references.
@@ -385,7 +399,7 @@ impl TypeSpace {
 
         for (index, (ref_name, schema)) in definitions.iter().enumerate() {
             self.ref_to_id
-                .insert(ref_name.to_string(), TypeId(base_id + index as u64));
+                .insert(ref_name.clone(), TypeId(base_id + index as u64));
             self.definitions.insert(ref_name.clone(), schema.clone());
         }
 
@@ -393,19 +407,34 @@ impl TypeSpace {
         // previous step because each type may create additional types. This
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
-        for (index, (type_name, schema)) in definitions.into_iter().enumerate() {
+        for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             info!(
-                "converting type: {} with schema {}",
-                type_name,
+                "converting type: {:?} with schema {}",
+                ref_name,
                 serde_json::to_string(&schema).unwrap()
             );
 
             // Check for manually replaced types. Proceed with type conversion
             // if there is none; use the specified type if there is.
             let type_id = TypeId(base_id + index as u64);
-            let check_name = sanitize(&type_name, Case::Pascal);
-            match self.settings.replace.get(&check_name) {
-                None => self.convert_ref_type(&type_name, schema, type_id)?,
+
+            let maybe_replace = match &ref_name {
+                RefKey::Root => None,
+                RefKey::Def(def_name) => {
+                    let check_name = sanitize(def_name, Case::Pascal);
+                    self.settings.replace.get(&check_name)
+                }
+            };
+
+            match maybe_replace {
+                None => {
+                    let type_name = if let RefKey::Def(name) = ref_name {
+                        Name::Required(name.clone())
+                    } else {
+                        Name::Unknown
+                    };
+                    self.convert_ref_type(type_name, schema, type_id)?
+                }
 
                 Some(replace_type) => {
                     let type_entry = TypeEntry::new_native(
@@ -456,9 +485,8 @@ impl TypeSpace {
         Ok(())
     }
 
-    fn convert_ref_type(&mut self, type_name: &str, schema: Schema, type_id: TypeId) -> Result<()> {
-        let (mut type_entry, metadata) =
-            self.convert_schema(Name::Required(type_name.to_string()), &schema)?;
+    fn convert_ref_type(&mut self, type_name: Name, schema: Schema, type_id: TypeId) -> Result<()> {
+        let (mut type_entry, metadata) = self.convert_schema(type_name.clone(), &schema)?;
         let default = metadata
             .as_ref()
             .and_then(|m| m.default.as_ref())
@@ -483,24 +511,15 @@ impl TypeSpace {
             // simple alias to another type in this list of definitions
             // (which may nor may not have already been converted). We
             // simply create a newtype with that type ID.
-            TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
-                self,
-                Name::Required(type_name.to_string()),
-                metadata,
-                type_id.clone(),
-            ),
+            TypeEntryDetails::Reference(type_id) => {
+                TypeEntryNewtype::from_metadata(self, type_name, metadata, type_id.clone())
+            }
 
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
             _ => {
                 let subtype_id = self.assign_type(type_entry);
-
-                TypeEntryNewtype::from_metadata(
-                    self,
-                    Name::Required(type_name.to_string()),
-                    metadata,
-                    subtype_id,
-                )
+                TypeEntryNewtype::from_metadata(self, type_name, metadata, subtype_id)
             }
         };
         let entry_name = type_entry.name().unwrap().clone();
@@ -649,12 +668,32 @@ impl TypeSpace {
     /// referenced types and the top-level type (if there is one and it has a
     /// title).
     pub fn add_root_schema(&mut self, schema: RootSchema) -> Result<Option<TypeId>> {
-        self.add_ref_types(schema.definitions)?;
+        let RootSchema {
+            meta_schema: _,
+            schema,
+            definitions,
+        } = schema;
 
-        // Only convert the top-level type if it has a name
-        if let Some(type_name) = (|| schema.schema.metadata.as_ref()?.title.as_ref().cloned())() {
-            self.add_type_with_name(&Schema::Object(schema.schema), Some(type_name))
-                .map(Some)
+        let mut defs = definitions
+            .into_iter()
+            .map(|(key, schema)| (RefKey::Def(key), schema))
+            .collect::<Vec<_>>();
+
+        // Does the root type have a name (otherwise... ignore it)
+        let root_type = schema
+            .metadata
+            .as_ref()
+            .and_then(|m| m.title.as_ref())
+            .is_some();
+
+        if root_type {
+            defs.push((RefKey::Root, schema.into()));
+        }
+
+        self.add_ref_types_impl(defs)?;
+
+        if root_type {
+            Ok(self.ref_to_id.get(&RefKey::Root).cloned())
         } else {
             Ok(None)
         }
