@@ -13,12 +13,16 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.0.13\...HEAD[Full list of commits]
+
+== 0.0.13 (released 2023-05-14)
+
 * Fixed-length, single-type arrays to `[T; N]` (#286)
 * Support for reflexive schemas (#292)
 * Much improved support for multi-type schemas (#291)
 * Better error messages on failures
 
-https://github.com/oxidecomputer/typify/compare/v0.0.12\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.12\...v0.0.13[Full list of commits]
 
 == 0.0.12 (released 2023-05-03)
 
