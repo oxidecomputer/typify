@@ -13,9 +13,19 @@
 
 == Unreleased changes (release date TBD)
 
+* Fixed-length, single-type arrays to `[T; N]` (#286)
+* Support for reflexive schemas (#292)
+* Much improved support for multi-type schemas (#291)
+* Better error messages on failures
+
 https://github.com/oxidecomputer/typify/compare/v0.0.12\...HEAD[Full list of commits]
 
 == 0.0.12 (released 2023-05-03)
+
+* Improved enum generation (#270)
+* Improved integer type selection based on number criteria (#255)
+* `TypeSpace::add_root_schema()` (#236)
+* ... and many general improvements
 
 https://github.com/oxidecomputer/typify/compare/v0.0.11\...v0.0.12[Full list of commits]
 
