@@ -151,7 +151,7 @@ pub struct TypeSpace {
     // enum of a "raw" or a "converted" schema.
     definitions: BTreeMap<RefKey, Schema>,
 
-    pub(crate) id_to_entry: BTreeMap<TypeId, TypeEntry>,
+    id_to_entry: BTreeMap<TypeId, TypeEntry>,
     type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
@@ -449,7 +449,7 @@ impl TypeSpace {
 
         // Eliminate cycles. It's sufficient to only start from referenced
         // types as a reference is required to make a cycle.
-        cycles::break_cycles(self, base_id..base_id + def_len);
+        self.break_cycles(base_id..base_id + def_len);
 
         // Finalize all created types.
         for index in base_id..self.next_id {
