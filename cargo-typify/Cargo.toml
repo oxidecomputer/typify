@@ -1,6 +1,6 @@
 [package]
 name = "cargo-typify"
-version = "0.0.12"
+version = "0.0.13"
 edition = "2021"
 license = "Apache-2.0"
 description = "cargo command to generate Rust code from a JSON Schema"
@@ -12,7 +12,7 @@ categories = ["api-bindings", "compilers"]
 default-run = "cargo-typify"
 
 [dependencies]
-typify = { version = "0.0.12", path = "../typify" }
+typify = { version = "0.0.13", path = "../typify" }
 
 clap = { version = "4.2.7", features = ["derive"] }
 color-eyre = "0.6"

@@ -1676,58 +1676,6 @@ mod tests {
     }
 
     #[test]
-    fn test_trivial_cycle() {
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct A {
-            a: Box<A>,
-        }
-
-        validate_output::<A>();
-    }
-
-    #[test]
-    fn test_optional_trivial_cycle() {
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct A {
-            a: Option<Box<A>>,
-        }
-
-        validate_output::<A>();
-    }
-
-    #[test]
-    fn test_enum_trivial_cycles() {
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        enum A {
-            Variant0(u64),
-            Variant1 {
-                a: u64,
-                b: Vec<A>,
-                rop: Option<Box<A>>,
-            },
-            Variant2 {
-                a: Box<A>,
-            },
-            Variant3(u64, Box<A>),
-            Variant4(Option<Box<A>>, String),
-        }
-
-        validate_output::<A>();
-    }
-
-    #[test]
-    fn test_newtype_trivial_cycle() {
-        #[derive(JsonSchema, Schema)]
-        #[allow(dead_code)]
-        struct A(Box<A>);
-
-        validate_output::<A>();
-    }
-
-    #[test]
     fn test_basic_option_flat() {
         #[derive(JsonSchema, Schema)]
         #[allow(dead_code)]

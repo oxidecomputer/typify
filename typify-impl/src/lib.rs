@@ -11,7 +11,7 @@ use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
-    VariantDetails, WrappedValue,
+    WrappedValue,
 };
 
 use crate::util::{sanitize, Case};
@@ -21,6 +21,7 @@ mod test_util;
 
 mod conversions;
 mod convert;
+mod cycles;
 mod defaults;
 mod enums;
 mod output;
@@ -446,33 +447,9 @@ impl TypeSpace {
             }
         }
 
-        // Now that all references have been processed, we can do some
-        // additional validation and processing.
-        for index in 0..def_len {
-            // This is slightly inefficient, but we make a copy of the type in
-            // order to manipulate it without holding a reference on self.
-            let type_id = TypeId(base_id + index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-
-            // TODO compute appropriate derives, taking care to account for
-            // dependency cycles. Currently we're using a more minimal--safe--
-            // set of derives than we might otherwise. This notably prevents us
-            // from using a HashSet or BTreeSet type where we might like to.
-
-            // Once all ref types are in, look for containment cycles that we
-            // need to break with a Box<T>. Note that we unconditionally
-            // replace the type entry at the given ID regardless of whether the
-            // type changes.
-
-            // TODO: we've declared box_id here to avoid allocating it in the
-            // ID space twice, but the dedup logic in assign_type() should
-            // already address this. There's room to simplify here...
-            let mut box_id = None;
-            self.break_trivial_cyclic_refs(&type_id, &mut type_entry, &mut box_id);
-
-            // Overwrite the entry regardless of whether we modified it.
-            self.id_to_entry.insert(type_id, type_entry);
-        }
+        // Eliminate cycles. It's sufficient to only start from referenced
+        // types as a reference is required to make a cycle.
+        self.break_cycles(base_id..base_id + def_len);
 
         // Finalize all created types.
         for index in base_id..self.next_id {
@@ -526,110 +503,6 @@ impl TypeSpace {
         self.name_to_id.insert(entry_name, type_id.clone());
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
-    }
-
-    /// If a type refers to itself, this creates a cycle that will eventually
-    /// be emit as a Rust struct that cannot be constructed. Break those cycles
-    /// here.
-    ///
-    /// While we aren't yet handling the general case of type containment
-    /// cycles, it's not that bad to look at trivial cycles such as:
-    ///
-    ///   1) A type referring to itself: A -> A
-    ///   2) A type optionally referring to itself: A -> Option<A>
-    ///   3) An enum variant referring to itself, either optionally or directly
-    ///   
-    /// TODO currently only trivial cycles are broken. A more generic solution
-    /// may be required, but it may also a point to ask oneself why such a
-    /// complicated type is required :) A generic solution is difficult because
-    /// certain cycles introduce a question of *where* to Box to break the
-    /// cycle, and there's no one answer to this.
-    fn check_for_cyclic_ref(
-        &mut self,
-        parent_type_id: &TypeId,
-        child_type_id: &mut TypeId,
-        box_id: &mut Option<TypeId>,
-    ) {
-        if *child_type_id == *parent_type_id {
-            *child_type_id = box_id
-                .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                .clone();
-        } else {
-            let mut child_type_entry = self.id_to_entry.get_mut(child_type_id).unwrap().clone();
-
-            if let TypeEntryDetails::Option(option_type_id) = &mut child_type_entry.details {
-                if *option_type_id == *parent_type_id {
-                    *option_type_id = box_id
-                        .get_or_insert_with(|| self.id_to_box(parent_type_id))
-                        .clone();
-                }
-            }
-
-            let _ = self
-                .id_to_entry
-                .insert(child_type_id.clone(), child_type_entry);
-        }
-    }
-
-    fn break_trivial_cyclic_refs(
-        &mut self,
-        parent_type_id: &TypeId,
-        type_entry: &mut TypeEntry,
-        box_id: &mut Option<TypeId>,
-    ) {
-        match &mut type_entry.details {
-            // Look for the case where a struct property refers to the parent
-            // type
-            TypeEntryDetails::Struct(s) => {
-                for prop in &mut s.properties {
-                    self.check_for_cyclic_ref(parent_type_id, &mut prop.type_id, box_id);
-                }
-            }
-
-            // Look for the cases where an enum variant refers to the parent
-            // type
-            TypeEntryDetails::Enum(type_entry_enum) => {
-                for variant in &mut type_entry_enum.variants {
-                    match &mut variant.details {
-                        // Simple variants will not refer to anything
-                        VariantDetails::Simple => {}
-                        // Look for a single-item tuple that refers to the
-                        // parent type.
-                        VariantDetails::Item(item_type_id) => {
-                            self.check_for_cyclic_ref(parent_type_id, item_type_id, box_id);
-                        }
-                        // Look for a tuple entry that refers to the parent
-                        // type.
-                        VariantDetails::Tuple(vec_type_id) => {
-                            for tuple_type_id in vec_type_id {
-                                self.check_for_cyclic_ref(parent_type_id, tuple_type_id, box_id);
-                            }
-                        }
-                        // Look for a struct property that refers to the parent
-                        // type.
-                        VariantDetails::Struct(vec_struct_property) => {
-                            for struct_property in vec_struct_property {
-                                let vec_type_id = &mut struct_property.type_id;
-                                self.check_for_cyclic_ref(parent_type_id, vec_type_id, box_id);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Look for cases where a newtype refers to a parent type
-            TypeEntryDetails::Newtype(new_type_entry) => {
-                self.check_for_cyclic_ref(parent_type_id, &mut new_type_entry.type_id, box_id);
-            }
-
-            // Containers that can be size 0 are *not* cyclic references for that type
-            TypeEntryDetails::Vec(_) => {}
-            TypeEntryDetails::Set(_) => {}
-            TypeEntryDetails::Map(..) => {}
-
-            // Everything else can be ignored
-            _ => {}
-        }
     }
 
     /// Add a new type and return a type identifier that may be used in
