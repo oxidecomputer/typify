@@ -22004,7 +22004,7 @@ impl From<bool> for NumberModifiersBand {
 #[serde(untagged)]
 pub enum NumberModifiersExponent {
     Variant0(f64),
-    Variant1(NumberValue),
+    Variant1(Box<NumberValue>),
 }
 impl From<&NumberModifiersExponent> for NumberModifiersExponent {
     fn from(value: &NumberModifiersExponent) -> Self {
@@ -22016,8 +22016,8 @@ impl From<f64> for NumberModifiersExponent {
         Self::Variant0(value)
     }
 }
-impl From<NumberValue> for NumberModifiersExponent {
-    fn from(value: NumberValue) -> Self {
+impl From<Box<NumberValue>> for NumberModifiersExponent {
+    fn from(value: Box<NumberValue>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -22025,7 +22025,7 @@ impl From<NumberValue> for NumberModifiersExponent {
 #[serde(untagged)]
 pub enum NumberModifiersMult {
     Variant0(f64),
-    Variant1(NumberValue),
+    Variant1(Box<NumberValue>),
 }
 impl From<&NumberModifiersMult> for NumberModifiersMult {
     fn from(value: &NumberModifiersMult) -> Self {
@@ -22037,8 +22037,8 @@ impl From<f64> for NumberModifiersMult {
         Self::Variant0(value)
     }
 }
-impl From<NumberValue> for NumberModifiersMult {
-    fn from(value: NumberValue) -> Self {
+impl From<Box<NumberValue>> for NumberModifiersMult {
+    fn from(value: Box<NumberValue>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -22046,7 +22046,7 @@ impl From<NumberValue> for NumberModifiersMult {
 #[serde(untagged)]
 pub enum NumberModifiersOffset {
     Variant0(f64),
-    Variant1(NumberValue),
+    Variant1(Box<NumberValue>),
 }
 impl From<&NumberModifiersOffset> for NumberModifiersOffset {
     fn from(value: &NumberModifiersOffset) -> Self {
@@ -22058,8 +22058,8 @@ impl From<f64> for NumberModifiersOffset {
         Self::Variant0(value)
     }
 }
-impl From<NumberValue> for NumberModifiersOffset {
-    fn from(value: NumberValue) -> Self {
+impl From<Box<NumberValue>> for NumberModifiersOffset {
+    fn from(value: Box<NumberValue>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -31414,7 +31414,7 @@ impl From<&Stream> for Stream {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StreamSubtype0 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub between: Option<[Stream; 2usize]>,
+    pub between: Option<[Box<Stream>; 2usize]>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub consume: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -31464,7 +31464,7 @@ pub enum StreamSubtype1 {
         type_: String,
     },
     Variant1 {
-        stream: Stream,
+        stream: Box<Stream>,
     },
     Variant2 {
         merge: Vec<Stream>,
