@@ -183,7 +183,7 @@ impl From<StringArray> for CoreSchemaMetaSchemaObjectDependenciesValue {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CoreSchemaMetaSchemaObjectItems {
-    Variant0(CoreSchemaMetaSchema),
+    Variant0(Box<CoreSchemaMetaSchema>),
     Variant1(SchemaArray),
 }
 impl From<&CoreSchemaMetaSchemaObjectItems> for CoreSchemaMetaSchemaObjectItems {
@@ -193,11 +193,11 @@ impl From<&CoreSchemaMetaSchemaObjectItems> for CoreSchemaMetaSchemaObjectItems 
 }
 impl Default for CoreSchemaMetaSchemaObjectItems {
     fn default() -> Self {
-        CoreSchemaMetaSchemaObjectItems::Variant0(CoreSchemaMetaSchema::Boolean(true))
+        CoreSchemaMetaSchemaObjectItems::Variant0(Box::new(CoreSchemaMetaSchema::Boolean(true)))
     }
 }
-impl From<CoreSchemaMetaSchema> for CoreSchemaMetaSchemaObjectItems {
-    fn from(value: CoreSchemaMetaSchema) -> Self {
+impl From<Box<CoreSchemaMetaSchema>> for CoreSchemaMetaSchemaObjectItems {
+    fn from(value: Box<CoreSchemaMetaSchema>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -410,7 +410,9 @@ pub mod defaults {
         V
     }
     pub(super) fn core_schema_meta_schema_object_items() -> super::CoreSchemaMetaSchemaObjectItems {
-        super::CoreSchemaMetaSchemaObjectItems::Variant0(super::CoreSchemaMetaSchema::Boolean(true))
+        super::CoreSchemaMetaSchemaObjectItems::Variant0(Box::new(
+            super::CoreSchemaMetaSchema::Boolean(true),
+        ))
     }
 }
 fn main() {}
