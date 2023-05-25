@@ -832,7 +832,7 @@ pub(crate) struct StringValidator {
 }
 
 impl StringValidator {
-    pub fn new(validation: Option<&StringValidation>) -> Result<Self> {
+    pub fn new(type_name: &Name, validation: Option<&StringValidation>) -> Result<Self> {
         let (max_length, min_length, pattern) =
             validation.map_or(Ok((None, None, None)), |validation| {
                 let max = validation.max_length;
@@ -841,8 +841,9 @@ impl StringValidator {
                     .pattern
                     .as_ref()
                     .map(|pattern| {
-                        regress::Regex::new(pattern).map_err(|e| {
-                            Error::InvalidSchema(format!("invalid pattern '{}' {}", pattern, e))
+                        regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                            type_name: type_name.clone().into_option(),
+                            reason: format!("invalid pattern '{}' {}", pattern, e),
                         })
                     })
                     .transpose()?;
@@ -878,7 +879,10 @@ mod tests {
         schema_for, JsonSchema,
     };
 
-    use crate::util::{sanitize, schemas_mutually_exclusive, Case};
+    use crate::{
+        util::{sanitize, schemas_mutually_exclusive, Case},
+        Name,
+    };
 
     use super::StringValidator;
 
@@ -1024,34 +1028,43 @@ mod tests {
 
     #[test]
     fn test_string_validation() {
-        let permissive = StringValidator::new(None).unwrap();
+        let permissive = StringValidator::new(&Name::Unknown, None).unwrap();
         assert!(permissive.is_valid("everything should be fine"));
         assert!(permissive.is_valid(""));
 
-        let also_permissive = StringValidator::new(Some(&StringValidation {
-            max_length: None,
-            min_length: None,
-            pattern: None,
-        }))
+        let also_permissive = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: None,
+                min_length: None,
+                pattern: None,
+            }),
+        )
         .unwrap();
         assert!(also_permissive.is_valid("everything should be fine"));
         assert!(also_permissive.is_valid(""));
 
-        let eight = StringValidator::new(Some(&StringValidation {
-            max_length: Some(8),
-            min_length: Some(8),
-            pattern: None,
-        }))
+        let eight = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: Some(8),
+                min_length: Some(8),
+                pattern: None,
+            }),
+        )
         .unwrap();
         assert!(eight.is_valid("Shadrach"));
         assert!(!eight.is_valid("Meshach"));
         assert!(eight.is_valid("Abednego"));
 
-        let ach = StringValidator::new(Some(&StringValidation {
-            max_length: None,
-            min_length: None,
-            pattern: Some("ach$".to_string()),
-        }))
+        let ach = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: None,
+                min_length: None,
+                pattern: Some("ach$".to_string()),
+            }),
+        )
         .unwrap();
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));

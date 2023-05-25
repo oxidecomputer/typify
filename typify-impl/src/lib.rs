@@ -38,8 +38,11 @@ pub enum Error {
     InvalidTypeId,
     #[error("value does not conform to the given schema")]
     InvalidValue,
-    #[error("schema invalid: {0}")]
-    InvalidSchema(String),
+    #[error("invalid schema for {}: {reason}", show_type_name(.type_name.as_deref()))]
+    InvalidSchema {
+        type_name: Option<String>,
+        reason: String,
+    },
 }
 
 impl Error {
@@ -49,6 +52,14 @@ impl Error {
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
+
+fn show_type_name(type_name: Option<&str>) -> &str {
+    if let Some(type_name) = type_name {
+        type_name
+    } else {
+        "<unknown type>"
+    }
+}
 
 /// Representation of a type which may have a definition or may be built-in.
 #[derive(Debug)]
