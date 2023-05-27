@@ -54,7 +54,16 @@ impl TypeSpace {
                 enum_values,
                 ..
             } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
-                if let Some(other_type) = multiple.iter().find(|t| t != &&InstanceType::Null) {
+                let only_null = enum_values.as_ref().map_or(false, |values| {
+                    values.iter().all(serde_json::Value::is_null)
+                });
+
+                if only_null {
+                    // If there are enumerated values and they're all null,
+                    // it's just a null.
+                    self.convert_null(metadata)
+                } else if let Some(other_type) = multiple.iter().find(|t| t != &&InstanceType::Null)
+                {
                     // In the sensible case where only one of the instance
                     // types is null.
                     let enum_values = enum_values.clone().map(|values| {

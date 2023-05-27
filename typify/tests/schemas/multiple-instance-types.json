@@ -38,6 +38,15 @@
           "type": "string"
         }
       }
+    },
+    "really-just-null": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null
+      ]
     }
   }
 }
