@@ -35,6 +35,37 @@ impl ToString for Eh {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapWithDateKeys(
+    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+);
+impl std::ops::Deref for MapWithDateKeys {
+    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
+    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+        &self.0
+    }
+}
+impl From<MapWithDateKeys>
+    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+{
+    fn from(value: MapWithDateKeys) -> Self {
+        value.0
+    }
+}
+impl From<&MapWithDateKeys> for MapWithDateKeys {
+    fn from(value: &MapWithDateKeys) -> Self {
+        value.clone()
+    }
+}
+impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
+    for MapWithDateKeys
+{
+    fn from(
+        value: std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+    ) -> Self {
+        Self(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MapWithKeys(pub std::collections::HashMap<Eh, Value>);
 impl std::ops::Deref for MapWithKeys {
     type Target = std::collections::HashMap<Eh, Value>;

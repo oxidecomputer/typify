@@ -177,15 +177,20 @@ impl TypeSpace {
         property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let key_id = match property_names {
-            Some(key_schema) => {
+        let key_id = match property_names.as_deref() {
+            Some(Schema::Bool(true)) | None => self.assign_type(TypeEntryDetails::String.into()),
+
+            // TODO this would correspond to an empty object: an object with
+            // no legal property values.
+            Some(Schema::Bool(false)) => todo!(),
+
+            Some(Schema::Object(obj)) => {
                 let key_type_name = match &type_name {
                     Some(name) => Name::Suggested(format!("{}Key", name)),
                     None => Name::Unknown,
                 };
-                self.id_for_schema(key_type_name, key_schema)?.0
+                self.id_for_schema_string(key_type_name, obj)?
             }
-            None => self.assign_type(TypeEntryDetails::String.into()),
         };
 
         let (value_id, _) = match additional_properties {
@@ -201,6 +206,37 @@ impl TypeSpace {
         };
 
         Ok((TypeEntryDetails::Map(key_id, value_id).into(), &None))
+    }
+
+    /// Perform a schema conversion for a type that must be string-like.
+    pub(crate) fn id_for_schema_string(
+        &mut self,
+        type_name: Name,
+        schema_obj: &SchemaObject,
+    ) -> Result<TypeId> {
+        match schema_obj {
+            // If the schema has no subschemas or references, fill in the
+            // string instance_type if none is present.
+            SchemaObject {
+                instance_type: None,
+                subschemas: None,
+                reference: None,
+                ..
+            } => {
+                let schema = Schema::Object(SchemaObject {
+                    instance_type: Some(InstanceType::String.into()),
+                    ..schema_obj.clone()
+                });
+                Ok(self.id_for_schema(type_name, &schema)?.0)
+            }
+
+            // TODO if and when we perform merging of schemas we could wrap the
+            // schema in an { allOf: [{ type: string }, <schema> ] }
+            _ => {
+                let schema = Schema::Object(schema_obj.clone());
+                Ok(self.id_for_schema(type_name, &schema)?.0)
+            }
+        }
     }
 
     /// This is used by both any-of and all-of subschema processing. This
