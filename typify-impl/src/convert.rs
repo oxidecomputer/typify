@@ -648,8 +648,9 @@ impl TypeSpace {
 
                 Some(validation) => {
                     if let Some(pattern) = &validation.pattern {
-                        let _ = regress::Regex::new(pattern).map_err(|e| {
-                            Error::InvalidSchema(format!("invalid pattern '{}' {}", pattern, e))
+                        let _ = regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                            type_name: type_name.clone().into_option(),
+                            reason: format!("invalid pattern '{}' {}", pattern, e),
                         })?;
                         self.uses_regress = true;
                     }
@@ -745,7 +746,7 @@ impl TypeSpace {
         // JSON schema.
         let mut has_null = false;
 
-        let validator = StringValidator::new(validation)?;
+        let validator = StringValidator::new(&type_name, validation)?;
 
         let variants = enum_values
             .iter()
@@ -780,7 +781,10 @@ impl TypeSpace {
             if has_null {
                 self.convert_null(metadata)
             } else {
-                Err(Error::InvalidSchema("empty enum array".to_string()))
+                Err(Error::InvalidSchema {
+                    type_name: type_name.into_option(),
+                    reason: "empty enum array".to_string(),
+                })
             }
         } else {
             let mut ty = TypeEntryEnum::from_metadata(
@@ -1402,10 +1406,10 @@ impl TypeSpace {
                 }
             }
 
-            _ => Err(Error::InvalidSchema(format!(
-                "unhandled array validation {:#?}",
-                validation
-            ))),
+            _ => Err(Error::InvalidSchema {
+                type_name: type_name.into_option(),
+                reason: format!("unhandled array validation {:#?}", validation),
+            }),
         }
     }
 
