@@ -165,8 +165,6 @@
         "$ref": "#"
       },
       "propertyNames": {
-        "$comment": "this is the only change required from the original",
-        "type": "string",
         "format": "regex"
       },
       "default": {}
