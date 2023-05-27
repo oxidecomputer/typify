@@ -90,6 +90,29 @@ impl From<i64> for OneOfSeveral {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ReallyJustNull(pub ());
+impl std::ops::Deref for ReallyJustNull {
+    type Target = ();
+    fn deref(&self) -> &() {
+        &self.0
+    }
+}
+impl From<ReallyJustNull> for () {
+    fn from(value: ReallyJustNull) -> Self {
+        value.0
+    }
+}
+impl From<&ReallyJustNull> for ReallyJustNull {
+    fn from(value: &ReallyJustNull) -> Self {
+        value.clone()
+    }
+}
+impl From<()> for ReallyJustNull {
+    fn from(value: ()) -> Self {
+        Self(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SeriouslyAnything(pub serde_json::Value);
 impl std::ops::Deref for SeriouslyAnything {
     type Target = serde_json::Value;
