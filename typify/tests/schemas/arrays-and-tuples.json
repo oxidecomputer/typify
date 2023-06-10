@@ -59,6 +59,11 @@
         "$comment": "ignored",
         "type": "string"
       }
+    },
+    "array-sans-items": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true
     }
   }
 }
