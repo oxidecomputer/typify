@@ -1,6 +1,29 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ArraySansItems(pub Vec<serde_json::Value>);
+impl std::ops::Deref for ArraySansItems {
+    type Target = Vec<serde_json::Value>;
+    fn deref(&self) -> &Vec<serde_json::Value> {
+        &self.0
+    }
+}
+impl From<ArraySansItems> for Vec<serde_json::Value> {
+    fn from(value: ArraySansItems) -> Self {
+        value.0
+    }
+}
+impl From<&ArraySansItems> for ArraySansItems {
+    fn from(value: &ArraySansItems) -> Self {
+        value.clone()
+    }
+}
+impl From<Vec<serde_json::Value>> for ArraySansItems {
+    fn from(value: Vec<serde_json::Value>) -> Self {
+        Self(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LessSimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for LessSimpleTwoTuple {
     type Target = (String, String);
