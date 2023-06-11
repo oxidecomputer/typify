@@ -1415,6 +1415,25 @@ impl TypeSpace {
                 }
             }
 
+            // Arrays and sets with no specified items.
+            ArrayValidation {
+                items: None,
+                additional_items: _, // By spec: ignored for missing items
+                max_items: _,        // TODO enforce size limitations
+                min_items: _,        // TODO enforce size limitations
+                unique_items,
+                contains: None,
+            } => {
+                self.uses_serde_json = true;
+                let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
+
+                // If items are unique, this is a Set; otherwise it's an Array.
+                match unique_items {
+                    Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
+                }
+            }
+
             _ => Err(Error::InvalidSchema {
                 type_name: type_name.into_option(),
                 reason: format!("unhandled array validation {:#?}", validation),
