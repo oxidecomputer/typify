@@ -253,7 +253,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -373,7 +373,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.18",
+ "syn 2.0.22",
  "typify",
 ]
 
@@ -692,7 +692,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9825a04601d60621feed79c4e6b56d65db77cdca55cef43b46b0de1096d1c282"
 dependencies = [
  "proc-macro2",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -858,7 +858,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -870,7 +870,7 @@ dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -933,7 +933,7 @@ checksum = "d9735b638ccc51c28bf6914d90a2e9725b377144fc612c49a611fddd1b631d68"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -967,7 +967,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -1004,9 +1004,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.18"
+version = "2.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32d41677bcbe24c20c52e7c70b0d8db04134c5d1066bf98662e2871ad200ea3e"
+checksum = "2efbeae7acf4eabd6bcdcbd11c92f45231ddda7539edc7806bd1a04a03b24616"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1069,7 +1069,7 @@ checksum = "f9456a42c5b0d803c8cd86e73dd7cc9edd429499f37a3550d286d5e86720569f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
 ]
 
 [[package]]
@@ -1207,7 +1207,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.18",
+ "syn 2.0.22",
  "thiserror",
  "unicode-ident",
  "uuid",
@@ -1223,7 +1223,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 2.0.18",
+ "syn 2.0.22",
  "typify-impl",
 ]
 
@@ -1237,7 +1237,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.18",
+ "syn 2.0.22",
  "typify",
 ]
 
@@ -1339,7 +1339,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
  "wasm-bindgen-shared",
 ]
 
@@ -1361,7 +1361,7 @@ checksum = "e128beba882dd1eb6200e1dc92ae6c5dbaa4311aa7bb211ca035779e5efc39f8"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.18",
+ "syn 2.0.22",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
