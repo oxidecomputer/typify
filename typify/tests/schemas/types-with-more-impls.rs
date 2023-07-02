@@ -88,7 +88,7 @@ impl<'de> serde::Deserialize<'de> for Sub10Primes {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(u32::deserialize(deserializer)?)
+        Self::try_from(<u32>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }

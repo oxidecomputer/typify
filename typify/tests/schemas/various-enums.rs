@@ -119,6 +119,55 @@ impl Default for DiskAttachmentState {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct EmptyObject {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prop: Option<EmptyObjectProp>,
+}
+impl From<&EmptyObject> for EmptyObject {
+    fn from(value: &EmptyObject) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct EmptyObjectProp(serde_json::Map<String, serde_json::Value>);
+impl std::ops::Deref for EmptyObjectProp {
+    type Target = serde_json::Map<String, serde_json::Value>;
+    fn deref(&self) -> &serde_json::Map<String, serde_json::Value> {
+        &self.0
+    }
+}
+impl From<EmptyObjectProp> for serde_json::Map<String, serde_json::Value> {
+    fn from(value: EmptyObjectProp) -> Self {
+        value.0
+    }
+}
+impl From<&EmptyObjectProp> for EmptyObjectProp {
+    fn from(value: &EmptyObjectProp) -> Self {
+        value.clone()
+    }
+}
+impl std::convert::TryFrom<serde_json::Map<String, serde_json::Value>> for EmptyObjectProp {
+    type Error = &'static str;
+    fn try_from(value: serde_json::Map<String, serde_json::Value>) -> Result<Self, &'static str> {
+        if ![[].into_iter().collect()].contains(&value) {
+            Err("invalid value")
+        } else {
+            Ok(Self(value))
+        }
+    }
+}
+impl<'de> serde::Deserialize<'de> for EmptyObjectProp {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Self::try_from(<serde_json::Map<String, serde_json::Value>>::deserialize(
+            deserializer,
+        )?)
+        .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IpNet {
     V4(Ipv4Net),

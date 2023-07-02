@@ -43,7 +43,7 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
+        Self::try_from(<String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
@@ -80,7 +80,7 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhyNot {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
+        Self::try_from(<String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
