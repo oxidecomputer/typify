@@ -5447,7 +5447,7 @@ impl<'de> serde::Deserialize<'de> for BindVariant3Input {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
+        Self::try_from(<String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
@@ -21734,7 +21734,7 @@ impl<'de> serde::Deserialize<'de> for MarkVisualType {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
+        Self::try_from(<String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
@@ -30894,7 +30894,7 @@ impl<'de> serde::Deserialize<'de> for SignalName {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::try_from(String::deserialize(deserializer)?)
+        Self::try_from(<String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }

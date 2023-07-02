@@ -1326,7 +1326,7 @@ impl TypeEntry {
                             D: serde::Deserializer<'de>,
                         {
                             Self::try_from(
-                                #inner_type_name::deserialize(deserializer)?,
+                                <#inner_type_name>::deserialize(deserializer)?,
                             )
                             .map_err(|e| {
                                 <D::Error as serde::de::Error>::custom(
