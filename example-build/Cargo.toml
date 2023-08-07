@@ -5,11 +5,11 @@ edition = "2021"
 
 [dependencies]
 serde = "1.0"
-serde_json = "1.0.99"
+serde_json = "1.0.104"
 
 [build-dependencies]
 prettyplease = "0.2"
 schemars = "0.8"
-serde_json = "1.0.99"
+serde_json = "1.0.104"
 syn = "2.0.28"
 typify = { path = "../typify" }
