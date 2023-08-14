@@ -21,7 +21,7 @@ typify-impl = { version = "0.0.13", path = "../typify-impl" }
 chrono = { version = "0.4.26", features = ["serde"] }
 expectorate = "1.0.7"
 glob = "0.3.1"
-quote = "1.0.31"
+quote = "1.0.32"
 regress = "0.6.0"
 rustfmt-wrapper = "0.2.0"
 schemars = "0.8.12"
