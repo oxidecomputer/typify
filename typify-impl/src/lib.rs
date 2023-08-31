@@ -24,6 +24,7 @@ mod convert;
 mod cycles;
 mod defaults;
 mod enums;
+mod merge;
 mod output;
 mod structs;
 mod type_entry;

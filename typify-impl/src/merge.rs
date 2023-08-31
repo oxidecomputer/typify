@@ -1,0 +1,375 @@
+// Copyright 2023 Oxide Computer Company
+
+use std::collections::{BTreeMap, BTreeSet};
+
+use schemars::{
+    schema::{
+        ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
+        SingleOrVec, StringValidation, SubschemaValidation,
+    },
+    Map,
+};
+
+pub fn merge_schema(a: &Schema, b: &Schema) -> Schema {
+    match try_merge_schema(a, b) {
+        Ok(schema) => schema,
+        // An error indicates that there is no value that satisfies both
+        // schemas.
+        Err(()) => Schema::Bool(false),
+    }
+}
+
+pub fn try_merge_schema(a: &Schema, b: &Schema) -> Result<Schema, ()> {
+    match (a, b) {
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
+        (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
+        (Schema::Object(aa), Schema::Object(bb)) => merge_schema_object(aa, bb),
+    }
+}
+
+fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()> {
+    // let SchemaObject {
+    //     metadata,
+    //     instance_type,
+    //     format,
+    //     enum_values,
+    //     const_value,
+    //     subschemas,
+    //     number,
+    //     string,
+    //     array,
+    //     object,
+    //     reference,
+    //     extensions,
+    // } = aa;
+
+    let instance_type = merge_so_instance_type(&a.instance_type, &b.instance_type)?;
+    let format = merge_so_format(&a.format, &b.format)?;
+
+    // TODO enum_values and const_value need validation against the other schema
+
+    // I can imagine how we might handle this, but it seems like both a pain in
+    // the neck and an odd construct given that the schemas were merging likely
+    // came from a subschema construct.
+    assert!(a.subschemas.is_none());
+    assert!(b.subschemas.is_none());
+
+    let number = merge_so_number(a.number.as_deref(), b.number.as_deref())?;
+    let string = merge_so_string(a.string.as_deref(), b.string.as_deref())?;
+    let array = merge_so_array(a.array.as_deref(), b.array.as_deref())?;
+    let object = merge_so_object(a.object.as_deref(), b.object.as_deref())?;
+
+    let x = SchemaObject {
+        instance_type,
+        format,
+        number,
+        string,
+        array,
+        object,
+        ..Default::default()
+    };
+
+    Ok(x.into())
+}
+
+fn merge_so_instance_type(
+    a: &Option<SingleOrVec<InstanceType>>,
+    b: &Option<SingleOrVec<InstanceType>>,
+) -> Result<Option<SingleOrVec<InstanceType>>, ()> {
+    match (a, b) {
+        (None, None) => Ok(None),
+        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.clone()),
+
+        // If each has a single type, it must match.
+        (Some(SingleOrVec::Single(aa)), Some(SingleOrVec::Single(bb))) => {
+            if aa == bb {
+                Ok(Some(SingleOrVec::Single(aa.clone())))
+            } else {
+                Err(())
+            }
+        }
+
+        // If one has a single type and the other is an array, the type must
+        // appear in the array (and that's the resulting type).
+        (Some(SingleOrVec::Vec(types)), Some(SingleOrVec::Single(it)))
+        | (Some(SingleOrVec::Single(it)), Some(SingleOrVec::Vec(types))) => {
+            if types.contains(it) {
+                Ok(Some(SingleOrVec::Single(it.clone())))
+            } else {
+                Err(())
+            }
+        }
+
+        (Some(SingleOrVec::Vec(aa)), Some(SingleOrVec::Vec(bb))) => {
+            let types = aa
+                .iter()
+                .collect::<BTreeSet<_>>()
+                .intersection(&bb.iter().collect::<BTreeSet<_>>())
+                .cloned()
+                .cloned()
+                .collect::<Vec<_>>();
+
+            match types.len() {
+                // No intersection
+                0 => Err(()),
+
+                1 => Ok(Some(types.into_iter().next().unwrap().into())),
+                _ => Ok(Some(types.into())),
+            }
+        }
+    }
+}
+
+fn merge_so_format(a: &Option<String>, b: &Option<String>) -> Result<Option<String>, ()> {
+    match (a, b) {
+        (None, other) | (other, None) => Ok(other.clone()),
+        (Some(_), Some(_)) => Err(()),
+    }
+}
+
+fn merge_so_number(
+    a: Option<&NumberValidation>,
+    b: Option<&NumberValidation>,
+) -> Result<Option<Box<NumberValidation>>, ()> {
+    match (a, b) {
+        (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(aa), Some(bb)) => {
+            unimplemented!("this is fairly fussy and I don't want to do it")
+        }
+    }
+}
+
+fn merge_so_string(
+    a: Option<&StringValidation>,
+    b: Option<&StringValidation>,
+) -> Result<Option<Box<StringValidation>>, ()> {
+    match (a, b) {
+        (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(aa), Some(bb)) => {
+            unimplemented!("this is fairly fussy and I don't want to do it")
+        }
+    }
+}
+
+fn merge_so_array(
+    a: Option<&ArrayValidation>,
+    b: Option<&ArrayValidation>,
+) -> Result<Option<Box<ArrayValidation>>, ()> {
+    match (a, b) {
+        // (None, other) | (other, None) => Ok(other.map(|x| Box::new(x.clone()))),
+        (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(aa), Some(bb)) => {
+            unimplemented!("this is fairly fussy and I don't want to do it")
+        }
+    }
+}
+
+fn merge_so_object(
+    a: Option<&ObjectValidation>,
+    b: Option<&ObjectValidation>,
+) -> Result<Option<Box<ObjectValidation>>, ()> {
+    match (a, b) {
+        (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(aa), Some(bb)) => {
+            let ObjectValidation {
+                max_properties,
+                min_properties,
+                required,
+                properties,
+                pattern_properties,
+                additional_properties,
+                property_names,
+            } = aa;
+
+            let a_props = aa.properties.iter().filter_map(|(name, a_schema)| {
+                let resolved_schema = if let Some(b_schema) = bb.properties.get(name) {
+                    try_merge_schema(a_schema, b_schema)
+                } else {
+                    filter_prop(name, a_schema, bb)
+                };
+
+                // TODO I'm going to copy/paste this so move it to a
+                // subroutine.
+                match resolved_schema {
+                    // If a required field is incompatible with the
+                    // other schema, this object is unsatisfiable.
+                    Err(()) if aa.required.contains(name) => Some(Err(())),
+
+                    // We can ignore incompatible, non-required fields.
+                    Err(()) => None,
+
+                    // Compatible schema; proceed.
+                    Ok(schema) => Some(Ok((name.clone(), schema))),
+                }
+            });
+
+            let b_props = bb.properties.iter().filter_map(|(name, b_schema)| {
+                if aa.properties.contains_key(name) {
+                    // We handled the intersection above.
+                    None
+                } else {
+                    // TODO I'm going to copy/paste this so move it to a
+                    // subroutine.
+                    match filter_prop(name, b_schema, aa) {
+                        // If a required field is incompatible with the
+                        // other schema, this object is unsatisfiable.
+                        Err(()) if bb.required.contains(name) => Some(Err(())),
+
+                        // We can ignore incompatible, non-required fields.
+                        Err(()) => None,
+
+                        // Compatible schema; proceed.
+                        Ok(schema) => Some(Ok((name.clone(), schema))),
+                    }
+                }
+            });
+
+            let properties = a_props.chain(b_props).collect::<Result<_, ()>>()?;
+
+            let required = aa.required.union(&bb.required).cloned().collect();
+            let additional_properties = merge_additional_properties(
+                aa.additional_properties.as_deref(),
+                bb.additional_properties.as_deref(),
+            );
+
+            let object_validation = ObjectValidation {
+                required,
+                properties,
+                additional_properties,
+                ..Default::default()
+            };
+            Ok(Some(object_validation.into()))
+        }
+    }
+}
+
+// TODO this is starting to feel redundant...
+fn merge_additional_properties(a: Option<&Schema>, b: Option<&Schema>) -> Option<Box<Schema>> {
+    match (a, b) {
+        (Some(Schema::Bool(true)), other)
+        | (None, other)
+        | (other, Some(Schema::Bool(true)))
+        | (other, None) => other.cloned().map(Box::new),
+
+        (Some(Schema::Bool(false)), _) | (_, Some(Schema::Bool(false))) => None,
+
+        (Some(aa @ Schema::Object(_)), Some(bb @ Schema::Object(_))) => Some(Box::new(
+            SchemaObject {
+                subschemas: Some(Box::new(SubschemaValidation {
+                    // TODO it would be a good idea to merge these now rather than
+                    // deferring that since the schemas might be unresolvable i.e.
+                    // they might have no intersection. However, a non-true/false/
+                    // absent additionalProperties within an allOf is an uncommon
+                    // pattern so this is likely good enough for the moment.
+                    all_of: Some(vec![aa.clone(), bb.clone()]),
+                    ..Default::default()
+                })),
+                ..Default::default()
+            }
+            .into(),
+        )),
+    }
+}
+
+fn filter_prop(
+    name: &str,
+    prop_schema: &Schema,
+    object_schema: &ObjectValidation,
+) -> Result<Schema, ()> {
+    // We're only considering properties we *know* do not appear in the other
+    // object's schema.
+    assert!(!object_schema.properties.contains_key(name));
+
+    // TODO We should do a simple check here to validating the name against
+    // propertyNames if that schema is specified.
+    assert!(object_schema.property_names.is_none());
+
+    // TODO We should first check patternProperties, but that's such a pain in
+    // the neck and so weird that I can't be bothered right now (until we hit
+    // some examples in the wild). A match here would exempt the property from
+    // the check below against additionalProperties.
+    assert!(object_schema.pattern_properties.is_empty());
+
+    merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+}
+
+fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result<Schema, ()> {
+    match additional {
+        // Anything is fine.
+        Some(Schema::Bool(true)) | None => Ok(prop_schema.clone()),
+        // Nothing is fine.
+        Some(Schema::Bool(false)) => Err(()),
+
+        // Some things might be fine.
+        Some(additional_schema) => Ok(SchemaObject {
+            subschemas: Some(Box::new(SubschemaValidation {
+                // TODO it would be a good idea to merge these now rather than
+                // deferring that since the schemas might be unresolvable i.e.
+                // they might have no intersection. However, a non-true/false/
+                // absent additionalProperties within an allOf is an uncommon
+                // pattern so this is likely good enough for the moment.
+                all_of: Some(vec![additional_schema.clone(), prop_schema.clone()]),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::try_merge_schema;
+
+    #[test]
+    fn xxx() {
+        // let a = json!({
+        //     "type": "object",
+        //     "properties": {
+        //         "result": {
+        //             "type": "string"
+        //         }
+        //     }
+        // });
+        // let b = json!({
+        //     "required": ["result", "msg"],
+        //     "properties": {
+        //         "result": {
+        //             "enum": ["success"]
+        //         },
+        //         "msg": {
+        //             "type": "string"
+        //         }
+        //     }
+        // });
+        let a = json!({
+            "type": "object",
+            "required": ["result", "msg"],
+            "properties": {
+                "result": {
+                    "enum": ["success"]
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        });
+        let b = json!({
+            "additionalProperties":false,
+            "properties": {
+                "result":{},
+                "msg":{}
+            }
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let x = try_merge_schema(&a, &b);
+
+        println!("{}", serde_json::to_string_pretty(&x.unwrap()).unwrap());
+        panic!();
+    }
+}
