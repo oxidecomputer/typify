@@ -251,7 +251,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -350,7 +350,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.29",
+ "syn 2.0.31",
  "typify",
 ]
 
@@ -630,12 +630,12 @@ dependencies = [
 
 [[package]]
 name = "prettyplease"
-version = "0.2.12"
+version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c64d9ba0963cdcea2e1b2230fbae2bab30eb25a174be395c41e764bfb65dd62"
+checksum = "8832c0f9be7e3cae60727e6256cfd2cd3c3e2b6cd5dad4190ecb2fd658c9030b"
 dependencies = [
  "proc-macro2",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -787,7 +787,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -799,7 +799,7 @@ dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -862,7 +862,7 @@ checksum = "4eca7ac642d82aa35b60049a6eccb4be6be75e599bd2e9adb5f875a737654af2"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -896,7 +896,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -933,9 +933,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.29"
+version = "2.0.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c324c494eba9d92503e6f1ef2e6df781e78f6a7705a0202d9801b198807d518a"
+checksum = "718fa2415bcb8d8bd775917a1bf12a7931b6dfa890753378538118181e0cb398"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -998,7 +998,7 @@ checksum = "6bb623b56e39ab7dcd4b1b98bb6c8f8d907ed255b18de254088016b27a8ee19b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
 ]
 
 [[package]]
@@ -1136,7 +1136,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.29",
+ "syn 2.0.31",
  "thiserror",
  "unicode-ident",
  "uuid",
@@ -1152,7 +1152,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 2.0.29",
+ "syn 2.0.31",
  "typify-impl",
 ]
 
@@ -1166,7 +1166,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.29",
+ "syn 2.0.31",
  "typify",
 ]
 
@@ -1268,7 +1268,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
  "wasm-bindgen-shared",
 ]
 
@@ -1290,7 +1290,7 @@ checksum = "e128beba882dd1eb6200e1dc92ae6c5dbaa4311aa7bb211ca035779e5efc39f8"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.29",
+ "syn 2.0.31",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
