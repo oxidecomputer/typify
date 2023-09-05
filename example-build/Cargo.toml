@@ -11,5 +11,5 @@ serde_json = "1.0.105"
 prettyplease = "0.2"
 schemars = "0.8"
 serde_json = "1.0.105"
-syn = "2.0.29"
+syn = "2.0.31"
 typify = { path = "../typify" }
