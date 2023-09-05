@@ -18,7 +18,7 @@ typify-macro = { version = "0.0.13", path = "../typify-macro", optional = true }
 typify-impl = { version = "0.0.13", path = "../typify-impl" }
 
 [dev-dependencies]
-chrono = { version = "0.4.26", features = ["serde"] }
+chrono = { version = "0.4.28", features = ["serde"] }
 expectorate = "1.0.7"
 glob = "0.3.1"
 quote = "1.0.33"
