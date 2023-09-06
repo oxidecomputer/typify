@@ -234,9 +234,8 @@ impl TypeEntry {
                 .ok_or_else(|| Error::invalid_value()),
 
             TypeEntryDetails::Array(type_id, length) => {
-                let Some(arr) = default.as_array()
-                else {
-                    return Err(Error::invalid_value())
+                let Some(arr) = default.as_array() else {
+                    return Err(Error::invalid_value());
                 };
                 if arr.len() != *length {
                     return Err(Error::invalid_value());
