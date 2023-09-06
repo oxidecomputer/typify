@@ -1,0 +1,3 @@
+[toolchain]
+channel = "1.72"
+profile = "default"
