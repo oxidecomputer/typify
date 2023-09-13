@@ -10,6 +10,9 @@ use schemars::{
     Map,
 };
 
+/// Merge two schemas returning the resulting schema. If the two schemas are
+/// incompatible (i.e. if there is no data that can satisfy them both
+/// simultaneously) then this returns `Schema::Bool(false)`.
 pub fn merge_schema(a: &Schema, b: &Schema) -> Schema {
     match try_merge_schema(a, b) {
         Ok(schema) => schema,
@@ -43,8 +46,8 @@ fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()>
     //     extensions,
     // } = aa;
 
-    let instance_type = merge_so_instance_type(&a.instance_type, &b.instance_type)?;
-    let format = merge_so_format(&a.format, &b.format)?;
+    let instance_type = merge_so_instance_type(a.instance_type.as_ref(), b.instance_type.as_ref())?;
+    let format = merge_so_format(a.format.as_ref(), b.format.as_ref())?;
 
     // TODO enum_values and const_value need validation against the other schema
 
@@ -59,7 +62,10 @@ fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()>
     let array = merge_so_array(a.array.as_deref(), b.array.as_deref())?;
     let object = merge_so_object(a.object.as_deref(), b.object.as_deref())?;
 
-    let x = SchemaObject {
+    // We could clean up this schema to eliminate data irrelevant to the
+    // instance type, but logic in the conversion path should already handle
+    // that.
+    Ok((SchemaObject {
         instance_type,
         format,
         number,
@@ -67,18 +73,20 @@ fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()>
         array,
         object,
         ..Default::default()
-    };
-
-    Ok(x.into())
+    })
+    .into())
 }
 
+/// Merge instance types which could be None (meaning type is valid), a
+/// singleton type, or an array of types. An error result indicates that the
+/// types were non-overlappin and therefore incompatible.
 fn merge_so_instance_type(
-    a: &Option<SingleOrVec<InstanceType>>,
-    b: &Option<SingleOrVec<InstanceType>>,
+    a: Option<&SingleOrVec<InstanceType>>,
+    b: Option<&SingleOrVec<InstanceType>>,
 ) -> Result<Option<SingleOrVec<InstanceType>>, ()> {
     match (a, b) {
         (None, None) => Ok(None),
-        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.clone()),
+        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.map(Clone::clone)),
 
         // If each has a single type, it must match.
         (Some(SingleOrVec::Single(aa)), Some(SingleOrVec::Single(bb))) => {
@@ -100,6 +108,8 @@ fn merge_so_instance_type(
             }
         }
 
+        // If both are arrays, we take the intersection; if the intersection is
+        // empty, we return an error.
         (Some(SingleOrVec::Vec(aa)), Some(SingleOrVec::Vec(bb))) => {
             let types = aa
                 .iter()
@@ -112,7 +122,6 @@ fn merge_so_instance_type(
             match types.len() {
                 // No intersection
                 0 => Err(()),
-
                 1 => Ok(Some(types.into_iter().next().unwrap().into())),
                 _ => Ok(Some(types.into())),
             }
@@ -120,9 +129,29 @@ fn merge_so_instance_type(
     }
 }
 
-fn merge_so_format(a: &Option<String>, b: &Option<String>) -> Result<Option<String>, ()> {
-    match (a, b) {
-        (None, other) | (other, None) => Ok(other.clone()),
+/// By and large, formats are pretty free-form and aren't really compatible
+/// with each other. That is to say, if you have two formats at the same time
+/// that's probably unsatisfiable. There are a few notable exceptions to this:
+/// o integer widths -- take the narrowest
+/// o "ip" vs. "ipv4" / "ipv6" -- take the more specific ip flavor
+///
+/// TODO incorporate the instance type / types here to limit what formats we
+/// consider.
+/// TODO We might need to handle this in a very type-specific way in order to
+/// properly handle cases such as
+/// "int8" and "uint8" -> { min: 0, max: 127, format: None }
+fn merge_so_format(a: Option<&String>, b: Option<&String>) -> Result<Option<String>, ()> {
+    match (a.map(String::as_str), b.map(String::as_str)) {
+        (None, other) | (other, None) => Ok(other.map(String::from)),
+
+        (Some("ip"), result @ Some("ipv4"))
+        | (Some("ip"), result @ Some("ipv6"))
+        | (result @ Some("ipv4"), Some("ip"))
+        | (result @ Some("ipv6"), Some("ip")) => Ok(result.map(String::from)),
+
+        // Fine if they're both the same
+        (Some(aa), Some(bb)) if aa == bb => Ok(Some(aa.into())),
+        // ... they're not the same...
         (Some(_), Some(_)) => Err(()),
     }
 }
@@ -156,9 +185,31 @@ fn merge_so_array(
     b: Option<&ArrayValidation>,
 ) -> Result<Option<Box<ArrayValidation>>, ()> {
     match (a, b) {
-        // (None, other) | (other, None) => Ok(other.map(|x| Box::new(x.clone()))),
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
+            let ArrayValidation {
+                items,
+                additional_items,
+                max_items,
+                min_items,
+                unique_items,
+                contains,
+            } = aa;
+
+            // The items and additional_items fields need to be considered
+            // together.
+            //
+            // - If items is a singleton, additional_items is ignored and all
+            //   items in the array must obey the items schema.
+            //
+            // - If items is an array of size N, the Ith < N item must conform
+            //   to the Ith schema. Subsequent items must conform to
+            //   additional_items (so can be whatever if it is None =
+            //   Schema::Bool(true))
+            //
+            // - If items is None (i.e. absent) additional_items is ignored and
+            //   any value is permitted in any position of the array.
+
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
     }
@@ -319,7 +370,10 @@ fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result
 
 #[cfg(test)]
 mod tests {
+    use schemars::schema::InstanceType;
     use serde_json::json;
+
+    use crate::merge::merge_so_instance_type;
 
     use super::try_merge_schema;
 
@@ -371,5 +425,87 @@ mod tests {
 
         println!("{}", serde_json::to_string_pretty(&x.unwrap()).unwrap());
         panic!();
+    }
+
+    #[test]
+    fn test_merge_instance_types() {
+        // Simple cases
+        assert_eq!(merge_so_instance_type(None, None), Ok(None));
+
+        assert_eq!(
+            merge_so_instance_type(None, Some(&InstanceType::Integer.into())),
+            Ok(Some(InstanceType::Integer.into())),
+        );
+        assert_eq!(
+            merge_so_instance_type(Some(&InstanceType::Null.into()), None),
+            Ok(Some(InstanceType::Null.into())),
+        );
+
+        // Containment
+        assert_eq!(
+            merge_so_instance_type(
+                Some(&vec![InstanceType::Integer, InstanceType::Number].into()),
+                Some(&InstanceType::Integer.into())
+            ),
+            Ok(Some(InstanceType::Integer.into())),
+        );
+        assert_eq!(
+            merge_so_instance_type(
+                Some(&vec![InstanceType::Integer, InstanceType::Number].into()),
+                Some(&InstanceType::Null.into())
+            ),
+            Err(()),
+        );
+        assert_eq!(
+            merge_so_instance_type(
+                Some(&vec![InstanceType::Integer, InstanceType::Number].into()),
+                Some(&vec![InstanceType::Integer, InstanceType::Null].into()),
+            ),
+            Ok(Some(InstanceType::Integer.into())),
+        );
+        assert_eq!(
+            merge_so_instance_type(
+                Some(
+                    &vec![
+                        InstanceType::Object,
+                        InstanceType::Integer,
+                        InstanceType::Number
+                    ]
+                    .into()
+                ),
+                Some(
+                    &vec![
+                        InstanceType::Object,
+                        InstanceType::Integer,
+                        InstanceType::Null
+                    ]
+                    .into()
+                ),
+            ),
+            Ok(Some(
+                vec![InstanceType::Object, InstanceType::Integer,].into()
+            )),
+        );
+        assert_eq!(
+            merge_so_instance_type(
+                Some(
+                    &vec![
+                        InstanceType::Object,
+                        InstanceType::Integer,
+                        InstanceType::Number
+                    ]
+                    .into()
+                ),
+                Some(
+                    &vec![
+                        InstanceType::Array,
+                        InstanceType::Boolean,
+                        InstanceType::Null
+                    ]
+                    .into()
+                ),
+            ),
+            Err(()),
+        );
     }
 }
