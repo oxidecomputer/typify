@@ -696,7 +696,6 @@ impl TypeSpace {
                     metadata,
                 ))
             }
-
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
@@ -729,6 +728,7 @@ impl TypeSpace {
                 ),
                 metadata,
             )),
+
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
                 Ok((TypeEntryDetails::String.into(), metadata))
@@ -1055,6 +1055,29 @@ impl TypeSpace {
         if let Some(ty) = self.maybe_singleton_subschema(type_name.clone(), subschemas) {
             return Ok((ty, metadata));
         }
+
+        // TODO With logic to merge types, I think that becomes the general
+        // case: merge all subschemas, convert to a type, (later/optional) add
+        // conversion methods into the named subtypes (i.e. the refs).
+        //
+        // Note that this merge/convert mechanism isn't specific to objects.
+        // It's equally applicable to other types.
+        //
+        // Also note that sometimes we might end up with a type that we
+        // determine to be invalid or unsatisfiable, for example if there's an
+        // integer whose minimum is greater than its maximum. In that case we
+        // could either blow up or generate some sort of Never equivalent.
+        //
+        // Beyond that there is a special case to consider where named
+        // subschemas are objects that are orthogonal to all other named
+        // schemas (an those are also objects). In that case (and in that case
+        // only) we could embed and flatten the named type. However, this seems
+        // like a convenience rather than a critical feature. The only
+        // advantage of pulling out this special case is the ease of
+        // translating between the big type and its component type.
+        //
+        // The existing special cases should go away as should the "flattened
+        // union" handling.
 
         if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
             return Ok((ty, metadata));
