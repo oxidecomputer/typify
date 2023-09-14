@@ -197,17 +197,31 @@ fn merge_so_array(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
-            let ArrayValidation {
-                items,
-                additional_items,
-                max_items,
-                min_items,
-                unique_items,
-                contains,
-            } = aa;
-
             let max_items = choose_value(aa.max_items, bb.max_items, Ord::min);
             let min_items = choose_value(aa.min_items, bb.min_items, Ord::max);
+            let unique_items =
+                choose_value(aa.unique_items, bb.unique_items, std::ops::BitOr::bitor);
+
+            // We can only contain one thing; we can't resolve the need to
+            // contain two different things.
+            let contains = match (aa.contains.as_deref(), bb.contains.as_deref()) {
+                (None, other) | (other, None) => other.cloned().map(Box::new),
+
+                // We could probably do a more complex "equivalency" check e.g.
+                // that would follow references.
+                (Some(aa_contains), Some(bb_contains)) if aa_contains == bb_contains => {
+                    Some(Box::new(aa_contains.clone()))
+                }
+
+                (Some(_), Some(_)) => return Err(()),
+            };
+
+            // If min > max the schema is unsatisfiable.
+            if let (Some(min), Some(max)) = (min_items, max_items) {
+                if min > max {
+                    return Err(());
+                }
+            }
 
             // The items and additional_items fields need to be considered
             // together.
@@ -222,6 +236,10 @@ fn merge_so_array(
             //
             // - If items is None (i.e. absent) additional_items is ignored and
             //   any value is permitted in any position of the array.
+            //
+            // Note that if there is a maximum array length specified and the
+            // items schema array is at least that long, additional_items is
+            // irrelevant so we omit it. This case appears several times below.
 
             let (items, additional_items) = match (
                 (&aa.items, &aa.additional_items),
@@ -229,17 +247,20 @@ fn merge_so_array(
             ) {
                 // Both items are none; items and additional_items are None.
                 ((None, _), (None, _)) => (None, None),
+
+                // A None and a single-item; we can use the single item and
+                // additional_items are irrelevant.
                 ((None, _), (Some(SingleOrVec::Single(item)), _))
                 | ((Some(SingleOrVec::Single(item)), _), (None, _)) => {
                     (Some(SingleOrVec::Single(item.clone())), None)
                 }
 
+                // A None and a array of schemas; we can take the array,
+                // modifying it only in consideration of the maximum length (if
+                // it is specified).
                 ((None, _), (Some(SingleOrVec::Vec(items)), additional_items))
                 | ((Some(SingleOrVec::Vec(items)), additional_items), (None, _)) => {
                     match (max_items, items.len()) {
-                        // If the number of item schemas is at least as large
-                        // as the maximum number if items then we don't need
-                        // any additional_items.
                         (Some(max), len) if len >= max as usize => (
                             Some(SingleOrVec::Vec(
                                 items.iter().take(max as usize).cloned().collect(),
@@ -253,7 +274,8 @@ fn merge_so_array(
                     }
                 }
 
-                // Two single schemas, just merge them.
+                // Two single schemas, just merge them; additional_items would
+                // be irrelevant.
                 (
                     (Some(SingleOrVec::Single(aa_single)), _),
                     (Some(SingleOrVec::Single(bb_single)), _),
@@ -264,7 +286,8 @@ fn merge_so_array(
                     None,
                 ),
 
-                // A single item and an array if schemas.
+                // A single item and an array of schemas. We merge the
+                // singleton with the array and additional_items as needed.
                 (
                     (Some(SingleOrVec::Single(single)), _),
                     (Some(SingleOrVec::Vec(items)), additional_items),
@@ -272,72 +295,75 @@ fn merge_so_array(
                 | (
                     (Some(SingleOrVec::Vec(items)), additional_items),
                     (Some(SingleOrVec::Single(single)), _),
-                ) => {
-                    match (max_items, items.len()) {
-                        // If the number of item schemas is at least as large
-                        // as the maximum number if items then we don't need
-                        // any additional_items.
-                        (Some(max), len) if len >= max as usize => (
-                            Some(SingleOrVec::Vec(
-                                items
-                                    .iter()
-                                    .take(max as usize)
-                                    .map(|item_schema| merge_schema(item_schema, single))
-                                    .collect(),
-                            )),
-                            None,
-                        ),
-                        _ => {
-                            let items = items
+                ) => match (max_items, items.len()) {
+                    (Some(max), len) if len >= max as usize => (
+                        Some(SingleOrVec::Vec(
+                            items
                                 .iter()
+                                .take(max as usize)
                                 .map(|item_schema| merge_schema(item_schema, single))
-                                .collect();
-                            let additional_items = additional_items.as_deref().map_or_else(
-                                || single.as_ref().clone(),
-                                |additional_schema| merge_schema(additional_schema, single),
-                            );
-                            (
-                                Some(SingleOrVec::Vec(items)),
-                                Some(Box::new(additional_items)),
-                            )
-                        }
+                                .collect(),
+                        )),
+                        None,
+                    ),
+                    _ => {
+                        let items = items
+                            .iter()
+                            .map(|item_schema| merge_schema(item_schema, single))
+                            .collect();
+                        let additional_items = additional_items.as_deref().map_or_else(
+                            || single.as_ref().clone(),
+                            |additional_schema| merge_schema(additional_schema, single),
+                        );
+                        (
+                            Some(SingleOrVec::Vec(items)),
+                            Some(Box::new(additional_items)),
+                        )
                     }
-                }
+                },
 
+                // We need to pairwise merge schemas--as many as the longer
+                // of the two items arrays, limited by the max size of the
+                // array if one is specified. To do this we create
+                // iterators over the items followed by a repetition of the
+                // additional_items schema. We zip these together, merge, and
+                // limit them as appropriate.
                 (
                     (Some(SingleOrVec::Vec(aa_items)), aa_additional_items),
                     (Some(SingleOrVec::Vec(bb_items)), bb_additional_items),
                 ) => {
                     let items_len = aa_items.len().max(bb_items.len());
 
+                    // Note that one of these .chain(repeat(..)) statements is
+                    // always irrelevant because we will always .take(..) a
+                    // quantity less than or equal to the longest of the two
+                    // schema arrays; we just do them both and don't sweat it.
+                    let aa_items_iter = aa_items
+                        .iter()
+                        .map(Some)
+                        .chain(repeat(aa_additional_items.as_deref()));
+                    let bb_items_iter = bb_items
+                        .iter()
+                        .map(Some)
+                        .chain(repeat(bb_additional_items.as_deref()));
+                    let items_iter =
+                        aa_items_iter
+                            .zip(bb_items_iter)
+                            .map(|schemas| match schemas {
+                                (None, None) => unreachable!(),
+                                (None, Some(item)) => item.clone(),
+                                (Some(item), None) => item.clone(),
+                                (Some(aa_item), Some(bb_item)) => merge_schema(aa_item, bb_item),
+                            });
+
                     match max_items {
                         Some(max) if items_len <= max as usize => {
-                            todo!();
-                            todo!()
+                            let items = items_iter.take(max as usize).collect();
+                            (Some(SingleOrVec::Vec(items)), None)
                         }
 
                         _ => {
-                            let aa_items_iter = aa_items
-                                .iter()
-                                .map(Some)
-                                .chain(repeat(aa_additional_items.as_deref()));
-                            let bb_items_iter = bb_items
-                                .iter()
-                                .map(Some)
-                                .chain(repeat(bb_additional_items.as_deref()));
-
-                            let items = aa_items_iter
-                                .zip(bb_items_iter)
-                                .take(items_len)
-                                .map(|schemas| match schemas {
-                                    (None, None) => unreachable!(),
-                                    (None, Some(item)) => item.clone(),
-                                    (Some(item), None) => item.clone(),
-                                    (Some(aa_item), Some(bb_item)) => {
-                                        merge_schema(aa_item, bb_item)
-                                    }
-                                })
-                                .collect();
+                            let items = items_iter.take(items_len).collect();
                             let additional_items = merge_maybe_schema(
                                 aa_additional_items.as_deref(),
                                 bb_additional_items.as_deref(),
@@ -348,27 +374,21 @@ fn merge_so_array(
                         }
                     }
                 }
-
-                // (None, other) => (other.clone(), None),
-                // (Some(_), None) => todo!(),
-                // (Some(_), Some(_)) => todo!(),
-                _ => todo!(),
             };
 
-            let xxx = ArrayValidation {
+            Ok(Some(Box::new(ArrayValidation {
                 items,
                 additional_items,
                 max_items,
                 min_items,
-                unique_items: todo!(),
-                contains: todo!(),
-            };
-
-            unimplemented!("this is fairly fussy and I don't want to do it")
+                unique_items,
+                contains,
+            })))
         }
     }
 }
 
+/// Prefer Some over None and the result of `prefer` if both are Some.
 fn choose_value<T, F>(a: Option<T>, b: Option<T>, prefer: F) -> Option<T>
 where
     F: FnOnce(T, T) -> T,
