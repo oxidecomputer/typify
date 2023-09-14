@@ -1,6 +1,9 @@
 // Copyright 2023 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    iter::repeat,
+};
 
 use schemars::{
     schema::{
@@ -19,6 +22,13 @@ pub fn merge_schema(a: &Schema, b: &Schema) -> Schema {
         // An error indicates that there is no value that satisfies both
         // schemas.
         Err(()) => Schema::Bool(false),
+    }
+}
+
+fn merge_maybe_schema(a: Option<&Schema>, b: Option<&Schema>) -> Option<Schema> {
+    match (a, b) {
+        (None, other) | (other, None) => other.cloned(),
+        (Some(aa), Some(bb)) => Some(merge_schema(aa, bb)),
     }
 }
 
@@ -196,6 +206,9 @@ fn merge_so_array(
                 contains,
             } = aa;
 
+            let max_items = choose_value(aa.max_items, bb.max_items, Ord::min);
+            let min_items = choose_value(aa.min_items, bb.min_items, Ord::max);
+
             // The items and additional_items fields need to be considered
             // together.
             //
@@ -210,8 +223,159 @@ fn merge_so_array(
             // - If items is None (i.e. absent) additional_items is ignored and
             //   any value is permitted in any position of the array.
 
+            let (items, additional_items) = match (
+                (&aa.items, &aa.additional_items),
+                (&bb.items, &bb.additional_items),
+            ) {
+                // Both items are none; items and additional_items are None.
+                ((None, _), (None, _)) => (None, None),
+                ((None, _), (Some(SingleOrVec::Single(item)), _))
+                | ((Some(SingleOrVec::Single(item)), _), (None, _)) => {
+                    (Some(SingleOrVec::Single(item.clone())), None)
+                }
+
+                ((None, _), (Some(SingleOrVec::Vec(items)), additional_items))
+                | ((Some(SingleOrVec::Vec(items)), additional_items), (None, _)) => {
+                    match (max_items, items.len()) {
+                        // If the number of item schemas is at least as large
+                        // as the maximum number if items then we don't need
+                        // any additional_items.
+                        (Some(max), len) if len >= max as usize => (
+                            Some(SingleOrVec::Vec(
+                                items.iter().take(max as usize).cloned().collect(),
+                            )),
+                            None,
+                        ),
+                        _ => (
+                            Some(SingleOrVec::Vec(items.clone())),
+                            additional_items.clone(),
+                        ),
+                    }
+                }
+
+                // Two single schemas, just merge them.
+                (
+                    (Some(SingleOrVec::Single(aa_single)), _),
+                    (Some(SingleOrVec::Single(bb_single)), _),
+                ) => (
+                    Some(SingleOrVec::Single(Box::new(merge_schema(
+                        aa_single, bb_single,
+                    )))),
+                    None,
+                ),
+
+                // A single item and an array if schemas.
+                (
+                    (Some(SingleOrVec::Single(single)), _),
+                    (Some(SingleOrVec::Vec(items)), additional_items),
+                )
+                | (
+                    (Some(SingleOrVec::Vec(items)), additional_items),
+                    (Some(SingleOrVec::Single(single)), _),
+                ) => {
+                    match (max_items, items.len()) {
+                        // If the number of item schemas is at least as large
+                        // as the maximum number if items then we don't need
+                        // any additional_items.
+                        (Some(max), len) if len >= max as usize => (
+                            Some(SingleOrVec::Vec(
+                                items
+                                    .iter()
+                                    .take(max as usize)
+                                    .map(|item_schema| merge_schema(item_schema, single))
+                                    .collect(),
+                            )),
+                            None,
+                        ),
+                        _ => {
+                            let items = items
+                                .iter()
+                                .map(|item_schema| merge_schema(item_schema, single))
+                                .collect();
+                            let additional_items = additional_items.as_deref().map_or_else(
+                                || single.as_ref().clone(),
+                                |additional_schema| merge_schema(additional_schema, single),
+                            );
+                            (
+                                Some(SingleOrVec::Vec(items)),
+                                Some(Box::new(additional_items)),
+                            )
+                        }
+                    }
+                }
+
+                (
+                    (Some(SingleOrVec::Vec(aa_items)), aa_additional_items),
+                    (Some(SingleOrVec::Vec(bb_items)), bb_additional_items),
+                ) => {
+                    let items_len = aa_items.len().max(bb_items.len());
+
+                    match max_items {
+                        Some(max) if items_len <= max as usize => {
+                            todo!();
+                            todo!()
+                        }
+
+                        _ => {
+                            let aa_items_iter = aa_items
+                                .iter()
+                                .map(Some)
+                                .chain(repeat(aa_additional_items.as_deref()));
+                            let bb_items_iter = bb_items
+                                .iter()
+                                .map(Some)
+                                .chain(repeat(bb_additional_items.as_deref()));
+
+                            let items = aa_items_iter
+                                .zip(bb_items_iter)
+                                .take(items_len)
+                                .map(|schemas| match schemas {
+                                    (None, None) => unreachable!(),
+                                    (None, Some(item)) => item.clone(),
+                                    (Some(item), None) => item.clone(),
+                                    (Some(aa_item), Some(bb_item)) => {
+                                        merge_schema(aa_item, bb_item)
+                                    }
+                                })
+                                .collect();
+                            let additional_items = merge_maybe_schema(
+                                aa_additional_items.as_deref(),
+                                bb_additional_items.as_deref(),
+                            )
+                            .map(Box::new);
+
+                            (Some(SingleOrVec::Vec(items)), additional_items)
+                        }
+                    }
+                }
+
+                // (None, other) => (other.clone(), None),
+                // (Some(_), None) => todo!(),
+                // (Some(_), Some(_)) => todo!(),
+                _ => todo!(),
+            };
+
+            let xxx = ArrayValidation {
+                items,
+                additional_items,
+                max_items,
+                min_items,
+                unique_items: todo!(),
+                contains: todo!(),
+            };
+
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
+    }
+}
+
+fn choose_value<T, F>(a: Option<T>, b: Option<T>, prefer: F) -> Option<T>
+where
+    F: FnOnce(T, T) -> T,
+{
+    match (a, b) {
+        (None, other) | (other, None) => other,
+        (Some(aa), Some(bb)) => Some(prefer(aa, bb)),
     }
 }
 
