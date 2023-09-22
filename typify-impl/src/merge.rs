@@ -13,11 +13,24 @@ use schemars::{
     Map,
 };
 
+use crate::RefKey;
+
+pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    let mut ss = schemas.iter();
+    let (Some(a), Some(b)) = (ss.next(), ss.next()) else {
+        panic!("merge_all requires at least two schemas")
+    };
+
+    let start = merge_schema(a, b, defs);
+
+    ss.fold(start, |schema, other| merge_schema(&schema, other, defs))
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns `Schema::Bool(false)`.
-pub fn merge_schema(a: &Schema, b: &Schema) -> Schema {
-    match try_merge_schema(a, b) {
+pub(crate) fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    match try_merge_schema(a, b, defs) {
         Ok(schema) => schema,
         // An error indicates that there is no value that satisfies both
         // schemas.
@@ -25,22 +38,30 @@ pub fn merge_schema(a: &Schema, b: &Schema) -> Schema {
     }
 }
 
-fn merge_maybe_schema(a: Option<&Schema>, b: Option<&Schema>) -> Option<Schema> {
+fn merge_maybe_schema(
+    a: Option<&Schema>,
+    b: Option<&Schema>,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Option<Schema> {
     match (a, b) {
         (None, other) | (other, None) => other.cloned(),
-        (Some(aa), Some(bb)) => Some(merge_schema(aa, bb)),
+        (Some(aa), Some(bb)) => Some(merge_schema(aa, bb, defs)),
     }
 }
 
-pub fn try_merge_schema(a: &Schema, b: &Schema) -> Result<Schema, ()> {
+fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     match (a, b) {
         (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
-        (Schema::Object(aa), Schema::Object(bb)) => merge_schema_object(aa, bb),
+        (Schema::Object(aa), Schema::Object(bb)) => merge_schema_object(aa, bb, defs),
     }
 }
 
-fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()> {
+fn merge_schema_object(
+    a: &SchemaObject,
+    b: &SchemaObject,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, ()> {
     // let SchemaObject {
     //     metadata,
     //     instance_type,
@@ -61,21 +82,20 @@ fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()>
 
     // TODO enum_values and const_value need validation against the other schema
 
-    // I can imagine how we might handle this, but it seems like both a pain in
-    // the neck and an odd construct given that the schemas were merging likely
-    // came from a subschema construct.
-    assert!(a.subschemas.is_none());
-    assert!(b.subschemas.is_none());
+    println!(
+        "merge_schema_object {}",
+        serde_json::to_string_pretty(b).unwrap()
+    );
 
     let number = merge_so_number(a.number.as_deref(), b.number.as_deref())?;
     let string = merge_so_string(a.string.as_deref(), b.string.as_deref())?;
-    let array = merge_so_array(a.array.as_deref(), b.array.as_deref())?;
-    let object = merge_so_object(a.object.as_deref(), b.object.as_deref())?;
+    let array = merge_so_array(a.array.as_deref(), b.array.as_deref(), defs)?;
+    let object = merge_so_object(a.object.as_deref(), b.object.as_deref(), defs)?;
 
     // We could clean up this schema to eliminate data irrelevant to the
     // instance type, but logic in the conversion path should already handle
     // that.
-    Ok((SchemaObject {
+    let merged_schema = SchemaObject {
         instance_type,
         format,
         number,
@@ -83,8 +103,94 @@ fn merge_schema_object(a: &SchemaObject, b: &SchemaObject) -> Result<Schema, ()>
         array,
         object,
         ..Default::default()
-    })
-    .into())
+    }
+    .into();
+
+    // I can imagine how we might handle this, but it seems like both a pain in
+    // the neck and an odd construct given that the schemas we're merging likely
+    // came from a subschema construct.
+    // assert!(a.subschemas.is_none());
+    // assert!(b.subschemas.is_none());
+
+    let merged_schema = merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs);
+    let merged_schema = merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs);
+
+    Ok(merged_schema)
+}
+
+pub(crate) fn merge_with_subschemas(
+    schema: Schema,
+    maybe_subschemas: Option<&SubschemaValidation>,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Schema {
+    match maybe_subschemas {
+        Some(SubschemaValidation {
+            all_of: Some(all_of),
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }) => all_of
+            .iter()
+            .fold(schema, |schema, other| merge_schema(&schema, other, defs)),
+        Some(SubschemaValidation {
+            all_of: None,
+            any_of: Some(any_of),
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }) => {
+            let any_of = Some(
+                any_of
+                    .iter()
+                    .map(|other| merge_schema(&schema, other, defs))
+                    .collect(),
+            );
+            let subschemas = Some(Box::new(SubschemaValidation {
+                any_of,
+                ..Default::default()
+            }));
+            SchemaObject {
+                subschemas,
+                ..Default::default()
+            }
+            .into()
+        }
+        Some(SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: Some(one_of),
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }) => {
+            let one_of = Some(
+                one_of
+                    .iter()
+                    .map(|other| merge_schema(&schema, other, defs))
+                    .collect(),
+            );
+            let subschemas = Some(Box::new(SubschemaValidation {
+                one_of,
+                ..Default::default()
+            }));
+            SchemaObject {
+                subschemas,
+                ..Default::default()
+            }
+            .into()
+        }
+        Some(x) => {
+            println!("{}", serde_json::to_string_pretty(x).unwrap());
+            todo!()
+        }
+        None => schema,
+    }
 }
 
 /// Merge instance types which could be None (meaning type is valid), a
@@ -193,6 +299,7 @@ fn merge_so_string(
 fn merge_so_array(
     a: Option<&ArrayValidation>,
     b: Option<&ArrayValidation>,
+    defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<Option<Box<ArrayValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
@@ -281,7 +388,7 @@ fn merge_so_array(
                     (Some(SingleOrVec::Single(bb_single)), _),
                 ) => (
                     Some(SingleOrVec::Single(Box::new(merge_schema(
-                        aa_single, bb_single,
+                        aa_single, bb_single, defs,
                     )))),
                     None,
                 ),
@@ -301,7 +408,7 @@ fn merge_so_array(
                             items
                                 .iter()
                                 .take(max as usize)
-                                .map(|item_schema| merge_schema(item_schema, single))
+                                .map(|item_schema| merge_schema(item_schema, single, defs))
                                 .collect(),
                         )),
                         None,
@@ -309,11 +416,11 @@ fn merge_so_array(
                     _ => {
                         let items = items
                             .iter()
-                            .map(|item_schema| merge_schema(item_schema, single))
+                            .map(|item_schema| merge_schema(item_schema, single, defs))
                             .collect();
                         let additional_items = additional_items.as_deref().map_or_else(
                             || single.as_ref().clone(),
-                            |additional_schema| merge_schema(additional_schema, single),
+                            |additional_schema| merge_schema(additional_schema, single, defs),
                         );
                         (
                             Some(SingleOrVec::Vec(items)),
@@ -353,7 +460,9 @@ fn merge_so_array(
                                 (None, None) => unreachable!(),
                                 (None, Some(item)) => item.clone(),
                                 (Some(item), None) => item.clone(),
-                                (Some(aa_item), Some(bb_item)) => merge_schema(aa_item, bb_item),
+                                (Some(aa_item), Some(bb_item)) => {
+                                    merge_schema(aa_item, bb_item, defs)
+                                }
                             });
 
                     match max_items {
@@ -367,6 +476,7 @@ fn merge_so_array(
                             let additional_items = merge_maybe_schema(
                                 aa_additional_items.as_deref(),
                                 bb_additional_items.as_deref(),
+                                defs,
                             )
                             .map(Box::new);
 
@@ -402,23 +512,14 @@ where
 fn merge_so_object(
     a: Option<&ObjectValidation>,
     b: Option<&ObjectValidation>,
+    defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<Option<Box<ObjectValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
-            let ObjectValidation {
-                max_properties,
-                min_properties,
-                required,
-                properties,
-                pattern_properties,
-                additional_properties,
-                property_names,
-            } = aa;
-
             let a_props = aa.properties.iter().filter_map(|(name, a_schema)| {
                 let resolved_schema = if let Some(b_schema) = bb.properties.get(name) {
-                    try_merge_schema(a_schema, b_schema)
+                    try_merge_schema(a_schema, b_schema, defs)
                 } else {
                     filter_prop(name, a_schema, bb)
                 };
@@ -554,6 +655,8 @@ fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
     use schemars::schema::InstanceType;
     use serde_json::json;
 
@@ -605,7 +708,7 @@ mod tests {
         let a = serde_json::from_value(a).unwrap();
         let b = serde_json::from_value(b).unwrap();
 
-        let x = try_merge_schema(&a, &b);
+        let x = try_merge_schema(&a, &b, &BTreeMap::default());
 
         println!("{}", serde_json::to_string_pretty(&x.unwrap()).unwrap());
         panic!();

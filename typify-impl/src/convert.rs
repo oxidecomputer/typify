@@ -2,6 +2,7 @@
 
 use std::collections::BTreeSet;
 
+use crate::merge::{merge_all, merge_schema, merge_with_subschemas};
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
@@ -461,6 +462,30 @@ impl TypeSpace {
                 _ => todo!("{:#?}", subschemas),
             },
 
+            // Subschemas with other stuff.
+            SchemaObject {
+                subschemas: Some(_),
+                ..
+            } => {
+                println!("input {}", serde_json::to_string_pretty(schema).unwrap());
+                let without_subschemas = SchemaObject {
+                    subschemas: None,
+                    ..schema.clone()
+                }
+                .into();
+                let merged_schema = merge_with_subschemas(
+                    without_subschemas,
+                    schema.subschemas.as_deref(),
+                    &self.definitions,
+                );
+                println!(
+                    "output {}",
+                    serde_json::to_string_pretty(&merged_schema).unwrap()
+                );
+                let (type_entry, _) = self.convert_schema(type_name, &merged_schema)?;
+                Ok((type_entry, &None))
+            }
+
             // TODO let's not bother with const values at the moment. In the
             // future we could create types that have a single value with a
             // newtype wrapper, but it's too much of a mess for too little
@@ -633,7 +658,10 @@ impl TypeSpace {
             }
 
             // Unknown
-            SchemaObject { .. } => todo!("invalid (or unexpected) schema:\n{:#?}", schema),
+            SchemaObject { .. } => todo!(
+                "invalid (or unexpected) schema:\n{}",
+                serde_json::to_string_pretty(schema).unwrap()
+            ),
         }
     }
 
@@ -1079,13 +1107,18 @@ impl TypeSpace {
         // The existing special cases should go away as should the "flattened
         // union" handling.
 
-        if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
-            return Ok((ty, metadata));
-        }
+        let xx = merge_all(subschemas, &self.definitions);
 
-        if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
-            return Ok((ty, metadata));
-        }
+        let (type_entry, _) = self.convert_schema(type_name, &xx)?;
+        Ok((type_entry, &None))
+
+        // if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
+        //     return Ok((ty, metadata));
+        // }
+
+        // if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
+        //     return Ok((ty, metadata));
+        // }
 
         // TODO JSON schema is annoying. In particular, "allOf" means that all
         // schemas must validate. So for us to construct the schema below, each
@@ -1103,7 +1136,7 @@ impl TypeSpace {
         //     schema2: Schema2Type,
         //     ...
         // }
-        self.flattened_union_struct(type_name, metadata, subschemas, false)
+        // self.flattened_union_struct(type_name, metadata, subschemas, false)
     }
 
     fn convert_any_of<'a>(
