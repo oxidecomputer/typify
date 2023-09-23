@@ -56,6 +56,27 @@
           }
         }
       ]
+    },
+    "nyet": {
+      "type": "object",
+      "properties": {
+        "a": {},
+        "b": {}
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "a"
+            ]
+          },
+          {
+            "required": [
+              "b"
+            ]
+          }
+        ]
+      }
     }
   }
 }
