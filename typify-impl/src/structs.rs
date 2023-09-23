@@ -170,7 +170,7 @@ impl TypeSpace {
         })
     }
 
-    pub(crate) fn make_map<'a>(
+    pub(crate) fn make_map(
         &mut self,
         type_name: Option<String>,
         property_names: &Option<Box<Schema>>,
