@@ -14,12 +14,12 @@ default-run = "cargo-typify"
 [dependencies]
 typify = { version = "0.0.13", path = "../typify" }
 
-clap = { version = "4.3.21", features = ["derive"] }
+clap = { version = "4.4.2", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.10"
 rustfmt-wrapper = "0.2.0"
-serde_json = "1.0.104"
-schemars = "0.8.12"
+serde_json = "1.0.107"
+schemars = "0.8.13"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"

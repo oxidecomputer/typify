@@ -9,6 +9,8 @@ members = [
 	"example-macro",
 ]
 
+resolver = "2"
+
 #[patch.crates-io]
 #serde_tokenstream = { path = "../serde_tokenstream" }
 

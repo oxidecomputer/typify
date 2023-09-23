@@ -334,9 +334,7 @@ impl TypeSpace {
             .map(|schema| {
                 // We've already validated this; we just need to pluck out the
                 // pieces we need to construct the variant.
-                let Some((metadata, validation)) =
-                    get_object(schema)
-                else {
+                let Some((metadata, validation)) = get_object(schema) else {
                     unreachable!();
                 };
 
@@ -473,8 +471,7 @@ impl TypeSpace {
             .map(|schema| {
                 // We've already validated this; we just need to pluck out the
                 // pieces we need to construct the variant.
-                let Some((metadata, validation)) = get_object(schema)
-                else {
+                let Some((metadata, validation)) = get_object(schema) else {
                     unreachable!();
                 };
                 let (variant, deny) =
