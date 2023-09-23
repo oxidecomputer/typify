@@ -2,7 +2,7 @@
 
 use std::collections::BTreeSet;
 
-use crate::merge::{merge_all, merge_schema, merge_with_subschemas};
+use crate::merge::{merge_all, merge_with_subschemas};
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
@@ -24,6 +24,11 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        info!(
+            "convert_schema {:?} {}",
+            type_name,
+            serde_json::to_string_pretty(schema).unwrap()
+        );
         match schema {
             Schema::Object(obj) => {
                 if let Some(type_entry) = self.cache.lookup(obj) {
@@ -328,7 +333,7 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
@@ -360,6 +365,9 @@ impl TypeSpace {
             // TODO this could be generalized to validate any redundant
             // validation here or could be used to compute a new, more
             // constrained type.
+            // TODO the strictest interpretation might be to ignore any fields
+            // that appear alongside "$ref" per
+            // https://json-schema.org/understanding-json-schema/structuring.html#ref
             SchemaObject {
                 metadata,
                 instance_type,
@@ -467,22 +475,16 @@ impl TypeSpace {
                 subschemas: Some(_),
                 ..
             } => {
-                println!("input {}", serde_json::to_string_pretty(schema).unwrap());
                 let without_subschemas = SchemaObject {
                     subschemas: None,
                     ..schema.clone()
-                }
-                .into();
+                };
                 let merged_schema = merge_with_subschemas(
                     without_subschemas,
                     schema.subschemas.as_deref(),
                     &self.definitions,
                 );
-                println!(
-                    "output {}",
-                    serde_json::to_string_pretty(&merged_schema).unwrap()
-                );
-                let (type_entry, _) = self.convert_schema(type_name, &merged_schema)?;
+                let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
                 Ok((type_entry, &None))
             }
 
@@ -1084,59 +1086,58 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
-        // TODO With logic to merge types, I think that becomes the general
-        // case: merge all subschemas, convert to a type, (later/optional) add
-        // conversion methods into the named subtypes (i.e. the refs).
+        // In the general case, we merge all schemas in the array. The merged
+        // schema will reflect all definitions and constraints. For example, it
+        // will have the union of all properties for an object, recursively
+        // merging properties defined in multiple schemas; it will have the
+        // union of all required object properties; and it will enforce the
+        // greater of all numeric constraints (e.g. the greater of all
+        // specified minimum values).
         //
-        // Note that this merge/convert mechanism isn't specific to objects.
-        // It's equally applicable to other types.
+        // Sometimes merging types will produce a result for which no data is
+        // valid, the schema is unsatisfiable. Consider this trivial case:
         //
-        // Also note that sometimes we might end up with a type that we
-        // determine to be invalid or unsatisfiable, for example if there's an
-        // integer whose minimum is greater than its maximum. In that case we
-        // could either blow up or generate some sort of Never equivalent.
+        // "allOf": [
+        //     { "type": "integer", "minimum": 5 },
+        //     { "type": "integer", "maximum": 3 }
+        // ]
         //
-        // Beyond that there is a special case to consider where named
-        // subschemas are objects that are orthogonal to all other named
-        // schemas (an those are also objects). In that case (and in that case
-        // only) we could embed and flatten the named type. However, this seems
-        // like a convenience rather than a critical feature. The only
-        // advantage of pulling out this special case is the ease of
-        // translating between the big type and its component type.
+        // No number is >= 5 *and* <= 3! Good luck with that schema!
         //
-        // The existing special cases should go away as should the "flattened
-        // union" handling.
+        // Note that we will effectively "embed" any referenced types. Consider
+        // a construction like this:
+        //
+        // "allOf": [
+        //     { "$ref": "#/definitions/SuperClass" },
+        //     { "type": "object", "properties": { "another_prop: {} }}
+        // ]
+        //
+        // The resulting merged schema will include all properties of
+        // "SuperClass" as well as "another_prop" (which we assume to not have
+        // been present in the original). This is suboptimal in that we would
+        // like the generated types to reflect some association with the
+        // original sub-type.
+        //
+        // TODO
+        // In cases where we have a named type, we would like to provide
+        // conversion methods to extract the named type from the merged type.
+        // In the "SuperClass" example above, we would provide an
+        // Into<SuperClass> implementation to discard the additional properties
+        // and produce an instance of "SuperClass".
+        //
+        // We can do something similar for types that become additionally
+        // constrained: a field that becomes required can be converted to an
+        // optional field; a number whose value is limited can be converted to
+        // the more expansive numeric type.
 
-        let xx = merge_all(subschemas, &self.definitions);
+        let merged_schema = merge_all(subschemas, &self.definitions);
+        assert_ne!(merged_schema, Schema::Bool(false));
+        let mut merged_schema = merged_schema.into_object();
+        assert!(merged_schema.metadata.is_none());
+        merged_schema.metadata = metadata.clone();
 
-        let (type_entry, _) = self.convert_schema(type_name, &xx)?;
+        let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
         Ok((type_entry, &None))
-
-        // if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
-        //     return Ok((ty, metadata));
-        // }
-
-        // if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
-        //     return Ok((ty, metadata));
-        // }
-
-        // TODO JSON schema is annoying. In particular, "allOf" means that all
-        // schemas must validate. So for us to construct the schema below, each
-        // type must actually be "open" i.e. it must permit arbitrary
-        // properties. If it does not, the schemas would not validate i.e. a
-        // value (object) could not satisfy both Schema1 and Schema2. To do
-        // this as accurately as possible, we would need to validate that each
-        // subschema was "open", pull out the "extra" item from each one, etc.
-
-        // We'll want to build a struct that looks like this:
-        // struct Name {
-        //     #[serde(flatten)]
-        //     schema1: Schema1Type,
-        //     #[serde(flatten)]
-        //     schema2: Schema2Type,
-        //     ...
-        // }
-        // self.flattened_union_struct(type_name, metadata, subschemas, false)
     }
 
     fn convert_any_of<'a>(

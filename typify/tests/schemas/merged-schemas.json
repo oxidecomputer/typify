@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "narrow-number": {
+      "allOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "minimum": 1
+        }
+      ]
+    },
+    "JsonResponseBase": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonSuccessBase": {
+      "description": "x",
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/JsonResponseBase"
+        },
+        {
+          "required": [
+            "result",
+            "msg"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "success"
+              ]
+            },
+            "msg": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "JsonSuccess": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/JsonSuccessBase"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "result": {},
+            "msg": {}
+          }
+        }
+      ]
+    }
+  }
+}

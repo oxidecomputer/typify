@@ -5,16 +5,15 @@ use std::{
     iter::repeat,
 };
 
-use schemars::{
-    schema::{
-        ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
-        SingleOrVec, StringValidation, SubschemaValidation,
-    },
-    Map,
+use schemars::schema::{
+    ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
+    SingleOrVec, StringValidation, SubschemaValidation,
 };
 
-use crate::RefKey;
+use crate::{util::ref_key, validate::schema_value_validate, RefKey};
 
+/// Merge all schemas in array of schemas. If the result is unsatisfiable, this
+/// returns `Schema::Bool(false)`.
 pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Schema {
     let mut ss = schemas.iter();
     let (Some(a), Some(b)) = (ss.next(), ss.next()) else {
@@ -29,7 +28,7 @@ pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> 
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns `Schema::Bool(false)`.
-pub(crate) fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
+fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
     match try_merge_schema(a, b, defs) {
         Ok(schema) => schema,
         // An error indicates that there is no value that satisfies both
@@ -53,6 +52,43 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
     match (a, b) {
         (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
+
+        // Resolve references here before we start to merge the objects.
+        //
+        // TODO: need to mitigate circular references so we don't go into a
+        // spin loop. We can do this by wrapping defs in a structure that
+        // remembers what we've already looked up; if we hit a cycle we can
+        // consider the proper handling, but it might be to ignore it--a
+        // circular allOf chain is a bit hard to reason about.
+        //
+        // TODO if we merge a referenced schema with another schema **and**
+        // the resulting schema is identical to the referenced schema (i.e.
+        // the other schema is strictly more permissive) then we should just
+        // return the reference schema.
+        (
+            Schema::Object(SchemaObject {
+                reference: Some(ref_name),
+                ..
+            }),
+            other,
+        )
+        | (
+            other,
+            Schema::Object(SchemaObject {
+                reference: Some(ref_name),
+                ..
+            }),
+        ) => {
+            println!(
+                "resolving {} against {}",
+                ref_name,
+                serde_json::to_string_pretty(other).unwrap()
+            );
+            let key = ref_key(ref_name);
+            let resolved = defs.get(&key).unwrap();
+            try_merge_schema(resolved, other, defs)
+        }
+
         (Schema::Object(aa), Schema::Object(bb)) => merge_schema_object(aa, bb, defs),
     }
 }
@@ -62,30 +98,17 @@ fn merge_schema_object(
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<Schema, ()> {
-    // let SchemaObject {
-    //     metadata,
-    //     instance_type,
-    //     format,
-    //     enum_values,
-    //     const_value,
-    //     subschemas,
-    //     number,
-    //     string,
-    //     array,
-    //     object,
-    //     reference,
-    //     extensions,
-    // } = aa;
+    assert!(a.reference.is_none());
+    assert!(b.reference.is_none());
+
+    println!(
+        "merge_schema_object {}\n{}",
+        serde_json::to_string_pretty(a).unwrap(),
+        serde_json::to_string_pretty(b).unwrap(),
+    );
 
     let instance_type = merge_so_instance_type(a.instance_type.as_ref(), b.instance_type.as_ref())?;
     let format = merge_so_format(a.format.as_ref(), b.format.as_ref())?;
-
-    // TODO enum_values and const_value need validation against the other schema
-
-    println!(
-        "merge_schema_object {}",
-        serde_json::to_string_pretty(b).unwrap()
-    );
 
     let number = merge_so_number(a.number.as_deref(), b.number.as_deref())?;
     let string = merge_so_string(a.string.as_deref(), b.string.as_deref())?;
@@ -96,33 +119,109 @@ fn merge_schema_object(
     // instance type, but logic in the conversion path should already handle
     // that.
     let merged_schema = SchemaObject {
+        metadata: None,
         instance_type,
         format,
+        enum_values: None,
+        const_value: None,
+        subschemas: None,
         number,
         string,
         array,
         object,
-        ..Default::default()
+        reference: None,
+        extensions: Default::default(),
+    };
+
+    // If we have subschemas for either schema then we merge the body of the
+    // two schemas and then do the appropriate merge with subschemas (i.e.
+    // potentially twice). This is effectively an `allOf` between the merged
+    // "body" schema and the component subschemas.
+    let merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
+    let merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
+
+    assert_ne!(merged_schema, Schema::Bool(false).into_object());
+
+    let enum_values = merge_so_enum_values(
+        a.enum_values.as_ref(),
+        a.const_value.as_ref(),
+        b.enum_values.as_ref(),
+        b.const_value.as_ref(),
+    )?;
+
+    match enum_values {
+        None => Ok(merged_schema.into()),
+        Some(enum_values) => {
+            let enum_values = enum_values
+                .into_iter()
+                .filter(|value| {
+                    schema_value_validate(&Schema::Object(merged_schema.clone()), value, defs)
+                        .is_ok()
+                })
+                .collect::<Vec<_>>();
+            if enum_values.is_empty() {
+                Err(())
+            } else {
+                Ok(SchemaObject {
+                    enum_values: Some(enum_values),
+                    ..merged_schema
+                }
+                .into())
+            }
+        }
     }
-    .into();
+}
 
-    // I can imagine how we might handle this, but it seems like both a pain in
-    // the neck and an odd construct given that the schemas we're merging likely
-    // came from a subschema construct.
-    // assert!(a.subschemas.is_none());
-    // assert!(b.subschemas.is_none());
+fn merge_so_enum_values(
+    a_enum: Option<&Vec<serde_json::Value>>,
+    a_const: Option<&serde_json::Value>,
+    b_enum: Option<&Vec<serde_json::Value>>,
+    b_const: Option<&serde_json::Value>,
+) -> Result<Option<Vec<serde_json::Value>>, ()> {
+    let aa = match (a_enum, a_const) {
+        (None, None) => None,
+        (Some(enum_values), None) => Some(enum_values.clone()),
+        (None, Some(value)) => Some(vec![value.clone()]),
+        (Some(_), Some(_)) => unimplemented!(),
+    };
+    let bb = match (b_enum, b_const) {
+        (None, None) => None,
+        (Some(enum_values), None) => Some(enum_values.clone()),
+        (None, Some(value)) => Some(vec![value.clone()]),
+        (Some(_), Some(_)) => unimplemented!(),
+    };
 
-    let merged_schema = merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs);
-    let merged_schema = merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs);
+    match (aa, bb) {
+        (None, None) => Ok(None),
+        (None, Some(values)) | (Some(values), None) => Ok(Some(values)),
+        (Some(aa), Some(bb)) => {
+            let values = aa
+                .into_iter()
+                .filter(|value| bb.contains(value))
+                .collect::<Vec<_>>();
 
-    Ok(merged_schema)
+            if values.is_empty() {
+                Err(())
+            } else {
+                Ok(Some(values))
+            }
+        }
+    }
 }
 
 pub(crate) fn merge_with_subschemas(
-    schema: Schema,
+    schema_object: SchemaObject,
     maybe_subschemas: Option<&SubschemaValidation>,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Schema {
+) -> SchemaObject {
+    try_merge_with_subschemas(schema_object, maybe_subschemas, defs).unwrap()
+}
+
+fn try_merge_with_subschemas(
+    schema_object: SchemaObject,
+    maybe_subschemas: Option<&SubschemaValidation>,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<SchemaObject, ()> {
     match maybe_subschemas {
         Some(SubschemaValidation {
             all_of: Some(all_of),
@@ -132,65 +231,133 @@ pub(crate) fn merge_with_subschemas(
             if_schema: None,
             then_schema: None,
             else_schema: None,
-        }) => all_of
-            .iter()
-            .fold(schema, |schema, other| merge_schema(&schema, other, defs)),
+        }) => {
+            println!(
+                "folding {} {}",
+                serde_json::to_string_pretty(&schema_object).unwrap(),
+                serde_json::to_string_pretty(all_of).unwrap(),
+            );
+            let xxx = all_of
+                .iter()
+                .try_fold(schema_object.into(), |schema, other| {
+                    try_merge_schema(&schema, other, defs)
+                })?;
+            assert_ne!(xxx, Schema::Bool(false));
+            Ok(xxx.into_object())
+        }
+
         Some(SubschemaValidation {
             all_of: None,
-            any_of: Some(any_of),
+            any_of: Some(subschemas),
             one_of: None,
             not: None,
             if_schema: None,
             then_schema: None,
             else_schema: None,
-        }) => {
-            let any_of = Some(
-                any_of
-                    .iter()
-                    .map(|other| merge_schema(&schema, other, defs))
-                    .collect(),
-            );
-            let subschemas = Some(Box::new(SubschemaValidation {
-                any_of,
-                ..Default::default()
-            }));
-            SchemaObject {
-                subschemas,
-                ..Default::default()
-            }
-            .into()
-        }
-        Some(SubschemaValidation {
+        })
+        | Some(SubschemaValidation {
             all_of: None,
             any_of: None,
-            one_of: Some(one_of),
+            one_of: Some(subschemas),
             not: None,
             if_schema: None,
             then_schema: None,
             else_schema: None,
         }) => {
-            let one_of = Some(
-                one_of
+            // TODO should get fancier here. First we should pairwise merge the
+            // schemas; if the result is invalid / unresolvable / never /
+            // whatever, we should exclude it from the list. If it is valid,
+            // *then* we should do the join thing to preserve information (and
+            // we probably only need to *that* if at least one schema contains
+            // a ref). This could probably be an opportunity for memoization,
+            // but this is an infrequent construction so... whatever.
+            let joined_schemas = Some(
+                subschemas
                     .iter()
-                    .map(|other| merge_schema(&schema, other, defs))
+                    .filter_map(|other| {
+                        println!(
+                            "joining {}\n{}",
+                            serde_json::to_string_pretty(&schema_object).unwrap(),
+                            serde_json::to_string_pretty(other).unwrap(),
+                        );
+                        let _ =
+                            try_merge_schema(&schema_object.clone().into(), other, defs).ok()?;
+                        Some(join_schema(&schema_object, other))
+                    })
                     .collect(),
             );
-            let subschemas = Some(Box::new(SubschemaValidation {
-                one_of,
+
+            // TODO we'd want to do something special here? maybe return an
+            // error?
+            assert!(!subschemas.is_empty());
+
+            let subschemas = match maybe_subschemas {
+                Some(SubschemaValidation {
+                    any_of: Some(_), ..
+                }) => SubschemaValidation {
+                    any_of: joined_schemas,
+                    ..Default::default()
+                },
+                Some(SubschemaValidation {
+                    one_of: Some(_), ..
+                }) => SubschemaValidation {
+                    one_of: joined_schemas,
+                    ..Default::default()
+                },
+                _ => unreachable!(),
+            };
+            Ok(SchemaObject {
+                metadata: schema_object.metadata,
+                subschemas: Some(Box::new(subschemas)),
                 ..Default::default()
-            }));
-            SchemaObject {
-                subschemas,
-                ..Default::default()
-            }
-            .into()
+            })
         }
+
+        // If it's any of the subschemas we don't know how to handle here,
+        // we'll try to leave them in place... probably to encounter an error
+        // later when we try to convert them...
+        Some(SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: None,
+            not,
+            if_schema,
+            then_schema,
+            else_schema,
+        }) if not.is_some()
+            || if_schema.is_some()
+            || then_schema.is_some()
+            || else_schema.is_some() =>
+        {
+            if let Some(ss) = &schema_object.subschemas {
+                assert!(ss.not.is_none());
+                assert!(ss.if_schema.is_none());
+                assert!(ss.then_schema.is_none());
+                assert!(ss.else_schema.is_none());
+            }
+            Ok(SchemaObject {
+                subschemas: maybe_subschemas.cloned().map(Box::new),
+                ..schema_object
+            })
+        }
+
         Some(x) => {
             println!("{}", serde_json::to_string_pretty(x).unwrap());
             todo!()
         }
-        None => schema,
+        None => Ok(schema_object),
     }
+}
+
+fn join_schema(a: &SchemaObject, b: &Schema) -> Schema {
+    SchemaObject {
+        subschemas: Some(Box::new(SubschemaValidation {
+            all_of: Some(vec![Schema::Object(a.clone()), b.clone()]),
+            ..Default::default()
+        })),
+        ..Default::default()
+    }
+    .into()
 }
 
 /// Merge instance types which could be None (meaning type is valid), a
@@ -248,6 +415,7 @@ fn merge_so_instance_type(
 /// By and large, formats are pretty free-form and aren't really compatible
 /// with each other. That is to say, if you have two formats at the same time
 /// that's probably unsatisfiable. There are a few notable exceptions to this:
+///
 /// o integer widths -- take the narrowest
 /// o "ip" vs. "ipv4" / "ipv6" -- take the more specific ip flavor
 ///
@@ -278,7 +446,7 @@ fn merge_so_number(
 ) -> Result<Option<Box<NumberValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
-        (Some(aa), Some(bb)) => {
+        (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
     }
@@ -290,7 +458,7 @@ fn merge_so_string(
 ) -> Result<Option<Box<StringValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
-        (Some(aa), Some(bb)) => {
+        (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
     }
@@ -663,30 +831,17 @@ mod tests {
     use crate::merge::merge_so_instance_type;
 
     use super::try_merge_schema;
-
     #[test]
-    fn xxx() {
-        // let a = json!({
-        //     "type": "object",
-        //     "properties": {
-        //         "result": {
-        //             "type": "string"
-        //         }
-        //     }
-        // });
-        // let b = json!({
-        //     "required": ["result", "msg"],
-        //     "properties": {
-        //         "result": {
-        //             "enum": ["success"]
-        //         },
-        //         "msg": {
-        //             "type": "string"
-        //         }
-        //     }
-        // });
+    fn test_simple_merge() {
         let a = json!({
             "type": "object",
+            "properties": {
+                "result": {
+                    "type": "string"
+                }
+            }
+        });
+        let b = json!({
             "required": ["result", "msg"],
             "properties": {
                 "result": {
@@ -697,21 +852,151 @@ mod tests {
                 }
             }
         });
-        let b = json!({
-            "additionalProperties":false,
+        let ab = json!({
+            "type": "object",
+            "required": ["result", "msg"],
             "properties": {
-                "result":{},
-                "msg":{}
+                "result": {
+                    "type": "string",
+                    "enum": ["success"]
+                },
+                "msg": {
+                    "type": "string"
+                }
             }
         });
 
         let a = serde_json::from_value(a).unwrap();
         let b = serde_json::from_value(b).unwrap();
+        let ab = serde_json::from_value(ab).unwrap();
 
-        let x = try_merge_schema(&a, &b, &BTreeMap::default());
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
 
-        println!("{}", serde_json::to_string_pretty(&x.unwrap()).unwrap());
-        panic!();
+        println!("{}", serde_json::to_string_pretty(&merged).unwrap());
+
+        assert_eq!(merged, ab);
+    }
+
+    #[test]
+    fn test_nop_merge() {
+        let a = json!({
+                "type": "object",
+                "required": [
+                  "avatar_url",
+                  "events_url",
+                  "followers_url",
+                  "following_url",
+                  "gists_url",
+                  "gravatar_id",
+                  "html_url",
+                  "id",
+                  "login",
+                  "node_id",
+                  "organizations_url",
+                  "received_events_url",
+                  "repos_url",
+                  "site_admin",
+                  "starred_url",
+                  "subscriptions_url",
+                  "type",
+                  "url"
+                ],
+                "properties": {
+                  "avatar_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "email": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "events_url": {
+                    "type": "string",
+                    "format": "uri-template"
+                  },
+                  "followers_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "following_url": {
+                    "type": "string",
+                    "format": "uri-template"
+                  },
+                  "gists_url": {
+                    "type": "string",
+                    "format": "uri-template"
+                  },
+                  "gravatar_id": {
+                    "type": "string"
+                  },
+                  "html_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "login": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "node_id": {
+                    "type": "string"
+                  },
+                  "organizations_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "received_events_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "repos_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "site_admin": {
+                    "type": "boolean"
+                  },
+                  "starred_url": {
+                    "type": "string",
+                    "format": "uri-template"
+                  },
+                  "subscriptions_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "Bot",
+                      "User",
+                      "Organization"
+                    ]
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "additionalProperties": false
+              }
+
+        );
+        let b = json!({});
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+
+        println!("{}", serde_json::to_string_pretty(&merged).unwrap());
+
+        assert_eq!(merged, a);
     }
 
     #[test]

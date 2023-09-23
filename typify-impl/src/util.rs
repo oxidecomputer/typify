@@ -1,6 +1,6 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2023 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::collections::{BTreeSet, HashSet};
 
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -324,6 +324,11 @@ fn object_schemas_mutually_exclusive(
         ..
     } = b_validation;
 
+    // No properties? Too permissive / insufficiently exclusive.
+    if a_properties.is_empty() || b_properties.is_empty() {
+        return false;
+    }
+
     // Either set of required properties must not be a subset of the other's
     // properties i.e. if there's a property that *must* be in one of the two
     // objects, and *cannot* be in the other, a property whose presence or
@@ -340,7 +345,10 @@ fn object_schemas_mutually_exclusive(
         // the value of the tag property will be unique.
 
         // Compute the set that consists of fixed-value properties--a
-        // tuple of the property name and the value.
+        // tuple of the property name and the fixed value. Note that we may
+        // encounter objects that specify that a field is required, but do
+        // *not* specify the field. That's ok, but we can't assure mutual
+        // exclusivity.
         let aa = a_required
             .iter()
             .filter_map(|name| {
@@ -641,78 +649,6 @@ pub(crate) fn get_object(schema: &Schema) -> Option<(&Option<Box<Metadata>>, &Ob
     }
 }
 
-/// Return the object data or None if it's not an object (or doesn't conform to
-/// the objects we know how to handle). Follow references if we find them.
-pub(crate) fn get_object_ref<'a>(
-    schema: &'a Schema,
-    definitions: &'a BTreeMap<RefKey, Schema>,
-) -> Option<&'a ObjectValidation> {
-    match schema {
-        // Objects
-        Schema::Object(SchemaObject {
-            metadata: _,
-            instance_type: Some(SingleOrVec::Single(single)),
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: None,
-            object: Some(validation),
-            reference: None,
-            extensions: _,
-        }) if single.as_ref() == &InstanceType::Object
-            && schema_none_or_false(&validation.additional_properties)
-            && validation.max_properties.is_none()
-            && validation.min_properties.is_none()
-            && validation.pattern_properties.is_empty()
-            && validation.property_names.is_none() =>
-        {
-            Some(validation.as_ref())
-        }
-
-        // References
-        Schema::Object(SchemaObject {
-            metadata: None,
-            instance_type: None,
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: None,
-            object: None,
-            reference: Some(ref_name),
-            extensions: _,
-        }) => {
-            let ref_key = ref_key(ref_name);
-            get_object_ref(definitions.get(&ref_key).unwrap(), definitions)
-        }
-
-        // Trivial (n == 1) subschemas
-        Schema::Object(SchemaObject {
-            metadata: _,
-            instance_type: _,
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: Some(subschemas),
-            number: None,
-            string: None,
-            array: None,
-            object: None,
-            reference: None,
-            extensions: _,
-        }) => singleton_subschema(subschemas)
-            .and_then(|sub_schema| get_object_ref(sub_schema, definitions)),
-
-        // None if the schema doesn't match the shape we expect.
-        _ => None,
-    }
-}
-
 // We infer from a Some(Schema::Bool(false)) or None value that either nothing
 // or nothing of importance is in the additional properties.
 fn schema_none_or_false(additional_properties: &Option<Box<Schema>>) -> bool {
@@ -962,27 +898,6 @@ mod tests {
             b: (),
             aa: (),
         }
-
-        #[derive(JsonSchema)]
-        struct B {
-            a: (),
-            b: Option<()>,
-            bb: (),
-        }
-
-        let a = schema_for!(A).schema.into();
-        let b = schema_for!(B).schema.into();
-
-        assert!(schemas_mutually_exclusive(&a, &b));
-        assert!(schemas_mutually_exclusive(&b, &a));
-    }
-
-    #[test]
-    fn test_exclusive_one_empty_struct() {
-        #![allow(dead_code)]
-
-        #[derive(JsonSchema)]
-        struct A {}
 
         #[derive(JsonSchema)]
         struct B {

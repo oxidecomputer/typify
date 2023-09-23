@@ -29,6 +29,7 @@ mod output;
 mod structs;
 mod type_entry;
 mod util;
+mod validate;
 mod value;
 
 #[derive(Error, Debug)]
