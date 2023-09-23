@@ -79,11 +79,6 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
                 ..
             }),
         ) => {
-            println!(
-                "resolving {} against {}",
-                ref_name,
-                serde_json::to_string_pretty(other).unwrap()
-            );
             let key = ref_key(ref_name);
             let resolved = defs.get(&key).unwrap();
             try_merge_schema(resolved, other, defs)
@@ -100,12 +95,6 @@ fn merge_schema_object(
 ) -> Result<Schema, ()> {
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
-
-    println!(
-        "merge_schema_object {}\n{}",
-        serde_json::to_string_pretty(a).unwrap(),
-        serde_json::to_string_pretty(b).unwrap(),
-    );
 
     let instance_type = merge_so_instance_type(a.instance_type.as_ref(), b.instance_type.as_ref())?;
     let format = merge_so_format(a.format.as_ref(), b.format.as_ref())?;
@@ -232,18 +221,13 @@ fn try_merge_with_subschemas(
             then_schema: None,
             else_schema: None,
         }) => {
-            println!(
-                "folding {} {}",
-                serde_json::to_string_pretty(&schema_object).unwrap(),
-                serde_json::to_string_pretty(all_of).unwrap(),
-            );
-            let xxx = all_of
+            let merged_schema = all_of
                 .iter()
                 .try_fold(schema_object.into(), |schema, other| {
                     try_merge_schema(&schema, other, defs)
                 })?;
-            assert_ne!(xxx, Schema::Bool(false));
-            Ok(xxx.into_object())
+            assert_ne!(merged_schema, Schema::Bool(false));
+            Ok(merged_schema.into_object())
         }
 
         Some(SubschemaValidation {
@@ -264,22 +248,18 @@ fn try_merge_with_subschemas(
             then_schema: None,
             else_schema: None,
         }) => {
-            // TODO should get fancier here. First we should pairwise merge the
-            // schemas; if the result is invalid / unresolvable / never /
-            // whatever, we should exclude it from the list. If it is valid,
-            // *then* we should do the join thing to preserve information (and
-            // we probably only need to *that* if at least one schema contains
-            // a ref). This could probably be an opportunity for memoization,
-            // but this is an infrequent construction so... whatever.
+            // First we do a pairwise merge the schemas; if the result is
+            // invalid / unresolvable / never / whatever, we exclude it
+            // from the list. If it is valid, *then* we do the join to preserve
+            // information (though we probably only need to *that* if at least
+            // one schema contains a ref). This could probably be an
+            // opportunity for memoization, but this is an infrequent
+            // construction so... whatever.
             let joined_schemas = Some(
                 subschemas
                     .iter()
                     .filter_map(|other| {
-                        println!(
-                            "joining {}\n{}",
-                            serde_json::to_string_pretty(&schema_object).unwrap(),
-                            serde_json::to_string_pretty(other).unwrap(),
-                        );
+                        // Skip if the merged schema is unsatisfiable.
                         let _ =
                             try_merge_schema(&schema_object.clone().into(), other, defs).ok()?;
                         Some(join_schema(&schema_object, other))
@@ -341,9 +321,8 @@ fn try_merge_with_subschemas(
             })
         }
 
-        Some(x) => {
-            println!("{}", serde_json::to_string_pretty(x).unwrap());
-            todo!()
+        Some(unknown) => {
+            todo!("{}", serde_json::to_string_pretty(unknown).unwrap());
         }
         None => Ok(schema_object),
     }
