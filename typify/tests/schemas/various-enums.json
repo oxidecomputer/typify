@@ -95,6 +95,15 @@
         "alternate"
       ]
     },
+    "EmptyObject": {
+      "type": "object",
+      "properties": {
+        "prop": {
+          "type": "object",
+          "enum": [{}]
+        }
+      }
+    },
     "JankNames": {
       "oneOf": [
         {

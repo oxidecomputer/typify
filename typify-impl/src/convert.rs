@@ -2,6 +2,7 @@
 
 use std::collections::BTreeSet;
 
+use crate::merge::{merge_all, merge_with_subschemas};
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
@@ -23,6 +24,11 @@ impl TypeSpace {
         type_name: Name,
         schema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        info!(
+            "convert_schema {:?} {}",
+            type_name,
+            serde_json::to_string_pretty(schema).unwrap()
+        );
         match schema {
             Schema::Object(obj) => {
                 if let Some(type_entry) = self.cache.lookup(obj) {
@@ -54,7 +60,16 @@ impl TypeSpace {
                 enum_values,
                 ..
             } if multiple.len() == 2 && multiple.contains(&InstanceType::Null) => {
-                if let Some(other_type) = multiple.iter().find(|t| t != &&InstanceType::Null) {
+                let only_null = enum_values.as_ref().map_or(false, |values| {
+                    values.iter().all(serde_json::Value::is_null)
+                });
+
+                if only_null {
+                    // If there are enumerated values and they're all null,
+                    // it's just a null.
+                    self.convert_null(metadata)
+                } else if let Some(other_type) = multiple.iter().find(|t| t != &&InstanceType::Null)
+                {
                     // In the sensible case where only one of the instance
                     // types is null.
                     let enum_values = enum_values.clone().map(|values| {
@@ -318,7 +333,7 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
@@ -350,6 +365,9 @@ impl TypeSpace {
             // TODO this could be generalized to validate any redundant
             // validation here or could be used to compute a new, more
             // constrained type.
+            // TODO the strictest interpretation might be to ignore any fields
+            // that appear alongside "$ref" per
+            // https://json-schema.org/understanding-json-schema/structuring.html#ref
             SchemaObject {
                 metadata,
                 instance_type,
@@ -451,6 +469,24 @@ impl TypeSpace {
                 // Unknown
                 _ => todo!("{:#?}", subschemas),
             },
+
+            // Subschemas with other stuff.
+            SchemaObject {
+                subschemas: Some(_),
+                ..
+            } => {
+                let without_subschemas = SchemaObject {
+                    subschemas: None,
+                    ..schema.clone()
+                };
+                let merged_schema = merge_with_subschemas(
+                    without_subschemas,
+                    schema.subschemas.as_deref(),
+                    &self.definitions,
+                );
+                let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
+                Ok((type_entry, &None))
+            }
 
             // TODO let's not bother with const values at the moment. In the
             // future we could create types that have a single value with a
@@ -624,7 +660,10 @@ impl TypeSpace {
             }
 
             // Unknown
-            SchemaObject { .. } => todo!("invalid (or unexpected) schema:\n{:#?}", schema),
+            SchemaObject { .. } => todo!(
+                "invalid (or unexpected) schema:\n{}",
+                serde_json::to_string_pretty(schema).unwrap()
+            ),
         }
     }
 
@@ -687,7 +726,6 @@ impl TypeSpace {
                     metadata,
                 ))
             }
-
             Some("date-time") => {
                 self.uses_chrono = true;
                 Ok((
@@ -720,6 +758,7 @@ impl TypeSpace {
                 ),
                 metadata,
             )),
+
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
                 Ok((TypeEntryDetails::String.into(), metadata))
@@ -990,13 +1029,17 @@ impl TypeSpace {
                 && additional_properties.as_ref().map(AsRef::as_ref)
                     != Some(&Schema::Bool(false)) =>
             {
-                self.make_map(
+                let type_entry = self.make_map(
                     type_name.into_option(),
                     property_names,
                     additional_properties,
-                )
+                )?;
+                Ok((type_entry, metadata))
             }
-            None => self.make_map(type_name.into_option(), &None, &None),
+            None => {
+                let type_entry = self.make_map(type_name.into_option(), &None, &None)?;
+                Ok((type_entry, metadata))
+            }
 
             // The typical case
             Some(validation) => {
@@ -1047,31 +1090,58 @@ impl TypeSpace {
             return Ok((ty, metadata));
         }
 
-        if let Some(ty) = self.maybe_all_of_constraints(type_name.clone(), subschemas) {
-            return Ok((ty, metadata));
-        }
+        // In the general case, we merge all schemas in the array. The merged
+        // schema will reflect all definitions and constraints. For example, it
+        // will have the union of all properties for an object, recursively
+        // merging properties defined in multiple schemas; it will have the
+        // union of all required object properties; and it will enforce the
+        // greater of all numeric constraints (e.g. the greater of all
+        // specified minimum values).
+        //
+        // Sometimes merging types will produce a result for which no data is
+        // valid, the schema is unsatisfiable. Consider this trivial case:
+        //
+        // "allOf": [
+        //     { "type": "integer", "minimum": 5 },
+        //     { "type": "integer", "maximum": 3 }
+        // ]
+        //
+        // No number is >= 5 *and* <= 3! Good luck with that schema!
+        //
+        // Note that we will effectively "embed" any referenced types. Consider
+        // a construction like this:
+        //
+        // "allOf": [
+        //     { "$ref": "#/definitions/SuperClass" },
+        //     { "type": "object", "properties": { "another_prop: {} }}
+        // ]
+        //
+        // The resulting merged schema will include all properties of
+        // "SuperClass" as well as "another_prop" (which we assume to not have
+        // been present in the original). This is suboptimal in that we would
+        // like the generated types to reflect some association with the
+        // original sub-type.
+        //
+        // TODO
+        // In cases where we have a named type, we would like to provide
+        // conversion methods to extract the named type from the merged type.
+        // In the "SuperClass" example above, we would provide an
+        // Into<SuperClass> implementation to discard the additional properties
+        // and produce an instance of "SuperClass".
+        //
+        // We can do something similar for types that become additionally
+        // constrained: a field that becomes required can be converted to an
+        // optional field; a number whose value is limited can be converted to
+        // the more expansive numeric type.
 
-        if let Some(ty) = self.maybe_all_of_subclass(type_name.clone(), metadata, subschemas) {
-            return Ok((ty, metadata));
-        }
+        let merged_schema = merge_all(subschemas, &self.definitions);
+        assert_ne!(merged_schema, Schema::Bool(false));
+        let mut merged_schema = merged_schema.into_object();
+        assert!(merged_schema.metadata.is_none());
+        merged_schema.metadata = metadata.clone();
 
-        // TODO JSON schema is annoying. In particular, "allOf" means that all
-        // schemas must validate. So for us to construct the schema below, each
-        // type must actually be "open" i.e. it must permit arbitrary
-        // properties. If it does not, the schemas would not validate i.e. a
-        // value (object) could not satisfy both Schema1 and Schema2. To do
-        // this as accurately as possible, we would need to validate that each
-        // subschema was "open", pull out the "extra" item from each one, etc.
-
-        // We'll want to build a struct that looks like this:
-        // struct Name {
-        //     #[serde(flatten)]
-        //     schema1: Schema1Type,
-        //     #[serde(flatten)]
-        //     schema2: Schema2Type,
-        //     ...
-        // }
-        self.flattened_union_struct(type_name, metadata, subschemas, false)
+        let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
+        Ok((type_entry, &None))
     }
 
     fn convert_any_of<'a>(
@@ -1398,6 +1468,25 @@ impl TypeSpace {
                     None => Name::Unknown,
                 };
                 let (type_id, _) = self.id_for_schema(item_type_name, item.as_ref())?;
+
+                // If items are unique, this is a Set; otherwise it's an Array.
+                match unique_items {
+                    Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
+                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
+                }
+            }
+
+            // Arrays and sets with no specified items.
+            ArrayValidation {
+                items: None,
+                additional_items: _, // By spec: ignored for missing items
+                max_items: _,        // TODO enforce size limitations
+                min_items: _,        // TODO enforce size limitations
+                unique_items,
+                contains: None,
+            } => {
+                self.uses_serde_json = true;
+                let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
 
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
