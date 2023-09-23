@@ -3,6 +3,8 @@
 Typify compiles JSON Schema documents into Rust types. It can be used in one of
 several ways:
 
+- using the [`cargo typify`](./cargo-typify/README.md) command
+
 - via the macro `import_types!("types.json")` to generate Rust types directly in
   your program
 
@@ -11,11 +13,10 @@ several ways:
 - via the builder functions to generate persistent files e.g. when building
   API bindings
 
-- using the [`cargo typify`](./cargo-typify/README.md) command
-
-**If generation fails or is lousy**: Please file an issue and include the JSON
-Schema and Rust output (if there is any). Use `cargo typify` command to
-generate code from the command-line.
+**If generation fails, doesn't compile or is generally lousy**: Please file an
+issue and include the JSON Schema and Rust output (if there is any). Use `cargo
+typify` command to generate code from the command-line. It's even more helpful
+if you can articulate the output you'd ideally like to see.
 
 ## JSON Schema → Rust types
 
@@ -56,21 +57,31 @@ simply get the `#[serde(default)]` attribute (so you won't see e.g.
 
 ### OneOf
 
-The `OneOf` construct maps to a Rust enum. Typify maps this to the various
+The `oneOf` construct maps to a Rust enum. Typify maps this to the various
 [serde enum types](https://serde.rs/enum-representations.html).
 
-### AnyOf / AllOf
+### AllOf
 
-The `anyOf` and `allOf` constructs are a little trickier to handle, but (in
-general) Typify models these as structs where each member is decorated with the
-`#[serde(flatten)]` attribute (with `Option` wrappers in the case of `anyOf`).
+The 'allOf' construct is handled by merging schemas. While most of the time,
+typify tries to preserve and share type names, it can't always do this when
+merging schemas. You may end up with fields replicated across type; optimizing
+this generation is an area of active work.
+
+### AnyOf
+
+The `anyOf` construct is much trickier. If can be close to an `enum` (`oneOf`),
+but where no particular variant might be canonical or unique for particular
+data. While today we (imprecisely) model these as structs with optional,
+flattened members, this is one of the weaker areas of code generation.
+
+Issues describing example schemas and desired output are welcome and helpful.
 
 ## Formatting
 
-By default Typify's generated code is not formatted. If formatted code is
-preferred, crates like [rustfmt-wrapper](https://docs.rs/rustfmt-wrapper) and
-[prettyplease](https://docs.rs/prettyplease) can be used to format the generated
-code before writing it to a file.
+You can format generated code using crates such as
+[rustfmt-wrapper](https://docs.rs/rustfmt-wrapper) and
+[prettyplease](https://docs.rs/prettyplease). This can be particularly useful
+when checking in code or emitting code from a `build.rs`.
 
 The examples below show different ways to convert a `TypeSpace` to a string
 (`typespace` is a `typify::TypeSpace`).
@@ -113,6 +124,12 @@ generated type isn't what you expect, please file an issue.
 
 There are some known areas where we'd like to improve:
 
+### Complex JSON Schema types
+
+JSON schema can express a wide variety of types. Some of them are easy to model
+in Rust; others aren't. There's a lot of work to be done to handle esoteric
+types. Examples from users are very helpful in this regard.
+
 ### Bounded numbers
 
 Bounded numbers aren't very well handled. Consider, for example, the schema:
@@ -134,15 +151,3 @@ type; similarly, a `format` of `date` translates to
 `chrono::Date<chrono::offset::Utc>`. For users that don't want dependencies on
 `uuid` or `chrono` it would be useful for Typify to optionally represent those
 as `String` (or as some other, consumer-specified type).
-
-### Cyclic types
-
-Typify has special-case handling for self-referential types. For example:
-
-```rust
-struct A {
-    a: Box<A>,
-}
-```
-
-.. but it does not support more complex cycles such as A -> B -> A.
