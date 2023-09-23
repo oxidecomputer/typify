@@ -28,5 +28,8 @@
         "format": "date-time"
       }
     }
-  }
+  },
+  "$comment": "usual case of a map whose name must come from its title",
+  "title": "DeadSimple",
+  "type": "object"
 }

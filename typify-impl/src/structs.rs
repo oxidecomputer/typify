@@ -3,9 +3,7 @@
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
 use quote::quote;
-use schemars::schema::{
-    InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-};
+use schemars::schema::{InstanceType, Metadata, ObjectValidation, Schema, SchemaObject};
 
 use crate::{
     output::{OutputSpace, OutputSpaceMod},
@@ -13,7 +11,7 @@ use crate::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
         WrappedValue,
     },
-    util::{get_object_ref, get_type_name, metadata_description, recase, schema_is_named, Case},
+    util::{get_type_name, metadata_description, recase, Case},
     Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
@@ -78,6 +76,7 @@ impl TypeSpace {
             {
                 false
             }
+
             None => false,
 
             // Only particular additional properties are allowed. Note that
@@ -86,7 +85,7 @@ impl TypeSpace {
             // quite right.
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
-                let (map_type, _) = self.make_map(
+                let map_type = self.make_map(
                     sub_type_name,
                     &validation.property_names,
                     additional_properties,
@@ -171,12 +170,12 @@ impl TypeSpace {
         })
     }
 
-    pub(crate) fn make_map<'a>(
+    pub(crate) fn make_map(
         &mut self,
         type_name: Option<String>,
         property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
-    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+    ) -> Result<TypeEntry> {
         let key_id = match property_names.as_deref() {
             Some(Schema::Bool(true)) | None => self.assign_type(TypeEntryDetails::String.into()),
 
@@ -205,7 +204,7 @@ impl TypeSpace {
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok((TypeEntryDetails::Map(key_id, value_id).into(), &None))
+        Ok(TypeEntryDetails::Map(key_id, value_id).into())
     }
 
     /// Perform a schema conversion for a type that must be string-like.
@@ -297,194 +296,6 @@ impl TypeSpace {
             TypeEntryStruct::from_metadata(self, type_name, metadata, properties, false),
             metadata,
         ))
-    }
-
-    /// This handles the case where an allOf is used to effect inheritance: the
-    /// subschemas consist of one or more "super classes" that have names with
-    /// a final, anonymous object.
-    ///
-    /// ```text
-    /// "allOf": [
-    ///     { "$ref": "#/definitions/SuperClass" },
-    ///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
-    /// ]
-    /// ```
-    ///
-    /// This turns into a struct of this form:
-    /// ```compile_fail
-    /// struct MyType {
-    ///     #[serde(flatten)]
-    ///     super_class: SuperClass,
-    ///     prop_a: (),
-    ///     prop_b: (),
-    /// }
-    /// ```
-    ///
-    /// Note that the super class member names are derived from the type and
-    /// are flattened into the struct; the subclass properties are simply
-    /// included alongside.
-    pub(crate) fn maybe_all_of_subclass(
-        &mut self,
-        type_name: Name,
-        metadata: &Option<Box<Metadata>>,
-        subschemas: &[Schema],
-    ) -> Option<TypeEntry> {
-        assert!(subschemas.len() > 1);
-
-        // Split the subschemas into named (superclass) and unnamed (subclass)
-        // schemas.
-        let mut named = Vec::new();
-        let mut unnamed = Vec::new();
-        for schema in subschemas {
-            match schema_is_named(schema) {
-                Some(name) => named.push((schema, name)),
-                None => unnamed.push(schema),
-            }
-        }
-
-        // We required exactly one unnamed subschema for this special case.
-        // Note that zero unnamed subschemas would be trivial to handle, but
-        // the generic case already does so albeit slightly differently.
-        if unnamed.len() != 1 {
-            return None;
-        }
-
-        // Get the object validation (or fail to match this special case).
-        let unnamed_schema = unnamed.first()?;
-        let validation = match unnamed_schema {
-            Schema::Object(SchemaObject {
-                metadata: _,
-                instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
-                enum_values: None,
-                const_value: None,
-                subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: Some(validation),
-                reference: None,
-                extensions: _,
-            }) if single.as_ref() == &InstanceType::Object => Some(validation),
-            _ => None,
-        }?;
-        let tmp_type_name = get_type_name(&type_name, metadata);
-        let (unnamed_properties, _) = self.struct_members(tmp_type_name, validation).ok()?;
-
-        let named_properties = named
-            .iter()
-            .map(|(schema, property_name)| {
-                let (type_id, metadata) = self.id_for_schema(type_name.clone(), schema)?;
-                let (name, _) = recase(property_name, Case::Snake);
-                let name = if validation.properties.contains_key(&name) {
-                    format!("{}__", name)
-                } else {
-                    name
-                };
-                Ok(StructProperty {
-                    name,
-                    rename: StructPropertyRename::Flatten,
-                    state: StructPropertyState::Required,
-                    description: metadata_description(metadata),
-                    type_id,
-                })
-            })
-            .collect::<Result<Vec<_>>>()
-            .ok()?;
-
-        Some(TypeEntryStruct::from_metadata(
-            self,
-            type_name,
-            metadata,
-            named_properties
-                .into_iter()
-                .chain(unnamed_properties.into_iter())
-                .collect(),
-            // Note that #[serde(deny_unknown_fields)] is incompatible with
-            // #[serde(flatten)] which we use for the superclass(es).
-            false,
-        ))
-    }
-
-    /// This handles the case where an allOf is used to denote constraints.
-    /// Currently we just look for a referenced type, which may be "closed"
-    /// (i.e. no unknown fields permitted) and an explicit type. The latter
-    /// must be a subset of the former and compatible from the perspective of
-    /// JSON Schema validation (that is to say, it must be "open" or must fully
-    /// cover the named type).
-    ///
-    /// ```text
-    /// "allOf": [
-    ///     { "$ref": "#/definitions/SomeType" },
-    ///     { "type": "object", "properties": { "prop_a": .., "prop_b": .. }}
-    /// ]
-    /// ```
-    ///
-    /// Types such as these should be treated as the named type along with
-    /// constraints. What do we do to enforce these constraints or communicate
-    /// them to the consumer? Nothing!
-    ///
-    /// What could we do? We could add a custom `serialize_with` /
-    /// `deserialize_with` functions to validate the constrains in and out.
-    /// Or we could introduce a newtype wrapper to enforce those constraints.
-    pub(crate) fn maybe_all_of_constraints(
-        &mut self,
-        type_name: Name,
-        subschemas: &[Schema],
-    ) -> Option<TypeEntry> {
-        assert!(subschemas.len() > 1);
-
-        // Split the subschemas into named (superclass) and unnamed (subclass)
-        // schemas.
-        let mut named = Vec::new();
-        let mut unnamed = Vec::new();
-        for schema in subschemas {
-            // TODO this might not be quite right since this will be true for
-            // schemas that have a title; we may want to look only for types
-            // with a mandatory name. Types with a title (optional name) are
-            // reasonable to inline generally.
-            match schema_is_named(schema) {
-                Some(name) => named.push((schema, name)),
-                None => unnamed.push(schema),
-            }
-        }
-
-        // We required exactly one named subschema and at least one unnamed
-        // subschema.
-        if named.len() != 1 || unnamed.is_empty() {
-            return None;
-        }
-
-        let (named_schema, _) = named.first()?;
-        let validation = get_object_ref(named_schema, &self.definitions)?;
-
-        // We need all unnamed schemas to be a subset of the named schema.
-        if !unnamed
-            .into_iter()
-            .all(|constraint_schema| is_obj_subset(validation, constraint_schema))
-        {
-            return None;
-        }
-
-        let (type_entry, _) = self.convert_schema(type_name, named_schema).ok()?;
-        Some(type_entry)
-    }
-}
-
-fn is_obj_subset(validation: &ObjectValidation, constraint_schema: &Schema) -> bool {
-    if let Schema::Object(SchemaObject {
-        object: Some(obj), ..
-    }) = constraint_schema
-    {
-        // TODO there's a lot more we could do to determine whether this is a
-        // subset including inspection of the property types and confirming
-        // that either all properties are covered or that the constraint object
-        // is "open".
-        obj.properties
-            .keys()
-            .all(|key| validation.properties.contains_key(key))
-    } else {
-        false
     }
 }
 

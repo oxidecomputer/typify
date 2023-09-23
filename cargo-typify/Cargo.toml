@@ -16,9 +16,10 @@ typify = { version = "0.0.13", path = "../typify" }
 
 clap = { version = "4.4.2", features = ["derive"] }
 color-eyre = "0.6"
+env_logger = "0.10"
+rustfmt-wrapper = "0.2.0"
 serde_json = "1.0.107"
 schemars = "0.8.13"
-rustfmt-wrapper = "0.2.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"
