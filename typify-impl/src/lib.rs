@@ -508,6 +508,12 @@ impl TypeSpace {
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
             _ => {
+                info!(
+                    "type alias {:?} {}\n{:?}",
+                    type_name,
+                    serde_json::to_string_pretty(&schema).unwrap(),
+                    metadata
+                );
                 let subtype_id = self.assign_type(type_entry);
                 TypeEntryNewtype::from_metadata(self, type_name, metadata, subtype_id)
             }

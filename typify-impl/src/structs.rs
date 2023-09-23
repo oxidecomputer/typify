@@ -76,6 +76,7 @@ impl TypeSpace {
             {
                 false
             }
+
             None => false,
 
             // Only particular additional properties are allowed. Note that
@@ -84,7 +85,7 @@ impl TypeSpace {
             // quite right.
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
-                let (map_type, _) = self.make_map(
+                let map_type = self.make_map(
                     sub_type_name,
                     &validation.property_names,
                     additional_properties,
@@ -174,7 +175,7 @@ impl TypeSpace {
         type_name: Option<String>,
         property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
-    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+    ) -> Result<TypeEntry> {
         let key_id = match property_names.as_deref() {
             Some(Schema::Bool(true)) | None => self.assign_type(TypeEntryDetails::String.into()),
 
@@ -203,7 +204,7 @@ impl TypeSpace {
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok((TypeEntryDetails::Map(key_id, value_id).into(), &None))
+        Ok(TypeEntryDetails::Map(key_id, value_id).into())
     }
 
     /// Perform a schema conversion for a type that must be string-like.

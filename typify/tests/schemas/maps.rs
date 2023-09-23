@@ -1,5 +1,28 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DeadSimple(pub serde_json::Map<String, serde_json::Value>);
+impl std::ops::Deref for DeadSimple {
+    type Target = serde_json::Map<String, serde_json::Value>;
+    fn deref(&self) -> &serde_json::Map<String, serde_json::Value> {
+        &self.0
+    }
+}
+impl From<DeadSimple> for serde_json::Map<String, serde_json::Value> {
+    fn from(value: DeadSimple) -> Self {
+        value.0
+    }
+}
+impl From<&DeadSimple> for DeadSimple {
+    fn from(value: &DeadSimple) -> Self {
+        value.clone()
+    }
+}
+impl From<serde_json::Map<String, serde_json::Value>> for DeadSimple {
+    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
+        Self(value)
+    }
+}
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Eh(pub String);
 impl std::ops::Deref for Eh {

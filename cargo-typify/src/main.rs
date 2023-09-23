@@ -1,3 +1,5 @@
+// Copyright 2023 Oxide Computer Company
+
 use cargo_typify::{convert, CliArgs};
 use clap::Parser;
 
@@ -11,6 +13,7 @@ enum CargoCli {
 }
 
 fn main() -> Result<()> {
+    env_logger::init();
     color_eyre::install()?;
 
     let cli = CargoCli::parse();
