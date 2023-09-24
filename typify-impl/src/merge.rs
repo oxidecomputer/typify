@@ -5,6 +5,7 @@ use std::{
     iter::repeat,
 };
 
+use log::debug;
 use schemars::schema::{
     ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
     SingleOrVec, StringValidation, SubschemaValidation,
@@ -84,7 +85,7 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
             try_merge_schema(resolved, other, defs)
         }
 
-        (Schema::Object(aa), Schema::Object(bb)) => merge_schema_object(aa, bb, defs),
+        (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)?.into()),
     }
 }
 
@@ -92,7 +93,13 @@ fn merge_schema_object(
     a: &SchemaObject,
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<Schema, ()> {
+) -> Result<SchemaObject, ()> {
+    debug!(
+        "merging {}\n{}",
+        serde_json::to_string_pretty(a).unwrap(),
+        serde_json::to_string_pretty(b).unwrap(),
+    );
+
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
 
@@ -138,8 +145,13 @@ fn merge_schema_object(
         b.const_value.as_ref(),
     )?;
 
+    debug!(
+        "merged {}",
+        serde_json::to_string_pretty(&merged_schema).unwrap(),
+    );
+
     match enum_values {
-        None => Ok(merged_schema.into()),
+        None => Ok(merged_schema),
         Some(enum_values) => {
             let enum_values = enum_values
                 .into_iter()
@@ -154,8 +166,7 @@ fn merge_schema_object(
                 Ok(SchemaObject {
                     enum_values: Some(enum_values),
                     ..merged_schema
-                }
-                .into())
+                })
             }
         }
     }
@@ -206,11 +217,16 @@ pub(crate) fn merge_with_subschemas(
     try_merge_with_subschemas(schema_object, maybe_subschemas, defs).unwrap()
 }
 
+/// Merge the schema with a subschema validation object. It's important that
+/// the return value reduces the complexity of the problem so avoid infinite
+/// recursion.
 fn try_merge_with_subschemas(
     schema_object: SchemaObject,
     maybe_subschemas: Option<&SubschemaValidation>,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
+    // TODO conceivably these different subschema types could appear at the
+    // same time; maybe it's fine to just handle them distinctly?
     match maybe_subschemas {
         Some(SubschemaValidation {
             all_of: Some(all_of),
@@ -293,6 +309,16 @@ fn try_merge_with_subschemas(
             })
         }
 
+        Some(SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: None,
+            not: Some(not),
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        }) => try_merge_schema_not(schema_object, not.as_ref(), defs),
+
         // If it's any of the subschemas we don't know how to handle here,
         // we'll try to leave them in place... probably to encounter an error
         // later when we try to convert them...
@@ -300,31 +326,142 @@ fn try_merge_with_subschemas(
             all_of: None,
             any_of: None,
             one_of: None,
-            not,
+            not: None,
             if_schema,
             then_schema,
             else_schema,
-        }) if not.is_some()
-            || if_schema.is_some()
-            || then_schema.is_some()
-            || else_schema.is_some() =>
-        {
-            if let Some(ss) = &schema_object.subschemas {
-                assert!(ss.not.is_none());
-                assert!(ss.if_schema.is_none());
-                assert!(ss.then_schema.is_none());
-                assert!(ss.else_schema.is_none());
-            }
-            Ok(SchemaObject {
-                subschemas: maybe_subschemas.cloned().map(Box::new),
-                ..schema_object
-            })
+        }) if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() => {
+            unimplemented!("if/then/else schemas are not supported")
         }
 
         Some(unknown) => {
             todo!("{}", serde_json::to_string_pretty(unknown).unwrap());
         }
         None => Ok(schema_object),
+    }
+}
+
+/// "Subtract" the "not" schema from the schema object.
+///
+/// TODO Exactly where and how we handle not constructions is... tricky! As we
+/// find and support more and more useful uses of not we will likely move some
+/// of this into the conversion methods.
+fn try_merge_schema_not(
+    mut schema_object: SchemaObject,
+    not_schema: &Schema,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<SchemaObject, ()> {
+    match not_schema {
+        // Subtracting everything leaves nothing...
+        Schema::Bool(true) => Err(()),
+        // ... whereas subtracting nothing leaves everything.
+        Schema::Bool(false) => Ok(schema_object),
+
+        Schema::Object(SchemaObject {
+            metadata: None,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: Some(not_object),
+            reference: None,
+            extensions: _,
+        }) => {
+            // TODO this is incomplete, but seems sufficient for the schemas
+            // we've seen in the wild.
+            if let Some(ObjectValidation {
+                required,
+                properties,
+                ..
+            }) = schema_object.object.as_deref_mut()
+            {
+                not_object.required.iter().for_each(|not_required| {
+                    let _ = required.remove(not_required);
+                    let _ = properties.remove(not_required);
+                });
+            }
+
+            Ok(schema_object)
+        }
+
+        Schema::Object(SchemaObject {
+            metadata: None,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: Some(not_subschemas),
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => try_merge_with_subschemas_not(schema_object, not_subschemas, defs),
+
+        // If we can't usefully reduce the complexity, leave it for the
+        // coversion pass.
+        _ => {
+            schema_object.subschemas().not = Some(Box::new(not_schema.clone()));
+            Ok(schema_object)
+        }
+    }
+}
+
+fn try_merge_with_subschemas_not(
+    schema_object: SchemaObject,
+    not_subschemas: &SubschemaValidation,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<SchemaObject, ()> {
+    match not_subschemas {
+        SubschemaValidation {
+            all_of: None,
+            any_of: Some(any_of),
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => {
+            // A not of anyOf is equivalent to an allOf of not... and the
+            // latter is easier to merge with other schemas by subtraction.
+            let all_of = any_of
+                .iter()
+                .map(|ss| {
+                    Schema::Object(SchemaObject {
+                        subschemas: Some(Box::new(SubschemaValidation {
+                            not: Some(Box::new(ss.clone())),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    })
+                })
+                .collect::<Vec<_>>();
+            let new_other = SchemaObject {
+                subschemas: Some(Box::new(SubschemaValidation {
+                    all_of: Some(all_of),
+                    ..Default::default()
+                })),
+                ..Default::default()
+            };
+            merge_schema_object(&schema_object, &new_other, defs)
+        }
+
+        SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => Ok(schema_object),
+
+        _ => todo!(),
     }
 }
 
