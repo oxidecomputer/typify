@@ -12,6 +12,7 @@ use typify_impl::TypeSpaceImpl;
 
 #[test]
 fn test_schemas() {
+    env_logger::init();
     // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
         validate_schema(entry.unwrap()).unwrap();

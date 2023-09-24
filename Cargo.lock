@@ -1176,6 +1176,7 @@ name = "typify"
 version = "0.0.13"
 dependencies = [
  "chrono",
+ "env_logger",
  "expectorate",
  "glob",
  "quote",

@@ -1237,6 +1237,16 @@ impl TypeSpace {
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // TODO it would probably be smart to do a pass through the schema
+        // given to us and either put it into some canonical form or move to
+        // some sort of intermediate representation.
+        //
+        // Each of the enum types does some similar exploration of each
+        // variant-schema--it should be possible to do that once. In addition
+        // the various enum types rely on some heuristics around how schemas
+        // are laid out; it would be nice to eliminate some of the guesswork,
+        // but putting schemas into a predictable form.
+
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)
             .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))

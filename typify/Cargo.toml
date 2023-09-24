@@ -19,6 +19,7 @@ typify-impl = { version = "0.0.13", path = "../typify-impl" }
 
 [dev-dependencies]
 chrono = { version = "0.4.31", features = ["serde"] }
+env_logger = "0.10.0"
 expectorate = "1.0.7"
 glob = "0.3.1"
 quote = "1.0.33"
