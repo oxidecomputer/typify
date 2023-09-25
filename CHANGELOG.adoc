@@ -16,6 +16,7 @@
 * Handle arbitrary containment cycles (#300)
 * More permissive of valid (if useless) schema constructions (#306, #320)
 * Much better handling of `allOf` constructions by merging schemas (#405)
+* Support for more `not` subschemas (#410)
 
 https://github.com/oxidecomputer/typify/compare/v0.0.13\...HEAD[Full list of commits]
 
