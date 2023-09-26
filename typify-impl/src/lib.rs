@@ -101,6 +101,12 @@ pub enum TypeEnumVariant<'a> {
     Struct(Vec<(&'a str, TypeId)>),
 }
 
+pub struct TypeEnumVariantInfo<'a> {
+    pub name: &'a str,
+    pub description: Option<&'a str>,
+    pub details: TypeEnumVariant<'a>,
+}
+
 /// Struct type details.
 pub struct TypeStruct<'a> {
     details: &'a type_entry::TypeEntryStruct,
@@ -866,8 +872,12 @@ impl<'a> Type<'a> {
 
 impl<'a> TypeEnum<'a> {
     pub fn variants(&'a self) -> impl Iterator<Item = (&'a str, TypeEnumVariant<'a>)> {
+        self.variants_info().map(|info| (info.name, info.details))
+    }
+
+    pub fn variants_info(&'a self) -> impl Iterator<Item = TypeEnumVariantInfo<'a>> {
         self.details.variants.iter().map(move |variant| {
-            let v = match &variant.details {
+            let details = match &variant.details {
                 type_entry::VariantDetails::Simple => TypeEnumVariant::Simple,
                 // The distinction between a lone item variant and a tuple
                 // variant with a single item is only relevant internally.
@@ -882,7 +892,11 @@ impl<'a> TypeEnum<'a> {
                         .collect(),
                 ),
             };
-            (variant.name.as_str(), v)
+            TypeEnumVariantInfo {
+                name: variant.name.as_str(),
+                description: variant.description.as_deref(),
+                details,
+            }
         })
     }
 }
