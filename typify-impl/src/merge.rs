@@ -21,34 +21,37 @@ pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> 
         panic!("merge_all requires at least two schemas")
     };
 
-    let start = merge_schema(a, b, defs);
-
-    ss.fold(start, |schema, other| merge_schema(&schema, other, defs))
+    try_merge_schema(a, b, defs)
+        .and_then(|start| {
+            ss.try_fold(start, |schema, other| {
+                try_merge_schema(&schema, other, defs)
+            })
+        })
+        .unwrap_or_else(|_| Schema::Bool(false))
 }
 
-/// Merge two schemas returning the resulting schema. If the two schemas are
-/// incompatible (i.e. if there is no data that can satisfy them both
-/// simultaneously) then this returns `Schema::Bool(false)`.
-fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
-    match try_merge_schema(a, b, defs) {
-        Ok(schema) => schema,
-        // An error indicates that there is no value that satisfies both
-        // schemas.
-        Err(()) => Schema::Bool(false),
-    }
-}
-
-fn merge_maybe_schema(
+/// Given two additionalItems schemas that might be None--which is equivalent
+/// to Schema::Bool(true)--this returns the appropriate value. This is only
+/// called in a situation where additionalItems are relevant, so we prefer
+/// `true` to the (equivalent) absence of the schema. In other words, this will
+/// never return None.
+fn merge_additional_items(
     a: Option<&Schema>,
     b: Option<&Schema>,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Option<Schema> {
     match (a, b) {
+        (None, None) => Some(Schema::Bool(true)),
         (None, other) | (other, None) => other.cloned(),
-        (Some(aa), Some(bb)) => Some(merge_schema(aa, bb, defs)),
+        (Some(aa), Some(bb)) => {
+            Some(try_merge_schema(aa, bb, defs).unwrap_or_else(|_| Schema::Bool(false)))
+        }
     }
 }
 
+/// Merge two schemas returning the resulting schema. If the two schemas are
+/// incompatible (i.e. if there is no data that can satisfy them both
+/// simultaneously) then this returns Err.
 fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     match (a, b) {
         (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
@@ -671,9 +674,9 @@ fn merge_so_array(
                     (Some(SingleOrVec::Single(aa_single)), _),
                     (Some(SingleOrVec::Single(bb_single)), _),
                 ) => (
-                    Some(SingleOrVec::Single(Box::new(merge_schema(
+                    Some(SingleOrVec::Single(Box::new(try_merge_schema(
                         aa_single, bb_single, defs,
-                    )))),
+                    )?))),
                     None,
                 ),
 
@@ -692,20 +695,20 @@ fn merge_so_array(
                             items
                                 .iter()
                                 .take(max as usize)
-                                .map(|item_schema| merge_schema(item_schema, single, defs))
-                                .collect(),
+                                .map(|item_schema| try_merge_schema(item_schema, single, defs))
+                                .collect::<Result<_, _>>()?,
                         )),
                         None,
                     ),
                     _ => {
                         let items = items
                             .iter()
-                            .map(|item_schema| merge_schema(item_schema, single, defs))
-                            .collect();
+                            .map(|item_schema| try_merge_schema(item_schema, single, defs))
+                            .collect::<Result<_, _>>()?;
                         let additional_items = additional_items.as_deref().map_or_else(
-                            || single.as_ref().clone(),
-                            |additional_schema| merge_schema(additional_schema, single, defs),
-                        );
+                            || Ok(single.as_ref().clone()),
+                            |additional_schema| try_merge_schema(additional_schema, single, defs),
+                        )?;
                         (
                             Some(SingleOrVec::Vec(items)),
                             Some(Box::new(additional_items)),
@@ -742,22 +745,22 @@ fn merge_so_array(
                             .zip(bb_items_iter)
                             .map(|schemas| match schemas {
                                 (None, None) => unreachable!(),
-                                (None, Some(item)) => item.clone(),
-                                (Some(item), None) => item.clone(),
+                                (None, Some(item)) => Ok(item.clone()),
+                                (Some(item), None) => Ok(item.clone()),
                                 (Some(aa_item), Some(bb_item)) => {
-                                    merge_schema(aa_item, bb_item, defs)
+                                    try_merge_schema(aa_item, bb_item, defs)
                                 }
                             });
 
                     match max_items {
-                        Some(max) if items_len <= max as usize => {
-                            let items = items_iter.take(max as usize).collect();
+                        Some(max) if items_len >= max as usize => {
+                            let items = items_iter.take(max as usize).collect::<Result<_, _>>()?;
                             (Some(SingleOrVec::Vec(items)), None)
                         }
 
                         _ => {
-                            let items = items_iter.take(items_len).collect();
-                            let additional_items = merge_maybe_schema(
+                            let items = items_iter.take(items_len).collect::<Result<_, _>>()?;
+                            let additional_items = merge_additional_items(
                                 aa_additional_items.as_deref(),
                                 bb_additional_items.as_deref(),
                                 defs,
@@ -947,6 +950,7 @@ mod tests {
     use crate::merge::merge_so_instance_type;
 
     use super::try_merge_schema;
+
     #[test]
     fn test_simple_merge() {
         let a = json!({
@@ -987,8 +991,6 @@ mod tests {
         let ab = serde_json::from_value(ab).unwrap();
 
         let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
-
-        println!("{}", serde_json::to_string_pretty(&merged).unwrap());
 
         assert_eq!(merged, ab);
     }
@@ -1110,8 +1112,6 @@ mod tests {
 
         let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
 
-        println!("{}", serde_json::to_string_pretty(&merged).unwrap());
-
         assert_eq!(merged, a);
     }
 
@@ -1195,5 +1195,153 @@ mod tests {
             ),
             Err(()),
         );
+    }
+
+    #[test]
+    fn test_array_fail() {
+        let a = json!({
+            "type": "array",
+            "items": { "type": "integer" }
+        });
+        let b = json!({
+            "type": "array",
+            "items": { "type": "string" }
+        });
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let ab = try_merge_schema(&a, &b, &Default::default());
+
+        assert!(ab.is_err());
+
+        let a = json!({
+            "type": "array",
+            "items": [{ "type": "integer" }, {"type": "object"}]
+        });
+        let b = json!({
+            "type": "array",
+            "items": { "type": "string" }
+        });
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let ab = try_merge_schema(&a, &b, &Default::default());
+
+        assert!(ab.is_err());
+
+        let a = json!({
+            "type": "array",
+            "items": [{ "type": "integer" }, {"type": "object"}]
+        });
+        let b = json!({
+            "type": "array",
+            "items": [{ "type": "integer" }, { "type": "string" }]
+        });
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let ab = try_merge_schema(&a, &b, &Default::default());
+
+        assert!(ab.is_err());
+
+        let a = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "maxItems": 4
+        });
+        let b = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "additionalItems": { "type": "string" },
+            "maxItems": 3
+        });
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        let ab = try_merge_schema(&a, &b, &Default::default());
+
+        assert!(ab.is_err());
+    }
+
+    #[test]
+    fn test_array_good() {
+        let a = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "maxItems": 4
+        });
+        let b = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "additionalItems": { "type": "integer" },
+            "maxItems": 3
+        });
+        let ab = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "maxItems": 3
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let ab = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(merged, ab);
+
+        let a = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "maxItems": 4
+        });
+        let b = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "additionalItems": true,
+        });
+        let ab = json!({
+            "type": "array",
+            "items": [
+                { "type": "integer" },
+                { "type": "integer" },
+                { "type": "integer" }
+            ],
+            "additionalItems": true,
+            "maxItems": 4
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let ab = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(merged, ab);
     }
 }
