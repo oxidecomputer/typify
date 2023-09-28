@@ -33140,8 +33140,8 @@ pub struct MarkGroup {
     pub data: Vec<Data>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
-    pub encode: serde_json::Map<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub encode: Option<Encode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<MarkGroupFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

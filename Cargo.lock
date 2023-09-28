@@ -1195,6 +1195,7 @@ dependencies = [
 name = "typify-impl"
 version = "0.0.14"
 dependencies = [
+ "env_logger",
  "expectorate",
  "heck",
  "log",

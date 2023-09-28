@@ -8478,6 +8478,7 @@ impl From<&DiscussionAnsweredDiscussion> for DiscussionAnsweredDiscussion {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredDiscussionAnswerChosenBy {
     pub avatar_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16163,6 +16164,7 @@ impl std::convert::TryFrom<String> for InstallationSuspendInstallationRepository
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct InstallationSuspendInstallationSuspendedBy {
     pub avatar_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -19163,7 +19165,7 @@ pub struct IssueCommentCreatedIssue {
     pub events_url: String,
     pub html_url: String,
     pub id: i64,
-    pub labels: Vec<IssueCommentCreatedIssueLabelsItem>,
+    pub labels: Vec<Label>,
     pub labels_url: String,
     pub locked: bool,
     pub milestone: Option<Milestone>,
@@ -19244,7 +19246,7 @@ impl std::convert::TryFrom<String> for IssueCommentCreatedIssueActiveLockReason 
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum IssueCommentCreatedIssueAssignee {
     Variant0 {
         avatar_url: String,
@@ -19330,21 +19332,7 @@ impl std::convert::TryFrom<String> for IssueCommentCreatedIssueAssigneeVariant0T
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct IssueCommentCreatedIssueLabelsItem {
-    pub color: String,
-    pub default: bool,
-    pub description: Option<String>,
-    pub id: i64,
-    pub name: String,
-    pub node_id: String,
-    pub url: String,
-}
-impl From<&IssueCommentCreatedIssueLabelsItem> for IssueCommentCreatedIssueLabelsItem {
-    fn from(value: &IssueCommentCreatedIssueLabelsItem) -> Self {
-        value.clone()
-    }
-}
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentCreatedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -19483,7 +19471,7 @@ pub struct IssueCommentDeletedIssue {
     pub events_url: String,
     pub html_url: String,
     pub id: i64,
-    pub labels: Vec<IssueCommentDeletedIssueLabelsItem>,
+    pub labels: Vec<Label>,
     pub labels_url: String,
     pub locked: bool,
     pub milestone: Option<Milestone>,
@@ -19564,7 +19552,7 @@ impl std::convert::TryFrom<String> for IssueCommentDeletedIssueActiveLockReason 
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum IssueCommentDeletedIssueAssignee {
     Variant0 {
         avatar_url: String,
@@ -19650,21 +19638,7 @@ impl std::convert::TryFrom<String> for IssueCommentDeletedIssueAssigneeVariant0T
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct IssueCommentDeletedIssueLabelsItem {
-    pub color: String,
-    pub default: bool,
-    pub description: Option<String>,
-    pub id: i64,
-    pub name: String,
-    pub node_id: String,
-    pub url: String,
-}
-impl From<&IssueCommentDeletedIssueLabelsItem> for IssueCommentDeletedIssueLabelsItem {
-    fn from(value: &IssueCommentDeletedIssueLabelsItem) -> Self {
-        value.clone()
-    }
-}
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentDeletedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -19827,7 +19801,7 @@ pub struct IssueCommentEditedIssue {
     pub events_url: String,
     pub html_url: String,
     pub id: i64,
-    pub labels: Vec<IssueCommentEditedIssueLabelsItem>,
+    pub labels: Vec<Label>,
     pub labels_url: String,
     pub locked: bool,
     pub milestone: Option<Milestone>,
@@ -19908,7 +19882,7 @@ impl std::convert::TryFrom<String> for IssueCommentEditedIssueActiveLockReason {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
+#[serde(untagged, deny_unknown_fields)]
 pub enum IssueCommentEditedIssueAssignee {
     Variant0 {
         avatar_url: String,
@@ -19994,21 +19968,7 @@ impl std::convert::TryFrom<String> for IssueCommentEditedIssueAssigneeVariant0Ty
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct IssueCommentEditedIssueLabelsItem {
-    pub color: String,
-    pub default: bool,
-    pub description: Option<String>,
-    pub id: i64,
-    pub name: String,
-    pub node_id: String,
-    pub url: String,
-}
-impl From<&IssueCommentEditedIssueLabelsItem> for IssueCommentEditedIssueLabelsItem {
-    fn from(value: &IssueCommentEditedIssueLabelsItem) -> Self {
-        value.clone()
-    }
-}
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedIssuePullRequest {
     pub diff_url: String,
     pub html_url: String,
@@ -21402,11 +21362,12 @@ impl std::convert::TryFrom<String> for IssuesMilestonedIssueActiveLockReason {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct IssuesMilestonedIssueMilestone {
     pub closed_at: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub closed_issues: i64,
     pub created_at: chrono::DateTime<chrono::offset::Utc>,
-    pub creator: IssuesMilestonedIssueMilestoneCreator,
+    pub creator: User,
     pub description: Option<String>,
     pub due_on: Option<chrono::DateTime<chrono::offset::Utc>>,
     pub html_url: String,
@@ -21423,88 +21384,6 @@ pub struct IssuesMilestonedIssueMilestone {
 impl From<&IssuesMilestonedIssueMilestone> for IssuesMilestonedIssueMilestone {
     fn from(value: &IssuesMilestonedIssueMilestone) -> Self {
         value.clone()
-    }
-}
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct IssuesMilestonedIssueMilestoneCreator {
-    pub avatar_url: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-    pub events_url: String,
-    pub followers_url: String,
-    pub following_url: String,
-    pub gists_url: String,
-    pub gravatar_id: String,
-    pub html_url: String,
-    pub id: i64,
-    pub login: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    pub node_id: String,
-    pub organizations_url: String,
-    pub received_events_url: String,
-    pub repos_url: String,
-    pub site_admin: bool,
-    pub starred_url: String,
-    pub subscriptions_url: String,
-    #[serde(rename = "type")]
-    pub type_: IssuesMilestonedIssueMilestoneCreatorType,
-    pub url: String,
-}
-impl From<&IssuesMilestonedIssueMilestoneCreator> for IssuesMilestonedIssueMilestoneCreator {
-    fn from(value: &IssuesMilestonedIssueMilestoneCreator) -> Self {
-        value.clone()
-    }
-}
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum IssuesMilestonedIssueMilestoneCreatorType {
-    Bot,
-    User,
-    Organization,
-}
-impl From<&IssuesMilestonedIssueMilestoneCreatorType>
-    for IssuesMilestonedIssueMilestoneCreatorType
-{
-    fn from(value: &IssuesMilestonedIssueMilestoneCreatorType) -> Self {
-        value.clone()
-    }
-}
-impl ToString for IssuesMilestonedIssueMilestoneCreatorType {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Bot => "Bot".to_string(),
-            Self::User => "User".to_string(),
-            Self::Organization => "Organization".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for IssuesMilestonedIssueMilestoneCreatorType {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
-        match value {
-            "Bot" => Ok(Self::Bot),
-            "User" => Ok(Self::User),
-            "Organization" => Ok(Self::Organization),
-            _ => Err("invalid value"),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for IssuesMilestonedIssueMilestoneCreatorType {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for IssuesMilestonedIssueMilestoneCreatorType {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for IssuesMilestonedIssueMilestoneCreatorType {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
-        value.parse()
     }
 }
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
@@ -38901,6 +38780,7 @@ impl std::convert::TryFrom<String> for WorkflowJobStartedWorkflowJobStatus {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct WorkflowJobStartedWorkflowJobStepsItem {
     pub completed_at: (),
     pub conclusion: (),
