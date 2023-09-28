@@ -21,6 +21,11 @@ pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> 
         panic!("merge_all requires at least two schemas")
     };
 
+    debug!(
+        "merge all {}",
+        serde_json::to_string_pretty(schemas).unwrap(),
+    );
+
     try_merge_schema(a, b, defs)
         .and_then(|start| {
             ss.try_fold(start, |schema, other| {
@@ -93,13 +98,8 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
         // remembers what we've already looked up; if we hit a cycle we can
         // consider the proper handling, but it might be to ignore it--a
         // circular allOf chain is a bit hard to reason about.
-        //
-        // TODO if we merge a referenced schema with another schema **and**
-        // the resulting schema is identical to the referenced schema (i.e.
-        // the other schema is strictly more permissive) then we should just
-        // return the reference schema.
         (
-            Schema::Object(SchemaObject {
+            ref_schema @ Schema::Object(SchemaObject {
                 reference: Some(ref_name),
                 ..
             }),
@@ -107,14 +107,26 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
         )
         | (
             other,
-            Schema::Object(SchemaObject {
+            ref_schema @ Schema::Object(SchemaObject {
                 reference: Some(ref_name),
                 ..
             }),
         ) => {
             let key = ref_key(ref_name);
-            let resolved = defs.get(&key).unwrap();
-            try_merge_schema(resolved, other, defs)
+            let resolved = defs
+                .get(&key)
+                .unwrap_or_else(|| panic!("unresolved reference: {}", ref_name));
+            let merged_schema = try_merge_schema(resolved, other, defs)?;
+
+            // If we merge a referenced schema with another schema **and**
+            // the resulting schema is equivalent to the referenced schema
+            // (i.e. the other schema is identical or less permissive) then we
+            // just return the reference schema rather than its contents.
+            if merged_schema.roughly(resolved) {
+                Ok(ref_schema.clone())
+            } else {
+                Ok(merged_schema)
+            }
         }
 
         (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)?.into()),
@@ -126,12 +138,6 @@ fn merge_schema_object(
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
-    debug!(
-        "merging {}\n{}",
-        serde_json::to_string_pretty(a).unwrap(),
-        serde_json::to_string_pretty(b).unwrap(),
-    );
-
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
 
@@ -181,7 +187,9 @@ fn merge_schema_object(
     )?;
 
     debug!(
-        "merged {}",
+        "merging {}\n{}\n|\nv\n{}",
+        serde_json::to_string_pretty(a).unwrap(),
+        serde_json::to_string_pretty(b).unwrap(),
         serde_json::to_string_pretty(&merged_schema).unwrap(),
     );
 
@@ -299,6 +307,7 @@ fn try_merge_with_subschemas(
             then_schema: None,
             else_schema: None,
         }) => {
+            let schema = Schema::Object(schema_object.clone());
             // First we do a pairwise merge the schemas; if the result is
             // invalid / unresolvable / never / whatever, we exclude it
             // from the list. If it is valid, *then* we do the join to preserve
@@ -306,44 +315,53 @@ fn try_merge_with_subschemas(
             // one schema contains a ref). This could probably be an
             // opportunity for memoization, but this is an infrequent
             // construction so... whatever.
-            let joined_schemas = Some(
-                subschemas
-                    .iter()
-                    .filter_map(|other| {
-                        // Skip if the merged schema is unsatisfiable.
-                        let _ =
-                            try_merge_schema(&schema_object.clone().into(), other, defs).ok()?;
-                        // TODO if the merged result is equal to either whole,
-                        // we should just use that.
+            let joined_schemas = subschemas
+                .iter()
+                .filter_map(|other| {
+                    // Skip if the merged schema is unsatisfiable.
+                    let merged_schema = try_merge_schema(&schema, other, defs).ok()?;
+                    if merged_schema.roughly(&schema) {
+                        Some(schema.clone())
+                    } else if merged_schema.roughly(other) {
+                        Some(other.clone())
+                    } else {
                         Some(join_schema(&schema_object, other))
+                    }
+                })
+                .collect::<Vec<_>>();
+
+            match (joined_schemas.first(), joined_schemas.len()) {
+                // All merges failed so this is unsatisfiable.
+                (None, _) => Err(()),
+
+                // If there's a single schema left, just return that as our
+                // only option
+                (Some(only), 1) => Ok(only.clone().into_object()),
+
+                // Otherwise return the appropriate `oneOf` or `anyOf`
+                _ => {
+                    let subschemas = match maybe_subschemas {
+                        Some(SubschemaValidation {
+                            any_of: Some(_), ..
+                        }) => SubschemaValidation {
+                            any_of: Some(joined_schemas),
+                            ..Default::default()
+                        },
+                        Some(SubschemaValidation {
+                            one_of: Some(_), ..
+                        }) => SubschemaValidation {
+                            one_of: Some(joined_schemas),
+                            ..Default::default()
+                        },
+                        _ => unreachable!(),
+                    };
+                    Ok(SchemaObject {
+                        metadata: schema_object.metadata,
+                        subschemas: Some(Box::new(subschemas)),
+                        ..Default::default()
                     })
-                    .collect(),
-            );
-
-            // TODO we'd want to do something special here? maybe return an
-            // error?
-            assert!(!subschemas.is_empty());
-
-            let subschemas = match maybe_subschemas {
-                Some(SubschemaValidation {
-                    any_of: Some(_), ..
-                }) => SubschemaValidation {
-                    any_of: joined_schemas,
-                    ..Default::default()
-                },
-                Some(SubschemaValidation {
-                    one_of: Some(_), ..
-                }) => SubschemaValidation {
-                    one_of: joined_schemas,
-                    ..Default::default()
-                },
-                _ => unreachable!(),
-            };
-            Ok(SchemaObject {
-                metadata: schema_object.metadata,
-                subschemas: Some(Box::new(subschemas)),
-                ..Default::default()
-            })
+                }
+            }
         }
 
         Some(SubschemaValidation {
@@ -967,6 +985,138 @@ fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result
     }
 }
 
+trait Roughly {
+    fn roughly(&self, other: &Self) -> bool;
+}
+
+impl Roughly for schemars::schema::Schema {
+    fn roughly(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Schema::Bool(a), Schema::Bool(b)) => a == b,
+            (Schema::Bool(false), _) | (_, Schema::Bool(false)) => false,
+
+            (Schema::Bool(true), Schema::Object(other))
+            | (Schema::Object(other), Schema::Bool(true)) => matches!(
+                other,
+                SchemaObject {
+                    metadata: _,
+                    instance_type: None,
+                    format: None,
+                    enum_values: None,
+                    const_value: None,
+                    subschemas: None,
+                    number: None,
+                    string: None,
+                    array: None,
+                    object: None,
+                    reference: None,
+                    extensions: _,
+                }
+            ),
+
+            (Schema::Object(a), Schema::Object(b)) => {
+                a.instance_type == b.instance_type
+                    && a.format == b.format
+                    && a.enum_values == b.enum_values
+                    && a.const_value == b.const_value
+                    && roughly_subschemas(a.subschemas.as_deref(), b.subschemas.as_deref())
+                    && a.number == b.number
+                    && a.string == b.string
+                    && roughly_array(a.array.as_deref(), b.array.as_deref())
+                    && roughly_object(a.object.as_deref(), b.object.as_deref())
+                    && a.reference == b.reference
+            }
+        }
+    }
+}
+
+fn roughly_subschemas(a: Option<&SubschemaValidation>, b: Option<&SubschemaValidation>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (None, Some(_)) => false,
+        (Some(_), None) => false,
+        (Some(aa), Some(bb)) => {
+            roughly_schema_array(aa.all_of.as_deref(), bb.all_of.as_deref())
+                && roughly_schema_array(aa.any_of.as_deref(), bb.any_of.as_deref())
+                && roughly_schema_array(aa.one_of.as_deref(), bb.one_of.as_deref())
+                && roughly_schema_option(aa.not.as_deref(), bb.not.as_deref())
+                && roughly_schema_option(aa.if_schema.as_deref(), bb.if_schema.as_deref())
+                && roughly_schema_option(aa.then_schema.as_deref(), bb.then_schema.as_deref())
+                && roughly_schema_option(aa.else_schema.as_deref(), bb.else_schema.as_deref())
+        }
+    }
+}
+
+fn roughly_schema_option(a: Option<&Schema>, b: Option<&Schema>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (None, Some(_)) => false,
+        (Some(_), None) => false,
+        (Some(aa), Some(bb)) => aa.roughly(bb),
+    }
+}
+
+fn roughly_schema_array(a: Option<&[Schema]>, b: Option<&[Schema]>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (None, Some(_)) => false,
+        (Some(_), None) => false,
+        (Some(aa), Some(bb)) => {
+            // TODO We'll do it pairwise, but we should be looser..
+            aa.len() == bb.len() && aa.iter().zip(bb.iter()).all(|(aaa, bbb)| aaa.roughly(bbb))
+        }
+    }
+}
+
+fn roughly_array(a: Option<&ArrayValidation>, b: Option<&ArrayValidation>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (None, Some(_)) => false,
+        (Some(_), None) => false,
+        (Some(aa), Some(bb)) => match (&aa.items, &bb.items) {
+            (None, None) => true,
+            (None, Some(_)) => false,
+            (Some(_), None) => false,
+            (Some(SingleOrVec::Single(_)), Some(SingleOrVec::Vec(_))) => false,
+            (Some(SingleOrVec::Vec(_)), Some(SingleOrVec::Single(_))) => false,
+
+            (Some(SingleOrVec::Single(aaa)), Some(SingleOrVec::Single(bbb))) => aaa.roughly(bbb),
+            (Some(SingleOrVec::Vec(aaa)), Some(SingleOrVec::Vec(bbb))) => {
+                roughly_schema_array(Some(aaa), Some(bbb))
+            }
+        },
+    }
+}
+
+fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (None, Some(_)) => false,
+        (Some(_), None) => false,
+        (Some(aa), Some(bb)) => {
+            aa.max_properties == bb.max_properties
+                && aa.min_properties == bb.min_properties
+                && aa.required == bb.required
+                && roughly_properties(&aa.properties, &bb.properties)
+                && roughly_properties(&aa.pattern_properties, &bb.pattern_properties)
+                && roughly_schema_option(
+                    aa.additional_properties.as_deref(),
+                    bb.additional_properties.as_deref(),
+                )
+                && roughly_schema_option(aa.property_names.as_deref(), bb.property_names.as_deref())
+        }
+    }
+}
+
+fn roughly_properties(a: &BTreeMap<String, Schema>, b: &BTreeMap<String, Schema>) -> bool {
+    a.len() == b.len()
+        && a.iter()
+            .zip(b.iter())
+            .all(|((aa_name, aa_schema), (bb_name, bb_schema))| {
+                aa_name == bb_name && aa_schema.roughly(bb_schema)
+            })
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
@@ -974,7 +1124,7 @@ mod tests {
     use schemars::schema::InstanceType;
     use serde_json::json;
 
-    use crate::merge::merge_so_instance_type;
+    use crate::{merge::merge_so_instance_type, RefKey};
 
     use super::try_merge_schema;
 
@@ -1428,6 +1578,103 @@ mod tests {
         let ab = serde_json::from_value(ab).unwrap();
 
         let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(
+            merged,
+            ab,
+            "{}",
+            serde_json::to_string_pretty(&merged).unwrap(),
+        )
+    }
+
+    #[test]
+    fn test_match_one_of() {
+        let a = json!({
+            "$ref": "#/definitions/x"
+        });
+        let b = json!({
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/x"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        });
+        let x = json!({
+            "type": "string"
+        });
+        let ab = json!({
+            "$ref": "#/definitions/x"
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let x: schemars::schema::Schema = serde_json::from_value(x).unwrap();
+        let ab = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(
+            &a,
+            &b,
+            &[(RefKey::Def("x".to_string()), x)].into_iter().collect(),
+        )
+        .unwrap();
+        assert_eq!(
+            merged,
+            ab,
+            "{}",
+            serde_json::to_string_pretty(&merged).unwrap(),
+        )
+    }
+
+    #[test]
+    fn test_all_of_one_of_identity() {
+        let a = json!({
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/x"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        });
+        let b = json!({
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/x"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        });
+        let x = json!({
+            "title": "x",
+            "type": "string"
+        });
+        let ab = json!({
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/x"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let x: schemars::schema::Schema = serde_json::from_value(x).unwrap();
+        let ab = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(
+            &a,
+            &b,
+            &[(RefKey::Def("x".to_string()), x)].into_iter().collect(),
+        )
+        .unwrap();
         assert_eq!(
             merged,
             ab,

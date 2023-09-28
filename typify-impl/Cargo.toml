@@ -27,4 +27,5 @@ rustfmt-wrapper = "0.2"
 schema = "0.1.0"
 schemars = { version = "0.8.13", features = ["uuid1"] }
 serde = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
 uuid = "1.4.1"
