@@ -433,7 +433,8 @@ fn array_schemas_mutually_exclusive(
             }
 
             match (&aa.items, &aa.max_items, &bb.items, &bb.max_items) {
-                //
+                // If thee's a single item schema and it's mutually exclusive
+                // then we're done.
                 (Some(SingleOrVec::Single(a_items)), _, Some(SingleOrVec::Single(b_items)), _)
                     if schemas_mutually_exclusive(a_items, b_items) =>
                 {
@@ -443,7 +444,7 @@ fn array_schemas_mutually_exclusive(
                 _ => (),
             }
             debug!(
-                "givin up on mututal exclusivity check {} {}",
+                "giving up on mutual exclusivity check {} {}",
                 serde_json::to_string_pretty(aa).unwrap(),
                 serde_json::to_string_pretty(bb).unwrap(),
             );
