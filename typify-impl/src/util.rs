@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeSet, HashSet};
 
+use log::debug;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -33,6 +34,14 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
         })
 }
 
+/// Check if all schemas are mutually exclusive.
+///
+/// TODO This is used to turn an `anyOf` into a `oneOf` (i.e. if true). However
+/// a better approach is probably to use the (newish) merge logic to try to
+/// explode an `anyOf` into its 2^N possibilities. Some of those may be invalid
+/// in which case we'll end up looking like a `oneOf`. The logic of merging is
+/// conceptually identical to the logic below that validates **if** the schemas
+/// **could** be merged (i.e. if they're compatible).
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
     definitions: &schemars::Map<RefKey, Schema>,
@@ -412,53 +421,34 @@ fn array_schemas_mutually_exclusive(
             .iter()
             .any(|schema| schemas_mutually_exclusive(schema, single)),
 
-        // Tuples with different numbers of elements are incompatible.
-        (
-            ArrayValidation {
-                items: Some(SingleOrVec::Vec(a_items)),
-                additional_items: None,
-                max_items: Some(a_max_items),
-                min_items: Some(a_min_items),
-                unique_items: None,
-                contains: None,
-            },
-            ArrayValidation {
-                items: Some(SingleOrVec::Vec(b_items)),
-                additional_items: None,
-                max_items: Some(b_max_items),
-                min_items: Some(b_min_items),
-                unique_items: None,
-                contains: None,
-            },
-        ) if a_max_items == a_min_items
-            && *a_max_items as usize == a_items.len()
-            && b_max_items == b_min_items
-            && *b_max_items as usize == b_items.len() =>
-        {
-            a_max_items != b_max_items
+        (aa, bb) => {
+            // If min > max then these schemas are incompatible.
+            match (&aa.max_items, &bb.min_items) {
+                (Some(max), Some(min)) if min > max => return true,
+                _ => (),
+            }
+            match (&bb.max_items, &aa.min_items) {
+                (Some(max), Some(min)) if min > max => return true,
+                _ => (),
+            }
+
+            match (&aa.items, &aa.max_items, &bb.items, &bb.max_items) {
+                //
+                (Some(SingleOrVec::Single(a_items)), _, Some(SingleOrVec::Single(b_items)), _)
+                    if schemas_mutually_exclusive(a_items, b_items) =>
+                {
+                    return true;
+                }
+
+                _ => (),
+            }
+            debug!(
+                "givin up on mututal exclusivity check {} {}",
+                serde_json::to_string_pretty(aa).unwrap(),
+                serde_json::to_string_pretty(bb).unwrap(),
+            );
+            false
         }
-
-        // Plain, vanilla arrays.
-        (
-            ArrayValidation {
-                items: Some(SingleOrVec::Single(a_items)),
-                additional_items: None,
-                max_items: None,
-                min_items: None,
-                unique_items: None,
-                contains: None,
-            },
-            ArrayValidation {
-                items: Some(SingleOrVec::Single(b_items)),
-                additional_items: None,
-                max_items: None,
-                min_items: None,
-                unique_items: None,
-                contains: None,
-            },
-        ) => schemas_mutually_exclusive(a_items, b_items),
-
-        (aa, bb) => todo!("{:#?} {:#?}", aa, bb),
     }
 }
 
