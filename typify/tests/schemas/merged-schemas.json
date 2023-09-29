@@ -56,6 +56,158 @@
           }
         }
       ]
+    },
+    "but-not-that": {
+      "type": "object",
+      "properties": {
+        "this": {},
+        "that": {}
+      },
+      "not": {
+        "required": [
+          "that"
+        ]
+      }
+    },
+    "trim-fat": {
+      "type": "object",
+      "properties": {
+        "a": {},
+        "b": {},
+        "c": {}
+      },
+      "required": [
+        "a"
+      ],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "b"
+            ]
+          },
+          {
+            "required": [
+              "c"
+            ]
+          }
+        ]
+      }
+    },
+    "weird-enum": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "type": "string"
+        },
+        "pattern-regex": {
+          "type": "string"
+        },
+        "patterns": {
+          "type": "string"
+        },
+        "pattern-either": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "pattern"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "patterns"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-either"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-regex"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "patterns"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "pattern"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-either"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-regex"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "pattern-either"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "pattern"
+                ]
+              },
+              {
+                "required": [
+                  "patterns"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-regex"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "pattern-regex"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "pattern"
+                ]
+              },
+              {
+                "required": [
+                  "patterns"
+                ]
+              },
+              {
+                "required": [
+                  "pattern-either"
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

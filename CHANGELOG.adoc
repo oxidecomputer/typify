@@ -13,11 +13,16 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.0.14\...HEAD[Full list of commits]
+
+== 0.0.14 (released 2023-09-25)
+
 * Handle arbitrary containment cycles (#300)
 * More permissive of valid (if useless) schema constructions (#306, #320)
 * Much better handling of `allOf` constructions by merging schemas (#405)
+* Support for more `not` subschemas (#410)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.13\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.13\...v0.0.14[Full list of commits]
 
 == 0.0.13 (released 2023-05-14)
 

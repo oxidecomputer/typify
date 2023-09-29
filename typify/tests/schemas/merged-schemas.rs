@@ -1,6 +1,16 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ButNotThat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub this: Option<serde_json::Value>,
+}
+impl From<&ButNotThat> for ButNotThat {
+    fn from(value: &ButNotThat) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub result: Option<String>,
@@ -170,6 +180,38 @@ impl std::convert::TryFrom<String> for NarrowNumber {
 impl ToString for NarrowNumber {
     fn to_string(&self) -> String {
         self.0.to_string()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TrimFat {
+    pub a: serde_json::Value,
+}
+impl From<&TrimFat> for TrimFat {
+    fn from(value: &TrimFat) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum WeirdEnum {
+    Variant0 {
+        pattern: String,
+    },
+    Variant1 {
+        patterns: String,
+    },
+    Variant2 {
+        #[serde(rename = "pattern-either")]
+        pattern_either: String,
+    },
+    Variant3 {
+        #[serde(rename = "pattern-regex")]
+        pattern_regex: String,
+    },
+}
+impl From<&WeirdEnum> for WeirdEnum {
+    fn from(value: &WeirdEnum) -> Self {
+        value.clone()
     }
 }
 fn main() {}
