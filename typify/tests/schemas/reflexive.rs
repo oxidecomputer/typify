@@ -280,14 +280,14 @@ impl ToString for NonNegativeInteger {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct NonNegativeIntegerDefault0(pub u64);
+pub struct NonNegativeIntegerDefault0(pub NonNegativeInteger);
 impl std::ops::Deref for NonNegativeIntegerDefault0 {
-    type Target = u64;
-    fn deref(&self) -> &u64 {
+    type Target = NonNegativeInteger;
+    fn deref(&self) -> &NonNegativeInteger {
         &self.0
     }
 }
-impl From<NonNegativeIntegerDefault0> for u64 {
+impl From<NonNegativeIntegerDefault0> for NonNegativeInteger {
     fn from(value: NonNegativeIntegerDefault0) -> Self {
         value.0
     }
@@ -297,31 +297,31 @@ impl From<&NonNegativeIntegerDefault0> for NonNegativeIntegerDefault0 {
         value.clone()
     }
 }
-impl From<u64> for NonNegativeIntegerDefault0 {
-    fn from(value: u64) -> Self {
+impl From<NonNegativeInteger> for NonNegativeIntegerDefault0 {
+    fn from(value: NonNegativeInteger) -> Self {
         Self(value)
     }
 }
 impl std::str::FromStr for NonNegativeIntegerDefault0 {
-    type Err = <u64 as std::str::FromStr>::Err;
+    type Err = <NonNegativeInteger as std::str::FromStr>::Err;
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
 impl std::convert::TryFrom<&str> for NonNegativeIntegerDefault0 {
-    type Error = <u64 as std::str::FromStr>::Err;
+    type Error = <NonNegativeInteger as std::str::FromStr>::Err;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for NonNegativeIntegerDefault0 {
-    type Error = <u64 as std::str::FromStr>::Err;
+    type Error = <NonNegativeInteger as std::str::FromStr>::Err;
     fn try_from(value: &String) -> Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for NonNegativeIntegerDefault0 {
-    type Error = <u64 as std::str::FromStr>::Err;
+    type Error = <NonNegativeInteger as std::str::FromStr>::Err;
     fn try_from(value: String) -> Result<Self, Self::Error> {
         value.parse()
     }
