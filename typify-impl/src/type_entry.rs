@@ -227,6 +227,7 @@ impl TypeEntryEnum {
         self.bespoke_impls = [
             // Not untagged with all simple variants.
             (self.tag_type != EnumTagType::Untagged
+                && !self.variants.is_empty()
                 && self
                     .variants
                     .iter()

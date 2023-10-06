@@ -39,8 +39,7 @@ impl TypeSpace {
             }
 
             Schema::Bool(true) => self.convert_permissive(&None),
-            // TODO Not sure what to do here... need to return something toxic?
-            Schema::Bool(false) => todo!(),
+            Schema::Bool(false) => self.convert_never(type_name),
         }
     }
 
@@ -1535,6 +1534,21 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
         Ok((TypeEntryDetails::JsonValue.into(), metadata))
+    }
+
+    fn convert_never<'a>(
+        &mut self,
+        type_name: Name,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let ty = TypeEntryEnum::from_metadata(
+            self,
+            type_name,
+            &None,
+            EnumTagType::External,
+            vec![],
+            true,
+        );
+        Ok((ty, &None))
     }
 
     fn convert_typed_enum<'a>(

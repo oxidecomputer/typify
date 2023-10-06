@@ -100,7 +100,9 @@
       "properties": {
         "prop": {
           "type": "object",
-          "enum": [{}]
+          "enum": [
+            {}
+          ]
         }
       }
     },
@@ -159,6 +161,10 @@
     },
     "ReferenceDef": {
       "type": "string"
+    },
+    "Never": false,
+    "NeverEver": {
+      "not": true
     }
   }
 }
