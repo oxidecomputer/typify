@@ -316,6 +316,22 @@ impl From<std::collections::HashMap<String, i64>> for JankNames {
         Self::Variant2(value)
     }
 }
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum Never {}
+impl From<&Never> for Never {
+    fn from(value: &Never) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum NeverEver {}
+impl From<&NeverEver> for NeverEver {
+    fn from(value: &NeverEver) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NullStringEnumWithUnknownFormat(pub Option<NullStringEnumWithUnknownFormatInner>);
 impl std::ops::Deref for NullStringEnumWithUnknownFormat {
