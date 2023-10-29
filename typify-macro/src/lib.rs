@@ -1,5 +1,9 @@
 // Copyright 2023 Oxide Computer Company
 
+//! typify macro implementation.
+
+#![deny(missing_docs)]
+
 use std::{collections::HashMap, path::Path};
 
 use proc_macro::TokenStream;

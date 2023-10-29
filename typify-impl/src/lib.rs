@@ -1,5 +1,9 @@
 // Copyright 2023 Oxide Computer Company
 
+//! typify backend implementation.
+
+#![deny(missing_docs)]
+
 use std::collections::{BTreeMap, BTreeSet};
 
 use conversions::SchemaCache;
@@ -32,6 +36,7 @@ mod util;
 mod validate;
 mod value;
 
+#[allow(missing_docs)]
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("unexpected value type")]
@@ -53,6 +58,7 @@ impl Error {
     }
 }
 
+#[allow(missing_docs)]
 pub type Result<T> = std::result::Result<T, Error>;
 
 fn show_type_name(type_name: Option<&str>) -> &str {
@@ -70,6 +76,7 @@ pub struct Type<'a> {
     type_entry: &'a TypeEntry,
 }
 
+#[allow(missing_docs)]
 /// Type details returned by Type::details() to inspect a type.
 pub enum TypeDetails<'a> {
     Enum(TypeEnum<'a>),
@@ -96,14 +103,21 @@ pub struct TypeEnum<'a> {
 
 /// Enum variant details.
 pub enum TypeEnumVariant<'a> {
+    /// Variant with no associated data.
     Simple,
+    /// Tuple-type variant with at least one associated type.
     Tuple(Vec<TypeId>),
+    /// Struct-type variant with named properties and types.
     Struct(Vec<(&'a str, TypeId)>),
 }
 
+/// Full information pertaining to an enum variant.
 pub struct TypeEnumVariantInfo<'a> {
+    /// Name.
     pub name: &'a str,
+    /// Description.
     pub description: Option<&'a str>,
+    /// Details for the enum variant.
     pub details: TypeEnumVariant<'a>,
 }
 
@@ -112,10 +126,15 @@ pub struct TypeStruct<'a> {
     details: &'a type_entry::TypeEntryStruct,
 }
 
+/// Full information pertaining to a struct property.
 pub struct TypeStructPropInfo<'a> {
+    /// Name.
     pub name: &'a str,
+    /// Description.
     pub description: Option<&'a str>,
+    /// Whether the propertty is required.
     pub required: bool,
+    /// Identifies the schema for the property.
     pub type_id: TypeId,
 }
 
@@ -251,6 +270,7 @@ struct TypeSpaceConversion {
     impls: Vec<TypeSpaceImpl>,
 }
 
+#[allow(missing_docs)]
 // TODO we can currently only address traits for which cycle analysis is not
 // required.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -606,18 +626,22 @@ impl TypeSpace {
         })
     }
 
+    /// Whether the generated code needs `chrono` crate.
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
     }
 
+    /// Whether the generated code needs [regress] crate.
     pub fn uses_regress(&self) -> bool {
         self.uses_regress
     }
 
+    /// Whether the generated code needs [serde_json] crate.
     pub fn uses_serde_json(&self) -> bool {
         self.uses_serde_json
     }
 
+    /// Whether the generated code needs `uuid` crate.
     pub fn uses_uuid(&self) -> bool {
         self.uses_uuid
     }
@@ -871,10 +895,12 @@ impl<'a> Type<'a> {
 }
 
 impl<'a> TypeEnum<'a> {
+    /// Get name and information of each enum variant.
     pub fn variants(&'a self) -> impl Iterator<Item = (&'a str, TypeEnumVariant<'a>)> {
         self.variants_info().map(|info| (info.name, info.details))
     }
 
+    /// Get all information for each enum variant.
     pub fn variants_info(&'a self) -> impl Iterator<Item = TypeEnumVariantInfo<'a>> {
         self.details.variants.iter().map(move |variant| {
             let details = match &variant.details {
@@ -902,6 +928,7 @@ impl<'a> TypeEnum<'a> {
 }
 
 impl<'a> TypeStruct<'a> {
+    /// Get name and type of each property.
     pub fn properties(&'a self) -> impl Iterator<Item = (&'a str, TypeId)> {
         self.details
             .properties
@@ -909,6 +936,7 @@ impl<'a> TypeStruct<'a> {
             .map(move |prop| (prop.name.as_str(), prop.type_id.clone()))
     }
 
+    /// Get all information about each struct property.
     pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo> {
         self.details
             .properties
@@ -923,7 +951,8 @@ impl<'a> TypeStruct<'a> {
 }
 
 impl<'a> TypeNewtype<'a> {
-    pub fn subtype(&self) -> TypeId {
+    /// Get the inner type of the newtype struct.
+    pub fn inner(&self) -> TypeId {
         self.details.type_id.clone()
     }
 }
