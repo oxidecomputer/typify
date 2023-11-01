@@ -165,6 +165,29 @@
     "Never": false,
     "NeverEver": {
       "not": true
+    },
+    "ShouldBeExclusive": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "id"
+          ]
+        },
+        {
+          "required": [
+            "reference"
+          ]
+        }
+      ]
     }
   }
 }

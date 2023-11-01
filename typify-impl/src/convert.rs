@@ -8,7 +8,7 @@ use crate::type_entry::{
     Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
-use log::info;
+use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -478,11 +478,21 @@ impl TypeSpace {
                     subschemas: None,
                     ..schema.clone()
                 };
+                debug!(
+                    "pre merged schema {}",
+                    serde_json::to_string_pretty(schema).unwrap(),
+                );
                 let merged_schema = merge_with_subschemas(
                     without_subschemas,
                     schema.subschemas.as_deref(),
                     &self.definitions,
                 );
+
+                debug!(
+                    "merged schema {}",
+                    serde_json::to_string_pretty(&merged_schema).unwrap(),
+                );
+
                 let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
                 Ok((type_entry, &None))
             }
