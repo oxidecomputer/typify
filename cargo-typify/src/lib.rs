@@ -1,5 +1,9 @@
 // Copyright 2023 Oxide Computer Company
 
+//! cargo command to generate Rust code from a JSON Schema.
+
+#![deny(missing_docs)]
+
 use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
@@ -38,6 +42,7 @@ pub struct CliArgs {
 }
 
 impl CliArgs {
+    /// Output path.
     pub fn output_path(&self) -> Option<PathBuf> {
         match &self.output {
             Some(output_path) => {
@@ -55,11 +60,13 @@ impl CliArgs {
         }
     }
 
+    /// Whether builder-style interface was selected.
     pub fn use_builder(&self) -> bool {
         !self.no_builder
     }
 }
 
+/// Generate Rust code for the selected JSON Schema.
 pub fn convert(args: &CliArgs) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
         .wrap_err_with(|| format!("Failed to open input file: {}", &args.input.display()))?;

@@ -154,6 +154,8 @@
 //! more information, see the project's
 //! [README.md](https://github.com/oxidecomputer/typify).
 
+#![deny(missing_docs)]
+
 pub use typify_impl::Error;
 pub use typify_impl::Type;
 pub use typify_impl::TypeDetails;
