@@ -148,6 +148,6 @@ The resulting types won't enforce those value constraints.
 
 A string schema with `format` set to `uuid` will result in the `uuid::Uuid`
 type; similarly, a `format` of `date` translates to
-`chrono::Date<chrono::offset::Utc>`. For users that don't want dependencies on
+`chrono::naive::NaiveDate`. For users that don't want dependencies on
 `uuid` or `chrono` it would be useful for Typify to optionally represent those
 as `String` (or as some other, consumer-specified type).
