@@ -18,7 +18,7 @@
       "type": "string",
       "format": "^a*$"
     },
-    "MapWithDateKeys": {
+    "MapWithDateTimeKeys": {
       "$comment": "test that a type isn't needed for propertyNames",
       "type": "object",
       "additionalProperties": {
@@ -26,6 +26,16 @@
       },
       "propertyNames": {
         "format": "date-time"
+      }
+    },
+    "MapWithDateKeys": {
+      "$comment": "test that a type isn't needed for propertyNames",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Value"
+      },
+      "propertyNames": {
+        "format": "date"
       }
     }
   },
