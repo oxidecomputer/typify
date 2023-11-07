@@ -58,18 +58,14 @@ impl ToString for Eh {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MapWithDateKeys(
-    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
-);
+pub struct MapWithDateKeys(pub std::collections::HashMap<chrono::naive::NaiveDate, Value>);
 impl std::ops::Deref for MapWithDateKeys {
-    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
-    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+    type Target = std::collections::HashMap<chrono::naive::NaiveDate, Value>;
+    fn deref(&self) -> &std::collections::HashMap<chrono::naive::NaiveDate, Value> {
         &self.0
     }
 }
-impl From<MapWithDateKeys>
-    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
-{
+impl From<MapWithDateKeys> for std::collections::HashMap<chrono::naive::NaiveDate, Value> {
     fn from(value: MapWithDateKeys) -> Self {
         value.0
     }
@@ -79,8 +75,35 @@ impl From<&MapWithDateKeys> for MapWithDateKeys {
         value.clone()
     }
 }
+impl From<std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWithDateKeys {
+    fn from(value: std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
+        Self(value)
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapWithDateTimeKeys(
+    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+);
+impl std::ops::Deref for MapWithDateTimeKeys {
+    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
+    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+        &self.0
+    }
+}
+impl From<MapWithDateTimeKeys>
+    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+{
+    fn from(value: MapWithDateTimeKeys) -> Self {
+        value.0
+    }
+}
+impl From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
+    fn from(value: &MapWithDateTimeKeys) -> Self {
+        value.clone()
+    }
+}
 impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
-    for MapWithDateKeys
+    for MapWithDateTimeKeys
 {
     fn from(
         value: std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,

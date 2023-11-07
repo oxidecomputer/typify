@@ -719,7 +719,7 @@ impl TypeSpace {
                 self.uses_chrono = true;
                 Ok((
                     TypeEntry::new_native(
-                        "chrono::Date<chrono::offset::Utc>",
+                        "chrono::naive::NaiveDate",
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
