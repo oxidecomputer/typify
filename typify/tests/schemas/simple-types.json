@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "floats-aren't-terrible-I'm-told": {
+      "type": "object",
+      "properties": {
+        "flush_timeout": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    }
+  }
+}
