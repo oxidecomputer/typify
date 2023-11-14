@@ -975,12 +975,12 @@ impl TypeSpace {
         }
     }
 
-    // TODO deal with metadata and format
+    // TODO deal with metadata
     fn convert_number<'a>(
         &self,
         _metadata: &'a Option<Box<Metadata>>,
         _validation: &Option<Box<schemars::schema::NumberValidation>>,
-        _format: &Option<String>,
+        format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         /*
         See https://github.com/oxidecomputer/typify/issues/169
@@ -993,7 +993,10 @@ impl TypeSpace {
         }
         */
 
-        Ok((TypeEntry::new_float("f64"), &None))
+        match format.as_deref() {
+            Some("float") => Ok((TypeEntry::new_float("f64"), &None)),
+            _ => Ok((TypeEntry::new_float("f64"), &None)),
+        }
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
