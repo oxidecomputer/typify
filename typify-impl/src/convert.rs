@@ -994,7 +994,7 @@ impl TypeSpace {
         */
 
         match format.as_deref() {
-            Some("float") => Ok((TypeEntry::new_float("f64"), &None)),
+            Some("float") => Ok((TypeEntry::new_float("f32"), &None)),
             _ => Ok((TypeEntry::new_float("f64"), &None)),
         }
     }
