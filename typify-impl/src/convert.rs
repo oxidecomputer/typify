@@ -1095,6 +1095,10 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        debug!(
+            "all_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
         if let Some(ty) = self.maybe_singleton_subschema(type_name.clone(), subschemas) {
             return Ok((ty, metadata));
         }
@@ -1246,6 +1250,11 @@ impl TypeSpace {
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        debug!(
+            "one_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
+
         // TODO it would probably be smart to do a pass through the schema
         // given to us and either put it into some canonical form or move to
         // some sort of intermediate representation.
