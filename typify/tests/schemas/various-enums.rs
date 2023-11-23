@@ -539,6 +539,17 @@ impl From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ShouldBeExclusive {
+    Variant0 { id: String },
+    Variant1 { reference: String },
+}
+impl From<&ShouldBeExclusive> for ShouldBeExclusive {
+    fn from(value: &ShouldBeExclusive) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct StringVersion(pub String);
 impl std::ops::Deref for StringVersion {

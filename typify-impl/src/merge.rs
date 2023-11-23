@@ -16,45 +16,26 @@ use crate::{util::ref_key, validate::schema_value_validate, RefKey};
 /// Merge all schemas in array of schemas. If the result is unsatisfiable, this
 /// returns `Schema::Bool(false)`.
 pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    try_merge_all(schemas, defs).unwrap_or(Schema::Bool(false))
+}
+
+fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     debug!(
         "merge all {}",
         serde_json::to_string_pretty(schemas).unwrap(),
     );
 
-    // let mut ss = schemas.iter();
-
-    // let (Some(a), Some(b)) = (ss.next(), ss.next()) else {
-    //     panic!("merge_all requires at least two schemas")
-    // };
-
-    // try_merge_schema(a, b, defs)
-    //     .and_then(|start| {
-    //         ss.try_fold(start, |schema, other| {
-    //             try_merge_schema(&schema, other, defs)
-    //         })
-    //     })
-    //     .unwrap_or_else(|_| Schema::Bool(false))
-
-    let mut out = Schema::Bool(true);
-
-    for schema in schemas {
-        debug!(
-            "merge all here {}",
-            serde_json::to_string_pretty(&out).unwrap(),
-        );
-        let xxx = try_merge_schema(&out, schema, defs);
-        match xxx {
-            Err(_) => {
-                todo!();
-                return Schema::Bool(false);
+    match schemas {
+        [] => panic!("we should not be trying to merge an empty array of schemas"),
+        [only] => Ok(only.clone()),
+        [first, second, rest @ ..] => {
+            let mut out = try_merge_schema(first, second, defs)?;
+            for schema in rest {
+                out = try_merge_schema(&out, schema, defs)?;
             }
-            Ok(yyy) => {
-                out = yyy;
-            }
+            Ok(out)
         }
     }
-
-    out
 }
 
 /// Given two additionalItems schemas that might be None--which is equivalent
@@ -606,36 +587,62 @@ fn try_merge_schema_not(
         Schema::Bool(false) => Ok(schema_object),
 
         Schema::Object(SchemaObject {
-            metadata,
-            instance_type,
-            format,
-            enum_values,
-            const_value,
+            // I don't think there's any significance to the schema metadata
+            // with respect to the types we might generate.
+            metadata: _,
+            // TODO we should should check instance_type and then walk through
+            // validation of each type based on the specific validation.
+            instance_type: _,
+            format: _,
+            enum_values: _,
+            const_value: _,
             subschemas,
-            number,
-            string,
-            array,
+            number: _,
+            string: _,
+            array: _,
             object,
-            reference,
-            extensions,
+            // TODO we might want to chase these references but need to take
+            // care to handle circular references.
+            reference: _,
+            extensions: _,
         }) => {
             if let Some(not_object) = object {
-                debug!("obj");
-                // TODO this is incomplete, but seems sufficient for the schemas
-                // we've seen in the wild.
+                // TODO this is incomplete, but seems sufficient for the
+                // schemas we've seen in the wild.
                 if let Some(ObjectValidation {
                     required,
                     properties,
                     ..
                 }) = schema_object.object.as_deref_mut()
                 {
-                    // TODO I think this is sort of wrong for arrays of len > 1
+                    // TODO This is completely wrong for arrays of len > 1.
+                    // We need to treat required: [x, y] like it's:
+                    //   not:
+                    //     allOf:
+                    //       required: [x]
+                    //       required: [y]
+                    // Then we can transform them into:
+                    //   anyOf:
+                    //     not:
+                    //       required: [x]
+                    //     not:
+                    //       required: [y]
+                    // Which in turn can become:
+                    //   oneOf:
+                    //     not:
+                    //       required: [x]
+                    //     not:
+                    //       required: [y]
+                    //     not:
+                    //       required: [x, y]
                     for not_required in &not_object.required {
+                        // A property can't be both required and not required
+                        // therefore this schema is unsatisfiable.
                         if required.contains(not_required) {
                             return Err(());
                         }
-                        // assert!(!required.contains(not_required));
-                        // assert!(properties.contains_key(not_required));
+                        // We don't care if a property we're saying is not
+                        // required was not present in the properties map.
                         let _ = properties.remove(not_required);
                     }
                 }
@@ -644,14 +651,7 @@ fn try_merge_schema_not(
             if let Some(not_subschemas) = subschemas {
                 schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
             }
-            Ok(schema_object)
-        }
 
-        // If we can't usefully reduce the complexity, leave it for the
-        // coversion pass.
-        _ => {
-            todo!();
-            schema_object.subschemas().not = Some(Box::new(not_schema.clone()));
             Ok(schema_object)
         }
     }
@@ -721,6 +721,18 @@ fn try_merge_with_subschemas_not(
             then_schema: None,
             else_schema: None,
         } => Ok(schema_object),
+
+        SubschemaValidation {
+            all_of: Some(all_of),
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => {
+            todo!()
+        }
 
         _ => todo!(
             "{}\nnot: {}",
