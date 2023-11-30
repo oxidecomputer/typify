@@ -712,6 +712,17 @@ fn try_merge_with_subschemas_not(
             Ok(yyy.into_object())
         }
 
+        // TODO this is a kludge
+        SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: Some(_),
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => Ok(schema_object),
+
         SubschemaValidation {
             all_of: None,
             any_of: None,
@@ -730,9 +741,10 @@ fn try_merge_with_subschemas_not(
             if_schema: None,
             then_schema: None,
             else_schema: None,
-        } => {
-            todo!()
-        }
+        } => match try_merge_all(all_of, defs) {
+            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
+            Err(_) => Ok(schema_object),
+        },
 
         _ => todo!(
             "{}\nnot: {}",
