@@ -208,6 +208,50 @@
           }
         }
       ]
+    },
+    "unsatisfiable-1": {
+      "allOf": [
+        {
+          "type": "string",
+          "enum": [
+            "foo"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bar": {}
+          }
+        }
+      ]
+    },
+    "unsatisfiable-2": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "foo"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "bar"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }
