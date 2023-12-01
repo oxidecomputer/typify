@@ -191,6 +191,22 @@ impl From<&TrimFat> for TrimFat {
         value.clone()
     }
 }
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum Unsatisfiable1 {}
+impl From<&Unsatisfiable1> for Unsatisfiable1 {
+    fn from(value: &Unsatisfiable1) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct Unsatisfiable2 {}
+impl From<&Unsatisfiable2> for Unsatisfiable2 {
+    fn from(value: &Unsatisfiable2) -> Self {
+        value.clone()
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WeirdEnum {

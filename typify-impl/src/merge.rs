@@ -876,46 +876,65 @@ fn merge_so_object(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
-            let a_props = aa.properties.iter().filter_map(|(name, a_schema)| {
-                let resolved_schema = if let Some(b_schema) = bb.properties.get(name) {
-                    try_merge_schema(a_schema, b_schema, defs)
-                } else {
-                    filter_prop(name, a_schema, bb)
-                };
+            enum AOrB<'a> {
+                A(&'a Schema),
+                B(&'a Schema),
+                Both(&'a Schema, &'a Schema),
+            }
 
-                match resolved_schema {
-                    // If a required field is incompatible with the
-                    // other schema, this object is unsatisfiable.
-                    Err(()) if aa.required.contains(name) => Some(Err(())),
-
-                    // We can ignore incompatible, non-required fields.
-                    Err(()) => None,
-
-                    // Compatible schema; proceed.
-                    Ok(schema) => Some(Ok((name.clone(), schema))),
-                }
-            });
-
-            let b_props = bb.properties.iter().filter_map(|(name, b_schema)| {
-                if aa.properties.contains_key(name) {
-                    // We handled the intersection above.
-                    None
-                } else {
-                    match filter_prop(name, b_schema, aa) {
+            let properties = aa
+                .properties
+                .iter()
+                // First characterize properties as being in a, b, or both.
+                .map(|(name, a_schema)| {
+                    if let Some(b_schema) = bb.properties.get(name) {
+                        (name, AOrB::Both(a_schema, b_schema))
+                    } else {
+                        (name, AOrB::A(a_schema))
+                    }
+                })
+                .chain(bb.properties.iter().filter_map(|(name, b_schema)| {
+                    if aa.properties.contains_key(name) {
+                        None
+                    } else {
+                        Some((name, AOrB::B(b_schema)))
+                    }
+                }))
+                // Then resolve properties against the other full schema or
+                // against the schemas for the properties if it appears in
+                // both.
+                .filter_map(|(name, ab_schema)| {
+                    let resolved_schema = match ab_schema {
+                        AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
+                        AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
+                        AOrB::Both(a_schema, b_schema) => {
+                            try_merge_schema(a_schema, b_schema, defs)
+                        }
+                    };
+                    match resolved_schema {
                         // If a required field is incompatible with the
                         // other schema, this object is unsatisfiable.
-                        Err(()) if bb.required.contains(name) => Some(Err(())),
+                        Err(()) if aa.required.contains(name) => Some(Err(())),
 
                         // We can ignore incompatible, non-required fields.
+                        //
+                        // TODO ... however we may need to note that the given
+                        // property is explicitly disallowed. We could do that
+                        // either by *leaving* the property in with an
+                        // unsatisfiable type (i.e. the schema `false`) or by
+                        // adding something to `propertyNames` (which would be
+                        // significantly more complicated).
+                        //
+                        // Note that if `additionalProperties` already disallows
+                        // all unnamed properties we could simply drop this
+                        // property.
                         Err(()) => None,
 
                         // Compatible schema; proceed.
                         Ok(schema) => Some(Ok((name.clone(), schema))),
                     }
-                }
-            });
-
-            let properties = a_props.chain(b_props).collect::<Result<_, ()>>()?;
+                })
+                .collect::<Result<_, ()>>()?;
 
             let required = aa.required.union(&bb.required).cloned().collect();
             let additional_properties = merge_additional_properties(
@@ -925,12 +944,21 @@ fn merge_so_object(
             )
             .map(Box::new);
 
+            let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
+            let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
+
+            if let (Some(min), Some(max)) = (min_properties, max_properties) {
+                if min > max {
+                    return Err(());
+                }
+            }
+
             let object_validation = ObjectValidation {
                 required,
                 properties,
                 additional_properties,
-                max_properties: Default::default(),     // TODO
-                min_properties: Default::default(),     // TODO
+                max_properties,
+                min_properties,
                 pattern_properties: Default::default(), // TODO
                 property_names: Default::default(),     // TODO
             };

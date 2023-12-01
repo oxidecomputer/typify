@@ -1090,22 +1090,34 @@ impl TypeSpace {
         }
 
         // In the general case, we merge all schemas in the array. The merged
-        // schema will reflect all definitions and constraints. For example, it
-        // will have the union of all properties for an object, recursively
-        // merging properties defined in multiple schemas; it will have the
-        // union of all required object properties; and it will enforce the
-        // greater of all numeric constraints (e.g. the greater of all
-        // specified minimum values).
+        // schema will reflect all definitions and constraints, the
+        // intersection of all schemas. For example, it will have the union of
+        // all properties for an object, recursively merging properties defined
+        // in multiple schemas; it will have the union of all required object
+        // properties; and it will enforce the greater of all numeric
+        // constraints (e.g. the greater of all specified minimum values).
         //
         // Sometimes merging types will produce a result for which no data is
         // valid, the schema is unsatisfiable. Consider this trivial case:
         //
-        // "allOf": [
+        // {
+        //   "allOf": [
         //     { "type": "integer", "minimum": 5 },
         //     { "type": "integer", "maximum": 3 }
-        // ]
+        //   ]
+        // }
         //
-        // No number is >= 5 *and* <= 3! Good luck with that schema!
+        // No number is >= 5 *and* <= 3! Good luck with that schema! Similarly
+        // for this case:
+        //
+        // {
+        //   "allOf": [
+        //     { "type": "string" },
+        //     { "type": "object" }
+        //   ]
+        // }
+        //
+        // A value cannot be both a string and an object!
         //
         // Note that we will effectively "embed" any referenced types. Consider
         // a construction like this:
@@ -1116,10 +1128,10 @@ impl TypeSpace {
         // ]
         //
         // The resulting merged schema will include all properties of
-        // "SuperClass" as well as "another_prop" (which we assume to not have
-        // been present in the original). This is suboptimal in that we would
-        // like the generated types to reflect some association with the
-        // original sub-type.
+        // "SuperClass" as well as "another_prop" (which we assume for this
+        // example to not have been present in the original). This is
+        // suboptimal in that we would like the generated types to reflect some
+        // association with the original sub-type.
         //
         // TODO
         // In cases where we have a named type, we would like to provide
@@ -1134,13 +1146,16 @@ impl TypeSpace {
         // the more expansive numeric type.
 
         let merged_schema = merge_all(subschemas, &self.definitions);
-        assert_ne!(merged_schema, Schema::Bool(false));
-        let mut merged_schema = merged_schema.into_object();
-        assert!(merged_schema.metadata.is_none());
-        merged_schema.metadata = metadata.clone();
+        if let Schema::Bool(false) = &merged_schema {
+            self.convert_never(type_name)
+        } else {
+            let mut merged_schema = merged_schema.into_object();
+            assert!(merged_schema.metadata.is_none());
+            merged_schema.metadata = metadata.clone();
 
-        let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
-        Ok((type_entry, &None))
+            let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
+            Ok((type_entry, &None))
+        }
     }
 
     fn convert_any_of<'a>(
