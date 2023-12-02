@@ -208,6 +208,122 @@ impl From<&Unsatisfiable2> for Unsatisfiable2 {
     }
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Unsatisfiable3 {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<Unsatisfiable3Action>,
+}
+impl From<&Unsatisfiable3> for Unsatisfiable3 {
+    fn from(value: &Unsatisfiable3) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Unsatisfiable3A {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<Unsatisfiable3C>,
+}
+impl From<&Unsatisfiable3A> for Unsatisfiable3A {
+    fn from(value: &Unsatisfiable3A) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum Unsatisfiable3Action {}
+impl From<&Unsatisfiable3Action> for Unsatisfiable3Action {
+    fn from(value: &Unsatisfiable3Action) -> Self {
+        value.clone()
+    }
+}
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum Unsatisfiable3B {
+    #[serde(rename = "bar")]
+    Bar,
+}
+impl From<&Unsatisfiable3B> for Unsatisfiable3B {
+    fn from(value: &Unsatisfiable3B) -> Self {
+        value.clone()
+    }
+}
+impl ToString for Unsatisfiable3B {
+    fn to_string(&self) -> String {
+        match *self {
+            Self::Bar => "bar".to_string(),
+        }
+    }
+}
+impl std::str::FromStr for Unsatisfiable3B {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        match value {
+            "bar" => Ok(Self::Bar),
+            _ => Err("invalid value"),
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for Unsatisfiable3B {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for Unsatisfiable3B {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for Unsatisfiable3B {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum Unsatisfiable3C {
+    #[serde(rename = "foo")]
+    Foo,
+}
+impl From<&Unsatisfiable3C> for Unsatisfiable3C {
+    fn from(value: &Unsatisfiable3C) -> Self {
+        value.clone()
+    }
+}
+impl ToString for Unsatisfiable3C {
+    fn to_string(&self) -> String {
+        match *self {
+            Self::Foo => "foo".to_string(),
+        }
+    }
+}
+impl std::str::FromStr for Unsatisfiable3C {
+    type Err = &'static str;
+    fn from_str(value: &str) -> Result<Self, &'static str> {
+        match value {
+            "foo" => Ok(Self::Foo),
+            _ => Err("invalid value"),
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for Unsatisfiable3C {
+    type Error = &'static str;
+    fn try_from(value: &str) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for Unsatisfiable3C {
+    type Error = &'static str;
+    fn try_from(value: &String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for Unsatisfiable3C {
+    type Error = &'static str;
+    fn try_from(value: String) -> Result<Self, &'static str> {
+        value.parse()
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum WeirdEnum {
     Variant0 {
