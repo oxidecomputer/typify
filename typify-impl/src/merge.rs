@@ -1186,7 +1186,7 @@ fn merge_so_object(
                         Ok(schema) => Some(Ok((name.clone(), schema))),
                     }
                 })
-                .collect::<Result<_, _>>()?;
+                .collect::<Result<schemars::Map<_, _>, _>>()?;
 
             let additional_properties = additional_properties.map(Box::new);
             let required = aa.required.union(&bb.required).cloned().collect();

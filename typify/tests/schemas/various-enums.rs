@@ -674,6 +674,14 @@ impl From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
+#[doc = "ShouldBeExclusive"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"allOf\": [\n        {\n          \"type\": \"object\",\n          \"properties\": {\n            \"id\": {\n              \"type\": \"string\"\n            },\n            \"reference\": {\n              \"type\": \"string\"\n            }\n          }\n        },\n        {\n          \"required\": [\n            \"id\"\n          ]\n        },\n        {\n          \"not\": {\n            \"required\": [\n              \"reference\"\n            ]\n          }\n        }\n      ]\n    },\n    {\n      \"allOf\": [\n        {\n          \"type\": \"object\",\n          \"properties\": {\n            \"id\": {\n              \"type\": \"string\"\n            },\n            \"reference\": {\n              \"type\": \"string\"\n            }\n          }\n        },\n        {\n          \"required\": [\n            \"reference\"\n          ]\n        },\n        {\n          \"not\": {\n            \"required\": [\n              \"id\"\n            ]\n          }\n        }\n      ]\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ShouldBeExclusive {
