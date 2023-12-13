@@ -256,6 +256,7 @@ impl TypeSpace {
     pub(crate) fn flattened_union_struct<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
         optional: bool,
@@ -293,7 +294,14 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()?;
 
         Ok((
-            TypeEntryStruct::from_metadata(self, type_name, metadata, properties, false),
+            TypeEntryStruct::from_metadata(
+                self,
+                type_name,
+                metadata,
+                properties,
+                false,
+                original_schema.clone(),
+            ),
             metadata,
         ))
     }

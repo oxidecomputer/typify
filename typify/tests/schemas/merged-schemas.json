@@ -208,6 +208,89 @@
           }
         }
       ]
+    },
+    "unsatisfiable-1": {
+      "allOf": [
+        {
+          "type": "string",
+          "enum": [
+            "foo"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bar": {}
+          }
+        }
+      ]
+    },
+    "unsatisfiable-2": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "foo"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "bar"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "unsatisfiable-3": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/unsatisfiable-3-a"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "$ref": "#/definitions/unsatisfiable-3-b"
+            }
+          }
+        }
+      ]
+    },
+    "unsatisfiable-3-a": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/unsatisfiable-3-c"
+            }
+          ]
+        }
+      }
+    },
+    "unsatisfiable-3-b": {
+      "type": "string",
+      "enum": [
+        "bar"
+      ]
+    },
+    "unsatisfiable-3-c": {
+      "type": "string",
+      "enum": [
+        "foo"
+      ]
     }
   }
 }

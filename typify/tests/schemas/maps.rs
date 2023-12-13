@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "DeadSimple"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"title\": \"DeadSimple\",\n  \"type\": \"object\",\n  \"$comment\": \"usual case of a map whose name must come from its title\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DeadSimple(pub serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for DeadSimple {
@@ -23,6 +31,14 @@ impl From<serde_json::Map<String, serde_json::Value>> for DeadSimple {
         Self(value)
     }
 }
+#[doc = "Eh"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\",\n  \"format\": \"^a*$\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Eh(pub String);
 impl std::ops::Deref for Eh {
@@ -57,19 +73,23 @@ impl ToString for Eh {
         self.0.to_string()
     }
 }
+#[doc = "MapWithDateKeys"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"additionalProperties\": {\n    \"$ref\": \"#/definitions/Value\"\n  },\n  \"propertyNames\": {\n    \"format\": \"date\"\n  },\n  \"$comment\": \"test that a type isn't needed for propertyNames\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MapWithDateKeys(
-    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
-);
+pub struct MapWithDateKeys(pub std::collections::HashMap<chrono::naive::NaiveDate, Value>);
 impl std::ops::Deref for MapWithDateKeys {
-    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
-    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+    type Target = std::collections::HashMap<chrono::naive::NaiveDate, Value>;
+    fn deref(&self) -> &std::collections::HashMap<chrono::naive::NaiveDate, Value> {
         &self.0
     }
 }
-impl From<MapWithDateKeys>
-    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
-{
+impl From<MapWithDateKeys> for std::collections::HashMap<chrono::naive::NaiveDate, Value> {
     fn from(value: MapWithDateKeys) -> Self {
         value.0
     }
@@ -79,8 +99,43 @@ impl From<&MapWithDateKeys> for MapWithDateKeys {
         value.clone()
     }
 }
+impl From<std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWithDateKeys {
+    fn from(value: std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "MapWithDateTimeKeys"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"additionalProperties\": {\n    \"$ref\": \"#/definitions/Value\"\n  },\n  \"propertyNames\": {\n    \"format\": \"date-time\"\n  },\n  \"$comment\": \"test that a type isn't needed for propertyNames\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MapWithDateTimeKeys(
+    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+);
+impl std::ops::Deref for MapWithDateTimeKeys {
+    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
+    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+        &self.0
+    }
+}
+impl From<MapWithDateTimeKeys>
+    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+{
+    fn from(value: MapWithDateTimeKeys) -> Self {
+        value.0
+    }
+}
+impl From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
+    fn from(value: &MapWithDateTimeKeys) -> Self {
+        value.clone()
+    }
+}
 impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
-    for MapWithDateKeys
+    for MapWithDateTimeKeys
 {
     fn from(
         value: std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
@@ -88,6 +143,14 @@ impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value
         Self(value)
     }
 }
+#[doc = "MapWithKeys"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"additionalProperties\": {\n    \"$ref\": \"#/definitions/Value\"\n  },\n  \"propertyNames\": {\n    \"$ref\": \"#/definitions/Eh\"\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MapWithKeys(pub std::collections::HashMap<Eh, Value>);
 impl std::ops::Deref for MapWithKeys {
@@ -111,6 +174,14 @@ impl From<std::collections::HashMap<Eh, Value>> for MapWithKeys {
         Self(value)
     }
 }
+#[doc = "Value"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Value(pub String);
 impl std::ops::Deref for Value {

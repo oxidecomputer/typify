@@ -141,6 +141,12 @@ fn merge_schema_object(
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
+    debug!(
+        "merging {}\n{}",
+        serde_json::to_string_pretty(a).unwrap(),
+        serde_json::to_string_pretty(b).unwrap(),
+    );
+
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
 
@@ -152,14 +158,21 @@ fn merge_schema_object(
     let array = merge_so_array(a.array.as_deref(), b.array.as_deref(), defs)?;
     let object = merge_so_object(a.object.as_deref(), b.object.as_deref(), defs)?;
 
+    let enum_values = merge_so_enum_values(
+        a.enum_values.as_ref(),
+        a.const_value.as_ref(),
+        b.enum_values.as_ref(),
+        b.const_value.as_ref(),
+    )?;
+
     // We could clean up this schema to eliminate data irrelevant to the
     // instance type, but logic in the conversion path should already handle
     // that.
-    let merged_schema = SchemaObject {
+    let mut merged_schema = SchemaObject {
         metadata: None,
         instance_type,
         format,
-        enum_values: None,
+        enum_values,
         const_value: None,
         subschemas: None,
         number,
@@ -177,45 +190,37 @@ fn merge_schema_object(
     // two schemas and then do the appropriate merge with subschemas (i.e.
     // potentially twice). This is effectively an `allOf` between the merged
     // "body" schema and the component subschemas.
-    let merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
-    let merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
+    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
+    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
 
     assert_ne!(merged_schema, Schema::Bool(false).into_object());
 
-    let enum_values = merge_so_enum_values(
-        a.enum_values.as_ref(),
-        a.const_value.as_ref(),
-        b.enum_values.as_ref(),
-        b.const_value.as_ref(),
-    )?;
+    // Now that we've finalized the schemas, we take a pass through the
+    // enumerated values (if there are any) to weed out any that might be
+    // invalid.
+    if let Some(enum_values) = merged_schema.enum_values.take() {
+        let wrapped_schema = Schema::Object(merged_schema);
+        let enum_values = Some(
+            enum_values
+                .into_iter()
+                .filter(|value| schema_value_validate(&wrapped_schema, value, defs).is_ok())
+                .collect(),
+        );
+        let Schema::Object(new_merged_schema) = wrapped_schema else {
+            unreachable!()
+        };
+        merged_schema = new_merged_schema;
+        merged_schema.enum_values = enum_values;
+    }
 
     debug!(
-        "merging {}\n{}\n|\nv\n{}",
+        "merged {}\n{}\n|\nv\n{}",
         serde_json::to_string_pretty(a).unwrap(),
         serde_json::to_string_pretty(b).unwrap(),
         serde_json::to_string_pretty(&merged_schema).unwrap(),
     );
 
-    match enum_values {
-        None => Ok(merged_schema),
-        Some(enum_values) => {
-            let enum_values = enum_values
-                .into_iter()
-                .filter(|value| {
-                    schema_value_validate(&Schema::Object(merged_schema.clone()), value, defs)
-                        .is_ok()
-                })
-                .collect::<Vec<_>>();
-            if enum_values.is_empty() {
-                Err(())
-            } else {
-                Ok(SchemaObject {
-                    enum_values: Some(enum_values),
-                    ..merged_schema
-                })
-            }
-        }
-    }
+    Ok(merged_schema)
 }
 
 fn merge_so_enum_values(
@@ -1110,49 +1115,80 @@ fn merge_so_object(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
-            let a_props = aa.properties.iter().filter_map(|(name, a_schema)| {
-                let resolved_schema = if let Some(b_schema) = bb.properties.get(name) {
-                    try_merge_schema(a_schema, b_schema, defs)
-                } else {
-                    filter_prop(name, a_schema, bb)
-                };
+            let additional_properties = merge_additional_properties(
+                aa.additional_properties.as_deref(),
+                bb.additional_properties.as_deref(),
+                defs,
+            );
 
-                match resolved_schema {
-                    // If a required field is incompatible with the
-                    // other schema, this object is unsatisfiable.
-                    Err(()) if aa.required.contains(name) => Some(Err(())),
+            enum AOrB<'a> {
+                A(&'a Schema),
+                B(&'a Schema),
+                Both(&'a Schema, &'a Schema),
+            }
 
-                    // We can ignore incompatible, non-required fields.
-                    Err(()) => None,
-
-                    // Compatible schema; proceed.
-                    Ok(schema) => Some(Ok((name.clone(), schema))),
-                }
-            });
-
-            let b_props = bb.properties.iter().filter_map(|(name, b_schema)| {
-                if aa.properties.contains_key(name) {
-                    // We handled the intersection above.
-                    None
-                } else {
-                    match filter_prop(name, b_schema, aa) {
+            let properties = aa
+                .properties
+                .iter()
+                // First characterize properties as being in a, b, or both.
+                .map(|(name, a_schema)| {
+                    if let Some(b_schema) = bb.properties.get(name) {
+                        (name, AOrB::Both(a_schema, b_schema))
+                    } else {
+                        (name, AOrB::A(a_schema))
+                    }
+                })
+                .chain(bb.properties.iter().filter_map(|(name, b_schema)| {
+                    if aa.properties.contains_key(name) {
+                        None
+                    } else {
+                        Some((name, AOrB::B(b_schema)))
+                    }
+                }))
+                // Then resolve properties against the other full schema or
+                // against the schemas for the properties if it appears in
+                // both.
+                .filter_map(|(name, ab_schema)| {
+                    let resolved_schema = match ab_schema {
+                        AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
+                        AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
+                        AOrB::Both(a_schema, b_schema) => {
+                            try_merge_schema(a_schema, b_schema, defs)
+                        }
+                    };
+                    match resolved_schema {
                         // If a required field is incompatible with the
                         // other schema, this object is unsatisfiable.
-                        Err(()) if bb.required.contains(name) => Some(Err(())),
+                        Err(()) if aa.required.contains(name) => Some(Err(())),
 
-                        // We can ignore incompatible, non-required fields.
-                        Err(()) => None,
+                        // For incompatible, non-required fields we need to
+                        // exclude the property from any values. If
+                        // `additionalProperties` is `false` (i.e. excludes all
+                        // other properties) then we can simply omit the
+                        // property. Otherwise we include the optional property
+                        // but with the `false` schema that means that no value
+                        // will satisfy that property--the value would always
+                        // be None and any serialization that included the
+                        // named property would fail to deserialize.
+                        //
+                        // If we ever make use of `propertyNames`, it's
+                        // conceivable that we might check it or modify it in
+                        // this case, but that may be overly complex.
+                        Err(()) => {
+                            if let Some(Schema::Bool(false)) = additional_properties {
+                                None
+                            } else {
+                                Some(Ok((name.clone(), Schema::Bool(false))))
+                            }
+                        }
 
                         // Compatible schema; proceed.
                         Ok(schema) => Some(Ok((name.clone(), schema))),
                     }
-                }
-            });
+                })
+                .collect::<Result<_, _>>()?;
 
-            let properties = a_props
-                .chain(b_props)
-                .collect::<Result<schemars::Map<_, _>, ()>>()?;
-
+            let additional_properties = additional_properties.map(Box::new);
             let required = aa.required.union(&bb.required).cloned().collect();
 
             // So. We merged the properties and we merged the array of
@@ -1166,19 +1202,21 @@ fn merge_so_object(
                 }
             }
 
-            let additional_properties = merge_additional_properties(
-                aa.additional_properties.as_deref(),
-                bb.additional_properties.as_deref(),
-                defs,
-            )
-            .map(Box::new);
+            let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
+            let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
+
+            if let (Some(min), Some(max)) = (min_properties, max_properties) {
+                if min > max {
+                    return Err(());
+                }
+            }
 
             let object_validation = ObjectValidation {
                 required,
                 properties,
                 additional_properties,
-                max_properties: Default::default(),     // TODO
-                min_properties: Default::default(),     // TODO
+                max_properties,
+                min_properties,
                 pattern_properties: Default::default(), // TODO
                 property_names: Default::default(),     // TODO
             };

@@ -99,13 +99,14 @@ macro_rules! validate_builtin {
 #[track_caller]
 pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
     let schema = schema_for!(T);
+    let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
 
     let mut type_space = TypeSpace::default();
     type_space
         .add_ref_types(schema.definitions.clone())
         .unwrap();
     let (ty, _) = type_space
-        .convert_schema_object(Name::Unknown, &schema.schema)
+        .convert_schema_object(Name::Unknown, &original_schema, &schema.schema)
         .unwrap();
 
     let output = ty.type_ident(&type_space, &None);

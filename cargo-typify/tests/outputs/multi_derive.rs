@@ -5,6 +5,14 @@
 
 use serde::{Deserialize, Serialize};
 
+#[doc = "Fruit"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Fruit(pub serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for Fruit {
@@ -28,6 +36,14 @@ impl From<serde_json::Map<String, serde_json::Value>> for Fruit {
         Self(value)
     }
 }
+#[doc = "FruitOrVeg"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"title\": \"veg\",\n      \"anyOf\": [\n        {\n          \"$ref\": \"#/defs/veggie\"\n        }\n      ]\n    },\n    {\n      \"title\": \"fruit\",\n      \"anyOf\": [\n        {\n          \"$ref\": \"#/defs/fruit\"\n        }\n      ]\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 #[serde(untagged)]
 pub enum FruitOrVeg {
@@ -49,6 +65,14 @@ impl From<Fruit> for FruitOrVeg {
         Self::Fruit(value)
     }
 }
+#[doc = "Veggie"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"required\": [\n    \"veggieLike\",\n    \"veggieName\"\n  ],\n  \"properties\": {\n    \"veggieLike\": {\n      \"description\": \"Do I like this vegetable?\",\n      \"type\": \"boolean\"\n    },\n    \"veggieName\": {\n      \"description\": \"The name of the vegetable.\",\n      \"type\": \"string\"\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
@@ -64,6 +88,13 @@ impl From<&Veggie> for Veggie {
     }
 }
 #[doc = "A representation of a person, company, organization, or place"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"$id\": \"https://example.com/arrays.schema.json\",\n  \"title\": \"veggies\",\n  \"description\": \"A representation of a person, company, organization, or place\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"fruits\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"vegetables\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"$ref\": \"#/$defs/veggie\"\n      }\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(AnotherDerive, Clone, Debug, Deserialize, ExtraDerive, Serialize)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

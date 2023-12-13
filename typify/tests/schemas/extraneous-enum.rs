@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "LetterBox"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"title\": \"LetterBox\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"letter\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"a\",\n        \"b\",\n        \"cee\"\n      ],\n      \"maxLength\": 2\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LetterBox {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10,6 +18,14 @@ impl From<&LetterBox> for LetterBox {
         value.clone()
     }
 }
+#[doc = "LetterBoxLetter"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\",\n  \"enum\": [\n    \"a\",\n    \"b\",\n    \"cee\"\n  ],\n  \"maxLength\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum LetterBoxLetter {
     #[serde(rename = "a")]
