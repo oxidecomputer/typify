@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "ArrayBs"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"multipleOf\": 100.0,\n  \"maxLength\": 100,\n  \"items\": {\n    \"type\": \"boolean\"\n  },\n  \"properties\": {\n    \"ok\": {}\n  },\n  \"additionalProperties\": {\n    \"type\": \"string\"\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ArrayBs(pub Vec<bool>);
 impl std::ops::Deref for ArrayBs {
@@ -23,6 +31,14 @@ impl From<Vec<bool>> for ArrayBs {
         Self(value)
     }
 }
+#[doc = "IntegerBs"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"integer\",\n  \"minimum\": 0.0,\n  \"maxLength\": 100,\n  \"properties\": {\n    \"ok\": {}\n  },\n  \"additionalProperties\": {\n    \"type\": \"string\"\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IntegerBs(pub u64);
 impl std::ops::Deref for IntegerBs {
@@ -75,6 +91,14 @@ impl ToString for IntegerBs {
         self.0.to_string()
     }
 }
+#[doc = "ObjectBs"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"multipleOf\": 100.0,\n  \"maxLength\": 100,\n  \"maxItems\": 100,\n  \"properties\": {\n    \"ok\": {\n      \"type\": \"boolean\"\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "Option::is_none")]

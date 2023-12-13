@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "TestType"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"title\": \"TestType\",\n  \"type\": \"object\",\n  \"required\": [\n    \"value\"\n  ],\n  \"properties\": {\n    \"value\": {\n      \"enum\": [\n        null,\n        \"start\",\n        \"middle\",\n        \"end\"\n      ]\n    }\n  },\n  \"$comment\": \"validate a type with no type and enum values that include a null\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TestType {
     pub value: Option<TestTypeValue>,
@@ -9,6 +17,14 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
+#[doc = "TestTypeValue"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"enum\": [\n    null,\n    \"start\",\n    \"middle\",\n    \"end\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TestTypeValue {
     #[serde(rename = "start")]

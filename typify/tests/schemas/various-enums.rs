@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "AlternativeEnum"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"default\": \"Choice2\",\n  \"type\": \"string\",\n  \"enum\": [\n    \"Choice1\",\n    \"Choice2\",\n    \"Choice3\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum AlternativeEnum {
     Choice1,
@@ -54,6 +62,14 @@ impl Default for AlternativeEnum {
         AlternativeEnum::Choice2
     }
 }
+#[doc = "DiskAttachment"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"required\": [\n    \"alternate\",\n    \"state\"\n  ],\n  \"properties\": {\n    \"alternate\": {\n      \"$ref\": \"#/components/schemas/AlternativeEnum\"\n    },\n    \"state\": {\n      \"default\": \"Detached\",\n      \"type\": \"string\",\n      \"enum\": [\n        \"Detached\",\n        \"Destroyed\",\n        \"Faulted\"\n      ]\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
@@ -64,6 +80,14 @@ impl From<&DiskAttachment> for DiskAttachment {
         value.clone()
     }
 }
+#[doc = "DiskAttachmentState"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"default\": \"Detached\",\n  \"type\": \"string\",\n  \"enum\": [\n    \"Detached\",\n    \"Destroyed\",\n    \"Faulted\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum DiskAttachmentState {
     Detached,
@@ -118,6 +142,14 @@ impl Default for DiskAttachmentState {
         DiskAttachmentState::Detached
     }
 }
+#[doc = "EmptyObject"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"prop\": {\n      \"type\": \"object\",\n      \"enum\": [\n        {}\n      ]\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -128,6 +160,14 @@ impl From<&EmptyObject> for EmptyObject {
         value.clone()
     }
 }
+#[doc = "EmptyObjectProp"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"enum\": [\n    {}\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Serialize)]
 pub struct EmptyObjectProp(serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for EmptyObjectProp {
@@ -167,6 +207,14 @@ impl<'de> serde::Deserialize<'de> for EmptyObjectProp {
         .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
+#[doc = "IpNet"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"title\": \"V4\",\n      \"allOf\": [\n        {\n          \"$ref\": \"#/components/schemas/Ipv4Net\"\n        }\n      ]\n    },\n    {\n      \"title\": \"V6\",\n      \"allOf\": [\n        {\n          \"$ref\": \"#/components/schemas/Ipv6Net\"\n        }\n      ]\n    }\n  ],\n  \"$comment\": \"we want to see *nice* variant names in the output\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IpNet {
@@ -226,6 +274,14 @@ impl From<Ipv6Net> for IpNet {
         Self::V6(value)
     }
 }
+#[doc = "Ipv4Net"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Ipv4Net(pub String);
 impl std::ops::Deref for Ipv4Net {
@@ -260,6 +316,14 @@ impl ToString for Ipv4Net {
         self.0.to_string()
     }
 }
+#[doc = "Ipv6Net"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Ipv6Net(pub String);
 impl std::ops::Deref for Ipv6Net {
@@ -294,6 +358,14 @@ impl ToString for Ipv6Net {
         self.0.to_string()
     }
 }
+#[doc = "JankNames"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"title\": \"Animation Specification\",\n      \"type\": \"string\"\n    },\n    {\n      \"title\": \"Animation Specification\",\n      \"type\": \"object\",\n      \"maxProperties\": 1,\n      \"minProperties\": 1,\n      \"additionalProperties\": {\n        \"type\": \"string\"\n      }\n    },\n    {\n      \"type\": \"object\",\n      \"maxProperties\": 2,\n      \"minProperties\": 2,\n      \"additionalProperties\": {\n        \"type\": \"integer\"\n      }\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum JankNames {
@@ -316,6 +388,14 @@ impl From<std::collections::HashMap<String, i64>> for JankNames {
         Self::Variant2(value)
     }
 }
+#[doc = "Never"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "false"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
@@ -324,6 +404,14 @@ impl From<&Never> for Never {
         value.clone()
     }
 }
+#[doc = "NeverEver"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "false"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
@@ -332,6 +420,14 @@ impl From<&NeverEver> for NeverEver {
         value.clone()
     }
 }
+#[doc = "NullStringEnumWithUnknownFormat"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"string\",\n    \"null\"\n  ],\n  \"format\": \"?\",\n  \"enum\": [\n    \"a\",\n    \"b\",\n    \"c\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NullStringEnumWithUnknownFormat(pub Option<NullStringEnumWithUnknownFormatInner>);
 impl std::ops::Deref for NullStringEnumWithUnknownFormat {
@@ -355,6 +451,14 @@ impl From<Option<NullStringEnumWithUnknownFormatInner>> for NullStringEnumWithUn
         Self(value)
     }
 }
+#[doc = "NullStringEnumWithUnknownFormatInner"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\",\n  \"format\": \"?\",\n  \"enum\": [\n    \"a\",\n    \"b\",\n    \"c\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "a")]
@@ -407,6 +511,14 @@ impl std::convert::TryFrom<String> for NullStringEnumWithUnknownFormatInner {
         value.parse()
     }
 }
+#[doc = "OneOfTypes"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"object\",\n  \"oneOf\": [\n    {\n      \"required\": [\n        \"bar\"\n      ],\n      \"properties\": {\n        \"bar\": {\n          \"type\": \"integer\"\n        }\n      }\n    },\n    {\n      \"required\": [\n        \"foo\"\n      ],\n      \"properties\": {\n        \"foo\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum OneOfTypes {
     #[serde(rename = "bar")]
@@ -424,6 +536,14 @@ impl From<i64> for OneOfTypes {
         Self::Bar(value)
     }
 }
+#[doc = "ReferenceDef"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct ReferenceDef(pub String);
 impl std::ops::Deref for ReferenceDef {
@@ -459,6 +579,13 @@ impl ToString for ReferenceDef {
     }
 }
 #[doc = "issue 280"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"description\": \"issue 280\",\n  \"oneOf\": [\n    {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    {\n      \"type\": \"object\",\n      \"additionalProperties\": {\n        \"oneOf\": [\n          {\n            \"$ref\": \"#/definitions/StringVersion\"\n          },\n          {\n            \"$ref\": \"#/definitions/ReferenceDef\"\n          }\n        ]\n      },\n      \"$comment\": \"Mapping of mod name to the desired version\"\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum References {
@@ -480,6 +607,14 @@ impl From<std::collections::HashMap<String, ReferencesVariant1Value>> for Refere
         Self::Variant1(value)
     }
 }
+#[doc = "ReferencesVariant1Value"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"$ref\": \"#/definitions/StringVersion\"\n    },\n    {\n      \"$ref\": \"#/definitions/ReferenceDef\"\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum ReferencesVariant1Value {
@@ -539,6 +674,14 @@ impl From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
+#[doc = "StringVersion"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct StringVersion(pub String);
 impl std::ops::Deref for StringVersion {

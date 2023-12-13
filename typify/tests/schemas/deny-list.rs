@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "TestType"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"title\": \"TestType\",\n  \"type\": \"object\",\n  \"required\": [\n    \"where_not\",\n    \"why_not\"\n  ],\n  \"properties\": {\n    \"where_not\": {\n      \"not\": {\n        \"enum\": [\n          \"start\",\n          \"middle\",\n          \"end\"\n        ]\n      }\n    },\n    \"why_not\": {\n      \"not\": {\n        \"type\": \"string\",\n        \"enum\": [\n          \"because\"\n        ]\n      }\n    }\n  },\n  \"$comment\": \"validate a 'not' schema with typed- and untyped-subschemas\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TestType {
     pub where_not: TestTypeWhereNot,
@@ -10,6 +18,14 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
+#[doc = "TestTypeWhereNot"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"not\": {\n    \"enum\": [\n      \"start\",\n      \"middle\",\n      \"end\"\n    ]\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
@@ -47,6 +63,14 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
             .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
+#[doc = "TestTypeWhyNot"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"not\": {\n    \"type\": \"string\",\n    \"enum\": [\n      \"because\"\n    ]\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {

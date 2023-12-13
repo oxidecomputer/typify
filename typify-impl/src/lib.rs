@@ -527,9 +527,13 @@ impl TypeSpace {
             // simple alias to another type in this list of definitions
             // (which may nor may not have already been converted). We
             // simply create a newtype with that type ID.
-            TypeEntryDetails::Reference(type_id) => {
-                TypeEntryNewtype::from_metadata(self, type_name, metadata, type_id.clone())
-            }
+            TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+                self,
+                type_name,
+                metadata,
+                type_id.clone(),
+                schema.clone(),
+            ),
 
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
@@ -541,7 +545,13 @@ impl TypeSpace {
                     metadata
                 );
                 let subtype_id = self.assign_type(type_entry);
-                TypeEntryNewtype::from_metadata(self, type_name, metadata, subtype_id)
+                TypeEntryNewtype::from_metadata(
+                    self,
+                    type_name,
+                    metadata,
+                    subtype_id,
+                    schema.clone(),
+                )
             }
         };
         let entry_name = type_entry.name().unwrap().clone();
@@ -1024,7 +1034,11 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
 
         println!("{:#?}", ty);
@@ -1058,7 +1072,11 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
 
         match ty.details {
@@ -1089,6 +1107,7 @@ mod tests {
 
     #[test]
     fn test_string_enum_with_null() {
+        let original_schema = json!({ "$ref": "xxx"});
         let enum_values = vec![
             json!("Shadrach"),
             json!("Meshach"),
@@ -1100,6 +1119,7 @@ mod tests {
         let (te, _) = type_space
             .convert_enum_string(
                 Name::Required("OnTheGo".to_string()),
+                &serde_json::from_value(original_schema).unwrap(),
                 &None,
                 &enum_values,
                 None,

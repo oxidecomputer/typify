@@ -59,6 +59,7 @@ impl TypeSpace {
     pub(crate) fn maybe_externally_tagged_enum(
         &mut self,
         type_name: Name,
+        original_schema: &Schema,
         enum_metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
@@ -217,6 +218,7 @@ impl TypeSpace {
             EnumTagType::External,
             variants,
             deny_unknown_fields,
+            original_schema.clone(),
         ))
     }
 
@@ -253,6 +255,7 @@ impl TypeSpace {
                         default: _, // TODO arguably we should look at this
                         properties,
                         deny_unknown_fields,
+                        schema: _,
                     }),
                 ..
             } => {
@@ -272,6 +275,7 @@ impl TypeSpace {
     pub(crate) fn maybe_internally_tagged_enum(
         &mut self,
         type_name: Name,
+        original_schema: &Schema,
         metadata: &Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
@@ -358,6 +362,7 @@ impl TypeSpace {
             EnumTagType::Internal { tag: tag.clone() },
             variants,
             deny_unknown_fields,
+            original_schema.clone(),
         ))
     }
 
@@ -409,6 +414,7 @@ impl TypeSpace {
     pub(crate) fn maybe_adjacently_tagged_enum(
         &mut self,
         type_name: Name,
+        original_schema: &Schema,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
@@ -489,6 +495,7 @@ impl TypeSpace {
             EnumTagType::Adjacent { tag, content },
             variants,
             deny_unknown_fields,
+            original_schema.clone(),
         ))
     }
 
@@ -584,6 +591,7 @@ impl TypeSpace {
     pub(crate) fn untagged_enum(
         &mut self,
         type_name: Name,
+        original_schema: &Schema,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<TypeEntry> {
@@ -670,6 +678,7 @@ impl TypeSpace {
             EnumTagType::Untagged,
             variants,
             deny_unknown_fields,
+            original_schema.clone(),
         ))
     }
 }
@@ -824,11 +833,13 @@ mod tests {
     fn test_externally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(ExternallyTaggedEnum);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(type_space
             .maybe_externally_tagged_enum(
                 Name::Required("ExternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -836,6 +847,7 @@ mod tests {
         assert!(type_space
             .maybe_adjacently_tagged_enum(
                 Name::Required("ExternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -843,6 +855,7 @@ mod tests {
         assert!(type_space
             .maybe_internally_tagged_enum(
                 Name::Required("ExternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -873,11 +886,13 @@ mod tests {
     fn test_adjacently_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(AdjacentlyTaggedEnum);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(type_space
             .maybe_adjacently_tagged_enum(
                 Name::Required("AdjacentlyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -885,6 +900,7 @@ mod tests {
         assert!(type_space
             .maybe_externally_tagged_enum(
                 Name::Required("AdjacentlyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -915,11 +931,13 @@ mod tests {
     fn test_internally_tagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(InternallyTaggedEnum);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
         assert!(type_space
             .maybe_internally_tagged_enum(
                 Name::Required("InternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -927,6 +945,7 @@ mod tests {
         assert!(type_space
             .maybe_adjacently_tagged_enum(
                 Name::Required("InternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -934,6 +953,7 @@ mod tests {
         assert!(type_space
             .maybe_externally_tagged_enum(
                 Name::Required("InternallyTaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -964,10 +984,12 @@ mod tests {
     fn test_untagged_enum() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(UntaggedEnum);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
         let ty = type_space
             .untagged_enum(
                 Name::Required("UntaggedEnum".to_string()),
+                &original_schema,
                 &None,
                 &subschemas,
             )
@@ -983,6 +1005,7 @@ mod tests {
                 variants,
                 deny_unknown_fields: _,
                 bespoke_impls: _,
+                schema: _,
             }) => {
                 assert_eq!(name, "UntaggedEnum");
                 assert_eq!(variants.len(), 5);
@@ -1036,10 +1059,16 @@ mod tests {
     fn test_enum_detection_untagged() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(UntaggedEnum);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
 
         let (ty, _) = type_space
-            .convert_one_of(Name::Required("Xyz".to_string()), &None, &subschemas)
+            .convert_one_of(
+                Name::Required("Xyz".to_string()),
+                &original_schema,
+                &None,
+                &subschemas,
+            )
             .unwrap();
 
         // This confirms in particular that the tag type is untagged and
@@ -1132,7 +1161,11 @@ mod tests {
         type_space.add_ref_types(schema.definitions).unwrap();
 
         let (type_entry, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
 
         if let TypeEntryDetails::Enum(TypeEntryEnum {
@@ -1375,14 +1408,29 @@ mod tests {
     fn test_result() {
         let mut type_space = TypeSpace::default();
         let schema = schema_for!(Result<u32, String>);
+        let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
-            .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
+            .maybe_externally_tagged_enum(
+                Name::Required("ResultX".to_string()),
+                &original_schema,
+                &None,
+                &subschemas,
+            )
             .unwrap();
         let mut output = OutputSpace::default();
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
+        let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
         let expected = quote! {
+            #[doc = "ResultX"]
+            ///
+            /// <details><summary>JSON schema</summary>
+            ///
+            /// ```json
+            #[doc = #schema_json]
+            /// ```
+            /// </details>
             #[derive(Clone, Debug, Deserialize, Serialize)]
             pub enum ResultX {
                 Ok(u32),
@@ -1416,12 +1464,25 @@ mod tests {
         let schema = schema_for!(Result<u32, String>);
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
-            .maybe_externally_tagged_enum(Name::Required("ResultX".to_string()), &None, &subschemas)
+            .maybe_externally_tagged_enum(
+                Name::Required("ResultX".to_string()),
+                &schemars::schema::Schema::Bool(true),
+                &None,
+                &subschemas,
+            )
             .unwrap();
         let mut output = OutputSpace::default();
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
+            #[doc = "ResultX"]
+            ///
+            /// <details><summary>JSON schema</summary>
+            ///
+            /// ```json
+            #[doc = "true"]
+            /// ```
+            /// </details>
             #[derive(A, B, C, Clone, D, Debug, Deserialize, Serialize)]
             pub enum ResultX {
                 Ok(u32),
