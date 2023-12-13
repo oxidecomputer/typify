@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "ArraySansItems"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"minItems\": 1,\n  \"uniqueItems\": true\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ArraySansItems(pub Vec<serde_json::Value>);
 impl std::ops::Deref for ArraySansItems {
@@ -23,6 +31,14 @@ impl From<Vec<serde_json::Value>> for ArraySansItems {
         Self(value)
     }
 }
+#[doc = "LessSimpleTwoTuple"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"items\": [\n    {\n      \"type\": \"string\"\n    },\n    {\n      \"type\": \"string\"\n    },\n    {\n      \"type\": \"string\"\n    }\n  ],\n  \"maxItems\": 2,\n  \"minItems\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LessSimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for LessSimpleTwoTuple {
@@ -46,6 +62,14 @@ impl From<(String, String)> for LessSimpleTwoTuple {
         Self(value)
     }
 }
+#[doc = "SimpleTwoArray"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"string\"\n  },\n  \"maxItems\": 2,\n  \"minItems\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SimpleTwoArray(pub [String; 2usize]);
 impl std::ops::Deref for SimpleTwoArray {
@@ -69,6 +93,14 @@ impl From<[String; 2usize]> for SimpleTwoArray {
         Self(value)
     }
 }
+#[doc = "SimpleTwoTuple"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"items\": [\n    {\n      \"type\": \"string\"\n    },\n    {\n      \"type\": \"string\"\n    }\n  ],\n  \"maxItems\": 2,\n  \"minItems\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for SimpleTwoTuple {
@@ -92,6 +124,14 @@ impl From<(String, String)> for SimpleTwoTuple {
         Self(value)
     }
 }
+#[doc = "UnsimpleTwoTuple"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"items\": [\n    {\n      \"type\": \"string\"\n    }\n  ],\n  \"additionalItems\": {\n    \"type\": \"string\"\n  },\n  \"maxItems\": 2,\n  \"minItems\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UnsimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for UnsimpleTwoTuple {
@@ -115,6 +155,14 @@ impl From<(String, String)> for UnsimpleTwoTuple {
         Self(value)
     }
 }
+#[doc = "YoloTwoArray"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"array\",\n  \"additionalItems\": {\n    \"type\": \"string\",\n    \"$comment\": \"ignored\"\n  },\n  \"maxItems\": 2,\n  \"minItems\": 2\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct YoloTwoArray(pub [serde_json::Value; 2usize]);
 impl std::ops::Deref for YoloTwoArray {

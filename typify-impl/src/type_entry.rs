@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
-use schemars::schema::Metadata;
+use schemars::schema::{Metadata, Schema};
 use syn::Path;
 
 use crate::{
@@ -14,6 +14,22 @@ use crate::{
     util::{get_type_name, metadata_description, type_patch},
     DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) struct SchemaWrapper(Schema);
+
+impl Eq for SchemaWrapper {}
+
+impl PartialOrd for SchemaWrapper {
+    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
+        Some(std::cmp::Ordering::Equal)
+    }
+}
+impl Ord for SchemaWrapper {
+    fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct TypeEntryEnum {
@@ -25,6 +41,7 @@ pub(crate) struct TypeEntryEnum {
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
     pub bespoke_impls: BTreeSet<TypeEntryEnumImpl>,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -42,6 +59,7 @@ pub(crate) struct TypeEntryStruct {
     pub default: Option<WrappedValue>,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -52,6 +70,7 @@ pub(crate) struct TypeEntryNewtype {
     pub default: Option<WrappedValue>,
     pub type_id: TypeId,
     pub constraints: TypeEntryNewtypeConstraints,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -199,6 +218,7 @@ impl TypeEntryEnum {
         tag_type: EnumTagType,
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -215,6 +235,7 @@ impl TypeEntryEnum {
             variants,
             deny_unknown_fields,
             bespoke_impls: Default::default(),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -263,6 +284,7 @@ impl TypeEntryStruct {
         metadata: &Option<Box<Metadata>>,
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -282,6 +304,7 @@ impl TypeEntryStruct {
             default,
             properties,
             deny_unknown_fields,
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -297,6 +320,7 @@ impl TypeEntryNewtype {
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -311,6 +335,7 @@ impl TypeEntryNewtype {
             default: None,
             type_id,
             constraints: TypeEntryNewtypeConstraints::None,
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -325,6 +350,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -341,6 +367,7 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::EnumValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -355,6 +382,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -371,6 +399,7 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::DenyValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -385,6 +414,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -409,6 +439,7 @@ impl TypeEntryNewtype {
                 min_length,
                 pattern,
             },
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -617,9 +648,10 @@ impl TypeEntry {
             variants,
             deny_unknown_fields,
             bespoke_impls,
+            schema: SchemaWrapper(schema),
         } = enum_details;
 
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         // TODO this is a one-off for some useful traits; this should move into
         // the creation of the enum type.
@@ -954,8 +986,9 @@ impl TypeEntry {
             default,
             properties,
             deny_unknown_fields,
+            schema: SchemaWrapper(schema),
         } = struct_details;
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
@@ -1028,8 +1061,7 @@ impl TypeEntry {
             derive_set,
             &self.extra_derives,
             &type_space.settings.extra_derives,
-        )
-        .collect::<Vec<_>>();
+        );
 
         output.add_item(
             OutputSpaceMod::Crate,
@@ -1164,8 +1196,9 @@ impl TypeEntry {
             default,
             type_id,
             constraints,
+            schema: SchemaWrapper(schema),
         } = newtype_details;
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         let serde = rename.as_ref().map(|old_name| {
             quote! {
@@ -1759,6 +1792,21 @@ impl TypeEntry {
     }
 }
 
+fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
+    let desc = description.map_or(name, |desc| desc.as_str());
+    let schema_json = serde_json::to_string_pretty(schema).unwrap();
+    quote! {
+        #[doc = #desc]
+        ///
+        /// <details><summary>JSON schema</summary>
+        ///
+        /// ```json
+        #[doc = #schema_json]
+        /// ```
+        /// </details>
+    }
+}
+
 fn strings_to_derives<'a>(
     derive_set: BTreeSet<&'a str>,
     type_derives: &'a BTreeSet<String>,
@@ -1805,7 +1853,7 @@ fn untagged_newtype_variants(
 #[cfg(test)]
 mod tests {
     use crate::{
-        type_entry::{TypeEntry, TypeEntryStruct},
+        type_entry::{SchemaWrapper, TypeEntry, TypeEntryStruct},
         TypeEntryDetails, TypeSpace,
     };
 
@@ -1842,6 +1890,7 @@ mod tests {
             default: None,
             properties: vec![],
             deny_unknown_fields: false,
+            schema: SchemaWrapper(schemars::schema::Schema::Bool(false)),
         }));
 
         let ident = t.type_ident(&ts, &type_mod);

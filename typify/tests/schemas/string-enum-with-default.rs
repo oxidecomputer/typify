@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "TestEnum"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"default\": \"failure\",\n  \"type\": \"string\",\n  \"enum\": [\n    \"failure\",\n    \"skipped\",\n    \"success\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum TestEnum {
     #[serde(rename = "failure")]

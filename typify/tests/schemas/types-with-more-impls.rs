@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "PatternString"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\",\n  \"pattern\": \"xx\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct PatternString(String);
 impl std::ops::Deref for PatternString {
@@ -55,6 +63,14 @@ impl<'de> serde::Deserialize<'de> for PatternString {
             .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
     }
 }
+#[doc = "Sub10Primes"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"integer\",\n  \"format\": \"uint\",\n  \"enum\": [\n    2,\n    3,\n    5,\n    7\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Serialize)]
 pub struct Sub10Primes(u32);
 impl std::ops::Deref for Sub10Primes {

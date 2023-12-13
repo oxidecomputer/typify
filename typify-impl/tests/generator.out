@@ -1,4 +1,12 @@
 mod types {
+    #[doc = "AllTheTraits"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{\n  \"title\": \"AllTheTraits\",\n  \"type\": \"object\",\n  \"required\": [\n    \"ok\"\n  ],\n  \"properties\": {\n    \"ok\": {\n      \"type\": \"string\"\n    }\n  }\n}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(
         Clone, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
     )]
@@ -15,6 +23,14 @@ mod types {
             builder::AllTheTraits::default()
         }
     }
+    #[doc = "CompoundType"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{\n  \"title\": \"CompoundType\",\n  \"type\": \"object\",\n  \"required\": [\n    \"value1\",\n    \"value2\"\n  ],\n  \"properties\": {\n    \"value1\": {\n      \"type\": \"string\"\n    },\n    \"value2\": {\n      \"type\": \"integer\",\n      \"format\": \"uint64\",\n      \"minimum\": 0.0\n    }\n  }\n}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
     pub struct CompoundType {
         pub value1: String,
@@ -30,6 +46,14 @@ mod types {
             builder::CompoundType::default()
         }
     }
+    #[doc = "Pair"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{\n  \"title\": \"Pair\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"a\": {\n      \"default\": \"One\",\n      \"$ref\": \"#/definitions/StringEnum\"\n    },\n    \"b\": {\n      \"default\": \"Two\",\n      \"$ref\": \"#/definitions/StringEnum\"\n    }\n  }\n}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
     pub struct Pair {
         #[serde(default = "defaults::pair_a")]
@@ -47,6 +71,14 @@ mod types {
             builder::Pair::default()
         }
     }
+    #[doc = "StringEnum"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{\n  \"type\": \"string\",\n  \"enum\": [\n    \"One\",\n    \"Two\",\n    \"BuckleMyShoe\"\n  ]\n}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(
         Clone, Copy, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
     )]

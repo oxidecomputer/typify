@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "IdOrName"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"title\": \"Id\",\n      \"allOf\": [\n        {\n          \"type\": \"string\",\n          \"format\": \"uuid\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Name\",\n      \"allOf\": [\n        {\n          \"$ref\": \"#/definitions/Name\"\n        }\n      ]\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IdOrName {
@@ -59,6 +67,14 @@ impl From<Name> for IdOrName {
         Self::Name(value)
     }
 }
+#[doc = "IdOrNameRedundant"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"type\": \"string\",\n      \"format\": \"uuid\"\n    },\n    {\n      \"type\": \"string\",\n      \"$ref\": \"#/definitions/Name\"\n    }\n  ],\n  \"$comment\": \"tests references that include a redundant type field\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
@@ -118,6 +134,14 @@ impl From<Name> for IdOrNameRedundant {
         Self::Variant1(value)
     }
 }
+#[doc = "IdOrYolo"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"oneOf\": [\n    {\n      \"title\": \"Id\",\n      \"allOf\": [\n        {\n          \"type\": \"string\",\n          \"format\": \"uuid\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Yolo\",\n      \"allOf\": [\n        {\n          \"type\": \"string\",\n          \"pattern\": \".*\"\n        }\n      ]\n    }\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IdOrYolo {
@@ -177,6 +201,14 @@ impl From<IdOrYoloYolo> for IdOrYolo {
         Self::Yolo(value)
     }
 }
+#[doc = "IdOrYoloYolo"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": \"string\",\n  \"pattern\": \".*\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct IdOrYoloYolo(String);
 impl std::ops::Deref for IdOrYoloYolo {
@@ -233,6 +265,13 @@ impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"title\": \"A name unique within the parent collection\",\n  \"description\": \"Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID.\",\n  \"type\": \"string\",\n  \"maxLength\": 63,\n  \"pattern\": \"^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$\"\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct Name(String);
 impl std::ops::Deref for Name {

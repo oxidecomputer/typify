@@ -1,5 +1,13 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = "IntOrStr"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"string\",\n    \"integer\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum IntOrStr {
@@ -54,6 +62,14 @@ impl From<i64> for IntOrStr {
         Self::Integer(value)
     }
 }
+#[doc = "OneOfSeveral"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"null\",\n    \"boolean\",\n    \"object\",\n    \"array\",\n    \"string\",\n    \"integer\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum OneOfSeveral {
@@ -89,6 +105,14 @@ impl From<i64> for OneOfSeveral {
         Self::Integer(value)
     }
 }
+#[doc = "ReallyJustNull"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"string\",\n    \"null\"\n  ],\n  \"enum\": [\n    null\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ReallyJustNull(pub ());
 impl std::ops::Deref for ReallyJustNull {
@@ -112,6 +136,14 @@ impl From<()> for ReallyJustNull {
         Self(value)
     }
 }
+#[doc = "SeriouslyAnything"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"null\",\n    \"boolean\",\n    \"object\",\n    \"array\",\n    \"number\",\n    \"string\",\n    \"integer\"\n  ]\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SeriouslyAnything(pub serde_json::Value);
 impl std::ops::Deref for SeriouslyAnything {
@@ -135,6 +167,14 @@ impl From<serde_json::Value> for SeriouslyAnything {
         Self(value)
     }
 }
+#[doc = "YesNoMaybe"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{\n  \"type\": [\n    \"boolean\",\n    \"object\"\n  ],\n  \"properties\": {\n    \"value\": {\n      \"type\": \"string\"\n    }\n  }\n}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum YesNoMaybe {
