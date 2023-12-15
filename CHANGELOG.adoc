@@ -13,12 +13,16 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.0.15\...HEAD[Full list of commits]
+
+== 0.0.15 (released 2023-12-15)
+
 * Improvements to array merging and mutual exclusivity checks (#412)
 * Support for 32-bit floating-point numbers (#440)
 * Better handling for unsatisfiable merged schemas (#447)
 * Show original JSON Schema in generated type docs (#454)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.14\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.14\...v0.0.15[Full list of commits]
 
 == 0.0.14 (released 2023-09-25)
 
