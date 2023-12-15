@@ -89,7 +89,7 @@ impl From<&Veggie> for Veggie {
 }
 impl Veggie {
     pub fn builder() -> builder::Veggie {
-        builder::Veggie::default()
+        Default::default()
     }
 }
 #[doc = "A representation of a person, company, organization, or place"]
@@ -114,7 +114,7 @@ impl From<&Veggies> for Veggies {
 }
 impl Veggies {
     pub fn builder() -> builder::Veggies {
-        builder::Veggies::default()
+        Default::default()
     }
 }
 pub mod builder {
