@@ -313,15 +313,11 @@ fn try_merge_with_subschemas(
     assert!(any_of.is_none() || one_of.is_none());
 
     if let Some(any_of) = any_of {
-        let merged_subschemas = try_merge_with_subschemas_any(&schema_object, any_of, defs);
+        let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
 
         match merged_subschemas.len() {
-            0 => {
-                return Err(());
-            }
-            1 => {
-                schema_object = merged_subschemas.into_iter().next().unwrap().into_object();
-            }
+            0 => return Err(()),
+            1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
                     metadata: schema_object.metadata,
@@ -330,21 +326,17 @@ fn try_merge_with_subschemas(
                         ..Default::default()
                     })),
                     ..Default::default()
-                };
+                }
             }
         }
     }
 
     if let Some(one_of) = one_of {
-        let merged_subschemas = try_merge_with_subschemas_any(&schema_object, one_of, defs);
+        let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
 
         match merged_subschemas.len() {
-            0 => {
-                return Err(());
-            }
-            1 => {
-                schema_object = merged_subschemas.into_iter().next().unwrap().into_object();
-            }
+            0 => return Err(()),
+            1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
                     metadata: schema_object.metadata,
@@ -353,7 +345,7 @@ fn try_merge_with_subschemas(
                         ..Default::default()
                     })),
                     ..Default::default()
-                };
+                }
             }
         }
     }
@@ -361,7 +353,7 @@ fn try_merge_with_subschemas(
     Ok(schema_object)
 }
 
-fn try_merge_with_subschemas_any(
+fn try_merge_with_each_subschema(
     schema_object: &SchemaObject,
     subschemas: &[Schema],
     defs: &BTreeMap<RefKey, Schema>,
@@ -380,6 +372,9 @@ fn try_merge_with_subschemas_any(
         .filter_map(|(ii, other)| {
             // Skip if the merged schema is unsatisfiable.
             let merged_schema = try_merge_schema(&schema, other, defs).ok()?;
+            // If the merged schema is equivalent to one or other of the
+            // individual schemas, use that.
+            // TODO is this right? Should we be "subtracting" out other schemas as below?
             if merged_schema.roughly(&schema) {
                 Some(schema.clone())
             } else if merged_schema.roughly(other) {
@@ -420,155 +415,8 @@ fn try_merge_with_subschemas_any(
         })
         .collect::<Vec<_>>();
 
-    // match (joined_schemas.first(), joined_schemas.len()) {
-    //     // All merges failed so this is unsatisfiable.
-    //     (None, _) => Err(()),
-
-    //     // If there's a single schema left, just return that as our
-    //     // only option
-    //     (Some(only), 1) => Ok(only.clone().into_object()),
-
-    //     // Otherwise return the appropriate `oneOf` or `anyOf`
-    //     _ => {
-    //         let subschemas = match maybe_subschemas {
-    //             Some(SubschemaValidation {
-    //                 any_of: Some(_), ..
-    //             }) => SubschemaValidation {
-    //                 any_of: Some(joined_schemas),
-    //                 ..Default::default()
-    //             },
-    //             Some(SubschemaValidation {
-    //                 one_of: Some(_), ..
-    //             }) => SubschemaValidation {
-    //                 one_of: Some(joined_schemas),
-    //                 ..Default::default()
-    //             },
-    //             _ => unreachable!(),
-    //         };
-    //         Ok(SchemaObject {
-    //             metadata: schema_object.metadata,
-    //             subschemas: Some(Box::new(subschemas)),
-    //             ..Default::default()
-    //         })
-    //     }
-    // }
     joined_schemas
 }
-
-// fn try_merge_with_subschemas_one_or_any(
-
-// )
-
-// Some(SubschemaValidation {
-//     all_of: None,
-//     any_of: Some(subschemas),
-//     one_of: None,
-//     not: None,
-//     if_schema: None,
-//     then_schema: None,
-//     else_schema: None,
-// })
-// | Some(SubschemaValidation {
-//     all_of: None,
-//     any_of: None,
-//     one_of: Some(subschemas),
-//     not: None,
-//     if_schema: None,
-//     then_schema: None,
-//     else_schema: None,
-// }) => {
-//     let schema = Schema::Object(schema_object.clone());
-//     // First we do a pairwise merge the schemas; if the result is
-//     // invalid / unresolvable / never / whatever, we exclude it
-//     // from the list. If it is valid, *then* we do the join to preserve
-//     // information (though we probably only need to to *that* if at
-//     // least one schema contains a ref). This could probably be an
-//     // opportunity for memoization, but this is an infrequent
-//     // construction so... whatever for now.
-//     let joined_schemas = subschemas
-//         .iter()
-//         .enumerate()
-//         .filter_map(|(ii, other)| {
-//             // Skip if the merged schema is unsatisfiable.
-//             let merged_schema = try_merge_schema(&schema, other, defs).ok()?;
-//             if merged_schema.roughly(&schema) {
-//                 Some(schema.clone())
-//             } else if merged_schema.roughly(other) {
-//                 Some(other.clone())
-//             } else {
-//                 let not_others = subschemas
-//                     .iter()
-//                     .enumerate()
-//                     .filter(|(jj, _)| *jj != ii)
-//                     .map(|(_, not_schema)| {
-//                         Schema::Object(SchemaObject {
-//                             subschemas: Some(Box::new(SubschemaValidation {
-//                                 not: Some(Box::new(not_schema.clone())),
-//                                 ..Default::default()
-//                             })),
-//                             ..Default::default()
-//                         })
-//                     });
-//                 let joined_schema = [schema.clone(), other.clone()]
-//                     .into_iter()
-//                     .chain(not_others)
-//                     .collect::<Vec<_>>();
-//                 println!(
-//                     "here {}",
-//                     serde_json::to_string_pretty(&joined_schema).unwrap()
-//                 );
-//                 Some(
-//                     SchemaObject {
-//                         subschemas: Some(Box::new(SubschemaValidation {
-//                             all_of: Some(joined_schema),
-//                             ..Default::default()
-//                         })),
-//                         ..Default::default()
-//                     }
-//                     .into(),
-//                 )
-//             }
-//         })
-//         .collect::<Vec<_>>();
-
-//     match (joined_schemas.first(), joined_schemas.len()) {
-//         // All merges failed so this is unsatisfiable.
-//         (None, _) => Err(()),
-
-//         // If there's a single schema left, just return that as our
-//         // only option
-//         (Some(only), 1) => Ok(only.clone().into_object()),
-
-//         // Otherwise return the appropriate `oneOf` or `anyOf`
-//         _ => {
-//             let subschemas = match maybe_subschemas {
-//                 Some(SubschemaValidation {
-//                     any_of: Some(_), ..
-//                 }) => SubschemaValidation {
-//                     any_of: Some(joined_schemas),
-//                     ..Default::default()
-//                 },
-//                 Some(SubschemaValidation {
-//                     one_of: Some(_), ..
-//                 }) => SubschemaValidation {
-//                     one_of: Some(joined_schemas),
-//                     ..Default::default()
-//                 },
-//                 _ => unreachable!(),
-//             };
-//             Ok(SchemaObject {
-//                 metadata: schema_object.metadata,
-//                 subschemas: Some(Box::new(subschemas)),
-//                 ..Default::default()
-//             })
-//         }
-//     }
-// }
-
-// Some(unknown) => {
-//     todo!("{}", serde_json::to_string_pretty(unknown).unwrap());
-// }
-// None => Ok(schema_object),
 
 /// "Subtract" the "not" schema from the schema object.
 ///
@@ -757,17 +605,6 @@ fn try_merge_with_subschemas_not(
             serde_json::to_string_pretty(&not_subschemas).unwrap(),
         ),
     }
-}
-
-fn join_schema(subschemas: &[&Schema]) -> Schema {
-    SchemaObject {
-        subschemas: Some(Box::new(SubschemaValidation {
-            all_of: Some(subschemas.iter().cloned().cloned().collect()),
-            ..Default::default()
-        })),
-        ..Default::default()
-    }
-    .into()
 }
 
 /// Merge instance types which could be None (meaning type is valid), a
