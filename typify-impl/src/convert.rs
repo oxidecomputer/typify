@@ -1176,7 +1176,8 @@ impl TypeSpace {
             assert!(merged_schema.metadata.is_none());
             merged_schema.metadata = metadata.clone();
 
-            let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
+            let (type_entry, _) =
+                self.convert_schema_object(type_name, original_schema, &merged_schema)?;
             Ok((type_entry, &None))
         }
     }
