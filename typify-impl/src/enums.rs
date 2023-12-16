@@ -1422,13 +1422,16 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
+        let schema_lines = schema_json.lines();
         let expected = quote! {
             #[doc = "ResultX"]
             ///
             /// <details><summary>JSON schema</summary>
             ///
             /// ```json
-            #[doc = #schema_json]
+            #(
+                #[doc = #schema_lines]
+            )*
             /// ```
             /// </details>
             #[derive(Clone, Debug, Deserialize, Serialize)]
