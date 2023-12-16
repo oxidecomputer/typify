@@ -1109,7 +1109,7 @@ impl TypeEntry {
                 quote! {
                     impl #type_name {
                         pub fn builder() -> builder::#type_name {
-                            builder::#type_name::default()
+                            Default::default()
                         }
                     }
                 },
