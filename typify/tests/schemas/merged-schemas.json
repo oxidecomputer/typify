@@ -291,6 +291,51 @@
       "enum": [
         "foo"
       ]
+    },
+    "pickingone": {
+      "$comment": "modeled on github's installation$suspend.installation",
+      "allOf": [
+        {
+          "$ref": "#/definitions/pickingone-installation"
+        },
+        {
+          "type": "object",
+          "required": [
+            "suspended_by"
+          ],
+          "properties": {
+            "suspended_by": {
+              "$ref": "#/definitions/pickingone-user"
+            }
+          }
+        }
+      ]
+    },
+    "pickingone-installation": {
+      "type": "object",
+      "properties": {
+        "suspended_by": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/pickingone-user"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "pickingone-user": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
     }
   }
 }
