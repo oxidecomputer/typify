@@ -293,7 +293,7 @@
       ]
     },
     "pickingone": {
-      "$comment": "modeled on github's installation$suspend.installation",
+      "$comment": "TODO this generates an extra type for the pickingone-user dependency",
       "allOf": [
         {
           "$ref": "#/definitions/pickingone-installation"
