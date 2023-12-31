@@ -310,6 +310,141 @@ impl ToString for NarrowNumber {
         self.0.to_string()
     }
 }
+#[doc = "Pickingone"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/pickingone-installation\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"suspended_by\""]
+#[doc = "      ],"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"suspended_by\": {"]
+#[doc = "          \"$ref\": \"#/definitions/pickingone-user\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"TODO this generates an extra type for the pickingone-user dependency\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Pickingone {
+    pub suspended_by: PickingoneSuspendedBy,
+}
+impl From<&Pickingone> for Pickingone {
+    fn from(value: &Pickingone) -> Self {
+        value.clone()
+    }
+}
+#[doc = "PickingoneInstallation"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"suspended_by\": {"]
+#[doc = "      \"oneOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/definitions/pickingone-user\""]
+#[doc = "        },"]
+#[doc = "        {"]
+#[doc = "          \"type\": \"null\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PickingoneInstallation {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspended_by: Option<PickingoneUser>,
+}
+impl From<&PickingoneInstallation> for PickingoneInstallation {
+    fn from(value: &PickingoneInstallation) -> Self {
+        value.clone()
+    }
+}
+#[doc = "PickingoneSuspendedBy"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"email\": {"]
+#[doc = "          \"type\": ["]
+#[doc = "            \"string\","]
+#[doc = "            \"null\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/pickingone-user\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"not\": {"]
+#[doc = "        \"type\": \"null\""]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PickingoneSuspendedBy {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+}
+impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
+    fn from(value: &PickingoneSuspendedBy) -> Self {
+        value.clone()
+    }
+}
+#[doc = "PickingoneUser"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"email\": {"]
+#[doc = "      \"type\": ["]
+#[doc = "        \"string\","]
+#[doc = "        \"null\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PickingoneUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+}
+impl From<&PickingoneUser> for PickingoneUser {
+    fn from(value: &PickingoneUser) -> Self {
+        value.clone()
+    }
+}
 #[doc = "TrimFat"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
