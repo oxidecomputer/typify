@@ -1,5 +1,30 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+pub mod error {
+    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    pub struct ConversionError(std::borrow::Cow<'static, str>);
+    impl std::error::Error for ConversionError {}
+    impl std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
 #[doc = "LetterBox"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -69,30 +94,30 @@ impl ToString for LetterBoxLetter {
     }
 }
 impl std::str::FromStr for LetterBoxLetter {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "a" => Ok(Self::A),
             "b" => Ok(Self::B),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
 impl std::convert::TryFrom<&str> for LetterBoxLetter {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for LetterBoxLetter {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for LetterBoxLetter {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

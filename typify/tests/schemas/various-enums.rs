@@ -1,5 +1,30 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+pub mod error {
+    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    pub struct ConversionError(std::borrow::Cow<'static, str>);
+    impl std::error::Error for ConversionError {}
+    impl std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
 #[doc = "AlternativeEnum"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -37,31 +62,31 @@ impl ToString for AlternativeEnum {
     }
 }
 impl std::str::FromStr for AlternativeEnum {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "Choice1" => Ok(Self::Choice1),
             "Choice2" => Ok(Self::Choice2),
             "Choice3" => Ok(Self::Choice3),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
 impl std::convert::TryFrom<&str> for AlternativeEnum {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for AlternativeEnum {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for AlternativeEnum {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -145,31 +170,31 @@ impl ToString for DiskAttachmentState {
     }
 }
 impl std::str::FromStr for DiskAttachmentState {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "Detached" => Ok(Self::Detached),
             "Destroyed" => Ok(Self::Destroyed),
             "Faulted" => Ok(Self::Faulted),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
 impl std::convert::TryFrom<&str> for DiskAttachmentState {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for DiskAttachmentState {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for DiskAttachmentState {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -238,10 +263,12 @@ impl From<&EmptyObjectProp> for EmptyObjectProp {
     }
 }
 impl std::convert::TryFrom<serde_json::Map<String, serde_json::Value>> for EmptyObjectProp {
-    type Error = &'static str;
-    fn try_from(value: serde_json::Map<String, serde_json::Value>) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: serde_json::Map<String, serde_json::Value>,
+    ) -> Result<Self, self::error::ConversionError> {
         if ![[].into_iter().collect()].contains(&value) {
-            Err("invalid value")
+            Err("invalid value".into())
         } else {
             Ok(Self(value))
         }
@@ -298,32 +325,32 @@ impl From<&IpNet> for IpNet {
     }
 }
 impl std::str::FromStr for IpNet {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::V4(v))
         } else if let Ok(v) = value.parse() {
             Ok(Self::V6(v))
         } else {
-            Err("string conversion failed for all variants")
+            Err("string conversion failed for all variants".into())
         }
     }
 }
 impl std::convert::TryFrom<&str> for IpNet {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IpNet {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IpNet {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -601,31 +628,31 @@ impl ToString for NullStringEnumWithUnknownFormatInner {
     }
 }
 impl std::str::FromStr for NullStringEnumWithUnknownFormatInner {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "a" => Ok(Self::A),
             "b" => Ok(Self::B),
             "c" => Ok(Self::C),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
 impl std::convert::TryFrom<&str> for NullStringEnumWithUnknownFormatInner {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for NullStringEnumWithUnknownFormatInner {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for NullStringEnumWithUnknownFormatInner {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -804,32 +831,32 @@ impl From<&ReferencesVariant1Value> for ReferencesVariant1Value {
     }
 }
 impl std::str::FromStr for ReferencesVariant1Value {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::StringVersion(v))
         } else if let Ok(v) = value.parse() {
             Ok(Self::ReferenceDef(v))
         } else {
-            Err("string conversion failed for all variants")
+            Err("string conversion failed for all variants".into())
         }
     }
 }
 impl std::convert::TryFrom<&str> for ReferencesVariant1Value {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for ReferencesVariant1Value {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for ReferencesVariant1Value {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
