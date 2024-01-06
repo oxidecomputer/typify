@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::BTreeMap;
 
@@ -48,16 +48,19 @@ impl OutputSpace {
                 #items
             },
             OutputSpaceMod::Builder => quote! {
+                /// Types for composing complex structures.
                 pub mod builder {
                     #items
                 }
             },
             OutputSpaceMod::Defaults => quote! {
+                /// Generation of default values for serde.
                 pub mod defaults {
                     #items
                 }
             },
             OutputSpaceMod::Error => quote! {
+                /// Error types.
                 pub mod error {
                     #items
                 }

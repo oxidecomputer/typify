@@ -5,6 +5,7 @@
 
 use serde::{Deserialize, Serialize};
 
+#[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
     pub struct ConversionError(std::borrow::Cow<'static, str>);
@@ -198,6 +199,7 @@ impl Veggies {
         Default::default()
     }
 }
+#[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Veggie {

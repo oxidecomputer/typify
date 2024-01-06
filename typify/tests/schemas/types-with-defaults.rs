@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
     pub struct ConversionError(std::borrow::Cow<'static, str>);
@@ -71,6 +72,7 @@ impl From<&TestBed> for TestBed {
         value.clone()
     }
 }
+#[doc = r" Generation of default values for serde."]
 pub mod defaults {
     pub(super) fn test_bed_any() -> Vec<serde_json::Value> {
         vec![

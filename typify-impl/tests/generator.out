@@ -1,4 +1,5 @@
 mod types {
+    #[doc = r" Error types."]
     pub mod error {
         #[doc = r" Error from a TryFrom or FromStr implementation."]
         pub struct ConversionError(std::borrow::Cow<'static, str>);
@@ -203,6 +204,7 @@ mod types {
             value.parse()
         }
     }
+    #[doc = r" Types for composing complex structures."]
     pub mod builder {
         #[derive(Clone, Debug)]
         pub struct AllTheTraits {
@@ -343,6 +345,7 @@ mod types {
             }
         }
     }
+    #[doc = r" Generation of default values for serde."]
     pub mod defaults {
         pub(super) fn pair_a() -> super::StringEnum {
             super::StringEnum::One
