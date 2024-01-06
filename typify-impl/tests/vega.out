@@ -1,3 +1,4 @@
+#[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
     pub struct ConversionError(std::borrow::Cow<'static, str>);
@@ -109930,6 +109931,7 @@ impl std::convert::TryFrom<String> for WordcloudTransformType {
         value.parse()
     }
 }
+#[doc = r" Generation of default values for serde."]
 pub mod defaults {
     pub(super) fn default_bool<const V: bool>() -> bool {
         V
