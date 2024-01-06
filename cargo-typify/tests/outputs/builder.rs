@@ -5,6 +5,31 @@
 
 use serde::{Deserialize, Serialize};
 
+pub mod error {
+    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    pub struct ConversionError(std::borrow::Cow<'static, str>);
+    impl std::error::Error for ConversionError {}
+    impl std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
 #[doc = "Fruit"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -210,8 +235,8 @@ pub mod builder {
         }
     }
     impl std::convert::TryFrom<Veggie> for super::Veggie {
-        type Error = String;
-        fn try_from(value: Veggie) -> Result<Self, String> {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Veggie) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 veggie_like: value.veggie_like?,
                 veggie_name: value.veggie_name?,
@@ -262,8 +287,8 @@ pub mod builder {
         }
     }
     impl std::convert::TryFrom<Veggies> for super::Veggies {
-        type Error = String;
-        fn try_from(value: Veggies) -> Result<Self, String> {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Veggies) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 fruits: value.fruits?,
                 vegetables: value.vegetables?,

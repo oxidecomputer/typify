@@ -12,6 +12,7 @@ pub struct OutputSpace {
 
 #[derive(Clone, Debug, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum OutputSpaceMod {
+    Error,
     Crate,
     Builder,
     Defaults,
@@ -53,6 +54,11 @@ impl OutputSpace {
             },
             OutputSpaceMod::Defaults => quote! {
                 pub mod defaults {
+                    #items
+                }
+            },
+            OutputSpaceMod::Error => quote! {
+                pub mod error {
                     #items
                 }
             },
