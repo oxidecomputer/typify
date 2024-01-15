@@ -464,7 +464,7 @@ fn try_merge_schema_not(
         }) => try_merge_with_subschemas_not(schema_object, not_subschemas, defs),
 
         // If we can't usefully reduce the complexity, leave it for the
-        // coversion pass.
+        // conversion pass.
         _ => {
             schema_object.subschemas().not = Some(Box::new(not_schema.clone()));
             Ok(schema_object)
