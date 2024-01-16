@@ -1864,7 +1864,7 @@ mod tests {
     fn test_ident() {
         let ts = TypeSpace::default();
 
-        let type_mod = Some("tha_mod".to_string());
+        let type_mod = Some("the_mod".to_string());
 
         let t = TypeEntry::new_integer("u32");
         let ident = t.type_ident(&ts, &type_mod);
@@ -1897,7 +1897,7 @@ mod tests {
         }));
 
         let ident = t.type_ident(&ts, &type_mod);
-        assert_eq!(ident.to_string(), "tha_mod :: SomeType");
+        assert_eq!(ident.to_string(), "the_mod :: SomeType");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& SomeType");
         let parameter = t.type_parameter_ident(&ts, Some("a"));
