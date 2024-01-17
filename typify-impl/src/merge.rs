@@ -560,9 +560,7 @@ fn try_merge_with_subschemas_not(
             else_schema: None,
         } => {
             debug!("not not");
-            let xxx = schema_object.into();
-            let yyy = try_merge_schema(&xxx, not.as_ref(), defs)?;
-            Ok(yyy.into_object())
+            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)?.into_object())
         }
 
         // TODO this is a kludge
