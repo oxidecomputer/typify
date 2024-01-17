@@ -533,7 +533,7 @@ impl TypeSpace {
                 // the content (i.e. the struct member); because this type is
                 // required (i.e. a named reference) it will be generated as a
                 // struct as well. This naming ensures that any inferred
-                // subtypes match between ths variant and the independent
+                // subtypes match between this variant and the independent
                 // struct type.
                 //
                 // Note that below we include the variant name to ensure

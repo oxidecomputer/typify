@@ -1,5 +1,31 @@
 #[allow(unused_imports)]
 use serde::{Deserialize, Serialize};
+#[doc = r" Error types."]
+pub mod error {
+    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    pub struct ConversionError(std::borrow::Cow<'static, str>);
+    impl std::error::Error for ConversionError {}
+    impl std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
 #[doc = "IdOrName"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -40,32 +66,32 @@ impl From<&IdOrName> for IdOrName {
     }
 }
 impl std::str::FromStr for IdOrName {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Id(v))
         } else if let Ok(v) = value.parse() {
             Ok(Self::Name(v))
         } else {
-            Err("string conversion failed for all variants")
+            Err("string conversion failed for all variants".into())
         }
     }
 }
 impl std::convert::TryFrom<&str> for IdOrName {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IdOrName {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IdOrName {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -119,32 +145,32 @@ impl From<&IdOrNameRedundant> for IdOrNameRedundant {
     }
 }
 impl std::str::FromStr for IdOrNameRedundant {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Variant0(v))
         } else if let Ok(v) = value.parse() {
             Ok(Self::Variant1(v))
         } else {
-            Err("string conversion failed for all variants")
+            Err("string conversion failed for all variants".into())
         }
     }
 }
 impl std::convert::TryFrom<&str> for IdOrNameRedundant {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IdOrNameRedundant {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IdOrNameRedundant {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -207,32 +233,32 @@ impl From<&IdOrYolo> for IdOrYolo {
     }
 }
 impl std::str::FromStr for IdOrYolo {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Id(v))
         } else if let Ok(v) = value.parse() {
             Ok(Self::Yolo(v))
         } else {
-            Err("string conversion failed for all variants")
+            Err("string conversion failed for all variants".into())
         }
     }
 }
 impl std::convert::TryFrom<&str> for IdOrYolo {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IdOrYolo {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IdOrYolo {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -284,29 +310,29 @@ impl From<&IdOrYoloYolo> for IdOrYoloYolo {
     }
 }
 impl std::str::FromStr for IdOrYoloYolo {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new(".*").unwrap().find(value).is_none() {
-            return Err("doesn't match pattern \".*\"");
+            return Err("doesn't match pattern \".*\"".into());
         }
         Ok(Self(value.to_string()))
     }
 }
 impl std::convert::TryFrom<&str> for IdOrYoloYolo {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IdOrYoloYolo {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IdOrYoloYolo {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -317,7 +343,9 @@ impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
@@ -353,30 +381,30 @@ impl From<&Name> for Name {
     }
 }
 impl std::str::FromStr for Name {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if value.len() > 63usize {
-            return Err("longer than 63 characters");
+            return Err("longer than 63 characters".into());
         }
-        if regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . unwrap () . find (value) . is_none () { return Err ("doesn't match pattern \"^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$\"") ; }
+        if regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . unwrap () . find (value) . is_none () { return Err ("doesn't match pattern \"^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$\"" . into ()) ; }
         Ok(Self(value.to_string()))
     }
 }
 impl std::convert::TryFrom<&str> for Name {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for Name {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for Name {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -387,7 +415,9 @@ impl<'de> serde::Deserialize<'de> for Name {
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 fn main() {}

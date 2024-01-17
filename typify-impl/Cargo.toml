@@ -9,23 +9,24 @@ readme = "../README.md"
 
 [dependencies]
 heck = "0.4.1"
-log = "0.4"
-proc-macro2 = "1.0"
-quote = "1.0"
+log = "0.4.20"
+proc-macro2 = "1.0.76"
+quote = "1.0.35"
 regress = "0.7.1"
-schemars = "0.8.13"
-serde_json = "1.0"
-syn = { version = "2.0", features = ["full"] }
-thiserror = "1.0"
+schemars = "0.8.16"
+serde_json = "1.0.111"
+syn = { version = "2.0.48", features = ["full"] }
+thiserror = "1.0.56"
 unicode-ident = "1.0.12"
+
 
 [dev-dependencies]
 env_logger = "0.10.1"
-expectorate = "1.1"
-paste = "1.0"
-rustfmt-wrapper = "0.2"
+expectorate = "1.1.0"
+paste = "1.0.14"
+rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
-schemars = { version = "0.8.13", features = ["uuid1"] }
-serde = "1.0"
-syn = { version = "2.0", features = ["full", "extra-traits"] }
+schemars = { version = "0.8.16", features = ["uuid1"] }
+serde = "1.0.109"
+syn = { version = "2.0.48", features = ["full", "extra-traits"] }
 uuid = "1.6.1"

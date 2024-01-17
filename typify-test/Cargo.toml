@@ -6,12 +6,12 @@ edition = "2021"
 [dependencies]
 regress = "0.7.1"
 serde = "1.0.193"
-serde_json = "1.0.108"
+serde_json = "1.0.109"
 
 [build-dependencies]
 ipnetwork = { version = "0.20.0", features = ["schemars"] }
-prettyplease = "0.2"
-schemars = "0.8.13"
+prettyplease = "0.2.16"
+schemars = "0.8.16"
 serde = "1.0.193"
-syn = "2.0.40"
+syn = "2.0.43"
 typify = { path = "../typify" }

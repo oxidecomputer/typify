@@ -669,6 +669,44 @@ impl TypeSpace {
     pub fn to_stream(&self) -> TokenStream {
         let mut output = OutputSpace::default();
 
+        // Add the error type we use for conversions; it's fine if this is
+        // unused.
+        output.add_item(
+            output::OutputSpaceMod::Error,
+            "",
+            quote! {
+                /// Error from a TryFrom or FromStr implementation.
+                pub struct ConversionError(std::borrow::Cow<'static, str>);
+
+                impl std::error::Error for ConversionError {}
+                impl std::fmt::Display for ConversionError {
+                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>)
+                        -> Result<(), std::fmt::Error>
+                    {
+                        std::fmt::Display::fmt(&self.0, f)
+                    }
+                }
+
+                impl std::fmt::Debug for ConversionError {
+                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>)
+                        -> Result<(), std::fmt::Error>
+                    {
+                        std::fmt::Debug::fmt(&self.0, f)
+                    }
+                }
+                impl From<&'static str> for ConversionError {
+                    fn from(value: &'static str) -> Self {
+                        Self(value.into())
+                    }
+                }
+                impl From<String> for ConversionError {
+                    fn from(value: String) -> Self {
+                        Self(value.into())
+                    }
+                }
+            },
+        );
+
         // Add all types.
         self.id_to_entry
             .values()

@@ -1809,7 +1809,7 @@ mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
     use paste::paste;
-    use quote::quote;
+    use quote::{quote, ToTokens};
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, Metadata, NumberValidation, RootSchema, SchemaObject},
@@ -2016,8 +2016,11 @@ mod tests {
         let _ = type_space.add_type(&schema.schema.into()).unwrap();
 
         let actual = type_space.to_stream();
-        let expected = quote! {};
-        assert_eq!(actual.to_string(), expected.to_string());
+        let file = syn::parse2::<syn::File>(actual).expect("type space should emit a valid file");
+        match file.items.as_slice() {
+            [syn::Item::Mod(error)] if error.ident == "error" => {}
+            _ => panic!("unexpected file contents {}", file.to_token_stream()),
+        }
     }
 
     #[test]

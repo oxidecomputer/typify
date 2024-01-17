@@ -11,11 +11,11 @@ readme = "../README.md"
 proc-macro = true
 
 [dependencies]
-proc-macro2 = "1.0"
-quote = "1.0"
-schemars = "0.8.13"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+proc-macro2 = "1.0.76"
+quote = "1.0.35"
+schemars = "0.8.16"
+serde = "1.0.195"
+serde_json = "1.0.109"
 serde_tokenstream = "0.2.0"
 syn = { version = "2.0", features = ["full", "extra-traits"] }
 typify-impl = { version = "0.0.15", path = "../typify-impl" }
