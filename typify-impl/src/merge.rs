@@ -397,10 +397,6 @@ fn try_merge_with_each_subschema(
                     .into_iter()
                     .chain(not_others)
                     .collect::<Vec<_>>();
-                println!(
-                    "here {}",
-                    serde_json::to_string_pretty(&joined_schema).unwrap()
-                );
                 Some(
                     SchemaObject {
                         subschemas: Some(Box::new(SubschemaValidation {
