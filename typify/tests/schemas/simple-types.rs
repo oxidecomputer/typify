@@ -64,49 +64,38 @@ impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum JustOne {
-    Variant0(String),
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct JustOne(pub String);
+impl std::ops::Deref for JustOne {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<JustOne> for String {
+    fn from(value: JustOne) -> Self {
+        value.0
+    }
 }
 impl From<&JustOne> for JustOne {
     fn from(value: &JustOne) -> Self {
         value.clone()
     }
 }
+impl From<String> for JustOne {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
 impl std::str::FromStr for JustOne {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
-        } else {
-            Err("string conversion failed for all variants".into())
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for JustOne {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for JustOne {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for JustOne {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
     }
 }
 impl ToString for JustOne {
     fn to_string(&self) -> String {
-        match self {
-            Self::Variant0(x) => x.to_string(),
-        }
+        self.0.to_string()
     }
 }
 fn main() {}
