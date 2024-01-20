@@ -359,13 +359,12 @@ fn try_merge_with_each_subschema(
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Vec<Schema> {
     let schema = Schema::Object(schema_object.clone());
-    // First we do a pairwise merge the schemas; if the result is
-    // invalid / unresolvable / never / whatever, we exclude it
-    // from the list. If it is valid, *then* we do the join to preserve
-    // information (though we probably only need to to *that* if at
-    // least one schema contains a ref). This could probably be an
-    // opportunity for memoization, but this is an infrequent
-    // construction so... whatever for now.
+    // First we do a pairwise merge the schemas; if the result is invalid /
+    // unresolvable / never / whatever, we exclude it from the list. If it is
+    // valid, *then* we do the join to preserve information (though we probably
+    // only need to to *that* if at least one schema contains a ref). This
+    // could probably be an opportunity for memoization, but this is an
+    // infrequent construction so... whatever for now.
     let joined_schemas = subschemas
         .iter()
         .enumerate()
