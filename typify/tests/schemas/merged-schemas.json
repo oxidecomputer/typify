@@ -291,6 +291,51 @@
       "enum": [
         "foo"
       ]
+    },
+    "pickingone": {
+      "$comment": "TODO this generates an extra type for the pickingone-user dependency",
+      "allOf": [
+        {
+          "$ref": "#/definitions/pickingone-installation"
+        },
+        {
+          "type": "object",
+          "required": [
+            "suspended_by"
+          ],
+          "properties": {
+            "suspended_by": {
+              "$ref": "#/definitions/pickingone-user"
+            }
+          }
+        }
+      ]
+    },
+    "pickingone-installation": {
+      "type": "object",
+      "properties": {
+        "suspended_by": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/pickingone-user"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "pickingone-user": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
     }
   }
 }

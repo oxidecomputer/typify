@@ -27,6 +27,7 @@ fn test_github() {
 
 #[test]
 fn test_vega() {
+    env_logger::init();
     let mut settings = TypeSpaceSettings::default();
     let raw_schema = serde_json::json! {
         {

@@ -8,7 +8,7 @@ use crate::type_entry::{
     Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
-use log::info;
+use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -482,11 +482,21 @@ impl TypeSpace {
                     subschemas: None,
                     ..schema.clone()
                 };
+                debug!(
+                    "pre merged schema {}",
+                    serde_json::to_string_pretty(schema).unwrap(),
+                );
                 let merged_schema = merge_with_subschemas(
                     without_subschemas,
                     schema.subschemas.as_deref(),
                     &self.definitions,
                 );
+
+                debug!(
+                    "merged schema {}",
+                    serde_json::to_string_pretty(&merged_schema).unwrap(),
+                );
+
                 let (type_entry, _) =
                     self.convert_schema_object(type_name, original_schema, &merged_schema)?;
                 Ok((type_entry, &None))
@@ -1106,6 +1116,10 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        debug!(
+            "all_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
         if let Some(ty) =
             self.maybe_singleton_subschema(type_name.clone(), original_schema, subschemas)
         {
@@ -1277,6 +1291,11 @@ impl TypeSpace {
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        debug!(
+            "one_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
+
         // TODO it would probably be smart to do a pass through the schema
         // given to us and either put it into some canonical form or move to
         // some sort of intermediate representation.

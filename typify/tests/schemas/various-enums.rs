@@ -879,6 +879,47 @@ impl From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
+#[doc = "ShouldBeExclusive"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"id\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"reference\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"id\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"reference\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ShouldBeExclusive {
+    Variant0 { id: String },
+    Variant1 { reference: String },
+}
+impl From<&ShouldBeExclusive> for ShouldBeExclusive {
+    fn from(value: &ShouldBeExclusive) -> Self {
+        value.clone()
+    }
+}
 #[doc = "StringVersion"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
