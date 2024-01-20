@@ -9,6 +9,11 @@
           "format": "float"
         }
       }
+    },
+    "just-one": {
+      "type": [
+        "string"
+      ]
     }
   }
 }

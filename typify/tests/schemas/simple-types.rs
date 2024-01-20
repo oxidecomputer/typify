@@ -52,4 +52,50 @@ impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
         value.clone()
     }
 }
+#[doc = "JustOne"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": ["]
+#[doc = "    \"string\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct JustOne(pub String);
+impl std::ops::Deref for JustOne {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<JustOne> for String {
+    fn from(value: JustOne) -> Self {
+        value.0
+    }
+}
+impl From<&JustOne> for JustOne {
+    fn from(value: &JustOne) -> Self {
+        value.clone()
+    }
+}
+impl From<String> for JustOne {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+impl std::str::FromStr for JustOne {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ToString for JustOne {
+    fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
 fn main() {}

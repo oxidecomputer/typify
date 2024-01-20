@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::BTreeSet;
 
@@ -551,6 +551,26 @@ impl TypeSpace {
                 Ok((type_entry, metadata))
             }
 
+            // Treat a singleton type array like a singleton type.
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Vec(instance_types)),
+                ..
+            } if instance_types.len() == 1 => {
+                let [it] = instance_types.as_slice() else {
+                    unreachable!()
+                };
+                let (type_entry, _) = self.convert_schema_object(
+                    type_name,
+                    original_schema,
+                    &SchemaObject {
+                        instance_type: Some(SingleOrVec::Single((*it).into())),
+                        ..schema.clone()
+                    },
+                )?;
+                Ok((type_entry, metadata))
+            }
+
             // Turn schemas with multiple types into an untagged enum labeled
             // according to the given type. We associate any validation with
             // the appropriate type. Note that the case of a 2-type list with
@@ -570,7 +590,8 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } => {
-                // Eliminate duplicates (they hold no significance).
+                // Eliminate duplicates (they hold no significance); they
+                // aren't supposed to be there, but we can still handle it.
                 let unique_types = instance_types.iter().collect::<BTreeSet<_>>();
 
                 // Massage the data into labeled subschemas with the following
