@@ -188,6 +188,76 @@
           ]
         }
       ]
+    },
+    "enum-and-constant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "bark"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "enum": [
+                "dog"
+              ]
+            },
+            "bark": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "purr"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "const": "cat"
+            },
+            "purr": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "help"
+          ],
+          "properties": {
+            "petType": {
+              "const": "monkey"
+            },
+            "help": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "float"
+          ],
+          "properties": {
+            "petType": {
+              "enum": [
+                "fish"
+              ]
+            },
+            "float": {
+              "type": "string"
+            }
+          }
+        }
+      ]
     }
   }
 }
