@@ -258,6 +258,26 @@
           }
         }
       ]
+    },
+    "commented-variants": {
+      "oneOf": [
+        {
+          "enum": [
+            "A"
+          ],
+          "description": "An A"
+        },
+        {
+          "enum": [
+            "B"
+          ],
+          "description": "A B"
+        },
+        {
+          "const": "C",
+          "description": "a pirate's favorite letter"
+        }
+      ]
     }
   }
 }

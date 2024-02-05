@@ -96,6 +96,85 @@ impl Default for AlternativeEnum {
         AlternativeEnum::Choice2
     }
 }
+#[doc = "CommentedVariants"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"description\": \"An A\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"A\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"description\": \"A B\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"B\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"description\": \"a pirate's favorite letter\","]
+#[doc = "      \"const\": \"C\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub enum CommentedVariants {
+    #[doc = "An A"]
+    A,
+    #[doc = "A B"]
+    B,
+    #[doc = "a pirate's favorite letter"]
+    C,
+}
+impl From<&CommentedVariants> for CommentedVariants {
+    fn from(value: &CommentedVariants) -> Self {
+        value.clone()
+    }
+}
+impl ToString for CommentedVariants {
+    fn to_string(&self) -> String {
+        match *self {
+            Self::A => "A".to_string(),
+            Self::B => "B".to_string(),
+            Self::C => "C".to_string(),
+        }
+    }
+}
+impl std::str::FromStr for CommentedVariants {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+        match value {
+            "A" => Ok(Self::A),
+            "B" => Ok(Self::B),
+            "C" => Ok(Self::C),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl std::convert::TryFrom<&str> for CommentedVariants {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for CommentedVariants {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for CommentedVariants {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "DiskAttachment"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

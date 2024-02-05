@@ -89,10 +89,10 @@ impl TypeSpace {
                     // variant that we'd never use... I guess.
                     Schema::Bool(false) => todo!(),
 
-                    // Strings must be simple enumerations.
+                    // Strings must be simple enumerations or constants.
                     Schema::Object(SchemaObject {
                         metadata,
-                        instance_type: Some(SingleOrVec::Single(single)),
+                        instance_type,
                         format: None,
                         enum_values: Some(values),
                         const_value: None,
@@ -103,7 +103,13 @@ impl TypeSpace {
                         object: _,
                         reference: None,
                         extensions: _,
-                    }) if single.as_ref() == &InstanceType::String => {
+                    }) => {
+                        match instance_type {
+                            Some(SingleOrVec::Single(single))
+                                if single.as_ref() == &InstanceType::String => {}
+                            None => {}
+                            _ => return None,
+                        };
                         // Confirm that all values are, in fact, simple strings.
                         // Simple strings become simple variants. If any is not
                         // a string, we'll end up returning None
@@ -117,6 +123,33 @@ impl TypeSpace {
                             })
                             .collect()
                     }
+                    Schema::Object(SchemaObject {
+                        metadata,
+                        instance_type,
+                        format: None,
+                        enum_values: None,
+                        const_value: Some(value),
+                        subschemas: None,
+                        number: _,
+                        string: _,
+                        array: _,
+                        object: _,
+                        reference: None,
+                        extensions: _,
+                    }) => {
+                        match instance_type {
+                            Some(SingleOrVec::Single(single))
+                                if single.as_ref() == &InstanceType::String => {}
+                            None => {}
+                            _ => return None,
+                        };
+                        std::iter::once(value.as_str().map(|variant_name| ProtoVariant::Simple {
+                            name: variant_name,
+                            description: metadata_description(metadata),
+                        }))
+                        .collect()
+                    }
+
                     other => match get_object(other) {
                         // Objects must have a single property, and that
                         // property must be required. The type of that lone
