@@ -457,7 +457,7 @@ fn array_schemas_mutually_exclusive(
 /// otherwise return None.
 pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     match schema {
-        // Strings must be simple enumerations.
+        // Singleton, typed enumerated value.
         Schema::Object(SchemaObject {
             metadata: _,
             instance_type: Some(SingleOrVec::Single(single)),
@@ -471,13 +471,58 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
             object: None,
             reference: None,
             extensions: _,
-        }) if single.as_ref() == &InstanceType::String => {
-            if values.len() == 1 {
-                values.get(0).and_then(|value| value.as_str())
-            } else {
-                None
-            }
+        }) if single.as_ref() == &InstanceType::String && values.len() == 1 => {
+            values.first().unwrap().as_str()
         }
+
+        // Singleton, untyped enumerated value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: Some(values),
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) if values.len() == 1 => values.first().unwrap().as_str(),
+
+        // Constant value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: Some(value),
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::String => value.as_str(),
+
+        // Constant, untyped value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: Some(value),
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => value.as_str(),
+
         _ => None,
     }
 }

@@ -21629,43 +21629,43 @@ impl From<SignalRef> for DensityTransformAsVariant0Item {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, deny_unknown_fields)]
+#[serde(tag = "function", deny_unknown_fields)]
 pub enum DensityTransformDistribution {
-    Variant0 {
-        function: DensityTransformDistributionVariant0Function,
+    #[serde(rename = "normal")]
+    Normal {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        mean: Option<DensityTransformDistributionVariant0Mean>,
-        #[serde(default = "defaults::density_transform_distribution_variant0_stdev")]
-        stdev: DensityTransformDistributionVariant0Stdev,
+        mean: Option<DensityTransformDistributionMean>,
+        #[serde(default = "defaults::density_transform_distribution_normal_stdev")]
+        stdev: DensityTransformDistributionStdev,
     },
-    Variant1 {
-        function: DensityTransformDistributionVariant1Function,
+    #[serde(rename = "lognormal")]
+    Lognormal {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        mean: Option<DensityTransformDistributionVariant1Mean>,
-        #[serde(default = "defaults::density_transform_distribution_variant1_stdev")]
-        stdev: DensityTransformDistributionVariant1Stdev,
+        mean: Option<DensityTransformDistributionMean>,
+        #[serde(default = "defaults::density_transform_distribution_lognormal_stdev")]
+        stdev: DensityTransformDistributionStdev,
     },
-    Variant2 {
-        function: DensityTransformDistributionVariant2Function,
-        #[serde(default = "defaults::density_transform_distribution_variant2_max")]
-        max: DensityTransformDistributionVariant2Max,
+    #[serde(rename = "uniform")]
+    Uniform {
+        #[serde(default = "defaults::density_transform_distribution_uniform_max")]
+        max: DensityTransformDistributionMax,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        min: Option<DensityTransformDistributionVariant2Min>,
+        min: Option<DensityTransformDistributionMin>,
     },
-    Variant3 {
+    #[serde(rename = "kde")]
+    Kde {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        bandwidth: Option<DensityTransformDistributionVariant3Bandwidth>,
-        field: DensityTransformDistributionVariant3Field,
+        bandwidth: Option<DensityTransformDistributionBandwidth>,
+        field: DensityTransformDistributionField,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         from: Option<String>,
-        function: DensityTransformDistributionVariant3Function,
     },
-    Variant4 {
+    #[serde(rename = "mixture")]
+    Mixture {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        distributions: Option<DensityTransformDistributionVariant4Distributions>,
-        function: DensityTransformDistributionVariant4Function,
+        distributions: Option<DensityTransformDistributionDistributions>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        weights: Option<DensityTransformDistributionVariant4Weights>,
+        weights: Option<DensityTransformDistributionWeights>,
     },
 }
 impl From<&DensityTransformDistribution> for DensityTransformDistribution {
@@ -21673,471 +21673,86 @@ impl From<&DensityTransformDistribution> for DensityTransformDistribution {
         value.clone()
     }
 }
-#[doc = "DensityTransformDistributionVariant0Function"]
+#[doc = "DensityTransformDistributionBandwidth"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"normal\""]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
 #[doc = "  ]"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DensityTransformDistributionVariant0Function {
-    #[serde(rename = "normal")]
-    Normal,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum DensityTransformDistributionBandwidth {
+    Variant0(f64),
+    Variant1(SignalRef),
 }
-impl From<&DensityTransformDistributionVariant0Function>
-    for DensityTransformDistributionVariant0Function
+impl From<&DensityTransformDistributionBandwidth> for DensityTransformDistributionBandwidth {
+    fn from(value: &DensityTransformDistributionBandwidth) -> Self {
+        value.clone()
+    }
+}
+impl From<f64> for DensityTransformDistributionBandwidth {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<SignalRef> for DensityTransformDistributionBandwidth {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[doc = "DensityTransformDistributionDistributions"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {}"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum DensityTransformDistributionDistributions {
+    Variant0(Vec<serde_json::Value>),
+    Variant1(SignalRef),
+}
+impl From<&DensityTransformDistributionDistributions>
+    for DensityTransformDistributionDistributions
 {
-    fn from(value: &DensityTransformDistributionVariant0Function) -> Self {
+    fn from(value: &DensityTransformDistributionDistributions) -> Self {
         value.clone()
     }
 }
-impl ToString for DensityTransformDistributionVariant0Function {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Normal => "normal".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for DensityTransformDistributionVariant0Function {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "normal" => Ok(Self::Normal),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant0Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant0Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for DensityTransformDistributionVariant0Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "DensityTransformDistributionVariant0Mean"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant0Mean {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant0Mean> for DensityTransformDistributionVariant0Mean {
-    fn from(value: &DensityTransformDistributionVariant0Mean) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant0Mean {
-    fn from(value: f64) -> Self {
+impl From<Vec<serde_json::Value>> for DensityTransformDistributionDistributions {
+    fn from(value: Vec<serde_json::Value>) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for DensityTransformDistributionVariant0Mean {
+impl From<SignalRef> for DensityTransformDistributionDistributions {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "DensityTransformDistributionVariant0Stdev"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 1,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant0Stdev {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant0Stdev>
-    for DensityTransformDistributionVariant0Stdev
-{
-    fn from(value: &DensityTransformDistributionVariant0Stdev) -> Self {
-        value.clone()
-    }
-}
-impl Default for DensityTransformDistributionVariant0Stdev {
-    fn default() -> Self {
-        DensityTransformDistributionVariant0Stdev::Variant0(1_f64)
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant0Stdev {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant0Stdev {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant1Function"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"lognormal\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DensityTransformDistributionVariant1Function {
-    #[serde(rename = "lognormal")]
-    Lognormal,
-}
-impl From<&DensityTransformDistributionVariant1Function>
-    for DensityTransformDistributionVariant1Function
-{
-    fn from(value: &DensityTransformDistributionVariant1Function) -> Self {
-        value.clone()
-    }
-}
-impl ToString for DensityTransformDistributionVariant1Function {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Lognormal => "lognormal".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for DensityTransformDistributionVariant1Function {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "lognormal" => Ok(Self::Lognormal),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant1Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant1Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for DensityTransformDistributionVariant1Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "DensityTransformDistributionVariant1Mean"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant1Mean {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant1Mean> for DensityTransformDistributionVariant1Mean {
-    fn from(value: &DensityTransformDistributionVariant1Mean) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant1Mean {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant1Mean {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant1Stdev"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 1,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant1Stdev {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant1Stdev>
-    for DensityTransformDistributionVariant1Stdev
-{
-    fn from(value: &DensityTransformDistributionVariant1Stdev) -> Self {
-        value.clone()
-    }
-}
-impl Default for DensityTransformDistributionVariant1Stdev {
-    fn default() -> Self {
-        DensityTransformDistributionVariant1Stdev::Variant0(1_f64)
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant1Stdev {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant1Stdev {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant2Function"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"uniform\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DensityTransformDistributionVariant2Function {
-    #[serde(rename = "uniform")]
-    Uniform,
-}
-impl From<&DensityTransformDistributionVariant2Function>
-    for DensityTransformDistributionVariant2Function
-{
-    fn from(value: &DensityTransformDistributionVariant2Function) -> Self {
-        value.clone()
-    }
-}
-impl ToString for DensityTransformDistributionVariant2Function {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Uniform => "uniform".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for DensityTransformDistributionVariant2Function {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "uniform" => Ok(Self::Uniform),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant2Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant2Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for DensityTransformDistributionVariant2Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "DensityTransformDistributionVariant2Max"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 1,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant2Max {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant2Max> for DensityTransformDistributionVariant2Max {
-    fn from(value: &DensityTransformDistributionVariant2Max) -> Self {
-        value.clone()
-    }
-}
-impl Default for DensityTransformDistributionVariant2Max {
-    fn default() -> Self {
-        DensityTransformDistributionVariant2Max::Variant0(1_f64)
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant2Max {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant2Max {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant2Min"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant2Min {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant2Min> for DensityTransformDistributionVariant2Min {
-    fn from(value: &DensityTransformDistributionVariant2Min) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant2Min {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant2Min {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant3Bandwidth"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum DensityTransformDistributionVariant3Bandwidth {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&DensityTransformDistributionVariant3Bandwidth>
-    for DensityTransformDistributionVariant3Bandwidth
-{
-    fn from(value: &DensityTransformDistributionVariant3Bandwidth) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for DensityTransformDistributionVariant3Bandwidth {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for DensityTransformDistributionVariant3Bandwidth {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "DensityTransformDistributionVariant3Field"]
+#[doc = "DensityTransformDistributionField"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22159,101 +21774,41 @@ impl From<SignalRef> for DensityTransformDistributionVariant3Bandwidth {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DensityTransformDistributionVariant3Field {
+pub enum DensityTransformDistributionField {
     ScaleField(ScaleField),
     ParamField(ParamField),
     Expr(Expr),
 }
-impl From<&DensityTransformDistributionVariant3Field>
-    for DensityTransformDistributionVariant3Field
-{
-    fn from(value: &DensityTransformDistributionVariant3Field) -> Self {
+impl From<&DensityTransformDistributionField> for DensityTransformDistributionField {
+    fn from(value: &DensityTransformDistributionField) -> Self {
         value.clone()
     }
 }
-impl From<ScaleField> for DensityTransformDistributionVariant3Field {
+impl From<ScaleField> for DensityTransformDistributionField {
     fn from(value: ScaleField) -> Self {
         Self::ScaleField(value)
     }
 }
-impl From<ParamField> for DensityTransformDistributionVariant3Field {
+impl From<ParamField> for DensityTransformDistributionField {
     fn from(value: ParamField) -> Self {
         Self::ParamField(value)
     }
 }
-impl From<Expr> for DensityTransformDistributionVariant3Field {
+impl From<Expr> for DensityTransformDistributionField {
     fn from(value: Expr) -> Self {
         Self::Expr(value)
     }
 }
-#[doc = "DensityTransformDistributionVariant3Function"]
+#[doc = "DensityTransformDistributionMax"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"kde\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DensityTransformDistributionVariant3Function {
-    #[serde(rename = "kde")]
-    Kde,
-}
-impl From<&DensityTransformDistributionVariant3Function>
-    for DensityTransformDistributionVariant3Function
-{
-    fn from(value: &DensityTransformDistributionVariant3Function) -> Self {
-        value.clone()
-    }
-}
-impl ToString for DensityTransformDistributionVariant3Function {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Kde => "kde".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for DensityTransformDistributionVariant3Function {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "kde" => Ok(Self::Kde),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant3Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant3Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for DensityTransformDistributionVariant3Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "DensityTransformDistributionVariant4Distributions"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
+#[doc = "  \"default\": 1,"]
+#[doc = "  \"anyOf\": ["]
 #[doc = "    {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {}"]
+#[doc = "      \"type\": \"number\""]
 #[doc = "    },"]
 #[doc = "    {"]
 #[doc = "      \"$ref\": \"#/definitions/signalRef\""]
@@ -22264,86 +21819,151 @@ impl std::convert::TryFrom<String> for DensityTransformDistributionVariant3Funct
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DensityTransformDistributionVariant4Distributions {
-    Variant0(Vec<serde_json::Value>),
+pub enum DensityTransformDistributionMax {
+    Variant0(f64),
     Variant1(SignalRef),
 }
-impl From<&DensityTransformDistributionVariant4Distributions>
-    for DensityTransformDistributionVariant4Distributions
-{
-    fn from(value: &DensityTransformDistributionVariant4Distributions) -> Self {
+impl From<&DensityTransformDistributionMax> for DensityTransformDistributionMax {
+    fn from(value: &DensityTransformDistributionMax) -> Self {
         value.clone()
     }
 }
-impl From<Vec<serde_json::Value>> for DensityTransformDistributionVariant4Distributions {
-    fn from(value: Vec<serde_json::Value>) -> Self {
+impl Default for DensityTransformDistributionMax {
+    fn default() -> Self {
+        DensityTransformDistributionMax::Variant0(1_f64)
+    }
+}
+impl From<f64> for DensityTransformDistributionMax {
+    fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for DensityTransformDistributionVariant4Distributions {
+impl From<SignalRef> for DensityTransformDistributionMax {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "DensityTransformDistributionVariant4Function"]
+#[doc = "DensityTransformDistributionMean"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"mixture\""]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
 #[doc = "  ]"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum DensityTransformDistributionVariant4Function {
-    #[serde(rename = "mixture")]
-    Mixture,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum DensityTransformDistributionMean {
+    Variant0(f64),
+    Variant1(SignalRef),
 }
-impl From<&DensityTransformDistributionVariant4Function>
-    for DensityTransformDistributionVariant4Function
-{
-    fn from(value: &DensityTransformDistributionVariant4Function) -> Self {
+impl From<&DensityTransformDistributionMean> for DensityTransformDistributionMean {
+    fn from(value: &DensityTransformDistributionMean) -> Self {
         value.clone()
     }
 }
-impl ToString for DensityTransformDistributionVariant4Function {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Mixture => "mixture".to_string(),
-        }
+impl From<f64> for DensityTransformDistributionMean {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
     }
 }
-impl std::str::FromStr for DensityTransformDistributionVariant4Function {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "mixture" => Ok(Self::Mixture),
-            _ => Err("invalid value".into()),
-        }
+impl From<SignalRef> for DensityTransformDistributionMean {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
     }
 }
-impl std::convert::TryFrom<&str> for DensityTransformDistributionVariant4Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
+#[doc = "DensityTransformDistributionMin"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum DensityTransformDistributionMin {
+    Variant0(f64),
+    Variant1(SignalRef),
+}
+impl From<&DensityTransformDistributionMin> for DensityTransformDistributionMin {
+    fn from(value: &DensityTransformDistributionMin) -> Self {
+        value.clone()
     }
 }
-impl std::convert::TryFrom<&String> for DensityTransformDistributionVariant4Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
+impl From<f64> for DensityTransformDistributionMin {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
     }
 }
-impl std::convert::TryFrom<String> for DensityTransformDistributionVariant4Function {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
+impl From<SignalRef> for DensityTransformDistributionMin {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
     }
 }
-#[doc = "DensityTransformDistributionVariant4Weights"]
+#[doc = "DensityTransformDistributionStdev"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"default\": 1,"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum DensityTransformDistributionStdev {
+    Variant0(f64),
+    Variant1(SignalRef),
+}
+impl From<&DensityTransformDistributionStdev> for DensityTransformDistributionStdev {
+    fn from(value: &DensityTransformDistributionStdev) -> Self {
+        value.clone()
+    }
+}
+impl Default for DensityTransformDistributionStdev {
+    fn default() -> Self {
+        DensityTransformDistributionStdev::Variant0(1_f64)
+    }
+}
+impl From<f64> for DensityTransformDistributionStdev {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<SignalRef> for DensityTransformDistributionStdev {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[doc = "DensityTransformDistributionWeights"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22372,30 +21992,28 @@ impl std::convert::TryFrom<String> for DensityTransformDistributionVariant4Funct
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DensityTransformDistributionVariant4Weights {
-    Variant0(Vec<DensityTransformDistributionVariant4WeightsVariant0Item>),
+pub enum DensityTransformDistributionWeights {
+    Variant0(Vec<DensityTransformDistributionWeightsVariant0Item>),
     Variant1(SignalRef),
 }
-impl From<&DensityTransformDistributionVariant4Weights>
-    for DensityTransformDistributionVariant4Weights
-{
-    fn from(value: &DensityTransformDistributionVariant4Weights) -> Self {
+impl From<&DensityTransformDistributionWeights> for DensityTransformDistributionWeights {
+    fn from(value: &DensityTransformDistributionWeights) -> Self {
         value.clone()
     }
 }
-impl From<Vec<DensityTransformDistributionVariant4WeightsVariant0Item>>
-    for DensityTransformDistributionVariant4Weights
+impl From<Vec<DensityTransformDistributionWeightsVariant0Item>>
+    for DensityTransformDistributionWeights
 {
-    fn from(value: Vec<DensityTransformDistributionVariant4WeightsVariant0Item>) -> Self {
+    fn from(value: Vec<DensityTransformDistributionWeightsVariant0Item>) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for DensityTransformDistributionVariant4Weights {
+impl From<SignalRef> for DensityTransformDistributionWeights {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "DensityTransformDistributionVariant4WeightsVariant0Item"]
+#[doc = "DensityTransformDistributionWeightsVariant0Item"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22414,23 +22032,23 @@ impl From<SignalRef> for DensityTransformDistributionVariant4Weights {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum DensityTransformDistributionVariant4WeightsVariant0Item {
+pub enum DensityTransformDistributionWeightsVariant0Item {
     Variant0(f64),
     Variant1(SignalRef),
 }
-impl From<&DensityTransformDistributionVariant4WeightsVariant0Item>
-    for DensityTransformDistributionVariant4WeightsVariant0Item
+impl From<&DensityTransformDistributionWeightsVariant0Item>
+    for DensityTransformDistributionWeightsVariant0Item
 {
-    fn from(value: &DensityTransformDistributionVariant4WeightsVariant0Item) -> Self {
+    fn from(value: &DensityTransformDistributionWeightsVariant0Item) -> Self {
         value.clone()
     }
 }
-impl From<f64> for DensityTransformDistributionVariant4WeightsVariant0Item {
+impl From<f64> for DensityTransformDistributionWeightsVariant0Item {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for DensityTransformDistributionVariant4WeightsVariant0Item {
+impl From<SignalRef> for DensityTransformDistributionWeightsVariant0Item {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
@@ -27656,68 +27274,68 @@ impl From<SignalRef> for ForceTransformAsVariant0Item {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, deny_unknown_fields)]
+#[serde(tag = "force", deny_unknown_fields)]
 pub enum ForceTransformForcesItem {
-    Variant0 {
-        force: ForceTransformForcesItemVariant0Force,
+    #[serde(rename = "center")]
+    Center {
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        x: Option<ForceTransformForcesItemVariant0X>,
+        x: Option<ForceTransformForcesItemX>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        y: Option<ForceTransformForcesItemVariant0Y>,
+        y: Option<ForceTransformForcesItemY>,
     },
-    Variant1 {
-        force: ForceTransformForcesItemVariant1Force,
-        #[serde(default = "defaults::force_transform_forces_item_variant1_iterations")]
-        iterations: ForceTransformForcesItemVariant1Iterations,
+    #[serde(rename = "collide")]
+    Collide {
+        #[serde(default = "defaults::force_transform_forces_item_collide_iterations")]
+        iterations: ForceTransformForcesItemIterations,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        radius: Option<ForceTransformForcesItemVariant1Radius>,
-        #[serde(default = "defaults::force_transform_forces_item_variant1_strength")]
-        strength: ForceTransformForcesItemVariant1Strength,
+        radius: Option<ForceTransformForcesItemRadius>,
+        #[serde(default = "defaults::force_transform_forces_item_collide_strength")]
+        strength: ForceTransformForcesItemStrength,
     },
-    Variant2 {
+    #[serde(rename = "nbody")]
+    Nbody {
         #[serde(
             rename = "distanceMax",
             default,
             skip_serializing_if = "Option::is_none"
         )]
-        distance_max: Option<ForceTransformForcesItemVariant2DistanceMax>,
+        distance_max: Option<ForceTransformForcesItemDistanceMax>,
         #[serde(
             rename = "distanceMin",
-            default = "defaults::force_transform_forces_item_variant2_distance_min"
+            default = "defaults::force_transform_forces_item_nbody_distance_min"
         )]
-        distance_min: ForceTransformForcesItemVariant2DistanceMin,
-        force: ForceTransformForcesItemVariant2Force,
-        #[serde(default = "defaults::force_transform_forces_item_variant2_strength")]
-        strength: ForceTransformForcesItemVariant2Strength,
-        #[serde(default = "defaults::force_transform_forces_item_variant2_theta")]
-        theta: ForceTransformForcesItemVariant2Theta,
+        distance_min: ForceTransformForcesItemDistanceMin,
+        #[serde(default = "defaults::force_transform_forces_item_nbody_strength")]
+        strength: ForceTransformForcesItemStrength,
+        #[serde(default = "defaults::force_transform_forces_item_nbody_theta")]
+        theta: ForceTransformForcesItemTheta,
     },
-    Variant3 {
-        #[serde(default = "defaults::force_transform_forces_item_variant3_distance")]
-        distance: ForceTransformForcesItemVariant3Distance,
-        force: ForceTransformForcesItemVariant3Force,
+    #[serde(rename = "link")]
+    Link {
+        #[serde(default = "defaults::force_transform_forces_item_link_distance")]
+        distance: ForceTransformForcesItemDistance,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        id: Option<ForceTransformForcesItemVariant3Id>,
-        #[serde(default = "defaults::force_transform_forces_item_variant3_iterations")]
-        iterations: ForceTransformForcesItemVariant3Iterations,
+        id: Option<ForceTransformForcesItemId>,
+        #[serde(default = "defaults::force_transform_forces_item_link_iterations")]
+        iterations: ForceTransformForcesItemIterations,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         links: Option<String>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        strength: Option<ForceTransformForcesItemVariant3Strength>,
+        strength: Option<ForceTransformForcesItemStrength>,
     },
-    Variant4 {
-        force: ForceTransformForcesItemVariant4Force,
-        #[serde(default = "defaults::force_transform_forces_item_variant4_strength")]
-        strength: ForceTransformForcesItemVariant4Strength,
+    #[serde(rename = "x")]
+    X {
+        #[serde(default = "defaults::force_transform_forces_item_x_strength")]
+        strength: ForceTransformForcesItemStrength,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        x: Option<ForceTransformForcesItemVariant4X>,
+        x: Option<ForceTransformForcesItemX>,
     },
-    Variant5 {
-        force: ForceTransformForcesItemVariant5Force,
-        #[serde(default = "defaults::force_transform_forces_item_variant5_strength")]
-        strength: ForceTransformForcesItemVariant5Strength,
+    #[serde(rename = "y")]
+    Y {
+        #[serde(default = "defaults::force_transform_forces_item_y_strength")]
+        strength: ForceTransformForcesItemStrength,
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        y: Option<ForceTransformForcesItemVariant5Y>,
+        y: Option<ForceTransformForcesItemY>,
     },
 }
 impl From<&ForceTransformForcesItem> for ForceTransformForcesItem {
@@ -27725,571 +27343,7 @@ impl From<&ForceTransformForcesItem> for ForceTransformForcesItem {
         value.clone()
     }
 }
-#[doc = "ForceTransformForcesItemVariant0Force"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"center\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant0Force {
-    #[serde(rename = "center")]
-    Center,
-}
-impl From<&ForceTransformForcesItemVariant0Force> for ForceTransformForcesItemVariant0Force {
-    fn from(value: &ForceTransformForcesItemVariant0Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant0Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Center => "center".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant0Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "center" => Ok(Self::Center),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant0Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant0Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant0Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant0X"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant0X {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant0X> for ForceTransformForcesItemVariant0X {
-    fn from(value: &ForceTransformForcesItemVariant0X) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant0X {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant0X {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant0Y"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant0Y {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant0Y> for ForceTransformForcesItemVariant0Y {
-    fn from(value: &ForceTransformForcesItemVariant0Y) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant0Y {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant0Y {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant1Force"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"collide\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant1Force {
-    #[serde(rename = "collide")]
-    Collide,
-}
-impl From<&ForceTransformForcesItemVariant1Force> for ForceTransformForcesItemVariant1Force {
-    fn from(value: &ForceTransformForcesItemVariant1Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant1Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Collide => "collide".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant1Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "collide" => Ok(Self::Collide),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant1Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant1Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant1Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant1Iterations"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 1,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant1Iterations {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant1Iterations>
-    for ForceTransformForcesItemVariant1Iterations
-{
-    fn from(value: &ForceTransformForcesItemVariant1Iterations) -> Self {
-        value.clone()
-    }
-}
-impl Default for ForceTransformForcesItemVariant1Iterations {
-    fn default() -> Self {
-        ForceTransformForcesItemVariant1Iterations::Variant0(1_f64)
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant1Iterations {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant1Iterations {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant1Radius"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/expr\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/paramField\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant1Radius {
-    Variant0(f64),
-    Variant1(SignalRef),
-    Variant2(Expr),
-    Variant3(ParamField),
-}
-impl From<&ForceTransformForcesItemVariant1Radius> for ForceTransformForcesItemVariant1Radius {
-    fn from(value: &ForceTransformForcesItemVariant1Radius) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant1Radius {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant1Radius {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-impl From<Expr> for ForceTransformForcesItemVariant1Radius {
-    fn from(value: Expr) -> Self {
-        Self::Variant2(value)
-    }
-}
-impl From<ParamField> for ForceTransformForcesItemVariant1Radius {
-    fn from(value: ParamField) -> Self {
-        Self::Variant3(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant1Strength"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 0.7,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant1Strength {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant1Strength> for ForceTransformForcesItemVariant1Strength {
-    fn from(value: &ForceTransformForcesItemVariant1Strength) -> Self {
-        value.clone()
-    }
-}
-impl Default for ForceTransformForcesItemVariant1Strength {
-    fn default() -> Self {
-        ForceTransformForcesItemVariant1Strength::Variant0(0.7_f64)
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant1Strength {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant1Strength {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant2DistanceMax"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant2DistanceMax {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant2DistanceMax>
-    for ForceTransformForcesItemVariant2DistanceMax
-{
-    fn from(value: &ForceTransformForcesItemVariant2DistanceMax) -> Self {
-        value.clone()
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant2DistanceMax {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant2DistanceMax {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant2DistanceMin"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 1,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant2DistanceMin {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant2DistanceMin>
-    for ForceTransformForcesItemVariant2DistanceMin
-{
-    fn from(value: &ForceTransformForcesItemVariant2DistanceMin) -> Self {
-        value.clone()
-    }
-}
-impl Default for ForceTransformForcesItemVariant2DistanceMin {
-    fn default() -> Self {
-        ForceTransformForcesItemVariant2DistanceMin::Variant0(1_f64)
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant2DistanceMin {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant2DistanceMin {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant2Force"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"nbody\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant2Force {
-    #[serde(rename = "nbody")]
-    Nbody,
-}
-impl From<&ForceTransformForcesItemVariant2Force> for ForceTransformForcesItemVariant2Force {
-    fn from(value: &ForceTransformForcesItemVariant2Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant2Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Nbody => "nbody".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant2Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "nbody" => Ok(Self::Nbody),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant2Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant2Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant2Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant2Strength"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": -30,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant2Strength {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant2Strength> for ForceTransformForcesItemVariant2Strength {
-    fn from(value: &ForceTransformForcesItemVariant2Strength) -> Self {
-        value.clone()
-    }
-}
-impl Default for ForceTransformForcesItemVariant2Strength {
-    fn default() -> Self {
-        ForceTransformForcesItemVariant2Strength::Variant0(-30_f64)
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant2Strength {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant2Strength {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant2Theta"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 0.9,"]
-#[doc = "  \"anyOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant2Theta {
-    Variant0(f64),
-    Variant1(SignalRef),
-}
-impl From<&ForceTransformForcesItemVariant2Theta> for ForceTransformForcesItemVariant2Theta {
-    fn from(value: &ForceTransformForcesItemVariant2Theta) -> Self {
-        value.clone()
-    }
-}
-impl Default for ForceTransformForcesItemVariant2Theta {
-    fn default() -> Self {
-        ForceTransformForcesItemVariant2Theta::Variant0(0.9_f64)
-    }
-}
-impl From<f64> for ForceTransformForcesItemVariant2Theta {
-    fn from(value: f64) -> Self {
-        Self::Variant0(value)
-    }
-}
-impl From<SignalRef> for ForceTransformForcesItemVariant2Theta {
-    fn from(value: SignalRef) -> Self {
-        Self::Variant1(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant3Distance"]
+#[doc = "ForceTransformForcesItemDistance"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -28315,113 +27369,54 @@ impl From<SignalRef> for ForceTransformForcesItemVariant2Theta {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant3Distance {
+pub enum ForceTransformForcesItemDistance {
     Variant0(f64),
     Variant1(SignalRef),
     Variant2(Expr),
     Variant3(ParamField),
 }
-impl From<&ForceTransformForcesItemVariant3Distance> for ForceTransformForcesItemVariant3Distance {
-    fn from(value: &ForceTransformForcesItemVariant3Distance) -> Self {
+impl From<&ForceTransformForcesItemDistance> for ForceTransformForcesItemDistance {
+    fn from(value: &ForceTransformForcesItemDistance) -> Self {
         value.clone()
     }
 }
-impl Default for ForceTransformForcesItemVariant3Distance {
+impl Default for ForceTransformForcesItemDistance {
     fn default() -> Self {
-        ForceTransformForcesItemVariant3Distance::Variant0(30_f64)
+        ForceTransformForcesItemDistance::Variant0(30_f64)
     }
 }
-impl From<f64> for ForceTransformForcesItemVariant3Distance {
+impl From<f64> for ForceTransformForcesItemDistance {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for ForceTransformForcesItemVariant3Distance {
+impl From<SignalRef> for ForceTransformForcesItemDistance {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-impl From<Expr> for ForceTransformForcesItemVariant3Distance {
+impl From<Expr> for ForceTransformForcesItemDistance {
     fn from(value: Expr) -> Self {
         Self::Variant2(value)
     }
 }
-impl From<ParamField> for ForceTransformForcesItemVariant3Distance {
+impl From<ParamField> for ForceTransformForcesItemDistance {
     fn from(value: ParamField) -> Self {
         Self::Variant3(value)
     }
 }
-#[doc = "ForceTransformForcesItemVariant3Force"]
+#[doc = "ForceTransformForcesItemDistanceMax"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"link\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant3Force {
-    #[serde(rename = "link")]
-    Link,
-}
-impl From<&ForceTransformForcesItemVariant3Force> for ForceTransformForcesItemVariant3Force {
-    fn from(value: &ForceTransformForcesItemVariant3Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant3Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Link => "link".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant3Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "link" => Ok(Self::Link),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant3Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant3Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant3Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant3Id"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
+#[doc = "  \"anyOf\": ["]
 #[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/scaleField\""]
+#[doc = "      \"type\": \"number\""]
 #[doc = "    },"]
 #[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/paramField\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/expr\""]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
 #[doc = "    }"]
 #[doc = "  ]"]
 #[doc = "}"]
@@ -28429,32 +27424,26 @@ impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant3Force {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant3Id {
-    ScaleField(ScaleField),
-    ParamField(ParamField),
-    Expr(Expr),
+pub enum ForceTransformForcesItemDistanceMax {
+    Variant0(f64),
+    Variant1(SignalRef),
 }
-impl From<&ForceTransformForcesItemVariant3Id> for ForceTransformForcesItemVariant3Id {
-    fn from(value: &ForceTransformForcesItemVariant3Id) -> Self {
+impl From<&ForceTransformForcesItemDistanceMax> for ForceTransformForcesItemDistanceMax {
+    fn from(value: &ForceTransformForcesItemDistanceMax) -> Self {
         value.clone()
     }
 }
-impl From<ScaleField> for ForceTransformForcesItemVariant3Id {
-    fn from(value: ScaleField) -> Self {
-        Self::ScaleField(value)
+impl From<f64> for ForceTransformForcesItemDistanceMax {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
     }
 }
-impl From<ParamField> for ForceTransformForcesItemVariant3Id {
-    fn from(value: ParamField) -> Self {
-        Self::ParamField(value)
+impl From<SignalRef> for ForceTransformForcesItemDistanceMax {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
     }
 }
-impl From<Expr> for ForceTransformForcesItemVariant3Id {
-    fn from(value: Expr) -> Self {
-        Self::Expr(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant3Iterations"]
+#[doc = "ForceTransformForcesItemDistanceMin"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -28474,33 +27463,122 @@ impl From<Expr> for ForceTransformForcesItemVariant3Id {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant3Iterations {
+pub enum ForceTransformForcesItemDistanceMin {
     Variant0(f64),
     Variant1(SignalRef),
 }
-impl From<&ForceTransformForcesItemVariant3Iterations>
-    for ForceTransformForcesItemVariant3Iterations
-{
-    fn from(value: &ForceTransformForcesItemVariant3Iterations) -> Self {
+impl From<&ForceTransformForcesItemDistanceMin> for ForceTransformForcesItemDistanceMin {
+    fn from(value: &ForceTransformForcesItemDistanceMin) -> Self {
         value.clone()
     }
 }
-impl Default for ForceTransformForcesItemVariant3Iterations {
+impl Default for ForceTransformForcesItemDistanceMin {
     fn default() -> Self {
-        ForceTransformForcesItemVariant3Iterations::Variant0(1_f64)
+        ForceTransformForcesItemDistanceMin::Variant0(1_f64)
     }
 }
-impl From<f64> for ForceTransformForcesItemVariant3Iterations {
+impl From<f64> for ForceTransformForcesItemDistanceMin {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for ForceTransformForcesItemVariant3Iterations {
+impl From<SignalRef> for ForceTransformForcesItemDistanceMin {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "ForceTransformForcesItemVariant3Strength"]
+#[doc = "ForceTransformForcesItemId"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/scaleField\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/paramField\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/expr\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ForceTransformForcesItemId {
+    ScaleField(ScaleField),
+    ParamField(ParamField),
+    Expr(Expr),
+}
+impl From<&ForceTransformForcesItemId> for ForceTransformForcesItemId {
+    fn from(value: &ForceTransformForcesItemId) -> Self {
+        value.clone()
+    }
+}
+impl From<ScaleField> for ForceTransformForcesItemId {
+    fn from(value: ScaleField) -> Self {
+        Self::ScaleField(value)
+    }
+}
+impl From<ParamField> for ForceTransformForcesItemId {
+    fn from(value: ParamField) -> Self {
+        Self::ParamField(value)
+    }
+}
+impl From<Expr> for ForceTransformForcesItemId {
+    fn from(value: Expr) -> Self {
+        Self::Expr(value)
+    }
+}
+#[doc = "ForceTransformForcesItemIterations"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"default\": 1,"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ForceTransformForcesItemIterations {
+    Variant0(f64),
+    Variant1(SignalRef),
+}
+impl From<&ForceTransformForcesItemIterations> for ForceTransformForcesItemIterations {
+    fn from(value: &ForceTransformForcesItemIterations) -> Self {
+        value.clone()
+    }
+}
+impl Default for ForceTransformForcesItemIterations {
+    fn default() -> Self {
+        ForceTransformForcesItemIterations::Variant0(1_f64)
+    }
+}
+impl From<f64> for ForceTransformForcesItemIterations {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<SignalRef> for ForceTransformForcesItemIterations {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[doc = "ForceTransformForcesItemRadius"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -28525,100 +27603,44 @@ impl From<SignalRef> for ForceTransformForcesItemVariant3Iterations {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant3Strength {
+pub enum ForceTransformForcesItemRadius {
     Variant0(f64),
     Variant1(SignalRef),
     Variant2(Expr),
     Variant3(ParamField),
 }
-impl From<&ForceTransformForcesItemVariant3Strength> for ForceTransformForcesItemVariant3Strength {
-    fn from(value: &ForceTransformForcesItemVariant3Strength) -> Self {
+impl From<&ForceTransformForcesItemRadius> for ForceTransformForcesItemRadius {
+    fn from(value: &ForceTransformForcesItemRadius) -> Self {
         value.clone()
     }
 }
-impl From<f64> for ForceTransformForcesItemVariant3Strength {
+impl From<f64> for ForceTransformForcesItemRadius {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for ForceTransformForcesItemVariant3Strength {
+impl From<SignalRef> for ForceTransformForcesItemRadius {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-impl From<Expr> for ForceTransformForcesItemVariant3Strength {
+impl From<Expr> for ForceTransformForcesItemRadius {
     fn from(value: Expr) -> Self {
         Self::Variant2(value)
     }
 }
-impl From<ParamField> for ForceTransformForcesItemVariant3Strength {
+impl From<ParamField> for ForceTransformForcesItemRadius {
     fn from(value: ParamField) -> Self {
         Self::Variant3(value)
     }
 }
-#[doc = "ForceTransformForcesItemVariant4Force"]
+#[doc = "ForceTransformForcesItemStrength"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"x\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant4Force {
-    #[serde(rename = "x")]
-    X,
-}
-impl From<&ForceTransformForcesItemVariant4Force> for ForceTransformForcesItemVariant4Force {
-    fn from(value: &ForceTransformForcesItemVariant4Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant4Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::X => "x".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant4Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "x" => Ok(Self::X),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant4Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant4Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant4Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant4Strength"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 0.1,"]
+#[doc = "  \"default\": 0.7,"]
 #[doc = "  \"anyOf\": ["]
 #[doc = "    {"]
 #[doc = "      \"type\": \"number\""]
@@ -28632,140 +27654,37 @@ impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant4Force {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant4Strength {
+pub enum ForceTransformForcesItemStrength {
     Variant0(f64),
     Variant1(SignalRef),
 }
-impl From<&ForceTransformForcesItemVariant4Strength> for ForceTransformForcesItemVariant4Strength {
-    fn from(value: &ForceTransformForcesItemVariant4Strength) -> Self {
+impl From<&ForceTransformForcesItemStrength> for ForceTransformForcesItemStrength {
+    fn from(value: &ForceTransformForcesItemStrength) -> Self {
         value.clone()
     }
 }
-impl Default for ForceTransformForcesItemVariant4Strength {
+impl Default for ForceTransformForcesItemStrength {
     fn default() -> Self {
-        ForceTransformForcesItemVariant4Strength::Variant0(0.1_f64)
+        ForceTransformForcesItemStrength::Variant0(0.7_f64)
     }
 }
-impl From<f64> for ForceTransformForcesItemVariant4Strength {
+impl From<f64> for ForceTransformForcesItemStrength {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for ForceTransformForcesItemVariant4Strength {
+impl From<SignalRef> for ForceTransformForcesItemStrength {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "ForceTransformForcesItemVariant4X"]
+#[doc = "ForceTransformForcesItemTheta"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/scaleField\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/paramField\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/expr\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum ForceTransformForcesItemVariant4X {
-    ScaleField(ScaleField),
-    ParamField(ParamField),
-    Expr(Expr),
-}
-impl From<&ForceTransformForcesItemVariant4X> for ForceTransformForcesItemVariant4X {
-    fn from(value: &ForceTransformForcesItemVariant4X) -> Self {
-        value.clone()
-    }
-}
-impl From<ScaleField> for ForceTransformForcesItemVariant4X {
-    fn from(value: ScaleField) -> Self {
-        Self::ScaleField(value)
-    }
-}
-impl From<ParamField> for ForceTransformForcesItemVariant4X {
-    fn from(value: ParamField) -> Self {
-        Self::ParamField(value)
-    }
-}
-impl From<Expr> for ForceTransformForcesItemVariant4X {
-    fn from(value: Expr) -> Self {
-        Self::Expr(value)
-    }
-}
-#[doc = "ForceTransformForcesItemVariant5Force"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"y\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub enum ForceTransformForcesItemVariant5Force {
-    #[serde(rename = "y")]
-    Y,
-}
-impl From<&ForceTransformForcesItemVariant5Force> for ForceTransformForcesItemVariant5Force {
-    fn from(value: &ForceTransformForcesItemVariant5Force) -> Self {
-        value.clone()
-    }
-}
-impl ToString for ForceTransformForcesItemVariant5Force {
-    fn to_string(&self) -> String {
-        match *self {
-            Self::Y => "y".to_string(),
-        }
-    }
-}
-impl std::str::FromStr for ForceTransformForcesItemVariant5Force {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        match value {
-            "y" => Ok(Self::Y),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl std::convert::TryFrom<&str> for ForceTransformForcesItemVariant5Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for ForceTransformForcesItemVariant5Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant5Force {
-    type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "ForceTransformForcesItemVariant5Strength"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"default\": 0.1,"]
+#[doc = "  \"default\": 0.9,"]
 #[doc = "  \"anyOf\": ["]
 #[doc = "    {"]
 #[doc = "      \"type\": \"number\""]
@@ -28779,45 +27698,42 @@ impl std::convert::TryFrom<String> for ForceTransformForcesItemVariant5Force {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant5Strength {
+pub enum ForceTransformForcesItemTheta {
     Variant0(f64),
     Variant1(SignalRef),
 }
-impl From<&ForceTransformForcesItemVariant5Strength> for ForceTransformForcesItemVariant5Strength {
-    fn from(value: &ForceTransformForcesItemVariant5Strength) -> Self {
+impl From<&ForceTransformForcesItemTheta> for ForceTransformForcesItemTheta {
+    fn from(value: &ForceTransformForcesItemTheta) -> Self {
         value.clone()
     }
 }
-impl Default for ForceTransformForcesItemVariant5Strength {
+impl Default for ForceTransformForcesItemTheta {
     fn default() -> Self {
-        ForceTransformForcesItemVariant5Strength::Variant0(0.1_f64)
+        ForceTransformForcesItemTheta::Variant0(0.9_f64)
     }
 }
-impl From<f64> for ForceTransformForcesItemVariant5Strength {
+impl From<f64> for ForceTransformForcesItemTheta {
     fn from(value: f64) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<SignalRef> for ForceTransformForcesItemVariant5Strength {
+impl From<SignalRef> for ForceTransformForcesItemTheta {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "ForceTransformForcesItemVariant5Y"]
+#[doc = "ForceTransformForcesItemX"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"oneOf\": ["]
+#[doc = "  \"anyOf\": ["]
 #[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/scaleField\""]
+#[doc = "      \"type\": \"number\""]
 #[doc = "    },"]
 #[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/paramField\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/expr\""]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
 #[doc = "    }"]
 #[doc = "  ]"]
 #[doc = "}"]
@@ -28825,29 +27741,61 @@ impl From<SignalRef> for ForceTransformForcesItemVariant5Strength {
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum ForceTransformForcesItemVariant5Y {
-    ScaleField(ScaleField),
-    ParamField(ParamField),
-    Expr(Expr),
+pub enum ForceTransformForcesItemX {
+    Variant0(f64),
+    Variant1(SignalRef),
 }
-impl From<&ForceTransformForcesItemVariant5Y> for ForceTransformForcesItemVariant5Y {
-    fn from(value: &ForceTransformForcesItemVariant5Y) -> Self {
+impl From<&ForceTransformForcesItemX> for ForceTransformForcesItemX {
+    fn from(value: &ForceTransformForcesItemX) -> Self {
         value.clone()
     }
 }
-impl From<ScaleField> for ForceTransformForcesItemVariant5Y {
-    fn from(value: ScaleField) -> Self {
-        Self::ScaleField(value)
+impl From<f64> for ForceTransformForcesItemX {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
     }
 }
-impl From<ParamField> for ForceTransformForcesItemVariant5Y {
-    fn from(value: ParamField) -> Self {
-        Self::ParamField(value)
+impl From<SignalRef> for ForceTransformForcesItemX {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
     }
 }
-impl From<Expr> for ForceTransformForcesItemVariant5Y {
-    fn from(value: Expr) -> Self {
-        Self::Expr(value)
+#[doc = "ForceTransformForcesItemY"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ForceTransformForcesItemY {
+    Variant0(f64),
+    Variant1(SignalRef),
+}
+impl From<&ForceTransformForcesItemY> for ForceTransformForcesItemY {
+    fn from(value: &ForceTransformForcesItemY) -> Self {
+        value.clone()
+    }
+}
+impl From<f64> for ForceTransformForcesItemY {
+    fn from(value: f64) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl From<SignalRef> for ForceTransformForcesItemY {
+    fn from(value: SignalRef) -> Self {
+        Self::Variant1(value)
     }
 }
 #[doc = "ForceTransformIterations"]
@@ -99150,17 +98098,17 @@ pub mod defaults {
     pub(super) fn density_transform_minsteps() -> super::DensityTransformMinsteps {
         super::DensityTransformMinsteps::Variant0(25_f64)
     }
-    pub(super) fn density_transform_distribution_variant0_stdev(
-    ) -> super::DensityTransformDistributionVariant0Stdev {
-        super::DensityTransformDistributionVariant0Stdev::Variant0(1_f64)
+    pub(super) fn density_transform_distribution_lognormal_stdev(
+    ) -> super::DensityTransformDistributionStdev {
+        super::DensityTransformDistributionStdev::Variant0(1_f64)
     }
-    pub(super) fn density_transform_distribution_variant1_stdev(
-    ) -> super::DensityTransformDistributionVariant1Stdev {
-        super::DensityTransformDistributionVariant1Stdev::Variant0(1_f64)
+    pub(super) fn density_transform_distribution_normal_stdev(
+    ) -> super::DensityTransformDistributionStdev {
+        super::DensityTransformDistributionStdev::Variant0(1_f64)
     }
-    pub(super) fn density_transform_distribution_variant2_max(
-    ) -> super::DensityTransformDistributionVariant2Max {
-        super::DensityTransformDistributionVariant2Max::Variant0(1_f64)
+    pub(super) fn density_transform_distribution_uniform_max(
+    ) -> super::DensityTransformDistributionMax {
+        super::DensityTransformDistributionMax::Variant0(1_f64)
     }
     pub(super) fn dotbin_transform_as() -> super::DotbinTransformAs {
         super::DotbinTransformAs::Variant0("bin".to_string())
@@ -99191,41 +98139,41 @@ pub mod defaults {
     pub(super) fn force_transform_velocity_decay() -> super::ForceTransformVelocityDecay {
         super::ForceTransformVelocityDecay::Variant0(0.4_f64)
     }
-    pub(super) fn force_transform_forces_item_variant1_iterations(
-    ) -> super::ForceTransformForcesItemVariant1Iterations {
-        super::ForceTransformForcesItemVariant1Iterations::Variant0(1_f64)
+    pub(super) fn force_transform_forces_item_collide_iterations(
+    ) -> super::ForceTransformForcesItemIterations {
+        super::ForceTransformForcesItemIterations::Variant0(1_f64)
     }
-    pub(super) fn force_transform_forces_item_variant1_strength(
-    ) -> super::ForceTransformForcesItemVariant1Strength {
-        super::ForceTransformForcesItemVariant1Strength::Variant0(0.7_f64)
+    pub(super) fn force_transform_forces_item_collide_strength(
+    ) -> super::ForceTransformForcesItemStrength {
+        super::ForceTransformForcesItemStrength::Variant0(0.7_f64)
     }
-    pub(super) fn force_transform_forces_item_variant2_distance_min(
-    ) -> super::ForceTransformForcesItemVariant2DistanceMin {
-        super::ForceTransformForcesItemVariant2DistanceMin::Variant0(1_f64)
+    pub(super) fn force_transform_forces_item_link_distance(
+    ) -> super::ForceTransformForcesItemDistance {
+        super::ForceTransformForcesItemDistance::Variant0(30_f64)
     }
-    pub(super) fn force_transform_forces_item_variant2_strength(
-    ) -> super::ForceTransformForcesItemVariant2Strength {
-        super::ForceTransformForcesItemVariant2Strength::Variant0(-30_f64)
+    pub(super) fn force_transform_forces_item_link_iterations(
+    ) -> super::ForceTransformForcesItemIterations {
+        super::ForceTransformForcesItemIterations::Variant0(1_f64)
     }
-    pub(super) fn force_transform_forces_item_variant2_theta(
-    ) -> super::ForceTransformForcesItemVariant2Theta {
-        super::ForceTransformForcesItemVariant2Theta::Variant0(0.9_f64)
+    pub(super) fn force_transform_forces_item_nbody_distance_min(
+    ) -> super::ForceTransformForcesItemDistanceMin {
+        super::ForceTransformForcesItemDistanceMin::Variant0(1_f64)
     }
-    pub(super) fn force_transform_forces_item_variant3_distance(
-    ) -> super::ForceTransformForcesItemVariant3Distance {
-        super::ForceTransformForcesItemVariant3Distance::Variant0(30_f64)
+    pub(super) fn force_transform_forces_item_nbody_strength(
+    ) -> super::ForceTransformForcesItemStrength {
+        super::ForceTransformForcesItemStrength::Variant0(-30_f64)
     }
-    pub(super) fn force_transform_forces_item_variant3_iterations(
-    ) -> super::ForceTransformForcesItemVariant3Iterations {
-        super::ForceTransformForcesItemVariant3Iterations::Variant0(1_f64)
+    pub(super) fn force_transform_forces_item_nbody_theta() -> super::ForceTransformForcesItemTheta
+    {
+        super::ForceTransformForcesItemTheta::Variant0(0.9_f64)
     }
-    pub(super) fn force_transform_forces_item_variant4_strength(
-    ) -> super::ForceTransformForcesItemVariant4Strength {
-        super::ForceTransformForcesItemVariant4Strength::Variant0(0.1_f64)
+    pub(super) fn force_transform_forces_item_x_strength() -> super::ForceTransformForcesItemStrength
+    {
+        super::ForceTransformForcesItemStrength::Variant0(0.1_f64)
     }
-    pub(super) fn force_transform_forces_item_variant5_strength(
-    ) -> super::ForceTransformForcesItemVariant5Strength {
-        super::ForceTransformForcesItemVariant5Strength::Variant0(0.1_f64)
+    pub(super) fn force_transform_forces_item_y_strength() -> super::ForceTransformForcesItemStrength
+    {
+        super::ForceTransformForcesItemStrength::Variant0(0.1_f64)
     }
     pub(super) fn geopath_transform_as() -> super::GeopathTransformAs {
         super::GeopathTransformAs::Variant0("path".to_string())
