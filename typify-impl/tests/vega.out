@@ -383,7 +383,7 @@ impl From<&Self> for AggregateTransformDrop {
 }
 impl Default for AggregateTransformDrop {
     fn default() -> Self {
-        AggregateTransformDrop::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for AggregateTransformDrop {
@@ -4005,7 +4005,7 @@ impl std::convert::TryFrom<String> for AutosizeVariant1Type {
 }
 impl Default for AutosizeVariant1Type {
     fn default() -> Self {
-        AutosizeVariant1Type::Pad
+        Self::Pad
     }
 }
 #[doc = "Axis"]
@@ -9738,7 +9738,7 @@ impl From<&Self> for BinTransformAs {
 }
 impl Default for BinTransformAs {
     fn default() -> Self {
-        BinTransformAs::Variant0([
+        Self::Variant0([
             BinTransformAsVariant0Item::Variant0("bin0".to_string()),
             BinTransformAsVariant0Item::Variant0("bin1".to_string()),
         ])
@@ -9818,7 +9818,7 @@ impl From<&Self> for BinTransformBase {
 }
 impl Default for BinTransformBase {
     fn default() -> Self {
-        BinTransformBase::Variant0(10_f64)
+        Self::Variant0(10_f64)
     }
 }
 impl From<f64> for BinTransformBase {
@@ -9875,7 +9875,7 @@ impl From<&Self> for BinTransformDivide {
 }
 impl Default for BinTransformDivide {
     fn default() -> Self {
-        BinTransformDivide::Variant0(vec![
+        Self::Variant0(vec![
             BinTransformDivideVariant0Item::Variant0(5_f64),
             BinTransformDivideVariant0Item::Variant0(2_f64),
         ])
@@ -10095,7 +10095,7 @@ impl From<&Self> for BinTransformInterval {
 }
 impl Default for BinTransformInterval {
     fn default() -> Self {
-        BinTransformInterval::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for BinTransformInterval {
@@ -10139,7 +10139,7 @@ impl From<&Self> for BinTransformMaxbins {
 }
 impl Default for BinTransformMaxbins {
     fn default() -> Self {
-        BinTransformMaxbins::Variant0(20_f64)
+        Self::Variant0(20_f64)
     }
 }
 impl From<f64> for BinTransformMaxbins {
@@ -10254,7 +10254,7 @@ impl From<&Self> for BinTransformNice {
 }
 impl Default for BinTransformNice {
     fn default() -> Self {
-        BinTransformNice::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for BinTransformNice {
@@ -13811,7 +13811,7 @@ impl From<&Self> for ContourTransformSmooth {
 }
 impl Default for ContourTransformSmooth {
     fn default() -> Self {
-        ContourTransformSmooth::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for ContourTransformSmooth {
@@ -14361,7 +14361,7 @@ impl From<&Self> for CountpatternTransformAs {
 }
 impl Default for CountpatternTransformAs {
     fn default() -> Self {
-        CountpatternTransformAs::Variant0([
+        Self::Variant0([
             CountpatternTransformAsVariant0Item::Variant0("text".to_string()),
             CountpatternTransformAsVariant0Item::Variant0("count".to_string()),
         ])
@@ -14445,7 +14445,7 @@ impl From<&Self> for CountpatternTransformCase {
 }
 impl Default for CountpatternTransformCase {
     fn default() -> Self {
-        CountpatternTransformCase::Variant0(CountpatternTransformCaseVariant0::Mixed)
+        Self::Variant0(CountpatternTransformCaseVariant0::Mixed)
     }
 }
 impl From<CountpatternTransformCaseVariant0> for CountpatternTransformCase {
@@ -14602,7 +14602,7 @@ impl From<&Self> for CountpatternTransformPattern {
 }
 impl Default for CountpatternTransformPattern {
     fn default() -> Self {
-        CountpatternTransformPattern::Variant0("[\\w\"]+".to_string())
+        Self::Variant0("[\\w\"]+".to_string())
     }
 }
 impl From<SignalRef> for CountpatternTransformPattern {
@@ -14815,7 +14815,7 @@ impl From<&Self> for CrossTransformAs {
 }
 impl Default for CrossTransformAs {
     fn default() -> Self {
-        CrossTransformAs::Variant0([
+        Self::Variant0([
             CrossTransformAsVariant0Item::Variant0("a".to_string()),
             CrossTransformAsVariant0Item::Variant0("b".to_string()),
         ])
@@ -21297,7 +21297,7 @@ impl From<&Self> for DensityTransformAs {
 }
 impl Default for DensityTransformAs {
     fn default() -> Self {
-        DensityTransformAs::Variant0(vec![
+        Self::Variant0(vec![
             DensityTransformAsVariant0Item::Variant0("value".to_string()),
             DensityTransformAsVariant0Item::Variant0("density".to_string()),
         ])
@@ -21748,7 +21748,7 @@ impl From<&Self> for DensityTransformDistributionMax {
 }
 impl Default for DensityTransformDistributionMax {
     fn default() -> Self {
-        DensityTransformDistributionMax::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for DensityTransformDistributionMax {
@@ -21868,7 +21868,7 @@ impl From<&Self> for DensityTransformDistributionStdev {
 }
 impl Default for DensityTransformDistributionStdev {
     fn default() -> Self {
-        DensityTransformDistributionStdev::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for DensityTransformDistributionStdev {
@@ -22088,7 +22088,7 @@ impl From<&Self> for DensityTransformMaxsteps {
 }
 impl Default for DensityTransformMaxsteps {
     fn default() -> Self {
-        DensityTransformMaxsteps::Variant0(200_f64)
+        Self::Variant0(200_f64)
     }
 }
 impl From<f64> for DensityTransformMaxsteps {
@@ -22132,7 +22132,7 @@ impl From<&Self> for DensityTransformMethod {
 }
 impl Default for DensityTransformMethod {
     fn default() -> Self {
-        DensityTransformMethod::Variant0("pdf".to_string())
+        Self::Variant0("pdf".to_string())
     }
 }
 impl From<SignalRef> for DensityTransformMethod {
@@ -22171,7 +22171,7 @@ impl From<&Self> for DensityTransformMinsteps {
 }
 impl Default for DensityTransformMinsteps {
     fn default() -> Self {
-        DensityTransformMinsteps::Variant0(25_f64)
+        Self::Variant0(25_f64)
     }
 }
 impl From<f64> for DensityTransformMinsteps {
@@ -23150,7 +23150,7 @@ impl From<&Self> for DotbinTransformAs {
 }
 impl Default for DotbinTransformAs {
     fn default() -> Self {
-        DotbinTransformAs::Variant0("bin".to_string())
+        Self::Variant0("bin".to_string())
     }
 }
 impl From<SignalRef> for DotbinTransformAs {
@@ -25308,7 +25308,7 @@ impl From<&Self> for FoldTransformAs {
 }
 impl Default for FoldTransformAs {
     fn default() -> Self {
-        FoldTransformAs::Variant0([
+        Self::Variant0([
             FoldTransformAsVariant0Item::Variant0("key".to_string()),
             FoldTransformAsVariant0Item::Variant0("value".to_string()),
         ])
@@ -26693,7 +26693,7 @@ impl From<&Self> for ForceTransformAlpha {
 }
 impl Default for ForceTransformAlpha {
     fn default() -> Self {
-        ForceTransformAlpha::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for ForceTransformAlpha {
@@ -26737,7 +26737,7 @@ impl From<&Self> for ForceTransformAlphaMin {
 }
 impl Default for ForceTransformAlphaMin {
     fn default() -> Self {
-        ForceTransformAlphaMin::Variant0(0.001_f64)
+        Self::Variant0(0.001_f64)
     }
 }
 impl From<f64> for ForceTransformAlphaMin {
@@ -26834,7 +26834,7 @@ impl From<&Self> for ForceTransformAs {
 }
 impl Default for ForceTransformAs {
     fn default() -> Self {
-        ForceTransformAs::Variant0(vec![
+        Self::Variant0(vec![
             ForceTransformAsVariant0Item::Variant0("x".to_string()),
             ForceTransformAsVariant0Item::Variant0("y".to_string()),
             ForceTransformAsVariant0Item::Variant0("vx".to_string()),
@@ -27298,7 +27298,7 @@ impl From<&Self> for ForceTransformForcesItemDistance {
 }
 impl Default for ForceTransformForcesItemDistance {
     fn default() -> Self {
-        ForceTransformForcesItemDistance::Variant0(30_f64)
+        Self::Variant0(30_f64)
     }
 }
 impl From<f64> for ForceTransformForcesItemDistance {
@@ -27390,7 +27390,7 @@ impl From<&Self> for ForceTransformForcesItemDistanceMin {
 }
 impl Default for ForceTransformForcesItemDistanceMin {
     fn default() -> Self {
-        ForceTransformForcesItemDistanceMin::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for ForceTransformForcesItemDistanceMin {
@@ -27481,7 +27481,7 @@ impl From<&Self> for ForceTransformForcesItemIterations {
 }
 impl Default for ForceTransformForcesItemIterations {
     fn default() -> Self {
-        ForceTransformForcesItemIterations::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for ForceTransformForcesItemIterations {
@@ -27581,7 +27581,7 @@ impl From<&Self> for ForceTransformForcesItemStrength {
 }
 impl Default for ForceTransformForcesItemStrength {
     fn default() -> Self {
-        ForceTransformForcesItemStrength::Variant0(0.7_f64)
+        Self::Variant0(0.7_f64)
     }
 }
 impl From<f64> for ForceTransformForcesItemStrength {
@@ -27625,7 +27625,7 @@ impl From<&Self> for ForceTransformForcesItemTheta {
 }
 impl Default for ForceTransformForcesItemTheta {
     fn default() -> Self {
-        ForceTransformForcesItemTheta::Variant0(0.9_f64)
+        Self::Variant0(0.9_f64)
     }
 }
 impl From<f64> for ForceTransformForcesItemTheta {
@@ -27745,7 +27745,7 @@ impl From<&Self> for ForceTransformIterations {
 }
 impl Default for ForceTransformIterations {
     fn default() -> Self {
-        ForceTransformIterations::Variant0(300_f64)
+        Self::Variant0(300_f64)
     }
 }
 impl From<f64> for ForceTransformIterations {
@@ -27921,7 +27921,7 @@ impl From<&Self> for ForceTransformVelocityDecay {
 }
 impl Default for ForceTransformVelocityDecay {
     fn default() -> Self {
-        ForceTransformVelocityDecay::Variant0(0.4_f64)
+        Self::Variant0(0.4_f64)
     }
 }
 impl From<f64> for ForceTransformVelocityDecay {
@@ -28560,7 +28560,7 @@ impl From<&Self> for GeopathTransformAs {
 }
 impl Default for GeopathTransformAs {
     fn default() -> Self {
-        GeopathTransformAs::Variant0("path".to_string())
+        Self::Variant0("path".to_string())
     }
 }
 impl From<SignalRef> for GeopathTransformAs {
@@ -28870,7 +28870,7 @@ impl From<&Self> for GeopointTransformAs {
 }
 impl Default for GeopointTransformAs {
     fn default() -> Self {
-        GeopointTransformAs::Variant0([
+        Self::Variant0([
             GeopointTransformAsVariant0Item::Variant0("x".to_string()),
             GeopointTransformAsVariant0Item::Variant0("y".to_string()),
         ])
@@ -29199,7 +29199,7 @@ impl From<&Self> for GeoshapeTransformAs {
 }
 impl Default for GeoshapeTransformAs {
     fn default() -> Self {
-        GeoshapeTransformAs::Variant0("shape".to_string())
+        Self::Variant0("shape".to_string())
     }
 }
 impl From<SignalRef> for GeoshapeTransformAs {
@@ -29242,9 +29242,7 @@ impl From<&Self> for GeoshapeTransformField {
 }
 impl Default for GeoshapeTransformField {
     fn default() -> Self {
-        GeoshapeTransformField::ScaleField(ScaleField(StringOrSignal::Variant0(
-            "datum".to_string(),
-        )))
+        Self::ScaleField(ScaleField(StringOrSignal::Variant0("datum".to_string())))
     }
 }
 impl From<ScaleField> for GeoshapeTransformField {
@@ -29800,7 +29798,7 @@ impl From<&Self> for GraticuleTransformPrecision {
 }
 impl Default for GraticuleTransformPrecision {
     fn default() -> Self {
-        GraticuleTransformPrecision::Variant0(2.5_f64)
+        Self::Variant0(2.5_f64)
     }
 }
 impl From<f64> for GraticuleTransformPrecision {
@@ -29909,7 +29907,7 @@ impl From<&Self> for GraticuleTransformStepMajor {
 }
 impl Default for GraticuleTransformStepMajor {
     fn default() -> Self {
-        GraticuleTransformStepMajor::Variant0([
+        Self::Variant0([
             GraticuleTransformStepMajorVariant0Item::Variant0(90_f64),
             GraticuleTransformStepMajorVariant0Item::Variant0(360_f64),
         ])
@@ -30009,7 +30007,7 @@ impl From<&Self> for GraticuleTransformStepMinor {
 }
 impl Default for GraticuleTransformStepMinor {
     fn default() -> Self {
-        GraticuleTransformStepMinor::Variant0([
+        Self::Variant0([
             GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
             GraticuleTransformStepMinorVariant0Item::Variant0(10_f64),
         ])
@@ -30348,7 +30346,7 @@ impl From<&Self> for HeatmapTransformAs {
 }
 impl Default for HeatmapTransformAs {
     fn default() -> Self {
-        HeatmapTransformAs::Variant0("image".to_string())
+        Self::Variant0("image".to_string())
     }
 }
 impl From<SignalRef> for HeatmapTransformAs {
@@ -30544,7 +30542,7 @@ impl From<&Self> for HeatmapTransformResolve {
 }
 impl Default for HeatmapTransformResolve {
     fn default() -> Self {
-        HeatmapTransformResolve::Variant0(HeatmapTransformResolveVariant0::Independent)
+        Self::Variant0(HeatmapTransformResolveVariant0::Independent)
     }
 }
 impl From<HeatmapTransformResolveVariant0> for HeatmapTransformResolve {
@@ -31208,7 +31206,7 @@ impl From<&Self> for ImputeTransformMethod {
 }
 impl Default for ImputeTransformMethod {
     fn default() -> Self {
-        ImputeTransformMethod::Variant0(ImputeTransformMethodVariant0::Value)
+        Self::Variant0(ImputeTransformMethodVariant0::Value)
     }
 }
 impl From<ImputeTransformMethodVariant0> for ImputeTransformMethod {
@@ -31590,7 +31588,7 @@ impl From<&Self> for IsocontourTransformAs {
 }
 impl Default for IsocontourTransformAs {
     fn default() -> Self {
-        IsocontourTransformAs::Variant0("contour".to_string())
+        Self::Variant0("contour".to_string())
     }
 }
 impl From<SignalRef> for IsocontourTransformAs {
@@ -31755,7 +31753,7 @@ impl From<&Self> for IsocontourTransformResolve {
 }
 impl Default for IsocontourTransformResolve {
     fn default() -> Self {
-        IsocontourTransformResolve::Variant0(IsocontourTransformResolveVariant0::Independent)
+        Self::Variant0(IsocontourTransformResolveVariant0::Independent)
     }
 }
 impl From<IsocontourTransformResolveVariant0> for IsocontourTransformResolve {
@@ -31916,7 +31914,7 @@ impl From<&Self> for IsocontourTransformSmooth {
 }
 impl Default for IsocontourTransformSmooth {
     fn default() -> Self {
-        IsocontourTransformSmooth::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for IsocontourTransformSmooth {
@@ -32212,7 +32210,7 @@ impl From<&Self> for IsocontourTransformZero {
 }
 impl Default for IsocontourTransformZero {
     fn default() -> Self {
-        IsocontourTransformZero::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for IsocontourTransformZero {
@@ -33326,7 +33324,7 @@ impl From<&Self> for Kde2dTransformAs {
 }
 impl Default for Kde2dTransformAs {
     fn default() -> Self {
-        Kde2dTransformAs::Variant0("grid".to_string())
+        Self::Variant0("grid".to_string())
     }
 }
 impl From<SignalRef> for Kde2dTransformAs {
@@ -34142,7 +34140,7 @@ impl From<&Self> for KdeTransformAs {
 }
 impl Default for KdeTransformAs {
     fn default() -> Self {
-        KdeTransformAs::Variant0(vec![
+        Self::Variant0(vec![
             KdeTransformAsVariant0Item::Variant0("value".to_string()),
             KdeTransformAsVariant0Item::Variant0("density".to_string()),
         ])
@@ -34569,7 +34567,7 @@ impl From<&Self> for KdeTransformMaxsteps {
 }
 impl Default for KdeTransformMaxsteps {
     fn default() -> Self {
-        KdeTransformMaxsteps::Variant0(200_f64)
+        Self::Variant0(200_f64)
     }
 }
 impl From<f64> for KdeTransformMaxsteps {
@@ -34613,7 +34611,7 @@ impl From<&Self> for KdeTransformMinsteps {
 }
 impl Default for KdeTransformMinsteps {
     fn default() -> Self {
-        KdeTransformMinsteps::Variant0(25_f64)
+        Self::Variant0(25_f64)
     }
 }
 impl From<f64> for KdeTransformMinsteps {
@@ -34660,7 +34658,7 @@ impl From<&Self> for KdeTransformResolve {
 }
 impl Default for KdeTransformResolve {
     fn default() -> Self {
-        KdeTransformResolve::Variant0(KdeTransformResolveVariant0::Independent)
+        Self::Variant0(KdeTransformResolveVariant0::Independent)
     }
 }
 impl From<KdeTransformResolveVariant0> for KdeTransformResolve {
@@ -35234,7 +35232,7 @@ impl From<&Self> for LabelTransformAnchor {
 }
 impl Default for LabelTransformAnchor {
     fn default() -> Self {
-        LabelTransformAnchor::Variant0(vec![
+        Self::Variant0(vec![
             LabelTransformAnchorVariant0Item::Variant0("top-left".to_string()),
             LabelTransformAnchorVariant0Item::Variant0("left".to_string()),
             LabelTransformAnchorVariant0Item::Variant0("bottom-left".to_string()),
@@ -35338,7 +35336,7 @@ impl From<&Self> for LabelTransformAs {
 }
 impl Default for LabelTransformAs {
     fn default() -> Self {
-        LabelTransformAs::Variant0([
+        Self::Variant0([
             LabelTransformAsVariant0Item::Variant0("x".to_string()),
             LabelTransformAsVariant0Item::Variant0("y".to_string()),
             LabelTransformAsVariant0Item::Variant0("opacity".to_string()),
@@ -35421,7 +35419,7 @@ impl From<&Self> for LabelTransformAvoidBaseMark {
 }
 impl Default for LabelTransformAvoidBaseMark {
     fn default() -> Self {
-        LabelTransformAvoidBaseMark::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for LabelTransformAvoidBaseMark {
@@ -35506,7 +35504,7 @@ impl From<&Self> for LabelTransformLineAnchor {
 }
 impl Default for LabelTransformLineAnchor {
     fn default() -> Self {
-        LabelTransformLineAnchor::Variant0("end".to_string())
+        Self::Variant0("end".to_string())
     }
 }
 impl From<SignalRef> for LabelTransformLineAnchor {
@@ -35583,7 +35581,7 @@ impl From<&Self> for LabelTransformMethod {
 }
 impl Default for LabelTransformMethod {
     fn default() -> Self {
-        LabelTransformMethod::Variant0("naive".to_string())
+        Self::Variant0("naive".to_string())
     }
 }
 impl From<SignalRef> for LabelTransformMethod {
@@ -35634,7 +35632,7 @@ impl From<&Self> for LabelTransformOffset {
 }
 impl Default for LabelTransformOffset {
     fn default() -> Self {
-        LabelTransformOffset::Variant0(vec![LabelTransformOffsetVariant0Item::Variant0(1_f64)])
+        Self::Variant0(vec![LabelTransformOffsetVariant0Item::Variant0(1_f64)])
     }
 }
 impl From<Vec<LabelTransformOffsetVariant0Item>> for LabelTransformOffset {
@@ -59679,7 +59677,7 @@ impl From<&Self> for LinkpathTransformAs {
 }
 impl Default for LinkpathTransformAs {
     fn default() -> Self {
-        LinkpathTransformAs::Variant0("path".to_string())
+        Self::Variant0("path".to_string())
     }
 }
 impl From<SignalRef> for LinkpathTransformAs {
@@ -59722,7 +59720,7 @@ impl From<&Self> for LinkpathTransformOrient {
 }
 impl Default for LinkpathTransformOrient {
     fn default() -> Self {
-        LinkpathTransformOrient::Variant0(LinkpathTransformOrientVariant0::Vertical)
+        Self::Variant0(LinkpathTransformOrientVariant0::Vertical)
     }
 }
 impl From<LinkpathTransformOrientVariant0> for LinkpathTransformOrient {
@@ -59838,7 +59836,7 @@ impl From<&Self> for LinkpathTransformShape {
 }
 impl Default for LinkpathTransformShape {
     fn default() -> Self {
-        LinkpathTransformShape::Variant0(LinkpathTransformShapeVariant0::Line)
+        Self::Variant0(LinkpathTransformShapeVariant0::Line)
     }
 }
 impl From<LinkpathTransformShapeVariant0> for LinkpathTransformShape {
@@ -59962,9 +59960,7 @@ impl From<&Self> for LinkpathTransformSourceX {
 }
 impl Default for LinkpathTransformSourceX {
     fn default() -> Self {
-        LinkpathTransformSourceX::ScaleField(ScaleField(StringOrSignal::Variant0(
-            "source.x".to_string(),
-        )))
+        Self::ScaleField(ScaleField(StringOrSignal::Variant0("source.x".to_string())))
     }
 }
 impl From<ScaleField> for LinkpathTransformSourceX {
@@ -60017,9 +60013,7 @@ impl From<&Self> for LinkpathTransformSourceY {
 }
 impl Default for LinkpathTransformSourceY {
     fn default() -> Self {
-        LinkpathTransformSourceY::ScaleField(ScaleField(StringOrSignal::Variant0(
-            "source.y".to_string(),
-        )))
+        Self::ScaleField(ScaleField(StringOrSignal::Variant0("source.y".to_string())))
     }
 }
 impl From<ScaleField> for LinkpathTransformSourceY {
@@ -60072,9 +60066,7 @@ impl From<&Self> for LinkpathTransformTargetX {
 }
 impl Default for LinkpathTransformTargetX {
     fn default() -> Self {
-        LinkpathTransformTargetX::ScaleField(ScaleField(StringOrSignal::Variant0(
-            "target.x".to_string(),
-        )))
+        Self::ScaleField(ScaleField(StringOrSignal::Variant0("target.x".to_string())))
     }
 }
 impl From<ScaleField> for LinkpathTransformTargetX {
@@ -60127,9 +60119,7 @@ impl From<&Self> for LinkpathTransformTargetY {
 }
 impl Default for LinkpathTransformTargetY {
     fn default() -> Self {
-        LinkpathTransformTargetY::ScaleField(ScaleField(StringOrSignal::Variant0(
-            "target.y".to_string(),
-        )))
+        Self::ScaleField(ScaleField(StringOrSignal::Variant0("target.y".to_string())))
     }
 }
 impl From<ScaleField> for LinkpathTransformTargetY {
@@ -60492,7 +60482,7 @@ impl From<&Self> for LoessTransformBandwidth {
 }
 impl Default for LoessTransformBandwidth {
     fn default() -> Self {
-        LoessTransformBandwidth::Variant0(0.3_f64)
+        Self::Variant0(0.3_f64)
     }
 }
 impl From<f64> for LoessTransformBandwidth {
@@ -67019,7 +67009,7 @@ impl From<&Self> for PackTransformAs {
 }
 impl Default for PackTransformAs {
     fn default() -> Self {
-        PackTransformAs::Variant0([
+        Self::Variant0([
             PackTransformAsVariant0Item::Variant0("x".to_string()),
             PackTransformAsVariant0Item::Variant0("y".to_string()),
             PackTransformAsVariant0Item::Variant0("r".to_string()),
@@ -67634,7 +67624,7 @@ impl From<&Self> for PartitionTransformAs {
 }
 impl Default for PartitionTransformAs {
     fn default() -> Self {
-        PartitionTransformAs::Variant0([
+        Self::Variant0([
             PartitionTransformAsVariant0Item::Variant0("x0".to_string()),
             PartitionTransformAsVariant0Item::Variant0("y0".to_string()),
             PartitionTransformAsVariant0Item::Variant0("x1".to_string()),
@@ -68121,7 +68111,7 @@ impl From<&Self> for PieTransformAs {
 }
 impl Default for PieTransformAs {
     fn default() -> Self {
-        PieTransformAs::Variant0([
+        Self::Variant0([
             PieTransformAsVariant0Item::Variant0("startAngle".to_string()),
             PieTransformAsVariant0Item::Variant0("endAngle".to_string()),
         ])
@@ -68201,7 +68191,7 @@ impl From<&Self> for PieTransformEndAngle {
 }
 impl Default for PieTransformEndAngle {
     fn default() -> Self {
-        PieTransformEndAngle::Variant0(6.283185307179586_f64)
+        Self::Variant0(6.283185307179586_f64)
     }
 }
 impl From<f64> for PieTransformEndAngle {
@@ -68836,7 +68826,7 @@ impl From<&Self> for PivotTransformOp {
 }
 impl Default for PivotTransformOp {
     fn default() -> Self {
-        PivotTransformOp::Variant0(PivotTransformOpVariant0::Sum)
+        Self::Variant0(PivotTransformOpVariant0::Sum)
     }
 }
 impl From<PivotTransformOpVariant0> for PivotTransformOp {
@@ -70299,7 +70289,7 @@ impl From<&Self> for QuantileTransformAs {
 }
 impl Default for QuantileTransformAs {
     fn default() -> Self {
-        QuantileTransformAs::Variant0(vec![
+        Self::Variant0(vec![
             QuantileTransformAsVariant0Item::Variant0("prob".to_string()),
             QuantileTransformAsVariant0Item::Variant0("value".to_string()),
         ])
@@ -70610,7 +70600,7 @@ impl From<&Self> for QuantileTransformStep {
 }
 impl Default for QuantileTransformStep {
     fn default() -> Self {
-        QuantileTransformStep::Variant0(0.01_f64)
+        Self::Variant0(0.01_f64)
     }
 }
 impl From<f64> for QuantileTransformStep {
@@ -71280,7 +71270,7 @@ impl From<&Self> for RegressionTransformMethod {
 }
 impl Default for RegressionTransformMethod {
     fn default() -> Self {
-        RegressionTransformMethod::Variant0("linear".to_string())
+        Self::Variant0("linear".to_string())
     }
 }
 impl From<SignalRef> for RegressionTransformMethod {
@@ -71319,7 +71309,7 @@ impl From<&Self> for RegressionTransformOrder {
 }
 impl Default for RegressionTransformOrder {
     fn default() -> Self {
-        RegressionTransformOrder::Variant0(3_f64)
+        Self::Variant0(3_f64)
     }
 }
 impl From<f64> for RegressionTransformOrder {
@@ -71772,7 +71762,7 @@ impl From<&Self> for SampleTransformSize {
 }
 impl Default for SampleTransformSize {
     fn default() -> Self {
-        SampleTransformSize::Variant0(1000_f64)
+        Self::Variant0(1000_f64)
     }
 }
 impl From<f64> for SampleTransformSize {
@@ -84745,7 +84735,7 @@ impl From<&Self> for SequenceTransformAs {
 }
 impl Default for SequenceTransformAs {
     fn default() -> Self {
-        SequenceTransformAs::Variant0("data".to_string())
+        Self::Variant0("data".to_string())
     }
 }
 impl From<SignalRef> for SequenceTransformAs {
@@ -84822,7 +84812,7 @@ impl From<&Self> for SequenceTransformStep {
 }
 impl Default for SequenceTransformStep {
     fn default() -> Self {
-        SequenceTransformStep::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for SequenceTransformStep {
@@ -85483,7 +85473,7 @@ impl From<&Self> for StackTransformAs {
 }
 impl Default for StackTransformAs {
     fn default() -> Self {
-        StackTransformAs::Variant0([
+        Self::Variant0([
             StackTransformAsVariant0Item::Variant0("y0".to_string()),
             StackTransformAsVariant0Item::Variant0("y1".to_string()),
         ])
@@ -85712,7 +85702,7 @@ impl From<&Self> for StackTransformOffset {
 }
 impl Default for StackTransformOffset {
     fn default() -> Self {
-        StackTransformOffset::Variant0(StackTransformOffsetVariant0::Zero)
+        Self::Variant0(StackTransformOffsetVariant0::Zero)
     }
 }
 impl From<StackTransformOffsetVariant0> for StackTransformOffset {
@@ -89969,7 +89959,7 @@ impl From<&Self> for TimeunitTransformAs {
 }
 impl Default for TimeunitTransformAs {
     fn default() -> Self {
-        TimeunitTransformAs::Variant0([
+        Self::Variant0([
             TimeunitTransformAsVariant0Item::Variant0("unit0".to_string()),
             TimeunitTransformAsVariant0Item::Variant0("unit1".to_string()),
         ])
@@ -90182,7 +90172,7 @@ impl From<&Self> for TimeunitTransformInterval {
 }
 impl Default for TimeunitTransformInterval {
     fn default() -> Self {
-        TimeunitTransformInterval::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for TimeunitTransformInterval {
@@ -90226,7 +90216,7 @@ impl From<&Self> for TimeunitTransformMaxbins {
 }
 impl Default for TimeunitTransformMaxbins {
     fn default() -> Self {
-        TimeunitTransformMaxbins::Variant0(40_f64)
+        Self::Variant0(40_f64)
     }
 }
 impl From<f64> for TimeunitTransformMaxbins {
@@ -90270,7 +90260,7 @@ impl From<&Self> for TimeunitTransformStep {
 }
 impl Default for TimeunitTransformStep {
     fn default() -> Self {
-        TimeunitTransformStep::Variant0(1_f64)
+        Self::Variant0(1_f64)
     }
 }
 impl From<f64> for TimeunitTransformStep {
@@ -90317,7 +90307,7 @@ impl From<&Self> for TimeunitTransformTimezone {
 }
 impl Default for TimeunitTransformTimezone {
     fn default() -> Self {
-        TimeunitTransformTimezone::Variant0(TimeunitTransformTimezoneVariant0::Local)
+        Self::Variant0(TimeunitTransformTimezoneVariant0::Local)
     }
 }
 impl From<TimeunitTransformTimezoneVariant0> for TimeunitTransformTimezone {
@@ -93474,7 +93464,7 @@ impl From<&Self> for TreeTransformAs {
 }
 impl Default for TreeTransformAs {
     fn default() -> Self {
-        TreeTransformAs::Variant0([
+        Self::Variant0([
             TreeTransformAsVariant0Item::Variant0("x".to_string()),
             TreeTransformAsVariant0Item::Variant0("y".to_string()),
             TreeTransformAsVariant0Item::Variant0("depth".to_string()),
@@ -93606,7 +93596,7 @@ impl From<&Self> for TreeTransformMethod {
 }
 impl Default for TreeTransformMethod {
     fn default() -> Self {
-        TreeTransformMethod::Variant0(TreeTransformMethodVariant0::Tidy)
+        Self::Variant0(TreeTransformMethodVariant0::Tidy)
     }
 }
 impl From<TreeTransformMethodVariant0> for TreeTransformMethod {
@@ -93799,7 +93789,7 @@ impl From<&Self> for TreeTransformSeparation {
 }
 impl Default for TreeTransformSeparation {
     fn default() -> Self {
-        TreeTransformSeparation::Variant0(true)
+        Self::Variant0(true)
     }
 }
 impl From<bool> for TreeTransformSeparation {
@@ -94365,7 +94355,7 @@ impl From<&Self> for TreemapTransformAs {
 }
 impl Default for TreemapTransformAs {
     fn default() -> Self {
-        TreemapTransformAs::Variant0([
+        Self::Variant0([
             TreemapTransformAsVariant0Item::Variant0("x0".to_string()),
             TreemapTransformAsVariant0Item::Variant0("y0".to_string()),
             TreemapTransformAsVariant0Item::Variant0("x1".to_string()),
@@ -94503,7 +94493,7 @@ impl From<&Self> for TreemapTransformMethod {
 }
 impl Default for TreemapTransformMethod {
     fn default() -> Self {
-        TreemapTransformMethod::Variant0(TreemapTransformMethodVariant0::Squarify)
+        Self::Variant0(TreemapTransformMethodVariant0::Squarify)
     }
 }
 impl From<TreemapTransformMethodVariant0> for TreemapTransformMethod {
@@ -94894,7 +94884,7 @@ impl From<&Self> for TreemapTransformRatio {
 }
 impl Default for TreemapTransformRatio {
     fn default() -> Self {
-        TreemapTransformRatio::Variant0(1.618033988749895_f64)
+        Self::Variant0(1.618033988749895_f64)
     }
 }
 impl From<f64> for TreemapTransformRatio {
@@ -95249,7 +95239,7 @@ impl From<&Self> for VoronoiTransformAs {
 }
 impl Default for VoronoiTransformAs {
     fn default() -> Self {
-        VoronoiTransformAs::Variant0("path".to_string())
+        Self::Variant0("path".to_string())
     }
 }
 impl From<SignalRef> for VoronoiTransformAs {
@@ -95300,7 +95290,7 @@ impl From<&Self> for VoronoiTransformExtent {
 }
 impl Default for VoronoiTransformExtent {
     fn default() -> Self {
-        VoronoiTransformExtent::Variant0([
+        Self::Variant0([
             serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
         ])
@@ -96048,7 +96038,7 @@ impl From<&Self> for WindowTransformFrame {
 }
 impl Default for WindowTransformFrame {
     fn default() -> Self {
-        WindowTransformFrame::Variant0([
+        Self::Variant0([
             WindowTransformFrameVariant0Item::Variant2,
             WindowTransformFrameVariant0Item::Variant0(0_f64),
         ])
@@ -97114,7 +97104,7 @@ impl From<&Self> for WordcloudTransformAs {
 }
 impl Default for WordcloudTransformAs {
     fn default() -> Self {
-        WordcloudTransformAs::Variant0([
+        Self::Variant0([
             WordcloudTransformAsVariant0Item::Variant0("x".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("y".to_string()),
             WordcloudTransformAsVariant0Item::Variant0("font".to_string()),
@@ -97207,7 +97197,7 @@ impl From<&Self> for WordcloudTransformFont {
 }
 impl Default for WordcloudTransformFont {
     fn default() -> Self {
-        WordcloudTransformFont::Variant0("sans-serif".to_string())
+        Self::Variant0("sans-serif".to_string())
     }
 }
 impl From<SignalRef> for WordcloudTransformFont {
@@ -97264,7 +97254,7 @@ impl From<&Self> for WordcloudTransformFontSize {
 }
 impl Default for WordcloudTransformFontSize {
     fn default() -> Self {
-        WordcloudTransformFontSize::Variant0(14_f64)
+        Self::Variant0(14_f64)
     }
 }
 impl From<f64> for WordcloudTransformFontSize {
@@ -97335,7 +97325,7 @@ impl From<&Self> for WordcloudTransformFontSizeRange {
 }
 impl Default for WordcloudTransformFontSizeRange {
     fn default() -> Self {
-        WordcloudTransformFontSizeRange::Variant0(vec![
+        Self::Variant0(vec![
             WordcloudTransformFontSizeRangeVariant0Item::Variant0(10_f64),
             WordcloudTransformFontSizeRangeVariant0Item::Variant0(50_f64),
         ])
@@ -97428,7 +97418,7 @@ impl From<&Self> for WordcloudTransformFontStyle {
 }
 impl Default for WordcloudTransformFontStyle {
     fn default() -> Self {
-        WordcloudTransformFontStyle::Variant0("normal".to_string())
+        Self::Variant0("normal".to_string())
     }
 }
 impl From<SignalRef> for WordcloudTransformFontStyle {
@@ -97485,7 +97475,7 @@ impl From<&Self> for WordcloudTransformFontWeight {
 }
 impl Default for WordcloudTransformFontWeight {
     fn default() -> Self {
-        WordcloudTransformFontWeight::Variant0("normal".to_string())
+        Self::Variant0("normal".to_string())
     }
 }
 impl From<SignalRef> for WordcloudTransformFontWeight {

@@ -766,7 +766,9 @@ impl TypeEntry {
             });
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
+            let default_stream = self
+                .output_value(type_space, &value.0, &quote! {}, true)
+                .unwrap();
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {
@@ -1088,7 +1090,9 @@ impl TypeEntry {
 
         // If there's a default value, generate an impl Default
         if let Some(value) = default {
-            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
+            let default_stream = self
+                .output_value(type_space, &value.0, &quote! {}, false)
+                .unwrap();
             output.add_item(
                 OutputSpaceMod::Crate,
                 name,
@@ -1329,7 +1333,7 @@ impl TypeEntry {
 
                 let value_output = enum_values
                     .iter()
-                    .map(|value| inner_type.output_value(type_space, &value.0, &quote! {}));
+                    .map(|value| inner_type.output_value(type_space, &value.0, &quote! {}, false));
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well and FromStr.
                 // TODO maybe we want to handle JsonSchema here
@@ -1477,7 +1481,9 @@ impl TypeEntry {
         };
 
         let default_impl = default.as_ref().map(|value| {
-            let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
+            let default_stream = self
+                .output_value(type_space, &value.0, &quote! {}, false)
+                .unwrap();
             quote! {
                 impl Default for #type_name {
                     fn default() -> Self {

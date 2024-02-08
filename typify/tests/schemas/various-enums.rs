@@ -93,7 +93,7 @@ impl std::convert::TryFrom<String> for AlternativeEnum {
 }
 impl Default for AlternativeEnum {
     fn default() -> Self {
-        AlternativeEnum::Choice2
+        Self::Choice2
     }
 }
 #[doc = "CommentedVariants"]
@@ -280,7 +280,7 @@ impl std::convert::TryFrom<String> for DiskAttachmentState {
 }
 impl Default for DiskAttachmentState {
     fn default() -> Self {
-        DiskAttachmentState::Detached
+        Self::Detached
     }
 }
 #[doc = "EmptyObject"]

@@ -96,7 +96,7 @@ impl std::convert::TryFrom<String> for TestEnum {
 }
 impl Default for TestEnum {
     fn default() -> Self {
-        TestEnum::Failure
+        Self::Failure
     }
 }
 fn main() {}
