@@ -50,8 +50,8 @@ impl From<PatternString> for String {
         value.0
     }
 }
-impl From<&PatternString> for PatternString {
-    fn from(value: &PatternString) -> Self {
+impl From<&Self> for PatternString {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -124,8 +124,8 @@ impl From<Sub10Primes> for u32 {
         value.0
     }
 }
-impl From<&Sub10Primes> for Sub10Primes {
-    fn from(value: &Sub10Primes) -> Self {
+impl From<&Self> for Sub10Primes {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

@@ -60,8 +60,8 @@ pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
 }
-impl From<&IdOrName> for IdOrName {
-    fn from(value: &IdOrName) -> Self {
+impl From<&Self> for IdOrName {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -139,8 +139,8 @@ pub enum IdOrNameRedundant {
     Variant0(uuid::Uuid),
     Variant1(Name),
 }
-impl From<&IdOrNameRedundant> for IdOrNameRedundant {
-    fn from(value: &IdOrNameRedundant) -> Self {
+impl From<&Self> for IdOrNameRedundant {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -227,8 +227,8 @@ pub enum IdOrYolo {
     Id(uuid::Uuid),
     Yolo(IdOrYoloYolo),
 }
-impl From<&IdOrYolo> for IdOrYolo {
-    fn from(value: &IdOrYolo) -> Self {
+impl From<&Self> for IdOrYolo {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -304,8 +304,8 @@ impl From<IdOrYoloYolo> for String {
         value.0
     }
 }
-impl From<&IdOrYoloYolo> for IdOrYoloYolo {
-    fn from(value: &IdOrYoloYolo) -> Self {
+impl From<&Self> for IdOrYoloYolo {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -375,8 +375,8 @@ impl From<Name> for String {
         value.0
     }
 }
-impl From<&Name> for Name {
-    fn from(value: &Name) -> Self {
+impl From<&Self> for Name {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

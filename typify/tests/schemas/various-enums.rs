@@ -48,8 +48,8 @@ pub enum AlternativeEnum {
     Choice2,
     Choice3,
 }
-impl From<&AlternativeEnum> for AlternativeEnum {
-    fn from(value: &AlternativeEnum) -> Self {
+impl From<&Self> for AlternativeEnum {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -132,8 +132,8 @@ pub enum CommentedVariants {
     #[doc = "a pirate's favorite letter"]
     C,
 }
-impl From<&CommentedVariants> for CommentedVariants {
-    fn from(value: &CommentedVariants) -> Self {
+impl From<&Self> for CommentedVariants {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -208,8 +208,8 @@ pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
 }
-impl From<&DiskAttachment> for DiskAttachment {
-    fn from(value: &DiskAttachment) -> Self {
+impl From<&Self> for DiskAttachment {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -235,8 +235,8 @@ pub enum DiskAttachmentState {
     Destroyed,
     Faulted,
 }
-impl From<&DiskAttachmentState> for DiskAttachmentState {
-    fn from(value: &DiskAttachmentState) -> Self {
+impl From<&Self> for DiskAttachmentState {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -306,8 +306,8 @@ pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prop: Option<EmptyObjectProp>,
 }
-impl From<&EmptyObject> for EmptyObject {
-    fn from(value: &EmptyObject) -> Self {
+impl From<&Self> for EmptyObject {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -337,8 +337,8 @@ impl From<EmptyObjectProp> for serde_json::Map<String, serde_json::Value> {
         value.0
     }
 }
-impl From<&EmptyObjectProp> for EmptyObjectProp {
-    fn from(value: &EmptyObjectProp) -> Self {
+impl From<&Self> for EmptyObjectProp {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -454,8 +454,8 @@ pub enum EnumAndConstant {
     #[serde(rename = "fish")]
     Fish { float: String },
 }
-impl From<&EnumAndConstant> for EnumAndConstant {
-    fn from(value: &EnumAndConstant) -> Self {
+impl From<&Self> for EnumAndConstant {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -493,8 +493,8 @@ pub enum IpNet {
     V4(Ipv4Net),
     V6(Ipv6Net),
 }
-impl From<&IpNet> for IpNet {
-    fn from(value: &IpNet) -> Self {
+impl From<&Self> for IpNet {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -569,8 +569,8 @@ impl From<Ipv4Net> for String {
         value.0
     }
 }
-impl From<&Ipv4Net> for Ipv4Net {
-    fn from(value: &Ipv4Net) -> Self {
+impl From<&Self> for Ipv4Net {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -613,8 +613,8 @@ impl From<Ipv6Net> for String {
         value.0
     }
 }
-impl From<&Ipv6Net> for Ipv6Net {
-    fn from(value: &Ipv6Net) -> Self {
+impl From<&Self> for Ipv6Net {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -673,8 +673,8 @@ pub enum JankNames {
     Variant1(std::collections::HashMap<String, String>),
     Variant2(std::collections::HashMap<String, i64>),
 }
-impl From<&JankNames> for JankNames {
-    fn from(value: &JankNames) -> Self {
+impl From<&Self> for JankNames {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -699,8 +699,8 @@ impl From<std::collections::HashMap<String, i64>> for JankNames {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
-impl From<&Never> for Never {
-    fn from(value: &Never) -> Self {
+impl From<&Self> for Never {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -715,8 +715,8 @@ impl From<&Never> for Never {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
-impl From<&NeverEver> for NeverEver {
-    fn from(value: &NeverEver) -> Self {
+impl From<&Self> for NeverEver {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -752,8 +752,8 @@ impl From<NullStringEnumWithUnknownFormat> for Option<NullStringEnumWithUnknownF
         value.0
     }
 }
-impl From<&NullStringEnumWithUnknownFormat> for NullStringEnumWithUnknownFormat {
-    fn from(value: &NullStringEnumWithUnknownFormat) -> Self {
+impl From<&Self> for NullStringEnumWithUnknownFormat {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -787,8 +787,8 @@ pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "c")]
     C,
 }
-impl From<&NullStringEnumWithUnknownFormatInner> for NullStringEnumWithUnknownFormatInner {
-    fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
+impl From<&Self> for NullStringEnumWithUnknownFormatInner {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -869,8 +869,8 @@ pub enum OneOfTypes {
     #[serde(rename = "foo")]
     Foo(String),
 }
-impl From<&OneOfTypes> for OneOfTypes {
-    fn from(value: &OneOfTypes) -> Self {
+impl From<&Self> for OneOfTypes {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -902,8 +902,8 @@ impl From<ReferenceDef> for String {
         value.0
     }
 }
-impl From<&ReferenceDef> for ReferenceDef {
-    fn from(value: &ReferenceDef) -> Self {
+impl From<&Self> for ReferenceDef {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -961,8 +961,8 @@ pub enum References {
     Variant0(Vec<String>),
     Variant1(std::collections::HashMap<String, ReferencesVariant1Value>),
 }
-impl From<&References> for References {
-    fn from(value: &References) -> Self {
+impl From<&Self> for References {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -999,8 +999,8 @@ pub enum ReferencesVariant1Value {
     StringVersion(StringVersion),
     ReferenceDef(ReferenceDef),
 }
-impl From<&ReferencesVariant1Value> for ReferencesVariant1Value {
-    fn from(value: &ReferencesVariant1Value) -> Self {
+impl From<&Self> for ReferencesVariant1Value {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1088,8 +1088,8 @@ pub enum ShouldBeExclusive {
     Variant0 { id: String },
     Variant1 { reference: String },
 }
-impl From<&ShouldBeExclusive> for ShouldBeExclusive {
-    fn from(value: &ShouldBeExclusive) -> Self {
+impl From<&Self> for ShouldBeExclusive {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1116,8 +1116,8 @@ impl From<StringVersion> for String {
         value.0
     }
 }
-impl From<&StringVersion> for StringVersion {
-    fn from(value: &StringVersion) -> Self {
+impl From<&Self> for StringVersion {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

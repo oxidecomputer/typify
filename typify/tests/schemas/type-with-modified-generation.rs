@@ -63,8 +63,8 @@ pub struct TestType {
     pub patched_type: TypeThatHasMoreDerives,
     pub replaced_type: String,
 }
-impl From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
+impl From<&Self> for TestType {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94,8 +94,8 @@ impl From<TypeThatHasMoreDerives> for std::collections::HashMap<String, String> 
         value.0
     }
 }
-impl From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
-    fn from(value: &TypeThatHasMoreDerives) -> Self {
+impl From<&Self> for TypeThatHasMoreDerives {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

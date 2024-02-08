@@ -51,8 +51,8 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&TestEnum> for TestEnum {
-    fn from(value: &TestEnum) -> Self {
+impl From<&Self> for TestEnum {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

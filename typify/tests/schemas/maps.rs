@@ -51,8 +51,8 @@ impl From<DeadSimple> for serde_json::Map<String, serde_json::Value> {
         value.0
     }
 }
-impl From<&DeadSimple> for DeadSimple {
-    fn from(value: &DeadSimple) -> Self {
+impl From<&Self> for DeadSimple {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85,8 +85,8 @@ impl From<Eh> for String {
         value.0
     }
 }
-impl From<&Eh> for Eh {
-    fn from(value: &Eh) -> Self {
+impl From<&Self> for Eh {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -136,8 +136,8 @@ impl From<MapWithDateKeys> for std::collections::HashMap<chrono::naive::NaiveDat
         value.0
     }
 }
-impl From<&MapWithDateKeys> for MapWithDateKeys {
-    fn from(value: &MapWithDateKeys) -> Self {
+impl From<&Self> for MapWithDateKeys {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -180,8 +180,8 @@ impl From<MapWithDateTimeKeys>
         value.0
     }
 }
-impl From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
-    fn from(value: &MapWithDateTimeKeys) -> Self {
+impl From<&Self> for MapWithDateTimeKeys {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -223,8 +223,8 @@ impl From<MapWithKeys> for std::collections::HashMap<Eh, Value> {
         value.0
     }
 }
-impl From<&MapWithKeys> for MapWithKeys {
-    fn from(value: &MapWithKeys) -> Self {
+impl From<&Self> for MapWithKeys {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -256,8 +256,8 @@ impl From<Value> for String {
         value.0
     }
 }
-impl From<&Value> for Value {
-    fn from(value: &Value) -> Self {
+impl From<&Self> for Value {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

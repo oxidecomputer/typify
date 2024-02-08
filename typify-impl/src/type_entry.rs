@@ -957,8 +957,8 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
-            impl From<&#type_name> for #type_name {
-                fn from(value: &#type_name) -> Self {
+            impl From<&Self> for #type_name {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }
@@ -1078,8 +1078,8 @@ impl TypeEntry {
                     )*
                 }
 
-                impl From<&#type_name> for #type_name {
-                    fn from(value: &#type_name) -> Self {
+                impl From<&Self> for #type_name {
+                    fn from(value: &Self) -> Self {
                         value.clone()
                     }
                 }
@@ -1512,8 +1512,8 @@ impl TypeEntry {
                 }
             }
 
-            impl From<&#type_name> for #type_name {
-                fn from(value: &#type_name) -> Self {
+            impl From<&Self> for #type_name {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }

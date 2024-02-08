@@ -54,8 +54,8 @@ impl From<Fruit> for serde_json::Map<String, serde_json::Value> {
         value.0
     }
 }
-impl From<&Fruit> for Fruit {
-    fn from(value: &Fruit) -> Self {
+impl From<&Self> for Fruit {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97,8 +97,8 @@ pub enum FruitOrVeg {
     Veg(Veggie),
     Fruit(Fruit),
 }
-impl From<&FruitOrVeg> for FruitOrVeg {
-    fn from(value: &FruitOrVeg) -> Self {
+impl From<&Self> for FruitOrVeg {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -145,8 +145,8 @@ pub struct Veggie {
     #[serde(rename = "veggieName")]
     pub veggie_name: String,
 }
-impl From<&Veggie> for Veggie {
-    fn from(value: &Veggie) -> Self {
+impl From<&Self> for Veggie {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -184,8 +184,8 @@ pub struct Veggies {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub vegetables: Vec<Veggie>,
 }
-impl From<&Veggies> for Veggies {
-    fn from(value: &Veggies) -> Self {
+impl From<&Self> for Veggies {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

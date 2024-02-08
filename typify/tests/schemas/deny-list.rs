@@ -66,8 +66,8 @@ pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-impl From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
+impl From<&Self> for TestType {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -100,8 +100,8 @@ impl From<TestTypeWhereNot> for String {
         value.0
     }
 }
-impl From<&TestTypeWhereNot> for TestTypeWhereNot {
-    fn from(value: &TestTypeWhereNot) -> Self {
+impl From<&Self> for TestTypeWhereNot {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -152,8 +152,8 @@ impl From<TestTypeWhyNot> for String {
         value.0
     }
 }
-impl From<&TestTypeWhyNot> for TestTypeWhyNot {
-    fn from(value: &TestTypeWhyNot) -> Self {
+impl From<&Self> for TestTypeWhyNot {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

@@ -51,8 +51,8 @@ impl From<ArraySansItems> for Vec<serde_json::Value> {
         value.0
     }
 }
-impl From<&ArraySansItems> for ArraySansItems {
-    fn from(value: &ArraySansItems) -> Self {
+impl From<&Self> for ArraySansItems {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97,8 +97,8 @@ impl From<LessSimpleTwoTuple> for (String, String) {
         value.0
     }
 }
-impl From<&LessSimpleTwoTuple> for LessSimpleTwoTuple {
-    fn from(value: &LessSimpleTwoTuple) -> Self {
+impl From<&Self> for LessSimpleTwoTuple {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -135,8 +135,8 @@ impl From<SimpleTwoArray> for [String; 2usize] {
         value.0
     }
 }
-impl From<&SimpleTwoArray> for SimpleTwoArray {
-    fn from(value: &SimpleTwoArray) -> Self {
+impl From<&Self> for SimpleTwoArray {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -178,8 +178,8 @@ impl From<SimpleTwoTuple> for (String, String) {
         value.0
     }
 }
-impl From<&SimpleTwoTuple> for SimpleTwoTuple {
-    fn from(value: &SimpleTwoTuple) -> Self {
+impl From<&Self> for SimpleTwoTuple {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -221,8 +221,8 @@ impl From<UnsimpleTwoTuple> for (String, String) {
         value.0
     }
 }
-impl From<&UnsimpleTwoTuple> for UnsimpleTwoTuple {
-    fn from(value: &UnsimpleTwoTuple) -> Self {
+impl From<&Self> for UnsimpleTwoTuple {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -260,8 +260,8 @@ impl From<YoloTwoArray> for [serde_json::Value; 2usize] {
         value.0
     }
 }
-impl From<&YoloTwoArray> for YoloTwoArray {
-    fn from(value: &YoloTwoArray) -> Self {
+impl From<&Self> for YoloTwoArray {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

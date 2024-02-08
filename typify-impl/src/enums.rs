@@ -1473,8 +1473,8 @@ mod tests {
                 Err(String),
             }
 
-            impl From<&ResultX> for ResultX {
-                fn from(value: &ResultX) -> Self {
+            impl From<&Self> for ResultX {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }
@@ -1525,8 +1525,8 @@ mod tests {
                 Err(String),
             }
 
-            impl From<&ResultX> for ResultX {
-                fn from(value: &ResultX) -> Self {
+            impl From<&Self> for ResultX {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }
