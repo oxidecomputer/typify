@@ -14,7 +14,7 @@ proc-macro2 = "1.0.78"
 quote = "1.0.35"
 regress = "0.8.0"
 schemars = "0.8.16"
-serde_json = "1.0.113"
+serde_json = "1.0.114"
 syn = { version = "2.0.48", features = ["full"] }
 thiserror = "1.0.57"
 unicode-ident = "1.0.12"
