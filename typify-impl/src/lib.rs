@@ -35,6 +35,7 @@ mod type_entry;
 mod util;
 mod validate;
 mod value;
+mod x_rust;
 
 #[allow(missing_docs)]
 #[derive(Error, Debug)]
