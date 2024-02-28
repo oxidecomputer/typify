@@ -13,6 +13,10 @@
 
 == Unreleased changes (release date TBD)
 
+* Introduce a proper Error type for various conversions (#475)
+* Add docs to generated mods (#476)
+* Various enum improvements
+
 https://github.com/oxidecomputer/typify/compare/v0.0.15\...HEAD[Full list of commits]
 
 == 0.0.15 (released 2023-12-15)
