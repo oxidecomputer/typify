@@ -686,6 +686,7 @@ fn merge_so_number(
 ) -> Result<Option<Box<NumberValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
         (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
@@ -698,6 +699,7 @@ fn merge_so_string(
 ) -> Result<Option<Box<StringValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
         (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
