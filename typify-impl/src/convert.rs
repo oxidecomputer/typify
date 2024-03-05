@@ -494,11 +494,11 @@ impl TypeSpace {
 
                 debug!(
                     "merged schema {}",
-                    serde_json::to_string_pretty(&merged_schema).unwrap(),
+                    serde_json::to_string_pretty(&merged_schema?).unwrap(),
                 );
 
                 let (type_entry, _) =
-                    self.convert_schema_object(type_name, original_schema, &merged_schema)?;
+                    self.convert_schema_object(type_name, original_schema, &merged_schema?)?;
                 Ok((type_entry, &None))
             }
 
