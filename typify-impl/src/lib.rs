@@ -68,6 +68,10 @@ pub enum Error {
     EmptyIntersectionOfInstanceTypes,
     #[error("Cannot merge formats {0} and {1}")]
     FormatMerge(String, String),
+    #[error("Cannot merge arrays with different contains")]
+    ArrayMergeDifferentContains(Schema, Schema),
+    #[error("Array has greater min than max")]
+    ArrayMinGreaterThanMax,
 }
 
 impl Error {

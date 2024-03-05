@@ -722,13 +722,13 @@ fn merge_so_array(
                     Some(Box::new(aa_contains.clone()))
                 }
 
-                (Some(_), Some(_)) => return Err(()),
+                (Some(aa_contains), Some(bb_contains)) => return Err(Error::ArrayMergeDifferentContains(aa_contains.clone(), bb_contains.clone())),
             };
 
             // If min > max the schema is unsatisfiable.
             if let (Some(min), Some(max)) = (min_items, max_items) {
                 if min > max {
-                    return Err(());
+                    return Err(Error::ArrayMinGreaterThanMax);
                 }
             }
 
