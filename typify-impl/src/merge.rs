@@ -668,7 +668,7 @@ fn merge_so_format(a: Option<&String>, b: Option<&String>) -> Result<Option<Stri
         // Fine if they're both the same
         (Some(aa), Some(bb)) if aa == bb => Ok(Some(aa.into())),
         // ... they're not the same...
-        (Some(_), Some(_)) => Err(()),
+        (Some(aa), Some(bb)) => Err(Error::FormatMerge(aa.to_string(), bb.to_string())),
     }
 }
 
