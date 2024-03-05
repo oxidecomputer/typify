@@ -52,6 +52,20 @@ pub enum Error {
     },
     #[error("No type entry for ID {0:?}")]
     NoTypeEntryForId(TypeId),
+    #[error("No value in merged enum values")]
+    NoValueInMergedEnumValues,
+    #[error("Empty merged anyOf subschema")]
+    EmptyMergedAnyOfSubschema,
+    #[error("Empty merged oneOf subschema")]
+    EmptyMergedOneOfSubschema,
+    #[error("Subtracting everything from a schema leaves nothing")]
+    SchemaSubtractEverything,
+    #[error("Property both required and not required")]
+    ConflictingRequire,
+    #[error("Cannot merge two single instance types with non-identical types")]
+    NonMatchingSingleInstanceTypes,
+    #[error("Cannot merge instance types with no intersection")]
+    EmptyIntersectionOfInstanceTypes,
 }
 
 impl Error {

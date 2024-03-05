@@ -252,7 +252,7 @@ fn merge_so_enum_values(
                 .collect::<Vec<_>>();
 
             if values.is_empty() {
-                Err(())
+                Err(Error::NoValueInMergedEnumValues)
             } else {
                 Ok(Some(values))
             }
@@ -308,7 +308,7 @@ pub(crate) fn merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => return Err(Error::EmptyMergedAnyOfSubschema),
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -327,7 +327,7 @@ pub(crate) fn merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => return Err(Error::EmptyMergedOneOfSubschema),
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -422,7 +422,7 @@ fn try_merge_schema_not(
     );
     match not_schema {
         // Subtracting everything leaves nothing...
-        Schema::Bool(true) => Err(()),
+        Schema::Bool(true) => Err(Error::SchemaSubtractEverything),
         // ... whereas subtracting nothing leaves everything.
         Schema::Bool(false) => Ok(schema_object),
 
@@ -479,7 +479,7 @@ fn try_merge_schema_not(
                         // A property can't be both required and not required
                         // therefore this schema is unsatisfiable.
                         if required.contains(not_required) {
-                            return Err(());
+                            return Err(Error::ConflictingRequire);
                         }
                         // We don't care if a property we're saying is not
                         // required was not present in the properties map.
@@ -608,7 +608,7 @@ fn merge_so_instance_type(
             if aa == bb {
                 Ok(Some(SingleOrVec::Single(aa.clone())))
             } else {
-                Err(())
+                Err(Error::NonMatchingSingleInstanceTypes)
             }
         }
 
@@ -619,7 +619,7 @@ fn merge_so_instance_type(
             if types.contains(it) {
                 Ok(Some(SingleOrVec::Single(it.clone())))
             } else {
-                Err(())
+                Err(Error::EmptyIntersectionOfInstanceTypes)
             }
         }
 
@@ -636,7 +636,7 @@ fn merge_so_instance_type(
 
             match types.len() {
                 // No intersection
-                0 => Err(()),
+                0 => Err(Error::EmptyIntersectionOfInstanceTypes),
                 1 => Ok(Some(types.into_iter().next().unwrap().into())),
                 _ => Ok(Some(types.into())),
             }
