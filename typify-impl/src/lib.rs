@@ -78,6 +78,8 @@ pub enum Error {
     RequiredPropertyNotPresent(String),
     #[error("Minimum properties {0} > max properties {1}")]
     MinPropertiesGreaterThanMaxProperties(u32, u32),
+    #[error("Cannot merge with trivial false schema")]
+    MergeWithFalseSchema,
 }
 
 impl Error {

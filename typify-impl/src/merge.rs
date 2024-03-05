@@ -1076,7 +1076,7 @@ fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result
         // Anything is fine.
         Some(Schema::Bool(true)) | None => Ok(prop_schema.clone()),
         // Nothing is fine.
-        Some(Schema::Bool(false)) => Err(()),
+        Some(Schema::Bool(false)) => Err(Error::MergeWithFalseSchema),
 
         // Some things might be fine.
         Some(additional_schema) => Ok(SchemaObject {
