@@ -494,7 +494,7 @@ impl TypeSpace {
 
                 debug!(
                     "merged schema {}",
-                    serde_json::to_string_pretty(&merged_schema?).unwrap(),
+                    serde_json::to_string_pretty(&merged_schema.clone()?).unwrap(),
                 );
 
                 let (type_entry, _) =

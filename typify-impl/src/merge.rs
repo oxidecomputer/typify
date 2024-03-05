@@ -1234,7 +1234,7 @@ mod tests {
     use schemars::schema::InstanceType;
     use serde_json::json;
 
-    use crate::{merge::merge_so_instance_type, RefKey};
+    use crate::{merge::merge_so_instance_type, Error, RefKey};
 
     use super::try_merge_schema;
 
@@ -1429,7 +1429,7 @@ mod tests {
                 Some(&vec![InstanceType::Integer, InstanceType::Number].into()),
                 Some(&InstanceType::Null.into())
             ),
-            Err(()),
+            Err(Error::EmptyMergedOneOfSubschema), // TODO: replace with correct
         );
         assert_eq!(
             merge_so_instance_type(
@@ -1480,7 +1480,7 @@ mod tests {
                     .into()
                 ),
             ),
-            Err(()),
+            Err(Error::EmptyMergedOneOfSubschema), // TODO: replace with correct
         );
     }
 

@@ -37,7 +37,7 @@ mod validate;
 mod value;
 
 #[allow(missing_docs)]
-#[derive(Error, Debug, PartialEq)]
+#[derive(Error, Debug, PartialEq, Clone)]
 pub enum Error {
     #[error("unexpected value type")]
     BadValue(String, serde_json::Value),
@@ -523,7 +523,7 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).ok_or_else(|| Error::NoTypeEntryForId(type_id))?.clone();
+            let mut type_entry = self.id_to_entry.get(&type_id).ok_or_else(|| Error::NoTypeEntryForId(type_id.clone()))?.clone();
             type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
