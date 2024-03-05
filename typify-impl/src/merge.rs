@@ -1429,7 +1429,7 @@ mod tests {
                 Some(&vec![InstanceType::Integer, InstanceType::Number].into()),
                 Some(&InstanceType::Null.into())
             ),
-            Err(Error::EmptyMergedOneOfSubschema), // TODO: replace with correct
+            Err(Error::EmptyIntersectionOfInstanceTypes),
         );
         assert_eq!(
             merge_so_instance_type(
@@ -1480,7 +1480,7 @@ mod tests {
                     .into()
                 ),
             ),
-            Err(Error::EmptyMergedOneOfSubschema), // TODO: replace with correct
+            Err(Error::EmptyIntersectionOfInstanceTypes),
         );
     }
 
