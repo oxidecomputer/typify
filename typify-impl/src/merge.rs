@@ -74,7 +74,11 @@ fn merge_additional_properties(
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
-fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, Error> {
+fn try_merge_schema(
+    a: &Schema,
+    b: &Schema,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, Error> {
     match (a, b) {
         (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
@@ -722,7 +726,12 @@ fn merge_so_array(
                     Some(Box::new(aa_contains.clone()))
                 }
 
-                (Some(aa_contains), Some(bb_contains)) => return Err(Error::ArrayMergeDifferentContains(aa_contains.clone(), bb_contains.clone())),
+                (Some(aa_contains), Some(bb_contains)) => {
+                    return Err(Error::ArrayMergeDifferentContains(
+                        aa_contains.clone(),
+                        bb_contains.clone(),
+                    ))
+                }
             };
 
             // If min > max the schema is unsatisfiable.
