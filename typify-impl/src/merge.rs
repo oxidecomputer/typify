@@ -910,7 +910,7 @@ fn merge_items_array<'a>(
             Err(_) => {
                 let len = items.len() as u32;
                 if len < min_items.unwrap_or(1) {
-                    return Err(());
+                    return Err(Error::ArrayLenLessThanMinItems(len));
                 }
                 return Ok((items, false));
             }

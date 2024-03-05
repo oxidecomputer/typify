@@ -72,6 +72,8 @@ pub enum Error {
     ArrayMergeDifferentContains(Schema, Schema),
     #[error("Array has greater min than max")]
     ArrayMinGreaterThanMax,
+    #[error("Array length less than the required {0} items")]
+    ArrayLenLessThanMinItems(u32),
 }
 
 impl Error {
