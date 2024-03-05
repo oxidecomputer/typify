@@ -27,7 +27,7 @@ impl TypeSpace {
         info!(
             "convert_schema {:?} {}",
             type_name,
-            serde_json::to_string_pretty(schema).unwrap()
+            serde_json::to_string_pretty(schema).expect("Serialize schema")
         );
         match schema {
             Schema::Object(obj) => {
