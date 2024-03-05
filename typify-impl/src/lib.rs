@@ -12,6 +12,7 @@ use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, RootSchema, Schema};
+use serde::Serialize;
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -37,7 +38,7 @@ mod validate;
 mod value;
 
 #[allow(missing_docs)]
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum Error {
     #[error("unexpected value type")]
     BadValue(String, serde_json::Value),
