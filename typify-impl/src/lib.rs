@@ -74,6 +74,10 @@ pub enum Error {
     ArrayMinGreaterThanMax,
     #[error("Array length less than the required {0} items")]
     ArrayLenLessThanMinItems(u32),
+    #[error("Required property {0} not present")]
+    RequiredPropertyNotPresent(String),
+    #[error("Minimum properties {0} > max properties {1}")]
+    MinPropertiesGreaterThanMaxProperties(u32, u32),
 }
 
 impl Error {

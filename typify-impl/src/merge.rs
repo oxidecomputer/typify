@@ -983,7 +983,7 @@ fn merge_so_object(
                     match resolved_schema {
                         // If a required field is incompatible with the
                         // other schema, this object is unsatisfiable.
-                        Err(()) if aa.required.contains(name) => Some(Err(())),
+                        Err(err) if aa.required.contains(name) => Some(Err(err)),
 
                         // For incompatible, non-required fields we need to
                         // exclude the property from any values. If
@@ -998,7 +998,7 @@ fn merge_so_object(
                         // If we ever make use of `propertyNames`, it's
                         // conceivable that we might check it or modify it in
                         // this case, but that may be overly complex.
-                        Err(()) => {
+                        Err(_) => {
                             if let Some(Schema::Bool(false)) = additional_properties {
                                 None
                             } else {
@@ -1021,8 +1021,8 @@ fn merge_so_object(
             // be present. This is imprecise, but allows us to make progress
             // without a most significant conversion to a new representation.
             for req_prop in &required {
-                if !properties.contains_key(req_prop) {
-                    return Err(());
+                if !properties.contains_key::<String>(req_prop) {
+                    return Err(Error::RequiredPropertyNotPresent(req_prop.clone()));
                 }
             }
 
@@ -1031,7 +1031,7 @@ fn merge_so_object(
 
             if let (Some(min), Some(max)) = (min_properties, max_properties) {
                 if min > max {
-                    return Err(());
+                    return Err(Error::MinPropertiesGreaterThanMaxProperties(min, max));
                 }
             }
 
