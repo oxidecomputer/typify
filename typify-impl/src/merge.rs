@@ -1532,7 +1532,7 @@ mod tests {
         assert!(
             ab.is_err(),
             "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
+            serde_json::to_string_pretty(&ab.unwrap()).unwrap(),
         );
 
         let a = json!({
@@ -1563,7 +1563,7 @@ mod tests {
         assert!(
             ab.is_err(),
             "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
+            serde_json::to_string_pretty(&ab.unwrap()).unwrap(),
         );
     }
 
