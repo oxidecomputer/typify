@@ -543,7 +543,7 @@ impl TypeSpace {
                 info!(
                     "type alias {:?} {}\n{:?}",
                     type_name,
-                    serde_json::to_string_pretty(&schema).unwrap(),
+                    serde_json::to_string_pretty(&schema).expect("Serialize schema"),
                     metadata
                 );
                 let subtype_id = self.assign_type(type_entry);
@@ -556,7 +556,7 @@ impl TypeSpace {
                 )
             }
         };
-        let entry_name = type_entry.name().unwrap().clone();
+        let entry_name = type_entry.name().expect("Get name for type entry").clone();
         self.name_to_id.insert(entry_name, type_id.clone());
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
