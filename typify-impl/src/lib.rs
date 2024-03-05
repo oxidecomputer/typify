@@ -12,7 +12,6 @@ use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, RootSchema, Schema};
-use serde::Serialize;
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -51,6 +50,8 @@ pub enum Error {
         type_name: Option<String>,
         reason: String,
     },
+    #[error("No type entry for ID {0:?}")]
+    NoTypeEntryForId(TypeId),
 }
 
 impl Error {
@@ -452,7 +453,7 @@ impl TypeSpace {
             info!(
                 "converting type: {:?} with schema {}",
                 ref_name,
-                serde_json::to_string(&schema).unwrap()
+                serde_json::to_string(&schema).expect("Serialize schema")
             );
 
             // Check for manually replaced types. Proceed with type conversion
@@ -494,7 +495,7 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            let mut type_entry = self.id_to_entry.get(&type_id).ok_or_else(|| Error::NoTypeEntryForId(type_id))?.clone();
             type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
