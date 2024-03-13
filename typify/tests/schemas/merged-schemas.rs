@@ -173,7 +173,7 @@ pub enum JsonSuccessBaseResult {
 }
 impl From<&JsonSuccessBaseResult> for JsonSuccessBaseResult {
     fn from(value: &JsonSuccessBaseResult) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for JsonSuccessBaseResult {
@@ -230,7 +230,7 @@ pub enum JsonSuccessResult {
 }
 impl From<&JsonSuccessResult> for JsonSuccessResult {
     fn from(value: &JsonSuccessResult) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for JsonSuccessResult {
@@ -540,7 +540,7 @@ impl From<&TrimFat> for TrimFat {
 pub enum Unsatisfiable1 {}
 impl From<&Unsatisfiable1> for Unsatisfiable1 {
     fn from(value: &Unsatisfiable1) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "Unsatisfiable2"]
@@ -660,7 +660,7 @@ impl From<&Unsatisfiable3A> for Unsatisfiable3A {
 pub enum Unsatisfiable3Action {}
 impl From<&Unsatisfiable3Action> for Unsatisfiable3Action {
     fn from(value: &Unsatisfiable3Action) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "Unsatisfiable3B"]
@@ -683,7 +683,7 @@ pub enum Unsatisfiable3B {
 }
 impl From<&Unsatisfiable3B> for Unsatisfiable3B {
     fn from(value: &Unsatisfiable3B) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for Unsatisfiable3B {
@@ -740,7 +740,7 @@ pub enum Unsatisfiable3C {
 }
 impl From<&Unsatisfiable3C> for Unsatisfiable3C {
     fn from(value: &Unsatisfiable3C) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for Unsatisfiable3C {

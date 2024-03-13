@@ -50,7 +50,7 @@ pub enum AlternativeEnum {
 }
 impl From<&AlternativeEnum> for AlternativeEnum {
     fn from(value: &AlternativeEnum) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AlternativeEnum {
@@ -134,7 +134,7 @@ pub enum CommentedVariants {
 }
 impl From<&CommentedVariants> for CommentedVariants {
     fn from(value: &CommentedVariants) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CommentedVariants {
@@ -237,7 +237,7 @@ pub enum DiskAttachmentState {
 }
 impl From<&DiskAttachmentState> for DiskAttachmentState {
     fn from(value: &DiskAttachmentState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiskAttachmentState {
@@ -701,7 +701,7 @@ impl From<std::collections::HashMap<String, i64>> for JankNames {
 pub enum Never {}
 impl From<&Never> for Never {
     fn from(value: &Never) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "NeverEver"]
@@ -717,7 +717,7 @@ impl From<&Never> for Never {
 pub enum NeverEver {}
 impl From<&NeverEver> for NeverEver {
     fn from(value: &NeverEver) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "NullStringEnumWithUnknownFormat"]
@@ -789,7 +789,7 @@ pub enum NullStringEnumWithUnknownFormatInner {
 }
 impl From<&NullStringEnumWithUnknownFormatInner> for NullStringEnumWithUnknownFormatInner {
     fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for NullStringEnumWithUnknownFormatInner {

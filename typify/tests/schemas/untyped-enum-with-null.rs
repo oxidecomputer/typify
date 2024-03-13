@@ -86,7 +86,7 @@ pub enum TestTypeValue {
 }
 impl From<&TestTypeValue> for TestTypeValue {
     fn from(value: &TestTypeValue) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TestTypeValue {

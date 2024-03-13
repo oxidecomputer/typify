@@ -872,7 +872,7 @@ impl From<&AggregateTransformOpsVariant0ItemVariant0>
     for AggregateTransformOpsVariant0ItemVariant0
 {
     fn from(value: &AggregateTransformOpsVariant0ItemVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AggregateTransformOpsVariant0ItemVariant0 {
@@ -974,7 +974,7 @@ pub enum AggregateTransformType {
 }
 impl From<&AggregateTransformType> for AggregateTransformType {
     fn from(value: &AggregateTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AggregateTransformType {
@@ -1375,7 +1375,7 @@ pub enum AlignValueVariant0ItemVariant1Value {
 }
 impl From<&AlignValueVariant0ItemVariant1Value> for AlignValueVariant0ItemVariant1Value {
     fn from(value: &AlignValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AlignValueVariant0ItemVariant1Value {
@@ -1635,7 +1635,7 @@ pub enum AlignValueVariant1Variant1Value {
 }
 impl From<&AlignValueVariant1Variant1Value> for AlignValueVariant1Variant1Value {
     fn from(value: &AlignValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AlignValueVariant1Variant1Value {
@@ -2116,7 +2116,7 @@ pub enum AnchorValueVariant0ItemVariant1Value {
 }
 impl From<&AnchorValueVariant0ItemVariant1Value> for AnchorValueVariant0ItemVariant1Value {
     fn from(value: &AnchorValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AnchorValueVariant0ItemVariant1Value {
@@ -2376,7 +2376,7 @@ pub enum AnchorValueVariant1Variant1Value {
 }
 impl From<&AnchorValueVariant1Variant1Value> for AnchorValueVariant1Variant1Value {
     fn from(value: &AnchorValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AnchorValueVariant1Variant1Value {
@@ -3822,7 +3822,7 @@ pub enum AutosizeVariant0 {
 }
 impl From<&AutosizeVariant0> for AutosizeVariant0 {
     fn from(value: &AutosizeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AutosizeVariant0 {
@@ -3889,7 +3889,7 @@ pub enum AutosizeVariant1Contains {
 }
 impl From<&AutosizeVariant1Contains> for AutosizeVariant1Contains {
     fn from(value: &AutosizeVariant1Contains) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AutosizeVariant1Contains {
@@ -3960,7 +3960,7 @@ pub enum AutosizeVariant1Type {
 }
 impl From<&AutosizeVariant1Type> for AutosizeVariant1Type {
     fn from(value: &AutosizeVariant1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AutosizeVariant1Type {
@@ -5661,7 +5661,7 @@ pub enum AxisFormatTypeVariant0 {
 }
 impl From<&AxisFormatTypeVariant0> for AxisFormatTypeVariant0 {
     fn from(value: &AxisFormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisFormatTypeVariant0 {
@@ -5994,7 +5994,7 @@ pub enum AxisLabelAlignVariant0 {
 }
 impl From<&AxisLabelAlignVariant0> for AxisLabelAlignVariant0 {
     fn from(value: &AxisLabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisLabelAlignVariant0 {
@@ -6152,7 +6152,7 @@ pub enum AxisLabelBaselineVariant0 {
 }
 impl From<&AxisLabelBaselineVariant0> for AxisLabelBaselineVariant0 {
     fn from(value: &AxisLabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisLabelBaselineVariant0 {
@@ -6871,7 +6871,7 @@ pub enum AxisOrientVariant0 {
 }
 impl From<&AxisOrientVariant0> for AxisOrientVariant0 {
     fn from(value: &AxisOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisOrientVariant0 {
@@ -7358,7 +7358,7 @@ pub enum AxisTitleAlignVariant0 {
 }
 impl From<&AxisTitleAlignVariant0> for AxisTitleAlignVariant0 {
     fn from(value: &AxisTitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisTitleAlignVariant0 {
@@ -7468,7 +7468,7 @@ pub enum AxisTitleAnchorVariant0 {
 }
 impl From<&AxisTitleAnchorVariant0> for AxisTitleAnchorVariant0 {
     fn from(value: &AxisTitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisTitleAnchorVariant0 {
@@ -7626,7 +7626,7 @@ pub enum AxisTitleBaselineVariant0 {
 }
 impl From<&AxisTitleBaselineVariant0> for AxisTitleBaselineVariant0 {
     fn from(value: &AxisTitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AxisTitleBaselineVariant0 {
@@ -9007,7 +9007,7 @@ pub enum BaselineValueVariant0ItemVariant1Value {
 }
 impl From<&BaselineValueVariant0ItemVariant1Value> for BaselineValueVariant0ItemVariant1Value {
     fn from(value: &BaselineValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BaselineValueVariant0ItemVariant1Value {
@@ -9273,7 +9273,7 @@ pub enum BaselineValueVariant1Variant1Value {
 }
 impl From<&BaselineValueVariant1Variant1Value> for BaselineValueVariant1Variant1Value {
     fn from(value: &BaselineValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BaselineValueVariant1Variant1Value {
@@ -10450,7 +10450,7 @@ pub enum BinTransformType {
 }
 impl From<&BinTransformType> for BinTransformType {
     fn from(value: &BinTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BinTransformType {
@@ -10713,7 +10713,7 @@ pub enum BindVariant0Input {
 }
 impl From<&BindVariant0Input> for BindVariant0Input {
     fn from(value: &BindVariant0Input) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BindVariant0Input {
@@ -10772,7 +10772,7 @@ pub enum BindVariant1Input {
 }
 impl From<&BindVariant1Input> for BindVariant1Input {
     fn from(value: &BindVariant1Input) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BindVariant1Input {
@@ -10830,7 +10830,7 @@ pub enum BindVariant2Input {
 }
 impl From<&BindVariant2Input> for BindVariant2Input {
     fn from(value: &BindVariant2Input) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BindVariant2Input {
@@ -11368,7 +11368,7 @@ pub enum BlendValueVariant0ItemVariant1Value {
 }
 impl From<&BlendValueVariant0ItemVariant1Value> for BlendValueVariant0ItemVariant1Value {
     fn from(value: &BlendValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BlendValueVariant0ItemVariant1Value {
@@ -11702,7 +11702,7 @@ pub enum BlendValueVariant1Variant1Value {
 }
 impl From<&BlendValueVariant1Variant1Value> for BlendValueVariant1Variant1Value {
     fn from(value: &BlendValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BlendValueVariant1Variant1Value {
@@ -12535,7 +12535,7 @@ pub enum CollectTransformType {
 }
 impl From<&CollectTransformType> for CollectTransformType {
     fn from(value: &CollectTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CollectTransformType {
@@ -13933,7 +13933,7 @@ pub enum ContourTransformType {
 }
 impl From<&ContourTransformType> for ContourTransformType {
     fn from(value: &ContourTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ContourTransformType {
@@ -14487,7 +14487,7 @@ pub enum CountpatternTransformCaseVariant0 {
 }
 impl From<&CountpatternTransformCaseVariant0> for CountpatternTransformCaseVariant0 {
     fn from(value: &CountpatternTransformCaseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CountpatternTransformCaseVariant0 {
@@ -14666,7 +14666,7 @@ pub enum CountpatternTransformType {
 }
 impl From<&CountpatternTransformType> for CountpatternTransformType {
     fn from(value: &CountpatternTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CountpatternTransformType {
@@ -14887,7 +14887,7 @@ pub enum CrossTransformType {
 }
 impl From<&CrossTransformType> for CrossTransformType {
     fn from(value: &CrossTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CrossTransformType {
@@ -15155,7 +15155,7 @@ pub enum CrossfilterTransformType {
 }
 impl From<&CrossfilterTransformType> for CrossfilterTransformType {
     fn from(value: &CrossfilterTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CrossfilterTransformType {
@@ -16369,7 +16369,7 @@ impl From<&DataVariant2FormatVariant0Subtype0ParseVariant0>
     for DataVariant2FormatVariant0Subtype0ParseVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant0 {
@@ -16524,7 +16524,7 @@ impl From<&DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0>
     for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
@@ -16818,7 +16818,7 @@ impl From<&DataVariant2FormatVariant0Subtype1ParseVariant0>
     for DataVariant2FormatVariant0Subtype1ParseVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant0 {
@@ -16973,7 +16973,7 @@ impl From<&DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0>
     for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
@@ -17117,7 +17117,7 @@ pub enum DataVariant2FormatVariant0Subtype1Type {
 }
 impl From<&DataVariant2FormatVariant0Subtype1Type> for DataVariant2FormatVariant0Subtype1Type {
     fn from(value: &DataVariant2FormatVariant0Subtype1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype1Type {
@@ -17325,7 +17325,7 @@ impl From<&DataVariant2FormatVariant0Subtype2ParseVariant0>
     for DataVariant2FormatVariant0Subtype2ParseVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant0 {
@@ -17480,7 +17480,7 @@ impl From<&DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0>
     for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
@@ -17627,7 +17627,7 @@ pub enum DataVariant2FormatVariant0Subtype2Type {
 }
 impl From<&DataVariant2FormatVariant0Subtype2Type> for DataVariant2FormatVariant0Subtype2Type {
     fn from(value: &DataVariant2FormatVariant0Subtype2Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype2Type {
@@ -17841,7 +17841,7 @@ impl From<&DataVariant2FormatVariant0Subtype3ParseVariant0>
     for DataVariant2FormatVariant0Subtype3ParseVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant0 {
@@ -17996,7 +17996,7 @@ impl From<&DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0>
     for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
@@ -18140,7 +18140,7 @@ pub enum DataVariant2FormatVariant0Subtype3Type {
 }
 impl From<&DataVariant2FormatVariant0Subtype3Type> for DataVariant2FormatVariant0Subtype3Type {
     fn from(value: &DataVariant2FormatVariant0Subtype3Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype3Type {
@@ -18283,7 +18283,7 @@ impl From<&DataVariant2FormatVariant0Subtype4Variant0Type>
     for DataVariant2FormatVariant0Subtype4Variant0Type
 {
     fn from(value: &DataVariant2FormatVariant0Subtype4Variant0Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype4Variant0Type {
@@ -18345,7 +18345,7 @@ impl From<&DataVariant2FormatVariant0Subtype4Variant1Filter>
     for DataVariant2FormatVariant0Subtype4Variant1Filter
 {
     fn from(value: &DataVariant2FormatVariant0Subtype4Variant1Filter) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype4Variant1Filter {
@@ -18405,7 +18405,7 @@ impl From<&DataVariant2FormatVariant0Subtype4Variant1Type>
     for DataVariant2FormatVariant0Subtype4Variant1Type
 {
     fn from(value: &DataVariant2FormatVariant0Subtype4Variant1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant2FormatVariant0Subtype4Variant1Type {
@@ -18889,7 +18889,7 @@ impl From<&DataVariant3FormatVariant0Subtype0ParseVariant0>
     for DataVariant3FormatVariant0Subtype0ParseVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant0 {
@@ -19044,7 +19044,7 @@ impl From<&DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0>
     for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
@@ -19338,7 +19338,7 @@ impl From<&DataVariant3FormatVariant0Subtype1ParseVariant0>
     for DataVariant3FormatVariant0Subtype1ParseVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant0 {
@@ -19493,7 +19493,7 @@ impl From<&DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0>
     for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
@@ -19637,7 +19637,7 @@ pub enum DataVariant3FormatVariant0Subtype1Type {
 }
 impl From<&DataVariant3FormatVariant0Subtype1Type> for DataVariant3FormatVariant0Subtype1Type {
     fn from(value: &DataVariant3FormatVariant0Subtype1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype1Type {
@@ -19845,7 +19845,7 @@ impl From<&DataVariant3FormatVariant0Subtype2ParseVariant0>
     for DataVariant3FormatVariant0Subtype2ParseVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant0 {
@@ -20000,7 +20000,7 @@ impl From<&DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0>
     for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
@@ -20147,7 +20147,7 @@ pub enum DataVariant3FormatVariant0Subtype2Type {
 }
 impl From<&DataVariant3FormatVariant0Subtype2Type> for DataVariant3FormatVariant0Subtype2Type {
     fn from(value: &DataVariant3FormatVariant0Subtype2Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype2Type {
@@ -20361,7 +20361,7 @@ impl From<&DataVariant3FormatVariant0Subtype3ParseVariant0>
     for DataVariant3FormatVariant0Subtype3ParseVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant0 {
@@ -20516,7 +20516,7 @@ impl From<&DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0>
     for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
 {
     fn from(value: &DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
@@ -20660,7 +20660,7 @@ pub enum DataVariant3FormatVariant0Subtype3Type {
 }
 impl From<&DataVariant3FormatVariant0Subtype3Type> for DataVariant3FormatVariant0Subtype3Type {
     fn from(value: &DataVariant3FormatVariant0Subtype3Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype3Type {
@@ -20803,7 +20803,7 @@ impl From<&DataVariant3FormatVariant0Subtype4Variant0Type>
     for DataVariant3FormatVariant0Subtype4Variant0Type
 {
     fn from(value: &DataVariant3FormatVariant0Subtype4Variant0Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype4Variant0Type {
@@ -20865,7 +20865,7 @@ impl From<&DataVariant3FormatVariant0Subtype4Variant1Filter>
     for DataVariant3FormatVariant0Subtype4Variant1Filter
 {
     fn from(value: &DataVariant3FormatVariant0Subtype4Variant1Filter) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype4Variant1Filter {
@@ -20925,7 +20925,7 @@ impl From<&DataVariant3FormatVariant0Subtype4Variant1Type>
     for DataVariant3FormatVariant0Subtype4Variant1Type
 {
     fn from(value: &DataVariant3FormatVariant0Subtype4Variant1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DataVariant3FormatVariant0Subtype4Variant1Type {
@@ -22325,7 +22325,7 @@ pub enum DensityTransformType {
 }
 impl From<&DensityTransformType> for DensityTransformType {
     fn from(value: &DensityTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DensityTransformType {
@@ -22720,7 +22720,7 @@ pub enum DirectionValueVariant0ItemVariant1Value {
 }
 impl From<&DirectionValueVariant0ItemVariant1Value> for DirectionValueVariant0ItemVariant1Value {
     fn from(value: &DirectionValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DirectionValueVariant0ItemVariant1Value {
@@ -22974,7 +22974,7 @@ pub enum DirectionValueVariant1Variant1Value {
 }
 impl From<&DirectionValueVariant1Variant1Value> for DirectionValueVariant1Variant1Value {
     fn from(value: &DirectionValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DirectionValueVariant1Variant1Value {
@@ -23482,7 +23482,7 @@ pub enum DotbinTransformType {
 }
 impl From<&DotbinTransformType> for DotbinTransformType {
     fn from(value: &DotbinTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DotbinTransformType {
@@ -24361,7 +24361,7 @@ pub enum ExtentTransformType {
 }
 impl From<&ExtentTransformType> for ExtentTransformType {
     fn from(value: &ExtentTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ExtentTransformType {
@@ -24855,7 +24855,7 @@ pub enum FilterTransformType {
 }
 impl From<&FilterTransformType> for FilterTransformType {
     fn from(value: &FilterTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for FilterTransformType {
@@ -25219,7 +25219,7 @@ pub enum FlattenTransformType {
 }
 impl From<&FlattenTransformType> for FlattenTransformType {
     fn from(value: &FlattenTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for FlattenTransformType {
@@ -25558,7 +25558,7 @@ pub enum FoldTransformType {
 }
 impl From<&FoldTransformType> for FoldTransformType {
     fn from(value: &FoldTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for FoldTransformType {
@@ -27937,7 +27937,7 @@ pub enum ForceTransformType {
 }
 impl From<&ForceTransformType> for ForceTransformType {
     fn from(value: &ForceTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ForceTransformType {
@@ -28175,7 +28175,7 @@ pub enum FormulaTransformType {
 }
 impl From<&FormulaTransformType> for FormulaTransformType {
     fn from(value: &FormulaTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for FormulaTransformType {
@@ -28484,7 +28484,7 @@ pub enum GeojsonTransformType {
 }
 impl From<&GeojsonTransformType> for GeojsonTransformType {
     fn from(value: &GeojsonTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GeojsonTransformType {
@@ -28774,7 +28774,7 @@ pub enum GeopathTransformType {
 }
 impl From<&GeopathTransformType> for GeopathTransformType {
     fn from(value: &GeopathTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GeopathTransformType {
@@ -29122,7 +29122,7 @@ pub enum GeopointTransformType {
 }
 impl From<&GeopointTransformType> for GeopointTransformType {
     fn from(value: &GeopointTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GeopointTransformType {
@@ -29421,7 +29421,7 @@ pub enum GeoshapeTransformType {
 }
 impl From<&GeoshapeTransformType> for GeoshapeTransformType {
     fn from(value: &GeoshapeTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GeoshapeTransformType {
@@ -30204,7 +30204,7 @@ pub enum GraticuleTransformType {
 }
 impl From<&GraticuleTransformType> for GraticuleTransformType {
     fn from(value: &GraticuleTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GraticuleTransformType {
@@ -30663,7 +30663,7 @@ pub enum HeatmapTransformResolveVariant0 {
 }
 impl From<&HeatmapTransformResolveVariant0> for HeatmapTransformResolveVariant0 {
     fn from(value: &HeatmapTransformResolveVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for HeatmapTransformResolveVariant0 {
@@ -30721,7 +30721,7 @@ pub enum HeatmapTransformType {
 }
 impl From<&HeatmapTransformType> for HeatmapTransformType {
     fn from(value: &HeatmapTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for HeatmapTransformType {
@@ -30860,7 +30860,7 @@ pub enum IdentifierTransformType {
 }
 impl From<&IdentifierTransformType> for IdentifierTransformType {
     fn from(value: &IdentifierTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IdentifierTransformType {
@@ -31336,7 +31336,7 @@ pub enum ImputeTransformMethodVariant0 {
 }
 impl From<&ImputeTransformMethodVariant0> for ImputeTransformMethodVariant0 {
     fn from(value: &ImputeTransformMethodVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ImputeTransformMethodVariant0 {
@@ -31400,7 +31400,7 @@ pub enum ImputeTransformType {
 }
 impl From<&ImputeTransformType> for ImputeTransformType {
     fn from(value: &ImputeTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ImputeTransformType {
@@ -31874,7 +31874,7 @@ pub enum IsocontourTransformResolveVariant0 {
 }
 impl From<&IsocontourTransformResolveVariant0> for IsocontourTransformResolveVariant0 {
     fn from(value: &IsocontourTransformResolveVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IsocontourTransformResolveVariant0 {
@@ -32230,7 +32230,7 @@ pub enum IsocontourTransformType {
 }
 impl From<&IsocontourTransformType> for IsocontourTransformType {
     fn from(value: &IsocontourTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IsocontourTransformType {
@@ -33054,7 +33054,7 @@ impl From<&JoinaggregateTransformOpsVariant0ItemVariant0>
     for JoinaggregateTransformOpsVariant0ItemVariant0
 {
     fn from(value: &JoinaggregateTransformOpsVariant0ItemVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for JoinaggregateTransformOpsVariant0ItemVariant0 {
@@ -33156,7 +33156,7 @@ pub enum JoinaggregateTransformType {
 }
 impl From<&JoinaggregateTransformType> for JoinaggregateTransformType {
     fn from(value: &JoinaggregateTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for JoinaggregateTransformType {
@@ -33793,7 +33793,7 @@ pub enum Kde2dTransformType {
 }
 impl From<&Kde2dTransformType> for Kde2dTransformType {
     fn from(value: &Kde2dTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for Kde2dTransformType {
@@ -34785,7 +34785,7 @@ pub enum KdeTransformResolveVariant0 {
 }
 impl From<&KdeTransformResolveVariant0> for KdeTransformResolveVariant0 {
     fn from(value: &KdeTransformResolveVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for KdeTransformResolveVariant0 {
@@ -34881,7 +34881,7 @@ pub enum KdeTransformType {
 }
 impl From<&KdeTransformType> for KdeTransformType {
     fn from(value: &KdeTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for KdeTransformType {
@@ -34990,7 +34990,7 @@ pub enum LabelOverlapVariant1 {
 }
 impl From<&LabelOverlapVariant1> for LabelOverlapVariant1 {
     fn from(value: &LabelOverlapVariant1) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LabelOverlapVariant1 {
@@ -35924,7 +35924,7 @@ pub enum LabelTransformType {
 }
 impl From<&LabelTransformType> for LabelTransformType {
     fn from(value: &LabelTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LabelTransformType {
@@ -36438,7 +36438,7 @@ pub enum LayoutVariant0AlignVariant0Variant0 {
 }
 impl From<&LayoutVariant0AlignVariant0Variant0> for LayoutVariant0AlignVariant0Variant0 {
     fn from(value: &LayoutVariant0AlignVariant0Variant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0AlignVariant0Variant0 {
@@ -36548,7 +36548,7 @@ impl From<&LayoutVariant0AlignVariant1ColumnVariant0>
     for LayoutVariant0AlignVariant1ColumnVariant0
 {
     fn from(value: &LayoutVariant0AlignVariant1ColumnVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0AlignVariant1ColumnVariant0 {
@@ -36656,7 +36656,7 @@ pub enum LayoutVariant0AlignVariant1RowVariant0 {
 }
 impl From<&LayoutVariant0AlignVariant1RowVariant0> for LayoutVariant0AlignVariant1RowVariant0 {
     fn from(value: &LayoutVariant0AlignVariant1RowVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0AlignVariant1RowVariant0 {
@@ -36760,7 +36760,7 @@ pub enum LayoutVariant0BoundsVariant0 {
 }
 impl From<&LayoutVariant0BoundsVariant0> for LayoutVariant0BoundsVariant0 {
     fn from(value: &LayoutVariant0BoundsVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0BoundsVariant0 {
@@ -37243,7 +37243,7 @@ impl From<&LayoutVariant0TitleAnchorVariant0Variant0>
     for LayoutVariant0TitleAnchorVariant0Variant0
 {
     fn from(value: &LayoutVariant0TitleAnchorVariant0Variant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0TitleAnchorVariant0Variant0 {
@@ -37349,7 +37349,7 @@ impl From<&LayoutVariant0TitleAnchorVariant1ColumnVariant0>
     for LayoutVariant0TitleAnchorVariant1ColumnVariant0
 {
     fn from(value: &LayoutVariant0TitleAnchorVariant1ColumnVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0TitleAnchorVariant1ColumnVariant0 {
@@ -37453,7 +37453,7 @@ impl From<&LayoutVariant0TitleAnchorVariant1RowVariant0>
     for LayoutVariant0TitleAnchorVariant1RowVariant0
 {
     fn from(value: &LayoutVariant0TitleAnchorVariant1RowVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LayoutVariant0TitleAnchorVariant1RowVariant0 {
@@ -40592,7 +40592,7 @@ pub enum LegendVariant0Direction {
 }
 impl From<&LegendVariant0Direction> for LegendVariant0Direction {
     fn from(value: &LegendVariant0Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0Direction {
@@ -40878,7 +40878,7 @@ pub enum LegendVariant0FormatTypeVariant0 {
 }
 impl From<&LegendVariant0FormatTypeVariant0> for LegendVariant0FormatTypeVariant0 {
     fn from(value: &LegendVariant0FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0FormatTypeVariant0 {
@@ -41099,7 +41099,7 @@ pub enum LegendVariant0GridAlignVariant0 {
 }
 impl From<&LegendVariant0GridAlignVariant0> for LegendVariant0GridAlignVariant0 {
     fn from(value: &LegendVariant0GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0GridAlignVariant0 {
@@ -41207,7 +41207,7 @@ pub enum LegendVariant0LabelAlignVariant0 {
 }
 impl From<&LegendVariant0LabelAlignVariant0> for LegendVariant0LabelAlignVariant0 {
     fn from(value: &LegendVariant0LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0LabelAlignVariant0 {
@@ -41327,7 +41327,7 @@ pub enum LegendVariant0LabelBaselineVariant0 {
 }
 impl From<&LegendVariant0LabelBaselineVariant0> for LegendVariant0LabelBaselineVariant0 {
     fn from(value: &LegendVariant0LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0LabelBaselineVariant0 {
@@ -41898,7 +41898,7 @@ pub enum LegendVariant0OrientVariant0 {
 }
 impl From<&LegendVariant0OrientVariant0> for LegendVariant0OrientVariant0 {
     fn from(value: &LegendVariant0OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0OrientVariant0 {
@@ -42431,7 +42431,7 @@ pub enum LegendVariant0TitleAlignVariant0 {
 }
 impl From<&LegendVariant0TitleAlignVariant0> for LegendVariant0TitleAlignVariant0 {
     fn from(value: &LegendVariant0TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0TitleAlignVariant0 {
@@ -42541,7 +42541,7 @@ pub enum LegendVariant0TitleAnchorVariant0 {
 }
 impl From<&LegendVariant0TitleAnchorVariant0> for LegendVariant0TitleAnchorVariant0 {
     fn from(value: &LegendVariant0TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0TitleAnchorVariant0 {
@@ -42661,7 +42661,7 @@ pub enum LegendVariant0TitleBaselineVariant0 {
 }
 impl From<&LegendVariant0TitleBaselineVariant0> for LegendVariant0TitleBaselineVariant0 {
     fn from(value: &LegendVariant0TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0TitleBaselineVariant0 {
@@ -43096,7 +43096,7 @@ pub enum LegendVariant0TitleOrientVariant0 {
 }
 impl From<&LegendVariant0TitleOrientVariant0> for LegendVariant0TitleOrientVariant0 {
     fn from(value: &LegendVariant0TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0TitleOrientVariant0 {
@@ -43199,7 +43199,7 @@ pub enum LegendVariant0Type {
 }
 impl From<&LegendVariant0Type> for LegendVariant0Type {
     fn from(value: &LegendVariant0Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant0Type {
@@ -43298,7 +43298,7 @@ pub enum LegendVariant1Direction {
 }
 impl From<&LegendVariant1Direction> for LegendVariant1Direction {
     fn from(value: &LegendVariant1Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1Direction {
@@ -43584,7 +43584,7 @@ pub enum LegendVariant1FormatTypeVariant0 {
 }
 impl From<&LegendVariant1FormatTypeVariant0> for LegendVariant1FormatTypeVariant0 {
     fn from(value: &LegendVariant1FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1FormatTypeVariant0 {
@@ -43805,7 +43805,7 @@ pub enum LegendVariant1GridAlignVariant0 {
 }
 impl From<&LegendVariant1GridAlignVariant0> for LegendVariant1GridAlignVariant0 {
     fn from(value: &LegendVariant1GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1GridAlignVariant0 {
@@ -43913,7 +43913,7 @@ pub enum LegendVariant1LabelAlignVariant0 {
 }
 impl From<&LegendVariant1LabelAlignVariant0> for LegendVariant1LabelAlignVariant0 {
     fn from(value: &LegendVariant1LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1LabelAlignVariant0 {
@@ -44033,7 +44033,7 @@ pub enum LegendVariant1LabelBaselineVariant0 {
 }
 impl From<&LegendVariant1LabelBaselineVariant0> for LegendVariant1LabelBaselineVariant0 {
     fn from(value: &LegendVariant1LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1LabelBaselineVariant0 {
@@ -44604,7 +44604,7 @@ pub enum LegendVariant1OrientVariant0 {
 }
 impl From<&LegendVariant1OrientVariant0> for LegendVariant1OrientVariant0 {
     fn from(value: &LegendVariant1OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1OrientVariant0 {
@@ -45137,7 +45137,7 @@ pub enum LegendVariant1TitleAlignVariant0 {
 }
 impl From<&LegendVariant1TitleAlignVariant0> for LegendVariant1TitleAlignVariant0 {
     fn from(value: &LegendVariant1TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1TitleAlignVariant0 {
@@ -45247,7 +45247,7 @@ pub enum LegendVariant1TitleAnchorVariant0 {
 }
 impl From<&LegendVariant1TitleAnchorVariant0> for LegendVariant1TitleAnchorVariant0 {
     fn from(value: &LegendVariant1TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1TitleAnchorVariant0 {
@@ -45367,7 +45367,7 @@ pub enum LegendVariant1TitleBaselineVariant0 {
 }
 impl From<&LegendVariant1TitleBaselineVariant0> for LegendVariant1TitleBaselineVariant0 {
     fn from(value: &LegendVariant1TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1TitleBaselineVariant0 {
@@ -45802,7 +45802,7 @@ pub enum LegendVariant1TitleOrientVariant0 {
 }
 impl From<&LegendVariant1TitleOrientVariant0> for LegendVariant1TitleOrientVariant0 {
     fn from(value: &LegendVariant1TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1TitleOrientVariant0 {
@@ -45905,7 +45905,7 @@ pub enum LegendVariant1Type {
 }
 impl From<&LegendVariant1Type> for LegendVariant1Type {
     fn from(value: &LegendVariant1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant1Type {
@@ -46004,7 +46004,7 @@ pub enum LegendVariant2Direction {
 }
 impl From<&LegendVariant2Direction> for LegendVariant2Direction {
     fn from(value: &LegendVariant2Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2Direction {
@@ -46290,7 +46290,7 @@ pub enum LegendVariant2FormatTypeVariant0 {
 }
 impl From<&LegendVariant2FormatTypeVariant0> for LegendVariant2FormatTypeVariant0 {
     fn from(value: &LegendVariant2FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2FormatTypeVariant0 {
@@ -46511,7 +46511,7 @@ pub enum LegendVariant2GridAlignVariant0 {
 }
 impl From<&LegendVariant2GridAlignVariant0> for LegendVariant2GridAlignVariant0 {
     fn from(value: &LegendVariant2GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2GridAlignVariant0 {
@@ -46619,7 +46619,7 @@ pub enum LegendVariant2LabelAlignVariant0 {
 }
 impl From<&LegendVariant2LabelAlignVariant0> for LegendVariant2LabelAlignVariant0 {
     fn from(value: &LegendVariant2LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2LabelAlignVariant0 {
@@ -46739,7 +46739,7 @@ pub enum LegendVariant2LabelBaselineVariant0 {
 }
 impl From<&LegendVariant2LabelBaselineVariant0> for LegendVariant2LabelBaselineVariant0 {
     fn from(value: &LegendVariant2LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2LabelBaselineVariant0 {
@@ -47310,7 +47310,7 @@ pub enum LegendVariant2OrientVariant0 {
 }
 impl From<&LegendVariant2OrientVariant0> for LegendVariant2OrientVariant0 {
     fn from(value: &LegendVariant2OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2OrientVariant0 {
@@ -47843,7 +47843,7 @@ pub enum LegendVariant2TitleAlignVariant0 {
 }
 impl From<&LegendVariant2TitleAlignVariant0> for LegendVariant2TitleAlignVariant0 {
     fn from(value: &LegendVariant2TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2TitleAlignVariant0 {
@@ -47953,7 +47953,7 @@ pub enum LegendVariant2TitleAnchorVariant0 {
 }
 impl From<&LegendVariant2TitleAnchorVariant0> for LegendVariant2TitleAnchorVariant0 {
     fn from(value: &LegendVariant2TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2TitleAnchorVariant0 {
@@ -48073,7 +48073,7 @@ pub enum LegendVariant2TitleBaselineVariant0 {
 }
 impl From<&LegendVariant2TitleBaselineVariant0> for LegendVariant2TitleBaselineVariant0 {
     fn from(value: &LegendVariant2TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2TitleBaselineVariant0 {
@@ -48508,7 +48508,7 @@ pub enum LegendVariant2TitleOrientVariant0 {
 }
 impl From<&LegendVariant2TitleOrientVariant0> for LegendVariant2TitleOrientVariant0 {
     fn from(value: &LegendVariant2TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2TitleOrientVariant0 {
@@ -48611,7 +48611,7 @@ pub enum LegendVariant2Type {
 }
 impl From<&LegendVariant2Type> for LegendVariant2Type {
     fn from(value: &LegendVariant2Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant2Type {
@@ -48710,7 +48710,7 @@ pub enum LegendVariant3Direction {
 }
 impl From<&LegendVariant3Direction> for LegendVariant3Direction {
     fn from(value: &LegendVariant3Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3Direction {
@@ -48996,7 +48996,7 @@ pub enum LegendVariant3FormatTypeVariant0 {
 }
 impl From<&LegendVariant3FormatTypeVariant0> for LegendVariant3FormatTypeVariant0 {
     fn from(value: &LegendVariant3FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3FormatTypeVariant0 {
@@ -49217,7 +49217,7 @@ pub enum LegendVariant3GridAlignVariant0 {
 }
 impl From<&LegendVariant3GridAlignVariant0> for LegendVariant3GridAlignVariant0 {
     fn from(value: &LegendVariant3GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3GridAlignVariant0 {
@@ -49325,7 +49325,7 @@ pub enum LegendVariant3LabelAlignVariant0 {
 }
 impl From<&LegendVariant3LabelAlignVariant0> for LegendVariant3LabelAlignVariant0 {
     fn from(value: &LegendVariant3LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3LabelAlignVariant0 {
@@ -49445,7 +49445,7 @@ pub enum LegendVariant3LabelBaselineVariant0 {
 }
 impl From<&LegendVariant3LabelBaselineVariant0> for LegendVariant3LabelBaselineVariant0 {
     fn from(value: &LegendVariant3LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3LabelBaselineVariant0 {
@@ -50016,7 +50016,7 @@ pub enum LegendVariant3OrientVariant0 {
 }
 impl From<&LegendVariant3OrientVariant0> for LegendVariant3OrientVariant0 {
     fn from(value: &LegendVariant3OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3OrientVariant0 {
@@ -50549,7 +50549,7 @@ pub enum LegendVariant3TitleAlignVariant0 {
 }
 impl From<&LegendVariant3TitleAlignVariant0> for LegendVariant3TitleAlignVariant0 {
     fn from(value: &LegendVariant3TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3TitleAlignVariant0 {
@@ -50659,7 +50659,7 @@ pub enum LegendVariant3TitleAnchorVariant0 {
 }
 impl From<&LegendVariant3TitleAnchorVariant0> for LegendVariant3TitleAnchorVariant0 {
     fn from(value: &LegendVariant3TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3TitleAnchorVariant0 {
@@ -50779,7 +50779,7 @@ pub enum LegendVariant3TitleBaselineVariant0 {
 }
 impl From<&LegendVariant3TitleBaselineVariant0> for LegendVariant3TitleBaselineVariant0 {
     fn from(value: &LegendVariant3TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3TitleBaselineVariant0 {
@@ -51214,7 +51214,7 @@ pub enum LegendVariant3TitleOrientVariant0 {
 }
 impl From<&LegendVariant3TitleOrientVariant0> for LegendVariant3TitleOrientVariant0 {
     fn from(value: &LegendVariant3TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3TitleOrientVariant0 {
@@ -51317,7 +51317,7 @@ pub enum LegendVariant3Type {
 }
 impl From<&LegendVariant3Type> for LegendVariant3Type {
     fn from(value: &LegendVariant3Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant3Type {
@@ -51416,7 +51416,7 @@ pub enum LegendVariant4Direction {
 }
 impl From<&LegendVariant4Direction> for LegendVariant4Direction {
     fn from(value: &LegendVariant4Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4Direction {
@@ -51702,7 +51702,7 @@ pub enum LegendVariant4FormatTypeVariant0 {
 }
 impl From<&LegendVariant4FormatTypeVariant0> for LegendVariant4FormatTypeVariant0 {
     fn from(value: &LegendVariant4FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4FormatTypeVariant0 {
@@ -51923,7 +51923,7 @@ pub enum LegendVariant4GridAlignVariant0 {
 }
 impl From<&LegendVariant4GridAlignVariant0> for LegendVariant4GridAlignVariant0 {
     fn from(value: &LegendVariant4GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4GridAlignVariant0 {
@@ -52031,7 +52031,7 @@ pub enum LegendVariant4LabelAlignVariant0 {
 }
 impl From<&LegendVariant4LabelAlignVariant0> for LegendVariant4LabelAlignVariant0 {
     fn from(value: &LegendVariant4LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4LabelAlignVariant0 {
@@ -52151,7 +52151,7 @@ pub enum LegendVariant4LabelBaselineVariant0 {
 }
 impl From<&LegendVariant4LabelBaselineVariant0> for LegendVariant4LabelBaselineVariant0 {
     fn from(value: &LegendVariant4LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4LabelBaselineVariant0 {
@@ -52722,7 +52722,7 @@ pub enum LegendVariant4OrientVariant0 {
 }
 impl From<&LegendVariant4OrientVariant0> for LegendVariant4OrientVariant0 {
     fn from(value: &LegendVariant4OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4OrientVariant0 {
@@ -53255,7 +53255,7 @@ pub enum LegendVariant4TitleAlignVariant0 {
 }
 impl From<&LegendVariant4TitleAlignVariant0> for LegendVariant4TitleAlignVariant0 {
     fn from(value: &LegendVariant4TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4TitleAlignVariant0 {
@@ -53365,7 +53365,7 @@ pub enum LegendVariant4TitleAnchorVariant0 {
 }
 impl From<&LegendVariant4TitleAnchorVariant0> for LegendVariant4TitleAnchorVariant0 {
     fn from(value: &LegendVariant4TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4TitleAnchorVariant0 {
@@ -53485,7 +53485,7 @@ pub enum LegendVariant4TitleBaselineVariant0 {
 }
 impl From<&LegendVariant4TitleBaselineVariant0> for LegendVariant4TitleBaselineVariant0 {
     fn from(value: &LegendVariant4TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4TitleBaselineVariant0 {
@@ -53920,7 +53920,7 @@ pub enum LegendVariant4TitleOrientVariant0 {
 }
 impl From<&LegendVariant4TitleOrientVariant0> for LegendVariant4TitleOrientVariant0 {
     fn from(value: &LegendVariant4TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4TitleOrientVariant0 {
@@ -54023,7 +54023,7 @@ pub enum LegendVariant4Type {
 }
 impl From<&LegendVariant4Type> for LegendVariant4Type {
     fn from(value: &LegendVariant4Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant4Type {
@@ -54122,7 +54122,7 @@ pub enum LegendVariant5Direction {
 }
 impl From<&LegendVariant5Direction> for LegendVariant5Direction {
     fn from(value: &LegendVariant5Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5Direction {
@@ -54408,7 +54408,7 @@ pub enum LegendVariant5FormatTypeVariant0 {
 }
 impl From<&LegendVariant5FormatTypeVariant0> for LegendVariant5FormatTypeVariant0 {
     fn from(value: &LegendVariant5FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5FormatTypeVariant0 {
@@ -54629,7 +54629,7 @@ pub enum LegendVariant5GridAlignVariant0 {
 }
 impl From<&LegendVariant5GridAlignVariant0> for LegendVariant5GridAlignVariant0 {
     fn from(value: &LegendVariant5GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5GridAlignVariant0 {
@@ -54737,7 +54737,7 @@ pub enum LegendVariant5LabelAlignVariant0 {
 }
 impl From<&LegendVariant5LabelAlignVariant0> for LegendVariant5LabelAlignVariant0 {
     fn from(value: &LegendVariant5LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5LabelAlignVariant0 {
@@ -54857,7 +54857,7 @@ pub enum LegendVariant5LabelBaselineVariant0 {
 }
 impl From<&LegendVariant5LabelBaselineVariant0> for LegendVariant5LabelBaselineVariant0 {
     fn from(value: &LegendVariant5LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5LabelBaselineVariant0 {
@@ -55428,7 +55428,7 @@ pub enum LegendVariant5OrientVariant0 {
 }
 impl From<&LegendVariant5OrientVariant0> for LegendVariant5OrientVariant0 {
     fn from(value: &LegendVariant5OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5OrientVariant0 {
@@ -55961,7 +55961,7 @@ pub enum LegendVariant5TitleAlignVariant0 {
 }
 impl From<&LegendVariant5TitleAlignVariant0> for LegendVariant5TitleAlignVariant0 {
     fn from(value: &LegendVariant5TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5TitleAlignVariant0 {
@@ -56071,7 +56071,7 @@ pub enum LegendVariant5TitleAnchorVariant0 {
 }
 impl From<&LegendVariant5TitleAnchorVariant0> for LegendVariant5TitleAnchorVariant0 {
     fn from(value: &LegendVariant5TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5TitleAnchorVariant0 {
@@ -56191,7 +56191,7 @@ pub enum LegendVariant5TitleBaselineVariant0 {
 }
 impl From<&LegendVariant5TitleBaselineVariant0> for LegendVariant5TitleBaselineVariant0 {
     fn from(value: &LegendVariant5TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5TitleBaselineVariant0 {
@@ -56626,7 +56626,7 @@ pub enum LegendVariant5TitleOrientVariant0 {
 }
 impl From<&LegendVariant5TitleOrientVariant0> for LegendVariant5TitleOrientVariant0 {
     fn from(value: &LegendVariant5TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5TitleOrientVariant0 {
@@ -56729,7 +56729,7 @@ pub enum LegendVariant5Type {
 }
 impl From<&LegendVariant5Type> for LegendVariant5Type {
     fn from(value: &LegendVariant5Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant5Type {
@@ -56828,7 +56828,7 @@ pub enum LegendVariant6Direction {
 }
 impl From<&LegendVariant6Direction> for LegendVariant6Direction {
     fn from(value: &LegendVariant6Direction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6Direction {
@@ -57114,7 +57114,7 @@ pub enum LegendVariant6FormatTypeVariant0 {
 }
 impl From<&LegendVariant6FormatTypeVariant0> for LegendVariant6FormatTypeVariant0 {
     fn from(value: &LegendVariant6FormatTypeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6FormatTypeVariant0 {
@@ -57335,7 +57335,7 @@ pub enum LegendVariant6GridAlignVariant0 {
 }
 impl From<&LegendVariant6GridAlignVariant0> for LegendVariant6GridAlignVariant0 {
     fn from(value: &LegendVariant6GridAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6GridAlignVariant0 {
@@ -57443,7 +57443,7 @@ pub enum LegendVariant6LabelAlignVariant0 {
 }
 impl From<&LegendVariant6LabelAlignVariant0> for LegendVariant6LabelAlignVariant0 {
     fn from(value: &LegendVariant6LabelAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6LabelAlignVariant0 {
@@ -57563,7 +57563,7 @@ pub enum LegendVariant6LabelBaselineVariant0 {
 }
 impl From<&LegendVariant6LabelBaselineVariant0> for LegendVariant6LabelBaselineVariant0 {
     fn from(value: &LegendVariant6LabelBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6LabelBaselineVariant0 {
@@ -58134,7 +58134,7 @@ pub enum LegendVariant6OrientVariant0 {
 }
 impl From<&LegendVariant6OrientVariant0> for LegendVariant6OrientVariant0 {
     fn from(value: &LegendVariant6OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6OrientVariant0 {
@@ -58667,7 +58667,7 @@ pub enum LegendVariant6TitleAlignVariant0 {
 }
 impl From<&LegendVariant6TitleAlignVariant0> for LegendVariant6TitleAlignVariant0 {
     fn from(value: &LegendVariant6TitleAlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6TitleAlignVariant0 {
@@ -58777,7 +58777,7 @@ pub enum LegendVariant6TitleAnchorVariant0 {
 }
 impl From<&LegendVariant6TitleAnchorVariant0> for LegendVariant6TitleAnchorVariant0 {
     fn from(value: &LegendVariant6TitleAnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6TitleAnchorVariant0 {
@@ -58897,7 +58897,7 @@ pub enum LegendVariant6TitleBaselineVariant0 {
 }
 impl From<&LegendVariant6TitleBaselineVariant0> for LegendVariant6TitleBaselineVariant0 {
     fn from(value: &LegendVariant6TitleBaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6TitleBaselineVariant0 {
@@ -59332,7 +59332,7 @@ pub enum LegendVariant6TitleOrientVariant0 {
 }
 impl From<&LegendVariant6TitleOrientVariant0> for LegendVariant6TitleOrientVariant0 {
     fn from(value: &LegendVariant6TitleOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6TitleOrientVariant0 {
@@ -59435,7 +59435,7 @@ pub enum LegendVariant6Type {
 }
 impl From<&LegendVariant6Type> for LegendVariant6Type {
     fn from(value: &LegendVariant6Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LegendVariant6Type {
@@ -59554,7 +59554,7 @@ pub enum LinearGradientGradient {
 }
 impl From<&LinearGradientGradient> for LinearGradientGradient {
     fn from(value: &LinearGradientGradient) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LinearGradientGradient {
@@ -59858,7 +59858,7 @@ pub enum LinkpathTransformOrientVariant0 {
 }
 impl From<&LinkpathTransformOrientVariant0> for LinkpathTransformOrientVariant0 {
     fn from(value: &LinkpathTransformOrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LinkpathTransformOrientVariant0 {
@@ -59980,7 +59980,7 @@ pub enum LinkpathTransformShapeVariant0 {
 }
 impl From<&LinkpathTransformShapeVariant0> for LinkpathTransformShapeVariant0 {
     fn from(value: &LinkpathTransformShapeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LinkpathTransformShapeVariant0 {
@@ -60264,7 +60264,7 @@ pub enum LinkpathTransformType {
 }
 impl From<&LinkpathTransformType> for LinkpathTransformType {
     fn from(value: &LinkpathTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LinkpathTransformType {
@@ -60720,7 +60720,7 @@ pub enum LoessTransformType {
 }
 impl From<&LoessTransformType> for LoessTransformType {
     fn from(value: &LoessTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LoessTransformType {
@@ -61228,7 +61228,7 @@ pub enum LookupTransformType {
 }
 impl From<&LookupTransformType> for LookupTransformType {
     fn from(value: &LookupTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LookupTransformType {
@@ -61646,7 +61646,7 @@ pub enum MarkGroupType {
 }
 impl From<&MarkGroupType> for MarkGroupType {
     fn from(value: &MarkGroupType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarkGroupType {
@@ -62076,7 +62076,7 @@ pub enum NestTransformType {
 }
 impl From<&NestTransformType> for NestTransformType {
     fn from(value: &NestTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for NestTransformType {
@@ -63993,7 +63993,7 @@ impl From<bool> for NumberValueVariant0ItemVariant0Variant3Range {
 pub enum NumberValueVariant0ItemVariant1 {}
 impl From<&NumberValueVariant0ItemVariant1> for NumberValueVariant0ItemVariant1 {
     fn from(value: &NumberValueVariant0ItemVariant1) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "NumberValueVariant0ItemVariant2Exponent"]
@@ -65439,7 +65439,7 @@ impl From<bool> for NumberValueVariant1Variant0Variant3Range {
 pub enum NumberValueVariant1Variant1 {}
 impl From<&NumberValueVariant1Variant1> for NumberValueVariant1Variant1 {
     fn from(value: &NumberValueVariant1Variant1) -> Self {
-        value.clone()
+        *value
     }
 }
 #[doc = "NumberValueVariant1Variant2Exponent"]
@@ -66594,7 +66594,7 @@ pub enum OrientValueVariant0ItemVariant1Value {
 }
 impl From<&OrientValueVariant0ItemVariant1Value> for OrientValueVariant0ItemVariant1Value {
     fn from(value: &OrientValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrientValueVariant0ItemVariant1Value {
@@ -66860,7 +66860,7 @@ pub enum OrientValueVariant1Variant1Value {
 }
 impl From<&OrientValueVariant1Variant1Value> for OrientValueVariant1Variant1Value {
     fn from(value: &OrientValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrientValueVariant1Variant1Value {
@@ -67458,7 +67458,7 @@ pub enum PackTransformType {
 }
 impl From<&PackTransformType> for PackTransformType {
     fn from(value: &PackTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PackTransformType {
@@ -68065,7 +68065,7 @@ pub enum PartitionTransformType {
 }
 impl From<&PartitionTransformType> for PartitionTransformType {
     fn from(value: &PartitionTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PartitionTransformType {
@@ -68504,7 +68504,7 @@ pub enum PieTransformType {
 }
 impl From<&PieTransformType> for PieTransformType {
     fn from(value: &PieTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PieTransformType {
@@ -69085,7 +69085,7 @@ pub enum PivotTransformOpVariant0 {
 }
 impl From<&PivotTransformOpVariant0> for PivotTransformOpVariant0 {
     fn from(value: &PivotTransformOpVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PivotTransformOpVariant0 {
@@ -69187,7 +69187,7 @@ pub enum PivotTransformType {
 }
 impl From<&PivotTransformType> for PivotTransformType {
     fn from(value: &PivotTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PivotTransformType {
@@ -69563,7 +69563,7 @@ pub enum ProjectTransformType {
 }
 impl From<&ProjectTransformType> for ProjectTransformType {
     fn from(value: &ProjectTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectTransformType {
@@ -70790,7 +70790,7 @@ pub enum QuantileTransformType {
 }
 impl From<&QuantileTransformType> for QuantileTransformType {
     fn from(value: &QuantileTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for QuantileTransformType {
@@ -70917,7 +70917,7 @@ pub enum RadialGradientGradient {
 }
 impl From<&RadialGradientGradient> for RadialGradientGradient {
     fn from(value: &RadialGradientGradient) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RadialGradientGradient {
@@ -71537,7 +71537,7 @@ pub enum RegressionTransformType {
 }
 impl From<&RegressionTransformType> for RegressionTransformType {
     fn from(value: &RegressionTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RegressionTransformType {
@@ -71777,7 +71777,7 @@ pub enum ResolvefilterTransformType {
 }
 impl From<&ResolvefilterTransformType> for ResolvefilterTransformType {
     fn from(value: &ResolvefilterTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ResolvefilterTransformType {
@@ -71952,7 +71952,7 @@ pub enum SampleTransformType {
 }
 impl From<&SampleTransformType> for SampleTransformType {
     fn from(value: &SampleTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SampleTransformType {
@@ -75266,7 +75266,7 @@ pub enum ScaleDataVariant1SortVariant1Op {
 }
 impl From<&ScaleDataVariant1SortVariant1Op> for ScaleDataVariant1SortVariant1Op {
     fn from(value: &ScaleDataVariant1SortVariant1Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleDataVariant1SortVariant1Op {
@@ -75328,7 +75328,7 @@ pub enum ScaleDataVariant1SortVariant2Op {
 }
 impl From<&ScaleDataVariant1SortVariant2Op> for ScaleDataVariant1SortVariant2Op {
     fn from(value: &ScaleDataVariant1SortVariant2Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleDataVariant1SortVariant2Op {
@@ -75617,7 +75617,7 @@ pub enum ScaleDataVariant2SortVariant1Op {
 }
 impl From<&ScaleDataVariant2SortVariant1Op> for ScaleDataVariant2SortVariant1Op {
     fn from(value: &ScaleDataVariant2SortVariant1Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleDataVariant2SortVariant1Op {
@@ -75679,7 +75679,7 @@ pub enum ScaleDataVariant2SortVariant2Op {
 }
 impl From<&ScaleDataVariant2SortVariant2Op> for ScaleDataVariant2SortVariant2Op {
     fn from(value: &ScaleDataVariant2SortVariant2Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleDataVariant2SortVariant2Op {
@@ -76007,7 +76007,7 @@ pub enum ScaleVariant0Type {
 }
 impl From<&ScaleVariant0Type> for ScaleVariant0Type {
     fn from(value: &ScaleVariant0Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant0Type {
@@ -76450,7 +76450,7 @@ pub enum ScaleVariant10RangeVariant0 {
 }
 impl From<&ScaleVariant10RangeVariant0> for ScaleVariant10RangeVariant0 {
     fn from(value: &ScaleVariant10RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant10RangeVariant0 {
@@ -76719,7 +76719,7 @@ pub enum ScaleVariant10Type {
 }
 impl From<&ScaleVariant10Type> for ScaleVariant10Type {
     fn from(value: &ScaleVariant10Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant10Type {
@@ -77162,7 +77162,7 @@ pub enum ScaleVariant11RangeVariant0 {
 }
 impl From<&ScaleVariant11RangeVariant0> for ScaleVariant11RangeVariant0 {
     fn from(value: &ScaleVariant11RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant11RangeVariant0 {
@@ -77431,7 +77431,7 @@ pub enum ScaleVariant11Type {
 }
 impl From<&ScaleVariant11Type> for ScaleVariant11Type {
     fn from(value: &ScaleVariant11Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant11Type {
@@ -78035,7 +78035,7 @@ pub enum ScaleVariant1RangeVariant0 {
 }
 impl From<&ScaleVariant1RangeVariant0> for ScaleVariant1RangeVariant0 {
     fn from(value: &ScaleVariant1RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1RangeVariant0 {
@@ -78669,7 +78669,7 @@ impl From<&ScaleVariant1RangeVariant3Variant1SortVariant1Op>
     for ScaleVariant1RangeVariant3Variant1SortVariant1Op
 {
     fn from(value: &ScaleVariant1RangeVariant3Variant1SortVariant1Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1RangeVariant3Variant1SortVariant1Op {
@@ -78733,7 +78733,7 @@ impl From<&ScaleVariant1RangeVariant3Variant1SortVariant2Op>
     for ScaleVariant1RangeVariant3Variant1SortVariant2Op
 {
     fn from(value: &ScaleVariant1RangeVariant3Variant1SortVariant2Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
@@ -79030,7 +79030,7 @@ impl From<&ScaleVariant1RangeVariant3Variant2SortVariant1Op>
     for ScaleVariant1RangeVariant3Variant2SortVariant1Op
 {
     fn from(value: &ScaleVariant1RangeVariant3Variant2SortVariant1Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1RangeVariant3Variant2SortVariant1Op {
@@ -79094,7 +79094,7 @@ impl From<&ScaleVariant1RangeVariant3Variant2SortVariant2Op>
     for ScaleVariant1RangeVariant3Variant2SortVariant2Op
 {
     fn from(value: &ScaleVariant1RangeVariant3Variant2SortVariant2Op) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1RangeVariant3Variant2SortVariant2Op {
@@ -79154,7 +79154,7 @@ pub enum ScaleVariant1Type {
 }
 impl From<&ScaleVariant1Type> for ScaleVariant1Type {
     fn from(value: &ScaleVariant1Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant1Type {
@@ -79506,7 +79506,7 @@ pub enum ScaleVariant2RangeVariant0 {
 }
 impl From<&ScaleVariant2RangeVariant0> for ScaleVariant2RangeVariant0 {
     fn from(value: &ScaleVariant2RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant2RangeVariant0 {
@@ -79643,7 +79643,7 @@ pub enum ScaleVariant2Type {
 }
 impl From<&ScaleVariant2Type> for ScaleVariant2Type {
     fn from(value: &ScaleVariant2Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant2Type {
@@ -79995,7 +79995,7 @@ pub enum ScaleVariant3RangeVariant0 {
 }
 impl From<&ScaleVariant3RangeVariant0> for ScaleVariant3RangeVariant0 {
     fn from(value: &ScaleVariant3RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant3RangeVariant0 {
@@ -80132,7 +80132,7 @@ pub enum ScaleVariant3Type {
 }
 impl From<&ScaleVariant3Type> for ScaleVariant3Type {
     fn from(value: &ScaleVariant3Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant3Type {
@@ -80575,7 +80575,7 @@ pub enum ScaleVariant4RangeVariant0 {
 }
 impl From<&ScaleVariant4RangeVariant0> for ScaleVariant4RangeVariant0 {
     fn from(value: &ScaleVariant4RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant4RangeVariant0 {
@@ -80845,7 +80845,7 @@ pub enum ScaleVariant4Type {
 }
 impl From<&ScaleVariant4Type> for ScaleVariant4Type {
     fn from(value: &ScaleVariant4Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant4Type {
@@ -81243,7 +81243,7 @@ pub enum ScaleVariant5RangeVariant0 {
 }
 impl From<&ScaleVariant5RangeVariant0> for ScaleVariant5RangeVariant0 {
     fn from(value: &ScaleVariant5RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant5RangeVariant0 {
@@ -81510,7 +81510,7 @@ pub enum ScaleVariant5Type {
 }
 impl From<&ScaleVariant5Type> for ScaleVariant5Type {
     fn from(value: &ScaleVariant5Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant5Type {
@@ -81906,7 +81906,7 @@ pub enum ScaleVariant6RangeVariant0 {
 }
 impl From<&ScaleVariant6RangeVariant0> for ScaleVariant6RangeVariant0 {
     fn from(value: &ScaleVariant6RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant6RangeVariant0 {
@@ -82173,7 +82173,7 @@ pub enum ScaleVariant6Type {
 }
 impl From<&ScaleVariant6Type> for ScaleVariant6Type {
     fn from(value: &ScaleVariant6Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant6Type {
@@ -82514,7 +82514,7 @@ pub enum ScaleVariant7NiceVariant1 {
 }
 impl From<&ScaleVariant7NiceVariant1> for ScaleVariant7NiceVariant1 {
     fn from(value: &ScaleVariant7NiceVariant1) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant7NiceVariant1 {
@@ -82654,7 +82654,7 @@ impl From<&ScaleVariant7NiceVariant2IntervalVariant0>
     for ScaleVariant7NiceVariant2IntervalVariant0
 {
     fn from(value: &ScaleVariant7NiceVariant2IntervalVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant7NiceVariant2IntervalVariant0 {
@@ -82883,7 +82883,7 @@ pub enum ScaleVariant7RangeVariant0 {
 }
 impl From<&ScaleVariant7RangeVariant0> for ScaleVariant7RangeVariant0 {
     fn from(value: &ScaleVariant7RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant7RangeVariant0 {
@@ -83153,7 +83153,7 @@ pub enum ScaleVariant7Type {
 }
 impl From<&ScaleVariant7Type> for ScaleVariant7Type {
     fn from(value: &ScaleVariant7Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant7Type {
@@ -83598,7 +83598,7 @@ pub enum ScaleVariant8RangeVariant0 {
 }
 impl From<&ScaleVariant8RangeVariant0> for ScaleVariant8RangeVariant0 {
     fn from(value: &ScaleVariant8RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant8RangeVariant0 {
@@ -83871,7 +83871,7 @@ pub enum ScaleVariant8Type {
 }
 impl From<&ScaleVariant8Type> for ScaleVariant8Type {
     fn from(value: &ScaleVariant8Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant8Type {
@@ -84318,7 +84318,7 @@ pub enum ScaleVariant9RangeVariant0 {
 }
 impl From<&ScaleVariant9RangeVariant0> for ScaleVariant9RangeVariant0 {
     fn from(value: &ScaleVariant9RangeVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant9RangeVariant0 {
@@ -84585,7 +84585,7 @@ pub enum ScaleVariant9Type {
 }
 impl From<&ScaleVariant9Type> for ScaleVariant9Type {
     fn from(value: &ScaleVariant9Type) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ScaleVariant9Type {
@@ -85072,7 +85072,7 @@ pub enum SequenceTransformType {
 }
 impl From<&SequenceTransformType> for SequenceTransformType {
     fn from(value: &SequenceTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SequenceTransformType {
@@ -85351,7 +85351,7 @@ pub enum SignalVariant0Push {
 }
 impl From<&SignalVariant0Push> for SignalVariant0Push {
     fn from(value: &SignalVariant0Push) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SignalVariant0Push {
@@ -85451,7 +85451,7 @@ pub enum SortOrderVariant0 {
 }
 impl From<&SortOrderVariant0> for SortOrderVariant0 {
     fn from(value: &SortOrderVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SortOrderVariant0 {
@@ -85930,7 +85930,7 @@ pub enum StackTransformOffsetVariant0 {
 }
 impl From<&StackTransformOffsetVariant0> for StackTransformOffsetVariant0 {
     fn from(value: &StackTransformOffsetVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StackTransformOffsetVariant0 {
@@ -85990,7 +85990,7 @@ pub enum StackTransformType {
 }
 impl From<&StackTransformType> for StackTransformType {
     fn from(value: &StackTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StackTransformType {
@@ -86208,7 +86208,7 @@ pub enum StratifyTransformType {
 }
 impl From<&StratifyTransformType> for StratifyTransformType {
     fn from(value: &StratifyTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StratifyTransformType {
@@ -87546,7 +87546,7 @@ pub enum StrokeCapValueVariant0ItemVariant1Value {
 }
 impl From<&StrokeCapValueVariant0ItemVariant1Value> for StrokeCapValueVariant0ItemVariant1Value {
     fn from(value: &StrokeCapValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StrokeCapValueVariant0ItemVariant1Value {
@@ -87806,7 +87806,7 @@ pub enum StrokeCapValueVariant1Variant1Value {
 }
 impl From<&StrokeCapValueVariant1Variant1Value> for StrokeCapValueVariant1Variant1Value {
     fn from(value: &StrokeCapValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StrokeCapValueVariant1Variant1Value {
@@ -88287,7 +88287,7 @@ pub enum StrokeJoinValueVariant0ItemVariant1Value {
 }
 impl From<&StrokeJoinValueVariant0ItemVariant1Value> for StrokeJoinValueVariant0ItemVariant1Value {
     fn from(value: &StrokeJoinValueVariant0ItemVariant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StrokeJoinValueVariant0ItemVariant1Value {
@@ -88547,7 +88547,7 @@ pub enum StrokeJoinValueVariant1Variant1Value {
 }
 impl From<&StrokeJoinValueVariant1Variant1Value> for StrokeJoinValueVariant1Variant1Value {
     fn from(value: &StrokeJoinValueVariant1Variant1Value) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StrokeJoinValueVariant1Variant1Value {
@@ -89552,7 +89552,7 @@ pub enum TickBandVariant0 {
 }
 impl From<&TickBandVariant0> for TickBandVariant0 {
     fn from(value: &TickBandVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TickBandVariant0 {
@@ -89723,7 +89723,7 @@ pub enum TickCountVariant1 {
 }
 impl From<&TickCountVariant1> for TickCountVariant1 {
     fn from(value: &TickCountVariant1) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TickCountVariant1 {
@@ -89861,7 +89861,7 @@ pub enum TickCountVariant2IntervalVariant0 {
 }
 impl From<&TickCountVariant2IntervalVariant0> for TickCountVariant2IntervalVariant0 {
     fn from(value: &TickCountVariant2IntervalVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TickCountVariant2IntervalVariant0 {
@@ -90532,7 +90532,7 @@ pub enum TimeunitTransformTimezoneVariant0 {
 }
 impl From<&TimeunitTransformTimezoneVariant0> for TimeunitTransformTimezoneVariant0 {
     fn from(value: &TimeunitTransformTimezoneVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TimeunitTransformTimezoneVariant0 {
@@ -90590,7 +90590,7 @@ pub enum TimeunitTransformType {
 }
 impl From<&TimeunitTransformType> for TimeunitTransformType {
     fn from(value: &TimeunitTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TimeunitTransformType {
@@ -90788,7 +90788,7 @@ impl From<&TimeunitTransformUnitsVariant0ItemVariant0>
     for TimeunitTransformUnitsVariant0ItemVariant0
 {
     fn from(value: &TimeunitTransformUnitsVariant0ItemVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TimeunitTransformUnitsVariant0ItemVariant0 {
@@ -91394,7 +91394,7 @@ pub enum TitleVariant1AlignVariant0 {
 }
 impl From<&TitleVariant1AlignVariant0> for TitleVariant1AlignVariant0 {
     fn from(value: &TitleVariant1AlignVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TitleVariant1AlignVariant0 {
@@ -91504,7 +91504,7 @@ pub enum TitleVariant1AnchorVariant0 {
 }
 impl From<&TitleVariant1AnchorVariant0> for TitleVariant1AnchorVariant0 {
     fn from(value: &TitleVariant1AnchorVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TitleVariant1AnchorVariant0 {
@@ -91662,7 +91662,7 @@ pub enum TitleVariant1BaselineVariant0 {
 }
 impl From<&TitleVariant1BaselineVariant0> for TitleVariant1BaselineVariant0 {
     fn from(value: &TitleVariant1BaselineVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TitleVariant1BaselineVariant0 {
@@ -92159,7 +92159,7 @@ pub enum TitleVariant1FrameVariant0 {
 }
 impl From<&TitleVariant1FrameVariant0> for TitleVariant1FrameVariant0 {
     fn from(value: &TitleVariant1FrameVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TitleVariant1FrameVariant0 {
@@ -92389,7 +92389,7 @@ pub enum TitleVariant1OrientVariant0 {
 }
 impl From<&TitleVariant1OrientVariant0> for TitleVariant1OrientVariant0 {
     fn from(value: &TitleVariant1OrientVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TitleVariant1OrientVariant0 {
@@ -93823,7 +93823,7 @@ pub enum TreeTransformMethodVariant0 {
 }
 impl From<&TreeTransformMethodVariant0> for TreeTransformMethodVariant0 {
     fn from(value: &TreeTransformMethodVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TreeTransformMethodVariant0 {
@@ -94101,7 +94101,7 @@ pub enum TreeTransformType {
 }
 impl From<&TreeTransformType> for TreeTransformType {
     fn from(value: &TreeTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TreeTransformType {
@@ -94194,7 +94194,7 @@ pub enum TreelinksTransformType {
 }
 impl From<&TreelinksTransformType> for TreelinksTransformType {
     fn from(value: &TreelinksTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TreelinksTransformType {
@@ -94732,7 +94732,7 @@ pub enum TreemapTransformMethodVariant0 {
 }
 impl From<&TreemapTransformMethodVariant0> for TreemapTransformMethodVariant0 {
     fn from(value: &TreemapTransformMethodVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TreemapTransformMethodVariant0 {
@@ -95234,7 +95234,7 @@ pub enum TreemapTransformType {
 }
 impl From<&TreemapTransformType> for TreemapTransformType {
     fn from(value: &TreemapTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TreemapTransformType {
@@ -95605,7 +95605,7 @@ pub enum VoronoiTransformType {
 }
 impl From<&VoronoiTransformType> for VoronoiTransformType {
     fn from(value: &VoronoiTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for VoronoiTransformType {
@@ -96713,7 +96713,7 @@ pub enum WindowTransformOpsVariant0ItemVariant0 {
 }
 impl From<&WindowTransformOpsVariant0ItemVariant0> for WindowTransformOpsVariant0ItemVariant0 {
     fn from(value: &WindowTransformOpsVariant0ItemVariant0) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WindowTransformOpsVariant0ItemVariant0 {
@@ -96934,7 +96934,7 @@ pub enum WindowTransformType {
 }
 impl From<&WindowTransformType> for WindowTransformType {
     fn from(value: &WindowTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WindowTransformType {
@@ -97986,7 +97986,7 @@ pub enum WordcloudTransformType {
 }
 impl From<&WordcloudTransformType> for WordcloudTransformType {
     fn from(value: &WordcloudTransformType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WordcloudTransformType {

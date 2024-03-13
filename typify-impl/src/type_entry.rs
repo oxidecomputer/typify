@@ -706,6 +706,26 @@ impl TypeEntry {
             )
         }
 
+        // If the enum is simple it should impl Copy and therefore can
+        // dereference instead of cloning
+        let from_ref_self_impl = if derive_set.contains("Copy") {
+            Some(quote! {
+                impl From<&#type_name> for #type_name {
+                    fn from(value: &#type_name) -> Self {
+                        *value
+                    }
+                }
+            })
+        } else {
+            Some(quote! {
+                impl From<&#type_name> for #type_name {
+                    fn from(value: &#type_name) -> Self {
+                        value.clone()
+                    }
+                }
+            })
+        };
+
         // ToString and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
         let simple_enum_impl = bespoke_impls
@@ -957,12 +977,7 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
-            impl From<&#type_name> for #type_name {
-                fn from(value: &#type_name) -> Self {
-                    value.clone()
-                }
-            }
-
+            #from_ref_self_impl
             #simple_enum_impl
             #default_impl
             #untagged_newtype_from_string_impl

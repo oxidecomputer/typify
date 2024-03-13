@@ -163,7 +163,7 @@ mod types {
     }
     impl From<&StringEnum> for StringEnum {
         fn from(value: &StringEnum) -> Self {
-            value.clone()
+            *value
         }
     }
     impl ToString for StringEnum {

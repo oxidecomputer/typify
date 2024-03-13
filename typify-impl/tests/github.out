@@ -232,7 +232,7 @@ pub enum AlertInstanceState {
 }
 impl From<&AlertInstanceState> for AlertInstanceState {
     fn from(value: &AlertInstanceState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AlertInstanceState {
@@ -815,7 +815,7 @@ pub enum AppEventsItem {
 }
 impl From<&AppEventsItem> for AppEventsItem {
     fn from(value: &AppEventsItem) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppEventsItem {
@@ -1290,7 +1290,7 @@ pub enum AppPermissionsActions {
 }
 impl From<&AppPermissionsActions> for AppPermissionsActions {
     fn from(value: &AppPermissionsActions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsActions {
@@ -1352,7 +1352,7 @@ pub enum AppPermissionsAdministration {
 }
 impl From<&AppPermissionsAdministration> for AppPermissionsAdministration {
     fn from(value: &AppPermissionsAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsAdministration {
@@ -1414,7 +1414,7 @@ pub enum AppPermissionsChecks {
 }
 impl From<&AppPermissionsChecks> for AppPermissionsChecks {
     fn from(value: &AppPermissionsChecks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsChecks {
@@ -1476,7 +1476,7 @@ pub enum AppPermissionsContentReferences {
 }
 impl From<&AppPermissionsContentReferences> for AppPermissionsContentReferences {
     fn from(value: &AppPermissionsContentReferences) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsContentReferences {
@@ -1538,7 +1538,7 @@ pub enum AppPermissionsContents {
 }
 impl From<&AppPermissionsContents> for AppPermissionsContents {
     fn from(value: &AppPermissionsContents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsContents {
@@ -1600,7 +1600,7 @@ pub enum AppPermissionsDeployments {
 }
 impl From<&AppPermissionsDeployments> for AppPermissionsDeployments {
     fn from(value: &AppPermissionsDeployments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsDeployments {
@@ -1662,7 +1662,7 @@ pub enum AppPermissionsDiscussions {
 }
 impl From<&AppPermissionsDiscussions> for AppPermissionsDiscussions {
     fn from(value: &AppPermissionsDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsDiscussions {
@@ -1724,7 +1724,7 @@ pub enum AppPermissionsEmails {
 }
 impl From<&AppPermissionsEmails> for AppPermissionsEmails {
     fn from(value: &AppPermissionsEmails) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsEmails {
@@ -1786,7 +1786,7 @@ pub enum AppPermissionsEnvironments {
 }
 impl From<&AppPermissionsEnvironments> for AppPermissionsEnvironments {
     fn from(value: &AppPermissionsEnvironments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsEnvironments {
@@ -1848,7 +1848,7 @@ pub enum AppPermissionsIssues {
 }
 impl From<&AppPermissionsIssues> for AppPermissionsIssues {
     fn from(value: &AppPermissionsIssues) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsIssues {
@@ -1910,7 +1910,7 @@ pub enum AppPermissionsMembers {
 }
 impl From<&AppPermissionsMembers> for AppPermissionsMembers {
     fn from(value: &AppPermissionsMembers) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsMembers {
@@ -1972,7 +1972,7 @@ pub enum AppPermissionsMetadata {
 }
 impl From<&AppPermissionsMetadata> for AppPermissionsMetadata {
     fn from(value: &AppPermissionsMetadata) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsMetadata {
@@ -2034,7 +2034,7 @@ pub enum AppPermissionsOrganizationAdministration {
 }
 impl From<&AppPermissionsOrganizationAdministration> for AppPermissionsOrganizationAdministration {
     fn from(value: &AppPermissionsOrganizationAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationAdministration {
@@ -2096,7 +2096,7 @@ pub enum AppPermissionsOrganizationHooks {
 }
 impl From<&AppPermissionsOrganizationHooks> for AppPermissionsOrganizationHooks {
     fn from(value: &AppPermissionsOrganizationHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationHooks {
@@ -2158,7 +2158,7 @@ pub enum AppPermissionsOrganizationPackages {
 }
 impl From<&AppPermissionsOrganizationPackages> for AppPermissionsOrganizationPackages {
     fn from(value: &AppPermissionsOrganizationPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationPackages {
@@ -2220,7 +2220,7 @@ pub enum AppPermissionsOrganizationPlan {
 }
 impl From<&AppPermissionsOrganizationPlan> for AppPermissionsOrganizationPlan {
     fn from(value: &AppPermissionsOrganizationPlan) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationPlan {
@@ -2282,7 +2282,7 @@ pub enum AppPermissionsOrganizationProjects {
 }
 impl From<&AppPermissionsOrganizationProjects> for AppPermissionsOrganizationProjects {
     fn from(value: &AppPermissionsOrganizationProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationProjects {
@@ -2344,7 +2344,7 @@ pub enum AppPermissionsOrganizationSecrets {
 }
 impl From<&AppPermissionsOrganizationSecrets> for AppPermissionsOrganizationSecrets {
     fn from(value: &AppPermissionsOrganizationSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationSecrets {
@@ -2408,7 +2408,7 @@ impl From<&AppPermissionsOrganizationSelfHostedRunners>
     for AppPermissionsOrganizationSelfHostedRunners
 {
     fn from(value: &AppPermissionsOrganizationSelfHostedRunners) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationSelfHostedRunners {
@@ -2470,7 +2470,7 @@ pub enum AppPermissionsOrganizationUserBlocking {
 }
 impl From<&AppPermissionsOrganizationUserBlocking> for AppPermissionsOrganizationUserBlocking {
     fn from(value: &AppPermissionsOrganizationUserBlocking) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsOrganizationUserBlocking {
@@ -2532,7 +2532,7 @@ pub enum AppPermissionsPackages {
 }
 impl From<&AppPermissionsPackages> for AppPermissionsPackages {
     fn from(value: &AppPermissionsPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsPackages {
@@ -2594,7 +2594,7 @@ pub enum AppPermissionsPages {
 }
 impl From<&AppPermissionsPages> for AppPermissionsPages {
     fn from(value: &AppPermissionsPages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsPages {
@@ -2656,7 +2656,7 @@ pub enum AppPermissionsPullRequests {
 }
 impl From<&AppPermissionsPullRequests> for AppPermissionsPullRequests {
     fn from(value: &AppPermissionsPullRequests) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsPullRequests {
@@ -2718,7 +2718,7 @@ pub enum AppPermissionsRepositoryHooks {
 }
 impl From<&AppPermissionsRepositoryHooks> for AppPermissionsRepositoryHooks {
     fn from(value: &AppPermissionsRepositoryHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsRepositoryHooks {
@@ -2780,7 +2780,7 @@ pub enum AppPermissionsRepositoryProjects {
 }
 impl From<&AppPermissionsRepositoryProjects> for AppPermissionsRepositoryProjects {
     fn from(value: &AppPermissionsRepositoryProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsRepositoryProjects {
@@ -2842,7 +2842,7 @@ pub enum AppPermissionsSecretScanningAlerts {
 }
 impl From<&AppPermissionsSecretScanningAlerts> for AppPermissionsSecretScanningAlerts {
     fn from(value: &AppPermissionsSecretScanningAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsSecretScanningAlerts {
@@ -2904,7 +2904,7 @@ pub enum AppPermissionsSecrets {
 }
 impl From<&AppPermissionsSecrets> for AppPermissionsSecrets {
     fn from(value: &AppPermissionsSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsSecrets {
@@ -2966,7 +2966,7 @@ pub enum AppPermissionsSecurityEvents {
 }
 impl From<&AppPermissionsSecurityEvents> for AppPermissionsSecurityEvents {
     fn from(value: &AppPermissionsSecurityEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsSecurityEvents {
@@ -3028,7 +3028,7 @@ pub enum AppPermissionsSecurityScanningAlert {
 }
 impl From<&AppPermissionsSecurityScanningAlert> for AppPermissionsSecurityScanningAlert {
     fn from(value: &AppPermissionsSecurityScanningAlert) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsSecurityScanningAlert {
@@ -3090,7 +3090,7 @@ pub enum AppPermissionsSingleFile {
 }
 impl From<&AppPermissionsSingleFile> for AppPermissionsSingleFile {
     fn from(value: &AppPermissionsSingleFile) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsSingleFile {
@@ -3152,7 +3152,7 @@ pub enum AppPermissionsStatuses {
 }
 impl From<&AppPermissionsStatuses> for AppPermissionsStatuses {
     fn from(value: &AppPermissionsStatuses) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsStatuses {
@@ -3214,7 +3214,7 @@ pub enum AppPermissionsTeamDiscussions {
 }
 impl From<&AppPermissionsTeamDiscussions> for AppPermissionsTeamDiscussions {
     fn from(value: &AppPermissionsTeamDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsTeamDiscussions {
@@ -3276,7 +3276,7 @@ pub enum AppPermissionsVulnerabilityAlerts {
 }
 impl From<&AppPermissionsVulnerabilityAlerts> for AppPermissionsVulnerabilityAlerts {
     fn from(value: &AppPermissionsVulnerabilityAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsVulnerabilityAlerts {
@@ -3338,7 +3338,7 @@ pub enum AppPermissionsWorkflows {
 }
 impl From<&AppPermissionsWorkflows> for AppPermissionsWorkflows {
     fn from(value: &AppPermissionsWorkflows) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AppPermissionsWorkflows {
@@ -3421,7 +3421,7 @@ pub enum AuthorAssociation {
 }
 impl From<&AuthorAssociation> for AuthorAssociation {
     fn from(value: &AuthorAssociation) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for AuthorAssociation {
@@ -3706,7 +3706,7 @@ impl From<&BranchProtectionRuleAllowDeletionsEnforcementLevel>
     for BranchProtectionRuleAllowDeletionsEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleAllowDeletionsEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleAllowDeletionsEnforcementLevel {
@@ -3775,7 +3775,7 @@ impl From<&BranchProtectionRuleAllowForcePushesEnforcementLevel>
     for BranchProtectionRuleAllowForcePushesEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleAllowForcePushesEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleAllowForcePushesEnforcementLevel {
@@ -3896,7 +3896,7 @@ pub enum BranchProtectionRuleCreatedAction {
 }
 impl From<&BranchProtectionRuleCreatedAction> for BranchProtectionRuleCreatedAction {
     fn from(value: &BranchProtectionRuleCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleCreatedAction {
@@ -4013,7 +4013,7 @@ pub enum BranchProtectionRuleDeletedAction {
 }
 impl From<&BranchProtectionRuleDeletedAction> for BranchProtectionRuleDeletedAction {
     fn from(value: &BranchProtectionRuleDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleDeletedAction {
@@ -4166,7 +4166,7 @@ pub enum BranchProtectionRuleEditedAction {
 }
 impl From<&BranchProtectionRuleEditedAction> for BranchProtectionRuleEditedAction {
     fn from(value: &BranchProtectionRuleEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleEditedAction {
@@ -4397,7 +4397,7 @@ impl From<&BranchProtectionRuleLinearHistoryRequirementEnforcementLevel>
     for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleLinearHistoryRequirementEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
@@ -4470,7 +4470,7 @@ impl From<&BranchProtectionRuleMergeQueueEnforcementLevel>
     for BranchProtectionRuleMergeQueueEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleMergeQueueEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleMergeQueueEnforcementLevel {
@@ -4539,7 +4539,7 @@ impl From<&BranchProtectionRulePullRequestReviewsEnforcementLevel>
     for BranchProtectionRulePullRequestReviewsEnforcementLevel
 {
     fn from(value: &BranchProtectionRulePullRequestReviewsEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRulePullRequestReviewsEnforcementLevel {
@@ -4608,7 +4608,7 @@ impl From<&BranchProtectionRuleRequiredConversationResolutionLevel>
     for BranchProtectionRuleRequiredConversationResolutionLevel
 {
     fn from(value: &BranchProtectionRuleRequiredConversationResolutionLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleRequiredConversationResolutionLevel {
@@ -4677,7 +4677,7 @@ impl From<&BranchProtectionRuleRequiredDeploymentsEnforcementLevel>
     for BranchProtectionRuleRequiredDeploymentsEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleRequiredDeploymentsEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
@@ -4746,7 +4746,7 @@ impl From<&BranchProtectionRuleRequiredStatusChecksEnforcementLevel>
     for BranchProtectionRuleRequiredStatusChecksEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleRequiredStatusChecksEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
@@ -4815,7 +4815,7 @@ impl From<&BranchProtectionRuleSignatureRequirementEnforcementLevel>
     for BranchProtectionRuleSignatureRequirementEnforcementLevel
 {
     fn from(value: &BranchProtectionRuleSignatureRequirementEnforcementLevel) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for BranchProtectionRuleSignatureRequirementEnforcementLevel {
@@ -5179,7 +5179,7 @@ pub enum CheckRunCompletedAction {
 }
 impl From<&CheckRunCompletedAction> for CheckRunCompletedAction {
     fn from(value: &CheckRunCompletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCompletedAction {
@@ -5660,7 +5660,7 @@ impl From<&CheckRunCompletedCheckRunCheckSuiteConclusion>
     for CheckRunCompletedCheckRunCheckSuiteConclusion
 {
     fn from(value: &CheckRunCompletedCheckRunCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCompletedCheckRunCheckSuiteConclusion {
@@ -5737,7 +5737,7 @@ impl From<&CheckRunCompletedCheckRunCheckSuiteStatus>
     for CheckRunCompletedCheckRunCheckSuiteStatus
 {
     fn from(value: &CheckRunCompletedCheckRunCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCompletedCheckRunCheckSuiteStatus {
@@ -5820,7 +5820,7 @@ pub enum CheckRunCompletedCheckRunConclusion {
 }
 impl From<&CheckRunCompletedCheckRunConclusion> for CheckRunCompletedCheckRunConclusion {
     fn from(value: &CheckRunCompletedCheckRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCompletedCheckRunConclusion {
@@ -5951,7 +5951,7 @@ pub enum CheckRunCompletedCheckRunStatus {
 }
 impl From<&CheckRunCompletedCheckRunStatus> for CheckRunCompletedCheckRunStatus {
     fn from(value: &CheckRunCompletedCheckRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCompletedCheckRunStatus {
@@ -6346,7 +6346,7 @@ pub enum CheckRunCreatedAction {
 }
 impl From<&CheckRunCreatedAction> for CheckRunCreatedAction {
     fn from(value: &CheckRunCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCreatedAction {
@@ -6832,7 +6832,7 @@ impl From<&CheckRunCreatedCheckRunCheckSuiteConclusion>
     for CheckRunCreatedCheckRunCheckSuiteConclusion
 {
     fn from(value: &CheckRunCreatedCheckRunCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCreatedCheckRunCheckSuiteConclusion {
@@ -6907,7 +6907,7 @@ pub enum CheckRunCreatedCheckRunCheckSuiteStatus {
 }
 impl From<&CheckRunCreatedCheckRunCheckSuiteStatus> for CheckRunCreatedCheckRunCheckSuiteStatus {
     fn from(value: &CheckRunCreatedCheckRunCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCreatedCheckRunCheckSuiteStatus {
@@ -6990,7 +6990,7 @@ pub enum CheckRunCreatedCheckRunConclusion {
 }
 impl From<&CheckRunCreatedCheckRunConclusion> for CheckRunCreatedCheckRunConclusion {
     fn from(value: &CheckRunCreatedCheckRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCreatedCheckRunConclusion {
@@ -7127,7 +7127,7 @@ pub enum CheckRunCreatedCheckRunStatus {
 }
 impl From<&CheckRunCreatedCheckRunStatus> for CheckRunCreatedCheckRunStatus {
     fn from(value: &CheckRunCreatedCheckRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunCreatedCheckRunStatus {
@@ -7834,7 +7834,7 @@ pub enum CheckRunRequestedActionAction {
 }
 impl From<&CheckRunRequestedActionAction> for CheckRunRequestedActionAction {
     fn from(value: &CheckRunRequestedActionAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRequestedActionAction {
@@ -8322,7 +8322,7 @@ impl From<&CheckRunRequestedActionCheckRunCheckSuiteConclusion>
     for CheckRunRequestedActionCheckRunCheckSuiteConclusion
 {
     fn from(value: &CheckRunRequestedActionCheckRunCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRequestedActionCheckRunCheckSuiteConclusion {
@@ -8399,7 +8399,7 @@ impl From<&CheckRunRequestedActionCheckRunCheckSuiteStatus>
     for CheckRunRequestedActionCheckRunCheckSuiteStatus
 {
     fn from(value: &CheckRunRequestedActionCheckRunCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRequestedActionCheckRunCheckSuiteStatus {
@@ -8484,7 +8484,7 @@ impl From<&CheckRunRequestedActionCheckRunConclusion>
     for CheckRunRequestedActionCheckRunConclusion
 {
     fn from(value: &CheckRunRequestedActionCheckRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRequestedActionCheckRunConclusion {
@@ -8621,7 +8621,7 @@ pub enum CheckRunRequestedActionCheckRunStatus {
 }
 impl From<&CheckRunRequestedActionCheckRunStatus> for CheckRunRequestedActionCheckRunStatus {
     fn from(value: &CheckRunRequestedActionCheckRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRequestedActionCheckRunStatus {
@@ -9009,7 +9009,7 @@ pub enum CheckRunRerequestedAction {
 }
 impl From<&CheckRunRerequestedAction> for CheckRunRerequestedAction {
     fn from(value: &CheckRunRerequestedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRerequestedAction {
@@ -9478,7 +9478,7 @@ impl From<&CheckRunRerequestedCheckRunCheckSuiteConclusion>
     for CheckRunRerequestedCheckRunCheckSuiteConclusion
 {
     fn from(value: &CheckRunRerequestedCheckRunCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRerequestedCheckRunCheckSuiteConclusion {
@@ -9549,7 +9549,7 @@ impl From<&CheckRunRerequestedCheckRunCheckSuiteStatus>
     for CheckRunRerequestedCheckRunCheckSuiteStatus
 {
     fn from(value: &CheckRunRerequestedCheckRunCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRerequestedCheckRunCheckSuiteStatus {
@@ -9628,7 +9628,7 @@ pub enum CheckRunRerequestedCheckRunConclusion {
 }
 impl From<&CheckRunRerequestedCheckRunConclusion> for CheckRunRerequestedCheckRunConclusion {
     fn from(value: &CheckRunRerequestedCheckRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRerequestedCheckRunConclusion {
@@ -9759,7 +9759,7 @@ pub enum CheckRunRerequestedCheckRunStatus {
 }
 impl From<&CheckRunRerequestedCheckRunStatus> for CheckRunRerequestedCheckRunStatus {
     fn from(value: &CheckRunRerequestedCheckRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckRunRerequestedCheckRunStatus {
@@ -10017,7 +10017,7 @@ pub enum CheckSuiteCompletedAction {
 }
 impl From<&CheckSuiteCompletedAction> for CheckSuiteCompletedAction {
     fn from(value: &CheckSuiteCompletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteCompletedAction {
@@ -10246,7 +10246,7 @@ pub enum CheckSuiteCompletedCheckSuiteConclusion {
 }
 impl From<&CheckSuiteCompletedCheckSuiteConclusion> for CheckSuiteCompletedCheckSuiteConclusion {
     fn from(value: &CheckSuiteCompletedCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteCompletedCheckSuiteConclusion {
@@ -10325,7 +10325,7 @@ pub enum CheckSuiteCompletedCheckSuiteStatus {
 }
 impl From<&CheckSuiteCompletedCheckSuiteStatus> for CheckSuiteCompletedCheckSuiteStatus {
     fn from(value: &CheckSuiteCompletedCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteCompletedCheckSuiteStatus {
@@ -10606,7 +10606,7 @@ pub enum CheckSuiteRequestedAction {
 }
 impl From<&CheckSuiteRequestedAction> for CheckSuiteRequestedAction {
     fn from(value: &CheckSuiteRequestedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRequestedAction {
@@ -10835,7 +10835,7 @@ pub enum CheckSuiteRequestedCheckSuiteConclusion {
 }
 impl From<&CheckSuiteRequestedCheckSuiteConclusion> for CheckSuiteRequestedCheckSuiteConclusion {
     fn from(value: &CheckSuiteRequestedCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRequestedCheckSuiteConclusion {
@@ -10914,7 +10914,7 @@ pub enum CheckSuiteRequestedCheckSuiteStatus {
 }
 impl From<&CheckSuiteRequestedCheckSuiteStatus> for CheckSuiteRequestedCheckSuiteStatus {
     fn from(value: &CheckSuiteRequestedCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRequestedCheckSuiteStatus {
@@ -11148,7 +11148,7 @@ pub enum CheckSuiteRerequestedAction {
 }
 impl From<&CheckSuiteRerequestedAction> for CheckSuiteRerequestedAction {
     fn from(value: &CheckSuiteRerequestedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRerequestedAction {
@@ -11379,7 +11379,7 @@ impl From<&CheckSuiteRerequestedCheckSuiteConclusion>
     for CheckSuiteRerequestedCheckSuiteConclusion
 {
     fn from(value: &CheckSuiteRerequestedCheckSuiteConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRerequestedCheckSuiteConclusion {
@@ -11458,7 +11458,7 @@ pub enum CheckSuiteRerequestedCheckSuiteStatus {
 }
 impl From<&CheckSuiteRerequestedCheckSuiteStatus> for CheckSuiteRerequestedCheckSuiteStatus {
     fn from(value: &CheckSuiteRerequestedCheckSuiteStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CheckSuiteRerequestedCheckSuiteStatus {
@@ -11733,7 +11733,7 @@ pub enum CodeScanningAlertAppearedInBranchAction {
 }
 impl From<&CodeScanningAlertAppearedInBranchAction> for CodeScanningAlertAppearedInBranchAction {
     fn from(value: &CodeScanningAlertAppearedInBranchAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertAppearedInBranchAction {
@@ -11975,7 +11975,7 @@ impl From<&CodeScanningAlertAppearedInBranchAlertDismissedReason>
     for CodeScanningAlertAppearedInBranchAlertDismissedReason
 {
     fn from(value: &CodeScanningAlertAppearedInBranchAlertDismissedReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertDismissedReason {
@@ -12105,7 +12105,7 @@ impl From<&CodeScanningAlertAppearedInBranchAlertRuleSeverity>
     for CodeScanningAlertAppearedInBranchAlertRuleSeverity
 {
     fn from(value: &CodeScanningAlertAppearedInBranchAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertRuleSeverity {
@@ -12177,7 +12177,7 @@ impl From<&CodeScanningAlertAppearedInBranchAlertState>
     for CodeScanningAlertAppearedInBranchAlertState
 {
     fn from(value: &CodeScanningAlertAppearedInBranchAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertAppearedInBranchAlertState {
@@ -12515,7 +12515,7 @@ pub enum CodeScanningAlertClosedByUserAction {
 }
 impl From<&CodeScanningAlertClosedByUserAction> for CodeScanningAlertClosedByUserAction {
     fn from(value: &CodeScanningAlertClosedByUserAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertClosedByUserAction {
@@ -12780,7 +12780,7 @@ impl From<&CodeScanningAlertClosedByUserAlertDismissedReason>
     for CodeScanningAlertClosedByUserAlertDismissedReason
 {
     fn from(value: &CodeScanningAlertClosedByUserAlertDismissedReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertClosedByUserAlertDismissedReason {
@@ -12977,7 +12977,7 @@ impl From<&CodeScanningAlertClosedByUserAlertInstancesItemState>
     for CodeScanningAlertClosedByUserAlertInstancesItemState
 {
     fn from(value: &CodeScanningAlertClosedByUserAlertInstancesItemState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertClosedByUserAlertInstancesItemState {
@@ -13121,7 +13121,7 @@ impl From<&CodeScanningAlertClosedByUserAlertRuleSeverity>
     for CodeScanningAlertClosedByUserAlertRuleSeverity
 {
     fn from(value: &CodeScanningAlertClosedByUserAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertClosedByUserAlertRuleSeverity {
@@ -13185,7 +13185,7 @@ pub enum CodeScanningAlertClosedByUserAlertState {
 }
 impl From<&CodeScanningAlertClosedByUserAlertState> for CodeScanningAlertClosedByUserAlertState {
     fn from(value: &CodeScanningAlertClosedByUserAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertClosedByUserAlertState {
@@ -13520,7 +13520,7 @@ pub enum CodeScanningAlertCreatedAction {
 }
 impl From<&CodeScanningAlertCreatedAction> for CodeScanningAlertCreatedAction {
     fn from(value: &CodeScanningAlertCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertCreatedAction {
@@ -13910,7 +13910,7 @@ impl From<&CodeScanningAlertCreatedAlertInstancesItemState>
     for CodeScanningAlertCreatedAlertInstancesItemState
 {
     fn from(value: &CodeScanningAlertCreatedAlertInstancesItemState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertCreatedAlertInstancesItemState {
@@ -14056,7 +14056,7 @@ impl From<&CodeScanningAlertCreatedAlertRuleSeverity>
     for CodeScanningAlertCreatedAlertRuleSeverity
 {
     fn from(value: &CodeScanningAlertCreatedAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertCreatedAlertRuleSeverity {
@@ -14123,7 +14123,7 @@ pub enum CodeScanningAlertCreatedAlertState {
 }
 impl From<&CodeScanningAlertCreatedAlertState> for CodeScanningAlertCreatedAlertState {
     fn from(value: &CodeScanningAlertCreatedAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertCreatedAlertState {
@@ -14556,7 +14556,7 @@ pub enum CodeScanningAlertFixedAction {
 }
 impl From<&CodeScanningAlertFixedAction> for CodeScanningAlertFixedAction {
     fn from(value: &CodeScanningAlertFixedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertFixedAction {
@@ -14839,7 +14839,7 @@ impl From<&CodeScanningAlertFixedAlertDismissedReason>
     for CodeScanningAlertFixedAlertDismissedReason
 {
     fn from(value: &CodeScanningAlertFixedAlertDismissedReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertFixedAlertDismissedReason {
@@ -15034,7 +15034,7 @@ impl From<&CodeScanningAlertFixedAlertInstancesItemState>
     for CodeScanningAlertFixedAlertInstancesItemState
 {
     fn from(value: &CodeScanningAlertFixedAlertInstancesItemState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertFixedAlertInstancesItemState {
@@ -15176,7 +15176,7 @@ pub enum CodeScanningAlertFixedAlertRuleSeverity {
 }
 impl From<&CodeScanningAlertFixedAlertRuleSeverity> for CodeScanningAlertFixedAlertRuleSeverity {
     fn from(value: &CodeScanningAlertFixedAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertFixedAlertRuleSeverity {
@@ -15240,7 +15240,7 @@ pub enum CodeScanningAlertFixedAlertState {
 }
 impl From<&CodeScanningAlertFixedAlertState> for CodeScanningAlertFixedAlertState {
     fn from(value: &CodeScanningAlertFixedAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertFixedAlertState {
@@ -15575,7 +15575,7 @@ pub enum CodeScanningAlertReopenedAction {
 }
 impl From<&CodeScanningAlertReopenedAction> for CodeScanningAlertReopenedAction {
     fn from(value: &CodeScanningAlertReopenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedAction {
@@ -15961,7 +15961,7 @@ impl From<&CodeScanningAlertReopenedAlertInstancesItemState>
     for CodeScanningAlertReopenedAlertInstancesItemState
 {
     fn from(value: &CodeScanningAlertReopenedAlertInstancesItemState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedAlertInstancesItemState {
@@ -16105,7 +16105,7 @@ impl From<&CodeScanningAlertReopenedAlertRuleSeverity>
     for CodeScanningAlertReopenedAlertRuleSeverity
 {
     fn from(value: &CodeScanningAlertReopenedAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedAlertRuleSeverity {
@@ -16175,7 +16175,7 @@ pub enum CodeScanningAlertReopenedAlertState {
 }
 impl From<&CodeScanningAlertReopenedAlertState> for CodeScanningAlertReopenedAlertState {
     fn from(value: &CodeScanningAlertReopenedAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedAlertState {
@@ -16494,7 +16494,7 @@ pub enum CodeScanningAlertReopenedByUserAction {
 }
 impl From<&CodeScanningAlertReopenedByUserAction> for CodeScanningAlertReopenedByUserAction {
     fn from(value: &CodeScanningAlertReopenedByUserAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedByUserAction {
@@ -16860,7 +16860,7 @@ impl From<&CodeScanningAlertReopenedByUserAlertInstancesItemState>
     for CodeScanningAlertReopenedByUserAlertInstancesItemState
 {
     fn from(value: &CodeScanningAlertReopenedByUserAlertInstancesItemState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertInstancesItemState {
@@ -16984,7 +16984,7 @@ impl From<&CodeScanningAlertReopenedByUserAlertRuleSeverity>
     for CodeScanningAlertReopenedByUserAlertRuleSeverity
 {
     fn from(value: &CodeScanningAlertReopenedByUserAlertRuleSeverity) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertRuleSeverity {
@@ -17050,7 +17050,7 @@ impl From<&CodeScanningAlertReopenedByUserAlertState>
     for CodeScanningAlertReopenedByUserAlertState
 {
     fn from(value: &CodeScanningAlertReopenedByUserAlertState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CodeScanningAlertReopenedByUserAlertState {
@@ -17392,7 +17392,7 @@ pub enum CommitCommentCreatedAction {
 }
 impl From<&CommitCommentCreatedAction> for CommitCommentCreatedAction {
     fn from(value: &CommitCommentCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CommitCommentCreatedAction {
@@ -17794,7 +17794,7 @@ pub enum ContentReferenceCreatedAction {
 }
 impl From<&ContentReferenceCreatedAction> for ContentReferenceCreatedAction {
     fn from(value: &ContentReferenceCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ContentReferenceCreatedAction {
@@ -18022,7 +18022,7 @@ pub enum CreateEventRefType {
 }
 impl From<&CreateEventRefType> for CreateEventRefType {
     fn from(value: &CreateEventRefType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for CreateEventRefType {
@@ -18158,7 +18158,7 @@ pub enum DeleteEventRefType {
 }
 impl From<&DeleteEventRefType> for DeleteEventRefType {
     fn from(value: &DeleteEventRefType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DeleteEventRefType {
@@ -18311,7 +18311,7 @@ pub enum DeployKeyCreatedAction {
 }
 impl From<&DeployKeyCreatedAction> for DeployKeyCreatedAction {
     fn from(value: &DeployKeyCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DeployKeyCreatedAction {
@@ -18523,7 +18523,7 @@ pub enum DeployKeyDeletedAction {
 }
 impl From<&DeployKeyDeletedAction> for DeployKeyDeletedAction {
     fn from(value: &DeployKeyDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DeployKeyDeletedAction {
@@ -18828,7 +18828,7 @@ pub enum DeploymentCreatedAction {
 }
 impl From<&DeploymentCreatedAction> for DeploymentCreatedAction {
     fn from(value: &DeploymentCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DeploymentCreatedAction {
@@ -19273,7 +19273,7 @@ pub enum DeploymentStatusCreatedAction {
 }
 impl From<&DeploymentStatusCreatedAction> for DeploymentStatusCreatedAction {
     fn from(value: &DeploymentStatusCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DeploymentStatusCreatedAction {
@@ -19956,7 +19956,7 @@ pub enum DiscussionAnsweredAction {
 }
 impl From<&DiscussionAnsweredAction> for DiscussionAnsweredAction {
     fn from(value: &DiscussionAnsweredAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionAnsweredAction {
@@ -20343,7 +20343,7 @@ impl From<&DiscussionAnsweredDiscussionAnswerChosenByType>
     for DiscussionAnsweredDiscussionAnswerChosenByType
 {
     fn from(value: &DiscussionAnsweredDiscussionAnswerChosenByType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionAnsweredDiscussionAnswerChosenByType {
@@ -20483,7 +20483,7 @@ pub enum DiscussionAnsweredDiscussionState {
 }
 impl From<&DiscussionAnsweredDiscussionState> for DiscussionAnsweredDiscussionState {
     fn from(value: &DiscussionAnsweredDiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionAnsweredDiscussionState {
@@ -20738,7 +20738,7 @@ pub enum DiscussionCategoryChangedAction {
 }
 impl From<&DiscussionCategoryChangedAction> for DiscussionCategoryChangedAction {
     fn from(value: &DiscussionCategoryChangedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCategoryChangedAction {
@@ -21138,7 +21138,7 @@ pub enum DiscussionCommentCreatedAction {
 }
 impl From<&DiscussionCommentCreatedAction> for DiscussionCommentCreatedAction {
     fn from(value: &DiscussionCommentCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCommentCreatedAction {
@@ -21402,7 +21402,7 @@ pub enum DiscussionCommentDeletedAction {
 }
 impl From<&DiscussionCommentDeletedAction> for DiscussionCommentDeletedAction {
     fn from(value: &DiscussionCommentDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCommentDeletedAction {
@@ -21689,7 +21689,7 @@ pub enum DiscussionCommentEditedAction {
 }
 impl From<&DiscussionCommentEditedAction> for DiscussionCommentEditedAction {
     fn from(value: &DiscussionCommentEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCommentEditedAction {
@@ -22045,7 +22045,7 @@ pub enum DiscussionCreatedAction {
 }
 impl From<&DiscussionCreatedAction> for DiscussionCreatedAction {
     fn from(value: &DiscussionCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCreatedAction {
@@ -22252,7 +22252,7 @@ pub enum DiscussionCreatedDiscussionState {
 }
 impl From<&DiscussionCreatedDiscussionState> for DiscussionCreatedDiscussionState {
     fn from(value: &DiscussionCreatedDiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionCreatedDiscussionState {
@@ -22370,7 +22370,7 @@ pub enum DiscussionDeletedAction {
 }
 impl From<&DiscussionDeletedAction> for DiscussionDeletedAction {
     fn from(value: &DiscussionDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionDeletedAction {
@@ -22518,7 +22518,7 @@ pub enum DiscussionEditedAction {
 }
 impl From<&DiscussionEditedAction> for DiscussionEditedAction {
     fn from(value: &DiscussionEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionEditedAction {
@@ -22884,7 +22884,7 @@ pub enum DiscussionLabeledAction {
 }
 impl From<&DiscussionLabeledAction> for DiscussionLabeledAction {
     fn from(value: &DiscussionLabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionLabeledAction {
@@ -23026,7 +23026,7 @@ pub enum DiscussionLockedAction {
 }
 impl From<&DiscussionLockedAction> for DiscussionLockedAction {
     fn from(value: &DiscussionLockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionLockedAction {
@@ -23217,7 +23217,7 @@ pub enum DiscussionLockedDiscussionState {
 }
 impl From<&DiscussionLockedDiscussionState> for DiscussionLockedDiscussionState {
     fn from(value: &DiscussionLockedDiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionLockedDiscussionState {
@@ -23333,7 +23333,7 @@ pub enum DiscussionPinnedAction {
 }
 impl From<&DiscussionPinnedAction> for DiscussionPinnedAction {
     fn from(value: &DiscussionPinnedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionPinnedAction {
@@ -23396,7 +23396,7 @@ pub enum DiscussionState {
 }
 impl From<&DiscussionState> for DiscussionState {
     fn from(value: &DiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionState {
@@ -23534,7 +23534,7 @@ pub enum DiscussionTransferredAction {
 }
 impl From<&DiscussionTransferredAction> for DiscussionTransferredAction {
     fn from(value: &DiscussionTransferredAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionTransferredAction {
@@ -23784,7 +23784,7 @@ pub enum DiscussionUnansweredAction {
 }
 impl From<&DiscussionUnansweredAction> for DiscussionUnansweredAction {
     fn from(value: &DiscussionUnansweredAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnansweredAction {
@@ -23998,7 +23998,7 @@ pub enum DiscussionUnansweredDiscussionState {
 }
 impl From<&DiscussionUnansweredDiscussionState> for DiscussionUnansweredDiscussionState {
     fn from(value: &DiscussionUnansweredDiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnansweredDiscussionState {
@@ -24209,7 +24209,7 @@ pub enum DiscussionUnlabeledAction {
 }
 impl From<&DiscussionUnlabeledAction> for DiscussionUnlabeledAction {
     fn from(value: &DiscussionUnlabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnlabeledAction {
@@ -24351,7 +24351,7 @@ pub enum DiscussionUnlockedAction {
 }
 impl From<&DiscussionUnlockedAction> for DiscussionUnlockedAction {
     fn from(value: &DiscussionUnlockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnlockedAction {
@@ -24542,7 +24542,7 @@ pub enum DiscussionUnlockedDiscussionState {
 }
 impl From<&DiscussionUnlockedDiscussionState> for DiscussionUnlockedDiscussionState {
     fn from(value: &DiscussionUnlockedDiscussionState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnlockedDiscussionState {
@@ -24658,7 +24658,7 @@ pub enum DiscussionUnpinnedAction {
 }
 impl From<&DiscussionUnpinnedAction> for DiscussionUnpinnedAction {
     fn from(value: &DiscussionUnpinnedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for DiscussionUnpinnedAction {
@@ -25691,7 +25691,7 @@ pub enum GithubAppAuthorizationRevokedAction {
 }
 impl From<&GithubAppAuthorizationRevokedAction> for GithubAppAuthorizationRevokedAction {
     fn from(value: &GithubAppAuthorizationRevokedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GithubAppAuthorizationRevokedAction {
@@ -26075,7 +26075,7 @@ pub enum GollumEventPagesItemAction {
 }
 impl From<&GollumEventPagesItemAction> for GollumEventPagesItemAction {
     fn from(value: &GollumEventPagesItemAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for GollumEventPagesItemAction {
@@ -26691,7 +26691,7 @@ pub enum InstallationCreatedAction {
 }
 impl From<&InstallationCreatedAction> for InstallationCreatedAction {
     fn from(value: &InstallationCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationCreatedAction {
@@ -26967,7 +26967,7 @@ pub enum InstallationDeletedAction {
 }
 impl From<&InstallationDeletedAction> for InstallationDeletedAction {
     fn from(value: &InstallationDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationDeletedAction {
@@ -27276,7 +27276,7 @@ pub enum InstallationEventsItem {
 }
 impl From<&InstallationEventsItem> for InstallationEventsItem {
     fn from(value: &InstallationEventsItem) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationEventsItem {
@@ -27547,7 +27547,7 @@ pub enum InstallationNewPermissionsAcceptedAction {
 }
 impl From<&InstallationNewPermissionsAcceptedAction> for InstallationNewPermissionsAcceptedAction {
     fn from(value: &InstallationNewPermissionsAcceptedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationNewPermissionsAcceptedAction {
@@ -28002,7 +28002,7 @@ pub enum InstallationPermissionsActions {
 }
 impl From<&InstallationPermissionsActions> for InstallationPermissionsActions {
     fn from(value: &InstallationPermissionsActions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsActions {
@@ -28064,7 +28064,7 @@ pub enum InstallationPermissionsAdministration {
 }
 impl From<&InstallationPermissionsAdministration> for InstallationPermissionsAdministration {
     fn from(value: &InstallationPermissionsAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsAdministration {
@@ -28126,7 +28126,7 @@ pub enum InstallationPermissionsChecks {
 }
 impl From<&InstallationPermissionsChecks> for InstallationPermissionsChecks {
     fn from(value: &InstallationPermissionsChecks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsChecks {
@@ -28188,7 +28188,7 @@ pub enum InstallationPermissionsContentReferences {
 }
 impl From<&InstallationPermissionsContentReferences> for InstallationPermissionsContentReferences {
     fn from(value: &InstallationPermissionsContentReferences) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsContentReferences {
@@ -28250,7 +28250,7 @@ pub enum InstallationPermissionsContents {
 }
 impl From<&InstallationPermissionsContents> for InstallationPermissionsContents {
     fn from(value: &InstallationPermissionsContents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsContents {
@@ -28312,7 +28312,7 @@ pub enum InstallationPermissionsDeployments {
 }
 impl From<&InstallationPermissionsDeployments> for InstallationPermissionsDeployments {
     fn from(value: &InstallationPermissionsDeployments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsDeployments {
@@ -28374,7 +28374,7 @@ pub enum InstallationPermissionsDiscussions {
 }
 impl From<&InstallationPermissionsDiscussions> for InstallationPermissionsDiscussions {
     fn from(value: &InstallationPermissionsDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsDiscussions {
@@ -28436,7 +28436,7 @@ pub enum InstallationPermissionsEmails {
 }
 impl From<&InstallationPermissionsEmails> for InstallationPermissionsEmails {
     fn from(value: &InstallationPermissionsEmails) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsEmails {
@@ -28498,7 +28498,7 @@ pub enum InstallationPermissionsEnvironments {
 }
 impl From<&InstallationPermissionsEnvironments> for InstallationPermissionsEnvironments {
     fn from(value: &InstallationPermissionsEnvironments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsEnvironments {
@@ -28560,7 +28560,7 @@ pub enum InstallationPermissionsIssues {
 }
 impl From<&InstallationPermissionsIssues> for InstallationPermissionsIssues {
     fn from(value: &InstallationPermissionsIssues) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsIssues {
@@ -28622,7 +28622,7 @@ pub enum InstallationPermissionsMembers {
 }
 impl From<&InstallationPermissionsMembers> for InstallationPermissionsMembers {
     fn from(value: &InstallationPermissionsMembers) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsMembers {
@@ -28684,7 +28684,7 @@ pub enum InstallationPermissionsMetadata {
 }
 impl From<&InstallationPermissionsMetadata> for InstallationPermissionsMetadata {
     fn from(value: &InstallationPermissionsMetadata) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsMetadata {
@@ -28748,7 +28748,7 @@ impl From<&InstallationPermissionsOrganizationAdministration>
     for InstallationPermissionsOrganizationAdministration
 {
     fn from(value: &InstallationPermissionsOrganizationAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationAdministration {
@@ -28812,7 +28812,7 @@ impl From<&InstallationPermissionsOrganizationEvents>
     for InstallationPermissionsOrganizationEvents
 {
     fn from(value: &InstallationPermissionsOrganizationEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationEvents {
@@ -28874,7 +28874,7 @@ pub enum InstallationPermissionsOrganizationHooks {
 }
 impl From<&InstallationPermissionsOrganizationHooks> for InstallationPermissionsOrganizationHooks {
     fn from(value: &InstallationPermissionsOrganizationHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationHooks {
@@ -28938,7 +28938,7 @@ impl From<&InstallationPermissionsOrganizationPackages>
     for InstallationPermissionsOrganizationPackages
 {
     fn from(value: &InstallationPermissionsOrganizationPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationPackages {
@@ -29000,7 +29000,7 @@ pub enum InstallationPermissionsOrganizationPlan {
 }
 impl From<&InstallationPermissionsOrganizationPlan> for InstallationPermissionsOrganizationPlan {
     fn from(value: &InstallationPermissionsOrganizationPlan) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationPlan {
@@ -29064,7 +29064,7 @@ impl From<&InstallationPermissionsOrganizationProjects>
     for InstallationPermissionsOrganizationProjects
 {
     fn from(value: &InstallationPermissionsOrganizationProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationProjects {
@@ -29128,7 +29128,7 @@ impl From<&InstallationPermissionsOrganizationSecrets>
     for InstallationPermissionsOrganizationSecrets
 {
     fn from(value: &InstallationPermissionsOrganizationSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationSecrets {
@@ -29192,7 +29192,7 @@ impl From<&InstallationPermissionsOrganizationSelfHostedRunners>
     for InstallationPermissionsOrganizationSelfHostedRunners
 {
     fn from(value: &InstallationPermissionsOrganizationSelfHostedRunners) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationSelfHostedRunners {
@@ -29256,7 +29256,7 @@ impl From<&InstallationPermissionsOrganizationUserBlocking>
     for InstallationPermissionsOrganizationUserBlocking
 {
     fn from(value: &InstallationPermissionsOrganizationUserBlocking) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsOrganizationUserBlocking {
@@ -29318,7 +29318,7 @@ pub enum InstallationPermissionsPackages {
 }
 impl From<&InstallationPermissionsPackages> for InstallationPermissionsPackages {
     fn from(value: &InstallationPermissionsPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsPackages {
@@ -29380,7 +29380,7 @@ pub enum InstallationPermissionsPages {
 }
 impl From<&InstallationPermissionsPages> for InstallationPermissionsPages {
     fn from(value: &InstallationPermissionsPages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsPages {
@@ -29442,7 +29442,7 @@ pub enum InstallationPermissionsPullRequests {
 }
 impl From<&InstallationPermissionsPullRequests> for InstallationPermissionsPullRequests {
     fn from(value: &InstallationPermissionsPullRequests) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsPullRequests {
@@ -29504,7 +29504,7 @@ pub enum InstallationPermissionsRepositoryHooks {
 }
 impl From<&InstallationPermissionsRepositoryHooks> for InstallationPermissionsRepositoryHooks {
     fn from(value: &InstallationPermissionsRepositoryHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsRepositoryHooks {
@@ -29568,7 +29568,7 @@ impl From<&InstallationPermissionsRepositoryProjects>
     for InstallationPermissionsRepositoryProjects
 {
     fn from(value: &InstallationPermissionsRepositoryProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsRepositoryProjects {
@@ -29632,7 +29632,7 @@ impl From<&InstallationPermissionsSecretScanningAlerts>
     for InstallationPermissionsSecretScanningAlerts
 {
     fn from(value: &InstallationPermissionsSecretScanningAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsSecretScanningAlerts {
@@ -29694,7 +29694,7 @@ pub enum InstallationPermissionsSecrets {
 }
 impl From<&InstallationPermissionsSecrets> for InstallationPermissionsSecrets {
     fn from(value: &InstallationPermissionsSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsSecrets {
@@ -29756,7 +29756,7 @@ pub enum InstallationPermissionsSecurityEvents {
 }
 impl From<&InstallationPermissionsSecurityEvents> for InstallationPermissionsSecurityEvents {
     fn from(value: &InstallationPermissionsSecurityEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsSecurityEvents {
@@ -29820,7 +29820,7 @@ impl From<&InstallationPermissionsSecurityScanningAlert>
     for InstallationPermissionsSecurityScanningAlert
 {
     fn from(value: &InstallationPermissionsSecurityScanningAlert) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsSecurityScanningAlert {
@@ -29882,7 +29882,7 @@ pub enum InstallationPermissionsSingleFile {
 }
 impl From<&InstallationPermissionsSingleFile> for InstallationPermissionsSingleFile {
     fn from(value: &InstallationPermissionsSingleFile) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsSingleFile {
@@ -29944,7 +29944,7 @@ pub enum InstallationPermissionsStatuses {
 }
 impl From<&InstallationPermissionsStatuses> for InstallationPermissionsStatuses {
     fn from(value: &InstallationPermissionsStatuses) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsStatuses {
@@ -30006,7 +30006,7 @@ pub enum InstallationPermissionsTeamDiscussions {
 }
 impl From<&InstallationPermissionsTeamDiscussions> for InstallationPermissionsTeamDiscussions {
     fn from(value: &InstallationPermissionsTeamDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsTeamDiscussions {
@@ -30070,7 +30070,7 @@ impl From<&InstallationPermissionsVulnerabilityAlerts>
     for InstallationPermissionsVulnerabilityAlerts
 {
     fn from(value: &InstallationPermissionsVulnerabilityAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsVulnerabilityAlerts {
@@ -30132,7 +30132,7 @@ pub enum InstallationPermissionsWorkflows {
 }
 impl From<&InstallationPermissionsWorkflows> for InstallationPermissionsWorkflows {
     fn from(value: &InstallationPermissionsWorkflows) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationPermissionsWorkflows {
@@ -30328,7 +30328,7 @@ pub enum InstallationRepositoriesAddedAction {
 }
 impl From<&InstallationRepositoriesAddedAction> for InstallationRepositoriesAddedAction {
     fn from(value: &InstallationRepositoriesAddedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationRepositoriesAddedAction {
@@ -30503,7 +30503,7 @@ impl From<&InstallationRepositoriesAddedRepositorySelection>
     for InstallationRepositoriesAddedRepositorySelection
 {
     fn from(value: &InstallationRepositoriesAddedRepositorySelection) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationRepositoriesAddedRepositorySelection {
@@ -30744,7 +30744,7 @@ pub enum InstallationRepositoriesRemovedAction {
 }
 impl From<&InstallationRepositoriesRemovedAction> for InstallationRepositoriesRemovedAction {
     fn from(value: &InstallationRepositoriesRemovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationRepositoriesRemovedAction {
@@ -30921,7 +30921,7 @@ impl From<&InstallationRepositoriesRemovedRepositorySelection>
     for InstallationRepositoriesRemovedRepositorySelection
 {
     fn from(value: &InstallationRepositoriesRemovedRepositorySelection) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationRepositoriesRemovedRepositorySelection {
@@ -30984,7 +30984,7 @@ pub enum InstallationRepositorySelection {
 }
 impl From<&InstallationRepositorySelection> for InstallationRepositorySelection {
     fn from(value: &InstallationRepositorySelection) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationRepositorySelection {
@@ -31151,7 +31151,7 @@ pub enum InstallationSuspendAction {
 }
 impl From<&InstallationSuspendAction> for InstallationSuspendAction {
     fn from(value: &InstallationSuspendAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendAction {
@@ -31484,7 +31484,7 @@ impl From<&InstallationSuspendInstallationEventsItem>
     for InstallationSuspendInstallationEventsItem
 {
     fn from(value: &InstallationSuspendInstallationEventsItem) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationEventsItem {
@@ -31980,7 +31980,7 @@ impl From<&InstallationSuspendInstallationPermissionsActions>
     for InstallationSuspendInstallationPermissionsActions
 {
     fn from(value: &InstallationSuspendInstallationPermissionsActions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsActions {
@@ -32044,7 +32044,7 @@ impl From<&InstallationSuspendInstallationPermissionsAdministration>
     for InstallationSuspendInstallationPermissionsAdministration
 {
     fn from(value: &InstallationSuspendInstallationPermissionsAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsAdministration {
@@ -32108,7 +32108,7 @@ impl From<&InstallationSuspendInstallationPermissionsChecks>
     for InstallationSuspendInstallationPermissionsChecks
 {
     fn from(value: &InstallationSuspendInstallationPermissionsChecks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsChecks {
@@ -32172,7 +32172,7 @@ impl From<&InstallationSuspendInstallationPermissionsContentReferences>
     for InstallationSuspendInstallationPermissionsContentReferences
 {
     fn from(value: &InstallationSuspendInstallationPermissionsContentReferences) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsContentReferences {
@@ -32238,7 +32238,7 @@ impl From<&InstallationSuspendInstallationPermissionsContents>
     for InstallationSuspendInstallationPermissionsContents
 {
     fn from(value: &InstallationSuspendInstallationPermissionsContents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsContents {
@@ -32302,7 +32302,7 @@ impl From<&InstallationSuspendInstallationPermissionsDeployments>
     for InstallationSuspendInstallationPermissionsDeployments
 {
     fn from(value: &InstallationSuspendInstallationPermissionsDeployments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsDeployments {
@@ -32366,7 +32366,7 @@ impl From<&InstallationSuspendInstallationPermissionsDiscussions>
     for InstallationSuspendInstallationPermissionsDiscussions
 {
     fn from(value: &InstallationSuspendInstallationPermissionsDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsDiscussions {
@@ -32430,7 +32430,7 @@ impl From<&InstallationSuspendInstallationPermissionsEmails>
     for InstallationSuspendInstallationPermissionsEmails
 {
     fn from(value: &InstallationSuspendInstallationPermissionsEmails) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsEmails {
@@ -32494,7 +32494,7 @@ impl From<&InstallationSuspendInstallationPermissionsEnvironments>
     for InstallationSuspendInstallationPermissionsEnvironments
 {
     fn from(value: &InstallationSuspendInstallationPermissionsEnvironments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsEnvironments {
@@ -32558,7 +32558,7 @@ impl From<&InstallationSuspendInstallationPermissionsIssues>
     for InstallationSuspendInstallationPermissionsIssues
 {
     fn from(value: &InstallationSuspendInstallationPermissionsIssues) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsIssues {
@@ -32622,7 +32622,7 @@ impl From<&InstallationSuspendInstallationPermissionsMembers>
     for InstallationSuspendInstallationPermissionsMembers
 {
     fn from(value: &InstallationSuspendInstallationPermissionsMembers) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsMembers {
@@ -32686,7 +32686,7 @@ impl From<&InstallationSuspendInstallationPermissionsMetadata>
     for InstallationSuspendInstallationPermissionsMetadata
 {
     fn from(value: &InstallationSuspendInstallationPermissionsMetadata) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsMetadata {
@@ -32750,7 +32750,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationAdministration>
     for InstallationSuspendInstallationPermissionsOrganizationAdministration
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationAdministration {
@@ -32820,7 +32820,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationEvents>
     for InstallationSuspendInstallationPermissionsOrganizationEvents
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationEvents {
@@ -32888,7 +32888,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationHooks>
     for InstallationSuspendInstallationPermissionsOrganizationHooks
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationHooks {
@@ -32954,7 +32954,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationPackages>
     for InstallationSuspendInstallationPermissionsOrganizationPackages
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationPackages {
@@ -33024,7 +33024,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationPlan>
     for InstallationSuspendInstallationPermissionsOrganizationPlan
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationPlan) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationPlan {
@@ -33088,7 +33088,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationProjects>
     for InstallationSuspendInstallationPermissionsOrganizationProjects
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationProjects {
@@ -33158,7 +33158,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationSecrets>
     for InstallationSuspendInstallationPermissionsOrganizationSecrets
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationSecrets {
@@ -33228,7 +33228,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunne
     fn from(
         value: &InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunners,
     ) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunners {
@@ -33298,7 +33298,7 @@ impl From<&InstallationSuspendInstallationPermissionsOrganizationUserBlocking>
     for InstallationSuspendInstallationPermissionsOrganizationUserBlocking
 {
     fn from(value: &InstallationSuspendInstallationPermissionsOrganizationUserBlocking) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsOrganizationUserBlocking {
@@ -33368,7 +33368,7 @@ impl From<&InstallationSuspendInstallationPermissionsPackages>
     for InstallationSuspendInstallationPermissionsPackages
 {
     fn from(value: &InstallationSuspendInstallationPermissionsPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsPackages {
@@ -33432,7 +33432,7 @@ impl From<&InstallationSuspendInstallationPermissionsPages>
     for InstallationSuspendInstallationPermissionsPages
 {
     fn from(value: &InstallationSuspendInstallationPermissionsPages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsPages {
@@ -33496,7 +33496,7 @@ impl From<&InstallationSuspendInstallationPermissionsPullRequests>
     for InstallationSuspendInstallationPermissionsPullRequests
 {
     fn from(value: &InstallationSuspendInstallationPermissionsPullRequests) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsPullRequests {
@@ -33560,7 +33560,7 @@ impl From<&InstallationSuspendInstallationPermissionsRepositoryHooks>
     for InstallationSuspendInstallationPermissionsRepositoryHooks
 {
     fn from(value: &InstallationSuspendInstallationPermissionsRepositoryHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsRepositoryHooks {
@@ -33624,7 +33624,7 @@ impl From<&InstallationSuspendInstallationPermissionsRepositoryProjects>
     for InstallationSuspendInstallationPermissionsRepositoryProjects
 {
     fn from(value: &InstallationSuspendInstallationPermissionsRepositoryProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsRepositoryProjects {
@@ -33692,7 +33692,7 @@ impl From<&InstallationSuspendInstallationPermissionsSecretScanningAlerts>
     for InstallationSuspendInstallationPermissionsSecretScanningAlerts
 {
     fn from(value: &InstallationSuspendInstallationPermissionsSecretScanningAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsSecretScanningAlerts {
@@ -33762,7 +33762,7 @@ impl From<&InstallationSuspendInstallationPermissionsSecrets>
     for InstallationSuspendInstallationPermissionsSecrets
 {
     fn from(value: &InstallationSuspendInstallationPermissionsSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsSecrets {
@@ -33826,7 +33826,7 @@ impl From<&InstallationSuspendInstallationPermissionsSecurityEvents>
     for InstallationSuspendInstallationPermissionsSecurityEvents
 {
     fn from(value: &InstallationSuspendInstallationPermissionsSecurityEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsSecurityEvents {
@@ -33890,7 +33890,7 @@ impl From<&InstallationSuspendInstallationPermissionsSecurityScanningAlert>
     for InstallationSuspendInstallationPermissionsSecurityScanningAlert
 {
     fn from(value: &InstallationSuspendInstallationPermissionsSecurityScanningAlert) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsSecurityScanningAlert {
@@ -33960,7 +33960,7 @@ impl From<&InstallationSuspendInstallationPermissionsSingleFile>
     for InstallationSuspendInstallationPermissionsSingleFile
 {
     fn from(value: &InstallationSuspendInstallationPermissionsSingleFile) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsSingleFile {
@@ -34024,7 +34024,7 @@ impl From<&InstallationSuspendInstallationPermissionsStatuses>
     for InstallationSuspendInstallationPermissionsStatuses
 {
     fn from(value: &InstallationSuspendInstallationPermissionsStatuses) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsStatuses {
@@ -34088,7 +34088,7 @@ impl From<&InstallationSuspendInstallationPermissionsTeamDiscussions>
     for InstallationSuspendInstallationPermissionsTeamDiscussions
 {
     fn from(value: &InstallationSuspendInstallationPermissionsTeamDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsTeamDiscussions {
@@ -34152,7 +34152,7 @@ impl From<&InstallationSuspendInstallationPermissionsVulnerabilityAlerts>
     for InstallationSuspendInstallationPermissionsVulnerabilityAlerts
 {
     fn from(value: &InstallationSuspendInstallationPermissionsVulnerabilityAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsVulnerabilityAlerts {
@@ -34220,7 +34220,7 @@ impl From<&InstallationSuspendInstallationPermissionsWorkflows>
     for InstallationSuspendInstallationPermissionsWorkflows
 {
     fn from(value: &InstallationSuspendInstallationPermissionsWorkflows) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationPermissionsWorkflows {
@@ -34285,7 +34285,7 @@ impl From<&InstallationSuspendInstallationRepositorySelection>
     for InstallationSuspendInstallationRepositorySelection
 {
     fn from(value: &InstallationSuspendInstallationRepositorySelection) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationRepositorySelection {
@@ -34508,7 +34508,7 @@ impl From<&InstallationSuspendInstallationSuspendedByType>
     for InstallationSuspendInstallationSuspendedByType
 {
     fn from(value: &InstallationSuspendInstallationSuspendedByType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationSuspendedByType {
@@ -34572,7 +34572,7 @@ impl From<&InstallationSuspendInstallationTargetType>
     for InstallationSuspendInstallationTargetType
 {
     fn from(value: &InstallationSuspendInstallationTargetType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationSuspendInstallationTargetType {
@@ -34764,7 +34764,7 @@ pub enum InstallationTargetType {
 }
 impl From<&InstallationTargetType> for InstallationTargetType {
     fn from(value: &InstallationTargetType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationTargetType {
@@ -34930,7 +34930,7 @@ pub enum InstallationUnsuspendAction {
 }
 impl From<&InstallationUnsuspendAction> for InstallationUnsuspendAction {
     fn from(value: &InstallationUnsuspendAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendAction {
@@ -35264,7 +35264,7 @@ impl From<&InstallationUnsuspendInstallationEventsItem>
     for InstallationUnsuspendInstallationEventsItem
 {
     fn from(value: &InstallationUnsuspendInstallationEventsItem) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationEventsItem {
@@ -35762,7 +35762,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsActions>
     for InstallationUnsuspendInstallationPermissionsActions
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsActions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsActions {
@@ -35826,7 +35826,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsAdministration>
     for InstallationUnsuspendInstallationPermissionsAdministration
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsAdministration) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsAdministration {
@@ -35890,7 +35890,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsChecks>
     for InstallationUnsuspendInstallationPermissionsChecks
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsChecks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsChecks {
@@ -35954,7 +35954,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsContentReferences>
     for InstallationUnsuspendInstallationPermissionsContentReferences
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsContentReferences) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsContentReferences {
@@ -36022,7 +36022,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsContents>
     for InstallationUnsuspendInstallationPermissionsContents
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsContents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsContents {
@@ -36086,7 +36086,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsDeployments>
     for InstallationUnsuspendInstallationPermissionsDeployments
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsDeployments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsDeployments {
@@ -36150,7 +36150,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsDiscussions>
     for InstallationUnsuspendInstallationPermissionsDiscussions
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsDiscussions {
@@ -36214,7 +36214,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsEmails>
     for InstallationUnsuspendInstallationPermissionsEmails
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsEmails) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsEmails {
@@ -36278,7 +36278,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsEnvironments>
     for InstallationUnsuspendInstallationPermissionsEnvironments
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsEnvironments) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsEnvironments {
@@ -36342,7 +36342,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsIssues>
     for InstallationUnsuspendInstallationPermissionsIssues
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsIssues) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsIssues {
@@ -36406,7 +36406,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsMembers>
     for InstallationUnsuspendInstallationPermissionsMembers
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsMembers) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsMembers {
@@ -36470,7 +36470,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsMetadata>
     for InstallationUnsuspendInstallationPermissionsMetadata
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsMetadata) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsMetadata {
@@ -36536,7 +36536,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationAdministratio
     fn from(
         value: &InstallationUnsuspendInstallationPermissionsOrganizationAdministration,
     ) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationAdministration {
@@ -36606,7 +36606,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationEvents>
     for InstallationUnsuspendInstallationPermissionsOrganizationEvents
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationEvents {
@@ -36676,7 +36676,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationHooks>
     for InstallationUnsuspendInstallationPermissionsOrganizationHooks
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationHooks {
@@ -36744,7 +36744,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationPackages>
     for InstallationUnsuspendInstallationPermissionsOrganizationPackages
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationPackages {
@@ -36814,7 +36814,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationPlan>
     for InstallationUnsuspendInstallationPermissionsOrganizationPlan
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationPlan) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationPlan {
@@ -36882,7 +36882,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationProjects>
     for InstallationUnsuspendInstallationPermissionsOrganizationProjects
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationProjects {
@@ -36952,7 +36952,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationSecrets>
     for InstallationUnsuspendInstallationPermissionsOrganizationSecrets
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationSecrets {
@@ -37024,7 +37024,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRun
     fn from(
         value: &InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRunners,
     ) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRunners {
@@ -37096,7 +37096,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking>
     for InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking {
@@ -37166,7 +37166,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsPackages>
     for InstallationUnsuspendInstallationPermissionsPackages
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsPackages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsPackages {
@@ -37230,7 +37230,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsPages>
     for InstallationUnsuspendInstallationPermissionsPages
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsPages) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsPages {
@@ -37294,7 +37294,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsPullRequests>
     for InstallationUnsuspendInstallationPermissionsPullRequests
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsPullRequests) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsPullRequests {
@@ -37358,7 +37358,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsRepositoryHooks>
     for InstallationUnsuspendInstallationPermissionsRepositoryHooks
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsRepositoryHooks) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsRepositoryHooks {
@@ -37424,7 +37424,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsRepositoryProjects>
     for InstallationUnsuspendInstallationPermissionsRepositoryProjects
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsRepositoryProjects) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsRepositoryProjects {
@@ -37494,7 +37494,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsSecretScanningAlerts>
     for InstallationUnsuspendInstallationPermissionsSecretScanningAlerts
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsSecretScanningAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsSecretScanningAlerts {
@@ -37564,7 +37564,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsSecrets>
     for InstallationUnsuspendInstallationPermissionsSecrets
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsSecrets) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsSecrets {
@@ -37628,7 +37628,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsSecurityEvents>
     for InstallationUnsuspendInstallationPermissionsSecurityEvents
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsSecurityEvents) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsSecurityEvents {
@@ -37692,7 +37692,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsSecurityScanningAlert>
     for InstallationUnsuspendInstallationPermissionsSecurityScanningAlert
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsSecurityScanningAlert) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsSecurityScanningAlert {
@@ -37762,7 +37762,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsSingleFile>
     for InstallationUnsuspendInstallationPermissionsSingleFile
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsSingleFile) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsSingleFile {
@@ -37826,7 +37826,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsStatuses>
     for InstallationUnsuspendInstallationPermissionsStatuses
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsStatuses) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsStatuses {
@@ -37890,7 +37890,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsTeamDiscussions>
     for InstallationUnsuspendInstallationPermissionsTeamDiscussions
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsTeamDiscussions) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsTeamDiscussions {
@@ -37956,7 +37956,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts>
     for InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts {
@@ -38026,7 +38026,7 @@ impl From<&InstallationUnsuspendInstallationPermissionsWorkflows>
     for InstallationUnsuspendInstallationPermissionsWorkflows
 {
     fn from(value: &InstallationUnsuspendInstallationPermissionsWorkflows) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationPermissionsWorkflows {
@@ -38091,7 +38091,7 @@ impl From<&InstallationUnsuspendInstallationRepositorySelection>
     for InstallationUnsuspendInstallationRepositorySelection
 {
     fn from(value: &InstallationUnsuspendInstallationRepositorySelection) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationRepositorySelection {
@@ -38153,7 +38153,7 @@ impl From<&InstallationUnsuspendInstallationTargetType>
     for InstallationUnsuspendInstallationTargetType
 {
     fn from(value: &InstallationUnsuspendInstallationTargetType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for InstallationUnsuspendInstallationTargetType {
@@ -38672,7 +38672,7 @@ pub enum IssueActiveLockReason {
 }
 impl From<&IssueActiveLockReason> for IssueActiveLockReason {
     fn from(value: &IssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueActiveLockReason {
@@ -38971,7 +38971,7 @@ pub enum IssueCommentCreatedAction {
 }
 impl From<&IssueCommentCreatedAction> for IssueCommentCreatedAction {
     fn from(value: &IssueCommentCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentCreatedAction {
@@ -39159,7 +39159,7 @@ pub enum IssueCommentCreatedIssueActiveLockReason {
 }
 impl From<&IssueCommentCreatedIssueActiveLockReason> for IssueCommentCreatedIssueActiveLockReason {
     fn from(value: &IssueCommentCreatedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentCreatedIssueActiveLockReason {
@@ -39286,7 +39286,7 @@ pub enum IssueCommentCreatedIssueAssigneeType {
 }
 impl From<&IssueCommentCreatedIssueAssigneeType> for IssueCommentCreatedIssueAssigneeType {
     fn from(value: &IssueCommentCreatedIssueAssigneeType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentCreatedIssueAssigneeType {
@@ -39398,7 +39398,7 @@ pub enum IssueCommentCreatedIssueState {
 }
 impl From<&IssueCommentCreatedIssueState> for IssueCommentCreatedIssueState {
     fn from(value: &IssueCommentCreatedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentCreatedIssueState {
@@ -39593,7 +39593,7 @@ pub enum IssueCommentDeletedAction {
 }
 impl From<&IssueCommentDeletedAction> for IssueCommentDeletedAction {
     fn from(value: &IssueCommentDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentDeletedAction {
@@ -39781,7 +39781,7 @@ pub enum IssueCommentDeletedIssueActiveLockReason {
 }
 impl From<&IssueCommentDeletedIssueActiveLockReason> for IssueCommentDeletedIssueActiveLockReason {
     fn from(value: &IssueCommentDeletedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentDeletedIssueActiveLockReason {
@@ -39908,7 +39908,7 @@ pub enum IssueCommentDeletedIssueAssigneeType {
 }
 impl From<&IssueCommentDeletedIssueAssigneeType> for IssueCommentDeletedIssueAssigneeType {
     fn from(value: &IssueCommentDeletedIssueAssigneeType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentDeletedIssueAssigneeType {
@@ -40020,7 +40020,7 @@ pub enum IssueCommentDeletedIssueState {
 }
 impl From<&IssueCommentDeletedIssueState> for IssueCommentDeletedIssueState {
     fn from(value: &IssueCommentDeletedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentDeletedIssueState {
@@ -40237,7 +40237,7 @@ pub enum IssueCommentEditedAction {
 }
 impl From<&IssueCommentEditedAction> for IssueCommentEditedAction {
     fn from(value: &IssueCommentEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentEditedAction {
@@ -40494,7 +40494,7 @@ pub enum IssueCommentEditedIssueActiveLockReason {
 }
 impl From<&IssueCommentEditedIssueActiveLockReason> for IssueCommentEditedIssueActiveLockReason {
     fn from(value: &IssueCommentEditedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentEditedIssueActiveLockReason {
@@ -40621,7 +40621,7 @@ pub enum IssueCommentEditedIssueAssigneeType {
 }
 impl From<&IssueCommentEditedIssueAssigneeType> for IssueCommentEditedIssueAssigneeType {
     fn from(value: &IssueCommentEditedIssueAssigneeType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentEditedIssueAssigneeType {
@@ -40733,7 +40733,7 @@ pub enum IssueCommentEditedIssueState {
 }
 impl From<&IssueCommentEditedIssueState> for IssueCommentEditedIssueState {
     fn from(value: &IssueCommentEditedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueCommentEditedIssueState {
@@ -40889,7 +40889,7 @@ pub enum IssueState {
 }
 impl From<&IssueState> for IssueState {
     fn from(value: &IssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssueState {
@@ -41025,7 +41025,7 @@ pub enum IssuesAssignedAction {
 }
 impl From<&IssuesAssignedAction> for IssuesAssignedAction {
     fn from(value: &IssuesAssignedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesAssignedAction {
@@ -41168,7 +41168,7 @@ pub enum IssuesClosedAction {
 }
 impl From<&IssuesClosedAction> for IssuesClosedAction {
     fn from(value: &IssuesClosedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesClosedAction {
@@ -41311,7 +41311,7 @@ pub enum IssuesClosedIssueActiveLockReason {
 }
 impl From<&IssuesClosedIssueActiveLockReason> for IssuesClosedIssueActiveLockReason {
     fn from(value: &IssuesClosedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesClosedIssueActiveLockReason {
@@ -41420,7 +41420,7 @@ pub enum IssuesClosedIssueState {
 }
 impl From<&IssuesClosedIssueState> for IssuesClosedIssueState {
     fn from(value: &IssuesClosedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesClosedIssueState {
@@ -41536,7 +41536,7 @@ pub enum IssuesDeletedAction {
 }
 impl From<&IssuesDeletedAction> for IssuesDeletedAction {
     fn from(value: &IssuesDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesDeletedAction {
@@ -41673,7 +41673,7 @@ pub enum IssuesDemilestonedAction {
 }
 impl From<&IssuesDemilestonedAction> for IssuesDemilestonedAction {
     fn from(value: &IssuesDemilestonedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesDemilestonedAction {
@@ -41810,7 +41810,7 @@ pub enum IssuesDemilestonedIssueActiveLockReason {
 }
 impl From<&IssuesDemilestonedIssueActiveLockReason> for IssuesDemilestonedIssueActiveLockReason {
     fn from(value: &IssuesDemilestonedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesDemilestonedIssueActiveLockReason {
@@ -41923,7 +41923,7 @@ pub enum IssuesDemilestonedIssueState {
 }
 impl From<&IssuesDemilestonedIssueState> for IssuesDemilestonedIssueState {
     fn from(value: &IssuesDemilestonedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesDemilestonedIssueState {
@@ -42081,7 +42081,7 @@ pub enum IssuesEditedAction {
 }
 impl From<&IssuesEditedAction> for IssuesEditedAction {
     fn from(value: &IssuesEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesEditedAction {
@@ -42483,7 +42483,7 @@ pub enum IssuesLabeledAction {
 }
 impl From<&IssuesLabeledAction> for IssuesLabeledAction {
     fn from(value: &IssuesLabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesLabeledAction {
@@ -42632,7 +42632,7 @@ pub enum IssuesLockedAction {
 }
 impl From<&IssuesLockedAction> for IssuesLockedAction {
     fn from(value: &IssuesLockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesLockedAction {
@@ -42785,7 +42785,7 @@ pub enum IssuesLockedIssueActiveLockReason {
 }
 impl From<&IssuesLockedIssueActiveLockReason> for IssuesLockedIssueActiveLockReason {
     fn from(value: &IssuesLockedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesLockedIssueActiveLockReason {
@@ -42898,7 +42898,7 @@ pub enum IssuesLockedIssueState {
 }
 impl From<&IssuesLockedIssueState> for IssuesLockedIssueState {
     fn from(value: &IssuesLockedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesLockedIssueState {
@@ -43037,7 +43037,7 @@ pub enum IssuesMilestonedAction {
 }
 impl From<&IssuesMilestonedAction> for IssuesMilestonedAction {
     fn from(value: &IssuesMilestonedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesMilestonedAction {
@@ -43174,7 +43174,7 @@ pub enum IssuesMilestonedIssueActiveLockReason {
 }
 impl From<&IssuesMilestonedIssueActiveLockReason> for IssuesMilestonedIssueActiveLockReason {
     fn from(value: &IssuesMilestonedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesMilestonedIssueActiveLockReason {
@@ -43379,7 +43379,7 @@ pub enum IssuesMilestonedIssueMilestoneState {
 }
 impl From<&IssuesMilestonedIssueMilestoneState> for IssuesMilestonedIssueMilestoneState {
     fn from(value: &IssuesMilestonedIssueMilestoneState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesMilestonedIssueMilestoneState {
@@ -43488,7 +43488,7 @@ pub enum IssuesMilestonedIssueState {
 }
 impl From<&IssuesMilestonedIssueState> for IssuesMilestonedIssueState {
     fn from(value: &IssuesMilestonedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesMilestonedIssueState {
@@ -43647,7 +43647,7 @@ pub enum IssuesOpenedAction {
 }
 impl From<&IssuesOpenedAction> for IssuesOpenedAction {
     fn from(value: &IssuesOpenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesOpenedAction {
@@ -43823,7 +43823,7 @@ pub enum IssuesOpenedIssueActiveLockReason {
 }
 impl From<&IssuesOpenedIssueActiveLockReason> for IssuesOpenedIssueActiveLockReason {
     fn from(value: &IssuesOpenedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesOpenedIssueActiveLockReason {
@@ -43932,7 +43932,7 @@ pub enum IssuesOpenedIssueState {
 }
 impl From<&IssuesOpenedIssueState> for IssuesOpenedIssueState {
     fn from(value: &IssuesOpenedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesOpenedIssueState {
@@ -44048,7 +44048,7 @@ pub enum IssuesPinnedAction {
 }
 impl From<&IssuesPinnedAction> for IssuesPinnedAction {
     fn from(value: &IssuesPinnedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesPinnedAction {
@@ -44183,7 +44183,7 @@ pub enum IssuesReopenedAction {
 }
 impl From<&IssuesReopenedAction> for IssuesReopenedAction {
     fn from(value: &IssuesReopenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesReopenedAction {
@@ -44321,7 +44321,7 @@ pub enum IssuesReopenedIssueActiveLockReason {
 }
 impl From<&IssuesReopenedIssueActiveLockReason> for IssuesReopenedIssueActiveLockReason {
     fn from(value: &IssuesReopenedIssueActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesReopenedIssueActiveLockReason {
@@ -44430,7 +44430,7 @@ pub enum IssuesReopenedIssueState {
 }
 impl From<&IssuesReopenedIssueState> for IssuesReopenedIssueState {
     fn from(value: &IssuesReopenedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesReopenedIssueState {
@@ -44564,7 +44564,7 @@ pub enum IssuesTransferredAction {
 }
 impl From<&IssuesTransferredAction> for IssuesTransferredAction {
     fn from(value: &IssuesTransferredAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesTransferredAction {
@@ -44731,7 +44731,7 @@ pub enum IssuesUnassignedAction {
 }
 impl From<&IssuesUnassignedAction> for IssuesUnassignedAction {
     fn from(value: &IssuesUnassignedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesUnassignedAction {
@@ -44854,7 +44854,7 @@ pub enum IssuesUnlabeledAction {
 }
 impl From<&IssuesUnlabeledAction> for IssuesUnlabeledAction {
     fn from(value: &IssuesUnlabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesUnlabeledAction {
@@ -44993,7 +44993,7 @@ pub enum IssuesUnlockedAction {
 }
 impl From<&IssuesUnlockedAction> for IssuesUnlockedAction {
     fn from(value: &IssuesUnlockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesUnlockedAction {
@@ -45227,7 +45227,7 @@ pub enum IssuesUnlockedIssueState {
 }
 impl From<&IssuesUnlockedIssueState> for IssuesUnlockedIssueState {
     fn from(value: &IssuesUnlockedIssueState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesUnlockedIssueState {
@@ -45345,7 +45345,7 @@ pub enum IssuesUnpinnedAction {
 }
 impl From<&IssuesUnpinnedAction> for IssuesUnpinnedAction {
     fn from(value: &IssuesUnpinnedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for IssuesUnpinnedAction {
@@ -45534,7 +45534,7 @@ pub enum LabelCreatedAction {
 }
 impl From<&LabelCreatedAction> for LabelCreatedAction {
     fn from(value: &LabelCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LabelCreatedAction {
@@ -45652,7 +45652,7 @@ pub enum LabelDeletedAction {
 }
 impl From<&LabelDeletedAction> for LabelDeletedAction {
     fn from(value: &LabelDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LabelDeletedAction {
@@ -45818,7 +45818,7 @@ pub enum LabelEditedAction {
 }
 impl From<&LabelEditedAction> for LabelEditedAction {
     fn from(value: &LabelEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LabelEditedAction {
@@ -46512,7 +46512,7 @@ pub enum MarketplacePurchaseCancelledAction {
 }
 impl From<&MarketplacePurchaseCancelledAction> for MarketplacePurchaseCancelledAction {
     fn from(value: &MarketplacePurchaseCancelledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarketplacePurchaseCancelledAction {
@@ -47028,7 +47028,7 @@ pub enum MarketplacePurchaseChangedAction {
 }
 impl From<&MarketplacePurchaseChangedAction> for MarketplacePurchaseChangedAction {
     fn from(value: &MarketplacePurchaseChangedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarketplacePurchaseChangedAction {
@@ -47609,7 +47609,7 @@ pub enum MarketplacePurchasePendingChangeAction {
 }
 impl From<&MarketplacePurchasePendingChangeAction> for MarketplacePurchasePendingChangeAction {
     fn from(value: &MarketplacePurchasePendingChangeAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarketplacePurchasePendingChangeAction {
@@ -47829,7 +47829,7 @@ impl From<&MarketplacePurchasePendingChangeCancelledAction>
     for MarketplacePurchasePendingChangeCancelledAction
 {
     fn from(value: &MarketplacePurchasePendingChangeCancelledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarketplacePurchasePendingChangeCancelledAction {
@@ -48722,7 +48722,7 @@ pub enum MarketplacePurchasePurchasedAction {
 }
 impl From<&MarketplacePurchasePurchasedAction> for MarketplacePurchasePurchasedAction {
     fn from(value: &MarketplacePurchasePurchasedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MarketplacePurchasePurchasedAction {
@@ -49160,7 +49160,7 @@ pub enum MemberAddedAction {
 }
 impl From<&MemberAddedAction> for MemberAddedAction {
     fn from(value: &MemberAddedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MemberAddedAction {
@@ -49293,7 +49293,7 @@ pub enum MemberAddedChangesPermissionTo {
 }
 impl From<&MemberAddedChangesPermissionTo> for MemberAddedChangesPermissionTo {
     fn from(value: &MemberAddedChangesPermissionTo) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MemberAddedChangesPermissionTo {
@@ -49433,7 +49433,7 @@ pub enum MemberEditedAction {
 }
 impl From<&MemberEditedAction> for MemberEditedAction {
     fn from(value: &MemberEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MemberEditedAction {
@@ -49664,7 +49664,7 @@ pub enum MemberRemovedAction {
 }
 impl From<&MemberRemovedAction> for MemberRemovedAction {
     fn from(value: &MemberRemovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MemberRemovedAction {
@@ -49848,7 +49848,7 @@ pub enum MembershipAddedAction {
 }
 impl From<&MembershipAddedAction> for MembershipAddedAction {
     fn from(value: &MembershipAddedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MembershipAddedAction {
@@ -49906,7 +49906,7 @@ pub enum MembershipAddedScope {
 }
 impl From<&MembershipAddedScope> for MembershipAddedScope {
     fn from(value: &MembershipAddedScope) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MembershipAddedScope {
@@ -50098,7 +50098,7 @@ pub enum MembershipRemovedAction {
 }
 impl From<&MembershipRemovedAction> for MembershipRemovedAction {
     fn from(value: &MembershipRemovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MembershipRemovedAction {
@@ -50159,7 +50159,7 @@ pub enum MembershipRemovedScope {
 }
 impl From<&MembershipRemovedScope> for MembershipRemovedScope {
     fn from(value: &MembershipRemovedScope) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MembershipRemovedScope {
@@ -50389,7 +50389,7 @@ pub enum MetaDeletedAction {
 }
 impl From<&MetaDeletedAction> for MetaDeletedAction {
     fn from(value: &MetaDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MetaDeletedAction {
@@ -50581,7 +50581,7 @@ pub enum MetaDeletedHookConfigContentType {
 }
 impl From<&MetaDeletedHookConfigContentType> for MetaDeletedHookConfigContentType {
     fn from(value: &MetaDeletedHookConfigContentType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MetaDeletedHookConfigContentType {
@@ -50892,7 +50892,7 @@ pub enum MilestoneClosedAction {
 }
 impl From<&MilestoneClosedAction> for MilestoneClosedAction {
     fn from(value: &MilestoneClosedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneClosedAction {
@@ -51009,7 +51009,7 @@ pub enum MilestoneClosedMilestoneState {
 }
 impl From<&MilestoneClosedMilestoneState> for MilestoneClosedMilestoneState {
     fn from(value: &MilestoneClosedMilestoneState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneClosedMilestoneState {
@@ -51148,7 +51148,7 @@ pub enum MilestoneCreatedAction {
 }
 impl From<&MilestoneCreatedAction> for MilestoneCreatedAction {
     fn from(value: &MilestoneCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneCreatedAction {
@@ -51265,7 +51265,7 @@ pub enum MilestoneCreatedMilestoneState {
 }
 impl From<&MilestoneCreatedMilestoneState> for MilestoneCreatedMilestoneState {
     fn from(value: &MilestoneCreatedMilestoneState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneCreatedMilestoneState {
@@ -51381,7 +51381,7 @@ pub enum MilestoneDeletedAction {
 }
 impl From<&MilestoneDeletedAction> for MilestoneDeletedAction {
     fn from(value: &MilestoneDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneDeletedAction {
@@ -51545,7 +51545,7 @@ pub enum MilestoneEditedAction {
 }
 impl From<&MilestoneEditedAction> for MilestoneEditedAction {
     fn from(value: &MilestoneEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneEditedAction {
@@ -51910,7 +51910,7 @@ pub enum MilestoneOpenedAction {
 }
 impl From<&MilestoneOpenedAction> for MilestoneOpenedAction {
     fn from(value: &MilestoneOpenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneOpenedAction {
@@ -52027,7 +52027,7 @@ pub enum MilestoneOpenedMilestoneState {
 }
 impl From<&MilestoneOpenedMilestoneState> for MilestoneOpenedMilestoneState {
     fn from(value: &MilestoneOpenedMilestoneState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneOpenedMilestoneState {
@@ -52088,7 +52088,7 @@ pub enum MilestoneState {
 }
 impl From<&MilestoneState> for MilestoneState {
     fn from(value: &MilestoneState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for MilestoneState {
@@ -52203,7 +52203,7 @@ pub enum OrgBlockBlockedAction {
 }
 impl From<&OrgBlockBlockedAction> for OrgBlockBlockedAction {
     fn from(value: &OrgBlockBlockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrgBlockBlockedAction {
@@ -52354,7 +52354,7 @@ pub enum OrgBlockUnblockedAction {
 }
 impl From<&OrgBlockUnblockedAction> for OrgBlockUnblockedAction {
     fn from(value: &OrgBlockUnblockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrgBlockUnblockedAction {
@@ -52568,7 +52568,7 @@ pub enum OrganizationDeletedAction {
 }
 impl From<&OrganizationDeletedAction> for OrganizationDeletedAction {
     fn from(value: &OrganizationDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrganizationDeletedAction {
@@ -52744,7 +52744,7 @@ pub enum OrganizationMemberAddedAction {
 }
 impl From<&OrganizationMemberAddedAction> for OrganizationMemberAddedAction {
     fn from(value: &OrganizationMemberAddedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrganizationMemberAddedAction {
@@ -52926,7 +52926,7 @@ pub enum OrganizationMemberInvitedAction {
 }
 impl From<&OrganizationMemberInvitedAction> for OrganizationMemberInvitedAction {
     fn from(value: &OrganizationMemberInvitedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrganizationMemberInvitedAction {
@@ -53133,7 +53133,7 @@ pub enum OrganizationMemberRemovedAction {
 }
 impl From<&OrganizationMemberRemovedAction> for OrganizationMemberRemovedAction {
     fn from(value: &OrganizationMemberRemovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrganizationMemberRemovedAction {
@@ -53244,7 +53244,7 @@ pub enum OrganizationRenamedAction {
 }
 impl From<&OrganizationRenamedAction> for OrganizationRenamedAction {
     fn from(value: &OrganizationRenamedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for OrganizationRenamedAction {
@@ -53682,7 +53682,7 @@ pub enum PackagePublishedAction {
 }
 impl From<&PackagePublishedAction> for PackagePublishedAction {
     fn from(value: &PackagePublishedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PackagePublishedAction {
@@ -54866,7 +54866,7 @@ pub enum PackageUpdatedAction {
 }
 impl From<&PackageUpdatedAction> for PackageUpdatedAction {
     fn from(value: &PackageUpdatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PackageUpdatedAction {
@@ -56275,7 +56275,7 @@ pub enum PingEventHookConfigContentType {
 }
 impl From<&PingEventHookConfigContentType> for PingEventHookConfigContentType {
     fn from(value: &PingEventHookConfigContentType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PingEventHookConfigContentType {
@@ -56669,7 +56669,7 @@ pub enum ProjectCardConvertedAction {
 }
 impl From<&ProjectCardConvertedAction> for ProjectCardConvertedAction {
     fn from(value: &ProjectCardConvertedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCardConvertedAction {
@@ -56852,7 +56852,7 @@ pub enum ProjectCardCreatedAction {
 }
 impl From<&ProjectCardCreatedAction> for ProjectCardCreatedAction {
     fn from(value: &ProjectCardCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCardCreatedAction {
@@ -56968,7 +56968,7 @@ pub enum ProjectCardDeletedAction {
 }
 impl From<&ProjectCardDeletedAction> for ProjectCardDeletedAction {
     fn from(value: &ProjectCardDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCardDeletedAction {
@@ -57107,7 +57107,7 @@ pub enum ProjectCardEditedAction {
 }
 impl From<&ProjectCardEditedAction> for ProjectCardEditedAction {
     fn from(value: &ProjectCardEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCardEditedAction {
@@ -57397,7 +57397,7 @@ pub enum ProjectCardMovedAction {
 }
 impl From<&ProjectCardMovedAction> for ProjectCardMovedAction {
     fn from(value: &ProjectCardMovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCardMovedAction {
@@ -57634,7 +57634,7 @@ pub enum ProjectClosedAction {
 }
 impl From<&ProjectClosedAction> for ProjectClosedAction {
     fn from(value: &ProjectClosedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectClosedAction {
@@ -57825,7 +57825,7 @@ pub enum ProjectColumnCreatedAction {
 }
 impl From<&ProjectColumnCreatedAction> for ProjectColumnCreatedAction {
     fn from(value: &ProjectColumnCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectColumnCreatedAction {
@@ -57941,7 +57941,7 @@ pub enum ProjectColumnDeletedAction {
 }
 impl From<&ProjectColumnDeletedAction> for ProjectColumnDeletedAction {
     fn from(value: &ProjectColumnDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectColumnDeletedAction {
@@ -58077,7 +58077,7 @@ pub enum ProjectColumnEditedAction {
 }
 impl From<&ProjectColumnEditedAction> for ProjectColumnEditedAction {
     fn from(value: &ProjectColumnEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectColumnEditedAction {
@@ -58314,7 +58314,7 @@ pub enum ProjectColumnMovedAction {
 }
 impl From<&ProjectColumnMovedAction> for ProjectColumnMovedAction {
     fn from(value: &ProjectColumnMovedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectColumnMovedAction {
@@ -58430,7 +58430,7 @@ pub enum ProjectCreatedAction {
 }
 impl From<&ProjectCreatedAction> for ProjectCreatedAction {
     fn from(value: &ProjectCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectCreatedAction {
@@ -58546,7 +58546,7 @@ pub enum ProjectDeletedAction {
 }
 impl From<&ProjectDeletedAction> for ProjectDeletedAction {
     fn from(value: &ProjectDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectDeletedAction {
@@ -58697,7 +58697,7 @@ pub enum ProjectEditedAction {
 }
 impl From<&ProjectEditedAction> for ProjectEditedAction {
     fn from(value: &ProjectEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectEditedAction {
@@ -58993,7 +58993,7 @@ pub enum ProjectReopenedAction {
 }
 impl From<&ProjectReopenedAction> for ProjectReopenedAction {
     fn from(value: &ProjectReopenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectReopenedAction {
@@ -59054,7 +59054,7 @@ pub enum ProjectState {
 }
 impl From<&ProjectState> for ProjectState {
     fn from(value: &ProjectState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ProjectState {
@@ -59959,7 +59959,7 @@ pub enum PullRequestActiveLockReason {
 }
 impl From<&PullRequestActiveLockReason> for PullRequestActiveLockReason {
     fn from(value: &PullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestActiveLockReason {
@@ -60093,7 +60093,7 @@ pub enum PullRequestAssignedAction {
 }
 impl From<&PullRequestAssignedAction> for PullRequestAssignedAction {
     fn from(value: &PullRequestAssignedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestAssignedAction {
@@ -60214,7 +60214,7 @@ pub enum PullRequestAutoMergeDisabledAction {
 }
 impl From<&PullRequestAutoMergeDisabledAction> for PullRequestAutoMergeDisabledAction {
     fn from(value: &PullRequestAutoMergeDisabledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestAutoMergeDisabledAction {
@@ -60335,7 +60335,7 @@ pub enum PullRequestAutoMergeEnabledAction {
 }
 impl From<&PullRequestAutoMergeEnabledAction> for PullRequestAutoMergeEnabledAction {
     fn from(value: &PullRequestAutoMergeEnabledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestAutoMergeEnabledAction {
@@ -60537,7 +60537,7 @@ pub enum PullRequestClosedAction {
 }
 impl From<&PullRequestClosedAction> for PullRequestClosedAction {
     fn from(value: &PullRequestClosedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestClosedAction {
@@ -60706,7 +60706,7 @@ impl From<&PullRequestClosedPullRequestActiveLockReason>
     for PullRequestClosedPullRequestActiveLockReason
 {
     fn from(value: &PullRequestClosedPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestClosedPullRequestActiveLockReason {
@@ -60974,7 +60974,7 @@ pub enum PullRequestClosedPullRequestState {
 }
 impl From<&PullRequestClosedPullRequestState> for PullRequestClosedPullRequestState {
     fn from(value: &PullRequestClosedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestClosedPullRequestState {
@@ -61136,7 +61136,7 @@ pub enum PullRequestConvertedToDraftAction {
 }
 impl From<&PullRequestConvertedToDraftAction> for PullRequestConvertedToDraftAction {
     fn from(value: &PullRequestConvertedToDraftAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestConvertedToDraftAction {
@@ -61315,7 +61315,7 @@ impl From<&PullRequestConvertedToDraftPullRequestActiveLockReason>
     for PullRequestConvertedToDraftPullRequestActiveLockReason
 {
     fn from(value: &PullRequestConvertedToDraftPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestConvertedToDraftPullRequestActiveLockReason {
@@ -61595,7 +61595,7 @@ impl From<&PullRequestConvertedToDraftPullRequestState>
     for PullRequestConvertedToDraftPullRequestState
 {
     fn from(value: &PullRequestConvertedToDraftPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestConvertedToDraftPullRequestState {
@@ -61755,7 +61755,7 @@ pub enum PullRequestEditedAction {
 }
 impl From<&PullRequestEditedAction> for PullRequestEditedAction {
     fn from(value: &PullRequestEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestEditedAction {
@@ -62221,7 +62221,7 @@ pub enum PullRequestLabeledAction {
 }
 impl From<&PullRequestLabeledAction> for PullRequestLabeledAction {
     fn from(value: &PullRequestLabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestLabeledAction {
@@ -62409,7 +62409,7 @@ pub enum PullRequestLockedAction {
 }
 impl From<&PullRequestLockedAction> for PullRequestLockedAction {
     fn from(value: &PullRequestLockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestLockedAction {
@@ -62571,7 +62571,7 @@ pub enum PullRequestOpenedAction {
 }
 impl From<&PullRequestOpenedAction> for PullRequestOpenedAction {
     fn from(value: &PullRequestOpenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestOpenedAction {
@@ -62996,7 +62996,7 @@ pub enum PullRequestOpenedPullRequestState {
 }
 impl From<&PullRequestOpenedPullRequestState> for PullRequestOpenedPullRequestState {
     fn from(value: &PullRequestOpenedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestOpenedPullRequestState {
@@ -63162,7 +63162,7 @@ pub enum PullRequestReadyForReviewAction {
 }
 impl From<&PullRequestReadyForReviewAction> for PullRequestReadyForReviewAction {
     fn from(value: &PullRequestReadyForReviewAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReadyForReviewAction {
@@ -63344,7 +63344,7 @@ impl From<&PullRequestReadyForReviewPullRequestActiveLockReason>
     for PullRequestReadyForReviewPullRequestActiveLockReason
 {
     fn from(value: &PullRequestReadyForReviewPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReadyForReviewPullRequestActiveLockReason {
@@ -63616,7 +63616,7 @@ impl From<&PullRequestReadyForReviewPullRequestState>
     for PullRequestReadyForReviewPullRequestState
 {
     fn from(value: &PullRequestReadyForReviewPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReadyForReviewPullRequestState {
@@ -63778,7 +63778,7 @@ pub enum PullRequestReopenedAction {
 }
 impl From<&PullRequestReopenedAction> for PullRequestReopenedAction {
     fn from(value: &PullRequestReopenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReopenedAction {
@@ -63957,7 +63957,7 @@ impl From<&PullRequestReopenedPullRequestActiveLockReason>
     for PullRequestReopenedPullRequestActiveLockReason
 {
     fn from(value: &PullRequestReopenedPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReopenedPullRequestActiveLockReason {
@@ -64225,7 +64225,7 @@ pub enum PullRequestReopenedPullRequestState {
 }
 impl From<&PullRequestReopenedPullRequestState> for PullRequestReopenedPullRequestState {
     fn from(value: &PullRequestReopenedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReopenedPullRequestState {
@@ -64924,7 +64924,7 @@ pub enum PullRequestReviewCommentCreatedAction {
 }
 impl From<&PullRequestReviewCommentCreatedAction> for PullRequestReviewCommentCreatedAction {
     fn from(value: &PullRequestReviewCommentCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentCreatedAction {
@@ -65352,7 +65352,7 @@ impl From<&PullRequestReviewCommentCreatedPullRequestActiveLockReason>
     for PullRequestReviewCommentCreatedPullRequestActiveLockReason
 {
     fn from(value: &PullRequestReviewCommentCreatedPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
@@ -65631,7 +65631,7 @@ impl From<&PullRequestReviewCommentCreatedPullRequestState>
     for PullRequestReviewCommentCreatedPullRequestState
 {
     fn from(value: &PullRequestReviewCommentCreatedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentCreatedPullRequestState {
@@ -66054,7 +66054,7 @@ pub enum PullRequestReviewCommentDeletedAction {
 }
 impl From<&PullRequestReviewCommentDeletedAction> for PullRequestReviewCommentDeletedAction {
     fn from(value: &PullRequestReviewCommentDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentDeletedAction {
@@ -66482,7 +66482,7 @@ impl From<&PullRequestReviewCommentDeletedPullRequestActiveLockReason>
     for PullRequestReviewCommentDeletedPullRequestActiveLockReason
 {
     fn from(value: &PullRequestReviewCommentDeletedPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
@@ -66761,7 +66761,7 @@ impl From<&PullRequestReviewCommentDeletedPullRequestState>
     for PullRequestReviewCommentDeletedPullRequestState
 {
     fn from(value: &PullRequestReviewCommentDeletedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentDeletedPullRequestState {
@@ -67206,7 +67206,7 @@ pub enum PullRequestReviewCommentEditedAction {
 }
 impl From<&PullRequestReviewCommentEditedAction> for PullRequestReviewCommentEditedAction {
     fn from(value: &PullRequestReviewCommentEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentEditedAction {
@@ -67705,7 +67705,7 @@ impl From<&PullRequestReviewCommentEditedPullRequestActiveLockReason>
     for PullRequestReviewCommentEditedPullRequestActiveLockReason
 {
     fn from(value: &PullRequestReviewCommentEditedPullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentEditedPullRequestActiveLockReason {
@@ -67984,7 +67984,7 @@ impl From<&PullRequestReviewCommentEditedPullRequestState>
     for PullRequestReviewCommentEditedPullRequestState
 {
     fn from(value: &PullRequestReviewCommentEditedPullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentEditedPullRequestState {
@@ -68134,7 +68134,7 @@ pub enum PullRequestReviewCommentSide {
 }
 impl From<&PullRequestReviewCommentSide> for PullRequestReviewCommentSide {
     fn from(value: &PullRequestReviewCommentSide) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentSide {
@@ -68198,7 +68198,7 @@ pub enum PullRequestReviewCommentStartSide {
 }
 impl From<&PullRequestReviewCommentStartSide> for PullRequestReviewCommentStartSide {
     fn from(value: &PullRequestReviewCommentStartSide) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewCommentStartSide {
@@ -68396,7 +68396,7 @@ pub enum PullRequestReviewDismissedAction {
 }
 impl From<&PullRequestReviewDismissedAction> for PullRequestReviewDismissedAction {
     fn from(value: &PullRequestReviewDismissedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewDismissedAction {
@@ -68596,7 +68596,7 @@ pub enum PullRequestReviewDismissedReviewState {
 }
 impl From<&PullRequestReviewDismissedReviewState> for PullRequestReviewDismissedReviewState {
     fn from(value: &PullRequestReviewDismissedReviewState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewDismissedReviewState {
@@ -68810,7 +68810,7 @@ pub enum PullRequestReviewEditedAction {
 }
 impl From<&PullRequestReviewEditedAction> for PullRequestReviewEditedAction {
     fn from(value: &PullRequestReviewEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewEditedAction {
@@ -69256,7 +69256,7 @@ impl From<&PullRequestReviewRequestRemovedVariant0Action>
     for PullRequestReviewRequestRemovedVariant0Action
 {
     fn from(value: &PullRequestReviewRequestRemovedVariant0Action) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewRequestRemovedVariant0Action {
@@ -69315,7 +69315,7 @@ impl From<&PullRequestReviewRequestRemovedVariant1Action>
     for PullRequestReviewRequestRemovedVariant1Action
 {
     fn from(value: &PullRequestReviewRequestRemovedVariant1Action) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewRequestRemovedVariant1Action {
@@ -69504,7 +69504,7 @@ pub enum PullRequestReviewRequestedVariant0Action {
 }
 impl From<&PullRequestReviewRequestedVariant0Action> for PullRequestReviewRequestedVariant0Action {
     fn from(value: &PullRequestReviewRequestedVariant0Action) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewRequestedVariant0Action {
@@ -69561,7 +69561,7 @@ pub enum PullRequestReviewRequestedVariant1Action {
 }
 impl From<&PullRequestReviewRequestedVariant1Action> for PullRequestReviewRequestedVariant1Action {
     fn from(value: &PullRequestReviewRequestedVariant1Action) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewRequestedVariant1Action {
@@ -69754,7 +69754,7 @@ pub enum PullRequestReviewSubmittedAction {
 }
 impl From<&PullRequestReviewSubmittedAction> for PullRequestReviewSubmittedAction {
     fn from(value: &PullRequestReviewSubmittedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestReviewSubmittedAction {
@@ -69955,7 +69955,7 @@ pub enum PullRequestState {
 }
 impl From<&PullRequestState> for PullRequestState {
     fn from(value: &PullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestState {
@@ -70090,7 +70090,7 @@ pub enum PullRequestSynchronizeAction {
 }
 impl From<&PullRequestSynchronizeAction> for PullRequestSynchronizeAction {
     fn from(value: &PullRequestSynchronizeAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestSynchronizeAction {
@@ -70218,7 +70218,7 @@ pub enum PullRequestUnassignedAction {
 }
 impl From<&PullRequestUnassignedAction> for PullRequestUnassignedAction {
     fn from(value: &PullRequestUnassignedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestUnassignedAction {
@@ -70346,7 +70346,7 @@ pub enum PullRequestUnlabeledAction {
 }
 impl From<&PullRequestUnlabeledAction> for PullRequestUnlabeledAction {
     fn from(value: &PullRequestUnlabeledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestUnlabeledAction {
@@ -70469,7 +70469,7 @@ pub enum PullRequestUnlockedAction {
 }
 impl From<&PullRequestUnlockedAction> for PullRequestUnlockedAction {
     fn from(value: &PullRequestUnlockedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for PullRequestUnlockedAction {
@@ -70904,7 +70904,7 @@ pub enum ReleaseAssetState {
 }
 impl From<&ReleaseAssetState> for ReleaseAssetState {
     fn from(value: &ReleaseAssetState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseAssetState {
@@ -71020,7 +71020,7 @@ pub enum ReleaseCreatedAction {
 }
 impl From<&ReleaseCreatedAction> for ReleaseCreatedAction {
     fn from(value: &ReleaseCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseCreatedAction {
@@ -71136,7 +71136,7 @@ pub enum ReleaseDeletedAction {
 }
 impl From<&ReleaseDeletedAction> for ReleaseDeletedAction {
     fn from(value: &ReleaseDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseDeletedAction {
@@ -71286,7 +71286,7 @@ pub enum ReleaseEditedAction {
 }
 impl From<&ReleaseEditedAction> for ReleaseEditedAction {
     fn from(value: &ReleaseEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseEditedAction {
@@ -71619,7 +71619,7 @@ pub enum ReleasePrereleasedAction {
 }
 impl From<&ReleasePrereleasedAction> for ReleasePrereleasedAction {
     fn from(value: &ReleasePrereleasedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleasePrereleasedAction {
@@ -71812,7 +71812,7 @@ pub enum ReleasePublishedAction {
 }
 impl From<&ReleasePublishedAction> for ReleasePublishedAction {
     fn from(value: &ReleasePublishedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleasePublishedAction {
@@ -71986,7 +71986,7 @@ pub enum ReleaseReleasedAction {
 }
 impl From<&ReleaseReleasedAction> for ReleaseReleasedAction {
     fn from(value: &ReleaseReleasedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseReleasedAction {
@@ -72118,7 +72118,7 @@ pub enum ReleaseUnpublishedAction {
 }
 impl From<&ReleaseUnpublishedAction> for ReleaseUnpublishedAction {
     fn from(value: &ReleaseUnpublishedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for ReleaseUnpublishedAction {
@@ -72942,7 +72942,7 @@ pub enum RepositoryArchivedAction {
 }
 impl From<&RepositoryArchivedAction> for RepositoryArchivedAction {
     fn from(value: &RepositoryArchivedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryArchivedAction {
@@ -73373,7 +73373,7 @@ pub enum RepositoryCreatedAction {
 }
 impl From<&RepositoryCreatedAction> for RepositoryCreatedAction {
     fn from(value: &RepositoryCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryCreatedAction {
@@ -73561,7 +73561,7 @@ pub enum RepositoryDeletedAction {
 }
 impl From<&RepositoryDeletedAction> for RepositoryDeletedAction {
     fn from(value: &RepositoryDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryDeletedAction {
@@ -73720,7 +73720,7 @@ pub enum RepositoryDispatchOnDemandTestAction {
 }
 impl From<&RepositoryDispatchOnDemandTestAction> for RepositoryDispatchOnDemandTestAction {
     fn from(value: &RepositoryDispatchOnDemandTestAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryDispatchOnDemandTestAction {
@@ -73881,7 +73881,7 @@ pub enum RepositoryEditedAction {
 }
 impl From<&RepositoryEditedAction> for RepositoryEditedAction {
     fn from(value: &RepositoryEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryEditedAction {
@@ -74264,7 +74264,7 @@ pub enum RepositoryImportEventStatus {
 }
 impl From<&RepositoryImportEventStatus> for RepositoryImportEventStatus {
     fn from(value: &RepositoryImportEventStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryImportEventStatus {
@@ -74751,7 +74751,7 @@ pub enum RepositoryPrivatizedAction {
 }
 impl From<&RepositoryPrivatizedAction> for RepositoryPrivatizedAction {
     fn from(value: &RepositoryPrivatizedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryPrivatizedAction {
@@ -75203,7 +75203,7 @@ pub enum RepositoryPublicizedAction {
 }
 impl From<&RepositoryPublicizedAction> for RepositoryPublicizedAction {
     fn from(value: &RepositoryPublicizedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryPublicizedAction {
@@ -75710,7 +75710,7 @@ pub enum RepositoryRenamedAction {
 }
 impl From<&RepositoryRenamedAction> for RepositoryRenamedAction {
     fn from(value: &RepositoryRenamedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryRenamedAction {
@@ -75964,7 +75964,7 @@ pub enum RepositoryTransferredAction {
 }
 impl From<&RepositoryTransferredAction> for RepositoryTransferredAction {
     fn from(value: &RepositoryTransferredAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryTransferredAction {
@@ -76202,7 +76202,7 @@ pub enum RepositoryUnarchivedAction {
 }
 impl From<&RepositoryUnarchivedAction> for RepositoryUnarchivedAction {
     fn from(value: &RepositoryUnarchivedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryUnarchivedAction {
@@ -76684,7 +76684,7 @@ pub enum RepositoryVulnerabilityAlertCreateAction {
 }
 impl From<&RepositoryVulnerabilityAlertCreateAction> for RepositoryVulnerabilityAlertCreateAction {
     fn from(value: &RepositoryVulnerabilityAlertCreateAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryVulnerabilityAlertCreateAction {
@@ -76935,7 +76935,7 @@ impl From<&RepositoryVulnerabilityAlertDismissAction>
     for RepositoryVulnerabilityAlertDismissAction
 {
     fn from(value: &RepositoryVulnerabilityAlertDismissAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryVulnerabilityAlertDismissAction {
@@ -77230,7 +77230,7 @@ impl From<&RepositoryVulnerabilityAlertResolveAction>
     for RepositoryVulnerabilityAlertResolveAction
 {
     fn from(value: &RepositoryVulnerabilityAlertResolveAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for RepositoryVulnerabilityAlertResolveAction {
@@ -77453,7 +77453,7 @@ pub enum SecretScanningAlertCreatedAction {
 }
 impl From<&SecretScanningAlertCreatedAction> for SecretScanningAlertCreatedAction {
     fn from(value: &SecretScanningAlertCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecretScanningAlertCreatedAction {
@@ -77692,7 +77692,7 @@ pub enum SecretScanningAlertReopenedAction {
 }
 impl From<&SecretScanningAlertReopenedAction> for SecretScanningAlertReopenedAction {
     fn from(value: &SecretScanningAlertReopenedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecretScanningAlertReopenedAction {
@@ -77890,7 +77890,7 @@ pub enum SecretScanningAlertResolvedAction {
 }
 impl From<&SecretScanningAlertResolvedAction> for SecretScanningAlertResolvedAction {
     fn from(value: &SecretScanningAlertResolvedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecretScanningAlertResolvedAction {
@@ -78014,7 +78014,7 @@ impl From<&SecretScanningAlertResolvedAlertResolution>
     for SecretScanningAlertResolvedAlertResolution
 {
     fn from(value: &SecretScanningAlertResolvedAlertResolution) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecretScanningAlertResolvedAlertResolution {
@@ -78339,7 +78339,7 @@ pub enum SecurityAdvisoryPerformedAction {
 }
 impl From<&SecurityAdvisoryPerformedAction> for SecurityAdvisoryPerformedAction {
     fn from(value: &SecurityAdvisoryPerformedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecurityAdvisoryPerformedAction {
@@ -79087,7 +79087,7 @@ pub enum SecurityAdvisoryPublishedAction {
 }
 impl From<&SecurityAdvisoryPublishedAction> for SecurityAdvisoryPublishedAction {
     fn from(value: &SecurityAdvisoryPublishedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecurityAdvisoryPublishedAction {
@@ -79835,7 +79835,7 @@ pub enum SecurityAdvisoryUpdatedAction {
 }
 impl From<&SecurityAdvisoryUpdatedAction> for SecurityAdvisoryUpdatedAction {
     fn from(value: &SecurityAdvisoryUpdatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecurityAdvisoryUpdatedAction {
@@ -80578,7 +80578,7 @@ pub enum SecurityAdvisoryWithdrawnAction {
 }
 impl From<&SecurityAdvisoryWithdrawnAction> for SecurityAdvisoryWithdrawnAction {
     fn from(value: &SecurityAdvisoryWithdrawnAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SecurityAdvisoryWithdrawnAction {
@@ -81486,7 +81486,7 @@ pub enum SimplePullRequestActiveLockReason {
 }
 impl From<&SimplePullRequestActiveLockReason> for SimplePullRequestActiveLockReason {
     fn from(value: &SimplePullRequestActiveLockReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SimplePullRequestActiveLockReason {
@@ -81755,7 +81755,7 @@ pub enum SimplePullRequestState {
 }
 impl From<&SimplePullRequestState> for SimplePullRequestState {
     fn from(value: &SimplePullRequestState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SimplePullRequestState {
@@ -81887,7 +81887,7 @@ pub enum SponsorshipCancelledAction {
 }
 impl From<&SponsorshipCancelledAction> for SponsorshipCancelledAction {
     fn from(value: &SponsorshipCancelledAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipCancelledAction {
@@ -82071,7 +82071,7 @@ pub enum SponsorshipCreatedAction {
 }
 impl From<&SponsorshipCreatedAction> for SponsorshipCreatedAction {
     fn from(value: &SponsorshipCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipCreatedAction {
@@ -82276,7 +82276,7 @@ pub enum SponsorshipEditedAction {
 }
 impl From<&SponsorshipEditedAction> for SponsorshipEditedAction {
     fn from(value: &SponsorshipEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipEditedAction {
@@ -82609,7 +82609,7 @@ pub enum SponsorshipPendingCancellationAction {
 }
 impl From<&SponsorshipPendingCancellationAction> for SponsorshipPendingCancellationAction {
     fn from(value: &SponsorshipPendingCancellationAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipPendingCancellationAction {
@@ -82825,7 +82825,7 @@ pub enum SponsorshipPendingTierChangeAction {
 }
 impl From<&SponsorshipPendingTierChangeAction> for SponsorshipPendingTierChangeAction {
     fn from(value: &SponsorshipPendingTierChangeAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipPendingTierChangeAction {
@@ -83166,7 +83166,7 @@ pub enum SponsorshipTierChangedAction {
 }
 impl From<&SponsorshipTierChangedAction> for SponsorshipTierChangedAction {
     fn from(value: &SponsorshipTierChangedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for SponsorshipTierChangedAction {
@@ -83405,7 +83405,7 @@ pub enum StarCreatedAction {
 }
 impl From<&StarCreatedAction> for StarCreatedAction {
     fn from(value: &StarCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StarCreatedAction {
@@ -83523,7 +83523,7 @@ pub enum StarDeletedAction {
 }
 impl From<&StarDeletedAction> for StarDeletedAction {
     fn from(value: &StarDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StarDeletedAction {
@@ -84676,7 +84676,7 @@ impl From<&StatusEventCommitCommitVerificationReason>
     for StatusEventCommitCommitVerificationReason
 {
     fn from(value: &StatusEventCommitCommitVerificationReason) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StatusEventCommitCommitVerificationReason {
@@ -84808,7 +84808,7 @@ pub enum StatusEventState {
 }
 impl From<&StatusEventState> for StatusEventState {
     fn from(value: &StatusEventState) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for StatusEventState {
@@ -85159,7 +85159,7 @@ pub enum TeamAddedToRepositoryAction {
 }
 impl From<&TeamAddedToRepositoryAction> for TeamAddedToRepositoryAction {
     fn from(value: &TeamAddedToRepositoryAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamAddedToRepositoryAction {
@@ -85275,7 +85275,7 @@ pub enum TeamCreatedAction {
 }
 impl From<&TeamCreatedAction> for TeamCreatedAction {
     fn from(value: &TeamCreatedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamCreatedAction {
@@ -85391,7 +85391,7 @@ pub enum TeamDeletedAction {
 }
 impl From<&TeamDeletedAction> for TeamDeletedAction {
     fn from(value: &TeamDeletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamDeletedAction {
@@ -85591,7 +85591,7 @@ pub enum TeamEditedAction {
 }
 impl From<&TeamEditedAction> for TeamEditedAction {
     fn from(value: &TeamEditedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamEditedAction {
@@ -86161,7 +86161,7 @@ pub enum TeamParentPrivacy {
 }
 impl From<&TeamParentPrivacy> for TeamParentPrivacy {
     fn from(value: &TeamParentPrivacy) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamParentPrivacy {
@@ -86228,7 +86228,7 @@ pub enum TeamPrivacy {
 }
 impl From<&TeamPrivacy> for TeamPrivacy {
     fn from(value: &TeamPrivacy) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamPrivacy {
@@ -86348,7 +86348,7 @@ pub enum TeamRemovedFromRepositoryAction {
 }
 impl From<&TeamRemovedFromRepositoryAction> for TeamRemovedFromRepositoryAction {
     fn from(value: &TeamRemovedFromRepositoryAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TeamRemovedFromRepositoryAction {
@@ -86555,7 +86555,7 @@ pub enum UserType {
 }
 impl From<&UserType> for UserType {
     fn from(value: &UserType) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for UserType {
@@ -86707,7 +86707,7 @@ pub enum WatchStartedAction {
 }
 impl From<&WatchStartedAction> for WatchStartedAction {
     fn from(value: &WatchStartedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WatchStartedAction {
@@ -87000,7 +87000,7 @@ pub enum WebhookEventsVariant0Item {
 }
 impl From<&WebhookEventsVariant0Item> for WebhookEventsVariant0Item {
     fn from(value: &WebhookEventsVariant0Item) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WebhookEventsVariant0Item {
@@ -87505,7 +87505,7 @@ pub enum WorkflowJobCompletedAction {
 }
 impl From<&WorkflowJobCompletedAction> for WorkflowJobCompletedAction {
     fn from(value: &WorkflowJobCompletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobCompletedAction {
@@ -87621,7 +87621,7 @@ impl From<&WorkflowJobCompletedWorkflowJobConclusion>
     for WorkflowJobCompletedWorkflowJobConclusion
 {
     fn from(value: &WorkflowJobCompletedWorkflowJobConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobCompletedWorkflowJobConclusion {
@@ -87686,7 +87686,7 @@ pub enum WorkflowJobCompletedWorkflowJobStatus {
 }
 impl From<&WorkflowJobCompletedWorkflowJobStatus> for WorkflowJobCompletedWorkflowJobStatus {
     fn from(value: &WorkflowJobCompletedWorkflowJobStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobCompletedWorkflowJobStatus {
@@ -87750,7 +87750,7 @@ pub enum WorkflowJobConclusion {
 }
 impl From<&WorkflowJobConclusion> for WorkflowJobConclusion {
     fn from(value: &WorkflowJobConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobConclusion {
@@ -87994,7 +87994,7 @@ pub enum WorkflowJobQueuedAction {
 }
 impl From<&WorkflowJobQueuedAction> for WorkflowJobQueuedAction {
     fn from(value: &WorkflowJobQueuedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobQueuedAction {
@@ -88164,7 +88164,7 @@ pub enum WorkflowJobQueuedWorkflowJobStatus {
 }
 impl From<&WorkflowJobQueuedWorkflowJobStatus> for WorkflowJobQueuedWorkflowJobStatus {
     fn from(value: &WorkflowJobQueuedWorkflowJobStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobQueuedWorkflowJobStatus {
@@ -88309,7 +88309,7 @@ pub enum WorkflowJobStartedAction {
 }
 impl From<&WorkflowJobStartedAction> for WorkflowJobStartedAction {
     fn from(value: &WorkflowJobStartedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobStartedAction {
@@ -88485,7 +88485,7 @@ pub enum WorkflowJobStartedWorkflowJobStatus {
 }
 impl From<&WorkflowJobStartedWorkflowJobStatus> for WorkflowJobStartedWorkflowJobStatus {
     fn from(value: &WorkflowJobStartedWorkflowJobStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobStartedWorkflowJobStatus {
@@ -88552,7 +88552,7 @@ pub enum WorkflowJobStatus {
 }
 impl From<&WorkflowJobStatus> for WorkflowJobStatus {
     fn from(value: &WorkflowJobStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowJobStatus {
@@ -88956,7 +88956,7 @@ pub enum WorkflowRunCompletedAction {
 }
 impl From<&WorkflowRunCompletedAction> for WorkflowRunCompletedAction {
     fn from(value: &WorkflowRunCompletedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunCompletedAction {
@@ -89104,7 +89104,7 @@ impl From<&WorkflowRunCompletedWorkflowRunConclusion>
     for WorkflowRunCompletedWorkflowRunConclusion
 {
     fn from(value: &WorkflowRunCompletedWorkflowRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunCompletedWorkflowRunConclusion {
@@ -89352,7 +89352,7 @@ pub enum WorkflowRunCompletedWorkflowRunStatus {
 }
 impl From<&WorkflowRunCompletedWorkflowRunStatus> for WorkflowRunCompletedWorkflowRunStatus {
     fn from(value: &WorkflowRunCompletedWorkflowRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunCompletedWorkflowRunStatus {
@@ -89433,7 +89433,7 @@ pub enum WorkflowRunConclusion {
 }
 impl From<&WorkflowRunConclusion> for WorkflowRunConclusion {
     fn from(value: &WorkflowRunConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunConclusion {
@@ -89768,7 +89768,7 @@ pub enum WorkflowRunRequestedAction {
 }
 impl From<&WorkflowRunRequestedAction> for WorkflowRunRequestedAction {
     fn from(value: &WorkflowRunRequestedAction) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunRequestedAction {
@@ -89834,7 +89834,7 @@ pub enum WorkflowRunStatus {
 }
 impl From<&WorkflowRunStatus> for WorkflowRunStatus {
     fn from(value: &WorkflowRunStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowRunStatus {
@@ -90008,7 +90008,7 @@ pub enum WorkflowStepCompletedConclusion {
 }
 impl From<&WorkflowStepCompletedConclusion> for WorkflowStepCompletedConclusion {
     fn from(value: &WorkflowStepCompletedConclusion) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowStepCompletedConclusion {
@@ -90069,7 +90069,7 @@ pub enum WorkflowStepCompletedStatus {
 }
 impl From<&WorkflowStepCompletedStatus> for WorkflowStepCompletedStatus {
     fn from(value: &WorkflowStepCompletedStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowStepCompletedStatus {
@@ -90185,7 +90185,7 @@ pub enum WorkflowStepInProgressStatus {
 }
 impl From<&WorkflowStepInProgressStatus> for WorkflowStepInProgressStatus {
     fn from(value: &WorkflowStepInProgressStatus) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for WorkflowStepInProgressStatus {

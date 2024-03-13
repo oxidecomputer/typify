@@ -83,7 +83,7 @@ pub enum LetterBoxLetter {
 }
 impl From<&LetterBoxLetter> for LetterBoxLetter {
     fn from(value: &LetterBoxLetter) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for LetterBoxLetter {

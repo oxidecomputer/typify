@@ -53,7 +53,7 @@ pub enum TestEnum {
 }
 impl From<&TestEnum> for TestEnum {
     fn from(value: &TestEnum) -> Self {
-        value.clone()
+        *value
     }
 }
 impl ToString for TestEnum {
