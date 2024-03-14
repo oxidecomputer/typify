@@ -706,8 +706,8 @@ impl TypeEntry {
             )
         }
 
-        // If the enum is simple it should impl Copy and therefore can
-        // dereference instead of cloning
+        // If the enum derives Copy it should dereference instead of cloning
+        // when converting to itself from a reference.
         let from_ref_self_impl = if derive_set.contains("Copy") {
             Some(quote! {
                 impl From<&#type_name> for #type_name {
