@@ -28,6 +28,27 @@
           ]
         }
       }
+    },
+    "OuterThing": {
+      "type": "object",
+      "properties": {
+        "thing": {
+          "type": "object",
+          "title": "ThingWithDefaults",
+          "properties": {
+            "a": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "default": {
+            "type": "bee"
+          }
+        }
+      }
     }
   }
 }
