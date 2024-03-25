@@ -10,7 +10,7 @@ readme = "../README.md"
 [dependencies]
 heck = "0.4.1"
 log = "0.4.21"
-proc-macro2 = "1.0.78"
+proc-macro2 = "1.0.79"
 quote = "1.0.35"
 regress = "0.9.0"
 schemars = "0.8.16"
