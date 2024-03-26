@@ -26,6 +26,44 @@ pub mod error {
         }
     }
 }
+#[doc = "OuterThing"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"thing\": {"]
+#[doc = "      \"title\": \"ThingWithDefaults\","]
+#[doc = "      \"default\": {"]
+#[doc = "        \"type\": \"bee\""]
+#[doc = "      },"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"a\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"additionalProperties\": false"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct OuterThing {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub thing: Option<ThingWithDefaults>,
+}
+impl From<&OuterThing> for OuterThing {
+    fn from(value: &OuterThing) -> Self {
+        value.clone()
+    }
+}
 #[doc = "TestBed"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -70,6 +108,50 @@ pub struct TestBed {
 impl From<&TestBed> for TestBed {
     fn from(value: &TestBed) -> Self {
         value.clone()
+    }
+}
+#[doc = "ThingWithDefaults"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"title\": \"ThingWithDefaults\","]
+#[doc = "  \"default\": {"]
+#[doc = "    \"type\": \"bee\""]
+#[doc = "  },"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"a\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"type\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"additionalProperties\": false"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ThingWithDefaults {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub a: Option<String>,
+    #[serde(rename = "type", default, skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+impl From<&ThingWithDefaults> for ThingWithDefaults {
+    fn from(value: &ThingWithDefaults) -> Self {
+        value.clone()
+    }
+}
+impl Default for ThingWithDefaults {
+    fn default() -> Self {
+        ThingWithDefaults {
+            a: Default::default(),
+            type_: Some("bee".to_string()),
+        }
     }
 }
 #[doc = r" Generation of default values for serde."]
