@@ -60,8 +60,8 @@ impl From<ArrayBs> for Vec<bool> {
         value.0
     }
 }
-impl From<&ArrayBs> for ArrayBs {
-    fn from(value: &ArrayBs) -> Self {
+impl From<&Self> for ArrayBs {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -101,8 +101,8 @@ impl From<IntegerBs> for u64 {
         value.0
     }
 }
-impl From<&IntegerBs> for IntegerBs {
-    fn from(value: &IntegerBs) -> Self {
+impl From<&Self> for IntegerBs {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -163,8 +163,8 @@ pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ok: Option<bool>,
 }
-impl From<&ObjectBs> for ObjectBs {
-    fn from(value: &ObjectBs) -> Self {
+impl From<&Self> for ObjectBs {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

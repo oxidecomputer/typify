@@ -50,8 +50,8 @@ mod types {
     pub struct AllTheTraits {
         pub ok: String,
     }
-    impl From<&AllTheTraits> for AllTheTraits {
-        fn from(value: &AllTheTraits) -> Self {
+    impl From<&Self> for AllTheTraits {
+        fn from(value: &Self) -> Self {
             value.clone()
         }
     }
@@ -90,8 +90,8 @@ mod types {
         pub value1: String,
         pub value2: u64,
     }
-    impl From<&CompoundType> for CompoundType {
-        fn from(value: &CompoundType) -> Self {
+    impl From<&Self> for CompoundType {
+        fn from(value: &Self) -> Self {
             value.clone()
         }
     }
@@ -128,8 +128,8 @@ mod types {
         #[serde(default = "defaults::pair_b")]
         pub b: StringEnum,
     }
-    impl From<&Pair> for Pair {
-        fn from(value: &Pair) -> Self {
+    impl From<&Self> for Pair {
+        fn from(value: &Self) -> Self {
             value.clone()
         }
     }
@@ -161,8 +161,8 @@ mod types {
         Two,
         BuckleMyShoe,
     }
-    impl From<&StringEnum> for StringEnum {
-        fn from(value: &StringEnum) -> Self {
+    impl From<&Self> for StringEnum {
+        fn from(value: &Self) -> Self {
             value.clone()
         }
     }

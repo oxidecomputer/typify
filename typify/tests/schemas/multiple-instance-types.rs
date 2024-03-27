@@ -45,8 +45,8 @@ pub enum IntOrStr {
     String(String),
     Integer(i64),
 }
-impl From<&IntOrStr> for IntOrStr {
-    fn from(value: &IntOrStr) -> Self {
+impl From<&Self> for IntOrStr {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -120,8 +120,8 @@ pub enum OneOfSeveral {
     String(String),
     Integer(i64),
 }
-impl From<&OneOfSeveral> for OneOfSeveral {
-    fn from(value: &OneOfSeveral) -> Self {
+impl From<&Self> for OneOfSeveral {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -174,8 +174,8 @@ impl From<ReallyJustNull> for () {
         value.0
     }
 }
-impl From<&ReallyJustNull> for ReallyJustNull {
-    fn from(value: &ReallyJustNull) -> Self {
+impl From<&Self> for ReallyJustNull {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -215,8 +215,8 @@ impl From<SeriouslyAnything> for serde_json::Value {
         value.0
     }
 }
-impl From<&SeriouslyAnything> for SeriouslyAnything {
-    fn from(value: &SeriouslyAnything) -> Self {
+impl From<&Self> for SeriouslyAnything {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -252,8 +252,8 @@ pub enum YesNoMaybe {
         value: Option<String>,
     },
 }
-impl From<&YesNoMaybe> for YesNoMaybe {
-    fn from(value: &YesNoMaybe) -> Self {
+impl From<&Self> for YesNoMaybe {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

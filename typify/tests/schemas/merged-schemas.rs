@@ -50,8 +50,8 @@ pub struct ButNotThat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub this: Option<serde_json::Value>,
 }
-impl From<&ButNotThat> for ButNotThat {
-    fn from(value: &ButNotThat) -> Self {
+impl From<&Self> for ButNotThat {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -75,8 +75,8 @@ pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub result: Option<String>,
 }
-impl From<&JsonResponseBase> for JsonResponseBase {
-    fn from(value: &JsonResponseBase) -> Self {
+impl From<&Self> for JsonResponseBase {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -107,8 +107,8 @@ pub struct JsonSuccess {
     pub msg: String,
     pub result: JsonSuccessResult,
 }
-impl From<&JsonSuccess> for JsonSuccess {
-    fn from(value: &JsonSuccess) -> Self {
+impl From<&Self> for JsonSuccess {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -148,8 +148,8 @@ pub struct JsonSuccessBase {
     pub msg: String,
     pub result: JsonSuccessBaseResult,
 }
-impl From<&JsonSuccessBase> for JsonSuccessBase {
-    fn from(value: &JsonSuccessBase) -> Self {
+impl From<&Self> for JsonSuccessBase {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -171,8 +171,8 @@ pub enum JsonSuccessBaseResult {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&JsonSuccessBaseResult> for JsonSuccessBaseResult {
-    fn from(value: &JsonSuccessBaseResult) -> Self {
+impl From<&Self> for JsonSuccessBaseResult {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -228,8 +228,8 @@ pub enum JsonSuccessResult {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&JsonSuccessResult> for JsonSuccessResult {
-    fn from(value: &JsonSuccessResult) -> Self {
+impl From<&Self> for JsonSuccessResult {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -297,8 +297,8 @@ impl From<NarrowNumber> for std::num::NonZeroU64 {
         value.0
     }
 }
-impl From<&NarrowNumber> for NarrowNumber {
-    fn from(value: &NarrowNumber) -> Self {
+impl From<&Self> for NarrowNumber {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -366,8 +366,8 @@ impl ToString for NarrowNumber {
 pub struct Pickingone {
     pub suspended_by: PickingoneSuspendedBy,
 }
-impl From<&Pickingone> for Pickingone {
-    fn from(value: &Pickingone) -> Self {
+impl From<&Self> for Pickingone {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -398,8 +398,8 @@ pub struct PickingoneInstallation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspended_by: Option<PickingoneUser>,
 }
-impl From<&PickingoneInstallation> for PickingoneInstallation {
-    fn from(value: &PickingoneInstallation) -> Self {
+impl From<&Self> for PickingoneInstallation {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -438,8 +438,8 @@ pub struct PickingoneSuspendedBy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 }
-impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
-    fn from(value: &PickingoneSuspendedBy) -> Self {
+impl From<&Self> for PickingoneSuspendedBy {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -466,8 +466,8 @@ pub struct PickingoneUser {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 }
-impl From<&PickingoneUser> for PickingoneUser {
-    fn from(value: &PickingoneUser) -> Self {
+impl From<&Self> for PickingoneUser {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -507,8 +507,8 @@ impl From<&PickingoneUser> for PickingoneUser {
 pub struct TrimFat {
     pub a: serde_json::Value,
 }
-impl From<&TrimFat> for TrimFat {
-    fn from(value: &TrimFat) -> Self {
+impl From<&Self> for TrimFat {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -538,8 +538,8 @@ impl From<&TrimFat> for TrimFat {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
-impl From<&Unsatisfiable1> for Unsatisfiable1 {
-    fn from(value: &Unsatisfiable1) -> Self {
+impl From<&Self> for Unsatisfiable1 {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -581,8 +581,8 @@ impl From<&Unsatisfiable1> for Unsatisfiable1 {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Unsatisfiable2 {}
-impl From<&Unsatisfiable2> for Unsatisfiable2 {
-    fn from(value: &Unsatisfiable2) -> Self {
+impl From<&Self> for Unsatisfiable2 {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -613,8 +613,8 @@ pub struct Unsatisfiable3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<Unsatisfiable3Action>,
 }
-impl From<&Unsatisfiable3> for Unsatisfiable3 {
-    fn from(value: &Unsatisfiable3) -> Self {
+impl From<&Self> for Unsatisfiable3 {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -642,8 +642,8 @@ pub struct Unsatisfiable3A {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<Unsatisfiable3C>,
 }
-impl From<&Unsatisfiable3A> for Unsatisfiable3A {
-    fn from(value: &Unsatisfiable3A) -> Self {
+impl From<&Self> for Unsatisfiable3A {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -658,8 +658,8 @@ impl From<&Unsatisfiable3A> for Unsatisfiable3A {
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable3Action {}
-impl From<&Unsatisfiable3Action> for Unsatisfiable3Action {
-    fn from(value: &Unsatisfiable3Action) -> Self {
+impl From<&Self> for Unsatisfiable3Action {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -681,8 +681,8 @@ pub enum Unsatisfiable3B {
     #[serde(rename = "bar")]
     Bar,
 }
-impl From<&Unsatisfiable3B> for Unsatisfiable3B {
-    fn from(value: &Unsatisfiable3B) -> Self {
+impl From<&Self> for Unsatisfiable3B {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -738,8 +738,8 @@ pub enum Unsatisfiable3C {
     #[serde(rename = "foo")]
     Foo,
 }
-impl From<&Unsatisfiable3C> for Unsatisfiable3C {
-    fn from(value: &Unsatisfiable3C) -> Self {
+impl From<&Self> for Unsatisfiable3C {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -917,8 +917,8 @@ pub enum WeirdEnum {
         pattern_regex: String,
     },
 }
-impl From<&WeirdEnum> for WeirdEnum {
-    fn from(value: &WeirdEnum) -> Self {
+impl From<&Self> for WeirdEnum {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

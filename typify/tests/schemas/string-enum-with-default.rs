@@ -51,8 +51,8 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&TestEnum> for TestEnum {
-    fn from(value: &TestEnum) -> Self {
+impl From<&Self> for TestEnum {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96,7 +96,7 @@ impl std::convert::TryFrom<String> for TestEnum {
 }
 impl Default for TestEnum {
     fn default() -> Self {
-        TestEnum::Failure
+        Self::Failure
     }
 }
 fn main() {}

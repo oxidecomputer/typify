@@ -56,8 +56,8 @@ pub struct Node {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
 }
-impl From<&Node> for Node {
-    fn from(value: &Node) -> Self {
+impl From<&Self> for Node {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

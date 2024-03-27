@@ -47,8 +47,8 @@ pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flush_timeout: Option<f32>,
 }
-impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
-    fn from(value: &FloatsArentTerribleImTold) -> Self {
+impl From<&Self> for FloatsArentTerribleImTold {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77,8 +77,8 @@ impl From<JustOne> for String {
         value.0
     }
 }
-impl From<&JustOne> for JustOne {
-    fn from(value: &JustOne) -> Self {
+impl From<&Self> for JustOne {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

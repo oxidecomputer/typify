@@ -67,8 +67,8 @@ pub struct TestBed {
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
-impl From<&TestBed> for TestBed {
-    fn from(value: &TestBed) -> Self {
+impl From<&Self> for TestBed {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

@@ -334,7 +334,7 @@ impl TypeEntry {
         } else {
             let n = self.type_ident(type_space, &Some("super".to_string()));
             let value = self
-                .output_value(type_space, default, &quote! { super:: })
+                .output_value(type_space, default, &quote! { super:: }, false)
                 .unwrap_or_else(|| {
                     panic!(
                         "{}\nvalue: {}\ntype: {:#?}",

@@ -55,8 +55,8 @@ pub mod error {
 pub struct TestType {
     pub value: Option<TestTypeValue>,
 }
-impl From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
+impl From<&Self> for TestType {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84,8 +84,8 @@ pub enum TestTypeValue {
     #[serde(rename = "end")]
     End,
 }
-impl From<&TestTypeValue> for TestTypeValue {
-    fn from(value: &TestTypeValue) -> Self {
+impl From<&Self> for TestTypeValue {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

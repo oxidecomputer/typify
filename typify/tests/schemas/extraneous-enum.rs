@@ -53,8 +53,8 @@ pub struct LetterBox {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub letter: Option<LetterBoxLetter>,
 }
-impl From<&LetterBox> for LetterBox {
-    fn from(value: &LetterBox) -> Self {
+impl From<&Self> for LetterBox {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -81,8 +81,8 @@ pub enum LetterBoxLetter {
     #[serde(rename = "b")]
     B,
 }
-impl From<&LetterBoxLetter> for LetterBoxLetter {
-    fn from(value: &LetterBoxLetter) -> Self {
+impl From<&Self> for LetterBoxLetter {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
