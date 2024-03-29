@@ -28,6 +28,16 @@
           ]
         }
       }
+    },
+    "Doodad": {
+      "type": "object",
+      "properties": {
+        "when": {
+          "type": "string",
+          "format": "date-time",
+          "default": "1970-01-01T00:00:00Z"
+        }
+      }
     }
   }
 }
