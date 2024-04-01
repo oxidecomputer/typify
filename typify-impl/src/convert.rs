@@ -1860,9 +1860,6 @@ impl TypeSpace {
 }
 
 fn merge(mut one: Box<ObjectValidation>, other: Box<ObjectValidation>) -> Box<ObjectValidation> {
-    println!("========================");
-    dbg!(&one);
-    dbg!(&other);
     one.max_properties = one.max_properties.or(other.max_properties);
     one.min_properties = one.min_properties.or(other.min_properties);
     one.required.extend(other.required);
@@ -1870,7 +1867,7 @@ fn merge(mut one: Box<ObjectValidation>, other: Box<ObjectValidation>) -> Box<Ob
     one.pattern_properties.extend(other.pattern_properties);
     one.additional_properties = one.additional_properties.or(other.additional_properties);
     one.property_names = one.property_names.or(other.property_names);
-    dbg!(one)
+    one
 }
 
 #[cfg(test)]
