@@ -266,6 +266,40 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_object(type_name, original_schema, metadata, validation),
 
+            SchemaObject {
+                metadata,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: Some(validation),
+                reference: Some(reference),
+                extensions: _,
+            } => {
+                let mut validation = validation.clone();
+                let mut def = self.definitions.get(&ref_key(reference)).unwrap();
+                while let Schema::Object(SchemaObject {
+                    object: ref_validation,
+                    reference: r,
+                    ..
+                }) = def
+                {
+                    if let Some(ref_validation) = ref_validation {
+                        validation = merge(validation, ref_validation.clone());
+                    }
+                    if let Some(r) = r {
+                        def = self.definitions.get(&ref_key(r)).unwrap();
+                    } else {
+                        break;
+                    }
+                }
+                self.convert_object(type_name, original_schema, metadata, &Some(validation))
+            }
+
             // Array
             SchemaObject {
                 metadata,
@@ -1823,6 +1857,20 @@ impl TypeSpace {
             _ => None,
         }
     }
+}
+
+fn merge(mut one: Box<ObjectValidation>, other: Box<ObjectValidation>) -> Box<ObjectValidation> {
+    println!("========================");
+    dbg!(&one);
+    dbg!(&other);
+    one.max_properties = one.max_properties.or(other.max_properties);
+    one.min_properties = one.min_properties.or(other.min_properties);
+    one.required.extend(other.required);
+    one.properties.extend(other.properties);
+    one.pattern_properties.extend(other.pattern_properties);
+    one.additional_properties = one.additional_properties.or(other.additional_properties);
+    one.property_names = one.property_names.or(other.property_names);
+    dbg!(one)
 }
 
 #[cfg(test)]
