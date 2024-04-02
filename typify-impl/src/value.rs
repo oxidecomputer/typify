@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -139,15 +139,13 @@ impl TypeEntry {
             TypeEntryDetails::Native(TypeEntryNative { type_name, .. }) => {
                 // Serialize value to a string... not hard.
                 let text = value.to_string();
-                let type_path = type_name
-                    .split("::")
-                    .map(|component| format_ident!("{}", component));
+                let type_path = syn::parse_str::<syn::TypePath>(type_name).unwrap();
 
                 // Deserialize the string to the type; the unwrap() is
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    serde_json::from_str::< #( #type_path )::* >(#text).unwrap()
+                    serde_json::from_str::< #type_path >(#text).unwrap()
                 }
             }
             TypeEntryDetails::JsonValue => {

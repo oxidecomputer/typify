@@ -26,6 +26,33 @@ pub mod error {
         }
     }
 }
+#[doc = "Doodad"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"when\": {"]
+#[doc = "      \"default\": \"1970-01-01T00:00:00Z\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"format\": \"date-time\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Doodad {
+    #[serde(default = "defaults::doodad_when")]
+    pub when: chrono::DateTime<chrono::offset::Utc>,
+}
+impl From<&Doodad> for Doodad {
+    fn from(value: &Doodad) -> Self {
+        value.clone()
+    }
+}
 #[doc = "OuterThing"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -156,6 +183,10 @@ impl Default for ThingWithDefaults {
 }
 #[doc = r" Generation of default values for serde."]
 pub mod defaults {
+    pub(super) fn doodad_when() -> chrono::DateTime<chrono::offset::Utc> {
+        serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
+            .unwrap()
+    }
     pub(super) fn test_bed_any() -> Vec<serde_json::Value> {
         vec![
             serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),
