@@ -5,13 +5,19 @@
 #![deny(missing_docs)]
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::path::PathBuf;
 
 use conversions::SchemaCache;
+use iref::iri::FragmentBuf;
+use iref::Iri;
 use log::info;
 use output::OutputSpace;
+use pathdiff::diff_paths;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
-use schemars::schema::{Metadata, RootSchema, Schema};
+use schemars::schema::{
+    Metadata, RootSchema, Schema, SchemaObject, SingleOrVec, SubschemaValidation,
+};
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -207,6 +213,23 @@ pub struct TypeSpace {
 
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
+
+    file_path: PathBuf,
+
+    distinct_definitions: bool,
+}
+
+impl TypeSpace {
+
+    /// Sets the file path for the `TypeSpace` instance.
+    pub fn with_path<T: Into<PathBuf>>(&mut self, path: T) {
+        self.file_path = path.into().canonicalize().unwrap();
+    }
+
+    /// Configures whether the `TypeSpace` instance should use distinct definitions.
+    pub fn distinct_defs(&mut self, value: bool) {
+        self.distinct_definitions = value;
+    }
 }
 
 impl Default for TypeSpace {
@@ -225,6 +248,8 @@ impl Default for TypeSpace {
             settings: Default::default(),
             cache: Default::default(),
             defaults: Default::default(),
+            file_path: Default::default(),
+            distinct_definitions: false,
         }
     }
 }
@@ -470,6 +495,20 @@ impl TypeSpacePatch {
     }
 }
 
+/// Retrieves id of the schema from possible places
+fn get_schema_id(schema: &SchemaObject) -> Option<String> {
+    schema
+        .metadata
+        .as_ref()
+        .and_then(|m| m.id.clone())
+        .or_else(|| {
+            schema
+                .extensions
+                .get("id")
+                .map(|id| id.as_str().unwrap().to_string())
+        })
+}
+
 impl TypeSpace {
     /// Create a new TypeSpace with custom settings
     pub fn new(settings: &TypeSpaceSettings) -> Self {
@@ -531,16 +570,16 @@ impl TypeSpace {
                 .insert(ref_name.clone(), TypeId(base_id + index as u64));
             self.definitions.insert(ref_name.clone(), schema.clone());
         }
-
         // Convert all types; note that we use the type id assigned from the
         // previous step because each type may create additional types. This
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             info!(
-                "converting type: {:?} with schema {}",
+                "converting type: {:?} with schema {} {}",
                 ref_name,
-                serde_json::to_string(&schema).unwrap()
+                serde_json::to_string(&schema).unwrap(),
+                line!()
             );
 
             // Check for manually replaced types. Proceed with type conversion
@@ -691,24 +730,117 @@ impl TypeSpace {
     pub fn add_root_schema(&mut self, schema: RootSchema) -> Result<Option<TypeId>> {
         let RootSchema {
             meta_schema: _,
-            schema,
+            schema: schema_object,
             definitions,
-        } = schema;
+        } = schema.clone();
+
+        let s_id = get_schema_id(&schema_object);
+
+        let untracked = schema_object
+            .extensions
+            .clone()
+            .into_iter()
+            .filter_map(|(_, value)| {
+                if !value.is_object() {
+                    None
+                } else {
+                    let object = value.as_object().unwrap();
+                    Some(
+                        object
+                            .iter()
+                            .filter_map(|(key, value)| {
+                                if let Ok(schema) = serde_json::from_value::<Schema>(value.clone())
+                                {
+                                    Some((RefKey::Def(key.clone()), schema))
+                                } else {
+                                    None
+                                }
+                            })
+                            .collect::<Vec<_>>(),
+                    )
+                }
+            })
+            .flatten()
+            .collect::<Vec<_>>();
 
         let mut defs = definitions
             .into_iter()
             .map(|(key, schema)| (RefKey::Def(key), schema))
+            .chain(untracked)
             .collect::<Vec<_>>();
 
         // Does the root type have a name (otherwise... ignore it)
-        let root_type = schema
+        let root_type = schema_object
             .metadata
             .as_ref()
             .and_then(|m| m.title.as_ref())
             .is_some();
 
         if root_type {
-            defs.push((RefKey::Root, schema.into()));
+            defs.push((RefKey::Root, schema_object.into()));
+        }
+
+        let mut external_references = BTreeMap::new();
+
+        for (_, def) in &defs {
+            fetch_external_definitions(
+                &schema,
+                def,
+                &self.file_path,
+                &s_id,
+                &mut external_references,
+                true,
+            );
+        }
+
+        let mut ext_refs = vec![];
+        for (_, schema) in defs.iter_mut() {
+            format_reference(schema, &s_id, &s_id);
+        }
+
+        for (reference, (mut schema, path, id)) in external_references {
+            let path = path.canonicalize().unwrap();
+            if let RefKey::Def(reference) = reference {
+                let path = path.canonicalize().unwrap();
+                let relpath = diff_paths(&path, self.file_path.parent().unwrap())
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .replace(format!("..{LINE_SEPARATOR}").as_str(), "Parent");
+                let ref_name = if relpath.ends_with(LINE_SEPARATOR) {
+                    format!(
+                        "{}{}",
+                        relpath,
+                        reference.split("/").last().unwrap_or_default()
+                    )
+                } else {
+                    format!(
+                        "{}{}{}",
+                        relpath,
+                        LINE_SEPARATOR,
+                        reference.split("/").last().unwrap_or_default()
+                    )
+                }
+                .replace(".json", LINE_SEPARATOR.to_string().as_str())
+                .trim_matches(LINE_SEPARATOR_CHAR)
+                .replace(
+                    format!("{LINE_SEPARATOR}{LINE_SEPARATOR}").as_str(),
+                    LINE_SEPARATOR,
+                )
+                .to_string();
+                format_reference(&mut schema, &id, &s_id);
+                ext_refs.push((RefKey::Def(ref_name), schema));
+            }
+        }
+
+        defs.extend(ext_refs.into_iter());
+        if self.distinct_definitions {
+            let mut old = defs.len();
+
+            distinct_definitions(&mut defs);
+            while (old - defs.len()) != 0 {
+                old = defs.len();
+                distinct_definitions(&mut defs);
+            }
         }
 
         self.add_ref_types_impl(defs)?;
@@ -1095,6 +1227,492 @@ impl<'a> TypeNewtype<'a> {
     /// Get the inner type of the newtype struct.
     pub fn inner(&self) -> TypeId {
         self.details.type_id.clone()
+    }
+}
+
+fn fetch_external_definitions(
+    base_schema: &RootSchema,
+    definition: &Schema,
+    base_path: &PathBuf,
+    base_id: &Option<String>,
+    external_references: &mut BTreeMap<RefKey, (Schema, PathBuf, Option<String>)>,
+    first_run: bool,
+) {
+    for mut reference in get_references(&definition) {
+        if reference.is_empty() {
+            continue;
+        }
+        if reference.starts_with("#") {
+            if first_run {
+                continue;
+            }
+
+            reference.remove(0);
+            let fragment = reference
+                .split("/")
+                .into_iter()
+                .map(|s| s.to_string())
+                .filter(|s| !s.is_empty())
+                .collect();
+            let definition_schema = fetch_defenition(base_schema, &reference, &fragment);
+            let k = format!("{}{}", base_id.as_ref().unwrap(), reference);
+            let key = RefKey::Def(k);
+            if external_references.contains_key(&key) {
+                continue;
+            } else {
+                external_references.insert(
+                    key,
+                    (
+                        definition_schema.clone(),
+                        base_path.clone(),
+                        base_id.clone(),
+                    ),
+                );
+                fetch_external_definitions(
+                    base_schema,
+                    &definition_schema,
+                    base_path,
+                    base_id,
+                    external_references,
+                    false,
+                );
+            }
+        } else {
+            let base_id = base_id
+                .as_ref()
+                .expect("missing 'id' attribute in schema definition");
+            let id = Iri::new(base_id).unwrap(); // path + last ref
+            let reff = Iri::new(&reference).unwrap();
+            let fragment = reff
+                .fragment()
+                .as_ref()
+                .unwrap_or(&FragmentBuf::new("".to_string()).unwrap().as_fragment())
+                .to_string()
+                .split("/")
+                .filter_map(|s| (!s.is_empty()).then_some(s.to_string()))
+                .collect::<Vec<_>>();
+            let relpath =
+                diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str()).unwrap();
+            let file_path = base_path.parent().unwrap().join(&relpath);
+            let content = std::fs::read_to_string(&file_path).expect(&format!(
+                "Failed to open input file: {}",
+                &file_path.display()
+            ));
+
+            let root_schema = serde_json::from_str::<RootSchema>(&content)
+                .expect("Failed to parse input file as JSON Schema");
+            let definition_schema = fetch_defenition(&root_schema, &reference, &fragment);
+            let key = RefKey::Def(reference.clone());
+            if external_references.contains_key(&key) {
+                continue;
+            } else {
+                let s_id = get_schema_id(&root_schema.schema);
+
+                external_references.insert(
+                    key,
+                    (definition_schema.clone(), file_path.clone(), s_id.clone()),
+                );
+                fetch_external_definitions(
+                    &root_schema,
+                    &definition_schema,
+                    &file_path,
+                    &s_id,
+                    external_references,
+                    false,
+                )
+            }
+        }
+    }
+}
+
+fn fetch_defenition(
+    base_schema: &RootSchema,
+    reference: &String,
+    fragment: &Vec<String>,
+) -> Schema {
+    if fragment.is_empty() {
+        return Schema::Object(base_schema.schema.clone());
+    }
+    let definition_schema = if fragment[0] == "definitions" {
+        base_schema
+            .definitions
+            .get(
+                reference
+                    .split('/')
+                    .last()
+                    .expect("unexpected end of reference"),
+            )
+            .unwrap()
+            .clone()
+    } else {
+        let mut value = base_schema.schema.extensions.get(&fragment[0]).unwrap();
+        for x in fragment.iter().skip(1) {
+            value = value.as_object().unwrap().get(x).unwrap();
+        }
+        serde_json::from_value(value.clone()).unwrap()
+    };
+    definition_schema
+}
+
+// fn get_references(schema: &Schema, base_id: &Option<String>) -> Vec<String> {
+fn get_references(schema: &Schema) -> Vec<String> {
+    match schema {
+        Schema::Object(obj) => {
+            let mut result = vec![];
+            obj.clone()
+                .reference
+                .map(|reference| result.push(reference));
+            if let Some(o) = &obj.object {
+                let prop_refs = o
+                    .properties
+                    .values()
+                    .into_iter()
+                    .flat_map(|p| get_references(p))
+                    .collect::<Vec<_>>();
+                result.extend(prop_refs);
+                if let Some(additional_props) = &o.additional_properties {
+                    result.extend(get_references(&additional_props));
+                }
+                let pattern_refs = o
+                    .pattern_properties
+                    .values()
+                    .into_iter()
+                    .flat_map(|p| get_references(p))
+                    .collect::<Vec<_>>();
+                if let Some(property_names) = &o.property_names {
+                    result.extend(get_references(&property_names))
+                }
+                result.extend(pattern_refs);
+            }
+            if let Some(o) = &obj.array {
+                result.extend(
+                    o.contains
+                        .as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    o.additional_items
+                        .as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    o.items
+                        .as_ref()
+                        .map(|s| match s {
+                            SingleOrVec::Single(v) => get_references(v.as_ref()),
+                            SingleOrVec::Vec(v) => v
+                                .iter()
+                                .flat_map(|element| get_references(element))
+                                .collect::<Vec<_>>(),
+                        })
+                        .unwrap_or_default(),
+                );
+            }
+            if let Some(SubschemaValidation {
+                all_of,
+                any_of,
+                one_of,
+                not,
+                if_schema,
+                then_schema,
+                else_schema,
+            }) = obj.subschemas.as_ref().map(AsRef::as_ref)
+            {
+                result.extend(
+                    all_of
+                        .as_ref()
+                        .map(|s| {
+                            s.iter()
+                                .flat_map(|element| get_references(element))
+                                .collect::<Vec<_>>()
+                                .into_iter()
+                        })
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    any_of
+                        .as_ref()
+                        .map(|s| {
+                            s.iter()
+                                .flat_map(|element| get_references(element))
+                                .collect::<Vec<_>>()
+                                .into_iter()
+                        })
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    one_of
+                        .as_ref()
+                        .map(|s| {
+                            s.iter()
+                                .flat_map(|element| get_references(element))
+                                .collect::<Vec<_>>()
+                                .into_iter()
+                        })
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    not.as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    if_schema
+                        .as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    then_schema
+                        .as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+                result.extend(
+                    else_schema
+                        .as_ref()
+                        .map(|s| get_references(s.as_ref()))
+                        .unwrap_or_default(),
+                );
+            }
+            result
+        }
+        _ => vec![],
+    }
+}
+
+#[cfg(target_os = "windows")]
+const LINE_SEPARATOR: &str = "\\";
+
+#[cfg(target_os = "windows")]
+const LINE_SEPARATOR_CHAR: char = '\\';
+
+#[cfg(not(target_os = "windows"))]
+const LINE_SEPARATOR: &str = "/";
+
+#[cfg(not(target_os = "windows"))]
+const LINE_SEPARATOR_CHAR: char = '/';
+
+fn format_reference(schema: &mut Schema, id: &Option<String>, base_id: &Option<String>) {
+    match schema {
+        Schema::Bool(_) => {}
+        Schema::Object(obj) => {
+            obj.reference.as_mut().map(|reference| {
+                let mut r = reference.clone();
+                if r.starts_with("#") {
+                    if id == base_id {
+                        // dbg!(&reference);
+                        // *reference = reference.split("/").last().unwrap_or_default().to_string();
+                        return;
+                    }
+                    r = id.clone().unwrap();
+                }
+                let b_id = base_id.clone().unwrap();
+                let id = Iri::new(&b_id).unwrap(); // path + last ref
+                let reff = Iri::new(&r).unwrap();
+                let dif = diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str())
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .replace(format!("..{LINE_SEPARATOR}").as_str(), "Parent");
+
+                let mut r = format!("{}{}", dif, reference.split("/").last().unwrap_or_default())
+                    .replace(".json", LINE_SEPARATOR.to_string().as_str());
+                if r.ends_with(LINE_SEPARATOR) {
+                    r.pop();
+                }
+                *reference = r;
+            });
+            if let Some(o) = obj.object.as_mut() {
+                for (_, s) in o.properties.iter_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(additional_props) = o.additional_properties.as_mut() {
+                    format_reference(additional_props, id, base_id);
+                }
+
+                for (_, s) in o.pattern_properties.iter_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(property_names) = o.property_names.as_mut() {
+                    format_reference(property_names, id, base_id);
+                }
+            }
+            if let Some(o) = obj.array.as_mut() {
+                if let Some(s) = o.contains.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(s) = o.additional_items.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(s) = o.items.as_mut() {
+                    match s {
+                        SingleOrVec::Single(s) => format_reference(s, id, base_id),
+                        SingleOrVec::Vec(v) => {
+                            for schema in v.iter_mut() {
+                                format_reference(schema, id, base_id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if let Some(SubschemaValidation {
+                all_of,
+                any_of,
+                one_of,
+                not,
+                if_schema,
+                then_schema,
+                else_schema,
+            }) = obj.subschemas.as_mut().map(AsMut::as_mut)
+            {
+                if let Some(s) = all_of.as_mut() {
+                    for s in s.iter_mut() {
+                        format_reference(s, id, base_id);
+                    }
+                }
+                if let Some(s) = any_of.as_mut() {
+                    for s in s.iter_mut() {
+                        format_reference(s, id, base_id);
+                    }
+                }
+                if let Some(s) = one_of.as_mut() {
+                    for s in s.iter_mut() {
+                        format_reference(s, id, base_id);
+                    }
+                }
+                if let Some(s) = not.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(s) = if_schema.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(s) = then_schema.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+                if let Some(s) = else_schema.as_mut() {
+                    format_reference(s, id, base_id);
+                }
+            }
+        }
+    }
+}
+
+fn distinct_definitions(definitions: &mut Vec<(RefKey, Schema)>) -> &mut Vec<(RefKey, Schema)> {
+    let mut delete_id = std::collections::HashSet::new();
+    let mut replace_from_to = BTreeMap::new();
+    for i in 0..definitions.len() {
+        if delete_id.contains(&i) {
+            continue;
+        }
+        for j in (i + 1)..definitions.len() {
+            if &definitions[i].1 == &definitions[j].1 {
+                delete_id.insert(j);
+                if let (RefKey::Def(k), RefKey::Def(key)) = (&definitions[j].0, &definitions[i].0) {
+                    replace_from_to.insert(k.clone(), key.clone());
+                }
+            }
+        }
+    }
+    let mut d = std::mem::take(definitions);
+    d = d
+        .into_iter()
+        .enumerate()
+        .filter(|(index, _)| !delete_id.contains(index))
+        .map(|(_, v)| v)
+        .collect::<Vec<_>>();
+
+    d.iter_mut()
+        .for_each(|(_, schema)| replace_reference(schema, &replace_from_to));
+
+    *definitions = d;
+    definitions
+}
+
+fn replace_reference(schema: &mut Schema, dictionary: &BTreeMap<String, String>) {
+    match schema {
+        Schema::Bool(_) => {}
+        Schema::Object(obj) => {
+            obj.reference.as_mut().map(|reference| {
+                if let Some(r) = dictionary.get(reference) {
+                    *reference = r.to_string();
+                }
+            });
+            if let Some(o) = obj.object.as_mut() {
+                for (_, s) in o.properties.iter_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(additional_props) = o.additional_properties.as_mut() {
+                    replace_reference(additional_props, dictionary);
+                }
+
+                for (_, s) in o.pattern_properties.iter_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(property_names) = o.property_names.as_mut() {
+                    replace_reference(property_names, dictionary);
+                }
+            }
+            if let Some(o) = obj.array.as_mut() {
+                if let Some(s) = o.contains.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(s) = o.additional_items.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(s) = o.items.as_mut() {
+                    match s {
+                        SingleOrVec::Single(s) => replace_reference(s, dictionary),
+                        SingleOrVec::Vec(v) => {
+                            for schema in v.iter_mut() {
+                                replace_reference(schema, dictionary);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if let Some(SubschemaValidation {
+                all_of,
+                any_of,
+                one_of,
+                not,
+                if_schema,
+                then_schema,
+                else_schema,
+            }) = obj.subschemas.as_mut().map(AsMut::as_mut)
+            {
+                if let Some(s) = all_of.as_mut() {
+                    for s in s.iter_mut() {
+                        replace_reference(s, dictionary);
+                    }
+                }
+                if let Some(s) = any_of.as_mut() {
+                    for s in s.iter_mut() {
+                        replace_reference(s, dictionary);
+                    }
+                }
+                if let Some(s) = one_of.as_mut() {
+                    for s in s.iter_mut() {
+                        replace_reference(s, dictionary);
+                    }
+                }
+                if let Some(s) = not.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(s) = if_schema.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(s) = then_schema.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+                if let Some(s) = else_schema.as_mut() {
+                    replace_reference(s, dictionary);
+                }
+            }
+        }
     }
 }
 
