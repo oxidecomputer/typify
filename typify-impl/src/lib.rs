@@ -37,7 +37,7 @@ mod validate;
 mod value;
 
 #[allow(missing_docs)]
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq, Clone)]
 pub enum Error {
     #[error("unexpected value type")]
     BadValue(String, serde_json::Value),
@@ -50,6 +50,36 @@ pub enum Error {
         type_name: Option<String>,
         reason: String,
     },
+    #[error("No type entry for ID {0:?}")]
+    NoTypeEntryForId(TypeId),
+    #[error("No value in merged enum values")]
+    NoValueInMergedEnumValues,
+    #[error("Empty merged anyOf subschema")]
+    EmptyMergedAnyOfSubschema,
+    #[error("Empty merged oneOf subschema")]
+    EmptyMergedOneOfSubschema,
+    #[error("Subtracting everything from a schema leaves nothing")]
+    SchemaSubtractEverything,
+    #[error("Property both required and not required")]
+    ConflictingRequire,
+    #[error("Cannot merge two single instance types with non-identical types")]
+    NonMatchingSingleInstanceTypes,
+    #[error("Cannot merge instance types with no intersection")]
+    EmptyIntersectionOfInstanceTypes,
+    #[error("Cannot merge formats {0} and {1}")]
+    FormatMerge(String, String),
+    #[error("Cannot merge arrays with different contains")]
+    ArrayMergeDifferentContains(Schema, Schema),
+    #[error("Array has greater min than max")]
+    ArrayMinGreaterThanMax,
+    #[error("Array length less than the required {0} items")]
+    ArrayLenLessThanMinItems(u32),
+    #[error("Required property {0} not present")]
+    RequiredPropertyNotPresent(String),
+    #[error("Minimum properties {0} > max properties {1}")]
+    MinPropertiesGreaterThanMaxProperties(u32, u32),
+    #[error("Cannot merge with trivial false schema")]
+    MergeWithFalseSchema,
 }
 
 impl Error {
@@ -451,7 +481,7 @@ impl TypeSpace {
             info!(
                 "converting type: {:?} with schema {}",
                 ref_name,
-                serde_json::to_string(&schema).unwrap()
+                serde_json::to_string(&schema).expect("Serialize schema")
             );
 
             // Check for manually replaced types. Proceed with type conversion
@@ -493,7 +523,11 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            let mut type_entry = self
+                .id_to_entry
+                .get(&type_id)
+                .ok_or_else(|| Error::NoTypeEntryForId(type_id.clone()))?
+                .clone();
             type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
@@ -541,7 +575,7 @@ impl TypeSpace {
                 info!(
                     "type alias {:?} {}\n{:?}",
                     type_name,
-                    serde_json::to_string_pretty(&schema).unwrap(),
+                    serde_json::to_string_pretty(&schema).expect("Serialize schema"),
                     metadata
                 );
                 let subtype_id = self.assign_type(type_entry);
@@ -554,7 +588,7 @@ impl TypeSpace {
                 )
             }
         };
-        let entry_name = type_entry.name().unwrap().clone();
+        let entry_name = type_entry.name().expect("Get name for type entry").clone();
         self.name_to_id.insert(entry_name, type_id.clone());
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
