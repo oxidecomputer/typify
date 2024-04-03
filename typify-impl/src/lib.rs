@@ -208,13 +208,13 @@ pub struct TypeSpace {
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
 
-    file_path: Option<PathBuf>,
+    file_path: PathBuf,
 }
 
 impl TypeSpace{
     ///doc
     pub fn with_path<T: Into<PathBuf>>(&mut self, path: T){
-        self.file_path = Some(path.into());
+        self.file_path = path.into();
     }
 }
 
@@ -644,22 +644,22 @@ impl TypeSpace {
                     continue
                 }
                 let mut index = 0;
-                for (c1, c2) in schema.extensions.get("id").unwrap().as_str().unwrap().chars().zip(reference.chars()) { 
+                for (c1, c2) in schema.extensions.get("id").expect("missing 'id' attribute in schema definition").as_str().unwrap().chars().zip(reference.chars()) { 
                     if c1 != c2 { 
                         break 
                     }
                     index += 1; 
                 }
                 let difference = &reference[index..];
-                let file_path = self.file_path.as_ref().unwrap().parent().unwrap().join(difference.split("#").next().unwrap());
+                let file_path = self.file_path.parent().unwrap().join(difference.split("#").next().expect("expect '#' before path to external reference"));
                 let content = std::fs::read_to_string(&file_path)
                   .expect(&format!("Failed to open input file: {}", &file_path.display()));
 
-                let root_schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
+                let root_schema = serde_json::from_str::<RootSchema>(&content)
                   .expect("Failed to parse input file as JSON Schema");
 
-                let defenition_schema = root_schema.definitions.get(reference.split('/').last().unwrap()).unwrap().clone();
-                external_references.push((RefKey::Def(reference), defenition_schema));
+                let definition_schema = root_schema.definitions.get(reference.split('/').last().expect("unexpected end of reference")).unwrap().clone();
+                external_references.push((RefKey::Def(reference), definition_schema));
             }
         }
         defs.extend(external_references.into_iter());
