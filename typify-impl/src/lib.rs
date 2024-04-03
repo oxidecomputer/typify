@@ -5,6 +5,7 @@
 #![deny(missing_docs)]
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::path::PathBuf;
 
 use conversions::SchemaCache;
 use log::info;
@@ -206,6 +207,15 @@ pub struct TypeSpace {
 
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
+
+    file_path: Option<PathBuf>,
+}
+
+impl TypeSpace{
+    ///doc
+    pub fn with_path<T: Into<PathBuf>>(&mut self, path: T){
+        self.file_path = Some(path.into());
+    }
 }
 
 impl Default for TypeSpace {
@@ -224,6 +234,7 @@ impl Default for TypeSpace {
             settings: Default::default(),
             cache: Default::default(),
             defaults: Default::default(),
+            file_path: Default::default(),
         }
     }
 }
@@ -438,6 +449,12 @@ impl TypeSpace {
         self.next_id += def_len;
 
         for (index, (ref_name, schema)) in definitions.iter().enumerate() {
+            if let RefKey::Def(name) = ref_name{
+                if name.contains("#"){
+                    self.definitions.insert(ref_name.clone(), schema.clone());
+                    continue
+                }
+            }
             self.ref_to_id
                 .insert(ref_name.clone(), TypeId(base_id + index as u64));
             self.definitions.insert(ref_name.clone(), schema.clone());
@@ -448,6 +465,11 @@ impl TypeSpace {
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
+            if let RefKey::Def(name) = &ref_name{
+                if name.contains("#"){
+                    continue
+                }
+            }
             info!(
                 "converting type: {:?} with schema {}",
                 ref_name,
@@ -493,9 +515,10 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-            type_entry.finalize(self)?;
-            self.id_to_entry.insert(type_id, type_entry);
+            if let Some(mut type_entry) = self.id_to_entry.get(&type_id).cloned(){
+                type_entry.finalize(self)?;
+                self.id_to_entry.insert(type_id, type_entry);
+            }
         }
 
         Ok(())
@@ -613,7 +636,33 @@ impl TypeSpace {
             .as_ref()
             .and_then(|m| m.title.as_ref())
             .is_some();
+        
+        let mut external_references = vec![];
+        for def in &defs {
+            if let Some( reference ) = def.1.clone().into_object().reference { 
+                if reference.starts_with("#"){
+                    continue
+                }
+                let mut index = 0;
+                for (c1, c2) in schema.extensions.get("id").unwrap().as_str().unwrap().chars().zip(reference.chars()) { 
+                    if c1 != c2 { 
+                        break 
+                    }
+                    index += 1; 
+                }
+                let difference = &reference[index..];
+                let file_path = self.file_path.as_ref().unwrap().parent().unwrap().join(difference.split("#").next().unwrap());
+                let content = std::fs::read_to_string(&file_path)
+                  .expect(&format!("Failed to open input file: {}", &file_path.display()));
 
+                let root_schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
+                  .expect("Failed to parse input file as JSON Schema");
+
+                let defenition_schema = root_schema.definitions.get(reference.split('/').last().unwrap()).unwrap().clone();
+                external_references.push((RefKey::Def(reference), defenition_schema));
+            }
+        }
+        defs.extend(external_references.into_iter());
         if root_type {
             defs.push((RefKey::Root, schema.into()));
         }

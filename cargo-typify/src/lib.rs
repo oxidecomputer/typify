@@ -82,6 +82,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     }
 
     let mut type_space = TypeSpace::new(settings);
+    type_space.with_path(&args.input);
     type_space
         .add_root_schema(schema)
         .wrap_err("Schema conversion failed")?;
