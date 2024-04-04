@@ -530,8 +530,6 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
 pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     if ref_name == "#" {
         RefKey::Root
-    } else if !ref_name.starts_with("#") {
-        RefKey::Def(ref_name.to_string())
     } else if let Some(idx) = ref_name.rfind('/') {
         RefKey::Def(ref_name[idx + 1..].to_string())
     } else {

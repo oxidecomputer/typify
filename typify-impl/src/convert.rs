@@ -362,7 +362,14 @@ impl TypeSpace {
                 object: None,
                 reference: Some(reference),
                 extensions: _,
-            } => self.convert_reference(metadata, reference),
+            } => { 
+                let r = if reference.starts_with('#') {
+                    reference.clone()
+                }else{
+                    format!("#{reference}")
+                };
+                self.convert_reference(metadata, &r) 
+            },
 
             // Accept references that... for some reason... include the type.
             // TODO this could be generalized to validate any redundant
@@ -1116,9 +1123,6 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if !ref_name.starts_with('#') {
-            panic!("external references are not supported: {}", ref_name);
-        }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id

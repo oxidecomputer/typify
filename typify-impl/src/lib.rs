@@ -449,12 +449,12 @@ impl TypeSpace {
         self.next_id += def_len;
 
         for (index, (ref_name, schema)) in definitions.iter().enumerate() {
-            if let RefKey::Def(name) = ref_name{
-                if name.contains("#"){
-                    self.definitions.insert(ref_name.clone(), schema.clone());
-                    continue
-                }
-            }
+            // if let RefKey::Def(name) = ref_name{
+            //     if name.contains("#"){
+            //         self.definitions.insert(ref_name.clone(), schema.clone());
+            //         continue
+            //     }
+            // }
             self.ref_to_id
                 .insert(ref_name.clone(), TypeId(base_id + index as u64));
             self.definitions.insert(ref_name.clone(), schema.clone());
@@ -465,11 +465,11 @@ impl TypeSpace {
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
-            if let RefKey::Def(name) = &ref_name{
-                if name.contains("#"){
-                    continue
-                }
-            }
+            // if let RefKey::Def(name) = &ref_name{
+            //     if name.contains("#"){
+            //         continue
+            //     }
+            // }
             info!(
                 "converting type: {:?} with schema {}",
                 ref_name,
@@ -659,7 +659,7 @@ impl TypeSpace {
                   .expect("Failed to parse input file as JSON Schema");
 
                 let definition_schema = root_schema.definitions.get(reference.split('/').last().expect("unexpected end of reference")).unwrap().clone();
-                external_references.push((RefKey::Def(reference), definition_schema));
+                external_references.push((RefKey::Def(reference.split('/').last().expect("unexpected end of reference").to_string()), definition_schema));
             }
         }
         defs.extend(external_references.into_iter());
@@ -1053,6 +1053,8 @@ impl<'a> TypeNewtype<'a> {
         self.details.type_id.clone()
     }
 }
+
+
 
 #[cfg(test)]
 mod tests {
