@@ -26,6 +26,30 @@ pub mod error {
         }
     }
 }
+#[doc = "BarProp"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"bar\": {"]
+#[doc = "      \"bar\": \"string\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BarProp {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bar: Option<serde_json::Value>,
+}
+impl From<&BarProp> for BarProp {
+    fn from(value: &BarProp) -> Self {
+        value.clone()
+    }
+}
 #[doc = "ButNotThat"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -336,6 +360,41 @@ impl ToString for NarrowNumber {
         self.0.to_string()
     }
 }
+#[doc = "OrderDependentMerge"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"$ref\": \"#/components/schemas/BarProp\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"baz\": {"]
+#[doc = "          \"type\": \"boolean\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"required\": ["]
+#[doc = "    \"baz\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct OrderDependentMerge {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bar: Option<serde_json::Value>,
+    pub baz: bool,
+}
+impl From<&OrderDependentMerge> for OrderDependentMerge {
+    fn from(value: &OrderDependentMerge) -> Self {
+        value.clone()
+    }
+}
 #[doc = "Pickingone"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -609,10 +668,7 @@ impl From<&Unsatisfiable2> for Unsatisfiable2 {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Unsatisfiable3 {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<Unsatisfiable3Action>,
-}
+pub struct Unsatisfiable3 {}
 impl From<&Unsatisfiable3> for Unsatisfiable3 {
     fn from(value: &Unsatisfiable3) -> Self {
         value.clone()
@@ -644,22 +700,6 @@ pub struct Unsatisfiable3A {
 }
 impl From<&Unsatisfiable3A> for Unsatisfiable3A {
     fn from(value: &Unsatisfiable3A) -> Self {
-        value.clone()
-    }
-}
-#[doc = "Unsatisfiable3Action"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "false"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-#[serde(deny_unknown_fields)]
-pub enum Unsatisfiable3Action {}
-impl From<&Unsatisfiable3Action> for Unsatisfiable3Action {
-    fn from(value: &Unsatisfiable3Action) -> Self {
         value.clone()
     }
 }
