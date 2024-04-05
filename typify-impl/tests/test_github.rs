@@ -59,7 +59,13 @@ fn test_vega() {
           }
     };
     let schema = serde_json::from_value(raw_schema).unwrap();
-    settings.with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter());
+    settings
+        .with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter())
+        // TODO ColorValue has resulted in an extremely expensive type; to
+        // resolve this we need to do a better job of canonicalizing the schema
+        // once rather than repeatedly doing quadratic expansions over it.
+        // Alternatively we can memoize conversions rather than repeating them.
+        .with_replacement("ColorValue", "ColorValue", [].into_iter());
 
     let mut type_space = TypeSpace::new(&settings);
 

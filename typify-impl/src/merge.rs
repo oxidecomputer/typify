@@ -73,12 +73,16 @@ fn merge_additional_properties(
     }
 }
 
+fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    try_merge_schema(a, b, defs).unwrap_or(Schema::Bool(false))
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
 fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     match (a, b) {
-        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
 
         // If we have two references to the same schema, that's easy!
@@ -993,14 +997,12 @@ fn merge_so_object(
                     let resolved_schema = match ab_schema {
                         AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
                         AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
-                        AOrB::Both(a_schema, b_schema) => {
-                            try_merge_schema(a_schema, b_schema, defs)
-                        }
+                        AOrB::Both(a_schema, b_schema) => merge_schema(a_schema, b_schema, defs),
                     };
                     match resolved_schema {
                         // If a required field is incompatible with the
                         // other schema, this object is unsatisfiable.
-                        Err(()) if required.contains(name) => Some(Err(())),
+                        Schema::Bool(false) if required.contains(name) => Some(Err(())),
 
                         // For incompatible, non-required fields we need to
                         // exclude the property from any values. If
@@ -1017,7 +1019,7 @@ fn merge_so_object(
                         // If we ever make use of `propertyNames`, it's
                         // conceivable that we might check it or modify it in
                         // this case, but that may be overly complex.
-                        Err(_) => {
+                        Schema::Bool(false) => {
                             if let Some(Schema::Bool(false)) = additional_properties {
                                 None
                             } else {
@@ -1026,23 +1028,10 @@ fn merge_so_object(
                         }
 
                         // Compatible schema; proceed.
-                        Ok(schema) => Some(Ok((name.clone(), schema))),
+                        schema => Some(Ok((name.clone(), schema))),
                     }
                 })
                 .collect::<Result<schemars::Map<_, _>, _>>()?;
-
-            // XXX
-            // So. We merged the properties and we merged the array of
-            // properties that are required. We use the absence of a property
-            // in the properties map to indicate that the property must *not*
-            // be present. This is imprecise, but allows us to make progress
-            // without a most significant conversion to a new representation.
-            // TODO
-            for req_prop in &required {
-                if let Some(Schema::Bool(false)) = properties.get(req_prop) {
-                    return Err(());
-                }
-            }
 
             let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
             let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
@@ -1067,11 +1056,7 @@ fn merge_so_object(
     }
 }
 
-fn filter_prop(
-    name: &str,
-    prop_schema: &Schema,
-    object_schema: &ObjectValidation,
-) -> Result<Schema, ()> {
+fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidation) -> Schema {
     // We're only considering properties we *know* do not appear in the other
     // object's schema.
     assert!(!object_schema.properties.contains_key(name));
@@ -1087,6 +1072,7 @@ fn filter_prop(
     assert!(object_schema.pattern_properties.is_empty());
 
     merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+        .unwrap_or(Schema::Bool(false))
 }
 
 fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result<Schema, ()> {

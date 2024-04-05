@@ -55,7 +55,6 @@ impl TypeSpace {
                     // serde::Deserialize implementation that failed in the
                     // presence of these values.
                     Schema::Bool(false) => None,
-
                     _ => {
                         // Generate a name we can use for the type of this
                         // property should there not be one specified by the
