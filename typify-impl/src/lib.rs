@@ -449,12 +449,6 @@ impl TypeSpace {
         self.next_id += def_len;
 
         for (index, (ref_name, schema)) in definitions.iter().enumerate() {
-            // if let RefKey::Def(name) = ref_name{
-            //     if name.contains("#"){
-            //         self.definitions.insert(ref_name.clone(), schema.clone());
-            //         continue
-            //     }
-            // }
             self.ref_to_id
                 .insert(ref_name.clone(), TypeId(base_id + index as u64));
             self.definitions.insert(ref_name.clone(), schema.clone());
@@ -465,11 +459,6 @@ impl TypeSpace {
         // effectively is doing the work of `add_type_with_name` but for a
         // batch of types.
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
-            // if let RefKey::Def(name) = &ref_name{
-            //     if name.contains("#"){
-            //         continue
-            //     }
-            // }
             info!(
                 "converting type: {:?} with schema {}",
                 ref_name,
@@ -515,10 +504,9 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            if let Some(mut type_entry) = self.id_to_entry.get(&type_id).cloned() {
-                type_entry.finalize(self)?;
-                self.id_to_entry.insert(type_id, type_entry);
-            }
+            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            type_entry.finalize(self)?;
+            self.id_to_entry.insert(type_id, type_entry);
         }
 
         Ok(())
@@ -639,7 +627,6 @@ impl TypeSpace {
 
         let mut external_references = vec![];
         for def in &defs {
-            // fetch_external_defenitions( def.1.clone(), self.file_path.clone(), schema.extensions.get("id").expect("missing 'id' attribute in schema definition").as_str().unwrap(), &mut external_references);
             if let Some(reference) = def.1.clone().into_object().reference {
                 if reference.starts_with("#") {
                     continue;
