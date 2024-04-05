@@ -19,7 +19,7 @@ use type_entry::{
     WrappedValue,
 };
 
-use crate::util::{sanitize, Case, ref_key};
+use crate::util::{sanitize, Case};
 
 #[cfg(test)]
 mod test_util;
@@ -211,9 +211,9 @@ pub struct TypeSpace {
     file_path: PathBuf,
 }
 
-impl TypeSpace{
+impl TypeSpace {
     ///doc
-    pub fn with_path<T: Into<PathBuf>>(&mut self, path: T){
+    pub fn with_path<T: Into<PathBuf>>(&mut self, path: T) {
         self.file_path = path.into();
     }
 }
@@ -515,7 +515,7 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            if let Some(mut type_entry) = self.id_to_entry.get(&type_id).cloned(){
+            if let Some(mut type_entry) = self.id_to_entry.get(&type_id).cloned() {
                 type_entry.finalize(self)?;
                 self.id_to_entry.insert(type_id, type_entry);
             }
@@ -636,35 +636,82 @@ impl TypeSpace {
             .as_ref()
             .and_then(|m| m.title.as_ref())
             .is_some();
-        
+
         let mut external_references = vec![];
         for def in &defs {
             // fetch_external_defenitions( def.1.clone(), self.file_path.clone(), schema.extensions.get("id").expect("missing 'id' attribute in schema definition").as_str().unwrap(), &mut external_references);
-            if let Some( reference ) = def.1.clone().into_object().reference { 
-                if reference.starts_with("#"){
-                    continue
+            if let Some(reference) = def.1.clone().into_object().reference {
+                if reference.starts_with("#") {
+                    continue;
                 }
                 let mut index = 0;
-                for (c1, c2) in schema.extensions.get("id").expect("missing 'id' attribute in schema definition").as_str().unwrap().chars().zip(reference.chars()) { 
-                    if c1 != c2 { 
-                        break 
+                for (c1, c2) in schema
+                    .extensions
+                    .get("id")
+                    .expect("missing 'id' attribute in schema definition")
+                    .as_str()
+                    .unwrap()
+                    .chars()
+                    .zip(reference.chars())
+                {
+                    if c1 != c2 {
+                        break;
                     }
-                    index += 1; 
+                    index += 1;
                 }
                 let difference = &reference[index..];
-                let file_path = self.file_path.parent().unwrap().join(difference.split("#").next().expect("expect '#' before path to external reference"));
-                let content = std::fs::read_to_string(&file_path)
-                  .expect(&format!("Failed to open input file: {}", &file_path.display()));
-            
+                let file_path = self.file_path.parent().unwrap().join(
+                    difference
+                        .split("#")
+                        .next()
+                        .expect("expect '#' before path to external reference"),
+                );
+                let content = std::fs::read_to_string(&file_path).expect(&format!(
+                    "Failed to open input file: {}",
+                    &file_path.display()
+                ));
+
                 let root_schema = serde_json::from_str::<RootSchema>(&content)
-                  .expect("Failed to parse input file as JSON Schema");
-            
-                let definition_schema = root_schema.definitions.get(reference.split('/').last().expect("unexpected end of reference")).unwrap().clone();
-                external_references.push((RefKey::Def(reference.split('/').last().expect("unexpected end of reference").to_string()), definition_schema.clone()));
-                let id = root_schema.schema.extensions.get("id").as_ref().expect("missing 'id' attribute in schema definition").as_str().unwrap().to_string();
-                fetch_external_definitions(root_schema, definition_schema, file_path, &id, &mut external_references);
+                    .expect("Failed to parse input file as JSON Schema");
+
+                let definition_schema = root_schema
+                    .definitions
+                    .get(
+                        reference
+                            .split('/')
+                            .last()
+                            .expect("unexpected end of reference"),
+                    )
+                    .unwrap()
+                    .clone();
+                external_references.push((
+                    RefKey::Def(
+                        reference
+                            .split('/')
+                            .last()
+                            .expect("unexpected end of reference")
+                            .to_string(),
+                    ),
+                    definition_schema.clone(),
+                ));
+                let id = root_schema
+                    .schema
+                    .extensions
+                    .get("id")
+                    .as_ref()
+                    .expect("missing 'id' attribute in schema definition")
+                    .as_str()
+                    .unwrap()
+                    .to_string();
+                fetch_external_definitions(
+                    root_schema,
+                    definition_schema,
+                    file_path,
+                    &id,
+                    &mut external_references,
+                );
             }
-        }// defenition, base_path, external_references
+        }
         defs.extend(external_references.into_iter());
         if root_type {
             defs.push((RefKey::Root, schema.into()));
@@ -1056,38 +1103,100 @@ impl<'a> TypeNewtype<'a> {
         self.details.type_id.clone()
     }
 }
-fn fetch_external_definitions(base_schema: RootSchema, definition: Schema, base_path: PathBuf, base_id: &str, external_references: &mut Vec<(RefKey, Schema)>){
-    if let Some( reference ) = definition.into_object().reference {
-        if reference.starts_with("#"){
-            let d = base_schema.definitions.get(reference.split('/').last().unwrap()).cloned().unwrap();
-            external_references.push((RefKey::Def(reference.split('/').last().expect("unexpected end of reference").to_string()), d.clone()));
-            fetch_external_definitions(base_schema, d.clone(), base_path, base_id, external_references);
-        }
-        else {
+
+fn fetch_external_definitions(
+    base_schema: RootSchema,
+    definition: Schema,
+    base_path: PathBuf,
+    base_id: &str,
+    external_references: &mut Vec<(RefKey, Schema)>,
+) {
+    if let Some(reference) = definition.into_object().reference {
+        if reference.starts_with("#") {
+            let d = base_schema
+                .definitions
+                .get(reference.split('/').last().unwrap())
+                .cloned()
+                .unwrap();
+            external_references.push((
+                RefKey::Def(
+                    reference
+                        .split('/')
+                        .last()
+                        .expect("unexpected end of reference")
+                        .to_string(),
+                ),
+                d.clone(),
+            ));
+            fetch_external_definitions(
+                base_schema,
+                d.clone(),
+                base_path,
+                base_id,
+                external_references,
+            );
+        } else {
             let mut index = 0;
             for (c1, c2) in base_id.chars().zip(reference.chars()) {
                 if c1 != c2 {
-                    break
+                    break;
                 }
                 index += 1;
             }
             let difference = &reference[index..];
-            let file_path = base_path.parent().unwrap().join(difference.split("#").next().expect("expect '#' before path to external reference"));
-            let content = std::fs::read_to_string(&file_path)
-              .expect(&format!("Failed to open input file: {}", &file_path.display()));
+            let file_path = base_path.parent().unwrap().join(
+                difference
+                    .split("#")
+                    .next()
+                    .expect("expect '#' before path to external reference"),
+            );
+            let content = std::fs::read_to_string(&file_path).expect(&format!(
+                "Failed to open input file: {}",
+                &file_path.display()
+            ));
 
             let root_schema = serde_json::from_str::<RootSchema>(&content)
-              .expect("Failed to parse input file as JSON Schema");
+                .expect("Failed to parse input file as JSON Schema");
 
-            let definition_schema = root_schema.definitions.get(reference.split('/').last().expect("unexpected end of reference")).unwrap().clone();
-            external_references.push((RefKey::Def(reference.split('/').last().expect("unexpected end of reference").to_string()), definition_schema.clone()));
-            let id = root_schema.schema.extensions.get("id").as_ref().unwrap().as_str().unwrap().to_string();
-            fetch_external_definitions(root_schema, definition_schema, file_path, id.as_str(), external_references)
+            let definition_schema = root_schema
+                .definitions
+                .get(
+                    reference
+                        .split('/')
+                        .last()
+                        .expect("unexpected end of reference"),
+                )
+                .unwrap()
+                .clone();
+            external_references.push((
+                RefKey::Def(
+                    reference
+                        .split('/')
+                        .last()
+                        .expect("unexpected end of reference")
+                        .to_string(),
+                ),
+                definition_schema.clone(),
+            ));
+            let id = root_schema
+                .schema
+                .extensions
+                .get("id")
+                .as_ref()
+                .unwrap()
+                .as_str()
+                .unwrap()
+                .to_string();
+            fetch_external_definitions(
+                root_schema,
+                definition_schema,
+                file_path,
+                id.as_str(),
+                external_references,
+            )
         }
     }
 }
-
-
 
 #[cfg(test)]
 mod tests {

@@ -74,10 +74,10 @@ impl TypeSpace {
                         // writing `get_child_ids` again for shared references.
                         let (snip, descend) = {
                             let type_entry = self.id_to_entry.get_mut(type_id);
-                            if type_entry.is_none(){
-                                continue
+                            if type_entry.is_none() {
+                                continue;
                             }
-                            let type_entry= type_entry.unwrap();
+                            let type_entry = type_entry.unwrap();
 
                             let child_ids = get_child_ids(type_entry)
                                 .into_iter()
