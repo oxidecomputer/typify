@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
