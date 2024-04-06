@@ -26,6 +26,28 @@ pub mod error {
         }
     }
 }
+#[doc = "AnythingWorks"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"value\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AnythingWorks {
+    pub value: serde_json::Value,
+}
+impl From<&AnythingWorks> for AnythingWorks {
+    fn from(value: &AnythingWorks) -> Self {
+        value.clone()
+    }
+}
 #[doc = "FloatsArentTerribleImTold"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

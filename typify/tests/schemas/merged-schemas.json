@@ -336,6 +336,30 @@
           ]
         }
       }
+    },
+    "OrderDependentMerge": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/BarProp"
+        },
+        {
+          "properties": {
+            "baz": {
+              "type": "boolean"
+            }
+          }
+        }
+      ],
+      "required": [
+        "baz"
+      ]
+    },
+    "BarProp": {
+      "properties": {
+        "bar": {
+          "bar": "string"
+        }
+      }
     }
   }
 }

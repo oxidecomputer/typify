@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
@@ -27,16 +27,49 @@ impl TypeSpace {
         //assert!(validation.pattern_properties.is_empty());
         //assert!(validation.property_names.is_none());
 
+        // Gather up the properties that are required but for which we have no
+        // schema. In those cases any value will do.
+        let required_unspecified = validation.required.iter().filter_map(|prop_name| {
+            validation
+                .properties
+                .get(prop_name)
+                .is_none()
+                .then_some((prop_name, &Schema::Bool(true)))
+        });
+
         let mut properties = validation
             .properties
             .iter()
-            .map(|(name, ty)| {
-                // Generate a name we can use for the type of this property
-                // should there not be a one defined in the schema.
-                let sub_type_name = type_name
-                    .as_ref()
-                    .map(|base| format!("{}_{}", base, name.to_snake_case()));
-                self.struct_property(sub_type_name, &validation.required, name, ty)
+            .chain(required_unspecified)
+            .filter_map(|(prop_name, schema)| {
+                match schema {
+                    // TODO We use the schema `false` to indicate an
+                    // unsatisfiable schema. We take a shortcut here and simply
+                    // ignore these. This is wrong in two subtle and important
+                    // ways that we'll need to address at some point. First,
+                    // there are other schemas in some non-trivial,
+                    // non-canonical form that might indicate the same thing.
+                    // We should handle those in the same way. In addition,
+                    // ignoring them isn't really right. We need to actively
+                    // exclude them. Specifically this would look like a custom
+                    // serde::Deserialize implementation that failed in the
+                    // presence of these values.
+                    Schema::Bool(false) => None,
+                    _ => {
+                        // Generate a name we can use for the type of this
+                        // property should there not be one specified by the
+                        // schema itself (i.e. via the title field).
+                        let sub_type_name = type_name
+                            .as_ref()
+                            .map(|base| format!("{}_{}", base, prop_name.to_snake_case()));
+                        Some(self.struct_property(
+                            sub_type_name,
+                            &validation.required,
+                            prop_name,
+                            schema,
+                        ))
+                    }
+                }
             })
             .collect::<Result<Vec<_>>>()?;
 
@@ -107,7 +140,7 @@ impl TypeSpace {
         Ok((properties, deny_unknown_fields))
     }
 
-    pub(crate) fn struct_property(
+    fn struct_property(
         &mut self,
         type_name: Option<String>,
         required: &schemars::Set<String>,
