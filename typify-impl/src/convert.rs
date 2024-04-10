@@ -8,7 +8,7 @@ use crate::type_entry::{
     Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
-use log::{debug, info};
+use log::{debug, error, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -555,7 +555,10 @@ impl TypeSpace {
                         Ok((type_entry, &None))
                     }
 
-                    Err(_) => self.convert_never(type_name, original_schema),
+                    Err(e) => {
+                        error!("Error in convert_schema_object: {:#?}", e);
+                        self.convert_never(type_name, original_schema)
+                    }
                 }
             }
 

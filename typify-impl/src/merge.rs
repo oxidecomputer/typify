@@ -10,6 +10,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
     SingleOrVec, StringValidation, SubschemaValidation,
 };
+use thiserror::Error;
 
 use crate::{util::ref_key, validate::schema_value_validate, RefKey};
 
@@ -196,8 +197,10 @@ fn merge_schema_object(
     // two schemas and then do the appropriate merge with subschemas (i.e.
     // potentially twice). This is effectively an `allOf` between the merged
     // "body" schema and the component subschemas.
-    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
-    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
+    merged_schema =
+        try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs).map_err(|_| ())?;
+    merged_schema =
+        try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs).map_err(|_| ())?;
 
     assert_ne!(merged_schema, Schema::Bool(false).into_object());
 
@@ -266,6 +269,18 @@ fn merge_so_enum_values(
     }
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum SubschemaMergeError {
+    #[error("Empty merged AnyOf subschema")]
+    EmptyMergedAnyOfSubschema,
+    #[error("Empty merged OneOf subschema")]
+    EmptyMergedOneOfSubschema,
+    #[error("try_merge_schema_not error")]
+    NotSchemaMerge,
+    #[error("try_merge_schema_not error")]
+    AllOfSchemaMerge,
+}
+
 /// Merge the schema with a subschema validation object. It's important that
 /// the return value reduces the complexity of the problem so avoid infinite
 /// recursion.
@@ -273,7 +288,7 @@ pub(crate) fn try_merge_with_subschemas(
     mut schema_object: SchemaObject,
     maybe_subschemas: Option<&SubschemaValidation>,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, SubschemaMergeError> {
     let Some(SubschemaValidation {
         all_of,
         any_of,
@@ -296,13 +311,15 @@ pub(crate) fn try_merge_with_subschemas(
             .iter()
             .try_fold(schema_object.into(), |schema, other| {
                 try_merge_schema(&schema, other, defs)
-            })?;
+            })
+            .map_err(|_| SubschemaMergeError::AllOfSchemaMerge)?;
         assert_ne!(merged_schema, Schema::Bool(false));
         schema_object = merged_schema.into_object();
     }
 
     if let Some(not) = not {
-        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)?;
+        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)
+            .map_err(|_| SubschemaMergeError::NotSchemaMerge)?;
     }
 
     // TODO: we should be able to handle a combined one_of and any_of... but
@@ -314,7 +331,7 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => return Err(SubschemaMergeError::EmptyMergedAnyOfSubschema),
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -333,7 +350,7 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => return Err(SubschemaMergeError::EmptyMergedOneOfSubschema),
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
