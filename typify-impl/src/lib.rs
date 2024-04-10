@@ -627,7 +627,7 @@ impl TypeSpace {
 
         let mut external_references = vec![];
         for def in &defs {
-            if let Some(reference) = def.1.clone().into_object().reference {
+            for reference in get_references(&def.1) {
                 if reference.starts_with("#") {
                     continue;
                 }
@@ -691,9 +691,9 @@ impl TypeSpace {
                     .unwrap()
                     .to_string();
                 fetch_external_definitions(
-                    root_schema,
+                    &root_schema,
                     definition_schema,
-                    file_path,
+                    &file_path,
                     &id,
                     &mut external_references,
                 );
@@ -1092,13 +1092,13 @@ impl<'a> TypeNewtype<'a> {
 }
 
 fn fetch_external_definitions(
-    base_schema: RootSchema,
+    base_schema: &RootSchema,
     definition: Schema,
-    base_path: PathBuf,
+    base_path: &PathBuf,
     base_id: &str,
     external_references: &mut Vec<(RefKey, Schema)>,
 ) {
-    if let Some(reference) = definition.into_object().reference {
+    for reference in get_references(&definition) {
         if reference.starts_with("#") {
             let d = base_schema
                 .definitions
@@ -1175,13 +1175,50 @@ fn fetch_external_definitions(
                 .unwrap()
                 .to_string();
             fetch_external_definitions(
-                root_schema,
+                &root_schema,
                 definition_schema,
-                file_path,
+                &file_path,
                 id.as_str(),
                 external_references,
             )
         }
+    }
+}
+
+fn get_references(schema: &Schema) -> Vec<String> {
+    match schema {
+        Schema::Object(obj) => {
+            let mut result = vec![];
+            obj.clone()
+                .reference
+                .map(|reference| result.push(reference));
+            if let Some(o) = &obj.object {
+                let prop_refs = o
+                    .properties
+                    .values()
+                    .into_iter()
+                    .map(|p| get_references(p))
+                    .flatten()
+                    .collect::<Vec<_>>();
+                if let Some(additional_props) = &o.additional_properties {
+                    result.extend(get_references(&additional_props));
+                }
+                let pattern_refs = o
+                    .pattern_properties
+                    .values()
+                    .into_iter()
+                    .map(|p| get_references(p))
+                    .flatten()
+                    .collect::<Vec<_>>();
+                if let Some(property_names) = &o.property_names {
+                    result.extend(get_references(&property_names))
+                }
+                result.extend(prop_refs);
+                result.extend(pattern_refs);
+            }
+            result
+        }
+        _ => vec![],
     }
 }
 
