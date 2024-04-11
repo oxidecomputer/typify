@@ -421,8 +421,6 @@ impl TypeSpace {
                         reference: None,
                         ..def.clone().into_object()
                     });
-                    // let n_new_schema = merge_all(&[schema_only_ref, schema_without_ref], &self.definitions);
-                    // new_schema = merge_all(&[n_new_schema, new_schema], &self.definitions);
                     new_schema = merge_all(
                         &[schema_without_ref, schema_only_ref, new_schema],
                         &self.definitions,
