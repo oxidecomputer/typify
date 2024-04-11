@@ -266,40 +266,6 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_object(type_name, original_schema, metadata, validation),
 
-            SchemaObject {
-                metadata,
-                instance_type: None,
-                format: None,
-                enum_values: None,
-                const_value: None,
-                subschemas: None,
-                number: None,
-                string: None,
-                array: None,
-                object: Some(validation),
-                reference: Some(reference),
-                extensions: _,
-            } => {
-                let mut validation = validation.clone();
-                let mut def = self.definitions.get(&ref_key(reference)).unwrap();
-                while let Schema::Object(SchemaObject {
-                    object: ref_validation,
-                    reference: r,
-                    ..
-                }) = def
-                {
-                    if let Some(ref_validation) = ref_validation {
-                        validation = merge(validation, ref_validation.clone());
-                    }
-                    if let Some(r) = r {
-                        def = self.definitions.get(&ref_key(r)).unwrap();
-                    } else {
-                        break;
-                    }
-                }
-                self.convert_object(type_name, original_schema, metadata, &Some(validation))
-            }
-
             // Array
             SchemaObject {
                 metadata,
@@ -425,6 +391,50 @@ impl TypeSpace {
                     }) if instance_type == it));
 
                 self.convert_reference(metadata, reference)
+            }
+
+            SchemaObject {
+                metadata,
+                instance_type: _,
+                format: _,
+                enum_values: _,
+                const_value: _,
+                subschemas: _,
+                number: _,
+                string: _,
+                array: _,
+                object: _,
+                reference: Some(reference),
+                extensions: _,
+            } => {
+                let mut def = self.definitions.get(&ref_key(reference)).unwrap();
+                let mut new_schema = Schema::Object(SchemaObject {
+                    reference: None,
+                    ..schema.clone()
+                });
+                while let Schema::Object(SchemaObject { reference: r, .. }) = def {
+                    let schema_only_ref = Schema::Object(SchemaObject {
+                        reference: r.clone(),
+                        ..Default::default()
+                    });
+                    let schema_without_ref = Schema::Object(SchemaObject {
+                        reference: None,
+                        ..def.clone().into_object()
+                    });
+                    // let n_new_schema = merge_all(&[schema_only_ref, schema_without_ref], &self.definitions);
+                    // new_schema = merge_all(&[n_new_schema, new_schema], &self.definitions);
+                    new_schema = merge_all(
+                        &[schema_without_ref, schema_only_ref, new_schema],
+                        &self.definitions,
+                    );
+                    if let Some(r) = r {
+                        def = self.definitions.get(&ref_key(r)).unwrap();
+                    } else {
+                        break;
+                    }
+                }
+                let (type_entry, _) = self.convert_schema(type_name, &new_schema).unwrap();
+                Ok((type_entry, metadata))
             }
 
             // Enum of a single, known, non-String type (strings above).
@@ -1857,17 +1867,6 @@ impl TypeSpace {
             _ => None,
         }
     }
-}
-
-fn merge(mut one: Box<ObjectValidation>, other: Box<ObjectValidation>) -> Box<ObjectValidation> {
-    one.max_properties = one.max_properties.or(other.max_properties);
-    one.min_properties = one.min_properties.or(other.min_properties);
-    one.required.extend(other.required);
-    one.properties.extend(other.properties);
-    one.pattern_properties.extend(other.pattern_properties);
-    one.additional_properties = one.additional_properties.or(other.additional_properties);
-    one.property_names = one.property_names.or(other.property_names);
-    one
 }
 
 #[cfg(test)]
