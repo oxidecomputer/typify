@@ -22,7 +22,7 @@ chrono = { version = "0.4.37", features = ["serde"] }
 env_logger = "0.10.2"
 expectorate = "1.1.0"
 glob = "0.3.1"
-quote = "1.0.34"
+quote = "1.0.36"
 regress = "0.9.1"
 rustfmt-wrapper = "0.2.1"
 schemars = "0.8.16"
