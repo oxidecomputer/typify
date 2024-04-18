@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
@@ -170,7 +170,7 @@ impl TypeSpace {
                             && properties.len() == 1
                             && pattern_properties.is_empty() =>
                         {
-                            let (prop_name, prop_type) = properties.first_key_value().unwrap();
+                            let (prop_name, prop_type) = properties.iter().next().unwrap();
                             // If required and properties both have length 1
                             // then the following must be true for a
                             // well-constructed schema.

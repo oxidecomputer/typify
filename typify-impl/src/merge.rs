@@ -1222,7 +1222,10 @@ fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) ->
     }
 }
 
-fn roughly_properties(a: &BTreeMap<String, Schema>, b: &BTreeMap<String, Schema>) -> bool {
+fn roughly_properties(
+    a: &schemars::Map<String, Schema>,
+    b: &schemars::Map<String, Schema>,
+) -> bool {
     a.len() == b.len()
         && a.iter()
             .zip(b.iter())
