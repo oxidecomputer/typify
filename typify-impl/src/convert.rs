@@ -725,7 +725,13 @@ impl TypeSpace {
 
                 Some(validation) => {
                     if let Some(pattern) = &validation.pattern {
-                        let _ = regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                        let decoded_str =
+                            urlencoding::decode(pattern).map_err(|e| Error::InvalidSchema {
+                                type_name: type_name.clone().into_option(),
+                                reason: format!("invalid pattern '{}' {}", pattern, e),
+                            })?;
+
+                        regress::Regex::new(&decoded_str.to_string()).map_err(|e| Error::InvalidSchema {
                             type_name: type_name.clone().into_option(),
                             reason: format!("invalid pattern '{}' {}", pattern, e),
                         })?;
@@ -1119,6 +1125,7 @@ impl TypeSpace {
         if !ref_name.starts_with('#') {
             panic!("external references are not supported: {}", ref_name);
         }
+
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
