@@ -9,6 +9,7 @@ use crate::type_entry::{
 };
 use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
 use log::{debug, info};
+use regress::Regex;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -704,6 +705,22 @@ impl TypeSpace {
         }
     }
 
+    fn decode_str(encoded_str: &str, type_name: Option<String>) -> Result<String> {
+        urlencoding::decode(encoded_str)
+            .map(|s| s.to_string())
+            .map_err(|e| Error::InvalidSchema {
+                type_name,
+                reason: format!("invalid pattern encoding '{}' {}", encoded_str, e),
+            })
+    }
+
+    fn valid_regex(pattern: &str, type_name: Option<String>) -> Result<Regex> {
+        regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+            type_name,
+            reason: format!("invalid pattern '{}' {}", pattern, e),
+        })
+    }
+
     fn convert_string<'a>(
         &mut self,
         type_name: Name,
@@ -725,16 +742,12 @@ impl TypeSpace {
 
                 Some(validation) => {
                     if let Some(pattern) = &validation.pattern {
-                        let decoded_str =
-                            urlencoding::decode(pattern).map_err(|e| Error::InvalidSchema {
-                                type_name: type_name.clone().into_option(),
-                                reason: format!("invalid pattern '{}' {}", pattern, e),
-                            })?;
+                        let type_name_opt = type_name.clone().into_option();
 
-                        regress::Regex::new(&decoded_str.to_string()).map_err(|e| Error::InvalidSchema {
-                            type_name: type_name.clone().into_option(),
-                            reason: format!("invalid pattern '{}' {}", pattern, e),
-                        })?;
+                        let decoded_str = Self::decode_str(&pattern, type_name_opt.clone())?;
+
+                        Self::valid_regex(decoded_str.as_str(), type_name_opt)?;
+
                         self.uses_regress = true;
                     }
 
@@ -1960,6 +1973,18 @@ mod tests {
         }
 
         validate_output::<Bar>();
+    }
+
+    #[test]
+    fn test_encoded_pattern() {
+        let pattern_enc = "http:%5C/%5C/example%5C.com%5C/test%5C/";
+        let pattern_dec = TypeSpace::decode_str(pattern_enc, None).expect("Should decode");
+
+        let value = "http://example.com/test/";
+
+        let regex = TypeSpace::valid_regex(&pattern_dec, None).expect("Should be valid");
+
+        assert!(regex.find(&value).is_some());
     }
 
     // TODO we can turn this on once we generate proper sets.
