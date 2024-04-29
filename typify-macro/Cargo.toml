@@ -13,7 +13,7 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0.81"
 quote = "1.0.36"
-schemars = "0.8.16"
+schemars = "0.8.17"
 serde = "1.0.198"
 serde_json = "1.0.116"
 serde_tokenstream = "0.2.0"
