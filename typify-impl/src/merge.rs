@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -25,17 +25,19 @@ fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<
         serde_json::to_string_pretty(schemas).unwrap(),
     );
 
-    match schemas {
+    let merged_schema = match schemas {
         [] => panic!("we should not be trying to merge an empty array of schemas"),
-        [only] => Ok(only.clone()),
+        [only] => only.clone(),
         [first, second, rest @ ..] => {
             let mut out = try_merge_schema(first, second, defs)?;
             for schema in rest {
                 out = try_merge_schema(&out, schema, defs)?;
             }
-            Ok(out)
+            out
         }
-    }
+    };
+
+    Ok(merged_schema)
 }
 
 /// Given two additionalItems schemas that might be None--which is equivalent
@@ -71,12 +73,16 @@ fn merge_additional_properties(
     }
 }
 
+fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    try_merge_schema(a, b, defs).unwrap_or(Schema::Bool(false))
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
 fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     match (a, b) {
-        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
 
         // If we have two references to the same schema, that's easy!
@@ -489,9 +495,11 @@ fn try_merge_schema_not(
                         if required.contains(not_required) {
                             return Err(());
                         }
-                        // We don't care if a property we're saying is not
-                        // required was not present in the properties map.
-                        let _ = properties.remove(not_required);
+                        // Set the property's schema to false i.e. that the
+                        // presence of any value would be invalid. We ignore
+                        // the return value as it doesn't matter if the
+                        // property was there previously or not.
+                        let _ = properties.insert(not_required.clone(), Schema::Bool(false));
                     }
                 }
             }
@@ -947,6 +955,11 @@ fn merge_so_object(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
+            let required = aa
+                .required
+                .union(&bb.required)
+                .cloned()
+                .collect::<BTreeSet<_>>();
             let additional_properties = merge_additional_properties(
                 aa.additional_properties.as_deref(),
                 bb.additional_properties.as_deref(),
@@ -984,29 +997,29 @@ fn merge_so_object(
                     let resolved_schema = match ab_schema {
                         AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
                         AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
-                        AOrB::Both(a_schema, b_schema) => {
-                            try_merge_schema(a_schema, b_schema, defs)
-                        }
+                        AOrB::Both(a_schema, b_schema) => merge_schema(a_schema, b_schema, defs),
                     };
                     match resolved_schema {
                         // If a required field is incompatible with the
                         // other schema, this object is unsatisfiable.
-                        Err(()) if aa.required.contains(name) => Some(Err(())),
+                        Schema::Bool(false) if required.contains(name) => Some(Err(())),
 
                         // For incompatible, non-required fields we need to
                         // exclude the property from any values. If
                         // `additionalProperties` is `false` (i.e. excludes all
                         // other properties) then we can simply omit the
-                        // property. Otherwise we include the optional property
-                        // but with the `false` schema that means that no value
-                        // will satisfy that property--the value would always
-                        // be None and any serialization that included the
-                        // named property would fail to deserialize.
+                        // property knowing that it (like all other unnamed
+                        // properties) will not be permitted. Otherwise we
+                        // include the optional property but with the `false`
+                        // schema that means that no value will satisfy that
+                        // property--the value would always be None and any
+                        // serialization that included the named property would
+                        // fail to deserialize.
                         //
                         // If we ever make use of `propertyNames`, it's
                         // conceivable that we might check it or modify it in
                         // this case, but that may be overly complex.
-                        Err(()) => {
+                        Schema::Bool(false) => {
                             if let Some(Schema::Bool(false)) = additional_properties {
                                 None
                             } else {
@@ -1015,24 +1028,10 @@ fn merge_so_object(
                         }
 
                         // Compatible schema; proceed.
-                        Ok(schema) => Some(Ok((name.clone(), schema))),
+                        schema => Some(Ok((name.clone(), schema))),
                     }
                 })
                 .collect::<Result<schemars::Map<_, _>, _>>()?;
-
-            let additional_properties = additional_properties.map(Box::new);
-            let required = aa.required.union(&bb.required).cloned().collect();
-
-            // So. We merged the properties and we merged the array of
-            // properties that are required. We use the absence of a property
-            // in the properties map to indicate that the property must *not*
-            // be present. This is imprecise, but allows us to make progress
-            // without a most significant conversion to a new representation.
-            for req_prop in &required {
-                if !properties.contains_key(req_prop) {
-                    return Err(());
-                }
-            }
 
             let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
             let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
@@ -1046,7 +1045,7 @@ fn merge_so_object(
             let object_validation = ObjectValidation {
                 required,
                 properties,
-                additional_properties,
+                additional_properties: additional_properties.map(Box::new),
                 max_properties,
                 min_properties,
                 pattern_properties: Default::default(), // TODO
@@ -1057,11 +1056,7 @@ fn merge_so_object(
     }
 }
 
-fn filter_prop(
-    name: &str,
-    prop_schema: &Schema,
-    object_schema: &ObjectValidation,
-) -> Result<Schema, ()> {
+fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidation) -> Schema {
     // We're only considering properties we *know* do not appear in the other
     // object's schema.
     assert!(!object_schema.properties.contains_key(name));
@@ -1077,6 +1072,7 @@ fn filter_prop(
     assert!(object_schema.pattern_properties.is_empty());
 
     merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+        .unwrap_or(Schema::Bool(false))
 }
 
 fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result<Schema, ()> {
@@ -1226,7 +1222,10 @@ fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) ->
     }
 }
 
-fn roughly_properties(a: &BTreeMap<String, Schema>, b: &BTreeMap<String, Schema>) -> bool {
+fn roughly_properties(
+    a: &schemars::Map<String, Schema>,
+    b: &schemars::Map<String, Schema>,
+) -> bool {
     a.len() == b.len()
         && a.iter()
             .zip(b.iter())

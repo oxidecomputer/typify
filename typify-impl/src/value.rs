@@ -377,6 +377,25 @@ fn value_for_struct_props(
 ) -> Option<Vec<TokenStream>> {
     let map = value.as_object()?;
 
+    let direct_props = properties.iter().filter_map(|prop| {
+        let name = match &prop.rename {
+            StructPropertyRename::None => &prop.name,
+            StructPropertyRename::Rename(rename) => rename,
+            StructPropertyRename::Flatten => return None,
+        };
+
+        let name_ident = format_ident!("{}", &prop.name);
+
+        if let Some(value) = map.get(name) {
+            let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+            let prop_value = type_entry.output_value(type_space, value, scope)?;
+
+            Some(quote! { #name_ident: #prop_value })
+        } else {
+            Some(quote! { #name_ident: Default::default() })
+        }
+    });
+
     let prop_map = properties
         .iter()
         .filter_map(|prop| {
@@ -389,17 +408,6 @@ fn value_for_struct_props(
             Some((name, prop))
         })
         .collect::<BTreeMap<_, _>>();
-
-    let direct_props = map.iter().filter_map(|(name, value)| {
-        // It's okay if the property isn't in the prop_map... it must be part
-        // of one of the flattened properties.
-        let prop = prop_map.get(name)?;
-        let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let prop_value = type_entry.output_value(type_space, value, scope)?;
-        let name_ident = format_ident!("{}", name);
-
-        Some(quote! { #name_ident: #prop_value })
-    });
 
     let extra_value = serde_json::Value::Object(
         map.clone()
@@ -622,7 +630,8 @@ mod tests {
                     super::Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string())
+                        c: Some("cccc".to_string()),
+                        d: Default::default()
                     }
                 }
                 .to_string()
@@ -663,7 +672,8 @@ mod tests {
                     Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string())
+                        c: Some("cccc".to_string()),
+                        d: Default::default()
                     }
                 }
                 .to_string()

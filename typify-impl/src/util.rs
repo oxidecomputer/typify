@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::{BTreeSet, HashSet};
 
@@ -44,7 +44,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
 /// **could** be merged (i.e. if they're compatible).
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
-    definitions: &schemars::Map<RefKey, Schema>,
+    definitions: &std::collections::BTreeMap<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
     // Consider all pairs
@@ -537,7 +537,10 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     }
 }
 
-fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<RefKey, Schema>) -> &'a Schema {
+fn resolve<'a>(
+    schema: &'a Schema,
+    definitions: &'a std::collections::BTreeMap<RefKey, Schema>,
+) -> &'a Schema {
     match schema {
         Schema::Bool(_) => schema,
         Schema::Object(SchemaObject {
