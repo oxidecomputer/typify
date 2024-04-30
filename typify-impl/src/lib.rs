@@ -1094,6 +1094,35 @@ mod tests {
     }
 
     #[test]
+    fn test_external_references() {
+        let schema = json!({
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "definitions": {
+                "somename": {
+                    "$ref": "#/definitions/someothername",
+                    "required": [ "someproperty" ]
+                },
+                "someothername": {
+                    "type": "object",
+                    "properties": {
+                        "someproperty": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        });
+        let schema = serde_json::from_value(schema).unwrap();
+        println!("{:#?}", schema);
+        let settings = TypeSpaceSettings::default();
+        let mut type_space = TypeSpace::new(&settings);
+        type_space.add_root_schema(schema).unwrap();
+        let tokens = type_space.to_stream().to_string();
+        println!("{}", tokens);
+        assert!(tokens.contains(" pub struct Somename { pub someproperty : String , }"))
+    }
+
+    #[test]
     fn test_convert_enum_string() {
         #[allow(dead_code)]
         #[derive(JsonSchema)]
