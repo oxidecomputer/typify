@@ -393,6 +393,48 @@ impl TypeSpace {
                 self.convert_reference(metadata, reference)
             }
 
+            SchemaObject {
+                metadata,
+                instance_type: _,
+                format: _,
+                enum_values: _,
+                const_value: _,
+                subschemas: _,
+                number: _,
+                string: _,
+                array: _,
+                object: _,
+                reference: Some(reference),
+                extensions: _,
+            } => {
+                let mut def = self.definitions.get(&ref_key(reference)).unwrap();
+                let mut new_schema = Schema::Object(SchemaObject {
+                    reference: None,
+                    ..schema.clone()
+                });
+                while let Schema::Object(SchemaObject { reference: r, .. }) = def {
+                    let schema_only_ref = Schema::Object(SchemaObject {
+                        reference: r.clone(),
+                        ..Default::default()
+                    });
+                    let schema_without_ref = Schema::Object(SchemaObject {
+                        reference: None,
+                        ..def.clone().into_object()
+                    });
+                    new_schema = merge_all(
+                        &[schema_without_ref, schema_only_ref, new_schema],
+                        &self.definitions,
+                    );
+                    if let Some(r) = r {
+                        def = self.definitions.get(&ref_key(r)).unwrap();
+                    } else {
+                        break;
+                    }
+                }
+                let (type_entry, _) = self.convert_schema(type_name, &new_schema).unwrap();
+                Ok((type_entry, metadata))
+            }
+
             // Enum of a single, known, non-String type (strings above).
             SchemaObject {
                 instance_type: Some(SingleOrVec::Single(_)),
