@@ -360,6 +360,63 @@
           "bar": "string"
         }
       }
+    },
+    "Unresolvable": {
+      "$comment": "subschemas all end up unresolvable",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "enum": [
+                "a"
+              ]
+            }
+          },
+          "required": [
+            "x"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "enum": [
+                "b"
+              ]
+            }
+          },
+          "required": [
+            "x"
+          ]
+        }
+      ],
+      "type": "object",
+      "properties": {
+        "x": {
+          "enum": [
+            "c"
+          ]
+        }
+      },
+      "required": [
+        "x"
+      ]
+    },
+    "CommentedTypeMerged": {
+      "description": "if we don't see this, we dropped the metadata",
+      "type": "object",
+      "properties": {
+        "x": true
+      },
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "y": true
+          }
+        }
+      ]
     }
   }
 }

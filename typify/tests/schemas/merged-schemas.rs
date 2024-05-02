@@ -79,6 +79,40 @@ impl From<&ButNotThat> for ButNotThat {
         value.clone()
     }
 }
+#[doc = "if we don't see this, we dropped the metadata"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"if we don't see this, we dropped the metadata\","]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"y\": true"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"x\": true"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CommentedTypeMerged {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub x: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub y: Option<serde_json::Value>,
+}
+impl From<&CommentedTypeMerged> for CommentedTypeMerged {
+    fn from(value: &CommentedTypeMerged) -> Self {
+        value.clone()
+    }
+}
 #[doc = "JsonResponseBase"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -568,6 +602,63 @@ pub struct TrimFat {
 }
 impl From<&TrimFat> for TrimFat {
     fn from(value: &TrimFat) -> Self {
+        value.clone()
+    }
+}
+#[doc = "Unresolvable"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"x\""]
+#[doc = "      ],"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"x\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"a\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"x\""]
+#[doc = "      ],"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"x\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"b\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"required\": ["]
+#[doc = "    \"x\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"x\": {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"c\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"$comment\": \"subschemas all end up unresolvable\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(deny_unknown_fields)]
+pub enum Unresolvable {}
+impl From<&Unresolvable> for Unresolvable {
+    fn from(value: &Unresolvable) -> Self {
         value.clone()
     }
 }

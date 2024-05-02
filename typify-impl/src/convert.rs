@@ -2,7 +2,7 @@
 
 use std::collections::BTreeSet;
 
-use crate::merge::{merge_all, merge_with_subschemas};
+use crate::merge::{merge_all, try_merge_with_subschemas};
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
@@ -475,31 +475,42 @@ impl TypeSpace {
 
             // Subschemas with other stuff.
             SchemaObject {
-                subschemas: Some(_),
+                metadata,
+                subschemas: subschemas @ Some(_),
                 ..
             } => {
                 let without_subschemas = SchemaObject {
                     subschemas: None,
+                    metadata: None,
                     ..schema.clone()
                 };
                 debug!(
                     "pre merged schema {}",
                     serde_json::to_string_pretty(schema).unwrap(),
                 );
-                let merged_schema = merge_with_subschemas(
+                match try_merge_with_subschemas(
                     without_subschemas,
-                    schema.subschemas.as_deref(),
+                    subschemas.as_deref(),
                     &self.definitions,
-                );
+                ) {
+                    Ok(merged_schema) => {
+                        // Preserve metadata from the outer schema.
+                        let merged_schema = SchemaObject {
+                            metadata: metadata.clone(),
+                            ..merged_schema
+                        };
+                        debug!(
+                            "merged schema {}",
+                            serde_json::to_string_pretty(&merged_schema).unwrap(),
+                        );
 
-                debug!(
-                    "merged schema {}",
-                    serde_json::to_string_pretty(&merged_schema).unwrap(),
-                );
+                        let (type_entry, _) =
+                            self.convert_schema_object(type_name, original_schema, &merged_schema)?;
+                        Ok((type_entry, &None))
+                    }
 
-                let (type_entry, _) =
-                    self.convert_schema_object(type_name, original_schema, &merged_schema)?;
-                Ok((type_entry, &None))
+                    Err(_) => self.convert_never(type_name, original_schema),
+                }
             }
 
             // TODO let's not bother with const values at the moment. In the
@@ -1744,8 +1755,8 @@ impl TypeSpace {
             // convert the resulting type to be optional.
             let enum_values = enum_values
                 .iter()
-                .cloned()
                 .filter(|v| !v.is_null())
+                .cloned()
                 .collect::<Vec<_>>();
 
             let (type_entry, metadata) =
