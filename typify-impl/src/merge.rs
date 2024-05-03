@@ -449,8 +449,8 @@ pub(crate) enum NotSchemaMergeError {
     SubtractingEverything,
     #[error("Property `{0}` can't be both required and not required")]
     ConflictingPropertyRequire(String),
-    #[error("Error in try_merge_with_subschemas_not")]
-    NotSubschemaMerge,
+    #[error("Error in try_merge_with_subschemas_not: {0}")]
+    NotSubschemaMerge(#[from] NotSubschemaMergeError),
 }
 
 /// "Subtract" the "not" schema from the schema object.
@@ -541,8 +541,7 @@ fn try_merge_schema_not(
             }
 
             if let Some(not_subschemas) = subschemas {
-                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)
-                    .map_err(|()| NotSchemaMergeError::NotSubschemaMerge)?;
+                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
             }
 
             Ok(schema_object)
@@ -550,11 +549,21 @@ fn try_merge_schema_not(
     }
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum NotSubschemaMergeError {
+    #[error("Error in merge_schema_object")]
+    ObjectSchemaMerge,
+    #[error("Error in merging schemas: {0}")]
+    SchemaMerge(#[from] SchemaMergeError),
+    #[error("Error in merging schemas: {0}")]
+    NotSchemaMerge(#[from] Box<NotSchemaMergeError>),
+}
+
 fn try_merge_with_subschemas_not(
     schema_object: SchemaObject,
     not_subschemas: &SubschemaValidation,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, NotSubschemaMergeError> {
     debug!("try_merge_with_subschemas_not");
     match not_subschemas {
         SubschemaValidation {
@@ -588,6 +597,7 @@ fn try_merge_with_subschemas_not(
                 ..Default::default()
             };
             merge_schema_object(&schema_object, &new_other, defs)
+                .map_err(|()| NotSubschemaMergeError::ObjectSchemaMerge)
         }
 
         SubschemaValidation {
@@ -600,9 +610,7 @@ fn try_merge_with_subschemas_not(
             else_schema: None,
         } => {
             debug!("not not");
-            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)
-                .map_err(|_| ())?
-                .into_object())
+            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)?.into_object())
         }
 
         // TODO this is a kludge
@@ -635,9 +643,8 @@ fn try_merge_with_subschemas_not(
             then_schema: None,
             else_schema: None,
         } => match try_merge_all(all_of, defs) {
-            Ok(merged_not_schema) => {
-                try_merge_schema_not(schema_object, &merged_not_schema, defs).map_err(|_| ())
-            }
+            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs)
+                .map_err(|e| Box::new(e).into()),
             Err(_) => Ok(schema_object),
         },
 
@@ -1582,11 +1589,7 @@ mod tests {
 
         let ab = try_merge_schema(&a, &b, &Default::default());
 
-        assert!(
-            ab.is_err(),
-            "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
-        );
+        assert!(ab.is_err(), "{:#?}", &ab,);
 
         let a = json!({
             "type": "array",
@@ -1613,11 +1616,7 @@ mod tests {
 
         let ab = try_merge_schema(&a, &b, &Default::default());
 
-        assert!(
-            ab.is_err(),
-            "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
-        );
+        assert!(ab.is_err(), "{:#?}", &ab,);
     }
 
     #[test]
