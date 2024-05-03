@@ -30,9 +30,9 @@ fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<
         [] => panic!("we should not be trying to merge an empty array of schemas"),
         [only] => only.clone(),
         [first, second, rest @ ..] => {
-            let mut out = try_merge_schema(first, second, defs)?;
+            let mut out = try_merge_schema(first, second, defs).map_err(|_| ())?;
             for schema in rest {
-                out = try_merge_schema(&out, schema, defs)?;
+                out = try_merge_schema(&out, schema, defs).map_err(|_| ())?;
             }
             out
         }
@@ -78,12 +78,26 @@ fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Sche
     try_merge_schema(a, b, defs).unwrap_or(Schema::Bool(false))
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum SchemaMergeError {
+    #[error("Cannot merge any schema with a trivially false schema")]
+    MergeWithFalse,
+    #[error("Error in merge_schema_object")]
+    ObjectSchemaMerge,
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
-fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
+fn try_merge_schema(
+    a: &Schema,
+    b: &Schema,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, SchemaMergeError> {
     match (a, b) {
-        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => {
+            Err(SchemaMergeError::MergeWithFalse)
+        }
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
 
         // If we have two references to the same schema, that's easy!
@@ -139,7 +153,9 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
             }
         }
 
-        (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)?.into()),
+        (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)
+            .map_err(|()| SchemaMergeError::ObjectSchemaMerge)?
+            .into()),
     }
 }
 
@@ -584,7 +600,9 @@ fn try_merge_with_subschemas_not(
             else_schema: None,
         } => {
             debug!("not not");
-            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)?.into_object())
+            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)
+                .map_err(|_| ())?
+                .into_object())
         }
 
         // TODO this is a kludge
@@ -830,9 +848,9 @@ fn merge_so_array(
                     (Some(SingleOrVec::Single(aa_single)), _),
                     (Some(SingleOrVec::Single(bb_single)), _),
                 ) => (
-                    Some(SingleOrVec::Single(Box::new(try_merge_schema(
-                        aa_single, bb_single, defs,
-                    )?))),
+                    Some(SingleOrVec::Single(Box::new(
+                        try_merge_schema(aa_single, bb_single, defs).map_err(|_| ())?,
+                    ))),
                     None,
                     max_items,
                 ),
@@ -855,10 +873,15 @@ fn merge_so_array(
                     )?;
 
                     if allow_additional_items {
-                        let additional_items = additional_items.as_deref().map_or_else(
-                            || Ok(single.as_ref().clone()),
-                            |additional_schema| try_merge_schema(additional_schema, single, defs),
-                        )?;
+                        let additional_items = additional_items
+                            .as_deref()
+                            .map_or_else(
+                                || Ok(single.as_ref().clone()),
+                                |additional_schema| {
+                                    try_merge_schema(additional_schema, single, defs)
+                                },
+                            )
+                            .map_err(|_| ())?;
                         (
                             Some(SingleOrVec::Vec(items)),
                             Some(Box::new(additional_items)),
