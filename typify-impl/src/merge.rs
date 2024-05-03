@@ -276,7 +276,7 @@ pub(crate) enum SubschemaMergeError {
     #[error("Empty merged OneOf subschema")]
     EmptyMergedOneOfSubschema,
     #[error("try_merge_schema_not error")]
-    NotSchemaMerge,
+    NotSchemaMerge(#[from] NotSchemaMergeError),
     #[error("try_merge_schema_not error")]
     AllOfSchemaMerge,
 }
@@ -318,8 +318,7 @@ pub(crate) fn try_merge_with_subschemas(
     }
 
     if let Some(not) = not {
-        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)
-            .map_err(|_| SubschemaMergeError::NotSchemaMerge)?;
+        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)?;
     }
 
     // TODO: we should be able to handle a combined one_of and any_of... but
@@ -428,6 +427,16 @@ fn try_merge_with_each_subschema(
     joined_schemas
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum NotSchemaMergeError {
+    #[error("Subtracting everything leaves nothing")]
+    SubtractingEverything,
+    #[error("Property `{0}` can't be both required and not required")]
+    ConflictingPropertyRequire(String),
+    #[error("Error in try_merge_with_subschemas_not")]
+    NotSubschemaMerge,
+}
+
 /// "Subtract" the "not" schema from the schema object.
 ///
 /// TODO Exactly where and how we handle not constructions is... tricky! As we
@@ -437,7 +446,7 @@ fn try_merge_schema_not(
     mut schema_object: SchemaObject,
     not_schema: &Schema,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, NotSchemaMergeError> {
     debug!(
         "try_merge_schema_not {}\n not:{}",
         serde_json::to_string_pretty(&schema_object).unwrap(),
@@ -445,7 +454,7 @@ fn try_merge_schema_not(
     );
     match not_schema {
         // Subtracting everything leaves nothing...
-        Schema::Bool(true) => Err(()),
+        Schema::Bool(true) => Err(NotSchemaMergeError::SubtractingEverything),
         // ... whereas subtracting nothing leaves everything.
         Schema::Bool(false) => Ok(schema_object),
 
@@ -502,7 +511,9 @@ fn try_merge_schema_not(
                         // A property can't be both required and not required
                         // therefore this schema is unsatisfiable.
                         if required.contains(not_required) {
-                            return Err(());
+                            return Err(NotSchemaMergeError::ConflictingPropertyRequire(
+                                not_required.to_string(),
+                            ));
                         }
                         // Set the property's schema to false i.e. that the
                         // presence of any value would be invalid. We ignore
@@ -514,7 +525,8 @@ fn try_merge_schema_not(
             }
 
             if let Some(not_subschemas) = subschemas {
-                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
+                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)
+                    .map_err(|()| NotSchemaMergeError::NotSubschemaMerge)?;
             }
 
             Ok(schema_object)
@@ -605,7 +617,9 @@ fn try_merge_with_subschemas_not(
             then_schema: None,
             else_schema: None,
         } => match try_merge_all(all_of, defs) {
-            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
+            Ok(merged_not_schema) => {
+                try_merge_schema_not(schema_object, &merged_not_schema, defs).map_err(|_| ())
+            }
             Err(_) => Ok(schema_object),
         },
 
