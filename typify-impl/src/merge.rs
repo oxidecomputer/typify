@@ -277,7 +277,7 @@ pub(crate) enum SubschemaMergeError {
     EmptyMergedOneOfSubschema,
     #[error("try_merge_schema_not error")]
     NotSchemaMerge(#[from] NotSchemaMergeError),
-    #[error("try_merge_schema_not error")]
+    #[error("Error merging AllOf schema")]
     AllOfSchemaMerge,
 }
 
