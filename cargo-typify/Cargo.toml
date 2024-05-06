@@ -19,7 +19,7 @@ color-eyre = "0.6"
 env_logger = "0.10"
 rustfmt-wrapper = "0.2.1"
 serde_json = "1.0.116"
-schemars = "0.8.17"
+schemars = "0.8.18"
 
 [dev-dependencies]
 assert_cmd = "2.0.14"
