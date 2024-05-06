@@ -5,13 +5,13 @@ edition = "2021"
 
 [dependencies]
 regress = "0.9.1"
-serde = "1.0.199"
+serde = "1.0.200"
 serde_json = "1.0.116"
 
 [build-dependencies]
 ipnetwork = { version = "0.20.0", features = ["schemars"] }
 prettyplease = "0.2.19"
 schemars = "0.8.17"
-serde = "1.0.199"
+serde = "1.0.200"
 syn = "2.0.60"
 typify = { path = "../typify" }
