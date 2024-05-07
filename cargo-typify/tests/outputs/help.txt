@@ -21,6 +21,9 @@ Options:
           
           If `-` is specified, the output will be written to stdout.
 
+      --crate <CRATES>
+          Specify each crate@version that can be assumed to be in use for types found in the schema with the x-rust-type extension
+
   -h, --help
           Print help (see a summary with '-h')
 

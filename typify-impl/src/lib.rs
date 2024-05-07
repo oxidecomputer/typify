@@ -243,6 +243,7 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     struct_builder: bool,
 
+    crates: BTreeMap<String, semver::Version>,
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
@@ -364,6 +365,22 @@ impl TypeSpaceSettings {
             type_name: type_name.to_string(),
             impls: impls.collect(),
         });
+        self
+    }
+
+    /// Type schemas may contain an extension (`x-rust-type`) that indicates
+    /// the corresponding Rust type within a particular crate. This extension
+    /// indicates the crate, version compatibility, type path, and type
+    /// parameters. This function modifies settings to use (rather than
+    /// generate) types from the given crate and version. The version should
+    /// precisely match the version of the crate that you expect as a
+    /// dependency.
+    pub fn with_crate<S: ToString>(
+        &mut self,
+        crate_name: S,
+        version: semver::Version,
+    ) -> &mut Self {
+        self.crates.insert(crate_name.to_string(), version);
         self
     }
 }
@@ -536,6 +553,8 @@ impl TypeSpace {
                 schema.clone(),
             ),
 
+            TypeEntryDetails::Native(_) => type_entry,
+
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
             _ => {
@@ -555,8 +574,9 @@ impl TypeSpace {
                 )
             }
         };
-        let entry_name = type_entry.name().unwrap().clone();
-        self.name_to_id.insert(entry_name, type_id.clone());
+        if let Some(entry_name) = type_entry.name() {
+            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+        }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
     }

@@ -4,7 +4,7 @@
 
 #![deny(missing_docs)]
 
-use std::path::PathBuf;
+use std::{path::PathBuf, str::FromStr};
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
@@ -25,7 +25,8 @@ pub struct CliArgs {
     #[arg(short, long, default_value = "false", group = "build")]
     pub builder: bool,
 
-    /// Inverse of `--builder`. When set the builder-style interface will not be included.
+    /// Inverse of `--builder`. When set the builder-style interface will not
+    /// be included.
     #[arg(short = 'B', long, default_value = "false", group = "build")]
     pub no_builder: bool,
 
@@ -33,12 +34,17 @@ pub struct CliArgs {
     #[arg(short, long = "additional-derive", value_name = "derive")]
     pub additional_derives: Vec<String>,
 
-    /// The output file to write to. If not specified, the input file name will be used with a
-    /// `.rs` extension.
+    /// The output file to write to. If not specified, the input file name will
+    /// be used with a `.rs` extension.
     ///
     /// If `-` is specified, the output will be written to stdout.
     #[arg(short, long)]
     pub output: Option<PathBuf>,
+
+    /// Specify each crate@version that can be assumed to be in use for types
+    /// found in the schema with the x-rust-type extension.
+    #[arg(long = "crate")]
+    pub crates: Vec<CrateSpec>,
 }
 
 impl CliArgs {
@@ -66,6 +72,30 @@ impl CliArgs {
     }
 }
 
+#[derive(Debug, Clone)]
+struct CrateSpec(String, semver::Version);
+
+impl FromStr for CrateSpec {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        fn convert(s: &str) -> Option<CrateSpec> {
+            let ii = s.find('@')?;
+            let crate_str = &s[..ii];
+            let vers_str = &s[ii + 1..];
+
+            if crate_str.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-') {
+                return None;
+            }
+            let crate_vers = semver::Version::parse(vers_str).ok()?;
+
+            Some(CrateSpec(crate_str.to_string(), crate_vers))
+        }
+
+        convert(s).ok_or("crate specifier must be of the form 'cratename@version'")
+    }
+}
+
 /// Generate Rust code for the selected JSON Schema.
 pub fn convert(args: &CliArgs) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
@@ -79,6 +109,10 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 
     for derive in &args.additional_derives {
         settings = settings.with_derive(derive.clone());
+    }
+
+    for CrateSpec(crate_name, crate_vers) in &args.crates {
+        settings = settings.with_crate(crate_name, crate_vers.clone());
     }
 
     let mut type_space = TypeSpace::new(settings);
@@ -113,6 +147,7 @@ mod tests {
             additional_derives: vec![],
             output: Some(PathBuf::from("-")),
             no_builder: false,
+            crates: vec![],
         };
 
         assert_eq!(args.output_path(), None);
@@ -126,6 +161,7 @@ mod tests {
             additional_derives: vec![],
             output: Some(PathBuf::from("some_file.rs")),
             no_builder: false,
+            crates: vec![],
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -139,6 +175,7 @@ mod tests {
             additional_derives: vec![],
             output: None,
             no_builder: false,
+            crates: vec![],
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -152,6 +189,7 @@ mod tests {
             additional_derives: vec![],
             output: None,
             no_builder: false,
+            crates: vec![],
         };
 
         assert!(args.use_builder());
@@ -165,6 +203,7 @@ mod tests {
             additional_derives: vec![],
             output: None,
             no_builder: true,
+            crates: vec![],
         };
 
         assert!(!args.use_builder());
@@ -178,6 +217,7 @@ mod tests {
             additional_derives: vec![],
             output: None,
             no_builder: false,
+            crates: vec![],
         };
 
         assert!(args.use_builder());

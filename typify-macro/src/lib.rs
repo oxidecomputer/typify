@@ -37,6 +37,11 @@ mod token_utils;
 ///   method for each generated struct that can be used to specify each
 ///   property and construct the struct
 ///
+/// - `crates`: optional map from crate name to the version of the crate in
+///   use. Types encountered with the Rust type extension (`x-rust-type`) will
+///   use types from the specified crates rather than generating them (within
+///   the constraints of type compatibility).
+///
 /// - `patch`: optional map from type to an object with the optional members
 ///   `rename` and `derives`. This may be used to renamed generated types or
 ///   to apply additional (non-default) derive macros to them.
@@ -65,12 +70,35 @@ struct MacroSettings {
     struct_builder: bool,
 
     #[serde(default)]
+    crates: HashMap<CrateName, semver::Version>,
+
+    #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
     #[serde(default)]
     replace: HashMap<ParseWrapper<syn::Ident>, ParseWrapper<TypeAndImpls>>,
     #[serde(default)]
     convert:
         serde_tokenstream::OrderedMap<schemars::schema::SchemaObject, ParseWrapper<TypeAndImpls>>,
+}
+
+#[derive(Hash, PartialEq, Eq)]
+struct CrateName(String);
+impl<'de> Deserialize<'de> for CrateName {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let ss = String::deserialize(deserializer)?;
+
+        if ss.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-') {
+            Err(<D::Error as serde::de::Error>::invalid_value(
+                serde::de::Unexpected::Str(&ss),
+                &"valid crate name",
+            ))
+        } else {
+            Ok(Self(ss))
+        }
+    }
 }
 
 #[derive(Deserialize)]
@@ -106,6 +134,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             patch,
             struct_builder,
             convert,
+            crates,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
@@ -113,6 +142,11 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         });
         settings.with_struct_builder(struct_builder);
 
+        crates
+            .into_iter()
+            .for_each(|(CrateName(crate_name), crate_vers)| {
+                settings.with_crate(crate_name, crate_vers);
+            });
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
         });

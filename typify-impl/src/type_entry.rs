@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, Schema};
-use syn::{punctuated::Punctuated, Path};
+use syn::Path;
 
 use crate::{
     enums::output_variant,
@@ -20,14 +20,14 @@ pub(crate) struct SchemaWrapper(Schema);
 
 impl Eq for SchemaWrapper {}
 
-impl PartialOrd for SchemaWrapper {
-    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
-    }
-}
 impl Ord for SchemaWrapper {
     fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
         std::cmp::Ordering::Equal
+    }
+}
+impl PartialOrd for SchemaWrapper {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -89,8 +89,9 @@ pub(crate) enum TypeEntryNewtypeConstraints {
 pub(crate) struct TypeEntryNative {
     pub type_name: String,
     impls: Vec<TypeSpaceImpl>,
-    // TODO to support const generics, this can be TypeOrValue, but note that
-    // we may some day need to disambiguate char and &'static str
+    // TODO to support const generics, this can be some sort of TypeOrValue,
+    // but note that we may some day need to disambiguate char and &'static str
+    // since schemars represents a char as a string of length 1.
     parameters: Vec<TypeId>,
 }
 
@@ -108,8 +109,8 @@ impl Ord for WrappedValue {
     }
 }
 impl PartialOrd for WrappedValue {
-    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -1666,18 +1667,15 @@ impl TypeEntry {
                 let path =
                     syn::parse_str::<syn::TypePath>(type_name).expect("type path wasn't valid");
 
-                let xxx = (!parameters.is_empty()).then(|| {
-                    let type_idents = parameters
-                        .iter()
-                        .map(|type_id| {
-                            type_space
-                                .id_to_entry
-                                .get(type_id)
-                                .expect("unresolved type id for tuple")
-                                .type_ident(type_space, type_mod)
-                        })
-                        .collect::<Punctuated<_, syn::Token![,]>>();
-                    type_idents
+                let type_idents = (!parameters.is_empty()).then(|| {
+                    let type_idents = parameters.iter().map(|type_id| {
+                        type_space
+                            .id_to_entry
+                            .get(type_id)
+                            .expect("unresolved type id for tuple")
+                            .type_ident(type_space, type_mod)
+                    });
+                    quote! { < #(#type_idents,)* > }
                 });
 
                 quote! {

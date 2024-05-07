@@ -1,9 +1,12 @@
 // Copyright 2024 Oxide Computer Company
 
-use schemars::schema::{Metadata, Schema, SchemaObject};
+use log::debug;
+use schemars::schema::{Schema, SchemaObject};
 use serde::Deserialize;
 
 use crate::{type_entry::TypeEntry, Name, Result, TypeSpace};
+
+const RUST_TYPE_EXTENSION: &str = "x-rust-type";
 
 // TODO crate renames?
 #[derive(Deserialize)]
@@ -18,7 +21,7 @@ struct RustExtension {
 
 impl TypeSpace {
     pub(crate) fn convert_rust_extension(&mut self, schema: &SchemaObject) -> Option<TypeEntry> {
-        let xxx = schema.extensions.get("x-rust")?;
+        let xxx = schema.extensions.get(RUST_TYPE_EXTENSION)?;
 
         // TODO warn if this fails
         let RustExtension {
@@ -28,14 +31,21 @@ impl TypeSpace {
             parameters,
         } = serde_json::from_value(xxx.clone()).ok()?;
 
+        let Ok(req) = semver::VersionReq::parse(&version) else {
+            debug!(
+                "{} contains an invalid version",
+                serde_json::to_string_pretty(&schema).unwrap(),
+            );
+            return None;
+        };
+
+        let crate_vers = self.settings.crates.get(&crate_name)?;
+        if !req.matches(crate_vers) {
+            return None;
+        }
+
         // Do the crate and version check
         // TODO
-
-        let crate_name = crate_name.replace("-", "_");
-
-        assert!(path.starts_with("::"));
-
-        let type_name = format!("{}{}", crate_name, path);
 
         let zzz = parameters
             .iter()
@@ -46,6 +56,6 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntry::new_native_params(type_name, &zzz))
+        Some(TypeEntry::new_native_params(path, &zzz))
     }
 }
