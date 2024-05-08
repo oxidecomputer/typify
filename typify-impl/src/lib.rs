@@ -243,10 +243,38 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     struct_builder: bool,
 
-    crates: BTreeMap<String, semver::Version>,
+    crates: BTreeMap<String, CrateSpec>,
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+#[derive(Debug, Clone)]
+struct CrateSpec {
+    version: CrateVers,
+    rename: Option<String>,
+}
+
+/// XXX
+#[derive(Debug, Clone)]
+pub enum CrateVers {
+    /// XXX
+    Version(semver::Version),
+    /// XXX
+    Any,
+    /// XXX
+    Never,
+}
+
+impl CrateVers {
+    /// XXX
+    pub fn parse(s: &str) -> Option<Self> {
+        if s == "!" {
+            Some(Self::Never)
+        } else {
+            Some(Self::Version(semver::Version::parse(s).ok()?))
+        }
+    }
 }
 
 /// Contains a set of modifications that may be applied to an existing type.
@@ -375,12 +403,19 @@ impl TypeSpaceSettings {
     /// generate) types from the given crate and version. The version should
     /// precisely match the version of the crate that you expect as a
     /// dependency.
-    pub fn with_crate<S: ToString>(
+    pub fn with_crate<S1: ToString, S2: ToString>(
         &mut self,
-        crate_name: S,
-        version: semver::Version,
+        crate_name: S1,
+        version: CrateVers,
+        rename: Option<S2>,
     ) -> &mut Self {
-        self.crates.insert(crate_name.to_string(), version);
+        self.crates.insert(
+            crate_name.to_string(),
+            CrateSpec {
+                version,
+                rename: rename.map(|r| r.to_string()),
+            },
+        );
         self
     }
 }

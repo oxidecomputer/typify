@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 //! cargo command to generate Rust code from a JSON Schema.
 
@@ -8,7 +8,7 @@ use std::{path::PathBuf, str::FromStr};
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
-use typify::{TypeSpace, TypeSpaceSettings};
+use typify::{CrateVers, TypeSpace, TypeSpaceSettings};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
@@ -44,7 +44,7 @@ pub struct CliArgs {
     /// Specify each crate@version that can be assumed to be in use for types
     /// found in the schema with the x-rust-type extension.
     #[arg(long = "crate")]
-    pub crates: Vec<CrateSpec>,
+    crates: Vec<CrateSpec>,
 }
 
 impl CliArgs {
@@ -73,13 +73,32 @@ impl CliArgs {
 }
 
 #[derive(Debug, Clone)]
-struct CrateSpec(String, semver::Version);
+struct CrateSpec {
+    name: String,
+    version: CrateVers,
+    rename: Option<String>,
+}
 
 impl FromStr for CrateSpec {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        fn is_crate(s: &str) -> bool {
+            !s.contains(|cc: char| !cc.is_alphabetic() && cc != '-' && cc != '_')
+        }
+
         fn convert(s: &str) -> Option<CrateSpec> {
+            let (rename, s) = if let Some(ii) = s.find('=') {
+                let rename = &s[..ii];
+                let rest = &s[ii + 1..];
+                if !is_crate(rename) {
+                    return None;
+                }
+                (Some(rename.to_string()), rest)
+            } else {
+                (None, s)
+            };
+
             let ii = s.find('@')?;
             let crate_str = &s[..ii];
             let vers_str = &s[ii + 1..];
@@ -87,9 +106,13 @@ impl FromStr for CrateSpec {
             if crate_str.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-') {
                 return None;
             }
-            let crate_vers = semver::Version::parse(vers_str).ok()?;
+            let version = CrateVers::parse(vers_str)?;
 
-            Some(CrateSpec(crate_str.to_string(), crate_vers))
+            Some(CrateSpec {
+                name: crate_str.to_string(),
+                version,
+                rename,
+            })
         }
 
         convert(s).ok_or("crate specifier must be of the form 'cratename@version'")
@@ -111,8 +134,13 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         settings = settings.with_derive(derive.clone());
     }
 
-    for CrateSpec(crate_name, crate_vers) in &args.crates {
-        settings = settings.with_crate(crate_name, crate_vers.clone());
+    for CrateSpec {
+        name,
+        version,
+        rename,
+    } in &args.crates
+    {
+        settings = settings.with_crate(name, version.clone(), rename.clone());
     }
 
     let mut type_space = TypeSpace::new(settings);

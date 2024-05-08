@@ -156,6 +156,7 @@
 
 #![deny(missing_docs)]
 
+pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::Type;
 pub use typify_impl::TypeDetails;

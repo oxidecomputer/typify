@@ -12,7 +12,7 @@ use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
 use token_utils::TypeAndImpls;
-use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
+use typify_impl::{CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 mod token_utils;
 
@@ -70,7 +70,7 @@ struct MacroSettings {
     struct_builder: bool,
 
     #[serde(default)]
-    crates: HashMap<CrateName, semver::Version>,
+    crates: HashMap<CrateName, CrateSpec>,
 
     #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
@@ -79,6 +79,51 @@ struct MacroSettings {
     #[serde(default)]
     convert:
         serde_tokenstream::OrderedMap<schemars::schema::SchemaObject, ParseWrapper<TypeAndImpls>>,
+}
+
+struct CrateSpec {
+    rename: Option<String>,
+    version: CrateVers,
+}
+
+impl<'de> Deserialize<'de> for CrateSpec {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let ss = String::deserialize(deserializer)?;
+
+        if ss == "*" {
+            Ok(Self {
+                rename: None,
+                version: CrateVers::Any,
+            })
+        } else {
+            let (rename, vers_str) = if let Some(ii) = ss.find('@') {
+                let rename_str = &ss[..ii];
+                let rest = &ss[ii + 1..];
+                if !is_crate(rename_str) {
+                    return Err(<D::Error as serde::de::Error>::invalid_value(
+                        serde::de::Unexpected::Str(&ss),
+                        &"valid crate name",
+                    ));
+                }
+
+                (Some(rename_str.to_string()), rest)
+            } else {
+                (None, ss.as_ref())
+            };
+
+            let Some(version) = CrateVers::parse(vers_str) else {
+                return Err(<D::Error as serde::de::Error>::invalid_value(
+                    serde::de::Unexpected::Str(&ss),
+                    &"valid version",
+                ));
+            };
+
+            Ok(Self { rename, version })
+        }
+    }
 }
 
 #[derive(Hash, PartialEq, Eq)]
@@ -90,7 +135,9 @@ impl<'de> Deserialize<'de> for CrateName {
     {
         let ss = String::deserialize(deserializer)?;
 
-        if ss.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-') {
+        if ss == "*" {
+            Ok(Self(ss))
+        } else if !is_crate(&ss) {
             Err(<D::Error as serde::de::Error>::invalid_value(
                 serde::de::Unexpected::Str(&ss),
                 &"valid crate name",
@@ -99,6 +146,10 @@ impl<'de> Deserialize<'de> for CrateName {
             Ok(Self(ss))
         }
     }
+}
+
+fn is_crate(s: &str) -> bool {
+    !s.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-')
 }
 
 #[derive(Deserialize)]
@@ -144,8 +195,8 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
         crates
             .into_iter()
-            .for_each(|(CrateName(crate_name), crate_vers)| {
-                settings.with_crate(crate_name, crate_vers);
+            .for_each(|(CrateName(crate_name), CrateSpec { rename, version })| {
+                settings.with_crate(crate_name, version, rename);
             });
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
