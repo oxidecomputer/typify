@@ -98,12 +98,42 @@ The extension includes the name of the crate, a Cargo-style version
 requirements spec, and the full path (that must start with ident-converted name
 of the crate).
 
-### Using types from other crates
-
 Each of the modes of using typify allow for a list of crates and versions to be
 specified. In this case, if the user specifies "crate-o-types@1.0.1" for
 example, then typify would use its `SomeType` type rather than generating one
 according to the schema.
+
+### Using types from other crates
+
+Each mode of using typify has a method for controlling the use of types with
+`x-rust-type` annotations. The default is to ignore them. The recommended
+method is to specify each crate and version you intend to use. You can
+additionally supply the `*` version for crates (which may result in
+incompatibilities) or you can define a policy to allow the use of all "unknown"
+crates (which may require that addition of dependencies for those crates).
+
+For the CLI:
+```console
+$ cargo typify --unknown-crates allow --crate oxnet@1.0.0 ...
+```
+
+For the builder:
+```rust
+let mut settings = typify::TypeSpaceSettings::default();
+settings.with_unknown_crates(typify::UnknownPolicy::Allow)
+    .with_crate("oxnet", typify::CrateVers::Version("1.0.0".parse().unwrap()));
+```
+
+For the macro:
+```rust
+typify::import_types!(
+  schema = "schema.json",
+  unknown_types = Allow,
+  crates {
+    "oxnet" = "1.0.0"
+  }
+)
+```
 
 ### Version requirements
 
@@ -160,8 +190,52 @@ With the `util@0.1.0` crate specified during type generation, schemas
 referencing `#/$defs/Sprocket` would use the (non-generated) type
 `util::Sprocket<util::Gizmo>`.
 
-The `parameters` field is an array of schemas. They may be inline schemas or referenced schemas.
+The `parameters` field is an array of schemas. They may be inline schemas or
+referenced schemas.
 
+### Including `x-rust-type` in your library
+
+The schema for the expected value is as follows:
+
+```json
+{
+  "description": "schema for the x-rust-type extension",
+  "type": "object",
+  "properties": {
+    "crate": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "version": {
+      "description": "semver requirements per a Cargo.toml dependencies entry",
+      "type": "string"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_]+(::[a-zA-Z0-9+]+)*$"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Schema"
+      }
+    }
+  },
+  "required": [
+    "crate",
+    "path",
+    "version"
+  ]
+}
+```
+
+The `version` field expresses the stability of your type. For example, if
+`0.1.0` indicates that `0.1.1` users would be fine whereas `0.2.0` users would
+not use the type (instead generating it). You can communicate a future
+commitment beyond what semver implies by using the [Cargo version requirement
+syntax](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#version-requirement-syntax).
+For example `>=0.1.0, <1.0.0` says that the type will remain structurally
+compatible from version `0.1.0` until `1.0.0`.
 
 ## Formatting
 

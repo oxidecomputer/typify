@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$comment": "this test makes weird use of types from std to avoid requiring other dependencies",
+  "$defs": {
+    "AllTheThings": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/PathBuf"
+        },
+        "option_marker": {
+          "$ref": "#/$defs/OptionMarker"
+        }
+      }
+    },
+    "PathBuf": {
+      "type": "string",
+      "x-rust-type": {
+        "crate": "std",
+        "version": "1.0.0",
+        "path": "std::path::PathBuf"
+      }
+    },
+    "OptionMarker": {
+      "$comment": "this is silly, but shows type parameters",
+      "type": "null",
+      "x-rust-type": {
+        "crate": "std",
+        "version": "1.0.0",
+        "path": "std::option::Option",
+        "parameters": [
+          {
+            "$ref": "#/$defs/Marker"
+          }
+        ]
+      }
+    },
+    "Marker": {
+      "not": true
+    }
+  }
+}

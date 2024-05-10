@@ -8,7 +8,8 @@ use crate::{type_entry::TypeEntry, CrateVers, Name, Result, TypeSpace};
 
 const RUST_TYPE_EXTENSION: &str = "x-rust-type";
 
-// TODO crate renames?
+/// Definition of the value of the x-rust-type extension. This structure
+/// must not change incompatibly (and probably shouldn't change at all).
 #[derive(Deserialize)]
 struct RustExtension {
     #[serde(rename = "crate")]
@@ -81,6 +82,7 @@ impl TypeSpace {
         let param_ids = parameters
             .iter()
             .map(|p_schema| {
+                // TODO could we have some reasonable type name? Do we need to?
                 let (param_id, _) = self.id_for_schema(Name::Unknown, p_schema)?;
                 Ok(param_id)
             })

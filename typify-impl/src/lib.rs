@@ -30,12 +30,12 @@ mod defaults;
 mod enums;
 mod merge;
 mod output;
+mod rust_extension;
 mod structs;
 mod type_entry;
 mod util;
 mod validate;
 mod value;
-mod x_rust;
 
 #[allow(missing_docs)]
 #[derive(Error, Debug)]

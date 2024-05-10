@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{error::Error, fs::File, io::BufReader};
 
@@ -32,11 +32,11 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     // Read the JSON contents of the file as an instance of `User`.
     let root_schema: RootSchema = serde_json::from_reader(reader)?;
 
-    let schema_raw = json! {
+    let schema_raw = json!(
         {
             "enum": [ 1, "one" ]
         }
-    };
+    );
     let schema = serde_json::from_value(schema_raw).unwrap();
 
     let mut type_space = TypeSpace::new(
@@ -57,6 +57,13 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
                 schema,
                 "serde_json::Value",
                 [TypeSpaceImpl::Display].into_iter(),
+            )
+            // Our test use of the x-rust-type extension only refers to things
+            // in std.
+            .with_crate(
+                "std",
+                typify::CrateVers::Version("1.0.0".parse().unwrap()),
+                None,
             ),
     );
     type_space.add_root_schema(root_schema)?;
