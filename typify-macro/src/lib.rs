@@ -12,7 +12,7 @@ use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
 use token_utils::TypeAndImpls;
-use typify_impl::{CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings};
+use typify_impl::{CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy};
 
 mod token_utils;
 
@@ -36,6 +36,15 @@ mod token_utils;
 /// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
 ///   method for each generated struct that can be used to specify each
 ///   property and construct the struct
+///
+/// - `unknown_crates`: optional policy regarding the handling of schemas that
+///   contain the `x-rust-type` extension whose crates are not explicitly named
+///   in the `crates` section. The options are `generate` to ignore the
+///   extension and generate a *de novo* type, `allow` to use the named type
+///   (which may require the addition of a new dependency to compile, and which
+///   ignores version compatibility checks), or `deny` to produce a
+///   compile-time error (requiring the user to specify the crate's disposition
+///   in the `crates` section).
 ///
 /// - `crates`: optional map from crate name to the version of the crate in
 ///   use. Types encountered with the Rust type extension (`x-rust-type`) will
@@ -70,7 +79,9 @@ struct MacroSettings {
     struct_builder: bool,
 
     #[serde(default)]
-    crates: HashMap<CrateName, CrateSpec>,
+    unknown_crates: UnknownPolicy,
+    #[serde(default)]
+    crates: HashMap<CrateName, MacroCrateSpec>,
 
     #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
@@ -81,48 +92,41 @@ struct MacroSettings {
         serde_tokenstream::OrderedMap<schemars::schema::SchemaObject, ParseWrapper<TypeAndImpls>>,
 }
 
-struct CrateSpec {
-    rename: Option<String>,
+struct MacroCrateSpec {
+    original: Option<String>,
     version: CrateVers,
 }
 
-impl<'de> Deserialize<'de> for CrateSpec {
+impl<'de> Deserialize<'de> for MacroCrateSpec {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let ss = String::deserialize(deserializer)?;
 
-        if ss == "*" {
-            Ok(Self {
-                rename: None,
-                version: CrateVers::Any,
-            })
-        } else {
-            let (rename, vers_str) = if let Some(ii) = ss.find('@') {
-                let rename_str = &ss[..ii];
-                let rest = &ss[ii + 1..];
-                if !is_crate(rename_str) {
-                    return Err(<D::Error as serde::de::Error>::invalid_value(
-                        serde::de::Unexpected::Str(&ss),
-                        &"valid crate name",
-                    ));
-                }
-
-                (Some(rename_str.to_string()), rest)
-            } else {
-                (None, ss.as_ref())
-            };
-
-            let Some(version) = CrateVers::parse(vers_str) else {
+        let (original, vers_str) = if let Some(ii) = ss.find('@') {
+            let original_str = &ss[..ii];
+            let rest = &ss[ii + 1..];
+            if !is_crate(original_str) {
                 return Err(<D::Error as serde::de::Error>::invalid_value(
                     serde::de::Unexpected::Str(&ss),
-                    &"valid version",
+                    &"valid crate name",
                 ));
-            };
+            }
 
-            Ok(Self { rename, version })
-        }
+            (Some(original_str.to_string()), rest)
+        } else {
+            (None, ss.as_ref())
+        };
+
+        let Some(version) = CrateVers::parse(vers_str) else {
+            return Err(<D::Error as serde::de::Error>::invalid_value(
+                serde::de::Unexpected::Str(&ss),
+                &"valid version",
+            ));
+        };
+
+        Ok(Self { original, version })
     }
 }
 
@@ -135,15 +139,13 @@ impl<'de> Deserialize<'de> for CrateName {
     {
         let ss = String::deserialize(deserializer)?;
 
-        if ss == "*" {
+        if is_crate(&ss) {
             Ok(Self(ss))
-        } else if !is_crate(&ss) {
+        } else {
             Err(<D::Error as serde::de::Error>::invalid_value(
                 serde::de::Unexpected::Str(&ss),
                 &"valid crate name",
             ))
-        } else {
-            Ok(Self(ss))
         }
     }
 }
@@ -185,6 +187,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             patch,
             struct_builder,
             convert,
+            unknown_crates,
             crates,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
@@ -193,11 +196,6 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         });
         settings.with_struct_builder(struct_builder);
 
-        crates
-            .into_iter()
-            .for_each(|(CrateName(crate_name), CrateSpec { rename, version })| {
-                settings.with_crate(crate_name, version, rename);
-            });
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
         });
@@ -209,6 +207,17 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             let (type_name, impls) = type_and_impls.into_inner().into_name_and_impls();
             settings.with_conversion(schema, type_name, impls);
         });
+
+        crates.into_iter().for_each(
+            |(CrateName(crate_name), MacroCrateSpec { original, version })| {
+                if let Some(original_crate) = original {
+                    settings.with_crate(original_crate, version, Some(&crate_name));
+                } else {
+                    settings.with_crate(crate_name, version, None);
+                }
+            },
+        );
+        settings.with_unknown_crates(unknown_crates);
 
         (schema.into_inner(), settings)
     };

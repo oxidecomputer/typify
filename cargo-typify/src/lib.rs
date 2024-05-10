@@ -140,7 +140,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         rename,
     } in &args.crates
     {
-        settings = settings.with_crate(name, version.clone(), rename.clone());
+        settings = settings.with_crate(name, version.clone(), rename.as_ref());
     }
 
     let mut type_space = TypeSpace::new(settings);

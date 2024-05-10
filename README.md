@@ -79,7 +79,8 @@ Issues describing example schemas and desired output are welcome and helpful.
 
 ## Rust -> Schema -> Rust
 
-Schemas derives from Rust types may include an extension that includes information about the original type:
+Schemas derived from Rust types may include an extension that provides
+information about the original type:
 
 ```json
 {
@@ -93,9 +94,13 @@ Schemas derives from Rust types may include an extension that includes informati
 }
 ```
 
-The extension includes the name of the crate, a Cargo-style version spec, and
-the full path (that must start with ident-converted name of the crate). Each of
-the modes of using typify allow for a list of crates and versions to be
+The extension includes the name of the crate, a Cargo-style version
+requirements spec, and the full path (that must start with ident-converted name
+of the crate).
+
+### Using types from other crates
+
+Each of the modes of using typify allow for a list of crates and versions to be
 specified. In this case, if the user specifies "crate-o-types@1.0.1" for
 example, then typify would use its `SomeType` type rather than generating one
 according to the schema.

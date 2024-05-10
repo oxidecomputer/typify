@@ -92,7 +92,14 @@ pub(crate) struct TypeEntryNative {
     // TODO to support const generics, this can be some sort of TypeOrValue,
     // but note that we may some day need to disambiguate char and &'static str
     // since schemars represents a char as a string of length 1.
-    parameters: Vec<TypeId>,
+    pub parameters: Vec<TypeId>,
+}
+impl TypeEntryNative {
+    pub(crate) fn name_match(&self, type_name: &Name) -> bool {
+        let native_name = self.type_name.rsplit("::").next().unwrap();
+        !self.parameters.is_empty()
+            || matches!(type_name, Name::Required(req) if req == native_name)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

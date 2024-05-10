@@ -49,29 +49,32 @@ impl TypeSpace {
             return None;
         }
 
-        // First look for the specific crate name; failing that get the
-        // wildcard crate '*'.
-        let crate_spec = {
-            let crate_name: &str = &crate_name;
-            self.settings
-                .crates
-                .get(crate_name)
-                .or_else(|| self.settings.crates.get("*"))
-        }?;
+        let path = {
+            if let Some(crate_spec) = self.settings.crates.get(crate_name.as_str()) {
+                // The version must be non-Never and match the requirements
+                // from the extension.
+                match &crate_spec.version {
+                    CrateVers::Any => (),
+                    CrateVers::Version(version) if req.matches(version) => (),
+                    _ => return None,
+                }
 
-        // The version must be non-Never and match the requirements from the
-        // extension.
-        match &crate_spec.version {
-            CrateVers::Any => (),
-            CrateVers::Version(version) if req.matches(version) => (),
-            _ => return None,
-        }
+                // Replace the initial path component with the new crate name.
+                if let Some(new_crate) = &crate_spec.rename {
+                    format!("{}{}", new_crate.replace('-', "_"), &path[path_sep..])
+                } else {
+                    path
+                }
+            } else {
+                match self.settings.unknown_crates {
+                    crate::UnknownPolicy::Generate => return None,
+                    crate::UnknownPolicy::Allow => path,
 
-        // Replace the initial path component with the new crate name.
-        let path = if let Some(new_crate) = &crate_spec.rename {
-            format!("{}{}", new_crate.replace('-', "_"), &path[path_sep..])
-        } else {
-            path
+                    // TODO need to bubble up a coherent compiler error via the
+                    // generated code.
+                    crate::UnknownPolicy::Deny => return None,
+                }
+            }
         };
 
         // Convert and collect type parameters.
