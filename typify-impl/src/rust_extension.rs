@@ -1,6 +1,6 @@
 // Copyright 2024 Oxide Computer Company
 
-use log::debug;
+use log::warn;
 use schemars::schema::{Schema, SchemaObject};
 use serde::Deserialize;
 
@@ -24,16 +24,23 @@ impl TypeSpace {
     pub(crate) fn convert_rust_extension(&mut self, schema: &SchemaObject) -> Option<TypeEntry> {
         let x_rust = schema.extensions.get(RUST_TYPE_EXTENSION)?;
 
-        // TODO warn if this fails
-        let RustExtension {
+        let Ok(RustExtension {
             crate_name,
             version,
             path,
             parameters,
-        } = serde_json::from_value(x_rust.clone()).ok()?;
+        }) = serde_json::from_value(x_rust.clone())
+        else {
+            warn!(
+                "{} contains an invalid value for {}",
+                serde_json::to_string_pretty(&schema).unwrap(),
+                RUST_TYPE_EXTENSION,
+            );
+            return None;
+        };
 
         let Ok(req) = semver::VersionReq::parse(&version) else {
-            debug!(
+            warn!(
                 "{} contains an invalid version",
                 serde_json::to_string_pretty(&schema).unwrap(),
             );
@@ -43,7 +50,7 @@ impl TypeSpace {
         let crate_ident = crate_name.replace('-', "_");
         let path_sep = path.find("::")?;
         if crate_ident != path[..path_sep] {
-            debug!(
+            warn!(
                 "{} path doesn't start with crate name",
                 serde_json::to_string_pretty(&schema).unwrap(),
             );
