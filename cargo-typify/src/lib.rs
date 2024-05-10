@@ -4,11 +4,11 @@
 
 #![deny(missing_docs)]
 
-use std::{path::PathBuf, str::FromStr};
+use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result};
-use typify::{CrateVers, TypeSpace, TypeSpaceSettings};
+use typify::{CrateVers, TypeSpace, TypeSpaceSettings, UnknownPolicy};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
@@ -45,6 +45,14 @@ pub struct CliArgs {
     /// found in the schema with the x-rust-type extension.
     #[arg(long = "crate")]
     crates: Vec<CrateSpec>,
+
+    /// Specify the policy unknown crates found in schemas with the
+    /// x-rust-type extension.
+    #[arg(
+        long = "unknown-crates",
+        value_parser = ["generate", "allow", "deny"]
+    )]
+    unknown_crates: Option<String>,
 }
 
 impl CliArgs {
@@ -79,7 +87,7 @@ struct CrateSpec {
     rename: Option<String>,
 }
 
-impl FromStr for CrateSpec {
+impl std::str::FromStr for CrateSpec {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -127,11 +135,11 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
         .wrap_err("Failed to parse input file as JSON Schema")?;
 
-    let mut settings = &mut TypeSpaceSettings::default();
-    settings = settings.with_struct_builder(args.use_builder());
+    let mut settings = TypeSpaceSettings::default();
+    settings.with_struct_builder(args.use_builder());
 
     for derive in &args.additional_derives {
-        settings = settings.with_derive(derive.clone());
+        settings.with_derive(derive.clone());
     }
 
     for CrateSpec {
@@ -140,10 +148,20 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         rename,
     } in &args.crates
     {
-        settings = settings.with_crate(name, version.clone(), rename.as_ref());
+        settings.with_crate(name, version.clone(), rename.as_ref());
     }
 
-    let mut type_space = TypeSpace::new(settings);
+    if let Some(unknown_crates) = &args.unknown_crates {
+        let unknown_crates = match unknown_crates.as_str() {
+            "generate" => UnknownPolicy::Generate,
+            "allow" => UnknownPolicy::Allow,
+            "deny" => UnknownPolicy::Deny,
+            _ => unreachable!(),
+        };
+        settings.with_unknown_crates(unknown_crates);
+    }
+
+    let mut type_space = TypeSpace::new(&settings);
     type_space
         .add_root_schema(schema)
         .wrap_err("Schema conversion failed")?;
@@ -176,6 +194,7 @@ mod tests {
             output: Some(PathBuf::from("-")),
             no_builder: false,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert_eq!(args.output_path(), None);
@@ -190,6 +209,7 @@ mod tests {
             output: Some(PathBuf::from("some_file.rs")),
             no_builder: false,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -204,6 +224,7 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -218,6 +239,7 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert!(args.use_builder());
@@ -232,6 +254,7 @@ mod tests {
             output: None,
             no_builder: true,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert!(!args.use_builder());
@@ -246,6 +269,7 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            unknown_crates: Default::default(),
         };
 
         assert!(args.use_builder());
