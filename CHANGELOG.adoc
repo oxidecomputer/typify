@@ -13,11 +13,15 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.1.0\...HEAD[Full list of commits]
+
+== 0.1.0 (released 2024-05-13)
+
 * Improvements and bug fixes around schema merging
 * Fixes for various bugs with defaults
 * Support for the `x-rust-type` extension (#584)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.16\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.0.16\...v0.1.0[Full list of commits]
 
 == 0.0.16 (released 2024-02-28)
 

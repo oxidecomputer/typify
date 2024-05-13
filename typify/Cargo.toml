@@ -1,6 +1,6 @@
 [package]
 name = "typify"
-version = "0.0.16"
+version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "JSON schema to rust type code generator"
@@ -14,8 +14,8 @@ default = ["macro"]
 macro = ["typify-macro"]
 
 [dependencies]
-typify-macro = { version = "0.0.16", path = "../typify-macro", optional = true }
-typify-impl = { version = "0.0.16", path = "../typify-impl" }
+typify-macro = { version = "0.1.0", path = "../typify-macro", optional = true }
+typify-impl = { version = "0.1.0", path = "../typify-impl" }
 
 [dev-dependencies]
 chrono = { version = "0.4.38", features = ["serde"] }
