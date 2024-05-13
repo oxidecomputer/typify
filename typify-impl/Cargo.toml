@@ -25,7 +25,7 @@ unicode-ident = "1.0.12"
 [dev-dependencies]
 env_logger = "0.10.2"
 expectorate = "1.1.0"
-paste = "1.0.14"
+paste = "1.0.15"
 rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
 schemars = { version = "0.8.17", features = ["uuid1", "impl_json_schema"] }
