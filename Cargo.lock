@@ -184,6 +184,7 @@ dependencies = [
  "newline-converter",
  "rustfmt-wrapper",
  "schemars",
+ "semver",
  "serde_json",
  "tempdir",
  "typify",
@@ -895,9 +896,12 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.20"
+version = "1.0.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "836fa6a3e1e547f9a2c4040802ec865b5d85f4014efe00555d7090a3dcaa1090"
+checksum = "92d43fe69e652f3df9bdc2b85b2854a0825b86e4fb76bc44d945137d053639ca"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "serde"
@@ -1199,6 +1203,7 @@ dependencies = [
  "rustfmt-wrapper",
  "schema",
  "schemars",
+ "semver",
  "serde",
  "serde_json",
  "syn",
@@ -1214,6 +1219,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schemars",
+ "semver",
  "serde",
  "serde_json",
  "serde_tokenstream",

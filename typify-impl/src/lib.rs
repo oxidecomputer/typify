@@ -30,6 +30,7 @@ mod defaults;
 mod enums;
 mod merge;
 mod output;
+mod rust_extension;
 mod structs;
 mod type_entry;
 mod util;
@@ -242,9 +243,64 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     struct_builder: bool,
 
+    unknown_crates: UnknownPolicy,
+    crates: BTreeMap<String, CrateSpec>,
+
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+#[derive(Debug, Clone)]
+struct CrateSpec {
+    version: CrateVers,
+    rename: Option<String>,
+}
+
+/// Policy to apply to external types described by schema extensions whose
+/// crates are not explicitly specified.
+#[derive(Default, Debug, Clone, Copy, Eq, PartialEq, serde::Deserialize)]
+pub enum UnknownPolicy {
+    /// Generate the type rather according to the schema.
+    #[default]
+    Generate,
+    /// Use the specified type by path (this will result in a compile error if
+    /// one of the crates is not an existing dependency). Note that this
+    /// ignores compatibility requirements specified by the schema extension
+    /// and may result in subtle failures if the crate used is incompatible
+    /// with the version that produced the schema.
+    Allow,
+    /// If an unknown crate is encountered, generate a compiler warning
+    /// indicating the crate that must be specified to proceed along with
+    /// version constraints. This affords users an opportunity to specify the
+    /// specific crate version to use (or the user may explicitly deny use of
+    /// that crate).
+    Deny,
+}
+
+/// Specify the version for a named crate to consider for type use (rather than
+/// generating types) in the presense of a schema extension.
+#[derive(Debug, Clone)]
+pub enum CrateVers {
+    /// An explicit version.
+    Version(semver::Version),
+    /// Any version.
+    Any,
+    /// Never use the given crate.
+    Never,
+}
+
+impl CrateVers {
+    /// Parse from a string
+    pub fn parse(s: &str) -> Option<Self> {
+        if s == "!" {
+            Some(Self::Never)
+        } else if s == "*" {
+            Some(Self::Any)
+        } else {
+            Some(Self::Version(semver::Version::parse(s).ok()?))
+        }
+    }
 }
 
 /// Contains a set of modifications that may be applied to an existing type.
@@ -363,6 +419,38 @@ impl TypeSpaceSettings {
             type_name: type_name.to_string(),
             impls: impls.collect(),
         });
+        self
+    }
+
+    /// Type schemas may contain an extension (`x-rust-type`) that indicates
+    /// the corresponding Rust type within a particular crate. This function
+    /// changes the disposition regarding crates not otherwise specified via
+    /// [`Self::with_crate`]. The default value is `false`.
+    pub fn with_unknown_crates(&mut self, policy: UnknownPolicy) -> &mut Self {
+        self.unknown_crates = policy;
+        self
+    }
+
+    /// Type schemas may contain an extension (`x-rust-type`) that indicates
+    /// the corresponding Rust type within a particular crate. This extension
+    /// indicates the crate, version compatibility, type path, and type
+    /// parameters. This function modifies settings to use (rather than
+    /// generate) types from the given crate and version. The version should
+    /// precisely match the version of the crate that you expect as a
+    /// dependency.
+    pub fn with_crate<S1: ToString>(
+        &mut self,
+        crate_name: S1,
+        version: CrateVers,
+        rename: Option<&String>,
+    ) -> &mut Self {
+        self.crates.insert(
+            crate_name.to_string(),
+            CrateSpec {
+                version,
+                rename: rename.cloned(),
+            },
+        );
         self
     }
 }
@@ -535,6 +623,8 @@ impl TypeSpace {
                 schema.clone(),
             ),
 
+            TypeEntryDetails::Native(native) if native.name_match(&type_name) => type_entry,
+
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
             _ => {
@@ -554,8 +644,10 @@ impl TypeSpace {
                 )
             }
         };
-        let entry_name = type_entry.name().unwrap().clone();
-        self.name_to_id.insert(entry_name, type_id.clone());
+        // TODO need a type alias?
+        if let Some(entry_name) = type_entry.name() {
+            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+        }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
     }

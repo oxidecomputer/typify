@@ -49,6 +49,10 @@ impl TypeSpace {
         original_schema: &'a Schema,
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if let Some(type_entry) = self.convert_rust_extension(schema) {
+            return Ok((type_entry, &schema.metadata));
+        }
+
         match schema {
             // If we have a schema that has an instance type array that's
             // exactly two elements and one of them is Null, we have the

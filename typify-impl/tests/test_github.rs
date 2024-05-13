@@ -29,7 +29,7 @@ fn test_github() {
 fn test_vega() {
     env_logger::init();
     let mut settings = TypeSpaceSettings::default();
-    let raw_schema = serde_json::json! {
+    let raw_schema = serde_json::json!(
         {
             "enum": [
               null,
@@ -57,7 +57,7 @@ fn test_vega() {
               900
             ]
           }
-    };
+    );
     let schema = serde_json::from_value(raw_schema).unwrap();
     settings
         .with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter())

@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 //! # Typify
 //!
@@ -156,6 +156,7 @@
 
 #![deny(missing_docs)]
 
+pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::Type;
 pub use typify_impl::TypeDetails;
@@ -169,5 +170,6 @@ pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::TypeStruct;
 pub use typify_impl::TypeStructPropInfo;
+pub use typify_impl::UnknownPolicy;
 #[cfg(feature = "macro")]
 pub use typify_macro::import_types;

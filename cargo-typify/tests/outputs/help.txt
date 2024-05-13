@@ -21,6 +21,14 @@ Options:
           
           If `-` is specified, the output will be written to stdout.
 
+      --crate <CRATES>
+          Specify each crate@version that can be assumed to be in use for types found in the schema with the x-rust-type extension
+
+      --unknown-crates <UNKNOWN_CRATES>
+          Specify the policy unknown crates found in schemas with the x-rust-type extension
+          
+          [possible values: generate, allow, deny]
+
   -h, --help
           Print help (see a summary with '-h')
 

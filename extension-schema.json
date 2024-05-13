@@ -1,0 +1,29 @@
+{
+  "description": "schema for the x-rust-type extension",
+  "type": "object",
+  "properties": {
+    "crate": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "version": {
+      "description": "semver requirements per a Cargo.toml dependencies entry",
+      "type": "string"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_]+(::[a-zA-Z0-9+]+)*$"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Schema"
+      }
+    }
+  },
+  "required": [
+    "crate",
+    "path",
+    "version"
+  ]
+}

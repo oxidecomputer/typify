@@ -20,14 +20,14 @@ pub(crate) struct SchemaWrapper(Schema);
 
 impl Eq for SchemaWrapper {}
 
-impl PartialOrd for SchemaWrapper {
-    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
-    }
-}
 impl Ord for SchemaWrapper {
     fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
         std::cmp::Ordering::Equal
+    }
+}
+impl PartialOrd for SchemaWrapper {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -89,6 +89,17 @@ pub(crate) enum TypeEntryNewtypeConstraints {
 pub(crate) struct TypeEntryNative {
     pub type_name: String,
     impls: Vec<TypeSpaceImpl>,
+    // TODO to support const generics, this can be some sort of TypeOrValue,
+    // but note that we may some day need to disambiguate char and &'static str
+    // since schemars represents a char as a string of length 1.
+    pub parameters: Vec<TypeId>,
+}
+impl TypeEntryNative {
+    pub(crate) fn name_match(&self, type_name: &Name) -> bool {
+        let native_name = self.type_name.rsplit("::").next().unwrap();
+        !self.parameters.is_empty()
+            || matches!(type_name, Name::Required(req) if req == native_name)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -105,8 +116,8 @@ impl Ord for WrappedValue {
     }
 }
 impl PartialOrd for WrappedValue {
-    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -464,6 +475,17 @@ impl TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: impls.to_vec(),
+                parameters: Default::default(),
+            }),
+            extra_derives: Default::default(),
+        }
+    }
+    pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
+        TypeEntry {
+            details: TypeEntryDetails::Native(TypeEntryNative {
+                type_name: type_name.to_string(),
+                impls: Default::default(),
+                parameters: params.to_vec(),
             }),
             extra_derives: Default::default(),
         }
@@ -1644,17 +1666,40 @@ impl TypeEntry {
                 quote! { [#item_ident; #length]}
             }
 
+            TypeEntryDetails::Native(TypeEntryNative {
+                type_name,
+                impls: _,
+                parameters,
+            }) => {
+                let path =
+                    syn::parse_str::<syn::TypePath>(type_name).expect("type path wasn't valid");
+
+                let type_idents = (!parameters.is_empty()).then(|| {
+                    let type_idents = parameters.iter().map(|type_id| {
+                        type_space
+                            .id_to_entry
+                            .get(type_id)
+                            .expect("unresolved type id for tuple")
+                            .type_ident(type_space, type_mod)
+                    });
+                    quote! { < #(#type_idents,)* > }
+                });
+
+                quote! {
+                    #path
+                    #type_idents
+                }
+            }
+
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
             TypeEntryDetails::JsonValue => quote! { serde_json::Value },
-            TypeEntryDetails::Native(TypeEntryNative {
-                type_name: name, ..
-            })
-            | TypeEntryDetails::Integer(name)
-            | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
-                .unwrap()
-                .to_token_stream(),
+            TypeEntryDetails::Integer(name) | TypeEntryDetails::Float(name) => {
+                syn::parse_str::<syn::TypePath>(name)
+                    .unwrap()
+                    .to_token_stream()
+            }
 
             TypeEntryDetails::Reference(_) => panic!("references should be resolved by now"),
         }
