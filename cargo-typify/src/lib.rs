@@ -111,7 +111,7 @@ impl std::str::FromStr for CrateSpec {
             let crate_str = &s[..ii];
             let vers_str = &s[ii + 1..];
 
-            if crate_str.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-') {
+            if !is_crate(crate_str) {
                 return None;
             }
             let version = CrateVers::parse(vers_str)?;

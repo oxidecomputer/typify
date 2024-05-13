@@ -96,6 +96,9 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntry::new_native_params(path, &param_ids))
+        Some(TypeEntry::new_native_params(
+            format!("::{path}"),
+            &param_ids,
+        ))
     }
 }

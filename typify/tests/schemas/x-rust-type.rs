@@ -47,9 +47,9 @@ pub mod error {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub option_marker: Option<std::option::Option<Marker>>,
+    pub option_marker: Option<::std::option::Option<Marker>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<std::path::PathBuf>,
+    pub path: Option<::std::path::PathBuf>,
 }
 impl From<&AllTheThings> for AllTheThings {
     fn from(value: &AllTheThings) -> Self {
