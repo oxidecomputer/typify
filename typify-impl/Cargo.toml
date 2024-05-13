@@ -16,7 +16,7 @@ regress = "0.9.1"
 schemars = "0.8.17"
 semver = "1.0.22"
 serde = "1.0.200"
-serde_json = "1.0.116"
+serde_json = "1.0.117"
 syn = { version = "2.0.63", features = ["full"] }
 thiserror = "1.0.59"
 unicode-ident = "1.0.12"
