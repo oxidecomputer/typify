@@ -28,7 +28,7 @@ basic properties of the schema:
 Integers, floating-point numbers, strings, etc. Those all have straightforward
 representations in Rust. The only significant nuance is how to select the
 appropriate built-in type based on type attributes. For example, a JSON Schema
-might specify a maximum and/or minimum that indicates the appropriate integral
+might specify a maximum and/or minimum that indicates the appropriate integer
 type to use.
 
 String schemas that include a known `format` are represented with the
