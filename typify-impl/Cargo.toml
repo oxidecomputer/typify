@@ -13,7 +13,7 @@ log = "0.4.21"
 proc-macro2 = "1.0.81"
 quote = "1.0.36"
 regress = "0.9.1"
-schemars = "0.8.17"
+schemars = "0.8.20"
 semver = "1.0.22"
 serde = "1.0.200"
 serde_json = "1.0.117"
@@ -28,6 +28,6 @@ expectorate = "1.1.0"
 paste = "1.0.15"
 rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
-schemars = { version = "0.8.17", features = ["uuid1", "impl_json_schema"] }
+schemars = { version = "0.8.20", features = ["uuid1", "impl_json_schema"] }
 syn = { version = "2.0.63", features = ["full", "extra-traits"] }
 uuid = "1.8.0"
