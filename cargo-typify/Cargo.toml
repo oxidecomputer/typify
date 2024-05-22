@@ -20,7 +20,7 @@ env_logger = "0.10"
 rustfmt-wrapper = "0.2.1"
 semver = "1.0.22"
 serde_json = "1.0.117"
-schemars = "0.8.17"
+schemars = "0.8.20"
 
 [dev-dependencies]
 assert_cmd = "2.0.14"
