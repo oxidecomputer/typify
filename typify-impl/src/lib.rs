@@ -4,7 +4,7 @@
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use conversions::SchemaCache;
 use log::info;
@@ -204,6 +204,8 @@ pub struct TypeSpace {
     settings: TypeSpaceSettings,
 
     cache: SchemaCache,
+    
+    names: HashSet<String>,
 
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
@@ -224,6 +226,7 @@ impl Default for TypeSpace {
             uses_regress: Default::default(),
             settings: Default::default(),
             cache: Default::default(),
+            names: Default::default(),
             defaults: Default::default(),
         }
     }
@@ -562,14 +565,27 @@ impl TypeSpace {
                     } else {
                         Name::Unknown
                     };
-                    self.convert_ref_type(type_name, schema, type_id)?
+                    self.convert_ref_type(type_name, schema, type_id)?;
                 }
 
                 Some(replace_type) => {
-                    let type_entry = TypeEntry::new_native(
+                    let mut type_entry = TypeEntry::new_native(
                         replace_type.replace_type.clone(),
                         &replace_type.impls.clone(),
                     );
+
+                    // let t = &mut type_entry;
+                    // if !t.check_name( &self.names ) {
+                    //     let mut n = t.name().unwrap().clone();
+                    //     while self.names.contains(&n) {
+                    //         n = format!("{n}Alias");
+                    //     }
+                    //     t.rename(n);
+                    // }
+                    // if let Some(n) = type_entry.name(){
+                    //     dbg!(n);
+                    //     self.names.insert(n.clone());
+                    // }
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
@@ -584,7 +600,14 @@ impl TypeSpace {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             type_entry.finalize(self)?;
-            self.id_to_entry.insert(type_id, type_entry);
+            if let Some(mut name) = type_entry.name().cloned() {
+                while self.names.contains(&name) {
+                    name = format!("{name}Alias");
+                }
+                self.names.insert(name.clone());
+                type_entry.rename(name);
+            }
+           self.id_to_entry.insert(type_id, type_entry);
         }
 
         Ok(())
