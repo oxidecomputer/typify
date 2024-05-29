@@ -569,7 +569,7 @@ impl TypeSpace {
                 }
 
                 Some(replace_type) => {
-                    let mut type_entry = TypeEntry::new_native(
+                    let type_entry = TypeEntry::new_native(
                         replace_type.replace_type.clone(),
                         &replace_type.impls.clone(),
                     );
