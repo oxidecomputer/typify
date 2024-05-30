@@ -574,18 +574,6 @@ impl TypeSpace {
                         &replace_type.impls.clone(),
                     );
 
-                    // let t = &mut type_entry;
-                    // if !t.check_name( &self.names ) {
-                    //     let mut n = t.name().unwrap().clone();
-                    //     while self.names.contains(&n) {
-                    //         n = format!("{n}Alias");
-                    //     }
-                    //     t.rename(n);
-                    // }
-                    // if let Some(n) = type_entry.name(){
-                    //     dbg!(n);
-                    //     self.names.insert(n.clone());
-                    // }
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
