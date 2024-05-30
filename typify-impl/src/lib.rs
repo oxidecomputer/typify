@@ -204,7 +204,7 @@ pub struct TypeSpace {
     settings: TypeSpaceSettings,
 
     cache: SchemaCache,
-    
+
     names: HashSet<String>,
 
     // Shared functions for generating default values
@@ -595,7 +595,7 @@ impl TypeSpace {
                 self.names.insert(name.clone());
                 type_entry.rename(name);
             }
-           self.id_to_entry.insert(type_id, type_entry);
+            self.id_to_entry.insert(type_id, type_entry);
         }
 
         Ok(())

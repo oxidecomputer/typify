@@ -374,18 +374,17 @@ impl TypeEntry {
             (format!("defaults::{}", fn_name), Some(def))
         }
     }
-    
+
     pub(crate) fn rename(&mut self, new_name: String) {
         match &mut self.details {
             TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
             | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
-            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => { 
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => {
                 *name = new_name;
-            },
-            _ => {},
+            }
+            _ => {}
         }
     }
-    
 }
 
 pub(crate) fn validate_default_for_external_enum(
