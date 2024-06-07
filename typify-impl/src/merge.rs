@@ -287,14 +287,25 @@ fn merge_so_enum_values(
 
 #[derive(Error, Debug)]
 pub(crate) enum SubschemaMergeError {
-    #[error("Empty merged AnyOf subschema")]
-    EmptyMergedAnyOfSubschema,
-    #[error("Empty merged OneOf subschema")]
-    EmptyMergedOneOfSubschema,
-    #[error("try_merge_schema_not error")]
+    #[error("Empty merged AnyOf subschema. schema_object: {schema_object:?}, any_of: {any_of:?}, defs: {defs:?}")]
+    EmptyMergedAnyOfSubschema {
+        schema_object: SchemaObject,
+        any_of: Vec<Schema>,
+        defs: BTreeMap<RefKey, Schema>,
+    },
+    #[error("Empty merged OneOf subschema. schema_object: {schema_object:?}, one_of: {one_of:?}, defs: {defs:?}")]
+    EmptyMergedOneOfSubschema {
+        schema_object: SchemaObject,
+        one_of: Vec<Schema>,
+        defs: BTreeMap<RefKey, Schema>,
+    },
+    #[error("try_merge_schema_not error: {0}")]
     NotSchemaMerge(#[from] NotSchemaMergeError),
-    #[error("Error merging AllOf schema")]
-    AllOfSchemaMerge,
+    #[error("Error merging AllOf schema: {error}. Context: {context:?}")]
+    AllOfSchemaMerge {
+        error: SchemaMergeError,
+        context: Vec<Schema>,
+    },
 }
 
 /// Merge the schema with a subschema validation object. It's important that
@@ -328,7 +339,10 @@ pub(crate) fn try_merge_with_subschemas(
             .try_fold(schema_object.into(), |schema, other| {
                 try_merge_schema(&schema, other, defs)
             })
-            .map_err(|_| SubschemaMergeError::AllOfSchemaMerge)?;
+            .map_err(|e| SubschemaMergeError::AllOfSchemaMerge {
+                error: e,
+                context: all_of.clone(),
+            })?;
         assert_ne!(merged_schema, Schema::Bool(false));
         schema_object = merged_schema.into_object();
     }
@@ -346,7 +360,13 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(SubschemaMergeError::EmptyMergedAnyOfSubschema),
+            0 => {
+                return Err(SubschemaMergeError::EmptyMergedAnyOfSubschema {
+                    schema_object,
+                    any_of: any_of.clone(),
+                    defs: defs.clone(),
+                })
+            }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -365,7 +385,13 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(SubschemaMergeError::EmptyMergedOneOfSubschema),
+            0 => {
+                return Err(SubschemaMergeError::EmptyMergedOneOfSubschema {
+                    schema_object,
+                    one_of: one_of.clone(),
+                    defs: defs.clone(),
+                })
+            }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
