@@ -287,17 +287,15 @@ fn merge_so_enum_values(
 
 #[derive(Error, Debug)]
 pub(crate) enum SubschemaMergeError {
-    #[error("Empty merged AnyOf subschema. schema_object: {schema_object:?}, any_of: {any_of:?}, defs: {defs:?}")]
+    #[error("Empty merged AnyOf subschema. schema_object: {schema_object:?}, any_of: {any_of:?}")]
     EmptyMergedAnyOfSubschema {
         schema_object: SchemaObject,
         any_of: Vec<Schema>,
-        defs: BTreeMap<RefKey, Schema>,
     },
-    #[error("Empty merged OneOf subschema. schema_object: {schema_object:?}, one_of: {one_of:?}, defs: {defs:?}")]
+    #[error("Empty merged OneOf subschema. schema_object: {schema_object:?}, one_of: {one_of:?}")]
     EmptyMergedOneOfSubschema {
         schema_object: SchemaObject,
         one_of: Vec<Schema>,
-        defs: BTreeMap<RefKey, Schema>,
     },
     #[error("try_merge_schema_not error: {0}")]
     NotSchemaMerge(#[from] NotSchemaMergeError),
@@ -364,7 +362,6 @@ pub(crate) fn try_merge_with_subschemas(
                 return Err(SubschemaMergeError::EmptyMergedAnyOfSubschema {
                     schema_object,
                     any_of: any_of.clone(),
-                    defs: defs.clone(),
                 })
             }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
@@ -389,7 +386,6 @@ pub(crate) fn try_merge_with_subschemas(
                 return Err(SubschemaMergeError::EmptyMergedOneOfSubschema {
                     schema_object,
                     one_of: one_of.clone(),
-                    defs: defs.clone(),
                 })
             }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
