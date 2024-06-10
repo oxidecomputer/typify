@@ -397,9 +397,9 @@ pub(crate) enum SubschemaMergeError {
     },
     #[error("try_merge_schema_not error: {0}")]
     NotSchemaMerge(#[from] NotSchemaMergeError),
-    #[error("Error merging AllOf schema: {error}. Context: {context:?}")]
+    #[error("Error merging AllOf schema: {source}. Context: {context:?}")]
     AllOfSchemaMerge {
-        error: SchemaMergeError,
+        source: SchemaMergeError,
         context: Vec<Schema>,
     },
 }
@@ -435,8 +435,8 @@ pub(crate) fn try_merge_with_subschemas(
             .try_fold(schema_object.into(), |schema, other| {
                 try_merge_schema(&schema, other, defs)
             })
-            .map_err(|e| SubschemaMergeError::AllOfSchemaMerge {
-                error: e,
+            .map_err(|source| SubschemaMergeError::AllOfSchemaMerge {
+                source,
                 context: all_of.clone(),
             })?;
         assert_ne!(merged_schema, Schema::Bool(false));
