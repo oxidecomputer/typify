@@ -395,12 +395,15 @@ pub(crate) enum SubschemaMergeError {
         schema_object: SchemaObject,
         one_of: Vec<Schema>,
     },
-    #[error("try_merge_schema_not error: {0}")]
-    NotSchemaMerge(#[from] NotSchemaMergeError),
-    #[error("Error merging AllOf schema: {source}. Context: {context:?}")]
+    #[error("Error trying to merge in the not schema {not:?}: {source}")]
+    NotSchemaMerge {
+        source: NotSchemaMergeError,
+        not: Box<Schema>,
+    },
+    #[error("Error trying to merge in the all_of schema {all_of:?}: {source}")]
     AllOfSchemaMerge {
         source: SchemaMergeError,
-        context: Vec<Schema>,
+        all_of: Vec<Schema>,
     },
 }
 
@@ -437,14 +440,20 @@ pub(crate) fn try_merge_with_subschemas(
             })
             .map_err(|source| SubschemaMergeError::AllOfSchemaMerge {
                 source,
-                context: all_of.clone(),
+                all_of: all_of.clone(),
             })?;
         assert_ne!(merged_schema, Schema::Bool(false));
         schema_object = merged_schema.into_object();
     }
 
     if let Some(not) = not {
-        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)?;
+        schema_object =
+            try_merge_schema_not(schema_object, not.as_ref(), defs).map_err(|source| {
+                SubschemaMergeError::NotSchemaMerge {
+                    source,
+                    not: not.clone(),
+                }
+            })?;
     }
 
     // TODO: we should be able to handle a combined one_of and any_of... but
