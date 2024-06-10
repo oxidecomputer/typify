@@ -209,10 +209,9 @@ pub(crate) enum ObjectSchemaMergeError {
         b_enum: Option<Vec<serde_json::Value>>,
         b_const: Option<serde_json::Value>,
     },
-    #[error("Error when trying to merge the schema {schema:?} with the maybe_subschema {maybe_subschema:?}: {source}")]
+    #[error("Error when trying to merge in the subschema {maybe_subschema:?}: {source}")]
     SubschemaMerge {
         source: SubschemaMergeError,
-        schema: SchemaObject,
         maybe_subschema: Option<Box<SubschemaValidation>>,
     },
 }
@@ -306,16 +305,14 @@ fn merge_schema_object(
     // two schemas and then do the appropriate merge with subschemas (i.e.
     // potentially twice). This is effectively an `allOf` between the merged
     // "body" schema and the component subschemas.
-    merged_schema = try_merge_with_subschemas(merged_schema.clone(), a.subschemas.as_deref(), defs)
+    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)
         .map_err(|source| ObjectSchemaMergeError::SubschemaMerge {
             source,
-            schema: merged_schema,
             maybe_subschema: a.subschemas.clone(),
         })?;
-    merged_schema = try_merge_with_subschemas(merged_schema.clone(), b.subschemas.as_deref(), defs)
+    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)
         .map_err(|source| ObjectSchemaMergeError::SubschemaMerge {
             source,
-            schema: merged_schema,
             maybe_subschema: a.subschemas.clone(),
         })?;
 
