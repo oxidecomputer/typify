@@ -80,10 +80,10 @@ fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Sche
 
 #[derive(Error, Debug)]
 pub(crate) enum SchemaMergeError {
-    #[error("Cannot merge any schema with a trivially false schema")]
+    #[error("Cannot merge two trivially false schemas")]
     MergeWithFalse,
-    #[error("Error in merge_schema_object")]
-    ObjectSchemaMerge,
+    #[error("Error when trying to merge the two schema objects {a:?} and {b:?}")]
+    ObjectSchemaMerge { a: SchemaObject, b: SchemaObject },
 }
 
 /// Merge two schemas returning the resulting schema. If the two schemas are
@@ -154,7 +154,10 @@ fn try_merge_schema(
         }
 
         (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)
-            .map_err(|()| SchemaMergeError::ObjectSchemaMerge)?
+            .map_err(|()| SchemaMergeError::ObjectSchemaMerge {
+                a: aa.clone(),
+                b: bb.clone(),
+            })?
             .into()),
     }
 }
@@ -573,8 +576,8 @@ fn try_merge_schema_not(
 
 #[derive(Error, Debug)]
 pub(crate) enum NotSubschemaMergeError {
-    #[error("Error in merge_schema_object")]
-    ObjectSchemaMerge,
+    #[error("Error when trying to merge the two schema objects {a:?} and {b:?}")]
+    ObjectSchemaMerge { a: SchemaObject, b: SchemaObject },
     #[error("Error in merging schemas: {0}")]
     SchemaMerge(#[from] SchemaMergeError),
     #[error("Error in merging schemas: {0}")]
@@ -618,8 +621,12 @@ fn try_merge_with_subschemas_not(
                 })),
                 ..Default::default()
             };
-            merge_schema_object(&schema_object, &new_other, defs)
-                .map_err(|()| NotSubschemaMergeError::ObjectSchemaMerge)
+            merge_schema_object(&schema_object, &new_other, defs).map_err(|()| {
+                NotSubschemaMergeError::ObjectSchemaMerge {
+                    a: schema_object,
+                    b: new_other,
+                }
+            })
         }
 
         SubschemaValidation {
