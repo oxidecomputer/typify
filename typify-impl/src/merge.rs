@@ -20,7 +20,10 @@ pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> 
     try_merge_all(schemas, defs).unwrap_or(Schema::Bool(false))
 }
 
-fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
+fn try_merge_all(
+    schemas: &[Schema],
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, SchemaMergeError> {
     debug!(
         "merge all {}",
         serde_json::to_string_pretty(schemas).unwrap(),
@@ -30,9 +33,9 @@ fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<
         [] => panic!("we should not be trying to merge an empty array of schemas"),
         [only] => only.clone(),
         [first, second, rest @ ..] => {
-            let mut out = try_merge_schema(first, second, defs).map_err(|_| ())?;
+            let mut out = try_merge_schema(first, second, defs)?;
             for schema in rest {
-                out = try_merge_schema(&out, schema, defs).map_err(|_| ())?;
+                out = try_merge_schema(&out, schema, defs)?;
             }
             out
         }
