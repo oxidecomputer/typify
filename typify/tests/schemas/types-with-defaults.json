@@ -59,6 +59,23 @@
           "default": "1970-01-01T00:00:00Z"
         }
       }
+    },
+    "MrDefaultNumbers": {
+      "type": "object",
+      "properties": {
+        "little_u8": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 1,
+          "default": 2
+        },
+        "little_u16": {
+          "type": "integer",
+          "format": "uint16",
+          "minimum": 1,
+          "default": 3
+        }
+      }
     }
   }
 }
