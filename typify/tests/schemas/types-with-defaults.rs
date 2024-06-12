@@ -53,6 +53,42 @@ impl From<&Doodad> for Doodad {
         value.clone()
     }
 }
+#[doc = "MrDefaultNumbers"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"little_u16\": {"]
+#[doc = "      \"default\": 3,"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint16\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
+#[doc = "    \"little_u8\": {"]
+#[doc = "      \"default\": 2,"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint8\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MrDefaultNumbers {
+    #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU16, 3>")]
+    pub little_u16: std::num::NonZeroU16,
+    #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU8, 2>")]
+    pub little_u8: std::num::NonZeroU8,
+}
+impl From<&MrDefaultNumbers> for MrDefaultNumbers {
+    fn from(value: &MrDefaultNumbers) -> Self {
+        value.clone()
+    }
+}
 #[doc = "OuterThing"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -183,6 +219,13 @@ impl Default for ThingWithDefaults {
 }
 #[doc = r" Generation of default values for serde."]
 pub mod defaults {
+    pub(super) fn default_nzu64<T, const V: u64>() -> T
+    where
+        T: std::convert::TryFrom<std::num::NonZeroU64>,
+        <T as std::convert::TryFrom<std::num::NonZeroU64>>::Error: std::fmt::Debug,
+    {
+        T::try_from(std::num::NonZeroU64::try_from(V).unwrap()).unwrap()
+    }
     pub(super) fn doodad_when() -> chrono::DateTime<chrono::offset::Utc> {
         serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
             .unwrap()

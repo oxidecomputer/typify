@@ -43,6 +43,17 @@ impl From<&DefaultImpl> for TokenStream {
                     T::try_from(V).unwrap()
                 }
             },
+            DefaultImpl::NZU64 => quote! {
+                pub(super) fn default_nzu64<T, const V: u64>() -> T
+                where
+                    T: std::convert::TryFrom<std::num::NonZeroU64>,
+                    <T as std::convert::TryFrom<std::num::NonZeroU64>>::Error:
+                        std::fmt::Debug,
+                {
+                    T::try_from(std::num::NonZeroU64::try_from(V).unwrap())
+                        .unwrap()
+                }
+            },
         }
     }
 }
@@ -272,11 +283,17 @@ impl TypeEntry {
             },
             // Note that min and max values are handled already by the
             // conversion routines since we have those close at hand.
-            TypeEntryDetails::Integer(_) => match (default.as_u64(), default.as_i64()) {
+            TypeEntryDetails::Integer(itype) => match (default.as_u64(), default.as_i64()) {
                 (None, None) => Err(Error::invalid_value()),
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
                 (_, Some(0)) => unreachable!(),
-                (Some(_), _) => Ok(DefaultKind::Generic(DefaultImpl::U64)),
+                (Some(_), _) => {
+                    if itype.starts_with("std::num::NonZero") {
+                        Ok(DefaultKind::Generic(DefaultImpl::NZU64))
+                    } else {
+                        Ok(DefaultKind::Generic(DefaultImpl::U64))
+                    }
+                }
                 (_, Some(_)) => Ok(DefaultKind::Generic(DefaultImpl::I64)),
             },
             TypeEntryDetails::Float(_) => {
@@ -319,7 +336,11 @@ impl TypeEntry {
             TypeEntryDetails::Boolean => Some("defaults::default_bool::<true>".to_string()),
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
-                    Some(format!("defaults::default_u64::<{}, {}>", name, value))
+                    if name.starts_with("std::num::NonZero") {
+                        Some(format!("defaults::default_nzu64::<{}, {}>", name, value))
+                    } else {
+                        Some(format!("defaults::default_u64::<{}, {}>", name, value))
+                    }
                 } else if let Some(value) = default.as_i64() {
                     Some(format!("defaults::default_i64::<{}, {}>", name, value))
                 } else {

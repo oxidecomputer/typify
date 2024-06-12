@@ -234,6 +234,7 @@ pub(crate) enum DefaultImpl {
     Boolean,
     I64,
     U64,
+    NZU64,
 }
 
 /// Settings that alter type generation.
