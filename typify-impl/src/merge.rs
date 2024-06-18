@@ -83,7 +83,7 @@ fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Sche
 
 #[derive(Error, Debug)]
 pub(crate) enum SchemaMergeError {
-    #[error("Cannot merge two trivially false schemas")]
+    #[error("merging with false")]
     MergeWithFalse,
     #[error("Error when trying to merge the two schema objects {a:?} and {b:?}: {source}")]
     ObjectSchemaMerge {
@@ -172,7 +172,7 @@ fn try_merge_schema(
 
 #[derive(Error, Debug)]
 pub(crate) enum ObjectSchemaMergeError {
-    #[error("Error when trying to merge the two instance types {a:?} and {b:?}")]
+    #[error("Incompatible instance types {a:?} and {b:?}")]
     InstanceType {
         a: Option<SingleOrVec<InstanceType>>,
         b: Option<SingleOrVec<InstanceType>>,
