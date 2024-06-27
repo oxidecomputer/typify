@@ -588,13 +588,7 @@ impl TypeSpace {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             type_entry.finalize(self)?;
-            if let Some(mut name) = type_entry.name().cloned() {
-                while self.names.contains(&name) {
-                    name = format!("{name}Alias");
-                }
-                self.names.insert(name.clone());
-                type_entry.rename(name);
-            }
+            type_entry.ensure_unique_name(self);
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -690,6 +684,7 @@ impl TypeSpace {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             type_entry.finalize(self)?;
+            type_entry.ensure_unique_name(self);
             self.id_to_entry.insert(type_id, type_entry);
         }
 
