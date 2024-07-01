@@ -1,26 +1,26 @@
+use schemars::schema::RootSchema;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use schemars::schema::RootSchema;
 use typify_impl::TypeSpace;
 
 #[test]
 fn test_external_references() {
-  let mut type_space = TypeSpace::default();
+    let mut type_space = TypeSpace::default();
 
-  let path = Path::new("tests/external_references.json");
-  let file = File::open(path).unwrap();
-  let reader = BufReader::new(file);
+    let path = Path::new("tests/external_references.json");
+    let file = File::open(path).unwrap();
+    let reader = BufReader::new(file);
 
-  let schema: RootSchema = serde_json::from_reader(reader).unwrap();
-  // schema.schema.metadata().title = Some("Everything".to_string());
-  type_space.with_path("tests/external_references.json");
-  type_space.add_root_schema(schema).unwrap();
+    let schema: RootSchema = serde_json::from_reader(reader).unwrap();
+    // schema.schema.metadata().title = Some("Everything".to_string());
+    type_space.with_path("tests/external_references.json");
+    type_space.add_root_schema(schema).unwrap();
 
-  let file = type_space.to_stream();
+    let file = type_space.to_stream();
 
-  let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
-  println!("{fmt}");
+    let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
+    println!("{fmt}");
 
-  expectorate::assert_contents("tests/external_references.out", fmt.as_str());
+    expectorate::assert_contents("tests/external_references.out", fmt.as_str());
 }

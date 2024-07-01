@@ -220,7 +220,6 @@ pub struct TypeSpace {
 }
 
 impl TypeSpace {
-
     /// Sets the file path for the `TypeSpace` instance.
     pub fn with_path<T: Into<PathBuf>>(&mut self, path: T) {
         self.file_path = path.into().canonicalize().unwrap();
@@ -1262,36 +1261,36 @@ impl<'a> TypeNewtype<'a> {
 }
 
 fn fetch_external_definitions(
-    base_schema: &RootSchema,  // Reference to the base schema
-    definition: &Schema,  // The schema definition to process
-    base_path: &PathBuf,  // Base path for file operations
-    base_id: &Option<String>,  // Optional base ID for schema
-    external_references: &mut BTreeMap<RefKey, (Schema, PathBuf, Option<String>)>,  // Map to store external references
-    first_run: bool,  // Flag to indicate if this is the first run of the function
+    base_schema: &RootSchema, // Reference to the base schema
+    definition: &Schema,      // The schema definition to process
+    base_path: &PathBuf,      // Base path for file operations
+    base_id: &Option<String>, // Optional base ID for schema
+    external_references: &mut BTreeMap<RefKey, (Schema, PathBuf, Option<String>)>, // Map to store external references
+    first_run: bool, // Flag to indicate if this is the first run of the function
 ) {
     // Iterate through each reference found in the given schema definition
     for mut reference in get_references(&definition) {
         if reference.is_empty() {
-            continue;  // Skip empty references
+            continue; // Skip empty references
         }
         if reference.starts_with("#") {
             // Handle internal references
             if first_run {
-                continue;  // Skip processing internal references on the first run
+                continue; // Skip processing internal references on the first run
             }
 
-            reference.remove(0);  // Remove the '#' character from the reference
+            reference.remove(0); // Remove the '#' character from the reference
             let fragment = reference
-              .split("/")
-              .into_iter()
-              .map(|s| s.to_string())
-              .filter(|s| !s.is_empty())
-              .collect();  // Split and collect the reference into a vector of strings
-            let definition_schema = fetch_defenition(base_schema, &reference, &fragment);  // Fetch the internal schema definition
-            let k = format!("{}{}", base_id.as_ref().unwrap(), reference);  // Create a key for the reference
+                .split("/")
+                .into_iter()
+                .map(|s| s.to_string())
+                .filter(|s| !s.is_empty())
+                .collect(); // Split and collect the reference into a vector of strings
+            let definition_schema = fetch_defenition(base_schema, &reference, &fragment); // Fetch the internal schema definition
+            let k = format!("{}{}", base_id.as_ref().unwrap(), reference); // Create a key for the reference
             let key = RefKey::Def(k);
             if external_references.contains_key(&key) {
-                continue;  // Skip if the reference already exists in the map
+                continue; // Skip if the reference already exists in the map
             } else {
                 // Insert the reference into the map and recursively fetch external definitions
                 external_references.insert(
@@ -1314,34 +1313,34 @@ fn fetch_external_definitions(
         } else {
             // Handle external references
             let base_id = base_id
-              .as_ref()
-              .expect("missing 'id' attribute in schema definition");  // Ensure base_id is present
-            let id = Iri::new(base_id).unwrap();  // Create an IRI from the base ID
-            let reff = Iri::new(&reference).unwrap();  // Create an IRI from the reference
+                .as_ref()
+                .expect("missing 'id' attribute in schema definition"); // Ensure base_id is present
+            let id = Iri::new(base_id).unwrap(); // Create an IRI from the base ID
+            let reff = Iri::new(&reference).unwrap(); // Create an IRI from the reference
             let fragment = reff
-              .fragment()
-              .as_ref()
-              .unwrap_or(&FragmentBuf::new("".to_string()).unwrap().as_fragment())
-              .to_string()
-              .split("/")
-              .filter_map(|s| (!s.is_empty()).then_some(s.to_string()))
-              .collect::<Vec<_>>();  // Process the fragment part of the reference
+                .fragment()
+                .as_ref()
+                .unwrap_or(&FragmentBuf::new("".to_string()).unwrap().as_fragment())
+                .to_string()
+                .split("/")
+                .filter_map(|s| (!s.is_empty()).then_some(s.to_string()))
+                .collect::<Vec<_>>(); // Process the fragment part of the reference
             let relpath =
-              diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str()).unwrap();  // Determine the relative path
-            let file_path = base_path.parent().unwrap().join(&relpath);  // Construct the file path
+                diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str()).unwrap(); // Determine the relative path
+            let file_path = base_path.parent().unwrap().join(&relpath); // Construct the file path
             let content = std::fs::read_to_string(&file_path).expect(&format!(
                 "Failed to open input file: {}",
                 &file_path.display()
-            ));  // Read the file content
+            )); // Read the file content
 
             let root_schema = serde_json::from_str::<RootSchema>(&content)
-              .expect("Failed to parse input file as JSON Schema");  // Parse the file content as JSON Schema
-            let definition_schema = fetch_defenition(&root_schema, &reference, &fragment);  // Fetch the external schema definition
+                .expect("Failed to parse input file as JSON Schema"); // Parse the file content as JSON Schema
+            let definition_schema = fetch_defenition(&root_schema, &reference, &fragment); // Fetch the external schema definition
             let key = RefKey::Def(reference.clone());
             if external_references.contains_key(&key) {
-                continue;  // Skip if the reference already exists in the map
+                continue; // Skip if the reference already exists in the map
             } else {
-                let s_id = get_schema_id(&root_schema.schema);  // Get the schema ID
+                let s_id = get_schema_id(&root_schema.schema); // Get the schema ID
 
                 // Insert the reference into the map and recursively fetch external definitions
                 external_references.insert(
