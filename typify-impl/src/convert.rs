@@ -1031,6 +1031,8 @@ impl TypeSpace {
             // f64 here, but we're already constrained by the schemars
             // representation so ... it's probably the best we can do at
             // the moment.
+            //
+            // I added this because numbers are sometimes specified in double quotes
             let d = match default {
                 serde_json::Value::Number(a) => a.as_f64(),
                 serde_json::Value::String(a) => a.parse().ok(),

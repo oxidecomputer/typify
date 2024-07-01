@@ -81,7 +81,6 @@ fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Sche
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
 fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
-    // dbg!((a,b));
     match (a, b) {
         (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),

@@ -1,0 +1,17 @@
+{
+  "id": "https://schemas.mysite.com/schemas/v1/external_reference.json#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "someothername": {
+      "type": "object",
+      "properties": {
+        "someproperty": {
+          "a":{
+            "type": "string"
+          }
+        }
+
+      }
+    }
+  }
+}
