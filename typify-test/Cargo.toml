@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 regress = "0.10.0"
 serde = "1.0.203"
-serde_json = "1.0.117"
+serde_json = "1.0.119"
 
 [build-dependencies]
 ipnetwork = { version = "0.20.0", features = ["schemars"] }
