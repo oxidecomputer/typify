@@ -79,8 +79,8 @@ impl TypeSpace {
                     let enum_values = enum_values.clone().map(|values| {
                         values
                             .iter()
+                            .filter(|&value| !value.is_null())
                             .cloned()
-                            .filter(|value| !value.is_null())
                             .collect()
                     });
                     let ss = Schema::Object(SchemaObject {
@@ -515,8 +515,29 @@ impl TypeSpace {
                     else_schema: None,
                 } => self.convert_not(type_name, original_schema, metadata, subschema),
 
-                // Unknown
-                _ => todo!("{:#?}", subschemas),
+                // Multiple subschemas may be present at the same time; attempt
+                // to merge and then convert.
+                subschemas => {
+                    // Remove the subschemas so we can merge into the rest.
+                    let schema_object = SchemaObject {
+                        subschemas: None,
+                        ..schema.clone()
+                    };
+                    let merged_schema = try_merge_with_subschemas(
+                        schema_object,
+                        Some(subschemas),
+                        &self.definitions,
+                    );
+                    match merged_schema {
+                        Ok(s) => {
+                            let (type_entry, _) =
+                                self.convert_schema_object(type_name, original_schema, &s)?;
+                            Ok((type_entry, &None))
+                        }
+                        // An error indicates that the schema is unresolvable.
+                        Err(_) => self.convert_never(type_name, original_schema),
+                    }
+                }
             },
 
             // Subschemas with other stuff.
