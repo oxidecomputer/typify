@@ -113,6 +113,64 @@ impl From<&CommentedTypeMerged> for CommentedTypeMerged {
         value.clone()
     }
 }
+#[doc = "HereAndThere"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"foo\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"bar\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"baz\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum HereAndThere {
+    Variant0 {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        bar: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        foo: Option<String>,
+    },
+    Variant1 {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        baz: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        foo: Option<String>,
+    },
+}
+impl From<&HereAndThere> for HereAndThere {
+    fn from(value: &HereAndThere) -> Self {
+        value.clone()
+    }
+}
 #[doc = "JsonResponseBase"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
