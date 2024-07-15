@@ -30,4 +30,4 @@ rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
 schemars = { version = "0.8.21", features = ["uuid1", "impl_json_schema"] }
 syn = { version = "2.0.69", features = ["full", "extra-traits"] }
-uuid = "1.9.1"
+uuid = "1.10.0"
