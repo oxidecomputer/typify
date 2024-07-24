@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -37,7 +35,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct PatternString(String);
 impl std::ops::Deref for PatternString {
     type Target = String;
@@ -111,7 +109,7 @@ impl<'de> serde::Deserialize<'de> for PatternString {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, serde :: Serialize)]
 pub struct Sub10Primes(u32);
 impl std::ops::Deref for Sub10Primes {
     type Target = u32;

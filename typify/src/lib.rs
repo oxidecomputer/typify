@@ -8,7 +8,6 @@
 //! A typical use looks like this:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!("../example.json");
 //! ```
 //!
@@ -21,7 +20,6 @@
 //! Alternatively, you may use the expanded form:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(schema = "../example.json");
 //! ```
 //!
@@ -29,7 +27,6 @@
 //! specify them with the `derives` property of the expanded form:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     derives = [schemars::JsonSchema],
@@ -40,7 +37,6 @@
 //! ```
 //! # mod x {
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     struct_builder = true,
@@ -52,7 +48,6 @@
 //! ```
 //! # mod x {
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! # import_types!(
 //! #    schema = "../example.json",
 //! #    struct_builder = true,
@@ -75,7 +70,6 @@
 //! types using the `patch` syntax:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     patch = {
@@ -97,7 +91,6 @@
 //! # pub struct Ipv6Cidr(String);
 //! # }
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     replace = {
@@ -116,7 +109,6 @@
 //! # pub struct MyUuid(String);
 //! # }
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     convert = {

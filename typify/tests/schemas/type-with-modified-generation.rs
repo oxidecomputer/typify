@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -57,7 +55,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TestType {
     pub converted_type: serde_json::Value,
     pub patched_type: TypeThatHasMoreDerives,
@@ -81,7 +79,7 @@ impl From<&TestType> for TestType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde :: Deserialize, serde :: Serialize)]
 pub struct TypeThatHasMoreDerives(pub std::collections::HashMap<String, String>);
 impl std::ops::Deref for TypeThatHasMoreDerives {
     type Target = std::collections::HashMap<String, String>;

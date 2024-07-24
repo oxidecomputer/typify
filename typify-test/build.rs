@@ -106,11 +106,8 @@ fn main() {
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
 
-    let contents = format!(
-        "{}\n{}",
-        "use serde::{Deserialize, Serialize};",
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
-    );
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");

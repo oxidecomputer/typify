@@ -45,7 +45,16 @@ mod types {
     #[doc = r" ```"]
     #[doc = r" </details>"]
     #[derive(
-        Clone, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
+        Clone,
+        Debug,
+        Eq,
+        Hash,
+        JsonSchema,
+        Ord,
+        PartialEq,
+        PartialOrd,
+        serde :: Deserialize,
+        serde :: Serialize,
     )]
     pub struct AllTheTraits {
         pub ok: String,
@@ -85,7 +94,7 @@ mod types {
     #[doc = "}"]
     #[doc = r" ```"]
     #[doc = r" </details>"]
-    #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
+    #[derive(Clone, Debug, JsonSchema, serde :: Deserialize, serde :: Serialize)]
     pub struct CompoundType {
         pub value1: String,
         pub value2: u64,
@@ -121,7 +130,7 @@ mod types {
     #[doc = "}"]
     #[doc = r" ```"]
     #[doc = r" </details>"]
-    #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
+    #[derive(Clone, Debug, JsonSchema, serde :: Deserialize, serde :: Serialize)]
     pub struct Pair {
         #[serde(default = "defaults::pair_a")]
         pub a: StringEnum,
@@ -154,7 +163,17 @@ mod types {
     #[doc = r" ```"]
     #[doc = r" </details>"]
     #[derive(
-        Clone, Copy, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        JsonSchema,
+        Ord,
+        PartialEq,
+        PartialOrd,
+        serde :: Deserialize,
+        serde :: Serialize,
     )]
     pub enum StringEnum {
         One,

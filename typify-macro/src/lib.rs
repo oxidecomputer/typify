@@ -21,7 +21,6 @@ mod token_utils;
 /// invoked with a structured form:
 /// ```
 /// use typify_macro::import_types;
-/// use serde::{Deserialize,Serialize};
 /// import_types!(
 ///     schema = "../example.json",
 ///     derives = [schemars::JsonSchema],

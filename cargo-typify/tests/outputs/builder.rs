@@ -3,8 +3,6 @@
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
-use serde::{Deserialize, Serialize};
-
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -41,7 +39,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Fruit(pub serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for Fruit {
     type Target = serde_json::Map<String, serde_json::Value>;
@@ -91,7 +89,7 @@ impl From<serde_json::Map<String, serde_json::Value>> for Fruit {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum FruitOrVeg {
     Veg(Veggie),
@@ -136,7 +134,7 @@ impl From<Fruit> for FruitOrVeg {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
     #[serde(rename = "veggieLike")]
@@ -182,7 +180,7 @@ impl Veggie {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub fruits: Vec<String>,
