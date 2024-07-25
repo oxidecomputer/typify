@@ -1163,6 +1163,62 @@ impl TypeSpace {
                 )?;
                 Ok((type_entry, metadata))
             }
+
+            Some(ObjectValidation {
+                max_properties: _,
+                min_properties: _,
+                required,
+                properties,
+                pattern_properties,
+                additional_properties,
+                property_names,
+            }) if required.is_empty()
+                && properties.is_empty()
+                && !pattern_properties.is_empty()
+                && additional_properties.as_ref().map(AsRef::as_ref)
+                    == Some(&Schema::Bool(false)) =>
+            {
+                // If not all of the schemas are the same, we reject the pattern properties
+                // because we cannot form a map with heterogeneous value types
+                if !pattern_properties
+                    .values()
+                    .next()
+                    .map(|first| pattern_properties.values().all(|schema| schema == first))
+                    // Default case true because we already checked that pattern_properties is not empty
+                    .unwrap_or(true)
+                {
+                    return Err(Error::InvalidSchema {
+                        type_name: type_name.into_option(),
+                        reason: "All pattern properties must have the same schema".to_string(),
+                    });
+                }
+
+                let schema = pattern_properties
+                    .values()
+                    .next()
+                    .unwrap_or_else(|| unreachable!("No pattern properties found when not empty"))
+                    .clone();
+
+                let additional_properties = Some(Box::new(schema.clone()));
+
+                let type_entry = self.make_map(
+                    type_name.clone().into_option(),
+                    property_names,
+                    &additional_properties,
+                )?;
+
+                let type_id = self.assign_type(type_entry);
+
+                let patterns = pattern_properties.keys();
+
+                Ok((
+                    TypeEntryNewtype::from_metadata_with_property_pattern(
+                        self, type_name, metadata, type_id, patterns, schema,
+                    ),
+                    &None,
+                ))
+            }
+
             None => {
                 let type_entry = self.make_map(type_name.into_option(), &None, &None)?;
                 Ok((type_entry, metadata))

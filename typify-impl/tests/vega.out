@@ -29955,13 +29955,7 @@ impl ToString for Element {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"patternProperties\": {"]
-#[doc = "    \"^.+$\": {"]
-#[doc = "      \"$ref\": \"#/definitions/encodeEntry\""]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": false"]
+#[doc = "  \"$ref\": \"#/definitions/encodeEntry\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
@@ -29971,6 +29965,46 @@ pub struct Encode {}
 impl From<&Encode> for Encode {
     fn from(value: &Encode) -> Self {
         value.clone()
+    }
+}
+struct EncodeVisitor {
+    marker: std::marker::PhantomData<fn() -> Encode>,
+}
+impl EncodeVisitor {
+    fn new() -> Self {
+        Self {
+            marker: std::marker::PhantomData,
+        }
+    }
+}
+impl<'de> serde::de::Visitor<'de> for EncodeVisitor {
+    type Value = Encode;
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a map with keys matching the pattern '^.+$'")
+    }
+    fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+    where
+        M: serde::de::MapAccess<'de>,
+    {
+        let mut map = std::collections::HashMap::new();
+        while let Some((key, value)) = access.next_entry()? {
+            if regress::Regex::new("^.+$").unwrap().find(key).is_none() {
+                return Err(serde::de::Error::custom(format!(
+                    "key '{}' doesn't match pattern '{}'",
+                    key, "^.+$"
+                )));
+            }
+            map.insert(key.to_string(), value);
+        }
+        Ok(Encode(map))
+    }
+}
+impl<'de> serde::Deserialize<'de> for Encode {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_map(EncodeVisitor::new())
     }
 }
 #[doc = "EncodeEntry"]
@@ -105116,13 +105150,7 @@ impl From<&TitleVariant1Encode> for TitleVariant1Encode {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"patternProperties\": {"]
-#[doc = "    \"^(?!interactive|name|style).+$\": {"]
-#[doc = "      \"$ref\": \"#/definitions/encodeEntry\""]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": false"]
+#[doc = "  \"$ref\": \"#/definitions/encodeEntry\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
@@ -105132,6 +105160,50 @@ pub struct TitleVariant1EncodeSubtype0 {}
 impl From<&TitleVariant1EncodeSubtype0> for TitleVariant1EncodeSubtype0 {
     fn from(value: &TitleVariant1EncodeSubtype0) -> Self {
         value.clone()
+    }
+}
+struct TitleVariant1EncodeSubtype0Visitor {
+    marker: std::marker::PhantomData<fn() -> TitleVariant1EncodeSubtype0>,
+}
+impl TitleVariant1EncodeSubtype0Visitor {
+    fn new() -> Self {
+        Self {
+            marker: std::marker::PhantomData,
+        }
+    }
+}
+impl<'de> serde::de::Visitor<'de> for TitleVariant1EncodeSubtype0Visitor {
+    type Value = TitleVariant1EncodeSubtype0;
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a map with keys matching the pattern '^(?!interactive|name|style).+$'")
+    }
+    fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+    where
+        M: serde::de::MapAccess<'de>,
+    {
+        let mut map = std::collections::HashMap::new();
+        while let Some((key, value)) = access.next_entry()? {
+            if regress::Regex::new("^(?!interactive|name|style).+$")
+                .unwrap()
+                .find(key)
+                .is_none()
+            {
+                return Err(serde::de::Error::custom(format!(
+                    "key '{}' doesn't match pattern '{}'",
+                    key, "^(?!interactive|name|style).+$"
+                )));
+            }
+            map.insert(key.to_string(), value);
+        }
+        Ok(TitleVariant1EncodeSubtype0(map))
+    }
+}
+impl<'de> serde::Deserialize<'de> for TitleVariant1EncodeSubtype0 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_map(TitleVariant1EncodeSubtype0Visitor::new())
     }
 }
 #[doc = "TitleVariant1EncodeSubtype1"]
