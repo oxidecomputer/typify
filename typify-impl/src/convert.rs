@@ -1163,6 +1163,42 @@ impl TypeSpace {
                 )?;
                 Ok((type_entry, metadata))
             }
+
+            // Maps may also be maps if they have a non-empty validation. For example, if they
+            // have pattern properties or additional properties.
+            Some(ObjectValidation {
+                max_properties: _,
+                min_properties: _,
+                required,
+                properties,
+                pattern_properties,
+                additional_properties,
+                property_names: _,
+            }) if required.is_empty()
+                && properties.is_empty()
+                && (!pattern_properties.is_empty()
+                    && self.settings.permissive_pattern_properties)
+                && additional_properties.as_ref().map(AsRef::as_ref)
+                    == Some(&Schema::Bool(false)) =>
+            {
+                assert!(
+                    pattern_properties.len() == 1,
+                    "Expected exactly one pattern property"
+                );
+                let additional_properties = Some(Box::new(
+                    pattern_properties
+                        .values()
+                        .next()
+                        .unwrap_or_else(|| {
+                            unreachable!("No pattern properties found after checking length 1)")
+                        })
+                        .clone(),
+                ));
+                let type_entry =
+                    self.make_map(type_name.into_option(), &None, &additional_properties)?;
+                Ok((type_entry, metadata))
+            }
+
             None => {
                 let type_entry = self.make_map(type_name.into_option(), &None, &None)?;
                 Ok((type_entry, metadata))

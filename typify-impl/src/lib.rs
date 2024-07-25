@@ -243,6 +243,7 @@ pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
     struct_builder: bool,
+    permissive_pattern_properties: bool,
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
@@ -369,6 +370,16 @@ impl TypeSpaceSettings {
     /// For structs, include a "builder" type that can be used to construct it.
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
+        self
+    }
+
+    /// For objects with pattern properties, treat pattern properties as if there was no
+    /// pattern and allow any key.
+    pub fn with_permissive_pattern_properties(
+        &mut self,
+        permissive_pattern_properties: bool,
+    ) -> &mut Self {
+        self.permissive_pattern_properties = permissive_pattern_properties;
         self
     }
 
