@@ -25,6 +25,11 @@ pub struct CliArgs {
     #[arg(short, long, default_value = "false", group = "build")]
     pub builder: bool,
 
+    /// Whether to use permissive pattern properties in objects. This is not the
+    /// default, because it can lead to accepting invalid input as valid.
+    #[arg(short, long, default_value = "false", group = "build")]
+    pub permissive_pattern_properties: bool,
+
     /// Inverse of `--builder`. When set the builder-style interface will not
     /// be included.
     #[arg(short = 'B', long, default_value = "false", group = "build")]
@@ -137,6 +142,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 
     let mut settings = TypeSpaceSettings::default();
     settings.with_struct_builder(args.use_builder());
+    settings.with_permissive_pattern_properties(args.permissive_pattern_properties);
 
     for derive in &args.additional_derives {
         settings.with_derive(derive.clone());
