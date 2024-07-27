@@ -1561,7 +1561,7 @@ pub struct TreeSitterGrammarSpecification {
     pub name: TreeSitterGrammarSpecificationName,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub precedences: Vec<Vec<Rule>>,
-    pub rules: TreeSitterGrammarSpecificationRules,
+    pub rules: std::collections::HashMap<TreeSitterGrammarSpecificationRulesKey, Rule>,
     #[doc = "A list of hidden rule names that should be considered supertypes in the generated node types file. See https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types."]
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub supertypes: Vec<String>,
@@ -1865,76 +1865,76 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationName {
             })
     }
 }
-#[doc = "TreeSitterGrammarSpecificationRules"]
+#[doc = "TreeSitterGrammarSpecificationRulesKey"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"$ref\": \"#/definitions/rule\""]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^[a-zA-Z_]\\\\w*$\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Serialize)]
-pub struct TreeSitterGrammarSpecificationRules(std::collections::HashMap<String, Rule>);
-impl std::ops::Deref for TreeSitterGrammarSpecificationRules {
-    type Target = std::collections::HashMap<String, Rule>;
-    fn deref(&self) -> &std::collections::HashMap<String, Rule> {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct TreeSitterGrammarSpecificationRulesKey(String);
+impl std::ops::Deref for TreeSitterGrammarSpecificationRulesKey {
+    type Target = String;
+    fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<TreeSitterGrammarSpecificationRules> for std::collections::HashMap<String, Rule> {
-    fn from(value: TreeSitterGrammarSpecificationRules) -> Self {
+impl From<TreeSitterGrammarSpecificationRulesKey> for String {
+    fn from(value: TreeSitterGrammarSpecificationRulesKey) -> Self {
         value.0
     }
 }
-impl From<&TreeSitterGrammarSpecificationRules> for TreeSitterGrammarSpecificationRules {
-    fn from(value: &TreeSitterGrammarSpecificationRules) -> Self {
+impl From<&TreeSitterGrammarSpecificationRulesKey> for TreeSitterGrammarSpecificationRulesKey {
+    fn from(value: &TreeSitterGrammarSpecificationRulesKey) -> Self {
         value.clone()
     }
 }
-struct TreeSitterGrammarSpecificationRulesVisitor {
-    marker: std::marker::PhantomData<fn() -> TreeSitterGrammarSpecificationRules>,
-}
-impl TreeSitterGrammarSpecificationRulesVisitor {
-    fn new() -> Self {
-        Self {
-            marker: std::marker::PhantomData,
+impl std::str::FromStr for TreeSitterGrammarSpecificationRulesKey {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+        if regress::Regex::new("^[a-zA-Z_]\\w*$")
+            .unwrap()
+            .find(value)
+            .is_none()
+        {
+            return Err("doesn't match pattern \"^[a-zA-Z_]\\w*$\"".into());
         }
+        Ok(Self(value.to_string()))
     }
 }
-impl<'de> serde::de::Visitor<'de> for TreeSitterGrammarSpecificationRulesVisitor {
-    type Value = TreeSitterGrammarSpecificationRules;
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("a map with keys matching the pattern '^[a-zA-Z_]\\w*$'")
-    }
-    fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
-    where
-        M: serde::de::MapAccess<'de>,
-    {
-        let mut map = std::collections::HashMap::new();
-        while let Some((key, value)) = access.next_entry()? {
-            if regress::Regex::new("^[a-zA-Z_]\\w*$")
-                .unwrap()
-                .find(key)
-                .is_none()
-            {
-                return Err(serde::de::Error::custom(format!(
-                    "key '{}' doesn't match pattern '{}'",
-                    key, "^[a-zA-Z_]\\w*$"
-                )));
-            }
-            map.insert(key.to_string(), value);
-        }
-        Ok(TreeSitterGrammarSpecificationRules(map))
+impl std::convert::TryFrom<&str> for TreeSitterGrammarSpecificationRulesKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+        value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationRules {
+impl std::convert::TryFrom<&String> for TreeSitterGrammarSpecificationRulesKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TreeSitterGrammarSpecificationRulesKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationRulesKey {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        deserializer.deserialize_map(TreeSitterGrammarSpecificationRulesVisitor::new())
+        String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "TreeSitterGrammarSpecificationWord"]

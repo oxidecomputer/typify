@@ -83,12 +83,6 @@ pub(crate) enum TypeEntryNewtypeConstraints {
         min_length: Option<u32>,
         pattern: Option<String>,
     },
-    Map {
-        // NOTE: Only one pattern is accepted. Pattern Properties with multiple patterns
-        // which map to different types are not accepted because only homogeneous maps are
-        // reasonable in Rust.
-        pattern: String,
-    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -457,50 +451,6 @@ impl TypeEntryNewtype {
                 pattern,
             },
             schema: SchemaWrapper(schema),
-        });
-
-        TypeEntry {
-            details,
-            extra_derives,
-        }
-    }
-
-    pub(crate) fn from_metadata_with_property_pattern<I, S>(
-        type_space: &TypeSpace,
-        type_name: Name,
-        metadata: &Option<Box<Metadata>>,
-        type_id: TypeId,
-        patterns: I,
-        schema: Schema,
-    ) -> TypeEntry
-    where
-        I: IntoIterator<Item = S>,
-        S: AsRef<str>,
-    {
-        let name = get_type_name(&type_name, metadata).unwrap();
-        let rename = None;
-        let description = metadata_description(metadata);
-
-        // Join all patterns (which are for the same schema) together into a single regular
-        // expression with an alternation
-        let pattern = patterns
-            .into_iter()
-            .map(|s| s.as_ref().to_string())
-            .collect::<Vec<_>>()
-            .join("|");
-
-        let (name, extra_derives) = type_patch(type_space, name);
-
-        let details = TypeEntryDetails::Newtype(Self {
-            name,
-            rename,
-            description,
-            default: None,
-            type_id,
-            constraints: TypeEntryNewtypeConstraints::Map {
-                pattern: pattern.clone(),
-            },
-            schema: SchemaWrapper(schema.clone()),
         });
 
         TypeEntry {
@@ -1536,69 +1486,6 @@ impl TypeEntry {
                                         e.to_string(),
                                     )
                                 })
-                        }
-                    }
-                }
-            }
-            TypeEntryNewtypeConstraints::Map { pattern } => {
-                derive_set.remove("Deserialize");
-
-                let visitor_name = format_ident!("{type_name}Visitor");
-
-                let expecting_message =
-                    format!("a map with keys matching the pattern '{}'", pattern);
-
-                let pat = {
-                    quote! {
-                        if regress::Regex::new(#pattern).unwrap().find(key).is_none() {
-                            return Err(serde::de::Error::custom(format!("key '{}' doesn't match pattern '{}'", key, #pattern)));
-                        }
-                    }
-                };
-
-                let visitor = quote! {
-                    struct #visitor_name {
-                        marker: std::marker::PhantomData<fn() -> #type_name>,
-                    }
-
-                    impl #visitor_name {
-                        fn new() -> Self {
-                            Self {
-                                marker: std::marker::PhantomData,
-                            }
-                        }
-                    }
-
-                    impl<'de> serde::de::Visitor<'de> for #visitor_name {
-                        type Value = #type_name;
-
-                        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                            formatter.write_str(#expecting_message)
-                        }
-
-                        fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
-                        where
-                            M: serde::de::MapAccess<'de>,
-                        {
-                            let mut map = std::collections::HashMap::new();
-                            while let Some((key, value)) = access.next_entry()? {
-                                #pat
-                                map.insert(key.to_string(), value);
-                            }
-                            Ok(#type_name(map))
-                        }
-                    }
-                };
-
-                quote! {
-                    #visitor
-
-                    impl<'de> serde::Deserialize<'de> for #type_name {
-                        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                        where
-                            D: serde::Deserializer<'de>,
-                        {
-                            deserializer.deserialize_map(#visitor_name::new())
                         }
                     }
                 }
