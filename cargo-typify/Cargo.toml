@@ -23,7 +23,7 @@ serde_json = "1.0.120"
 schemars = "0.8.21"
 
 [dev-dependencies]
-assert_cmd = "2.0.14"
+assert_cmd = "2.0.15"
 expectorate = "1.1.0"
 newline-converter = "0.3.0"
 tempdir = "0.3.7"
