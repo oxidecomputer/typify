@@ -70,10 +70,6 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
 
     // Make a file with the generated code.
     let code = quote! {
-        // Some types impl their own Deserialize and fully qualify the name.
-        #[allow(unused_imports)]
-        use serde::{Deserialize, Serialize};
-
         #type_space
 
         fn main() {}

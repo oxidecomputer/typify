@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -39,7 +37,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct AnythingWorks {
     pub value: serde_json::Value,
 }
@@ -64,7 +62,7 @@ impl From<&AnythingWorks> for AnythingWorks {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flush_timeout: Option<f32>,
@@ -86,7 +84,9 @@ impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct JustOne(pub String);
 impl std::ops::Deref for JustOne {
     type Target = String;

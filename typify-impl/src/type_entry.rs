@@ -630,7 +630,7 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
-        let derive_set = ["Serialize", "Deserialize", "Debug", "Clone"]
+        let derive_set = ["serde::Serialize", "serde::Deserialize", "Debug", "Clone"]
             .into_iter()
             .collect::<BTreeSet<_>>();
 
@@ -1344,7 +1344,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("Deserialize");
+                derive_set.remove("serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
@@ -1428,7 +1428,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("Deserialize");
+                derive_set.remove("serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.

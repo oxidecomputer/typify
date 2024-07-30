@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -47,7 +45,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ArrayBs(pub Vec<bool>);
 impl std::ops::Deref for ArrayBs {
     type Target = Vec<bool>;
@@ -88,7 +86,7 @@ impl From<Vec<bool>> for ArrayBs {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct IntegerBs(pub u64);
 impl std::ops::Deref for IntegerBs {
     type Target = u64;
@@ -158,7 +156,7 @@ impl ToString for IntegerBs {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ok: Option<bool>,
