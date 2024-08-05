@@ -1142,21 +1142,17 @@ impl TypeSpace {
             return false;
         }
 
-        let all_pattern_property_schemas_same = validation
-            .pattern_properties
-            .values()
-            .next()
-            .map(|first| {
-                validation
-                    .pattern_properties
-                    .values()
-                    .all(|schema| schema == first)
-            })
-            .unwrap_or(true);
-
         // Ensure we have at least one pattern property and all pattern property
         // schemas are the same
-        if validation.pattern_properties.is_empty() || !all_pattern_property_schemas_same {
+        let Some(first_schema) = validation.pattern_properties.values().next() else {
+            return false;
+        };
+
+        if !validation
+            .pattern_properties
+            .values()
+            .all(|schema| schema == first_schema)
+        {
             return false;
         }
 
