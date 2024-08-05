@@ -1164,6 +1164,8 @@ impl TypeSpace {
                 Ok((type_entry, metadata))
             }
 
+            // Handle the case where `propertyNames` is None, `patternProperties` is
+            // empty, and `additionalProperties` is either None, or a boolean.
             Some(ObjectValidation {
                 max_properties: _,
                 min_properties: _,
@@ -1176,103 +1178,49 @@ impl TypeSpace {
                 && properties.is_empty()
                 // If no pattern properties are provided
                 && (!pattern_properties.is_empty()
+
+                    // All pattern properties have the same schema
                     && pattern_properties
                         .values()
                         .next()
                         .map(|first| pattern_properties.values().all(|schema| schema == first))
-                        // Default case true because we already checked that pattern_properties is not empty
-                        .unwrap_or(true)
-                    && (property_names.is_none()
-                        || property_names.as_ref().is_some_and(|property_names| {
-                            let Schema::Object(property_names) = property_names.as_ref() else {
-                                return false;
-                            };
-
-                            property_names
-                                .string
-                                .as_ref()
-                                .map(|string| string.pattern.is_none())
-                                .unwrap_or(true)
-                        }))
-                    && additional_properties.as_ref().map(AsRef::as_ref).is_some_and(|schema| {
-                            // This is OK if additional properties is empty, is equal to the pattern properties schema, or is a boolean
-                            matches!(schema, Schema::Bool(_))
-                            || pattern_properties.values().next().is_some_and(|first| first == schema)
-                    })
-                ) =>
+                        .unwrap_or(true))
+                // TODO: Handle interaction between a `true` additionalProperties and patternProperties
+                && (additional_properties.is_none() || additional_properties.as_ref().map(AsRef::as_ref) == Some(&Schema::Bool(false)))
+                // No propertyNames are provided
+                && property_names.is_none() =>
             {
-                // A non-empty patternProperties where all the schemas are the same means we
-                // leverage the isomorphism between the patternProperties and a pattern in
-                // propertyNames combined with additionalProperties
-                let type_entry = if !pattern_properties.is_empty() {
-                    let mut property_names = property_names.clone();
-                    let mut additional_properties = additional_properties.clone();
+                let pattern = pattern_properties
+                    .keys()
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join("|");
 
-                    let pattern = pattern_properties
-                        .keys()
+                // Construct a propertyNames to use for pattern validation
+                let property_names = Some(Box::new(Schema::Object(SchemaObject {
+                    string: Some(Box::new(StringValidation {
+                        max_length: None,
+                        min_length: None,
+                        pattern: Some(pattern),
+                    })),
+                    ..Default::default()
+                })));
+
+                // Construct an additionalProperties (which is originally boolean/None)
+                // to use for schema validation of properties matching the pattern
+                let additional_properties = Some(Box::new(
+                    pattern_properties
+                        .values()
+                        .next()
                         .cloned()
-                        .collect::<Vec<_>>()
-                        .join("|");
+                        .unwrap_or_else(|| unreachable!("pattern_properties cannot be empty here")),
+                ));
 
-                    if let Some(property_names) = property_names.as_mut() {
-                        if let Schema::Object(property_names) = property_names.as_mut() {
-                            if let Some(string) = &mut property_names.string {
-                                string.pattern = Some(pattern);
-                            } else {
-                                property_names.string = Some(Box::new(StringValidation {
-                                    pattern: Some(pattern),
-                                    ..Default::default()
-                                }));
-                            }
-                        } else {
-                            return Err(Error::InvalidSchema {
-                                type_name: type_name.into_option(),
-                                reason: "propertyNames is not an object".to_string(),
-                            });
-                        }
-                    } else {
-                        // Construct a new propertyNames object
-                        property_names = Some(Box::new(Schema::Object(SchemaObject {
-                            string: Some(Box::new(StringValidation {
-                                max_length: None,
-                                min_length: None,
-                                pattern: Some(pattern),
-                            })),
-                            ..Default::default()
-                        })));
-                    }
-
-                    if let Some(additional_properties) = additional_properties.as_mut() {
-                        if let Schema::Bool(_) = additional_properties.as_ref() {
-                            // Replace the boolean with the pattern properties schema
-                            *additional_properties = Box::new(
-                                // NOTE: unwrap OK because we know pattern_properties is not empty
-                                pattern_properties.values().next().unwrap().clone(),
-                            );
-                        } else {
-                            // The additional properties is an object with schema equal to the pattern properties schema,
-                            // so it can be left alone
-                        }
-                    } else {
-                        // Construct a new additionalProperties object
-                        additional_properties = Some(Box::new(
-                            // NOTE: unwrap OK because we know pattern_properties is not empty
-                            pattern_properties.values().next().unwrap().clone(),
-                        ));
-                    }
-
-                    self.make_map(
-                        type_name.into_option(),
-                        &property_names,
-                        &additional_properties,
-                    )?
-                } else {
-                    self.make_map(
-                        type_name.into_option(),
-                        property_names,
-                        additional_properties,
-                    )?
-                };
+                let type_entry = self.make_map(
+                    type_name.into_option(),
+                    &property_names,
+                    &additional_properties,
+                )?;
 
                 Ok((type_entry, metadata))
             }
