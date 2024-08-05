@@ -29965,12 +29965,7 @@ impl ToString for Element {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-<<<<<<< HEAD
 #[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct Encode {}
-=======
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Encode(pub std::collections::HashMap<EncodeKey, EncodeEntry>);
 impl std::ops::Deref for Encode {
     type Target = std::collections::HashMap<EncodeKey, EncodeEntry>;
@@ -29983,7 +29978,6 @@ impl From<Encode> for std::collections::HashMap<EncodeKey, EncodeEntry> {
         value.0
     }
 }
->>>>>>> f94b2d9 (Validate patternProperties with existing method for propertyNames)
 impl From<&Encode> for Encode {
     fn from(value: &Encode) -> Self {
         value.clone()
@@ -30451,7 +30445,7 @@ impl From<&EncodeEntry> for EncodeEntry {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct EncodeKey(String);
 impl std::ops::Deref for EncodeKey {
     type Target = String;
@@ -105210,14 +105204,7 @@ impl From<&TitleVariant1Encode> for TitleVariant1Encode {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-<<<<<<< HEAD
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct TitleVariant1EncodeSubtype0 {}
-impl From<&TitleVariant1EncodeSubtype0> for TitleVariant1EncodeSubtype0 {
-    fn from(value: &TitleVariant1EncodeSubtype0) -> Self {
-=======
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TitleVariant1EncodeSubtype0Key(String);
 impl std::ops::Deref for TitleVariant1EncodeSubtype0Key {
     type Target = String;
@@ -105232,7 +105219,6 @@ impl From<TitleVariant1EncodeSubtype0Key> for String {
 }
 impl From<&TitleVariant1EncodeSubtype0Key> for TitleVariant1EncodeSubtype0Key {
     fn from(value: &TitleVariant1EncodeSubtype0Key) -> Self {
->>>>>>> f94b2d9 (Validate patternProperties with existing method for propertyNames)
         value.clone()
     }
 }

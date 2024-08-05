@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -57,7 +55,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct AliasRule {
     pub content: Rule,
     pub named: bool,
@@ -81,7 +79,7 @@ impl From<&AliasRule> for AliasRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct AliasRuleType(String);
 impl std::ops::Deref for AliasRuleType {
     type Target = String;
@@ -161,7 +159,7 @@ impl<'de> serde::Deserialize<'de> for AliasRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct BlankRule {
     #[serde(rename = "type")]
     pub type_: BlankRuleType,
@@ -182,7 +180,7 @@ impl From<&BlankRule> for BlankRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct BlankRuleType(String);
 impl std::ops::Deref for BlankRuleType {
     type Target = String;
@@ -269,7 +267,7 @@ impl<'de> serde::Deserialize<'de> for BlankRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ChoiceRule {
     pub members: Vec<Rule>,
     #[serde(rename = "type")]
@@ -291,7 +289,7 @@ impl From<&ChoiceRule> for ChoiceRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct ChoiceRuleType(String);
 impl std::ops::Deref for ChoiceRuleType {
     type Target = String;
@@ -378,7 +376,7 @@ impl<'de> serde::Deserialize<'de> for ChoiceRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct FieldRule {
     pub content: Box<Rule>,
     pub name: String,
@@ -401,7 +399,7 @@ impl From<&FieldRule> for FieldRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct FieldRuleType(String);
 impl std::ops::Deref for FieldRuleType {
     type Target = String;
@@ -488,7 +486,7 @@ impl<'de> serde::Deserialize<'de> for FieldRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct PatternRule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flags: Option<String>,
@@ -512,7 +510,7 @@ impl From<&PatternRule> for PatternRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct PatternRuleType(String);
 impl std::ops::Deref for PatternRuleType {
     type Target = String;
@@ -607,7 +605,7 @@ impl<'de> serde::Deserialize<'de> for PatternRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct PrecRule {
     pub content: Box<Rule>,
     #[serde(rename = "type")]
@@ -630,7 +628,7 @@ impl From<&PrecRule> for PrecRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct PrecRuleType(String);
 impl std::ops::Deref for PrecRuleType {
     type Target = String;
@@ -716,7 +714,7 @@ impl<'de> serde::Deserialize<'de> for PrecRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Repeat1Rule {
     pub content: Box<Rule>,
     #[serde(rename = "type")]
@@ -738,7 +736,7 @@ impl From<&Repeat1Rule> for Repeat1Rule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct Repeat1RuleType(String);
 impl std::ops::Deref for Repeat1RuleType {
     type Target = String;
@@ -822,7 +820,7 @@ impl<'de> serde::Deserialize<'de> for Repeat1RuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct RepeatRule {
     pub content: Box<Rule>,
     #[serde(rename = "type")]
@@ -844,7 +842,7 @@ impl From<&RepeatRule> for RepeatRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct RepeatRuleType(String);
 impl std::ops::Deref for RepeatRuleType {
     type Target = String;
@@ -952,7 +950,7 @@ impl<'de> serde::Deserialize<'de> for RepeatRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum Rule {
     AliasRule(Box<AliasRule>),
@@ -1059,7 +1057,7 @@ impl From<PrecRule> for Rule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct SeqRule {
     pub members: Vec<Rule>,
     #[serde(rename = "type")]
@@ -1081,7 +1079,7 @@ impl From<&SeqRule> for SeqRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct SeqRuleType(String);
 impl std::ops::Deref for SeqRuleType {
     type Target = String;
@@ -1161,7 +1159,7 @@ impl<'de> serde::Deserialize<'de> for SeqRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct StringRule {
     #[serde(rename = "type")]
     pub type_: StringRuleType,
@@ -1183,7 +1181,7 @@ impl From<&StringRule> for StringRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct StringRuleType(String);
 impl std::ops::Deref for StringRuleType {
     type Target = String;
@@ -1267,7 +1265,7 @@ impl<'de> serde::Deserialize<'de> for StringRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct SymbolRule {
     pub name: String,
     #[serde(rename = "type")]
@@ -1289,7 +1287,7 @@ impl From<&SymbolRule> for SymbolRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct SymbolRuleType(String);
 impl std::ops::Deref for SymbolRuleType {
     type Target = String;
@@ -1373,7 +1371,7 @@ impl<'de> serde::Deserialize<'de> for SymbolRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TokenRule {
     pub content: Box<Rule>,
     #[serde(rename = "type")]
@@ -1395,7 +1393,7 @@ impl From<&TokenRule> for TokenRule {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TokenRuleType(String);
 impl std::ops::Deref for TokenRuleType {
     type Target = String;
@@ -1543,7 +1541,7 @@ impl<'de> serde::Deserialize<'de> for TokenRuleType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct TreeSitterGrammarSpecification {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -1584,7 +1582,7 @@ impl From<&TreeSitterGrammarSpecification> for TreeSitterGrammarSpecification {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationConflictsItemItem(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationConflictsItemItem {
     type Target = String;
@@ -1659,7 +1657,7 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationConflictsIte
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationInherits(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationInherits {
     type Target = String;
@@ -1731,7 +1729,7 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationInherits {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationInlineItem(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationInlineItem {
     type Target = String;
@@ -1804,7 +1802,7 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationInlineItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationName(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationName {
     type Target = String;
@@ -1876,7 +1874,7 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationName {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationRulesKey(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationRulesKey {
     type Target = String;
@@ -1948,7 +1946,7 @@ impl<'de> serde::Deserialize<'de> for TreeSitterGrammarSpecificationRulesKey {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TreeSitterGrammarSpecificationWord(String);
 impl std::ops::Deref for TreeSitterGrammarSpecificationWord {
     type Target = String;
