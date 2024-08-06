@@ -13,7 +13,6 @@ fn test_external_references() {
     let reader = BufReader::new(file);
 
     let schema: RootSchema = serde_json::from_reader(reader).unwrap();
-    // schema.schema.metadata().title = Some("Everything".to_string());
     type_space.with_path("tests/external_references.json");
     type_space.add_root_schema(schema).unwrap();
 
