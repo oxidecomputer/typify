@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -42,7 +40,18 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum AlternativeEnum {
     Choice1,
     Choice2,
@@ -123,7 +132,18 @@ impl Default for AlternativeEnum {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum CommentedVariants {
     #[doc = "An A"]
     A,
@@ -203,7 +223,7 @@ impl std::convert::TryFrom<String> for CommentedVariants {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
@@ -229,7 +249,18 @@ impl From<&DiskAttachment> for DiskAttachment {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum DiskAttachmentState {
     Detached,
     Destroyed,
@@ -301,7 +332,7 @@ impl Default for DiskAttachmentState {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prop: Option<EmptyObjectProp>,
@@ -324,7 +355,7 @@ impl From<&EmptyObject> for EmptyObject {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, serde :: Serialize)]
 pub struct EmptyObjectProp(serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for EmptyObjectProp {
     type Target = serde_json::Map<String, serde_json::Value>;
@@ -442,7 +473,7 @@ impl<'de> serde::Deserialize<'de> for EmptyObjectProp {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(tag = "petType")]
 pub enum EnumAndConstant {
     #[serde(rename = "dog")]
@@ -487,7 +518,7 @@ impl From<&EnumAndConstant> for EnumAndConstant {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum IpNet {
     V4(Ipv4Net),
@@ -556,7 +587,9 @@ impl From<Ipv6Net> for IpNet {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct Ipv4Net(pub String);
 impl std::ops::Deref for Ipv4Net {
     type Target = String;
@@ -600,7 +633,9 @@ impl ToString for Ipv4Net {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct Ipv6Net(pub String);
 impl std::ops::Deref for Ipv6Net {
     type Target = String;
@@ -666,7 +701,7 @@ impl ToString for Ipv6Net {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum JankNames {
     Variant0(String),
@@ -696,7 +731,18 @@ impl From<std::collections::HashMap<String, i64>> for JankNames {
 #[doc = "false"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
 impl From<&Never> for Never {
@@ -712,7 +758,18 @@ impl From<&Never> for Never {
 #[doc = "false"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
 impl From<&NeverEver> for NeverEver {
@@ -739,7 +796,7 @@ impl From<&NeverEver> for NeverEver {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct NullStringEnumWithUnknownFormat(pub Option<NullStringEnumWithUnknownFormatInner>);
 impl std::ops::Deref for NullStringEnumWithUnknownFormat {
     type Target = Option<NullStringEnumWithUnknownFormatInner>;
@@ -778,7 +835,18 @@ impl From<Option<NullStringEnumWithUnknownFormatInner>> for NullStringEnumWithUn
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "a")]
     A,
@@ -862,7 +930,7 @@ impl std::convert::TryFrom<String> for NullStringEnumWithUnknownFormatInner {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub enum OneOfTypes {
     #[serde(rename = "bar")]
     Bar(i64),
@@ -889,7 +957,9 @@ impl From<i64> for OneOfTypes {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct ReferenceDef(pub String);
 impl std::ops::Deref for ReferenceDef {
     type Target = String;
@@ -955,7 +1025,7 @@ impl ToString for ReferenceDef {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum References {
     Variant0(Vec<String>),
@@ -993,7 +1063,7 @@ impl From<std::collections::HashMap<String, ReferencesVariant1Value>> for Refere
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum ReferencesVariant1Value {
     StringVersion(StringVersion),
@@ -1082,7 +1152,7 @@ impl From<ReferenceDef> for ReferencesVariant1Value {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum ShouldBeExclusive {
     Variant0 { id: String },
@@ -1103,7 +1173,9 @@ impl From<&ShouldBeExclusive> for ShouldBeExclusive {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct StringVersion(pub String);
 impl std::ops::Deref for StringVersion {
     type Target = String;

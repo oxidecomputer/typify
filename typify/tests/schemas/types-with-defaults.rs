@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -43,7 +41,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Doodad {
     #[serde(default = "defaults::doodad_when")]
     pub when: chrono::DateTime<chrono::offset::Utc>,
@@ -77,7 +75,7 @@ impl From<&Doodad> for Doodad {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct MrDefaultNumbers {
     #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU16, 3>")]
     pub little_u16: std::num::NonZeroU16,
@@ -117,7 +115,7 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct OuterThing {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub thing: Option<ThingWithDefaults>,
@@ -161,7 +159,7 @@ impl From<&OuterThing> for OuterThing {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
     pub any: Vec<serde_json::Value>,
@@ -196,7 +194,7 @@ impl From<&TestBed> for TestBed {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ThingWithDefaults {
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -63,9 +63,7 @@ is installed. Install rustfmt with rustup component add rustfmt
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(uuid::Uuid),

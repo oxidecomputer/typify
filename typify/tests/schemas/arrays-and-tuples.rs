@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -38,7 +36,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ArraySansItems(pub Vec<serde_json::Value>);
 impl std::ops::Deref for ArraySansItems {
     type Target = Vec<serde_json::Value>;
@@ -84,7 +82,7 @@ impl From<Vec<serde_json::Value>> for ArraySansItems {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct LessSimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for LessSimpleTwoTuple {
     type Target = (String, String);
@@ -122,7 +120,7 @@ impl From<(String, String)> for LessSimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct SimpleTwoArray(pub [String; 2usize]);
 impl std::ops::Deref for SimpleTwoArray {
     type Target = [String; 2usize];
@@ -165,7 +163,7 @@ impl From<[String; 2usize]> for SimpleTwoArray {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct SimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for SimpleTwoTuple {
     type Target = (String, String);
@@ -208,7 +206,7 @@ impl From<(String, String)> for SimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct UnsimpleTwoTuple(pub (String, String));
 impl std::ops::Deref for UnsimpleTwoTuple {
     type Target = (String, String);
@@ -247,7 +245,7 @@ impl From<(String, String)> for UnsimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct YoloTwoArray(pub [serde_json::Value; 2usize]);
 impl std::ops::Deref for YoloTwoArray {
     type Target = [serde_json::Value; 2usize];

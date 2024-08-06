@@ -243,7 +243,8 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                     {
                         object_schemas_mutually_exclusive(a_validation, b_validation)
                     } else {
-                        todo!()
+                        // Could check further, but we'll be conservative.
+                        false
                     }
                 }
 
@@ -286,7 +287,8 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                     {
                         array_schemas_mutually_exclusive(a_validation, b_validation)
                     } else {
-                        todo!()
+                        // Could check further, but we'll be conservative.
+                        false
                     }
                 }
 

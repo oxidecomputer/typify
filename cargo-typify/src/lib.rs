@@ -175,8 +175,6 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 #![allow(clippy::needless_lifetimes)]
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
-
-use serde::{Deserialize, Serialize};
 ";
 
     let contents = format!("{intro}\n{}", type_space.to_stream());

@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -54,7 +52,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(uuid::Uuid),
@@ -133,7 +131,7 @@ impl From<Name> for IdOrName {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
     Variant0(uuid::Uuid),
@@ -221,7 +219,7 @@ impl From<Name> for IdOrNameRedundant {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum IdOrYolo {
     Id(uuid::Uuid),
@@ -291,7 +289,7 @@ impl From<IdOrYoloYolo> for IdOrYolo {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct IdOrYoloYolo(String);
 impl std::ops::Deref for IdOrYoloYolo {
     type Target = String;
@@ -362,7 +360,7 @@ impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct Name(String);
 impl std::ops::Deref for Name {
     type Target = String;

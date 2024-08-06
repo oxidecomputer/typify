@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -38,7 +36,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct DeadSimple(pub serde_json::Map<String, serde_json::Value>);
 impl std::ops::Deref for DeadSimple {
     type Target = serde_json::Map<String, serde_json::Value>;
@@ -72,7 +70,9 @@ impl From<serde_json::Map<String, serde_json::Value>> for DeadSimple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct Eh(pub String);
 impl std::ops::Deref for Eh {
     type Target = String;
@@ -123,7 +123,7 @@ impl ToString for Eh {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct MapWithDateKeys(pub std::collections::HashMap<chrono::naive::NaiveDate, Value>);
 impl std::ops::Deref for MapWithDateKeys {
     type Target = std::collections::HashMap<chrono::naive::NaiveDate, Value>;
@@ -163,7 +163,7 @@ impl From<std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWit
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct MapWithDateTimeKeys(
     pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
 );
@@ -210,7 +210,7 @@ impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct MapWithKeys(pub std::collections::HashMap<Eh, Value>);
 impl std::ops::Deref for MapWithKeys {
     type Target = std::collections::HashMap<Eh, Value>;
@@ -243,7 +243,9 @@ impl From<std::collections::HashMap<Eh, Value>> for MapWithKeys {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct Value(pub String);
 impl std::ops::Deref for Value {
     type Target = String;

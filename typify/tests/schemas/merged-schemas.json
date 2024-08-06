@@ -417,6 +417,36 @@
           }
         }
       ]
+    },
+    "HereAndThere": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "foo": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "bar": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "baz": {
+              "type": "string"
+            }
+          }
+        }
+      ]
     }
   }
 }

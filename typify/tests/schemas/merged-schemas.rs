@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -40,7 +38,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct BarProp {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bar: Option<serde_json::Value>,
@@ -69,7 +67,7 @@ impl From<&BarProp> for BarProp {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ButNotThat {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub this: Option<serde_json::Value>,
@@ -101,7 +99,7 @@ impl From<&ButNotThat> for ButNotThat {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct CommentedTypeMerged {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub x: Option<serde_json::Value>,
@@ -110,6 +108,64 @@ pub struct CommentedTypeMerged {
 }
 impl From<&CommentedTypeMerged> for CommentedTypeMerged {
     fn from(value: &CommentedTypeMerged) -> Self {
+        value.clone()
+    }
+}
+#[doc = "HereAndThere"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"foo\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"bar\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"baz\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[serde(untagged)]
+pub enum HereAndThere {
+    Variant0 {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        bar: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        foo: Option<String>,
+    },
+    Variant1 {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        baz: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        foo: Option<String>,
+    },
+}
+impl From<&HereAndThere> for HereAndThere {
+    fn from(value: &HereAndThere) -> Self {
         value.clone()
     }
 }
@@ -128,7 +184,7 @@ impl From<&CommentedTypeMerged> for CommentedTypeMerged {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub result: Option<String>,
@@ -159,7 +215,7 @@ impl From<&JsonResponseBase> for JsonResponseBase {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct JsonSuccess {
     pub msg: String,
@@ -201,7 +257,7 @@ impl From<&JsonSuccess> for JsonSuccess {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct JsonSuccessBase {
     pub msg: String,
     pub result: JsonSuccessBaseResult,
@@ -224,7 +280,18 @@ impl From<&JsonSuccessBase> for JsonSuccessBase {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum JsonSuccessBaseResult {
     #[serde(rename = "success")]
     Success,
@@ -281,7 +348,18 @@ impl std::convert::TryFrom<String> for JsonSuccessBaseResult {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum JsonSuccessResult {
     #[serde(rename = "success")]
     Success,
@@ -342,7 +420,7 @@ impl std::convert::TryFrom<String> for JsonSuccessResult {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct NarrowNumber(pub std::num::NonZeroU64);
 impl std::ops::Deref for NarrowNumber {
     type Target = std::num::NonZeroU64;
@@ -418,7 +496,7 @@ impl ToString for NarrowNumber {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct OrderDependentMerge {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bar: Option<serde_json::Value>,
@@ -455,7 +533,7 @@ impl From<&OrderDependentMerge> for OrderDependentMerge {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Pickingone {
     pub suspended_by: PickingoneSuspendedBy,
 }
@@ -486,7 +564,7 @@ impl From<&Pickingone> for Pickingone {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct PickingoneInstallation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspended_by: Option<PickingoneUser>,
@@ -526,7 +604,7 @@ impl From<&PickingoneInstallation> for PickingoneInstallation {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct PickingoneSuspendedBy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
@@ -554,7 +632,7 @@ impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct PickingoneUser {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
@@ -596,7 +674,7 @@ impl From<&PickingoneUser> for PickingoneUser {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TrimFat {
     pub a: serde_json::Value,
 }
@@ -654,7 +732,18 @@ impl From<&TrimFat> for TrimFat {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Unresolvable {}
 impl From<&Unresolvable> for Unresolvable {
@@ -685,7 +774,18 @@ impl From<&Unresolvable> for Unresolvable {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
 impl From<&Unsatisfiable1> for Unsatisfiable1 {
@@ -728,7 +828,7 @@ impl From<&Unsatisfiable1> for Unsatisfiable1 {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Unsatisfiable2 {}
 impl From<&Unsatisfiable2> for Unsatisfiable2 {
@@ -758,7 +858,7 @@ impl From<&Unsatisfiable2> for Unsatisfiable2 {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Unsatisfiable3 {}
 impl From<&Unsatisfiable3> for Unsatisfiable3 {
     fn from(value: &Unsatisfiable3) -> Self {
@@ -784,7 +884,7 @@ impl From<&Unsatisfiable3> for Unsatisfiable3 {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Unsatisfiable3A {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<Unsatisfiable3C>,
@@ -807,7 +907,18 @@ impl From<&Unsatisfiable3A> for Unsatisfiable3A {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum Unsatisfiable3B {
     #[serde(rename = "bar")]
     Bar,
@@ -864,7 +975,18 @@ impl std::convert::TryFrom<String> for Unsatisfiable3B {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde :: Deserialize,
+    serde :: Serialize,
+)]
 pub enum Unsatisfiable3C {
     #[serde(rename = "foo")]
     Foo,
@@ -1030,7 +1152,7 @@ impl std::convert::TryFrom<String> for Unsatisfiable3C {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum WeirdEnum {
     Variant0 {
