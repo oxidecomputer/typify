@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -36,7 +34,9 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct Baz(pub String);
 impl std::ops::Deref for Baz {
     type Target = String;
@@ -92,7 +92,7 @@ impl ToString for Baz {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Foo {
     #[serde(rename = "Bar", default, skip_serializing_if = "Option::is_none")]
     pub bar: Option<FooBarAlias>,
@@ -112,7 +112,9 @@ impl From<&Foo> for Foo {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(
+    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+)]
 pub struct FooBar(pub String);
 impl std::ops::Deref for FooBar {
     type Target = String;
@@ -163,7 +165,7 @@ impl ToString for FooBar {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum FooBarAlias {
     FooBar(FooBar),
