@@ -831,6 +831,8 @@ impl TypeSpace {
                 )
                 .to_string();
                 format_reference(&mut schema, &id, &s_id);
+                #[cfg(target_os= "windows")]
+                let ref_name = ref_name.replace("\\", "/");
                 ext_refs.push((RefKey::Def(ref_name), schema));
             }
         }
@@ -1554,6 +1556,8 @@ fn format_reference(schema: &mut Schema, id: &Option<String>, base_id: &Option<S
                 if r.ends_with(LINE_SEPARATOR) {
                     r.pop();
                 }
+                #[cfg(target_os= "windows")]
+                let r = r.replace("\\", "/");
                 *reference = r;
             });
             if let Some(o) = obj.object.as_mut() {

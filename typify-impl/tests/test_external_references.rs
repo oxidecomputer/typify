@@ -19,7 +19,6 @@ fn test_external_references() {
     let file = type_space.to_stream();
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
-    println!("{fmt}");
 
     expectorate::assert_contents("tests/external_references.out", fmt.as_str());
 }
