@@ -17,10 +17,10 @@ quote = "1.0.36"
 regress = "0.10.0"
 schemars = "0.8.21"
 semver = "1.0.23"
-serde = "1.0.203"
-serde_json = "1.0.119"
-syn = { version = "2.0.68", features = ["full"] }
-thiserror = "1.0.61"
+serde = "1.0.204"
+serde_json = "1.0.122"
+syn = { version = "2.0.72", features = ["full"] }
+thiserror = "1.0.63"
 unicode-ident = "1.0.12"
 
 [dev-dependencies]
@@ -30,5 +30,5 @@ paste = "1.0.15"
 rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
 schemars = { version = "0.8.21", features = ["uuid1", "impl_json_schema"] }
-syn = { version = "2.0.68", features = ["full", "extra-traits"] }
-uuid = "1.9.1"
+syn = { version = "2.0.72", features = ["full", "extra-traits"] }
+uuid = "1.10.0"

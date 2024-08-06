@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -61,7 +59,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
@@ -87,7 +85,7 @@ impl From<&TestType> for TestType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TestTypeWhereNot(String);
 impl std::ops::Deref for TestTypeWhereNot {
     type Target = String;
@@ -139,7 +137,7 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
 pub struct TestTypeWhyNot(String);
 impl std::ops::Deref for TestTypeWhyNot {
     type Target = String;

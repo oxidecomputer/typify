@@ -38,7 +38,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct Somename {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub someproperty: Option<V1ExternalReferenceSomeothername>,
@@ -65,7 +65,7 @@ impl From<&Somename> for Somename {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct V1ExternalReferenceSomeothername {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub someproperty: Option<serde_json::Value>,

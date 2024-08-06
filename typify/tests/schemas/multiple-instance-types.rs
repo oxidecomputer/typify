@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use serde::{Deserialize, Serialize};
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -39,7 +37,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum IntOrStr {
     String(String),
@@ -110,7 +108,7 @@ impl From<i64> for IntOrStr {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum OneOfSeveral {
     Null,
@@ -161,7 +159,7 @@ impl From<i64> for OneOfSeveral {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct ReallyJustNull(pub ());
 impl std::ops::Deref for ReallyJustNull {
     type Target = ();
@@ -202,7 +200,7 @@ impl From<()> for ReallyJustNull {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct SeriouslyAnything(pub serde_json::Value);
 impl std::ops::Deref for SeriouslyAnything {
     type Target = serde_json::Value;
@@ -243,7 +241,7 @@ impl From<serde_json::Value> for SeriouslyAnything {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 #[serde(untagged)]
 pub enum YesNoMaybe {
     Boolean(bool),
