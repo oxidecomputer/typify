@@ -1157,9 +1157,9 @@ impl TypeSpace {
         }
 
         // Ensure any additional properties are a false or null schema
-        if !(validation.additional_properties.as_ref().map(AsRef::as_ref)
-            == Some(&Schema::Bool(false))
-            || validation.additional_properties.is_none())
+        if validation.additional_properties.as_ref().map(AsRef::as_ref)
+            != Some(&Schema::Bool(false))
+            || validation.additional_properties.is_some()
         {
             return false;
         }
