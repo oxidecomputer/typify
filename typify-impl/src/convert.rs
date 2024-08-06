@@ -1132,6 +1132,49 @@ impl TypeSpace {
         Ok((TypeEntryDetails::Unit.into(), metadata))
     }
 
+    /// Determine whether a schema's property name validation constraints can be handled
+    fn can_handle_pattern_properties(validation: &ObjectValidation) -> bool {
+        if !validation.required.is_empty() {
+            return false;
+        }
+
+        if !validation.properties.is_empty() {
+            return false;
+        }
+
+        // Ensure we have at least one pattern property and all pattern property
+        // schemas are the same
+        let Some(first_schema) = validation.pattern_properties.values().next() else {
+            return false;
+        };
+
+        if !validation
+            .pattern_properties
+            .values()
+            .all(|schema| schema == first_schema)
+        {
+            return false;
+        }
+
+        // Ensure any additional properties are a false or null schema
+        if validation.additional_properties.as_ref().map(AsRef::as_ref) == Some(&Schema::Bool(true))
+            || matches!(
+                validation.additional_properties.as_ref().map(AsRef::as_ref),
+                Some(&Schema::Object(_))
+            )
+        {
+            return false;
+        }
+
+        // Ensure there are no additional property names constraints, to avoid a
+        // collision between different types of constraints interacting unexpectedly
+        if validation.property_names.is_some() {
+            return false;
+        }
+
+        true
+    }
+
     fn convert_object<'a>(
         &mut self,
         type_name: Name,
@@ -1163,6 +1206,44 @@ impl TypeSpace {
                 )?;
                 Ok((type_entry, metadata))
             }
+
+            Some(validation) if Self::can_handle_pattern_properties(validation) => {
+                let pattern = validation
+                    .pattern_properties
+                    .keys()
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join("|");
+
+                // Construct a schema to use for property name validation
+                let property_names = Some(Box::new(Schema::Object(SchemaObject {
+                    string: Some(Box::new(StringValidation {
+                        max_length: None,
+                        min_length: None,
+                        pattern: Some(pattern),
+                    })),
+                    ..Default::default()
+                })));
+
+                // Construct schema to use for property value validation
+                let additional_properties = Some(Box::new(
+                    validation
+                        .pattern_properties
+                        .values()
+                        .next()
+                        .cloned()
+                        .unwrap_or_else(|| unreachable!("pattern_properties cannot be empty here")),
+                ));
+
+                let type_entry = self.make_map(
+                    type_name.into_option(),
+                    &property_names,
+                    &additional_properties,
+                )?;
+
+                Ok((type_entry, metadata))
+            }
+
             None => {
                 let type_entry = self.make_map(type_name.into_option(), &None, &None)?;
                 Ok((type_entry, metadata))

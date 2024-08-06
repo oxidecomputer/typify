@@ -29966,11 +29966,26 @@ impl ToString for Element {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct Encode {}
+pub struct Encode(pub std::collections::HashMap<EncodeKey, EncodeEntry>);
+impl std::ops::Deref for Encode {
+    type Target = std::collections::HashMap<EncodeKey, EncodeEntry>;
+    fn deref(&self) -> &std::collections::HashMap<EncodeKey, EncodeEntry> {
+        &self.0
+    }
+}
+impl From<Encode> for std::collections::HashMap<EncodeKey, EncodeEntry> {
+    fn from(value: Encode) -> Self {
+        value.0
+    }
+}
 impl From<&Encode> for Encode {
     fn from(value: &Encode) -> Self {
         value.clone()
+    }
+}
+impl From<std::collections::HashMap<EncodeKey, EncodeEntry>> for Encode {
+    fn from(value: std::collections::HashMap<EncodeKey, EncodeEntry>) -> Self {
+        Self(value)
     }
 }
 #[doc = "EncodeEntry"]
@@ -30417,6 +30432,74 @@ pub struct EncodeEntry {
 impl From<&EncodeEntry> for EncodeEntry {
     fn from(value: &EncodeEntry) -> Self {
         value.clone()
+    }
+}
+#[doc = "EncodeKey"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^.+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+pub struct EncodeKey(String);
+impl std::ops::Deref for EncodeKey {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<EncodeKey> for String {
+    fn from(value: EncodeKey) -> Self {
+        value.0
+    }
+}
+impl From<&EncodeKey> for EncodeKey {
+    fn from(value: &EncodeKey) -> Self {
+        value.clone()
+    }
+}
+impl std::str::FromStr for EncodeKey {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+        if regress::Regex::new("^.+$").unwrap().find(value).is_none() {
+            return Err("doesn't match pattern \"^.+$\"".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl std::convert::TryFrom<&str> for EncodeKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for EncodeKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for EncodeKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> serde::Deserialize<'de> for EncodeKey {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "Everything"]
@@ -105101,7 +105184,7 @@ impl From<NumberValue> for TitleVariant1Dy {
 #[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
 pub struct TitleVariant1Encode {
     #[serde(flatten, default, skip_serializing_if = "Option::is_none")]
-    pub subtype_0: Option<TitleVariant1EncodeSubtype0>,
+    pub subtype_0: Option<std::collections::HashMap<TitleVariant1EncodeSubtype0Key, EncodeEntry>>,
     #[serde(flatten, default, skip_serializing_if = "Option::is_none")]
     pub subtype_1: Option<TitleVariant1EncodeSubtype1>,
 }
@@ -105110,28 +105193,76 @@ impl From<&TitleVariant1Encode> for TitleVariant1Encode {
         value.clone()
     }
 }
-#[doc = "TitleVariant1EncodeSubtype0"]
+#[doc = "TitleVariant1EncodeSubtype0Key"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"patternProperties\": {"]
-#[doc = "    \"^(?!interactive|name|style).+$\": {"]
-#[doc = "      \"$ref\": \"#/definitions/encodeEntry\""]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": false"]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(?!interactive|name|style).+$\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct TitleVariant1EncodeSubtype0 {}
-impl From<&TitleVariant1EncodeSubtype0> for TitleVariant1EncodeSubtype0 {
-    fn from(value: &TitleVariant1EncodeSubtype0) -> Self {
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+pub struct TitleVariant1EncodeSubtype0Key(String);
+impl std::ops::Deref for TitleVariant1EncodeSubtype0Key {
+    type Target = String;
+    fn deref(&self) -> &String {
+        &self.0
+    }
+}
+impl From<TitleVariant1EncodeSubtype0Key> for String {
+    fn from(value: TitleVariant1EncodeSubtype0Key) -> Self {
+        value.0
+    }
+}
+impl From<&TitleVariant1EncodeSubtype0Key> for TitleVariant1EncodeSubtype0Key {
+    fn from(value: &TitleVariant1EncodeSubtype0Key) -> Self {
         value.clone()
+    }
+}
+impl std::str::FromStr for TitleVariant1EncodeSubtype0Key {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+        if regress::Regex::new("^(?!interactive|name|style).+$")
+            .unwrap()
+            .find(value)
+            .is_none()
+        {
+            return Err("doesn't match pattern \"^(?!interactive|name|style).+$\"".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl std::convert::TryFrom<&str> for TitleVariant1EncodeSubtype0Key {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<&String> for TitleVariant1EncodeSubtype0Key {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl std::convert::TryFrom<String> for TitleVariant1EncodeSubtype0Key {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> serde::Deserialize<'de> for TitleVariant1EncodeSubtype0Key {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "TitleVariant1EncodeSubtype1"]
