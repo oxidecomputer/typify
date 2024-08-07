@@ -520,12 +520,25 @@ impl TypeEntry {
     // the function modifies the name by appending "Alias" until a unique name is found. The unique name
     // is then inserted into the `TypeSpace` and the object's name is updated accordingly.
     pub(crate) fn ensure_unique_name(&mut self, type_space: &mut TypeSpace) {
-        if let Some(mut name) = self.name().cloned() {
-            while type_space.names.contains(&name) {
-                name = format!("{name}Alias");
+        if let Some(name) = self.name() {
+            let mut postfix = 2;
+            let mut new_name = name.clone();
+            while type_space.name_to_id.contains_key(&new_name) {
+                new_name = format!("{name}{postfix}");
+                postfix += 1;
             }
-            type_space.names.insert(name.clone());
-            self.rename(name);
+            self.rename(new_name);
+        }
+    }
+
+    pub(crate) fn rename(&mut self, new_name: String) {
+        match &mut self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
+            | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => {
+                *name = new_name;
+            }
+            _ => {}
         }
     }
 

@@ -4,7 +4,7 @@
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 
 use conversions::SchemaCache;
 use log::info;
@@ -205,8 +205,6 @@ pub struct TypeSpace {
 
     cache: SchemaCache,
 
-    names: HashSet<String>,
-
     // Shared functions for generating default values
     defaults: BTreeSet<DefaultImpl>,
 }
@@ -226,7 +224,6 @@ impl Default for TypeSpace {
             uses_regress: Default::default(),
             settings: Default::default(),
             cache: Default::default(),
-            names: Default::default(),
             defaults: Default::default(),
         }
     }
@@ -588,9 +585,6 @@ impl TypeSpace {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             type_entry.finalize(self)?;
-            // I think we should do it this, because in this place we're iterating over all
-            // created types.
-            type_entry.ensure_unique_name(self);
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -604,7 +598,7 @@ impl TypeSpace {
             .and_then(|m| m.default.as_ref())
             .cloned()
             .map(WrappedValue::new);
-        let type_entry = match &mut type_entry.details {
+        let mut type_entry = match &mut type_entry.details {
             // The types that are already named are good to go.
             TypeEntryDetails::Enum(details) => {
                 details.default = default;
@@ -652,9 +646,9 @@ impl TypeSpace {
                 )
             }
         };
-        // TODO need a type alias?
-        if let Some(entry_name) = type_entry.name() {
-            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+        if let Some(entry_name) = type_entry.name().cloned() {
+            type_entry.ensure_unique_name(self);
+            self.name_to_id.insert(entry_name, type_id.clone());
         }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
@@ -686,9 +680,6 @@ impl TypeSpace {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             type_entry.finalize(self)?;
-            // I think we should do it this, because in this place we're iterating over all
-            // created types.
-            type_entry.ensure_unique_name(self);
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -834,10 +825,10 @@ impl TypeSpace {
     /// checking for duplicate type definitions (e.g. to make sure there aren't
     /// two conflicting types of the same name), and deduplicates various
     /// flavors of built-in types.
-    fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
+    fn assign_type(&mut self, mut ty: TypeEntry) -> TypeId {
         if let TypeEntryDetails::Reference(type_id) = ty.details {
             type_id
-        } else if let Some(name) = ty.name() {
+        } else if let Some(name) = ty.name().cloned() {
             // If there's already a type of this name, we make sure it's
             // identical. Note that this covers all user-defined types.
 
@@ -847,7 +838,7 @@ impl TypeSpace {
             // bunch of places and if that were the case we might expect
             // them to be different and resolve that by renaming or scoping
             // them in some way.
-            if let Some(type_id) = self.name_to_id.get(name) {
+            if let Some(type_id) = self.name_to_id.get(&name) {
                 // TODO we'd like to verify that the type is structurally the
                 // same, but the types may not be functionally equal. This is a
                 // consequence of types being "finalized" after each type
@@ -856,7 +847,8 @@ impl TypeSpace {
                 type_id.clone()
             } else {
                 let type_id = self.assign();
-                self.name_to_id.insert(name.clone(), type_id.clone());
+                ty.ensure_unique_name(self);
+                self.name_to_id.insert(name, type_id.clone());
                 self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
             }
