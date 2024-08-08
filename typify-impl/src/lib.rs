@@ -562,7 +562,7 @@ impl TypeSpace {
                     } else {
                         Name::Unknown
                     };
-                    self.convert_ref_type(type_name, schema, type_id)?
+                    self.convert_ref_type(type_name, schema, type_id)?;
                 }
 
                 Some(replace_type) => {
@@ -570,6 +570,7 @@ impl TypeSpace {
                         replace_type.replace_type.clone(),
                         &replace_type.impls.clone(),
                     );
+
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
@@ -597,7 +598,7 @@ impl TypeSpace {
             .and_then(|m| m.default.as_ref())
             .cloned()
             .map(WrappedValue::new);
-        let type_entry = match &mut type_entry.details {
+        let mut type_entry = match &mut type_entry.details {
             // The types that are already named are good to go.
             TypeEntryDetails::Enum(details) => {
                 details.default = default;
@@ -645,9 +646,9 @@ impl TypeSpace {
                 )
             }
         };
-        // TODO need a type alias?
-        if let Some(entry_name) = type_entry.name() {
-            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+        if let Some(entry_name) = type_entry.name().cloned() {
+            let name = type_entry.ensure_unique_name(self).unwrap_or(entry_name);
+            self.name_to_id.insert(name, type_id.clone());
         }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
@@ -824,10 +825,10 @@ impl TypeSpace {
     /// checking for duplicate type definitions (e.g. to make sure there aren't
     /// two conflicting types of the same name), and deduplicates various
     /// flavors of built-in types.
-    fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
+    fn assign_type(&mut self, mut ty: TypeEntry) -> TypeId {
         if let TypeEntryDetails::Reference(type_id) = ty.details {
             type_id
-        } else if let Some(name) = ty.name() {
+        } else if let Some(name) = ty.name().cloned() {
             // If there's already a type of this name, we make sure it's
             // identical. Note that this covers all user-defined types.
 
@@ -837,7 +838,7 @@ impl TypeSpace {
             // bunch of places and if that were the case we might expect
             // them to be different and resolve that by renaming or scoping
             // them in some way.
-            if let Some(type_id) = self.name_to_id.get(name) {
+            if let Some(type_id) = self.name_to_id.get(&name) {
                 // TODO we'd like to verify that the type is structurally the
                 // same, but the types may not be functionally equal. This is a
                 // consequence of types being "finalized" after each type
@@ -846,7 +847,8 @@ impl TypeSpace {
                 type_id.clone()
             } else {
                 let type_id = self.assign();
-                self.name_to_id.insert(name.clone(), type_id.clone());
+                let name = ty.ensure_unique_name(self).unwrap_or(name);
+                self.name_to_id.insert(name, type_id.clone());
                 self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
             }
