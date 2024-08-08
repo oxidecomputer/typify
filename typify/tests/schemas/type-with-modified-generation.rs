@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -55,7 +55,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
     pub converted_type: serde_json::Value,
     pub patched_type: TypeThatHasMoreDerives,
@@ -79,15 +79,15 @@ impl From<&TestType> for TestType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, PartialEq, serde :: Deserialize, serde :: Serialize)]
-pub struct TypeThatHasMoreDerives(pub std::collections::HashMap<String, String>);
-impl std::ops::Deref for TypeThatHasMoreDerives {
-    type Target = std::collections::HashMap<String, String>;
-    fn deref(&self) -> &std::collections::HashMap<String, String> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Eq, PartialEq)]
+pub struct TypeThatHasMoreDerives(pub ::std::collections::HashMap<String, String>);
+impl ::std::ops::Deref for TypeThatHasMoreDerives {
+    type Target = ::std::collections::HashMap<String, String>;
+    fn deref(&self) -> &::std::collections::HashMap<String, String> {
         &self.0
     }
 }
-impl From<TypeThatHasMoreDerives> for std::collections::HashMap<String, String> {
+impl From<TypeThatHasMoreDerives> for ::std::collections::HashMap<String, String> {
     fn from(value: TypeThatHasMoreDerives) -> Self {
         value.0
     }
@@ -97,8 +97,8 @@ impl From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<String, String>> for TypeThatHasMoreDerives {
-    fn from(value: std::collections::HashMap<String, String>) -> Self {
+impl From<::std::collections::HashMap<String, String>> for TypeThatHasMoreDerives {
+    fn from(value: ::std::collections::HashMap<String, String>) -> Self {
         Self(value)
     }
 }

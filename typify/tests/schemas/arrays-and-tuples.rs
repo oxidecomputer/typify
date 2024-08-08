@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -36,15 +36,15 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct ArraySansItems(pub Vec<serde_json::Value>);
-impl std::ops::Deref for ArraySansItems {
-    type Target = Vec<serde_json::Value>;
-    fn deref(&self) -> &Vec<serde_json::Value> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct ArraySansItems(pub Vec<::serde_json::Value>);
+impl ::std::ops::Deref for ArraySansItems {
+    type Target = Vec<::serde_json::Value>;
+    fn deref(&self) -> &Vec<::serde_json::Value> {
         &self.0
     }
 }
-impl From<ArraySansItems> for Vec<serde_json::Value> {
+impl From<ArraySansItems> for Vec<::serde_json::Value> {
     fn from(value: ArraySansItems) -> Self {
         value.0
     }
@@ -54,8 +54,8 @@ impl From<&ArraySansItems> for ArraySansItems {
         value.clone()
     }
 }
-impl From<Vec<serde_json::Value>> for ArraySansItems {
-    fn from(value: Vec<serde_json::Value>) -> Self {
+impl From<Vec<::serde_json::Value>> for ArraySansItems {
+    fn from(value: Vec<::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -82,9 +82,9 @@ impl From<Vec<serde_json::Value>> for ArraySansItems {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct LessSimpleTwoTuple(pub (String, String));
-impl std::ops::Deref for LessSimpleTwoTuple {
+impl ::std::ops::Deref for LessSimpleTwoTuple {
     type Target = (String, String);
     fn deref(&self) -> &(String, String) {
         &self.0
@@ -120,9 +120,9 @@ impl From<(String, String)> for LessSimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct SimpleTwoArray(pub [String; 2usize]);
-impl std::ops::Deref for SimpleTwoArray {
+impl ::std::ops::Deref for SimpleTwoArray {
     type Target = [String; 2usize];
     fn deref(&self) -> &[String; 2usize] {
         &self.0
@@ -163,9 +163,9 @@ impl From<[String; 2usize]> for SimpleTwoArray {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct SimpleTwoTuple(pub (String, String));
-impl std::ops::Deref for SimpleTwoTuple {
+impl ::std::ops::Deref for SimpleTwoTuple {
     type Target = (String, String);
     fn deref(&self) -> &(String, String) {
         &self.0
@@ -206,9 +206,9 @@ impl From<(String, String)> for SimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct UnsimpleTwoTuple(pub (String, String));
-impl std::ops::Deref for UnsimpleTwoTuple {
+impl ::std::ops::Deref for UnsimpleTwoTuple {
     type Target = (String, String);
     fn deref(&self) -> &(String, String) {
         &self.0
@@ -245,15 +245,15 @@ impl From<(String, String)> for UnsimpleTwoTuple {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct YoloTwoArray(pub [serde_json::Value; 2usize]);
-impl std::ops::Deref for YoloTwoArray {
-    type Target = [serde_json::Value; 2usize];
-    fn deref(&self) -> &[serde_json::Value; 2usize] {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct YoloTwoArray(pub [::serde_json::Value; 2usize]);
+impl ::std::ops::Deref for YoloTwoArray {
+    type Target = [::serde_json::Value; 2usize];
+    fn deref(&self) -> &[::serde_json::Value; 2usize] {
         &self.0
     }
 }
-impl From<YoloTwoArray> for [serde_json::Value; 2usize] {
+impl From<YoloTwoArray> for [::serde_json::Value; 2usize] {
     fn from(value: YoloTwoArray) -> Self {
         value.0
     }
@@ -263,8 +263,8 @@ impl From<&YoloTwoArray> for YoloTwoArray {
         value.clone()
     }
 }
-impl From<[serde_json::Value; 2usize]> for YoloTwoArray {
-    fn from(value: [serde_json::Value; 2usize]) -> Self {
+impl From<[::serde_json::Value; 2usize]> for YoloTwoArray {
+    fn from(value: [::serde_json::Value; 2usize]) -> Self {
         Self(value)
     }
 }

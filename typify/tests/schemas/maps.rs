@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -36,15 +36,15 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct DeadSimple(pub serde_json::Map<String, serde_json::Value>);
-impl std::ops::Deref for DeadSimple {
-    type Target = serde_json::Map<String, serde_json::Value>;
-    fn deref(&self) -> &serde_json::Map<String, serde_json::Value> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct DeadSimple(pub ::serde_json::Map<String, ::serde_json::Value>);
+impl ::std::ops::Deref for DeadSimple {
+    type Target = ::serde_json::Map<String, ::serde_json::Value>;
+    fn deref(&self) -> &::serde_json::Map<String, ::serde_json::Value> {
         &self.0
     }
 }
-impl From<DeadSimple> for serde_json::Map<String, serde_json::Value> {
+impl From<DeadSimple> for ::serde_json::Map<String, ::serde_json::Value> {
     fn from(value: DeadSimple) -> Self {
         value.0
     }
@@ -54,8 +54,8 @@ impl From<&DeadSimple> for DeadSimple {
         value.clone()
     }
 }
-impl From<serde_json::Map<String, serde_json::Value>> for DeadSimple {
-    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
+impl From<::serde_json::Map<String, ::serde_json::Value>> for DeadSimple {
+    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -71,10 +71,18 @@ impl From<serde_json::Map<String, serde_json::Value>> for DeadSimple {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(
-    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
 )]
 pub struct Eh(pub String);
-impl std::ops::Deref for Eh {
+impl ::std::ops::Deref for Eh {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -123,15 +131,15 @@ impl ToString for Eh {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct MapWithDateKeys(pub std::collections::HashMap<chrono::naive::NaiveDate, Value>);
-impl std::ops::Deref for MapWithDateKeys {
-    type Target = std::collections::HashMap<chrono::naive::NaiveDate, Value>;
-    fn deref(&self) -> &std::collections::HashMap<chrono::naive::NaiveDate, Value> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct MapWithDateKeys(pub ::std::collections::HashMap<chrono::naive::NaiveDate, Value>);
+impl ::std::ops::Deref for MapWithDateKeys {
+    type Target = ::std::collections::HashMap<chrono::naive::NaiveDate, Value>;
+    fn deref(&self) -> &::std::collections::HashMap<chrono::naive::NaiveDate, Value> {
         &self.0
     }
 }
-impl From<MapWithDateKeys> for std::collections::HashMap<chrono::naive::NaiveDate, Value> {
+impl From<MapWithDateKeys> for ::std::collections::HashMap<chrono::naive::NaiveDate, Value> {
     fn from(value: MapWithDateKeys) -> Self {
         value.0
     }
@@ -141,8 +149,8 @@ impl From<&MapWithDateKeys> for MapWithDateKeys {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWithDateKeys {
-    fn from(value: std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
+impl From<::std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWithDateKeys {
+    fn from(value: ::std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
         Self(value)
     }
 }
@@ -163,18 +171,18 @@ impl From<std::collections::HashMap<chrono::naive::NaiveDate, Value>> for MapWit
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MapWithDateTimeKeys(
-    pub std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+    pub ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
 );
-impl std::ops::Deref for MapWithDateTimeKeys {
-    type Target = std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
-    fn deref(&self) -> &std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+impl ::std::ops::Deref for MapWithDateTimeKeys {
+    type Target = ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
+    fn deref(&self) -> &::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
         &self.0
     }
 }
 impl From<MapWithDateTimeKeys>
-    for std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+    for ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
 {
     fn from(value: MapWithDateTimeKeys) -> Self {
         value.0
@@ -185,11 +193,11 @@ impl From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
+impl From<::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
     for MapWithDateTimeKeys
 {
     fn from(
-        value: std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+        value: ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
     ) -> Self {
         Self(value)
     }
@@ -210,15 +218,15 @@ impl From<std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct MapWithKeys(pub std::collections::HashMap<Eh, Value>);
-impl std::ops::Deref for MapWithKeys {
-    type Target = std::collections::HashMap<Eh, Value>;
-    fn deref(&self) -> &std::collections::HashMap<Eh, Value> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct MapWithKeys(pub ::std::collections::HashMap<Eh, Value>);
+impl ::std::ops::Deref for MapWithKeys {
+    type Target = ::std::collections::HashMap<Eh, Value>;
+    fn deref(&self) -> &::std::collections::HashMap<Eh, Value> {
         &self.0
     }
 }
-impl From<MapWithKeys> for std::collections::HashMap<Eh, Value> {
+impl From<MapWithKeys> for ::std::collections::HashMap<Eh, Value> {
     fn from(value: MapWithKeys) -> Self {
         value.0
     }
@@ -228,8 +236,8 @@ impl From<&MapWithKeys> for MapWithKeys {
         value.clone()
     }
 }
-impl From<std::collections::HashMap<Eh, Value>> for MapWithKeys {
-    fn from(value: std::collections::HashMap<Eh, Value>) -> Self {
+impl From<::std::collections::HashMap<Eh, Value>> for MapWithKeys {
+    fn from(value: ::std::collections::HashMap<Eh, Value>) -> Self {
         Self(value)
     }
 }
@@ -244,10 +252,18 @@ impl From<std::collections::HashMap<Eh, Value>> for MapWithKeys {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(
-    Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Deserialize, serde :: Serialize,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
 )]
 pub struct Value(pub String);
-impl std::ops::Deref for Value {
+impl ::std::ops::Deref for Value {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0

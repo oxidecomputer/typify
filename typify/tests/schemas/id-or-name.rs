@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -52,7 +52,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(uuid::Uuid),
@@ -131,7 +131,7 @@ impl From<Name> for IdOrName {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
     Variant0(uuid::Uuid),
@@ -219,7 +219,7 @@ impl From<Name> for IdOrNameRedundant {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrYolo {
     Id(uuid::Uuid),
@@ -289,9 +289,9 @@ impl From<IdOrYoloYolo> for IdOrYolo {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct IdOrYoloYolo(String);
-impl std::ops::Deref for IdOrYoloYolo {
+impl ::std::ops::Deref for IdOrYoloYolo {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -307,7 +307,7 @@ impl From<&IdOrYoloYolo> for IdOrYoloYolo {
         value.clone()
     }
 }
-impl std::str::FromStr for IdOrYoloYolo {
+impl ::std::str::FromStr for IdOrYoloYolo {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new(".*").unwrap().find(value).is_none() {
@@ -316,33 +316,33 @@ impl std::str::FromStr for IdOrYoloYolo {
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for IdOrYoloYolo {
+impl ::std::convert::TryFrom<&str> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IdOrYoloYolo {
+impl ::std::convert::TryFrom<&String> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
     fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IdOrYoloYolo {
+impl ::std::convert::TryFrom<String> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
     fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
+impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
-                <D::Error as serde::de::Error>::custom(e.to_string())
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
     }
 }
@@ -360,9 +360,9 @@ impl<'de> serde::Deserialize<'de> for IdOrYoloYolo {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Name(String);
-impl std::ops::Deref for Name {
+impl ::std::ops::Deref for Name {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -378,7 +378,7 @@ impl From<&Name> for Name {
         value.clone()
     }
 }
-impl std::str::FromStr for Name {
+impl ::std::str::FromStr for Name {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if value.len() > 63usize {
@@ -388,33 +388,33 @@ impl std::str::FromStr for Name {
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for Name {
+impl ::std::convert::TryFrom<&str> for Name {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for Name {
+impl ::std::convert::TryFrom<&String> for Name {
     type Error = self::error::ConversionError;
     fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for Name {
+impl ::std::convert::TryFrom<String> for Name {
     type Error = self::error::ConversionError;
     fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for Name {
+impl<'de> ::serde::Deserialize<'de> for Name {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
-                <D::Error as serde::de::Error>::custom(e.to_string())
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
     }
 }

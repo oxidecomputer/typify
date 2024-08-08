@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -630,9 +630,14 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
-        let derive_set = ["serde::Serialize", "serde::Deserialize", "Debug", "Clone"]
-            .into_iter()
-            .collect::<BTreeSet<_>>();
+        let derive_set = [
+            "::serde::Serialize",
+            "::serde::Deserialize",
+            "Debug",
+            "Clone",
+        ]
+        .into_iter()
+        .collect::<BTreeSet<_>>();
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
@@ -1344,7 +1349,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("serde::Deserialize");
+                derive_set.remove("::serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
@@ -1374,18 +1379,18 @@ impl TypeEntry {
                         }
                     }
 
-                    impl<'de> serde::Deserialize<'de> for #type_name {
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
                         ) -> Result<Self, D::Error>
                         where
-                            D: serde::Deserializer<'de>,
+                            D: ::serde::Deserializer<'de>,
                         {
                             Self::try_from(
                                 <#inner_type_name>::deserialize(deserializer)?,
                             )
                             .map_err(|e| {
-                                <D::Error as serde::de::Error>::custom(
+                                <D::Error as ::serde::de::Error>::custom(
                                     e.to_string(),
                                 )
                             })
@@ -1428,12 +1433,12 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("serde::Deserialize");
+                derive_set.remove("::serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
                 quote! {
-                    impl std::str::FromStr for #type_name {
+                    impl ::std::str::FromStr for #type_name {
                         type Err = self::error::ConversionError;
 
                         fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
@@ -1444,7 +1449,7 @@ impl TypeEntry {
                             Ok(Self(value.to_string()))
                         }
                     }
-                    impl std::convert::TryFrom<&str> for #type_name {
+                    impl ::std::convert::TryFrom<&str> for #type_name {
                         type Error = self::error::ConversionError;
 
                         fn try_from(value: &str) ->
@@ -1453,7 +1458,7 @@ impl TypeEntry {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
+                    impl ::std::convert::TryFrom<&String> for #type_name {
                         type Error = self::error::ConversionError;
 
                         fn try_from(value: &String) ->
@@ -1462,7 +1467,7 @@ impl TypeEntry {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
+                    impl ::std::convert::TryFrom<String> for #type_name {
                         type Error = self::error::ConversionError;
 
                         fn try_from(value: String) ->
@@ -1472,17 +1477,17 @@ impl TypeEntry {
                         }
                     }
 
-                    impl<'de> serde::Deserialize<'de> for #type_name {
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
                         ) -> Result<Self, D::Error>
                         where
-                            D: serde::Deserializer<'de>,
+                            D: ::serde::Deserializer<'de>,
                         {
                             String::deserialize(deserializer)?
                                 .parse()
                                 .map_err(|e: self::error::ConversionError| {
-                                    <D::Error as serde::de::Error>::custom(
+                                    <D::Error as ::serde::de::Error>::custom(
                                         e.to_string(),
                                     )
                                 })
@@ -1521,7 +1526,7 @@ impl TypeEntry {
             #serde
             pub struct #type_name(#vis #inner_type_name);
 
-            impl std::ops::Deref for #type_name {
+            impl ::std::ops::Deref for #type_name {
                 type Target = #inner_type_name;
                 fn deref(&self) -> &#inner_type_name {
                     &self.0
@@ -1620,11 +1625,11 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { serde_json::Map<String, serde_json::Value> }
+                    quote! { ::serde_json::Map<String, ::serde_json::Value> }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
-                    quote! { std::collections::HashMap<#key_ident, #value_ident> }
+                    quote! { ::std::collections::HashMap<#key_ident, #value_ident> }
                 }
             }
 
@@ -1694,7 +1699,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { String },
             TypeEntryDetails::Boolean => quote! { bool },
-            TypeEntryDetails::JsonValue => quote! { serde_json::Value },
+            TypeEntryDetails::JsonValue => quote! { ::serde_json::Value },
             TypeEntryDetails::Integer(name) | TypeEntryDetails::Float(name) => {
                 syn::parse_str::<syn::TypePath>(name)
                     .unwrap()

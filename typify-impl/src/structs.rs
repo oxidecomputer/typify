@@ -397,11 +397,11 @@ pub(crate) fn generate_serde_attr(
                 && value_ty.details == TypeEntryDetails::JsonValue
             {
                 serde_options.push(quote! {
-                    skip_serializing_if = "serde_json::Map::is_empty"
+                    skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
                 serde_options.push(quote! {
-                    skip_serializing_if = "std::collections::HashMap::is_empty"
+                    skip_serializing_if = "::std::collections::HashMap::is_empty"
                 });
             }
             DefaultFunction::Default
@@ -542,8 +542,8 @@ mod tests {
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
     struct SomeMaps {
-        strings: std::collections::HashMap<String, String>,
-        things: serde_json::Map<String, serde_json::Value>,
+        strings: ::std::collections::HashMap<String, String>,
+        things: ::serde_json::Map<String, ::serde_json::Value>,
     }
 
     #[test]
@@ -557,7 +557,7 @@ mod tests {
     struct FlattenStuff {
         number: i32,
         #[serde(flatten)]
-        extra: std::collections::HashMap<String, String>,
+        extra: ::std::collections::HashMap<String, String>,
     }
 
     #[test]
@@ -588,6 +588,6 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
         let output = ty.type_name(&type_space).replace(" ", "");
-        assert_eq!(output, "serde_json::Map<String,serde_json::Value>");
+        assert_eq!(output, "::serde_json::Map<String,::serde_json::Value>");
     }
 }

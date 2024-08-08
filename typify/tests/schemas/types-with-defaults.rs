@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -41,7 +41,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Doodad {
     #[serde(default = "defaults::doodad_when")]
     pub when: chrono::DateTime<chrono::offset::Utc>,
@@ -75,7 +75,7 @@ impl From<&Doodad> for Doodad {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MrDefaultNumbers {
     #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU16, 3>")]
     pub little_u16: std::num::NonZeroU16,
@@ -115,7 +115,7 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OuterThing {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub thing: Option<ThingWithDefaults>,
@@ -159,10 +159,10 @@ impl From<&OuterThing> for OuterThing {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
-    pub any: Vec<serde_json::Value>,
+    pub any: Vec<::serde_json::Value>,
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
@@ -194,7 +194,7 @@ impl From<&TestBed> for TestBed {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ThingWithDefaults {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -228,7 +228,7 @@ pub mod defaults {
         serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
             .unwrap()
     }
-    pub(super) fn test_bed_any() -> Vec<serde_json::Value> {
+    pub(super) fn test_bed_any() -> Vec<::serde_json::Value> {
         vec![
             serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[5,3,0,9]").unwrap(),

@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -59,7 +59,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
@@ -85,9 +85,9 @@ impl From<&TestType> for TestType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TestTypeWhereNot(String);
-impl std::ops::Deref for TestTypeWhereNot {
+impl ::std::ops::Deref for TestTypeWhereNot {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -113,13 +113,13 @@ impl std::convert::TryFrom<String> for TestTypeWhereNot {
         }
     }
 }
-impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
+impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         Self::try_from(<String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 #[doc = "TestTypeWhyNot"]
@@ -137,9 +137,9 @@ impl<'de> serde::Deserialize<'de> for TestTypeWhereNot {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TestTypeWhyNot(String);
-impl std::ops::Deref for TestTypeWhyNot {
+impl ::std::ops::Deref for TestTypeWhyNot {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -165,13 +165,13 @@ impl std::convert::TryFrom<String> for TestTypeWhyNot {
         }
     }
 }
-impl<'de> serde::Deserialize<'de> for TestTypeWhyNot {
+impl<'de> ::serde::Deserialize<'de> for TestTypeWhyNot {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         Self::try_from(<String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}
