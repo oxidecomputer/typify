@@ -1467,7 +1467,7 @@ mod tests {
             )*
             /// ```
             /// </details>
-            #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),
@@ -1519,7 +1519,7 @@ mod tests {
             #[doc = "true"]
             /// ```
             /// </details>
-            #[derive(A, B, C, Clone, D, Debug, serde::Deserialize, serde::Serialize)]
+            #[derive(::serde::Deserialize, ::serde::Serialize, A, B, C, Clone, D, Debug)]
             pub enum ResultX {
                 Ok(u32),
                 Err(String),

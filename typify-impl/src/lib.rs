@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 //! typify backend implementation.
 
@@ -769,22 +769,22 @@ impl TypeSpace {
             "",
             quote! {
                 /// Error from a TryFrom or FromStr implementation.
-                pub struct ConversionError(std::borrow::Cow<'static, str>);
+                pub struct ConversionError(::std::borrow::Cow<'static, str>);
 
-                impl std::error::Error for ConversionError {}
-                impl std::fmt::Display for ConversionError {
-                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>)
-                        -> Result<(), std::fmt::Error>
+                impl ::std::error::Error for ConversionError {}
+                impl ::std::fmt::Display for ConversionError {
+                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
+                        -> Result<(), ::std::fmt::Error>
                     {
-                        std::fmt::Display::fmt(&self.0, f)
+                        ::std::fmt::Display::fmt(&self.0, f)
                     }
                 }
 
-                impl std::fmt::Debug for ConversionError {
-                    fn fmt(&self, f: &mut std::fmt::Formatter<'_>)
-                        -> Result<(), std::fmt::Error>
+                impl ::std::fmt::Debug for ConversionError {
+                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
+                        -> Result<(), ::std::fmt::Error>
                     {
-                        std::fmt::Debug::fmt(&self.0, f)
+                        ::std::fmt::Debug::fmt(&self.0, f)
                     }
                 }
                 impl From<&'static str> for ConversionError {
@@ -989,7 +989,7 @@ impl<'a> Type<'a> {
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
             TypeEntryDetails::String => TypeDetails::String,
-            TypeEntryDetails::JsonValue => TypeDetails::Builtin("serde_json::Value"),
+            TypeEntryDetails::JsonValue => TypeDetails::Builtin("::serde_json::Value"),
 
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),

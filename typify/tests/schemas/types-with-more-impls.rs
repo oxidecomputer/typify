@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -35,9 +35,9 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct PatternString(String);
-impl std::ops::Deref for PatternString {
+impl ::std::ops::Deref for PatternString {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -53,7 +53,7 @@ impl From<&PatternString> for PatternString {
         value.clone()
     }
 }
-impl std::str::FromStr for PatternString {
+impl ::std::str::FromStr for PatternString {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("xx").unwrap().find(value).is_none() {
@@ -62,33 +62,33 @@ impl std::str::FromStr for PatternString {
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for PatternString {
+impl ::std::convert::TryFrom<&str> for PatternString {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for PatternString {
+impl ::std::convert::TryFrom<&String> for PatternString {
     type Error = self::error::ConversionError;
     fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for PatternString {
+impl ::std::convert::TryFrom<String> for PatternString {
     type Error = self::error::ConversionError;
     fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for PatternString {
+impl<'de> ::serde::Deserialize<'de> for PatternString {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
-                <D::Error as serde::de::Error>::custom(e.to_string())
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
     }
 }
@@ -109,9 +109,9 @@ impl<'de> serde::Deserialize<'de> for PatternString {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug)]
 pub struct Sub10Primes(u32);
-impl std::ops::Deref for Sub10Primes {
+impl ::std::ops::Deref for Sub10Primes {
     type Target = u32;
     fn deref(&self) -> &u32 {
         &self.0
@@ -137,13 +137,13 @@ impl std::convert::TryFrom<u32> for Sub10Primes {
         }
     }
 }
-impl<'de> serde::Deserialize<'de> for Sub10Primes {
+impl<'de> ::serde::Deserialize<'de> for Sub10Primes {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         Self::try_from(<u32>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}

@@ -6,16 +6,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -39,15 +39,15 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, ExtraDerive, serde :: Deserialize, serde :: Serialize)]
-pub struct Fruit(pub serde_json::Map<String, serde_json::Value>);
-impl std::ops::Deref for Fruit {
-    type Target = serde_json::Map<String, serde_json::Value>;
-    fn deref(&self) -> &serde_json::Map<String, serde_json::Value> {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
+pub struct Fruit(pub ::serde_json::Map<String, ::serde_json::Value>);
+impl ::std::ops::Deref for Fruit {
+    type Target = ::serde_json::Map<String, ::serde_json::Value>;
+    fn deref(&self) -> &::serde_json::Map<String, ::serde_json::Value> {
         &self.0
     }
 }
-impl From<Fruit> for serde_json::Map<String, serde_json::Value> {
+impl From<Fruit> for ::serde_json::Map<String, ::serde_json::Value> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -57,8 +57,8 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<serde_json::Map<String, serde_json::Value>> for Fruit {
-    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
+impl From<::serde_json::Map<String, ::serde_json::Value>> for Fruit {
+    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -89,7 +89,7 @@ impl From<serde_json::Map<String, serde_json::Value>> for Fruit {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, ExtraDerive, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
 #[serde(untagged)]
 pub enum FruitOrVeg {
     Veg(Veggie),
@@ -134,7 +134,7 @@ impl From<Fruit> for FruitOrVeg {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, ExtraDerive, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
     #[serde(rename = "veggieLike")]
@@ -175,7 +175,7 @@ impl From<&Veggie> for Veggie {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, ExtraDerive, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub fruits: Vec<String>,

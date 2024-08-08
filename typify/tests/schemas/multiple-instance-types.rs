@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -37,7 +37,7 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IntOrStr {
     String(String),
@@ -108,13 +108,13 @@ impl From<i64> for IntOrStr {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(serde_json::Map<String, serde_json::Value>),
-    Array(Vec<serde_json::Value>),
+    Object(::serde_json::Map<String, ::serde_json::Value>),
+    Array(Vec<::serde_json::Value>),
     String(String),
     Integer(i64),
 }
@@ -128,13 +128,13 @@ impl From<bool> for OneOfSeveral {
         Self::Boolean(value)
     }
 }
-impl From<serde_json::Map<String, serde_json::Value>> for OneOfSeveral {
-    fn from(value: serde_json::Map<String, serde_json::Value>) -> Self {
+impl From<::serde_json::Map<String, ::serde_json::Value>> for OneOfSeveral {
+    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
         Self::Object(value)
     }
 }
-impl From<Vec<serde_json::Value>> for OneOfSeveral {
-    fn from(value: Vec<serde_json::Value>) -> Self {
+impl From<Vec<::serde_json::Value>> for OneOfSeveral {
+    fn from(value: Vec<::serde_json::Value>) -> Self {
         Self::Array(value)
     }
 }
@@ -159,9 +159,9 @@ impl From<i64> for OneOfSeveral {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ReallyJustNull(pub ());
-impl std::ops::Deref for ReallyJustNull {
+impl ::std::ops::Deref for ReallyJustNull {
     type Target = ();
     fn deref(&self) -> &() {
         &self.0
@@ -200,15 +200,15 @@ impl From<()> for ReallyJustNull {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
-pub struct SeriouslyAnything(pub serde_json::Value);
-impl std::ops::Deref for SeriouslyAnything {
-    type Target = serde_json::Value;
-    fn deref(&self) -> &serde_json::Value {
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct SeriouslyAnything(pub ::serde_json::Value);
+impl ::std::ops::Deref for SeriouslyAnything {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &::serde_json::Value {
         &self.0
     }
 }
-impl From<SeriouslyAnything> for serde_json::Value {
+impl From<SeriouslyAnything> for ::serde_json::Value {
     fn from(value: SeriouslyAnything) -> Self {
         value.0
     }
@@ -218,8 +218,8 @@ impl From<&SeriouslyAnything> for SeriouslyAnything {
         value.clone()
     }
 }
-impl From<serde_json::Value> for SeriouslyAnything {
-    fn from(value: serde_json::Value) -> Self {
+impl From<::serde_json::Value> for SeriouslyAnything {
+    fn from(value: ::serde_json::Value) -> Self {
         Self(value)
     }
 }
@@ -241,7 +241,7 @@ impl From<serde_json::Value> for SeriouslyAnything {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum YesNoMaybe {
     Boolean(bool),

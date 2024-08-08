@@ -1,16 +1,16 @@
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
-    pub struct ConversionError(std::borrow::Cow<'static, str>);
-    impl std::error::Error for ConversionError {}
-    impl std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Display::fmt(&self.0, f)
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
         }
     }
-    impl std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-            std::fmt::Debug::fmt(&self.0, f)
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
         }
     }
     impl From<&'static str> for ConversionError {
@@ -50,10 +50,10 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, serde :: Deserialize, serde :: Serialize)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TestGrammarForPatternProperties {
-    pub rules: std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, String>,
+    pub rules: ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, String>,
 }
 impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
     fn from(value: &TestGrammarForPatternProperties) -> Self {
@@ -71,9 +71,9 @@ impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde :: Serialize)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TestGrammarForPatternPropertiesRulesKey(String);
-impl std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
@@ -89,7 +89,7 @@ impl From<&TestGrammarForPatternPropertiesRulesKey> for TestGrammarForPatternPro
         value.clone()
     }
 }
-impl std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^[a-zA-Z_]\\w*$")
@@ -102,33 +102,33 @@ impl std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::TryFrom<&String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::TryFrom<String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey {
+impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
-                <D::Error as serde::de::Error>::custom(e.to_string())
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
     }
 }
