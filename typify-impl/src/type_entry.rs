@@ -516,10 +516,13 @@ impl TypeEntry {
 
     // Ensures that the name is unique within the provided `TypeSpace`.
     //
-    // This function checks if the current object's name already exists in the `TypeSpace`. If it does,
-    // the function modifies the name by appending "Alias" until a unique name is found. The unique name
-    // is then inserted into the `TypeSpace` and the object's name is updated accordingly.
-    pub(crate) fn ensure_unique_name(&mut self, type_space: &mut TypeSpace) {
+    // This function checks if the current object's name already exists in the
+    // `TypeSpace`. If it does, the function modifies the name by appending
+    // numbers until a unique name is found (Name2, Name3 ...).
+    //
+    // The unique name is then inserted into the `TypeSpace` and the object's
+    // name is updated accordingly.
+    pub(crate) fn ensure_unique_name(&mut self, type_space: &mut TypeSpace) -> Option<String> {
         if let Some(name) = self.name() {
             let mut postfix = 2;
             let mut new_name = name.clone();
@@ -527,7 +530,10 @@ impl TypeEntry {
                 new_name = format!("{name}{postfix}");
                 postfix += 1;
             }
-            self.rename(new_name);
+            self.rename(new_name.clone());
+            Some(new_name)
+        } else {
+            None
         }
     }
 

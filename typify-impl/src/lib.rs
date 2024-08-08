@@ -647,8 +647,8 @@ impl TypeSpace {
             }
         };
         if let Some(entry_name) = type_entry.name().cloned() {
-            type_entry.ensure_unique_name(self);
-            self.name_to_id.insert(entry_name, type_id.clone());
+            let name = type_entry.ensure_unique_name(self).unwrap_or(entry_name);
+            self.name_to_id.insert(name, type_id.clone());
         }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
@@ -847,7 +847,7 @@ impl TypeSpace {
                 type_id.clone()
             } else {
                 let type_id = self.assign();
-                ty.ensure_unique_name(self);
+                let name = ty.ensure_unique_name(self).unwrap_or(name);
                 self.name_to_id.insert(name, type_id.clone());
                 self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
