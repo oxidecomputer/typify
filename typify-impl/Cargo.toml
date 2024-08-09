@@ -9,7 +9,9 @@ readme = "../README.md"
 
 [dependencies]
 heck = "0.5.0"
+iref = "3.1.4"
 log = "0.4.22"
+pathdiff = "0.2.1"
 proc-macro2 = "1.0.86"
 quote = "1.0.36"
 regress = "0.10.0"
@@ -20,7 +22,6 @@ serde_json = "1.0.122"
 syn = { version = "2.0.72", features = ["full"] }
 thiserror = "1.0.63"
 unicode-ident = "1.0.12"
-
 
 [dev-dependencies]
 env_logger = "0.10.2"

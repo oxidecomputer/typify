@@ -126,7 +126,6 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
                 .get(&key)
                 .unwrap_or_else(|| panic!("unresolved reference: {}", ref_name));
             let merged_schema = try_merge_schema(resolved, other, defs)?;
-
             // If we merge a referenced schema with another schema **and**
             // the resulting schema is equivalent to the referenced schema
             // (i.e. the other schema is identical or less permissive) then we
