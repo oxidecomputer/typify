@@ -514,6 +514,40 @@ impl TypeEntry {
         self.check_defaults(type_space)
     }
 
+    // Ensures that the name is unique within the provided `TypeSpace`.
+    //
+    // This function checks if the current object's name already exists in the
+    // `TypeSpace`. If it does, the function modifies the name by appending
+    // numbers until a unique name is found (Name2, Name3 ...).
+    //
+    // The unique name is then inserted into the `TypeSpace` and the object's
+    // name is updated accordingly.
+    pub(crate) fn ensure_unique_name(&mut self, type_space: &mut TypeSpace) -> Option<String> {
+        if let Some(name) = self.name() {
+            let mut postfix = 2;
+            let mut new_name = name.clone();
+            while type_space.name_to_id.contains_key(&new_name) {
+                new_name = format!("{name}{postfix}");
+                postfix += 1;
+            }
+            self.rename(new_name.clone());
+            Some(new_name)
+        } else {
+            None
+        }
+    }
+
+    pub(crate) fn rename(&mut self, new_name: String) {
+        match &mut self.details {
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
+            | TypeEntryDetails::Struct(TypeEntryStruct { name, .. })
+            | TypeEntryDetails::Newtype(TypeEntryNewtype { name, .. }) => {
+                *name = new_name;
+            }
+            _ => {}
+        }
+    }
+
     pub(crate) fn name(&self) -> Option<&String> {
         match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum { name, .. })
