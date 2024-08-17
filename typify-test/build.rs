@@ -53,7 +53,7 @@ struct WithSet {
     set: HashSet<TestStruct>,
 }
 
-struct LoginName(String);
+struct LoginName;
 impl JsonSchema for LoginName {
     fn schema_name() -> String {
         "LoginName".to_string()
@@ -72,7 +72,7 @@ impl JsonSchema for LoginName {
     }
 }
 
-struct Pancakes(String);
+struct Pancakes;
 impl JsonSchema for Pancakes {
     fn schema_name() -> String {
         "Pancakes".to_string()
