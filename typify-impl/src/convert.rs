@@ -2003,7 +2003,7 @@ mod tests {
     };
 
     #[track_caller]
-    fn int_helper<T: JsonSchema>() {
+    fn int_helper<T: JsonSchema>(type_name: &'static str) {
         let schema = schema_for!(T);
 
         let mut type_space = TypeSpace::default();
@@ -2018,14 +2018,8 @@ mod tests {
             )
             .unwrap();
         let output = ty.type_name(&type_space);
-        let actual = output
-            .rsplit_once("::")
-            .map(|(_, x)| x.trim())
-            .unwrap_or(&output);
-        let expected = std::any::type_name::<T>()
-            .rsplit_once("::")
-            .map(|(_, x)| x.trim())
-            .unwrap_or(&output);
+        let actual = output.split("::").last().unwrap().trim();
+        let expected = type_name.split("::").last().unwrap();
         assert_eq!(actual, expected);
     }
 
@@ -2034,7 +2028,7 @@ mod tests {
             paste! {
                 #[test]
                 fn [<test_int_ $t:lower>]() {
-                    int_helper::<$t>()
+                    int_helper::<$t>(stringify!($t))
                 }
             }
         };

@@ -1314,6 +1314,7 @@ mod tests {
 
     #[test]
     fn test_alias() {
+        #[allow(dead_code)]
         #[derive(JsonSchema, Schema)]
         struct Stuff(Vec<String>);
 
