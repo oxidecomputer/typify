@@ -13,5 +13,5 @@ ipnetwork = { version = "0.20.0", features = ["schemars"] }
 prettyplease = "0.2.20"
 schemars = "0.8.21"
 serde = "1.0.208"
-syn = "2.0.74"
+syn = "2.0.75"
 typify = { path = "../typify" }
