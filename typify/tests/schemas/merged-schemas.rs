@@ -301,10 +301,10 @@ impl From<&JsonSuccessBaseResult> for JsonSuccessBaseResult {
         value.clone()
     }
 }
-impl ToString for JsonSuccessBaseResult {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for JsonSuccessBaseResult {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => "success".to_string(),
+            Self::Success => write!(f, "success"),
         }
     }
 }
@@ -369,10 +369,10 @@ impl From<&JsonSuccessResult> for JsonSuccessResult {
         value.clone()
     }
 }
-impl ToString for JsonSuccessResult {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for JsonSuccessResult {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => "success".to_string(),
+            Self::Success => write!(f, "success"),
         }
     }
 }
@@ -467,9 +467,9 @@ impl std::convert::TryFrom<String> for NarrowNumber {
         value.parse()
     }
 }
-impl ToString for NarrowNumber {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for NarrowNumber {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "OrderDependentMerge"]
@@ -928,10 +928,10 @@ impl From<&Unsatisfiable3B> for Unsatisfiable3B {
         value.clone()
     }
 }
-impl ToString for Unsatisfiable3B {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for Unsatisfiable3B {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Bar => "bar".to_string(),
+            Self::Bar => write!(f, "bar"),
         }
     }
 }
@@ -996,10 +996,10 @@ impl From<&Unsatisfiable3C> for Unsatisfiable3C {
         value.clone()
     }
 }
-impl ToString for Unsatisfiable3C {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for Unsatisfiable3C {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Foo => "foo".to_string(),
+            Self::Foo => write!(f, "foo"),
         }
     }
 }

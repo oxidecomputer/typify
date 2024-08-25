@@ -78,11 +78,11 @@ impl std::convert::TryFrom<String> for IntOrStr {
         value.parse()
     }
 }
-impl ToString for IntOrStr {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IntOrStr {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::String(x) => x.to_string(),
-            Self::Integer(x) => x.to_string(),
+            Self::String(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }

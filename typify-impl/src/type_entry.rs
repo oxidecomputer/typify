@@ -733,7 +733,7 @@ impl TypeEntry {
             )
         }
 
-        // ToString and FromStr impls for enums that are made exclusively of
+        // Display and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
         let simple_enum_impl = bespoke_impls
             .contains(&TypeEntryEnumImpl::AllSimpleVariants)
@@ -751,10 +751,10 @@ impl TypeEntry {
                     .unzip();
 
                 quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
+                    impl ::std::fmt::Display for #type_name {
+                        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                             match *self {
-                                #(Self::#match_variants => #match_strs.to_string(),)*
+                                #(Self::#match_variants => write!(f, #match_strs),)*
                             }
                         }
                     }
@@ -866,10 +866,10 @@ impl TypeEntry {
                     .map(|variant| format_ident!("{}", variant.name));
 
                 quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
+                    impl ::std::fmt::Display for #type_name {
+                        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                             match self {
-                                #(Self::#variant_name(x) => x.to_string(),)*
+                                #(Self::#variant_name(x) => x.fmt(f),)*
                             }
                         }
                     }
@@ -1314,9 +1314,9 @@ impl TypeEntry {
                     .has_impl(type_space, TypeSpaceImpl::Display)
                     .then(|| {
                         quote! {
-                            impl ToString for #type_name {
-                                fn to_string(&self) -> String {
-                                    self.0.to_string()
+                            impl ::std::fmt::Display for #type_name {
+                                fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+                                    self.0.fmt(f)
                                 }
                             }
                         }

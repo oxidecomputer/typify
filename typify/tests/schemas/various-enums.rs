@@ -62,12 +62,12 @@ impl From<&AlternativeEnum> for AlternativeEnum {
         value.clone()
     }
 }
-impl ToString for AlternativeEnum {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for AlternativeEnum {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Choice1 => "Choice1".to_string(),
-            Self::Choice2 => "Choice2".to_string(),
-            Self::Choice3 => "Choice3".to_string(),
+            Self::Choice1 => write!(f, "Choice1"),
+            Self::Choice2 => write!(f, "Choice2"),
+            Self::Choice3 => write!(f, "Choice3"),
         }
     }
 }
@@ -157,12 +157,12 @@ impl From<&CommentedVariants> for CommentedVariants {
         value.clone()
     }
 }
-impl ToString for CommentedVariants {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for CommentedVariants {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => "A".to_string(),
-            Self::B => "B".to_string(),
-            Self::C => "C".to_string(),
+            Self::A => write!(f, "A"),
+            Self::B => write!(f, "B"),
+            Self::C => write!(f, "C"),
         }
     }
 }
@@ -271,12 +271,12 @@ impl From<&DiskAttachmentState> for DiskAttachmentState {
         value.clone()
     }
 }
-impl ToString for DiskAttachmentState {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for DiskAttachmentState {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Detached => "Detached".to_string(),
-            Self::Destroyed => "Destroyed".to_string(),
-            Self::Faulted => "Faulted".to_string(),
+            Self::Detached => write!(f, "Detached"),
+            Self::Destroyed => write!(f, "Destroyed"),
+            Self::Faulted => write!(f, "Faulted"),
         }
     }
 }
@@ -557,11 +557,11 @@ impl std::convert::TryFrom<String> for IpNet {
         value.parse()
     }
 }
-impl ToString for IpNet {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IpNet {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::V4(x) => x.to_string(),
-            Self::V6(x) => x.to_string(),
+            Self::V4(x) => x.fmt(f),
+            Self::V6(x) => x.fmt(f),
         }
     }
 }
@@ -624,9 +624,9 @@ impl std::str::FromStr for Ipv4Net {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for Ipv4Net {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for Ipv4Net {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "Ipv6Net"]
@@ -678,9 +678,9 @@ impl std::str::FromStr for Ipv6Net {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for Ipv6Net {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for Ipv6Net {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "JankNames"]
@@ -874,12 +874,12 @@ impl From<&NullStringEnumWithUnknownFormatInner> for NullStringEnumWithUnknownFo
         value.clone()
     }
 }
-impl ToString for NullStringEnumWithUnknownFormatInner {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for NullStringEnumWithUnknownFormatInner {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => "a".to_string(),
-            Self::B => "b".to_string(),
-            Self::C => "c".to_string(),
+            Self::A => write!(f, "a"),
+            Self::B => write!(f, "b"),
+            Self::C => write!(f, "c"),
         }
     }
 }
@@ -1010,9 +1010,9 @@ impl std::str::FromStr for ReferenceDef {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for ReferenceDef {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for ReferenceDef {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "issue 280"]
@@ -1126,11 +1126,11 @@ impl std::convert::TryFrom<String> for ReferencesVariant1Value {
         value.parse()
     }
 }
-impl ToString for ReferencesVariant1Value {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for ReferencesVariant1Value {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::StringVersion(x) => x.to_string(),
-            Self::ReferenceDef(x) => x.to_string(),
+            Self::StringVersion(x) => x.fmt(f),
+            Self::ReferenceDef(x) => x.fmt(f),
         }
     }
 }
@@ -1234,9 +1234,9 @@ impl std::str::FromStr for StringVersion {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for StringVersion {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for StringVersion {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 fn main() {}

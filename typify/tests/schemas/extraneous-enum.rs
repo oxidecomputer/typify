@@ -95,11 +95,11 @@ impl From<&LetterBoxLetter> for LetterBoxLetter {
         value.clone()
     }
 }
-impl ToString for LetterBoxLetter {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LetterBoxLetter {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => "a".to_string(),
-            Self::B => "b".to_string(),
+            Self::A => write!(f, "a"),
+            Self::B => write!(f, "b"),
         }
     }
 }

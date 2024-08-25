@@ -65,12 +65,12 @@ impl From<&TestEnum> for TestEnum {
         value.clone()
     }
 }
-impl ToString for TestEnum {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for TestEnum {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Failure => "failure".to_string(),
-            Self::Skipped => "skipped".to_string(),
-            Self::Success => "success".to_string(),
+            Self::Failure => write!(f, "failure"),
+            Self::Skipped => write!(f, "skipped"),
+            Self::Success => write!(f, "success"),
         }
     }
 }

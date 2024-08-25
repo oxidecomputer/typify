@@ -98,12 +98,12 @@ impl From<&TestTypeValue> for TestTypeValue {
         value.clone()
     }
 }
-impl ToString for TestTypeValue {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for TestTypeValue {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => "start".to_string(),
-            Self::Middle => "middle".to_string(),
-            Self::End => "end".to_string(),
+            Self::Start => write!(f, "start"),
+            Self::Middle => write!(f, "middle"),
+            Self::End => write!(f, "end"),
         }
     }
 }
