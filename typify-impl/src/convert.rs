@@ -576,7 +576,10 @@ impl TypeSpace {
                         Ok((type_entry, &None))
                     }
 
-                    Err(_) => self.convert_never(type_name, original_schema),
+                    Err(e) => {
+                        debug!("failed to merge schemas in convert_schema_object: {:#?}", e);
+                        self.convert_never(type_name, original_schema)
+                    }
                 }
             }
 
