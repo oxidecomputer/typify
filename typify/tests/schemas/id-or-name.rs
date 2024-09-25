@@ -93,11 +93,11 @@ impl std::convert::TryFrom<String> for IdOrName {
         value.parse()
     }
 }
-impl ToString for IdOrName {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IdOrName {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Id(x) => x.to_string(),
-            Self::Name(x) => x.to_string(),
+            Self::Id(x) => x.fmt(f),
+            Self::Name(x) => x.fmt(f),
         }
     }
 }
@@ -172,11 +172,11 @@ impl std::convert::TryFrom<String> for IdOrNameRedundant {
         value.parse()
     }
 }
-impl ToString for IdOrNameRedundant {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IdOrNameRedundant {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.to_string(),
-            Self::Variant1(x) => x.to_string(),
+            Self::Variant0(x) => x.fmt(f),
+            Self::Variant1(x) => x.fmt(f),
         }
     }
 }
@@ -260,11 +260,11 @@ impl std::convert::TryFrom<String> for IdOrYolo {
         value.parse()
     }
 }
-impl ToString for IdOrYolo {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IdOrYolo {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Id(x) => x.to_string(),
-            Self::Yolo(x) => x.to_string(),
+            Self::Id(x) => x.fmt(f),
+            Self::Yolo(x) => x.fmt(f),
         }
     }
 }

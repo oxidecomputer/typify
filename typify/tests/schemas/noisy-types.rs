@@ -133,9 +133,9 @@ impl std::convert::TryFrom<String> for IntegerBs {
         value.parse()
     }
 }
-impl ToString for IntegerBs {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for IntegerBs {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "ObjectBs"]

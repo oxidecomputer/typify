@@ -104,11 +104,11 @@ impl std::convert::TryFrom<String> for IdOrName {
         value.parse()
     }
 }
-impl ToString for IdOrName {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for IdOrName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Id(x) => x.to_string(),
-            Self::Name(x) => x.to_string(),
+            Self::Id(x) => x.fmt(f),
+            Self::Name(x) => x.fmt(f),
         }
     }
 }

@@ -109,9 +109,9 @@ impl std::str::FromStr for Eh {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for Eh {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for Eh {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 #[doc = "MapWithDateKeys"]
@@ -290,9 +290,9 @@ impl std::str::FromStr for Value {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for Value {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for Value {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 fn main() {}
