@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.1.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.2.0\...HEAD[Full list of commits]
+
+== 0.2.0 (released 2024-09-26)
+
+https://github.com/oxidecomputer/typify/compare/v0.1.0\...v0.2.0[Full list of commits]
 
 * Migrate from `ToString` to `std::fmt::Display` (#663)
 * fully qualify types and traits (#647)

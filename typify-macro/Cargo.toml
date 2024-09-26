@@ -1,6 +1,6 @@
 [package]
 name = "typify-macro"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "typify macro implementation"
@@ -19,4 +19,4 @@ serde = "1.0.210"
 serde_json = "1.0.128"
 serde_tokenstream = "0.2.2"
 syn = { version = "2.0", features = ["full", "extra-traits"] }
-typify-impl = { version = "0.1.0", path = "../typify-impl" }
+typify-impl = { version = "0.2.0", path = "../typify-impl" }
