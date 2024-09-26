@@ -15,6 +15,13 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.1.0\...HEAD[Full list of commits]
 
+* Migrate from `ToString` to `std::fmt::Display` (#663)
+* fully qualify types and traits (#647)
+* Add support for `patternProperties` in particular circumstances (#637)
+* Fully qualify `serde::Deserialize`` and `serde::Serialize` in outputs (#634)
+* Fix panic in `all_mutually_exclusive` and allow multiple subschema types in a single schema (#627)
+* handle default values for fields represented as `NonZeroU{8,16,32}`` (#608)
+
 == 0.1.0 (released 2024-05-13)
 
 * Improvements and bug fixes around schema merging
