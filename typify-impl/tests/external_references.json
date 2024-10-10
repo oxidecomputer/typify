@@ -1,0 +1,13 @@
+{
+  "id": "https://schemas.mysite.com/schemas/external_references.json#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "somename": {
+      "properties": {
+        "someproperty": {
+          "$ref": "https://schemas.mysite.com/schemas/v1/external_reference.json#/definitions/someothername"
+        }
+      }
+    }
+  }
+}

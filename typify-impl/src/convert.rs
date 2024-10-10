@@ -366,7 +366,7 @@ impl TypeSpace {
                 object: None,
                 reference: Some(reference),
                 extensions: _,
-            } => self.convert_reference(metadata, reference),
+            } => self.convert_reference(metadata, &reference),
 
             // Accept references that... for some reason... include the type.
             // TODO this could be generalized to validate any redundant
@@ -905,6 +905,7 @@ impl TypeSpace {
         // this case and strip out the null in both enum values and instance
         // type. Nevertheless, we do our best to interpret even incorrect
         // JSON schema.
+
         let mut has_null = false;
 
         let validator = StringValidator::new(&type_name, validation)?;
@@ -1051,7 +1052,14 @@ impl TypeSpace {
             // f64 here, but we're already constrained by the schemars
             // representation so ... it's probably the best we can do at
             // the moment.
-            match (default.as_f64(), min, max) {
+            //
+            // I added this because numbers are sometimes specified in double quotes
+            let d = match default {
+                serde_json::Value::Number(a) => a.as_f64(),
+                serde_json::Value::String(a) => a.parse().ok(),
+                _ => None,
+            };
+            match (d, min, max) {
                 (Some(_), None, None) => Some(()),
                 (Some(value), None, Some(fmax)) if value <= fmax => Some(()),
                 (Some(value), Some(fmin), None) if value >= fmin => Some(()),
@@ -1275,9 +1283,6 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if !ref_name.starts_with('#') {
-            panic!("external references are not supported: {}", ref_name);
-        }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
