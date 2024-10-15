@@ -10,6 +10,7 @@ use schemars::schema::{
     ArrayValidation, InstanceType, NumberValidation, ObjectValidation, Schema, SchemaObject,
     SingleOrVec, StringValidation, SubschemaValidation,
 };
+use thiserror::Error;
 
 use crate::{util::ref_key, validate::schema_value_validate, RefKey};
 
@@ -19,7 +20,10 @@ pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> 
     try_merge_all(schemas, defs).unwrap_or(Schema::Bool(false))
 }
 
-fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
+fn try_merge_all(
+    schemas: &[Schema],
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, SchemaMergeError> {
     debug!(
         "merge all {}",
         serde_json::to_string_pretty(schemas).unwrap(),
@@ -77,12 +81,30 @@ fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Sche
     try_merge_schema(a, b, defs).unwrap_or(Schema::Bool(false))
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum SchemaMergeError {
+    #[error("merging with false")]
+    MergeWithFalse,
+    #[error("Error when trying to merge the two schema objects {a:?} and {b:?}: {source}")]
+    ObjectSchemaMerge {
+        source: Box<ObjectSchemaMergeError>,
+        a: SchemaObject,
+        b: SchemaObject,
+    },
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
-fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
+fn try_merge_schema(
+    a: &Schema,
+    b: &Schema,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<Schema, SchemaMergeError> {
     match (a, b) {
-        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => {
+            Err(SchemaMergeError::MergeWithFalse)
+        }
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
 
         // If we have two references to the same schema, that's easy!
@@ -138,15 +160,67 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
             }
         }
 
-        (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)?.into()),
+        (Schema::Object(aa), Schema::Object(bb)) => Ok(merge_schema_object(aa, bb, defs)
+            .map_err(|source| SchemaMergeError::ObjectSchemaMerge {
+                source: Box::new(source),
+                a: aa.clone(),
+                b: bb.clone(),
+            })?
+            .into()),
     }
+}
+
+#[derive(Error, Debug)]
+pub(crate) enum ObjectSchemaMergeError {
+    #[error("Incompatible instance types {a:?} and {b:?}")]
+    InstanceType {
+        a: Option<SingleOrVec<InstanceType>>,
+        b: Option<SingleOrVec<InstanceType>>,
+    },
+    #[error("Error when trying to merge the two formats {a:?} and {b:?}")]
+    Format {
+        a: Option<String>,
+        b: Option<String>,
+    },
+    #[error("Error when trying to merge the two numbers {a:?} and {b:?}")]
+    Number {
+        a: Option<Box<NumberValidation>>,
+        b: Option<Box<NumberValidation>>,
+    },
+    #[error("Error when trying to merge the two strings {a:?} and {b:?}")]
+    String {
+        a: Option<Box<StringValidation>>,
+        b: Option<Box<StringValidation>>,
+    },
+    #[error("Error when trying to merge the two arrays {a:?} and {b:?}")]
+    Array {
+        a: Option<Box<ArrayValidation>>,
+        b: Option<Box<ArrayValidation>>,
+    },
+    #[error("Error when trying to merge the two objects {a:?} and {b:?}")]
+    Object {
+        a: Option<Box<ObjectValidation>>,
+        b: Option<Box<ObjectValidation>>,
+    },
+    #[error("Error when trying to merge the two enums {a_enum:?} (with const value {a_const:?}) and {b_enum:?} (with const value {b_const:?})")]
+    EnumValues {
+        a_enum: Option<Vec<serde_json::Value>>,
+        a_const: Option<serde_json::Value>,
+        b_enum: Option<Vec<serde_json::Value>>,
+        b_const: Option<serde_json::Value>,
+    },
+    #[error("Error when trying to merge in the subschema {maybe_subschema:?}: {source}")]
+    SubschemaMerge {
+        source: SubschemaMergeError,
+        maybe_subschema: Option<Box<SubschemaValidation>>,
+    },
 }
 
 fn merge_schema_object(
     a: &SchemaObject,
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, ObjectSchemaMergeError> {
     debug!(
         "merging {}\n{}",
         serde_json::to_string_pretty(a).unwrap(),
@@ -156,20 +230,55 @@ fn merge_schema_object(
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
 
-    let instance_type = merge_so_instance_type(a.instance_type.as_ref(), b.instance_type.as_ref())?;
-    let format = merge_so_format(a.format.as_ref(), b.format.as_ref())?;
+    let instance_type = merge_so_instance_type(a.instance_type.as_ref(), b.instance_type.as_ref())
+        .map_err(|()| ObjectSchemaMergeError::InstanceType {
+            a: a.instance_type.clone(),
+            b: b.instance_type.clone(),
+        })?;
+    let format = merge_so_format(a.format.as_ref(), b.format.as_ref()).map_err(|()| {
+        ObjectSchemaMergeError::Format {
+            a: a.format.clone(),
+            b: b.format.clone(),
+        }
+    })?;
 
-    let number = merge_so_number(a.number.as_deref(), b.number.as_deref())?;
-    let string = merge_so_string(a.string.as_deref(), b.string.as_deref())?;
-    let array = merge_so_array(a.array.as_deref(), b.array.as_deref(), defs)?;
-    let object = merge_so_object(a.object.as_deref(), b.object.as_deref(), defs)?;
+    let number = merge_so_number(a.number.as_deref(), b.number.as_deref()).map_err(|()| {
+        ObjectSchemaMergeError::Number {
+            a: a.number.clone(),
+            b: b.number.clone(),
+        }
+    })?;
+    let string = merge_so_string(a.string.as_deref(), b.string.as_deref()).map_err(|()| {
+        ObjectSchemaMergeError::String {
+            a: a.string.clone(),
+            b: b.string.clone(),
+        }
+    })?;
+    let array = merge_so_array(a.array.as_deref(), b.array.as_deref(), defs).map_err(|()| {
+        ObjectSchemaMergeError::Array {
+            a: a.array.clone(),
+            b: b.array.clone(),
+        }
+    })?;
+    let object = merge_so_object(a.object.as_deref(), b.object.as_deref(), defs).map_err(|()| {
+        ObjectSchemaMergeError::Object {
+            a: a.object.clone(),
+            b: b.object.clone(),
+        }
+    })?;
 
     let enum_values = merge_so_enum_values(
         a.enum_values.as_ref(),
         a.const_value.as_ref(),
         b.enum_values.as_ref(),
         b.const_value.as_ref(),
-    )?;
+    )
+    .map_err(|()| ObjectSchemaMergeError::EnumValues {
+        a_enum: a.enum_values.clone(),
+        a_const: b.const_value.clone(),
+        b_enum: b.enum_values.clone(),
+        b_const: b.const_value.clone(),
+    })?;
 
     // We could clean up this schema to eliminate data irrelevant to the
     // instance type, but logic in the conversion path should already handle
@@ -196,8 +305,16 @@ fn merge_schema_object(
     // two schemas and then do the appropriate merge with subschemas (i.e.
     // potentially twice). This is effectively an `allOf` between the merged
     // "body" schema and the component subschemas.
-    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
-    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
+    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)
+        .map_err(|source| ObjectSchemaMergeError::SubschemaMerge {
+            source,
+            maybe_subschema: a.subschemas.clone(),
+        })?;
+    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)
+        .map_err(|source| ObjectSchemaMergeError::SubschemaMerge {
+            source,
+            maybe_subschema: a.subschemas.clone(),
+        })?;
 
     assert_ne!(merged_schema, Schema::Bool(false).into_object());
 
@@ -266,6 +383,30 @@ fn merge_so_enum_values(
     }
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum SubschemaMergeError {
+    #[error("Empty merged AnyOf subschema. schema_object: {schema_object:?}, any_of: {any_of:?}")]
+    EmptyMergedAnyOfSubschema {
+        schema_object: SchemaObject,
+        any_of: Vec<Schema>,
+    },
+    #[error("Empty merged OneOf subschema. schema_object: {schema_object:?}, one_of: {one_of:?}")]
+    EmptyMergedOneOfSubschema {
+        schema_object: SchemaObject,
+        one_of: Vec<Schema>,
+    },
+    #[error("Error trying to merge in the not schema {not:?}: {source}")]
+    NotSchemaMerge {
+        source: NotSchemaMergeError,
+        not: Box<Schema>,
+    },
+    #[error("Error trying to merge in the all_of schema {all_of:?}: {source}")]
+    AllOfSchemaMerge {
+        source: SchemaMergeError,
+        all_of: Vec<Schema>,
+    },
+}
+
 /// Merge the schema with a subschema validation object. It's important that
 /// the return value reduces the complexity of the problem so avoid infinite
 /// recursion.
@@ -273,7 +414,7 @@ pub(crate) fn try_merge_with_subschemas(
     mut schema_object: SchemaObject,
     maybe_subschemas: Option<&SubschemaValidation>,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, SubschemaMergeError> {
     let Some(SubschemaValidation {
         all_of,
         any_of,
@@ -296,13 +437,23 @@ pub(crate) fn try_merge_with_subschemas(
             .iter()
             .try_fold(schema_object.into(), |schema, other| {
                 try_merge_schema(&schema, other, defs)
+            })
+            .map_err(|source| SubschemaMergeError::AllOfSchemaMerge {
+                source,
+                all_of: all_of.clone(),
             })?;
         assert_ne!(merged_schema, Schema::Bool(false));
         schema_object = merged_schema.into_object();
     }
 
     if let Some(not) = not {
-        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)?;
+        schema_object =
+            try_merge_schema_not(schema_object, not.as_ref(), defs).map_err(|source| {
+                SubschemaMergeError::NotSchemaMerge {
+                    source,
+                    not: not.clone(),
+                }
+            })?;
     }
 
     // TODO: we should be able to handle a combined one_of and any_of... but
@@ -314,7 +465,12 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => {
+                return Err(SubschemaMergeError::EmptyMergedAnyOfSubschema {
+                    schema_object,
+                    any_of: any_of.clone(),
+                })
+            }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -333,7 +489,12 @@ pub(crate) fn try_merge_with_subschemas(
         let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
 
         match merged_subschemas.len() {
-            0 => return Err(()),
+            0 => {
+                return Err(SubschemaMergeError::EmptyMergedOneOfSubschema {
+                    schema_object,
+                    one_of: one_of.clone(),
+                })
+            }
             1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
             _ => {
                 schema_object = SchemaObject {
@@ -411,6 +572,16 @@ fn try_merge_with_each_subschema(
     joined_schemas
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum NotSchemaMergeError {
+    #[error("Subtracting everything leaves nothing")]
+    SubtractingEverything,
+    #[error("Property `{0}` can't be both required and not required")]
+    ConflictingPropertyRequire(String),
+    #[error("Error in try_merge_with_subschemas_not: {0}")]
+    NotSubschemaMerge(#[from] NotSubschemaMergeError),
+}
+
 /// "Subtract" the "not" schema from the schema object.
 ///
 /// TODO Exactly where and how we handle not constructions is... tricky! As we
@@ -420,7 +591,7 @@ fn try_merge_schema_not(
     mut schema_object: SchemaObject,
     not_schema: &Schema,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, NotSchemaMergeError> {
     debug!(
         "try_merge_schema_not {}\n not:{}",
         serde_json::to_string_pretty(&schema_object).unwrap(),
@@ -428,7 +599,7 @@ fn try_merge_schema_not(
     );
     match not_schema {
         // Subtracting everything leaves nothing...
-        Schema::Bool(true) => Err(()),
+        Schema::Bool(true) => Err(NotSchemaMergeError::SubtractingEverything),
         // ... whereas subtracting nothing leaves everything.
         Schema::Bool(false) => Ok(schema_object),
 
@@ -485,7 +656,9 @@ fn try_merge_schema_not(
                         // A property can't be both required and not required
                         // therefore this schema is unsatisfiable.
                         if required.contains(not_required) {
-                            return Err(());
+                            return Err(NotSchemaMergeError::ConflictingPropertyRequire(
+                                not_required.to_string(),
+                            ));
                         }
                         // Set the property's schema to false i.e. that the
                         // presence of any value would be invalid. We ignore
@@ -505,11 +678,25 @@ fn try_merge_schema_not(
     }
 }
 
+#[derive(Error, Debug)]
+pub(crate) enum NotSubschemaMergeError {
+    #[error("Error when trying to merge the two schema objects {a:?} and {b:?}: {source}")]
+    ObjectSchemaMerge {
+        source: Box<ObjectSchemaMergeError>,
+        a: SchemaObject,
+        b: SchemaObject,
+    },
+    #[error("Error in merging schemas: {0}")]
+    SchemaMerge(#[from] SchemaMergeError),
+    #[error("Error in merging schemas: {0}")]
+    NotSchemaMerge(#[from] Box<NotSchemaMergeError>),
+}
+
 fn try_merge_with_subschemas_not(
     schema_object: SchemaObject,
     not_subschemas: &SubschemaValidation,
     defs: &BTreeMap<RefKey, Schema>,
-) -> Result<SchemaObject, ()> {
+) -> Result<SchemaObject, NotSubschemaMergeError> {
     debug!("try_merge_with_subschemas_not");
     match not_subschemas {
         SubschemaValidation {
@@ -542,7 +729,13 @@ fn try_merge_with_subschemas_not(
                 })),
                 ..Default::default()
             };
-            merge_schema_object(&schema_object, &new_other, defs)
+            merge_schema_object(&schema_object, &new_other, defs).map_err(|source| {
+                NotSubschemaMergeError::ObjectSchemaMerge {
+                    source: Box::new(source),
+                    a: schema_object,
+                    b: new_other,
+                }
+            })
         }
 
         SubschemaValidation {
@@ -588,7 +781,8 @@ fn try_merge_with_subschemas_not(
             then_schema: None,
             else_schema: None,
         } => match try_merge_all(all_of, defs) {
-            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
+            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs)
+                .map_err(|e| Box::new(e).into()),
             Err(_) => Ok(schema_object),
         },
 
@@ -799,9 +993,9 @@ fn merge_so_array(
                     (Some(SingleOrVec::Single(aa_single)), _),
                     (Some(SingleOrVec::Single(bb_single)), _),
                 ) => (
-                    Some(SingleOrVec::Single(Box::new(try_merge_schema(
-                        aa_single, bb_single, defs,
-                    )?))),
+                    Some(SingleOrVec::Single(Box::new(
+                        try_merge_schema(aa_single, bb_single, defs).map_err(|_| ())?,
+                    ))),
                     None,
                     max_items,
                 ),
@@ -824,10 +1018,15 @@ fn merge_so_array(
                     )?;
 
                     if allow_additional_items {
-                        let additional_items = additional_items.as_deref().map_or_else(
-                            || Ok(single.as_ref().clone()),
-                            |additional_schema| try_merge_schema(additional_schema, single, defs),
-                        )?;
+                        let additional_items = additional_items
+                            .as_deref()
+                            .map_or_else(
+                                || Ok(single.as_ref().clone()),
+                                |additional_schema| {
+                                    try_merge_schema(additional_schema, single, defs)
+                                },
+                            )
+                            .map_err(|_| ())?;
                         (
                             Some(SingleOrVec::Vec(items)),
                             Some(Box::new(additional_items)),
@@ -1528,11 +1727,7 @@ mod tests {
 
         let ab = try_merge_schema(&a, &b, &Default::default());
 
-        assert!(
-            ab.is_err(),
-            "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
-        );
+        assert!(ab.is_err(), "{:#?}", &ab,);
 
         let a = json!({
             "type": "array",
@@ -1559,11 +1754,7 @@ mod tests {
 
         let ab = try_merge_schema(&a, &b, &Default::default());
 
-        assert!(
-            ab.is_err(),
-            "{}",
-            serde_json::to_string_pretty(&ab).unwrap(),
-        );
+        assert!(ab.is_err(), "{:#?}", &ab,);
     }
 
     #[test]
