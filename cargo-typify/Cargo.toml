@@ -19,7 +19,7 @@ color-eyre = "0.6"
 env_logger = "0.10"
 rustfmt-wrapper = "0.2.1"
 semver = "1.0.23"
-serde_json = "1.0.128"
+serde_json = "1.0.132"
 schemars = "0.8.21"
 
 [dev-dependencies]
