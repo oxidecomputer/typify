@@ -15,7 +15,7 @@ quote = "1.0.37"
 regress = "0.10.1"
 schemars = "0.8.21"
 semver = "1.0.23"
-serde = "1.0.210"
+serde = "1.0.214"
 serde_json = "1.0.132"
 syn = { version = "2.0.87", features = ["full"] }
 thiserror = "1.0.65"
