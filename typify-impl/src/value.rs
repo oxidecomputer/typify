@@ -620,9 +620,9 @@ mod tests {
                     &type_space,
                     &json!(
                         {
-                        "a": "aaaa",
-                        "b": 7,
-                        "c": "cccc"
+                            "a": "aaaa",
+                            "b": 7,
+                            "c": "cccc"
                         }
                     ),
                     &quote! {super::}
@@ -662,9 +662,9 @@ mod tests {
                     &type_space,
                     &json!(
                         {
-                        "a": "aaaa",
-                        "b": 7,
-                        "c": "cccc"
+                            "a": "aaaa",
+                            "b": 7,
+                            "c": "cccc"
                         }
                     ),
                     &quote! {}

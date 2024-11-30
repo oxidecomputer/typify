@@ -113,11 +113,9 @@ fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
 
     impl syn::visit_mut::VisitMut for Visitor {
         fn visit_path_mut(&mut self, path: &mut syn::Path) {
-            dbg!("Before", path.to_token_stream().to_string());
-
             // Check if path starts with ::std
             if path.leading_colon.is_some()
-                && path.segments.len() >= 1
+                && !path.segments.is_empty()
                 && path.segments[0].ident == "std"
             {
                 // Fun additional hack to keep you on your toes:
@@ -135,19 +133,13 @@ fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
                 }
             }
 
-            dbg!("After", path.to_token_stream().to_string());
-
             // Delegate to the default impl to visit nested paths
             syn::visit_mut::visit_path_mut(self, path);
         }
     }
 
-    dbg!("Canonicalized: ", input.to_token_stream().to_string());
     let mut visitor = Visitor;
     syn::visit_mut::visit_derive_input_mut(&mut visitor, &mut input);
-
-    dbg!("Decanonialized: ", input.to_token_stream().to_string());
-
     input
 }
 
