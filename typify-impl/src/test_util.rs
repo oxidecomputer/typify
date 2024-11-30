@@ -3,7 +3,7 @@
 use std::{any::type_name, collections::HashSet};
 
 use proc_macro2::TokenStream;
-use quote::ToTokens;
+use quote::{quote, ToTokens};
 use rustfmt_wrapper::rustfmt;
 use schema::Schema;
 use schemars::{schema_for, JsonSchema};
@@ -81,12 +81,74 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     assert!(!file.items.is_empty(), "{}", output.to_string());
     let actual = parse2::<DeriveInput>(file.items.first().unwrap().to_token_stream()).unwrap();
 
+    // Fun hack to make sure we're comparing apples to apples
+    let actual = decanonicalize_std_types(actual);
+
     // Make sure they match.
     if let Err(err) = expected.syn_cmp(&actual, ignore_variant_names) {
         println!("{}", serde_json::to_string_pretty(&schema_for!(T)).unwrap());
         println!("{}", rustfmt(output.to_string()).unwrap());
         panic!("{}", err);
     }
+}
+
+/// Reverse the canonicalization of Rust standard types performed in the codegen logic so that it
+/// is reasonable to expect that the generated Rust binding matches exactly the Rust type from
+/// which the JSON Schema was generated.
+///
+/// The code generation logic that generates Rust bindings given JSON Schema always canonicalizes
+/// any standard type (eg, `Option` is output as `::std::option::Option`), to avoid potential
+/// conflicts with types in the JSON schema with conflicting names like `Option`.  Unfortunately,
+/// this complicates the test cases that start with a Rust type that implements `JsonSchema`, use
+/// that to generate a JSON schema for that type, then use typify to generate a Rust binding for
+/// that type, and expects that the Rust AST for the source type and the generated type are exactly
+/// the same.
+///
+/// To work around this, this somewhat inelegant function simply finds every type in the input AST
+/// that starts with `::std`, and strips everything but the simple type name.  This will break if
+/// any of the input Rust types ever use fully-qualified type names that start with `::std`, but
+/// the solution is to simply not do that :)
+fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
+    struct Visitor;
+
+    impl syn::visit_mut::VisitMut for Visitor {
+        fn visit_path_mut(&mut self, path: &mut syn::Path) {
+            dbg!("Before", path.to_token_stream().to_string());
+
+            // Check if path starts with ::std
+            if path.leading_colon.is_some()
+                && path.segments.len() >= 1
+                && path.segments[0].ident == "std"
+            {
+                // Fun additional hack to keep you on your toes:
+                // The test structs that have a HashMap for some reason *do* declare it with the
+                // fully-qualified type name, so don't mess with HashMap
+                if *path
+                    != syn::parse_quote! { ::std::collections::HashMap<::std::string::String, ::std::string::String> }
+                {
+                    if let Some(last_segment) = path.segments.last().cloned() {
+                        // Replace the entire path with just the last segment
+                        path.leading_colon = None;
+                        path.segments.clear();
+                        path.segments.push(last_segment);
+                    }
+                }
+            }
+
+            dbg!("After", path.to_token_stream().to_string());
+
+            // Delegate to the default impl to visit nested paths
+            syn::visit_mut::visit_path_mut(self, path);
+        }
+    }
+
+    dbg!("Canonicalized: ", input.to_token_stream().to_string());
+    let mut visitor = Visitor;
+    syn::visit_mut::visit_derive_input_mut(&mut visitor, &mut input);
+
+    dbg!("Decanonialized: ", input.to_token_stream().to_string());
+
+    input
 }
 
 #[macro_export]

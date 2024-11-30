@@ -40,14 +40,14 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct Fruit(pub ::serde_json::Map<String, ::serde_json::Value>);
+pub struct Fruit(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for Fruit {
-    type Target = ::serde_json::Map<String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<String, ::serde_json::Value> {
+    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
+    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
         &self.0
     }
 }
-impl From<Fruit> for ::serde_json::Map<String, ::serde_json::Value> {
+impl From<Fruit> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -57,8 +57,8 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<::serde_json::Map<String, ::serde_json::Value>> for Fruit {
-    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
+impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for Fruit {
+    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -141,7 +141,7 @@ pub struct Veggie {
     pub veggie_like: bool,
     #[doc = "The name of the vegetable."]
     #[serde(rename = "veggieName")]
-    pub veggie_name: String,
+    pub veggie_name: ::std::string::String,
 }
 impl From<&Veggie> for Veggie {
     fn from(value: &Veggie) -> Self {
@@ -182,10 +182,10 @@ impl Veggie {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Veggies {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub fruits: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub vegetables: Vec<Veggie>,
+    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    pub fruits: ::std::vec::Vec<::std::string::String>,
+    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    pub vegetables: ::std::vec::Vec<Veggie>,
 }
 impl From<&Veggies> for Veggies {
     fn from(value: &Veggies) -> Self {
@@ -201,8 +201,8 @@ impl Veggies {
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Veggie {
-        veggie_like: Result<bool, String>,
-        veggie_name: Result<String, String>,
+        veggie_like: ::std::result::Result<bool, String>,
+        veggie_name: ::std::result::Result<::std::string::String, String>,
     }
     impl Default for Veggie {
         fn default() -> Self {
@@ -225,7 +225,7 @@ pub mod builder {
         }
         pub fn veggie_name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<String>,
+            T: std::convert::TryInto<::std::string::String>,
             T::Error: std::fmt::Display,
         {
             self.veggie_name = value
@@ -234,9 +234,9 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<Veggie> for super::Veggie {
+    impl ::std::convert::TryFrom<Veggie> for super::Veggie {
         type Error = super::error::ConversionError;
-        fn try_from(value: Veggie) -> Result<Self, super::error::ConversionError> {
+        fn try_from(value: Veggie) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 veggie_like: value.veggie_like?,
                 veggie_name: value.veggie_name?,
@@ -253,8 +253,8 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Veggies {
-        fruits: Result<Vec<String>, String>,
-        vegetables: Result<Vec<super::Veggie>, String>,
+        fruits: ::std::result::Result<::std::vec::Vec<::std::string::String>, String>,
+        vegetables: ::std::result::Result<::std::vec::Vec<super::Veggie>, String>,
     }
     impl Default for Veggies {
         fn default() -> Self {
@@ -267,7 +267,7 @@ pub mod builder {
     impl Veggies {
         pub fn fruits<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<String>>,
+            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
             T::Error: std::fmt::Display,
         {
             self.fruits = value
@@ -277,7 +277,7 @@ pub mod builder {
         }
         pub fn vegetables<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::Veggie>>,
+            T: std::convert::TryInto<::std::vec::Vec<super::Veggie>>,
             T::Error: std::fmt::Display,
         {
             self.vegetables = value
@@ -286,9 +286,9 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<Veggies> for super::Veggies {
+    impl ::std::convert::TryFrom<Veggies> for super::Veggies {
         type Error = super::error::ConversionError;
-        fn try_from(value: Veggies) -> Result<Self, super::error::ConversionError> {
+        fn try_from(value: Veggies) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 fruits: value.fruits?,
                 vegetables: value.vegetables?,

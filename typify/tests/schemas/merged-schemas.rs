@@ -40,8 +40,8 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct BarProp {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bar: Option<::serde_json::Value>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub bar: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&BarProp> for BarProp {
     fn from(value: &BarProp) -> Self {
@@ -69,8 +69,8 @@ impl From<&BarProp> for BarProp {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ButNotThat {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub this: Option<::serde_json::Value>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub this: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&ButNotThat> for ButNotThat {
     fn from(value: &ButNotThat) -> Self {
@@ -101,10 +101,10 @@ impl From<&ButNotThat> for ButNotThat {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct CommentedTypeMerged {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub x: Option<::serde_json::Value>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub y: Option<::serde_json::Value>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub x: ::std::option::Option<::serde_json::Value>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub y: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&CommentedTypeMerged> for CommentedTypeMerged {
     fn from(value: &CommentedTypeMerged) -> Self {
@@ -152,16 +152,16 @@ impl From<&CommentedTypeMerged> for CommentedTypeMerged {
 #[serde(untagged)]
 pub enum HereAndThere {
     Variant0 {
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        bar: Option<String>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        foo: Option<String>,
+        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        bar: ::std::option::Option<::std::string::String>,
+        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        foo: ::std::option::Option<::std::string::String>,
     },
     Variant1 {
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        baz: Option<String>,
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        foo: Option<String>,
+        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        baz: ::std::option::Option<::std::string::String>,
+        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        foo: ::std::option::Option<::std::string::String>,
     },
 }
 impl From<&HereAndThere> for HereAndThere {
@@ -186,8 +186,8 @@ impl From<&HereAndThere> for HereAndThere {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct JsonResponseBase {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub result: Option<String>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub result: ::std::option::Option<::std::string::String>,
 }
 impl From<&JsonResponseBase> for JsonResponseBase {
     fn from(value: &JsonResponseBase) -> Self {
@@ -218,7 +218,7 @@ impl From<&JsonResponseBase> for JsonResponseBase {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct JsonSuccess {
-    pub msg: String,
+    pub msg: ::std::string::String,
     pub result: JsonSuccessResult,
 }
 impl From<&JsonSuccess> for JsonSuccess {
@@ -259,7 +259,7 @@ impl From<&JsonSuccess> for JsonSuccess {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct JsonSuccessBase {
-    pub msg: String,
+    pub msg: ::std::string::String,
     pub result: JsonSuccessBaseResult,
 }
 impl From<&JsonSuccessBase> for JsonSuccessBase {
@@ -310,7 +310,7 @@ impl ::std::fmt::Display for JsonSuccessBaseResult {
 }
 impl std::str::FromStr for JsonSuccessBaseResult {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "success" => Ok(Self::Success),
             _ => Err("invalid value".into()),
@@ -319,19 +319,23 @@ impl std::str::FromStr for JsonSuccessBaseResult {
 }
 impl std::convert::TryFrom<&str> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for JsonSuccessBaseResult {
+impl std::convert::TryFrom<&::std::string::String> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for JsonSuccessBaseResult {
+impl std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -378,7 +382,7 @@ impl ::std::fmt::Display for JsonSuccessResult {
 }
 impl std::str::FromStr for JsonSuccessResult {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "success" => Ok(Self::Success),
             _ => Err("invalid value".into()),
@@ -387,19 +391,23 @@ impl std::str::FromStr for JsonSuccessResult {
 }
 impl std::convert::TryFrom<&str> for JsonSuccessResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for JsonSuccessResult {
+impl std::convert::TryFrom<&::std::string::String> for JsonSuccessResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for JsonSuccessResult {
+impl std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -444,26 +452,26 @@ impl From<std::num::NonZeroU64> for NarrowNumber {
     }
 }
 impl std::str::FromStr for NarrowNumber {
-    type Err = <std::num::NonZeroU64 as std::str::FromStr>::Err;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    type Err = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
 impl std::convert::TryFrom<&str> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as std::str::FromStr>::Err;
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as std::str::FromStr>::Err;
-    fn try_from(value: &String) -> Result<Self, Self::Error> {
+    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as std::str::FromStr>::Err;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
@@ -498,8 +506,8 @@ impl ::std::fmt::Display for NarrowNumber {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OrderDependentMerge {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bar: Option<::serde_json::Value>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
 impl From<&OrderDependentMerge> for OrderDependentMerge {
@@ -566,8 +574,8 @@ impl From<&Pickingone> for Pickingone {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneInstallation {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub suspended_by: Option<PickingoneUser>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub suspended_by: ::std::option::Option<PickingoneUser>,
 }
 impl From<&PickingoneInstallation> for PickingoneInstallation {
     fn from(value: &PickingoneInstallation) -> Self {
@@ -606,8 +614,8 @@ impl From<&PickingoneInstallation> for PickingoneInstallation {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneSuspendedBy {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub email: ::std::option::Option<::std::string::String>,
 }
 impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
     fn from(value: &PickingoneSuspendedBy) -> Self {
@@ -634,8 +642,8 @@ impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneUser {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub email: ::std::option::Option<::std::string::String>,
 }
 impl From<&PickingoneUser> for PickingoneUser {
     fn from(value: &PickingoneUser) -> Self {
@@ -886,8 +894,8 @@ impl From<&Unsatisfiable3> for Unsatisfiable3 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Unsatisfiable3A {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<Unsatisfiable3C>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub action: ::std::option::Option<Unsatisfiable3C>,
 }
 impl From<&Unsatisfiable3A> for Unsatisfiable3A {
     fn from(value: &Unsatisfiable3A) -> Self {
@@ -937,7 +945,7 @@ impl ::std::fmt::Display for Unsatisfiable3B {
 }
 impl std::str::FromStr for Unsatisfiable3B {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "bar" => Ok(Self::Bar),
             _ => Err("invalid value".into()),
@@ -946,19 +954,23 @@ impl std::str::FromStr for Unsatisfiable3B {
 }
 impl std::convert::TryFrom<&str> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for Unsatisfiable3B {
+impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for Unsatisfiable3B {
+impl std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1005,7 +1017,7 @@ impl ::std::fmt::Display for Unsatisfiable3C {
 }
 impl std::str::FromStr for Unsatisfiable3C {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "foo" => Ok(Self::Foo),
             _ => Err("invalid value".into()),
@@ -1014,19 +1026,23 @@ impl std::str::FromStr for Unsatisfiable3C {
 }
 impl std::convert::TryFrom<&str> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for Unsatisfiable3C {
+impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for Unsatisfiable3C {
+impl std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1156,18 +1172,18 @@ impl std::convert::TryFrom<String> for Unsatisfiable3C {
 #[serde(untagged)]
 pub enum WeirdEnum {
     Variant0 {
-        pattern: String,
+        pattern: ::std::string::String,
     },
     Variant1 {
-        patterns: String,
+        patterns: ::std::string::String,
     },
     Variant2 {
         #[serde(rename = "pattern-either")]
-        pattern_either: String,
+        pattern_either: ::std::string::String,
     },
     Variant3 {
         #[serde(rename = "pattern-regex")]
-        pattern_regex: String,
+        pattern_regex: ::std::string::String,
     },
 }
 impl From<&WeirdEnum> for WeirdEnum {

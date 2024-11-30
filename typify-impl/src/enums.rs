@@ -1470,7 +1470,7 @@ mod tests {
             #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
             pub enum ResultX {
                 Ok(u32),
-                Err(String),
+                Err(::std::string::String),
             }
 
             impl From<&ResultX> for ResultX {
@@ -1522,7 +1522,7 @@ mod tests {
             #[derive(::serde::Deserialize, ::serde::Serialize, A, B, C, Clone, D, Debug)]
             pub enum ResultX {
                 Ok(u32),
-                Err(String),
+                Err(::std::string::String),
             }
 
             impl From<&ResultX> for ResultX {

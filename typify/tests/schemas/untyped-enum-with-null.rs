@@ -51,7 +51,7 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
-    pub value: Option<TestTypeValue>,
+    pub value: ::std::option::Option<TestTypeValue>,
 }
 impl From<&TestType> for TestType {
     fn from(value: &TestType) -> Self {
@@ -109,7 +109,7 @@ impl ::std::fmt::Display for TestTypeValue {
 }
 impl std::str::FromStr for TestTypeValue {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "start" => Ok(Self::Start),
             "middle" => Ok(Self::Middle),
@@ -120,19 +120,23 @@ impl std::str::FromStr for TestTypeValue {
 }
 impl std::convert::TryFrom<&str> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for TestTypeValue {
+impl std::convert::TryFrom<&::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for TestTypeValue {
+impl std::convert::TryFrom<::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

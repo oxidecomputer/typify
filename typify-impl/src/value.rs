@@ -66,14 +66,14 @@ impl TypeEntry {
 
             TypeEntryDetails::Option(type_id) => {
                 if let serde_json::Value::Null = value {
-                    quote! { None }
+                    quote! { ::std::option::Option::None }
                 } else {
                     let inner = type_space
                         .id_to_entry
                         .get(type_id)
                         .unwrap()
                         .output_value(type_space, value, scope)?;
-                    quote! { Some(#inner) }
+                    quote! { ::std::option::Option::Some(#inner) }
                 }
             }
             TypeEntryDetails::Box(type_id) => {
@@ -82,7 +82,7 @@ impl TypeEntry {
                     .get(type_id)
                     .unwrap()
                     .output_value(type_space, value, scope)?;
-                quote! { Box::new(#inner) }
+                quote! { ::std::boxed::Box::new(#inner) }
             }
             // TODO: this should become a HashSet<_> once we figure out the
             // derives more precisely.
@@ -457,13 +457,13 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("None".to_string()),
+            Some(":: std :: option :: Option :: None".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (42_u32)".to_string()),
+            Some(":: std :: option :: Option :: Some (42_u32)".to_string()),
         );
     }
 
@@ -480,13 +480,16 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Box :: new (None)".to_string()),
+            Some(":: std :: boxed :: Box :: new (:: std :: option :: Option :: None)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Box :: new (Some (42_u32))".to_string()),
+            Some(
+                ":: std :: boxed :: Box :: new (:: std :: option :: Option :: Some (42_u32))"
+                    .to_string()
+            ),
         );
     }
 
@@ -568,19 +571,19 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(true), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (true)".to_string()),
+            Some(":: std :: option :: Option :: Some (true)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(false), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (false)".to_string()),
+            Some(":: std :: option :: Option :: Some (false)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("None".to_string()),
+            Some(":: std :: option :: Option :: None".to_string()),
         );
     }
 
@@ -617,9 +620,9 @@ mod tests {
                     &type_space,
                     &json!(
                         {
-                            "a": "aaaa",
-                            "b": 7,
-                            "c": "cccc"
+                        "a": "aaaa",
+                        "b": 7,
+                        "c": "cccc"
                         }
                     ),
                     &quote! {super::}
@@ -630,7 +633,7 @@ mod tests {
                     super::Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string()),
+                        c: ::std::option::Option::Some("cccc".to_string()),
                         d: Default::default()
                     }
                 }
@@ -659,9 +662,9 @@ mod tests {
                     &type_space,
                     &json!(
                         {
-                            "a": "aaaa",
-                            "b": 7,
-                            "c": "cccc"
+                        "a": "aaaa",
+                        "b": 7,
+                        "c": "cccc"
                         }
                     ),
                     &quote! {}
@@ -672,7 +675,7 @@ mod tests {
                     Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string()),
+                        c: ::std::option::Option::Some("cccc".to_string()),
                         d: Default::default()
                     }
                 }

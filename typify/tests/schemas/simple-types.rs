@@ -64,8 +64,8 @@ impl From<&AnythingWorks> for AnythingWorks {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct FloatsArentTerribleImTold {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flush_timeout: Option<f32>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub flush_timeout: ::std::option::Option<f32>,
 }
 impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
     fn from(value: &FloatsArentTerribleImTold) -> Self {
@@ -95,14 +95,14 @@ impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
     PartialEq,
     PartialOrd,
 )]
-pub struct JustOne(pub String);
+pub struct JustOne(pub ::std::string::String);
 impl ::std::ops::Deref for JustOne {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<JustOne> for String {
+impl From<JustOne> for ::std::string::String {
     fn from(value: JustOne) -> Self {
         value.0
     }
@@ -112,14 +112,14 @@ impl From<&JustOne> for JustOne {
         value.clone()
     }
 }
-impl From<String> for JustOne {
-    fn from(value: String) -> Self {
+impl From<::std::string::String> for JustOne {
+    fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for JustOne {
-    type Err = std::convert::Infallible;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+impl ::std::str::FromStr for JustOne {
+    type Err = ::std::convert::Infallible;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
     }
 }

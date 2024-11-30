@@ -23,6 +23,8 @@ fn test_schemas() {
 }
 
 fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
+    println!("Testing the processing of schema: {}", path.display());
+
     let mut out_path = path.clone();
     out_path.set_extension("rs");
 

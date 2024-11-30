@@ -1,0 +1,491 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Test schema with various definitions, type names, and properties that likely conflict with built-in Rust types and keywords",
+  "definitions": {
+    "std": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "convert": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "fmt": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "str": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "string": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "option": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        },
+        "boxed": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["value"]
+        }
+      },
+      "required": [
+        "result",
+        "convert",
+        "fmt",
+        "str",
+        "string",
+        "option",
+        "boxed"
+      ]
+    },
+    "Box": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      },
+      "required": ["data"]
+    },
+    "Option": {
+      "type": "object",
+      "properties": {
+        "maybe": {
+          "type": "string"
+        }
+      },
+      "required": ["maybe"]
+    },
+    "Vec": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["items"]
+    },
+    "String": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": ["text"]
+    },
+    "Copy": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer"
+        }
+      },
+      "required": ["value"]
+    },
+    "Sync": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      },
+      "required": ["data"]
+    },
+    "Send": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": ["message"]
+    },
+    "Pin": {
+      "type": "object",
+      "properties": {
+        "pointer": {
+          "type": "string"
+        }
+      },
+      "required": ["pointer"]
+    },
+    "Drop": {
+      "type": "object",
+      "properties": {
+        "cleanup": {
+          "type": "boolean"
+        }
+      },
+      "required": ["cleanup"]
+    },
+    "TypeWithOptionField": {
+      "type": "object",
+      "properties": {
+        "optional_field": {
+          "type": ["string", "null"]
+        },
+        "boxed_field": {
+          "$ref": "#/definitions/Box"
+        }
+      },
+      "required": ["boxed_field"]
+    },
+    "StringNewtype": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "StringEnum": {
+      "type": "string",
+      "enum": ["one", "two", "three"]
+    },
+    "RustKeywordMonster": {
+      "type": "object",
+      "properties": {
+        "as": {
+          "type": "string"
+        },
+        "break": {
+          "type": "string"
+        },
+        "const": {
+          "type": "string"
+        },
+        "continue": {
+          "type": "string"
+        },
+        "crate": {
+          "type": "string"
+        },
+        "else": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "string"
+        },
+        "extern": {
+          "type": "string"
+        },
+        "false": {
+          "type": "string"
+        },
+        "fn": {
+          "type": "string"
+        },
+        "for": {
+          "type": "string"
+        },
+        "if": {
+          "type": "string"
+        },
+        "impl": {
+          "type": "string"
+        },
+        "in": {
+          "type": "string"
+        },
+        "let": {
+          "type": "string"
+        },
+        "loop": {
+          "type": "string"
+        },
+        "match": {
+          "type": "string"
+        },
+        "mod": {
+          "type": "string"
+        },
+        "move": {
+          "type": "string"
+        },
+        "mut": {
+          "type": "string"
+        },
+        "pub": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "return": {
+          "type": "string"
+        },
+        "self": {
+          "type": "string"
+        },
+        "static": {
+          "type": "string"
+        },
+        "struct": {
+          "type": "string"
+        },
+        "super": {
+          "type": "string"
+        },
+        "trait": {
+          "type": "string"
+        },
+        "true": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "unsafe": {
+          "type": "string"
+        },
+        "use": {
+          "type": "string"
+        },
+        "where": {
+          "type": "string"
+        },
+        "while": {
+          "type": "string"
+        },
+        "async": {
+          "type": "string"
+        },
+        "await": {
+          "type": "string"
+        },
+        "dyn": {
+          "type": "string"
+        },
+        "abstract": {
+          "type": "string"
+        },
+        "become": {
+          "type": "string"
+        },
+        "box": {
+          "type": "string"
+        },
+        "do": {
+          "type": "string"
+        },
+        "final": {
+          "type": "string"
+        },
+        "macro": {
+          "type": "string"
+        },
+        "override": {
+          "type": "string"
+        },
+        "priv": {
+          "type": "string"
+        },
+        "typeof": {
+          "type": "string"
+        },
+        "unsized": {
+          "type": "string"
+        },
+        "virtual": {
+          "type": "string"
+        },
+        "yield": {
+          "type": "string"
+        },
+        "try": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "as",
+        "break",
+        "const",
+        "continue",
+        "crate",
+        "else",
+        "enum",
+        "extern",
+        "false",
+        "fn",
+        "for",
+        "if",
+        "impl",
+        "in",
+        "let",
+        "loop",
+        "match",
+        "mod",
+        "move",
+        "mut",
+        "pub",
+        "ref",
+        "return",
+        "self",
+        "static",
+        "struct",
+        "super",
+        "trait",
+        "true",
+        "type",
+        "unsafe",
+        "use",
+        "where",
+        "while",
+        "async",
+        "await",
+        "dyn",
+        "abstract",
+        "become",
+        "box",
+        "do",
+        "final",
+        "macro",
+        "override",
+        "priv",
+        "typeof",
+        "unsized",
+        "virtual",
+        "yield",
+        "try"
+      ]
+    },
+    "MapOfKeywords": {
+      "type": "object",
+      "properties": {
+        "keyword_map": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "type",
+              "impl",
+              "fn",
+              "let",
+              "match",
+              "mod",
+              "move",
+              "pub",
+              "ref",
+              "self",
+              "super",
+              "trait",
+              "use",
+              "where"
+            ]
+          }
+        }
+      },
+      "required": ["keyword_map"]
+    },
+    "NestedTypeCollisions": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/TypeWithOptionField"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TypeWithOptionField"
+          }
+        },
+        "option_type": {
+          "type": ["null", "object"],
+          "properties": {
+            "type": { "type": "string" }
+          }
+        }
+      },
+      "required": ["type", "types"]
+    },
+
+    "KeywordFieldsEnum": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "match": { "type": "integer" },
+            "ref": { "type": "boolean" },
+            "impl": { "type": "string" }
+          },
+          "required": ["type", "match", "ref", "impl"]
+        },
+        {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      ]
+    },
+
+    "FlattenedKeywords": {
+      "type": "object",
+      "properties": {
+        "normal": { "type": "string" }
+      },
+      "required": ["normal"],
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+
+    "DoubleOptionCollision": {
+      "type": "object",
+      "properties": {
+        "option": {
+          "type": ["null", "object"],
+          "properties": {
+            "option": {
+              "type": ["null", "string"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

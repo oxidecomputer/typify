@@ -117,8 +117,8 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OuterThing {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub thing: Option<ThingWithDefaults>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub thing: ::std::option::Option<ThingWithDefaults>,
 }
 impl From<&OuterThing> for OuterThing {
     fn from(value: &OuterThing) -> Self {
@@ -162,7 +162,7 @@ impl From<&OuterThing> for OuterThing {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
-    pub any: Vec<::serde_json::Value>,
+    pub any: ::std::vec::Vec<::serde_json::Value>,
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
@@ -197,10 +197,14 @@ impl From<&TestBed> for TestBed {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ThingWithDefaults {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub a: Option<String>,
-    #[serde(rename = "type", default, skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    pub a: ::std::option::Option<::std::string::String>,
+    #[serde(
+        rename = "type",
+        default,
+        skip_serializing_if = "std::option::Option::is_none"
+    )]
+    pub type_: ::std::option::Option<::std::string::String>,
 }
 impl From<&ThingWithDefaults> for ThingWithDefaults {
     fn from(value: &ThingWithDefaults) -> Self {
@@ -211,7 +215,7 @@ impl Default for ThingWithDefaults {
     fn default() -> Self {
         ThingWithDefaults {
             a: Default::default(),
-            type_: Some("bee".to_string()),
+            type_: ::std::option::Option::Some("bee".to_string()),
         }
     }
 }
@@ -228,7 +232,7 @@ pub mod defaults {
         serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
             .unwrap()
     }
-    pub(super) fn test_bed_any() -> Vec<::serde_json::Value> {
+    pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
             serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[5,3,0,9]").unwrap(),

@@ -42,14 +42,14 @@ pub mod error {
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
-pub struct Fruit(pub ::serde_json::Map<String, ::serde_json::Value>);
+pub struct Fruit(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for Fruit {
-    type Target = ::serde_json::Map<String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<String, ::serde_json::Value> {
+    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
+    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
         &self.0
     }
 }
-impl From<Fruit> for ::serde_json::Map<String, ::serde_json::Value> {
+impl From<Fruit> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -59,8 +59,8 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<::serde_json::Map<String, ::serde_json::Value>> for Fruit {
-    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
+impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for Fruit {
+    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -147,7 +147,7 @@ pub struct Veggie {
     pub veggie_like: bool,
     #[doc = "The name of the vegetable."]
     #[serde(rename = "veggieName")]
-    pub veggie_name: String,
+    pub veggie_name: ::std::string::String,
 }
 impl From<&Veggie> for Veggie {
     fn from(value: &Veggie) -> Self {
@@ -185,10 +185,10 @@ impl From<&Veggie> for Veggie {
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
 pub struct Veggies {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub fruits: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub vegetables: Vec<Veggie>,
+    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    pub fruits: ::std::vec::Vec<::std::string::String>,
+    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    pub vegetables: ::std::vec::Vec<Veggie>,
 }
 impl From<&Veggies> for Veggies {
     fn from(value: &Veggies) -> Self {

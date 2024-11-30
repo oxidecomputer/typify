@@ -53,7 +53,8 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TestGrammarForPatternProperties {
-    pub rules: ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, String>,
+    pub rules:
+        ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, ::std::string::String>,
 }
 impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
     fn from(value: &TestGrammarForPatternProperties) -> Self {
@@ -72,14 +73,14 @@ impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties 
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct TestGrammarForPatternPropertiesRulesKey(String);
+pub struct TestGrammarForPatternPropertiesRulesKey(::std::string::String);
 impl ::std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<TestGrammarForPatternPropertiesRulesKey> for String {
+impl From<TestGrammarForPatternPropertiesRulesKey> for ::std::string::String {
     fn from(value: TestGrammarForPatternPropertiesRulesKey) -> Self {
         value.0
     }
@@ -91,7 +92,7 @@ impl From<&TestGrammarForPatternPropertiesRulesKey> for TestGrammarForPatternPro
 }
 impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^[a-zA-Z_]\\w*$")
             .unwrap()
             .find(value)
@@ -104,32 +105,33 @@ impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
 }
 impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&String> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::TryFrom<&::std::string::String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::TryFrom<::std::string::String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        String::deserialize(deserializer)?
-            .parse()
-            .map_err(|e: self::error::ConversionError| {
-                <D::Error as ::serde::de::Error>::custom(e.to_string())
-            })
+        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 fn main() {}

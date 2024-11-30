@@ -80,14 +80,18 @@ impl From<&TestType> for TestType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Eq, PartialEq)]
-pub struct TypeThatHasMoreDerives(pub ::std::collections::HashMap<String, String>);
+pub struct TypeThatHasMoreDerives(
+    pub ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+);
 impl ::std::ops::Deref for TypeThatHasMoreDerives {
-    type Target = ::std::collections::HashMap<String, String>;
-    fn deref(&self) -> &::std::collections::HashMap<String, String> {
+    type Target = ::std::collections::HashMap<::std::string::String, ::std::string::String>;
+    fn deref(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.0
     }
 }
-impl From<TypeThatHasMoreDerives> for ::std::collections::HashMap<String, String> {
+impl From<TypeThatHasMoreDerives>
+    for ::std::collections::HashMap<::std::string::String, ::std::string::String>
+{
     fn from(value: TypeThatHasMoreDerives) -> Self {
         value.0
     }
@@ -97,8 +101,12 @@ impl From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<String, String>> for TypeThatHasMoreDerives {
-    fn from(value: ::std::collections::HashMap<String, String>) -> Self {
+impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
+    for TypeThatHasMoreDerives
+{
+    fn from(
+        value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) -> Self {
         Self(value)
     }
 }

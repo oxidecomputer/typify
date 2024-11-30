@@ -57,7 +57,7 @@ mod types {
         PartialOrd,
     )]
     pub struct AllTheTraits {
-        pub ok: String,
+        pub ok: ::std::string::String,
     }
     impl From<&AllTheTraits> for AllTheTraits {
         fn from(value: &AllTheTraits) -> Self {
@@ -96,7 +96,7 @@ mod types {
     #[doc = r" </details>"]
     #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
     pub struct CompoundType {
-        pub value1: String,
+        pub value1: ::std::string::String,
         pub value2: u64,
     }
     impl From<&CompoundType> for CompoundType {
@@ -196,7 +196,7 @@ mod types {
     }
     impl std::str::FromStr for StringEnum {
         type Err = self::error::ConversionError;
-        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
                 "One" => Ok(Self::One),
                 "Two" => Ok(Self::Two),
@@ -207,19 +207,23 @@ mod types {
     }
     impl std::convert::TryFrom<&str> for StringEnum {
         type Error = self::error::ConversionError;
-        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+        fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
-    impl std::convert::TryFrom<&String> for StringEnum {
+    impl std::convert::TryFrom<&::std::string::String> for StringEnum {
         type Error = self::error::ConversionError;
-        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+        fn try_from(
+            value: &::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
-    impl std::convert::TryFrom<String> for StringEnum {
+    impl std::convert::TryFrom<::std::string::String> for StringEnum {
         type Error = self::error::ConversionError;
-        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
@@ -227,7 +231,7 @@ mod types {
     pub mod builder {
         #[derive(Clone, Debug)]
         pub struct AllTheTraits {
-            ok: Result<String, String>,
+            ok: ::std::result::Result<::std::string::String, String>,
         }
         impl Default for AllTheTraits {
             fn default() -> Self {
@@ -239,7 +243,7 @@ mod types {
         impl AllTheTraits {
             pub fn ok<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<String>,
+                T: std::convert::TryInto<::std::string::String>,
                 T::Error: std::fmt::Display,
             {
                 self.ok = value
@@ -248,9 +252,11 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
+        impl ::std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
             type Error = super::error::ConversionError;
-            fn try_from(value: AllTheTraits) -> Result<Self, super::error::ConversionError> {
+            fn try_from(
+                value: AllTheTraits,
+            ) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self { ok: value.ok? })
             }
         }
@@ -261,8 +267,8 @@ mod types {
         }
         #[derive(Clone, Debug)]
         pub struct CompoundType {
-            value1: Result<String, String>,
-            value2: Result<u64, String>,
+            value1: ::std::result::Result<::std::string::String, String>,
+            value2: ::std::result::Result<u64, String>,
         }
         impl Default for CompoundType {
             fn default() -> Self {
@@ -275,7 +281,7 @@ mod types {
         impl CompoundType {
             pub fn value1<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<String>,
+                T: std::convert::TryInto<::std::string::String>,
                 T::Error: std::fmt::Display,
             {
                 self.value1 = value
@@ -294,9 +300,11 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<CompoundType> for super::CompoundType {
+        impl ::std::convert::TryFrom<CompoundType> for super::CompoundType {
             type Error = super::error::ConversionError;
-            fn try_from(value: CompoundType) -> Result<Self, super::error::ConversionError> {
+            fn try_from(
+                value: CompoundType,
+            ) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self {
                     value1: value.value1?,
                     value2: value.value2?,
@@ -313,8 +321,8 @@ mod types {
         }
         #[derive(Clone, Debug)]
         pub struct Pair {
-            a: Result<super::StringEnum, String>,
-            b: Result<super::StringEnum, String>,
+            a: ::std::result::Result<super::StringEnum, String>,
+            b: ::std::result::Result<super::StringEnum, String>,
         }
         impl Default for Pair {
             fn default() -> Self {
@@ -346,9 +354,9 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<Pair> for super::Pair {
+        impl ::std::convert::TryFrom<Pair> for super::Pair {
             type Error = super::error::ConversionError;
-            fn try_from(value: Pair) -> Result<Self, super::error::ConversionError> {
+            fn try_from(value: Pair) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self {
                     a: value.a?,
                     b: value.b?,
