@@ -666,18 +666,7 @@ impl TypeEntry {
         enum_details: &TypeEntryEnum,
         mut derive_set: BTreeSet<&str>,
     ) {
-        let extra_attrs: Vec<TokenStream> = {
-            type_space
-                .settings
-                .extra_attrs
-                .clone()
-                .into_iter()
-                .map(|attr| {
-                    let s: proc_macro2::TokenStream = attr.parse().unwrap();
-                    s
-                })
-                .collect()
-        };
+        let extra_attrs = attrs_from_type_space(type_space);
         let TypeEntryEnum {
             name,
             rename,
@@ -1853,6 +1842,22 @@ impl TypeEntry {
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
+}
+
+fn attrs_from_type_space(type_space: &TypeSpace) -> Vec<TokenStream> {
+    let extra_attrs: Vec<TokenStream> = {
+        type_space
+            .settings
+            .extra_attrs
+            .clone()
+            .into_iter()
+            .map(|attr| {
+                let s: proc_macro2::TokenStream = attr.parse().unwrap();
+                s
+            })
+            .collect()
+    };
+    extra_attrs
 }
 
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
