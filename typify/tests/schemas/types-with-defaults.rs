@@ -117,7 +117,7 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OuterThing {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub thing: ::std::option::Option<ThingWithDefaults>,
 }
 impl From<&OuterThing> for OuterThing {
@@ -197,12 +197,12 @@ impl From<&TestBed> for TestBed {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ThingWithDefaults {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub a: ::std::option::Option<::std::string::String>,
     #[serde(
         rename = "type",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
 }

@@ -158,7 +158,7 @@ impl ::std::fmt::Display for IntegerBs {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ObjectBs {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
 }
 impl From<&ObjectBs> for ObjectBs {

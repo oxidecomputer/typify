@@ -106,7 +106,7 @@ impl From<&Copy> for Copy {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct DoubleOptionCollision {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
 }
 impl From<&DoubleOptionCollision> for DoubleOptionCollision {
@@ -134,7 +134,7 @@ impl From<&DoubleOptionCollision> for DoubleOptionCollision {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct DoubleOptionCollisionOption {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
 }
 impl From<&DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
@@ -491,7 +491,7 @@ impl std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapVal
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct NestedTypeCollisions {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option_type: ::std::option::Option<NestedTypeCollisionsOptionType>,
     #[serde(rename = "type")]
     pub type_: TypeWithOptionField,
@@ -522,7 +522,7 @@ pub struct NestedTypeCollisionsOptionType {
     #[serde(
         rename = "type",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
 }
@@ -1490,7 +1490,7 @@ impl From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNam
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TypeWithOptionField {
     pub boxed_field: Box,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub optional_field: ::std::option::Option<::std::string::String>,
 }
 impl From<&TypeWithOptionField> for TypeWithOptionField {

@@ -373,12 +373,12 @@ pub(crate) fn generate_serde_attr(
     let default_fn = match (state, &prop_type.details) {
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "std::option::Option::is_none" });
+            serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "std::vec::Vec::is_empty" });
+            serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {

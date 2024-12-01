@@ -57,7 +57,7 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Annotated {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<AnnotatedAnnotations>,
 }
 impl From<&Annotated> for Annotated {
@@ -93,9 +93,9 @@ impl From<&Annotated> for Annotated {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct AnnotatedAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&AnnotatedAnnotations> for AnnotatedAnnotations {
@@ -141,7 +141,7 @@ pub struct BlobResourceContents {
     #[serde(
         rename = "mimeType",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub mime_type: ::std::option::Option<::std::string::String>,
     #[doc = "The URI of this resource."]
@@ -279,7 +279,7 @@ pub struct CallToolResult {
     #[serde(
         rename = "isError",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub is_error: ::std::option::Option<bool>,
     #[doc = "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses."]
@@ -415,7 +415,7 @@ impl From<&CancelledNotification> for CancelledNotification {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct CancelledNotificationParams {
     #[doc = "An optional string describing the reason for the cancellation. This MAY be logged or presented to the user."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub reason: ::std::option::Option<::std::string::String>,
     #[doc = "The ID of the request to cancel.\n\nThis MUST correspond to the ID of a request previously issued in the same direction."]
     #[serde(rename = "requestId")]
@@ -470,7 +470,7 @@ pub struct ClientCapabilities {
         ::std::string::String,
         ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     >,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub roots: ::std::option::Option<ClientCapabilitiesRoots>,
     #[doc = "Present if the client supports sampling from an LLM."]
     #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
@@ -504,7 +504,7 @@ pub struct ClientCapabilitiesRoots {
     #[serde(
         rename = "listChanged",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub list_changed: ::std::option::Option<bool>,
 }
@@ -1038,11 +1038,11 @@ pub struct CompleteResultCompletion {
     #[serde(
         rename = "hasMore",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub has_more: ::std::option::Option<bool>,
     #[doc = "The total number of completion options available. This can exceed the number of values actually sent in the response."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub total: ::std::option::Option<i64>,
     #[doc = "An array of completion values. Must not exceed 100 items."]
     pub values: ::std::vec::Vec<::std::string::String>,
@@ -1196,7 +1196,7 @@ pub struct CreateMessageRequestParams {
     #[serde(
         rename = "includeContext",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub include_context: ::std::option::Option<CreateMessageRequestParamsIncludeContext>,
     #[doc = "The maximum number of tokens to sample, as requested by the server. The client MAY choose to sample fewer tokens than requested."]
@@ -1210,23 +1210,23 @@ pub struct CreateMessageRequestParams {
     #[serde(
         rename = "modelPreferences",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub model_preferences: ::std::option::Option<ModelPreferences>,
     #[serde(
         rename = "stopSequences",
         default,
-        skip_serializing_if = "std::vec::Vec::is_empty"
+        skip_serializing_if = "::std::vec::Vec::is_empty"
     )]
     pub stop_sequences: ::std::vec::Vec<::std::string::String>,
     #[doc = "An optional system prompt the server wants to use for sampling. The client MAY modify or omit this prompt."]
     #[serde(
         rename = "systemPrompt",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub system_prompt: ::std::option::Option<::std::string::String>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub temperature: ::std::option::Option<f64>,
 }
 impl From<&CreateMessageRequestParams> for CreateMessageRequestParams {
@@ -1378,7 +1378,7 @@ pub struct CreateMessageResult {
     #[serde(
         rename = "stopReason",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub stop_reason: ::std::option::Option<::std::string::String>,
 }
@@ -1531,7 +1531,7 @@ impl ::std::fmt::Display for Cursor {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct EmbeddedResource {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<EmbeddedResourceAnnotations>,
     pub resource: EmbeddedResourceResource,
     #[serde(rename = "type")]
@@ -1570,9 +1570,9 @@ impl From<&EmbeddedResource> for EmbeddedResource {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct EmbeddedResourceAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&EmbeddedResourceAnnotations> for EmbeddedResourceAnnotations {
@@ -1774,7 +1774,7 @@ impl From<&GetPromptRequestParams> for GetPromptRequestParams {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct GetPromptResult {
     #[doc = "An optional description for the prompt."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub messages: ::std::vec::Vec<PromptMessage>,
     #[doc = "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses."]
@@ -1841,7 +1841,7 @@ impl From<&GetPromptResult> for GetPromptResult {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ImageContent {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<ImageContentAnnotations>,
     #[doc = "The base64-encoded image data."]
     pub data: ::std::string::String,
@@ -1884,9 +1884,9 @@ impl From<&ImageContent> for ImageContent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ImageContentAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&ImageContentAnnotations> for ImageContentAnnotations {
@@ -2060,7 +2060,7 @@ impl From<&InitializeRequestParams> for InitializeRequestParams {
 pub struct InitializeResult {
     pub capabilities: ServerCapabilities,
     #[doc = "Instructions describing how to use the server and its features.\n\nThis can be used by clients to improve the LLM's understanding of available tools, resources, etc. It can be thought of like a \"hint\" to the model. For example, this information MAY be added to the system prompt."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub instructions: ::std::option::Option<::std::string::String>,
     #[doc = "This result property is reserved by the protocol to allow clients and servers to attach additional metadata to their responses."]
     #[serde(
@@ -2114,7 +2114,7 @@ impl From<&InitializeResult> for InitializeResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct InitializedNotification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<InitializedNotificationParams>,
 }
 impl From<&InitializedNotification> for InitializedNotification {
@@ -2243,7 +2243,7 @@ pub struct JsonrpcErrorError {
     #[doc = "The error type that occurred."]
     pub code: i64,
     #[doc = "Additional information about the error. The value of this member is defined by the sender (e.g. detailed error information, nested errors etc.)."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub data: ::std::option::Option<::serde_json::Value>,
     #[doc = "A short description of the error. The message SHOULD be limited to a concise single sentence."]
     pub message: ::std::string::String,
@@ -2348,7 +2348,7 @@ impl From<JsonrpcError> for JsonrpcMessage {
 pub struct JsonrpcNotification {
     pub jsonrpc: ::std::string::String,
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<JsonrpcNotificationParams>,
 }
 impl From<&JsonrpcNotification> for JsonrpcNotification {
@@ -2437,7 +2437,7 @@ pub struct JsonrpcRequest {
     pub id: RequestId,
     pub jsonrpc: ::std::string::String,
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<JsonrpcRequestParams>,
 }
 impl From<&JsonrpcRequest> for JsonrpcRequest {
@@ -2472,7 +2472,7 @@ pub struct JsonrpcRequestParams {
     #[serde(
         rename = "_meta",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub meta: ::std::option::Option<JsonrpcRequestParamsMeta>,
 }
@@ -2503,7 +2503,7 @@ pub struct JsonrpcRequestParamsMeta {
     #[serde(
         rename = "progressToken",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub progress_token: ::std::option::Option<ProgressToken>,
 }
@@ -2583,7 +2583,7 @@ impl From<&JsonrpcResponse> for JsonrpcResponse {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListPromptsRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ListPromptsRequestParams>,
 }
 impl From<&ListPromptsRequest> for ListPromptsRequest {
@@ -2610,7 +2610,7 @@ impl From<&ListPromptsRequest> for ListPromptsRequest {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListPromptsRequestParams {
     #[doc = "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub cursor: ::std::option::Option<::std::string::String>,
 }
 impl From<&ListPromptsRequestParams> for ListPromptsRequestParams {
@@ -2662,7 +2662,7 @@ pub struct ListPromptsResult {
     #[serde(
         rename = "nextCursor",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub next_cursor: ::std::option::Option<::std::string::String>,
     pub prompts: ::std::vec::Vec<Prompt>,
@@ -2704,7 +2704,7 @@ impl From<&ListPromptsResult> for ListPromptsResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListResourceTemplatesRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ListResourceTemplatesRequestParams>,
 }
 impl From<&ListResourceTemplatesRequest> for ListResourceTemplatesRequest {
@@ -2731,7 +2731,7 @@ impl From<&ListResourceTemplatesRequest> for ListResourceTemplatesRequest {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListResourceTemplatesRequestParams {
     #[doc = "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub cursor: ::std::option::Option<::std::string::String>,
 }
 impl From<&ListResourceTemplatesRequestParams> for ListResourceTemplatesRequestParams {
@@ -2783,7 +2783,7 @@ pub struct ListResourceTemplatesResult {
     #[serde(
         rename = "nextCursor",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub next_cursor: ::std::option::Option<::std::string::String>,
     #[serde(rename = "resourceTemplates")]
@@ -2826,7 +2826,7 @@ impl From<&ListResourceTemplatesResult> for ListResourceTemplatesResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListResourcesRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ListResourcesRequestParams>,
 }
 impl From<&ListResourcesRequest> for ListResourcesRequest {
@@ -2853,7 +2853,7 @@ impl From<&ListResourcesRequest> for ListResourcesRequest {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListResourcesRequestParams {
     #[doc = "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub cursor: ::std::option::Option<::std::string::String>,
 }
 impl From<&ListResourcesRequestParams> for ListResourcesRequestParams {
@@ -2905,7 +2905,7 @@ pub struct ListResourcesResult {
     #[serde(
         rename = "nextCursor",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub next_cursor: ::std::option::Option<::std::string::String>,
     pub resources: ::std::vec::Vec<Resource>,
@@ -2953,7 +2953,7 @@ impl From<&ListResourcesResult> for ListResourcesResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListRootsRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ListRootsRequestParams>,
 }
 impl From<&ListRootsRequest> for ListRootsRequest {
@@ -2988,7 +2988,7 @@ pub struct ListRootsRequestParams {
     #[serde(
         rename = "_meta",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub meta: ::std::option::Option<ListRootsRequestParamsMeta>,
 }
@@ -3019,7 +3019,7 @@ pub struct ListRootsRequestParamsMeta {
     #[serde(
         rename = "progressToken",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub progress_token: ::std::option::Option<ProgressToken>,
 }
@@ -3103,7 +3103,7 @@ impl From<&ListRootsResult> for ListRootsResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListToolsRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ListToolsRequestParams>,
 }
 impl From<&ListToolsRequest> for ListToolsRequest {
@@ -3130,7 +3130,7 @@ impl From<&ListToolsRequest> for ListToolsRequest {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ListToolsRequestParams {
     #[doc = "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub cursor: ::std::option::Option<::std::string::String>,
 }
 impl From<&ListToolsRequestParams> for ListToolsRequestParams {
@@ -3182,7 +3182,7 @@ pub struct ListToolsResult {
     #[serde(
         rename = "nextCursor",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub next_cursor: ::std::option::Option<::std::string::String>,
     pub tools: ::std::vec::Vec<Tool>,
@@ -3385,7 +3385,7 @@ pub struct LoggingMessageNotificationParams {
     #[doc = "The severity of this log message."]
     pub level: LoggingLevel,
     #[doc = "An optional name of the logger issuing this message."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub logger: ::std::option::Option<::std::string::String>,
 }
 impl From<&LoggingMessageNotificationParams> for LoggingMessageNotificationParams {
@@ -3413,7 +3413,7 @@ impl From<&LoggingMessageNotificationParams> for LoggingMessageNotificationParam
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ModelHint {
     #[doc = "A hint for a model name.\n\nThe client SHOULD treat this as a substring of a model name; for example:\n - `claude-3-5-sonnet` should match `claude-3-5-sonnet-20241022`\n - `sonnet` should match `claude-3-5-sonnet-20241022`, `claude-3-sonnet-20240229`, etc.\n - `claude` should match any Claude model\n\nThe client MAY also map the string to a different provider's model name or a different model family, as long as it fills a similar niche; for example:\n - `gemini-1.5-flash` could match `claude-3-haiku-20240307`"]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
 }
 impl From<&ModelHint> for ModelHint {
@@ -3464,22 +3464,22 @@ pub struct ModelPreferences {
     #[serde(
         rename = "costPriority",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub cost_priority: ::std::option::Option<f64>,
     #[doc = "Optional hints to use for model selection.\n\nIf multiple hints are specified, the client MUST evaluate them in order\n(such that the first match is taken).\n\nThe client SHOULD prioritize these hints over the numeric priorities, but\nMAY still use the priorities to select from ambiguous matches."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub hints: ::std::vec::Vec<ModelHint>,
     #[serde(
         rename = "intelligencePriority",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub intelligence_priority: ::std::option::Option<f64>,
     #[serde(
         rename = "speedPriority",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub speed_priority: ::std::option::Option<f64>,
 }
@@ -3520,7 +3520,7 @@ impl From<&ModelPreferences> for ModelPreferences {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Notification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<NotificationParams>,
 }
 impl From<&Notification> for Notification {
@@ -3591,7 +3591,7 @@ impl From<&NotificationParams> for NotificationParams {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PaginatedRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<PaginatedRequestParams>,
 }
 impl From<&PaginatedRequest> for PaginatedRequest {
@@ -3618,7 +3618,7 @@ impl From<&PaginatedRequest> for PaginatedRequest {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PaginatedRequestParams {
     #[doc = "An opaque token representing the current pagination position.\nIf provided, the server should return results starting after this cursor."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub cursor: ::std::option::Option<::std::string::String>,
 }
 impl From<&PaginatedRequestParams> for PaginatedRequestParams {
@@ -3660,7 +3660,7 @@ pub struct PaginatedResult {
     #[serde(
         rename = "nextCursor",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub next_cursor: ::std::option::Option<::std::string::String>,
 }
@@ -3707,7 +3707,7 @@ impl From<&PaginatedResult> for PaginatedResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PingRequest {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<PingRequestParams>,
 }
 impl From<&PingRequest> for PingRequest {
@@ -3742,7 +3742,7 @@ pub struct PingRequestParams {
     #[serde(
         rename = "_meta",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub meta: ::std::option::Option<PingRequestParamsMeta>,
 }
@@ -3773,7 +3773,7 @@ pub struct PingRequestParamsMeta {
     #[serde(
         rename = "progressToken",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub progress_token: ::std::option::Option<ProgressToken>,
 }
@@ -3868,7 +3868,7 @@ pub struct ProgressNotificationParams {
     #[doc = "The progress token which was given in the initial request, used to associate this notification with the request that is proceeding."]
     #[serde(rename = "progressToken")]
     pub progress_token: ProgressToken,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub total: ::std::option::Option<f64>,
 }
 impl From<&ProgressNotificationParams> for ProgressNotificationParams {
@@ -3982,10 +3982,10 @@ impl From<i64> for ProgressToken {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Prompt {
     #[doc = "A list of arguments to use for templating the prompt."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub arguments: ::std::vec::Vec<PromptArgument>,
     #[doc = "An optional description of what this prompt provides"]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the prompt or prompt template."]
     pub name: ::std::string::String,
@@ -4026,12 +4026,12 @@ impl From<&Prompt> for Prompt {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PromptArgument {
     #[doc = "A human-readable description of the argument."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the argument."]
     pub name: ::std::string::String,
     #[doc = "Whether this argument must be provided."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub required: ::std::option::Option<bool>,
 }
 impl From<&PromptArgument> for PromptArgument {
@@ -4073,7 +4073,7 @@ impl From<&PromptArgument> for PromptArgument {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PromptListChangedNotification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<PromptListChangedNotificationParams>,
 }
 impl From<&PromptListChangedNotification> for PromptListChangedNotification {
@@ -4439,7 +4439,7 @@ impl From<BlobResourceContents> for ReadResourceResultContentsItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Request {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<RequestParams>,
 }
 impl From<&Request> for Request {
@@ -4546,7 +4546,7 @@ pub struct RequestParams {
     #[serde(
         rename = "_meta",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub meta: ::std::option::Option<RequestParamsMeta>,
 }
@@ -4577,7 +4577,7 @@ pub struct RequestParamsMeta {
     #[serde(
         rename = "progressToken",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub progress_token: ::std::option::Option<ProgressToken>,
 }
@@ -4640,16 +4640,16 @@ impl From<&RequestParamsMeta> for RequestParamsMeta {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Resource {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<ResourceAnnotations>,
     #[doc = "A description of what this resource represents.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The MIME type of this resource, if known."]
     #[serde(
         rename = "mimeType",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub mime_type: ::std::option::Option<::std::string::String>,
     #[doc = "A human-readable name for this resource.\n\nThis can be used by clients to populate UI elements."]
@@ -4690,9 +4690,9 @@ impl From<&Resource> for Resource {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ResourceAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&ResourceAnnotations> for ResourceAnnotations {
@@ -4731,7 +4731,7 @@ pub struct ResourceContents {
     #[serde(
         rename = "mimeType",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub mime_type: ::std::option::Option<::std::string::String>,
     #[doc = "The URI of this resource."]
@@ -4776,7 +4776,7 @@ impl From<&ResourceContents> for ResourceContents {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ResourceListChangedNotification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ResourceListChangedNotificationParams>,
 }
 impl From<&ResourceListChangedNotification> for ResourceListChangedNotification {
@@ -4909,16 +4909,16 @@ impl From<&ResourceReference> for ResourceReference {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ResourceTemplate {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<ResourceTemplateAnnotations>,
     #[doc = "A description of what this template is for.\n\nThis can be used by clients to improve the LLM's understanding of available resources. It can be thought of like a \"hint\" to the model."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The MIME type for all resources that match this template. This should only be included if all resources matching this template have the same type."]
     #[serde(
         rename = "mimeType",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub mime_type: ::std::option::Option<::std::string::String>,
     #[doc = "A human-readable name for the type of resource this template refers to.\n\nThis can be used by clients to populate UI elements."]
@@ -4960,9 +4960,9 @@ impl From<&ResourceTemplate> for ResourceTemplate {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ResourceTemplateAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&ResourceTemplateAnnotations> for ResourceTemplateAnnotations {
@@ -5183,7 +5183,7 @@ impl std::convert::TryFrom<::std::string::String> for Role {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Root {
     #[doc = "An optional name for the root. This can be used to provide a human-readable\nidentifier for the root, which may be useful for display purposes or for\nreferencing the root in other parts of the application."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
     #[doc = "The URI identifying the root. This *must* start with file:// for now.\nThis restriction may be relaxed in future versions of the protocol to allow\nother URI schemes."]
     pub uri: ::std::string::String,
@@ -5227,7 +5227,7 @@ impl From<&Root> for Root {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct RootsListChangedNotification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<RootsListChangedNotificationParams>,
 }
 impl From<&RootsListChangedNotification> for RootsListChangedNotification {
@@ -5417,11 +5417,11 @@ pub struct ServerCapabilities {
     #[doc = "Present if the server supports sending log messages to the client."]
     #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
     pub logging: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub prompts: ::std::option::Option<ServerCapabilitiesPrompts>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub resources: ::std::option::Option<ServerCapabilitiesResources>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub tools: ::std::option::Option<ServerCapabilitiesTools>,
 }
 impl From<&ServerCapabilities> for ServerCapabilities {
@@ -5452,7 +5452,7 @@ pub struct ServerCapabilitiesPrompts {
     #[serde(
         rename = "listChanged",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub list_changed: ::std::option::Option<bool>,
 }
@@ -5488,11 +5488,11 @@ pub struct ServerCapabilitiesResources {
     #[serde(
         rename = "listChanged",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub list_changed: ::std::option::Option<bool>,
     #[doc = "Whether this server supports subscribing to resource updates."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub subscribe: ::std::option::Option<bool>,
 }
 impl From<&ServerCapabilitiesResources> for ServerCapabilitiesResources {
@@ -5523,7 +5523,7 @@ pub struct ServerCapabilitiesTools {
     #[serde(
         rename = "listChanged",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub list_changed: ::std::option::Option<bool>,
 }
@@ -5954,7 +5954,7 @@ impl From<&SubscribeRequestParams> for SubscribeRequestParams {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TextContent {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub annotations: ::std::option::Option<TextContentAnnotations>,
     #[doc = "The text content of the message."]
     pub text: ::std::string::String,
@@ -5994,9 +5994,9 @@ impl From<&TextContent> for TextContent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TextContentAnnotations {
     #[doc = "Describes who the intended customer of this object or data is.\n\nIt can include multiple entries to indicate content useful for multiple audiences (e.g., `[\"user\", \"assistant\"]`)."]
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub audience: ::std::vec::Vec<Role>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub priority: ::std::option::Option<f64>,
 }
 impl From<&TextContentAnnotations> for TextContentAnnotations {
@@ -6039,7 +6039,7 @@ pub struct TextResourceContents {
     #[serde(
         rename = "mimeType",
         default,
-        skip_serializing_if = "std::option::Option::is_none"
+        skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub mime_type: ::std::option::Option<::std::string::String>,
     #[doc = "The text of the item. This must only be set if the item can actually be represented as text (not binary data)."]
@@ -6100,7 +6100,7 @@ impl From<&TextResourceContents> for TextResourceContents {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Tool {
     #[doc = "A human-readable description of the tool."]
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[serde(rename = "inputSchema")]
     pub input_schema: ToolInputSchema,
@@ -6188,7 +6188,7 @@ impl From<&ToolInputSchema> for ToolInputSchema {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ToolListChangedNotification {
     pub method: ::std::string::String,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub params: ::std::option::Option<ToolListChangedNotificationParams>,
 }
 impl From<&ToolListChangedNotification> for ToolListChangedNotification {

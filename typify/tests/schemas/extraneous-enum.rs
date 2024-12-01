@@ -48,7 +48,7 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct LetterBox {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub letter: ::std::option::Option<LetterBoxLetter>,
 }
 impl From<&LetterBox> for LetterBox {

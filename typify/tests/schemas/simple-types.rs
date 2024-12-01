@@ -64,7 +64,7 @@ impl From<&AnythingWorks> for AnythingWorks {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct FloatsArentTerribleImTold {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub flush_timeout: ::std::option::Option<f32>,
 }
 impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {

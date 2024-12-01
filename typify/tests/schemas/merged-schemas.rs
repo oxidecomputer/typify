@@ -40,7 +40,7 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct BarProp {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&BarProp> for BarProp {
@@ -69,7 +69,7 @@ impl From<&BarProp> for BarProp {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ButNotThat {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&ButNotThat> for ButNotThat {
@@ -101,9 +101,9 @@ impl From<&ButNotThat> for ButNotThat {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct CommentedTypeMerged {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub x: ::std::option::Option<::serde_json::Value>,
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
 }
 impl From<&CommentedTypeMerged> for CommentedTypeMerged {
@@ -152,15 +152,15 @@ impl From<&CommentedTypeMerged> for CommentedTypeMerged {
 #[serde(untagged)]
 pub enum HereAndThere {
     Variant0 {
-        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         bar: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
     Variant1 {
-        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         baz: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
 }
@@ -186,7 +186,7 @@ impl From<&HereAndThere> for HereAndThere {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct JsonResponseBase {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
 }
 impl From<&JsonResponseBase> for JsonResponseBase {
@@ -506,7 +506,7 @@ impl ::std::fmt::Display for NarrowNumber {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OrderDependentMerge {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
@@ -574,7 +574,7 @@ impl From<&Pickingone> for Pickingone {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneInstallation {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
 }
 impl From<&PickingoneInstallation> for PickingoneInstallation {
@@ -614,7 +614,7 @@ impl From<&PickingoneInstallation> for PickingoneInstallation {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneSuspendedBy {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
 impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
@@ -642,7 +642,7 @@ impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct PickingoneUser {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
 impl From<&PickingoneUser> for PickingoneUser {
@@ -894,7 +894,7 @@ impl From<&Unsatisfiable3> for Unsatisfiable3 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Unsatisfiable3A {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
 }
 impl From<&Unsatisfiable3A> for Unsatisfiable3A {

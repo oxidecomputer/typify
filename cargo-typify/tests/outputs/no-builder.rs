@@ -177,9 +177,9 @@ impl From<&Veggie> for Veggie {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Veggies {
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub fruits: ::std::vec::Vec<::std::string::String>,
-    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
 }
 impl From<&Veggies> for Veggies {

@@ -250,7 +250,7 @@ impl From<::serde_json::Value> for SeriouslyAnything {
 pub enum YesNoMaybe {
     Boolean(bool),
     Object {
-        #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         value: ::std::option::Option<::std::string::String>,
     },
 }

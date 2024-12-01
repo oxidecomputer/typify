@@ -346,7 +346,7 @@ impl Default for DiskAttachmentState {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct EmptyObject {
-    #[serde(default, skip_serializing_if = "std::option::Option::is_none")]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub prop: ::std::option::Option<EmptyObjectProp>,
 }
 impl From<&EmptyObject> for EmptyObject {

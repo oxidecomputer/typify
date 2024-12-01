@@ -3,7 +3,7 @@
 use std::{any::type_name, collections::HashSet};
 
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::ToTokens;
 use rustfmt_wrapper::rustfmt;
 use schema::Schema;
 use schemars::{schema_for, JsonSchema};
