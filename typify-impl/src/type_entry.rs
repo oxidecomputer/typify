@@ -1019,6 +1019,7 @@ impl TypeEntry {
         } = struct_details;
         let doc = make_doc(name, description.as_ref(), schema);
 
+        let extra_attrs = attrs_from_type_space(type_space);
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
         if let Some(old_name) = rename {
@@ -1098,6 +1099,7 @@ impl TypeEntry {
             quote! {
                 #doc
                 #[derive(#(#derives),*)]
+                #(#extra_attrs)*
                 #serde
                 pub struct #type_name {
                     #(
@@ -1228,6 +1230,7 @@ impl TypeEntry {
             schema: SchemaWrapper(schema),
         } = newtype_details;
         let doc = make_doc(name, description.as_ref(), schema);
+        let extra_attrs = attrs_from_type_space(type_space);
 
         let serde = rename.as_ref().map(|old_name| {
             quote! {
@@ -1525,6 +1528,7 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
+            #(#extra_attrs)*
             #serde
             pub struct #type_name(#vis #inner_type_name);
 
