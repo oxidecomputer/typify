@@ -666,6 +666,18 @@ impl TypeEntry {
         enum_details: &TypeEntryEnum,
         mut derive_set: BTreeSet<&str>,
     ) {
+        let extra_attrs: Vec<TokenStream> = {
+            type_space
+                .settings
+                .extra_attrs
+                .clone()
+                .into_iter()
+                .map(|attr| {
+                    let s: proc_macro2::TokenStream = attr.parse().unwrap();
+                    s
+                })
+                .collect()
+        };
         let TypeEntryEnum {
             name,
             rename,
@@ -979,6 +991,7 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
+            #(#extra_attrs)*
             #serde
             pub enum #type_name {
                 #(#variants_decl)*

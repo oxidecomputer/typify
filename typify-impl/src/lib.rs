@@ -242,6 +242,7 @@ pub(crate) enum DefaultImpl {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
+    extra_attrs: Vec<String>,
     struct_builder: bool,
 
     unknown_crates: UnknownPolicy,
@@ -307,8 +308,12 @@ impl CrateVers {
 /// Contains a set of modifications that may be applied to an existing type.
 #[derive(Debug, Default, Clone)]
 pub struct TypeSpacePatch {
-    rename: Option<String>,
-    derives: Vec<String>,
+    /// Rename the type
+    pub rename: Option<String>,
+    /// Derives to add
+    pub derives: Vec<String>,
+    /// Attributes to add
+    pub attrs: Vec<String>,
 }
 
 /// Contains the attributes of a replacement of an existing type.
@@ -362,6 +367,13 @@ impl TypeSpaceSettings {
     pub fn with_derive(&mut self, derive: String) -> &mut Self {
         if !self.extra_derives.contains(&derive) {
             self.extra_derives.push(derive);
+        }
+        self
+    }
+    /// Add an additional attribute to apply to all defined types.
+    pub fn with_attr(&mut self, attr: String) -> &mut Self {
+        if !self.extra_attrs.contains(&attr) {
+            self.extra_attrs.push(attr);
         }
         self
     }
