@@ -104,16 +104,15 @@ fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
 /// is reasonable to expect that the generated Rust binding matches exactly the Rust type from
 /// which the JSON Schema was generated.
 ///
-/// Our code generation logic, always canonicalizes
-/// any standard type (eg, `Option` is output as `::std::option::Option`), to avoid potential
-/// conflicts with types in the JSON schema with conflicting names like `Option`.  Unfortunately,
-/// this complicates the test cases that validate that a round-trip from Rust to JSON back to Rust
-/// are exactly the same.
+/// Our code generation logic always canonicalizes any standard type (eg, `Option` is output as
+/// `::std::option::Option`), to avoid potential conflicts with types in the JSON schema with
+/// conflicting names like `Option`.  Unfortunately, this complicates the test cases that validate
+/// that a round-trip from Rust to JSON back to Rust are exactly the same.
 ///
 /// To work around this, this somewhat inelegant function simply finds every type in the input AST
 /// that starts with `::std`, and strips everything but the simple type name.  This will break if
-/// any of the input Rust types use fully-qualified type names that start with `::std`, but
-/// the solution is to simply not do that.
+/// any of the input Rust types use fully-qualified type names that start with `::std`, but the
+/// solution is to simply not do that.
 fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
     struct Visitor;
 
