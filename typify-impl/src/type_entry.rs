@@ -761,7 +761,7 @@ impl TypeEntry {
                     impl std::str::FromStr for #type_name {
                         type Err = self::error::ConversionError;
 
-                        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+                        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
                             match value {
                                 #(#match_strs => Ok(Self::#match_variants),)*
                                 _ => Err("invalid value".into()),
@@ -771,21 +771,27 @@ impl TypeEntry {
                     impl std::convert::TryFrom<&str> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+                        fn try_from(value: &str) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
+                    impl std::convert::TryFrom<&::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
+                    impl std::convert::TryFrom<::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
@@ -815,7 +821,7 @@ impl TypeEntry {
                         type Err = self::error::ConversionError;
 
                         fn from_str(value: &str) ->
-                            Result<Self, self::error::ConversionError>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             #(
                                 // Try to parse() into each variant.
@@ -832,25 +838,25 @@ impl TypeEntry {
                         type Error = self::error::ConversionError;
 
                         fn try_from(value: &str) ->
-                            Result<Self, self::error::ConversionError>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
+                    impl std::convert::TryFrom<&::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) ->
-                            Result<Self, self::error::ConversionError>
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
+                    impl std::convert::TryFrom<::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) ->
-                            Result<Self, self::error::ConversionError>
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
@@ -1149,7 +1155,7 @@ impl TypeEntry {
                     #[derive(Clone, Debug)]
                     pub struct #type_name {
                         #(
-                            #prop_name: Result<#prop_type_scoped, String>,
+                            #prop_name: ::std::result::Result<#prop_type_scoped, ::std::string::String>,
                         )*
                     }
 
@@ -1178,13 +1184,13 @@ impl TypeEntry {
                     }
 
                     // This is how the item is built.
-                    impl std::convert::TryFrom<#type_name>
+                    impl ::std::convert::TryFrom<#type_name>
                         for super::#type_name
                     {
                         type Error = super::error::ConversionError;
 
                         fn try_from(value: #type_name)
-                            -> Result<Self, super::error::ConversionError>
+                            -> ::std::result::Result<Self, super::error::ConversionError>
                         {
                             Ok(Self {
                                 #(
@@ -1250,11 +1256,11 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::None => {
                 let str_impl = is_str.then(|| {
                     quote! {
-                        impl std::str::FromStr for #type_name {
-                            type Err = std::convert::Infallible;
+                        impl ::std::str::FromStr for #type_name {
+                            type Err = ::std::convert::Infallible;
 
                             fn from_str(value: &str) ->
-                                Result<Self, Self::Err>
+                                ::std::result::Result<Self, Self::Err>
                             {
                                 Ok(Self(value.to_string()))
                             }
@@ -1269,40 +1275,40 @@ impl TypeEntry {
                         quote! {
                             impl std::str::FromStr for #type_name {
                                 type Err = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                ::std::str::FromStr>::Err;
 
                                 fn from_str(value: &str) ->
-                                    Result<Self, Self::Err>
+                                    ::std::result::Result<Self, Self::Err>
                                 {
                                     Ok(Self(value.parse()?))
                                 }
                             }
                             impl std::convert::TryFrom<&str> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                ::std::str::FromStr>::Err;
 
                                 fn try_from(value: &str) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
                             }
                             impl std::convert::TryFrom<&String> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                    ::std::str::FromStr>::Err;
 
                                 fn try_from(value: &String) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
                             }
                             impl std::convert::TryFrom<String> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                ::std::str::FromStr>::Err;
 
                                 fn try_from(value: String) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
@@ -1362,12 +1368,12 @@ impl TypeEntry {
                 // TODO maybe we want to handle JsonSchema here
                 quote! {
                     // This is effectively the constructor for this type.
-                    impl std::convert::TryFrom<#inner_type_name> for #type_name {
+                    impl ::std::convert::TryFrom<#inner_type_name> for #type_name {
                         type Error = self::error::ConversionError;
 
                         fn try_from(
                             value: #inner_type_name
-                        ) -> Result<Self, self::error::ConversionError>
+                        ) -> ::std::result::Result<Self, self::error::ConversionError>
                         {
                             if #not [
                                 #(#value_output,)*
@@ -1382,7 +1388,7 @@ impl TypeEntry {
                     impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
-                        ) -> Result<Self, D::Error>
+                        ) -> ::std::result::Result<Self, D::Error>
                         where
                             D: ::serde::Deserializer<'de>,
                         {
@@ -1441,7 +1447,7 @@ impl TypeEntry {
                     impl ::std::str::FromStr for #type_name {
                         type Err = self::error::ConversionError;
 
-                        fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+                        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
                             #max
                             #min
                             #pat
@@ -1453,25 +1459,25 @@ impl TypeEntry {
                         type Error = self::error::ConversionError;
 
                         fn try_from(value: &str) ->
-                            Result<Self, self::error::ConversionError>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl ::std::convert::TryFrom<&String> for #type_name {
+                    impl ::std::convert::TryFrom<&::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) ->
-                            Result<Self, self::error::ConversionError>
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl ::std::convert::TryFrom<String> for #type_name {
+                    impl ::std::convert::TryFrom<::std::string::String> for #type_name {
                         type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) ->
-                            Result<Self, self::error::ConversionError>
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
@@ -1480,17 +1486,17 @@ impl TypeEntry {
                     impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
-                        ) -> Result<Self, D::Error>
+                        ) -> ::std::result::Result<Self, D::Error>
                         where
                             D: ::serde::Deserializer<'de>,
                         {
-                            String::deserialize(deserializer)?
-                                .parse()
-                                .map_err(|e: self::error::ConversionError| {
-                                    <D::Error as ::serde::de::Error>::custom(
-                                        e.to_string(),
-                                    )
-                                })
+                            ::std::string::String::deserialize(deserializer)?
+                            .parse()
+                            .map_err(|e: self::error::ConversionError| {
+                                <D::Error as ::serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
                         }
                     }
                 }
@@ -1587,7 +1593,7 @@ impl TypeEntry {
                 // schema encoded it; it's an odd construction.
                 match &inner_ty.details {
                     TypeEntryDetails::Option(_) => inner_ident,
-                    _ => quote! { Option<#inner_ident> },
+                    _ => quote! { ::std::option::Option<#inner_ident> },
                 }
             }
 
@@ -1599,7 +1605,7 @@ impl TypeEntry {
 
                 let item = inner_ty.type_ident(type_space, type_mod);
 
-                quote! { Box<#item> }
+                quote! { ::std::boxed::Box<#item> }
             }
 
             TypeEntryDetails::Vec(id) => {
@@ -1609,7 +1615,7 @@ impl TypeEntry {
                     .expect("unresolved type id for array");
                 let item = inner_ty.type_ident(type_space, type_mod);
 
-                quote! { Vec<#item> }
+                quote! { ::std::vec::Vec<#item> }
             }
 
             TypeEntryDetails::Map(key_id, value_id) => {
@@ -1625,7 +1631,7 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { ::serde_json::Map<String, ::serde_json::Value> }
+                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
@@ -1697,7 +1703,7 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Unit => quote! { () },
-            TypeEntryDetails::String => quote! { String },
+            TypeEntryDetails::String => quote! { ::std::string::String },
             TypeEntryDetails::Boolean => quote! { bool },
             TypeEntryDetails::JsonValue => quote! { ::serde_json::Value },
             TypeEntryDetails::Integer(name) | TypeEntryDetails::Float(name) => {
@@ -1924,7 +1930,7 @@ mod tests {
 
         let t = TypeEntry::from(TypeEntryDetails::String);
         let ident = t.type_ident(&ts, &type_mod);
-        assert_eq!(ident.to_string(), "String");
+        assert_eq!(ident.to_string(), ":: std :: string :: String");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& str");
         let parameter = t.type_parameter_ident(&ts, Some("static"));

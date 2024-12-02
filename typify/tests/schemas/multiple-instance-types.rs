@@ -40,7 +40,7 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IntOrStr {
-    String(String),
+    String(::std::string::String),
     Integer(i64),
 }
 impl From<&IntOrStr> for IntOrStr {
@@ -50,7 +50,7 @@ impl From<&IntOrStr> for IntOrStr {
 }
 impl std::str::FromStr for IntOrStr {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::String(v))
         } else if let Ok(v) = value.parse() {
@@ -62,19 +62,23 @@ impl std::str::FromStr for IntOrStr {
 }
 impl std::convert::TryFrom<&str> for IntOrStr {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IntOrStr {
+impl std::convert::TryFrom<&::std::string::String> for IntOrStr {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IntOrStr {
+impl std::convert::TryFrom<::std::string::String> for IntOrStr {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -113,9 +117,9 @@ impl From<i64> for IntOrStr {
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(::serde_json::Map<String, ::serde_json::Value>),
-    Array(Vec<::serde_json::Value>),
-    String(String),
+    Object(::serde_json::Map<::std::string::String, ::serde_json::Value>),
+    Array(::std::vec::Vec<::serde_json::Value>),
+    String(::std::string::String),
     Integer(i64),
 }
 impl From<&OneOfSeveral> for OneOfSeveral {
@@ -128,13 +132,13 @@ impl From<bool> for OneOfSeveral {
         Self::Boolean(value)
     }
 }
-impl From<::serde_json::Map<String, ::serde_json::Value>> for OneOfSeveral {
-    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
+impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for OneOfSeveral {
+    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
         Self::Object(value)
     }
 }
-impl From<Vec<::serde_json::Value>> for OneOfSeveral {
-    fn from(value: Vec<::serde_json::Value>) -> Self {
+impl From<::std::vec::Vec<::serde_json::Value>> for OneOfSeveral {
+    fn from(value: ::std::vec::Vec<::serde_json::Value>) -> Self {
         Self::Array(value)
     }
 }
@@ -246,8 +250,8 @@ impl From<::serde_json::Value> for SeriouslyAnything {
 pub enum YesNoMaybe {
     Boolean(bool),
     Object {
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        value: Option<String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        value: ::std::option::Option<::std::string::String>,
     },
 }
 impl From<&YesNoMaybe> for YesNoMaybe {

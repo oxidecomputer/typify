@@ -69,6 +69,11 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
+impl TestType {
+    pub fn builder() -> builder::TestType {
+        Default::default()
+    }
+}
 #[doc = "TestTypeWhereNot"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -86,14 +91,14 @@ impl From<&TestType> for TestType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct TestTypeWhereNot(String);
+pub struct TestTypeWhereNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhereNot {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<TestTypeWhereNot> for String {
+impl From<TestTypeWhereNot> for ::std::string::String {
     fn from(value: TestTypeWhereNot) -> Self {
         value.0
     }
@@ -103,9 +108,11 @@ impl From<&TestTypeWhereNot> for TestTypeWhereNot {
         value.clone()
     }
 }
-impl std::convert::TryFrom<String> for TestTypeWhereNot {
+impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhereNot {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         if ["start".to_string(), "middle".to_string(), "end".to_string()].contains(&value) {
             Err("invalid value".into())
         } else {
@@ -114,11 +121,11 @@ impl std::convert::TryFrom<String> for TestTypeWhereNot {
     }
 }
 impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<String>::deserialize(deserializer)?)
+        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
@@ -138,14 +145,14 @@ impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct TestTypeWhyNot(String);
+pub struct TestTypeWhyNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhyNot {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<TestTypeWhyNot> for String {
+impl From<TestTypeWhyNot> for ::std::string::String {
     fn from(value: TestTypeWhyNot) -> Self {
         value.0
     }
@@ -155,9 +162,11 @@ impl From<&TestTypeWhyNot> for TestTypeWhyNot {
         value.clone()
     }
 }
-impl std::convert::TryFrom<String> for TestTypeWhyNot {
+impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhyNot {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         if ["because".to_string()].contains(&value) {
             Err("invalid value".into())
         } else {
@@ -166,12 +175,67 @@ impl std::convert::TryFrom<String> for TestTypeWhyNot {
     }
 }
 impl<'de> ::serde::Deserialize<'de> for TestTypeWhyNot {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<String>::deserialize(deserializer)?)
+        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct TestType {
+        where_not: ::std::result::Result<super::TestTypeWhereNot, ::std::string::String>,
+        why_not: ::std::result::Result<super::TestTypeWhyNot, ::std::string::String>,
+    }
+    impl Default for TestType {
+        fn default() -> Self {
+            Self {
+                where_not: Err("no value supplied for where_not".to_string()),
+                why_not: Err("no value supplied for why_not".to_string()),
+            }
+        }
+    }
+    impl TestType {
+        pub fn where_not<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TestTypeWhereNot>,
+            T::Error: std::fmt::Display,
+        {
+            self.where_not = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for where_not: {}", e));
+            self
+        }
+        pub fn why_not<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TestTypeWhyNot>,
+            T::Error: std::fmt::Display,
+        {
+            self.why_not = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for why_not: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestType> for super::TestType {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestType) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                where_not: value.where_not?,
+                why_not: value.why_not?,
+            })
+        }
+    }
+    impl From<super::TestType> for TestType {
+        fn from(value: super::TestType) -> Self {
+            Self {
+                where_not: Ok(value.where_not),
+                why_not: Ok(value.why_not),
+            }
+        }
     }
 }
 fn main() {}

@@ -64,7 +64,8 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
                 "std",
                 typify::CrateVers::Version("1.0.0".parse().unwrap()),
                 None,
-            ),
+            )
+            .with_struct_builder(true),
     );
     type_space.add_root_schema(root_schema)?;
 

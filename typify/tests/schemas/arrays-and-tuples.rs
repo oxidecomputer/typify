@@ -83,14 +83,14 @@ impl From<Vec<::serde_json::Value>> for ArraySansItems {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct LessSimpleTwoTuple(pub (String, String));
+pub struct LessSimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for LessSimpleTwoTuple {
-    type Target = (String, String);
-    fn deref(&self) -> &(String, String) {
+    type Target = (::std::string::String, ::std::string::String);
+    fn deref(&self) -> &(::std::string::String, ::std::string::String) {
         &self.0
     }
 }
-impl From<LessSimpleTwoTuple> for (String, String) {
+impl From<LessSimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: LessSimpleTwoTuple) -> Self {
         value.0
     }
@@ -100,8 +100,8 @@ impl From<&LessSimpleTwoTuple> for LessSimpleTwoTuple {
         value.clone()
     }
 }
-impl From<(String, String)> for LessSimpleTwoTuple {
-    fn from(value: (String, String)) -> Self {
+impl From<(::std::string::String, ::std::string::String)> for LessSimpleTwoTuple {
+    fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
 }
@@ -121,14 +121,14 @@ impl From<(String, String)> for LessSimpleTwoTuple {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct SimpleTwoArray(pub [String; 2usize]);
+pub struct SimpleTwoArray(pub [::std::string::String; 2usize]);
 impl ::std::ops::Deref for SimpleTwoArray {
-    type Target = [String; 2usize];
-    fn deref(&self) -> &[String; 2usize] {
+    type Target = [::std::string::String; 2usize];
+    fn deref(&self) -> &[::std::string::String; 2usize] {
         &self.0
     }
 }
-impl From<SimpleTwoArray> for [String; 2usize] {
+impl From<SimpleTwoArray> for [::std::string::String; 2usize] {
     fn from(value: SimpleTwoArray) -> Self {
         value.0
     }
@@ -138,8 +138,8 @@ impl From<&SimpleTwoArray> for SimpleTwoArray {
         value.clone()
     }
 }
-impl From<[String; 2usize]> for SimpleTwoArray {
-    fn from(value: [String; 2usize]) -> Self {
+impl From<[::std::string::String; 2usize]> for SimpleTwoArray {
+    fn from(value: [::std::string::String; 2usize]) -> Self {
         Self(value)
     }
 }
@@ -164,14 +164,14 @@ impl From<[String; 2usize]> for SimpleTwoArray {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct SimpleTwoTuple(pub (String, String));
+pub struct SimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for SimpleTwoTuple {
-    type Target = (String, String);
-    fn deref(&self) -> &(String, String) {
+    type Target = (::std::string::String, ::std::string::String);
+    fn deref(&self) -> &(::std::string::String, ::std::string::String) {
         &self.0
     }
 }
-impl From<SimpleTwoTuple> for (String, String) {
+impl From<SimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: SimpleTwoTuple) -> Self {
         value.0
     }
@@ -181,8 +181,8 @@ impl From<&SimpleTwoTuple> for SimpleTwoTuple {
         value.clone()
     }
 }
-impl From<(String, String)> for SimpleTwoTuple {
-    fn from(value: (String, String)) -> Self {
+impl From<(::std::string::String, ::std::string::String)> for SimpleTwoTuple {
+    fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
 }
@@ -207,14 +207,14 @@ impl From<(String, String)> for SimpleTwoTuple {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct UnsimpleTwoTuple(pub (String, String));
+pub struct UnsimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for UnsimpleTwoTuple {
-    type Target = (String, String);
-    fn deref(&self) -> &(String, String) {
+    type Target = (::std::string::String, ::std::string::String);
+    fn deref(&self) -> &(::std::string::String, ::std::string::String) {
         &self.0
     }
 }
-impl From<UnsimpleTwoTuple> for (String, String) {
+impl From<UnsimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: UnsimpleTwoTuple) -> Self {
         value.0
     }
@@ -224,8 +224,8 @@ impl From<&UnsimpleTwoTuple> for UnsimpleTwoTuple {
         value.clone()
     }
 }
-impl From<(String, String)> for UnsimpleTwoTuple {
-    fn from(value: (String, String)) -> Self {
+impl From<(::std::string::String, ::std::string::String)> for UnsimpleTwoTuple {
+    fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
 }

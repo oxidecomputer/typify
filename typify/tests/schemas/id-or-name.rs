@@ -65,7 +65,7 @@ impl From<&IdOrName> for IdOrName {
 }
 impl std::str::FromStr for IdOrName {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Id(v))
         } else if let Ok(v) = value.parse() {
@@ -77,19 +77,23 @@ impl std::str::FromStr for IdOrName {
 }
 impl std::convert::TryFrom<&str> for IdOrName {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IdOrName {
+impl std::convert::TryFrom<&::std::string::String> for IdOrName {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IdOrName {
+impl std::convert::TryFrom<::std::string::String> for IdOrName {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -144,7 +148,7 @@ impl From<&IdOrNameRedundant> for IdOrNameRedundant {
 }
 impl std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Variant0(v))
         } else if let Ok(v) = value.parse() {
@@ -156,19 +160,23 @@ impl std::str::FromStr for IdOrNameRedundant {
 }
 impl std::convert::TryFrom<&str> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IdOrNameRedundant {
+impl std::convert::TryFrom<&::std::string::String> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IdOrNameRedundant {
+impl std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -232,7 +240,7 @@ impl From<&IdOrYolo> for IdOrYolo {
 }
 impl std::str::FromStr for IdOrYolo {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
             Ok(Self::Id(v))
         } else if let Ok(v) = value.parse() {
@@ -244,19 +252,23 @@ impl std::str::FromStr for IdOrYolo {
 }
 impl std::convert::TryFrom<&str> for IdOrYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IdOrYolo {
+impl std::convert::TryFrom<&::std::string::String> for IdOrYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IdOrYolo {
+impl std::convert::TryFrom<::std::string::String> for IdOrYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -290,14 +302,14 @@ impl From<IdOrYoloYolo> for IdOrYolo {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct IdOrYoloYolo(String);
+pub struct IdOrYoloYolo(::std::string::String);
 impl ::std::ops::Deref for IdOrYoloYolo {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<IdOrYoloYolo> for String {
+impl From<IdOrYoloYolo> for ::std::string::String {
     fn from(value: IdOrYoloYolo) -> Self {
         value.0
     }
@@ -309,7 +321,7 @@ impl From<&IdOrYoloYolo> for IdOrYoloYolo {
 }
 impl ::std::str::FromStr for IdOrYoloYolo {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new(".*").unwrap().find(value).is_none() {
             return Err("doesn't match pattern \".*\"".into());
         }
@@ -318,28 +330,32 @@ impl ::std::str::FromStr for IdOrYoloYolo {
 }
 impl ::std::convert::TryFrom<&str> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&String> for IdOrYoloYolo {
+impl ::std::convert::TryFrom<&::std::string::String> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for IdOrYoloYolo {
+impl ::std::convert::TryFrom<::std::string::String> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        String::deserialize(deserializer)?
+        ::std::string::String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
@@ -361,14 +377,14 @@ impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct Name(String);
+pub struct Name(::std::string::String);
 impl ::std::ops::Deref for Name {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<Name> for String {
+impl From<Name> for ::std::string::String {
     fn from(value: Name) -> Self {
         value.0
     }
@@ -380,7 +396,7 @@ impl From<&Name> for Name {
 }
 impl ::std::str::FromStr for Name {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if value.len() > 63usize {
             return Err("longer than 63 characters".into());
         }
@@ -390,28 +406,32 @@ impl ::std::str::FromStr for Name {
 }
 impl ::std::convert::TryFrom<&str> for Name {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&String> for Name {
+impl ::std::convert::TryFrom<&::std::string::String> for Name {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for Name {
+impl ::std::convert::TryFrom<::std::string::String> for Name {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for Name {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        String::deserialize(deserializer)?
+        ::std::string::String::deserialize(deserializer)?
             .parse()
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())

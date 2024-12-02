@@ -46,14 +46,14 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct ArrayBs(pub Vec<bool>);
+pub struct ArrayBs(pub ::std::vec::Vec<bool>);
 impl ::std::ops::Deref for ArrayBs {
-    type Target = Vec<bool>;
-    fn deref(&self) -> &Vec<bool> {
+    type Target = ::std::vec::Vec<bool>;
+    fn deref(&self) -> &::std::vec::Vec<bool> {
         &self.0
     }
 }
-impl From<ArrayBs> for Vec<bool> {
+impl From<ArrayBs> for ::std::vec::Vec<bool> {
     fn from(value: ArrayBs) -> Self {
         value.0
     }
@@ -63,8 +63,8 @@ impl From<&ArrayBs> for ArrayBs {
         value.clone()
     }
 }
-impl From<Vec<bool>> for ArrayBs {
-    fn from(value: Vec<bool>) -> Self {
+impl From<::std::vec::Vec<bool>> for ArrayBs {
+    fn from(value: ::std::vec::Vec<bool>) -> Self {
         Self(value)
     }
 }
@@ -110,26 +110,26 @@ impl From<u64> for IntegerBs {
     }
 }
 impl std::str::FromStr for IntegerBs {
-    type Err = <u64 as std::str::FromStr>::Err;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+    type Err = <u64 as ::std::str::FromStr>::Err;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
 impl std::convert::TryFrom<&str> for IntegerBs {
-    type Error = <u64 as std::str::FromStr>::Err;
-    fn try_from(value: &str) -> Result<Self, Self::Error> {
+    type Error = <u64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<&String> for IntegerBs {
-    type Error = <u64 as std::str::FromStr>::Err;
-    fn try_from(value: &String) -> Result<Self, Self::Error> {
+    type Error = <u64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl std::convert::TryFrom<String> for IntegerBs {
-    type Error = <u64 as std::str::FromStr>::Err;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    type Error = <u64 as ::std::str::FromStr>::Err;
+    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
@@ -158,12 +158,54 @@ impl ::std::fmt::Display for IntegerBs {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ObjectBs {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ok: Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub ok: ::std::option::Option<bool>,
 }
 impl From<&ObjectBs> for ObjectBs {
     fn from(value: &ObjectBs) -> Self {
         value.clone()
+    }
+}
+impl ObjectBs {
+    pub fn builder() -> builder::ObjectBs {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct ObjectBs {
+        ok: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ObjectBs {
+        fn default() -> Self {
+            Self {
+                ok: Ok(Default::default()),
+            }
+        }
+    }
+    impl ObjectBs {
+        pub fn ok<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.ok = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for ok: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ObjectBs> for super::ObjectBs {
+        type Error = super::error::ConversionError;
+        fn try_from(value: ObjectBs) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { ok: value.ok? })
+        }
+    }
+    impl From<super::ObjectBs> for ObjectBs {
+        fn from(value: super::ObjectBs) -> Self {
+            Self { ok: Ok(value.ok) }
+        }
     }
 }
 fn main() {}

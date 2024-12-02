@@ -76,7 +76,7 @@ impl ::std::fmt::Display for TestEnum {
 }
 impl std::str::FromStr for TestEnum {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "failure" => Ok(Self::Failure),
             "skipped" => Ok(Self::Skipped),
@@ -87,19 +87,23 @@ impl std::str::FromStr for TestEnum {
 }
 impl std::convert::TryFrom<&str> for TestEnum {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for TestEnum {
+impl std::convert::TryFrom<&::std::string::String> for TestEnum {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for TestEnum {
+impl std::convert::TryFrom<::std::string::String> for TestEnum {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

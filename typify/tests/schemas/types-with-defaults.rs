@@ -51,6 +51,11 @@ impl From<&Doodad> for Doodad {
         value.clone()
     }
 }
+impl Doodad {
+    pub fn builder() -> builder::Doodad {
+        Default::default()
+    }
+}
 #[doc = "MrDefaultNumbers"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -87,6 +92,11 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
         value.clone()
     }
 }
+impl MrDefaultNumbers {
+    pub fn builder() -> builder::MrDefaultNumbers {
+        Default::default()
+    }
+}
 #[doc = "OuterThing"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -117,12 +127,17 @@ impl From<&MrDefaultNumbers> for MrDefaultNumbers {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OuterThing {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub thing: Option<ThingWithDefaults>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub thing: ::std::option::Option<ThingWithDefaults>,
 }
 impl From<&OuterThing> for OuterThing {
     fn from(value: &OuterThing) -> Self {
         value.clone()
+    }
+}
+impl OuterThing {
+    pub fn builder() -> builder::OuterThing {
+        Default::default()
     }
 }
 #[doc = "TestBed"]
@@ -162,13 +177,18 @@ impl From<&OuterThing> for OuterThing {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
-    pub any: Vec<::serde_json::Value>,
+    pub any: ::std::vec::Vec<::serde_json::Value>,
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
 impl From<&TestBed> for TestBed {
     fn from(value: &TestBed) -> Self {
         value.clone()
+    }
+}
+impl TestBed {
+    pub fn builder() -> builder::TestBed {
+        Default::default()
     }
 }
 #[doc = "ThingWithDefaults"]
@@ -197,10 +217,14 @@ impl From<&TestBed> for TestBed {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ThingWithDefaults {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub a: Option<String>,
-    #[serde(rename = "type", default, skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub a: ::std::option::Option<::std::string::String>,
+    #[serde(
+        rename = "type",
+        default,
+        skip_serializing_if = "::std::option::Option::is_none"
+    )]
+    pub type_: ::std::option::Option<::std::string::String>,
 }
 impl From<&ThingWithDefaults> for ThingWithDefaults {
     fn from(value: &ThingWithDefaults) -> Self {
@@ -211,7 +235,260 @@ impl Default for ThingWithDefaults {
     fn default() -> Self {
         ThingWithDefaults {
             a: Default::default(),
-            type_: Some("bee".to_string()),
+            type_: ::std::option::Option::Some("bee".to_string()),
+        }
+    }
+}
+impl ThingWithDefaults {
+    pub fn builder() -> builder::ThingWithDefaults {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct Doodad {
+        when: ::std::result::Result<chrono::DateTime<chrono::offset::Utc>, ::std::string::String>,
+    }
+    impl Default for Doodad {
+        fn default() -> Self {
+            Self {
+                when: Ok(super::defaults::doodad_when()),
+            }
+        }
+    }
+    impl Doodad {
+        pub fn when<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<chrono::DateTime<chrono::offset::Utc>>,
+            T::Error: std::fmt::Display,
+        {
+            self.when = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for when: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Doodad> for super::Doodad {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Doodad) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { when: value.when? })
+        }
+    }
+    impl From<super::Doodad> for Doodad {
+        fn from(value: super::Doodad) -> Self {
+            Self {
+                when: Ok(value.when),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct MrDefaultNumbers {
+        little_u16: ::std::result::Result<std::num::NonZeroU16, ::std::string::String>,
+        little_u8: ::std::result::Result<std::num::NonZeroU8, ::std::string::String>,
+    }
+    impl Default for MrDefaultNumbers {
+        fn default() -> Self {
+            Self {
+                little_u16: Ok(super::defaults::default_nzu64::<std::num::NonZeroU16, 3>()),
+                little_u8: Ok(super::defaults::default_nzu64::<std::num::NonZeroU8, 2>()),
+            }
+        }
+    }
+    impl MrDefaultNumbers {
+        pub fn little_u16<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<std::num::NonZeroU16>,
+            T::Error: std::fmt::Display,
+        {
+            self.little_u16 = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for little_u16: {}", e));
+            self
+        }
+        pub fn little_u8<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<std::num::NonZeroU8>,
+            T::Error: std::fmt::Display,
+        {
+            self.little_u8 = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for little_u8: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<MrDefaultNumbers> for super::MrDefaultNumbers {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: MrDefaultNumbers,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                little_u16: value.little_u16?,
+                little_u8: value.little_u8?,
+            })
+        }
+    }
+    impl From<super::MrDefaultNumbers> for MrDefaultNumbers {
+        fn from(value: super::MrDefaultNumbers) -> Self {
+            Self {
+                little_u16: Ok(value.little_u16),
+                little_u8: Ok(value.little_u8),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct OuterThing {
+        thing: ::std::result::Result<
+            ::std::option::Option<super::ThingWithDefaults>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for OuterThing {
+        fn default() -> Self {
+            Self {
+                thing: Ok(Default::default()),
+            }
+        }
+    }
+    impl OuterThing {
+        pub fn thing<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ThingWithDefaults>>,
+            T::Error: std::fmt::Display,
+        {
+            self.thing = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for thing: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<OuterThing> for super::OuterThing {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: OuterThing,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                thing: value.thing?,
+            })
+        }
+    }
+    impl From<super::OuterThing> for OuterThing {
+        fn from(value: super::OuterThing) -> Self {
+            Self {
+                thing: Ok(value.thing),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TestBed {
+        any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
+        id: ::std::result::Result<uuid::Uuid, ::std::string::String>,
+    }
+    impl Default for TestBed {
+        fn default() -> Self {
+            Self {
+                any: Ok(super::defaults::test_bed_any()),
+                id: Ok(super::defaults::test_bed_id()),
+            }
+        }
+    }
+    impl TestBed {
+        pub fn any<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.any = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for any: {}", e));
+            self
+        }
+        pub fn id<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<uuid::Uuid>,
+            T::Error: std::fmt::Display,
+        {
+            self.id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for id: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestBed> for super::TestBed {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestBed) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                any: value.any?,
+                id: value.id?,
+            })
+        }
+    }
+    impl From<super::TestBed> for TestBed {
+        fn from(value: super::TestBed) -> Self {
+            Self {
+                any: Ok(value.any),
+                id: Ok(value.id),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ThingWithDefaults {
+        a: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        type_: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ThingWithDefaults {
+        fn default() -> Self {
+            Self {
+                a: Ok(Default::default()),
+                type_: Ok(Default::default()),
+            }
+        }
+    }
+    impl ThingWithDefaults {
+        pub fn a<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.a = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for a: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ThingWithDefaults> for super::ThingWithDefaults {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ThingWithDefaults,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                a: value.a?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::ThingWithDefaults> for ThingWithDefaults {
+        fn from(value: super::ThingWithDefaults) -> Self {
+            Self {
+                a: Ok(value.a),
+                type_: Ok(value.type_),
+            }
         }
     }
 }
@@ -228,7 +505,7 @@ pub mod defaults {
         serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
             .unwrap()
     }
-    pub(super) fn test_bed_any() -> Vec<::serde_json::Value> {
+    pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
             serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),
             serde_json::from_str::<serde_json::Value>("[5,3,0,9]").unwrap(),

@@ -1212,7 +1212,8 @@ mod tests {
         type_space.add_root_schema(schema).unwrap();
         let tokens = type_space.to_stream().to_string();
         println!("{}", tokens);
-        assert!(tokens.contains(" pub struct Somename { pub someproperty : String , }"))
+        assert!(tokens
+            .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"))
     }
 
     #[test]

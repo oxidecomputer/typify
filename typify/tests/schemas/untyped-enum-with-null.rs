@@ -51,11 +51,16 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
-    pub value: Option<TestTypeValue>,
+    pub value: ::std::option::Option<TestTypeValue>,
 }
 impl From<&TestType> for TestType {
     fn from(value: &TestType) -> Self {
         value.clone()
+    }
+}
+impl TestType {
+    pub fn builder() -> builder::TestType {
+        Default::default()
     }
 }
 #[doc = "TestTypeValue"]
@@ -109,7 +114,7 @@ impl ::std::fmt::Display for TestTypeValue {
 }
 impl std::str::FromStr for TestTypeValue {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "start" => Ok(Self::Start),
             "middle" => Ok(Self::Middle),
@@ -120,20 +125,68 @@ impl std::str::FromStr for TestTypeValue {
 }
 impl std::convert::TryFrom<&str> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for TestTypeValue {
+impl std::convert::TryFrom<&::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: &String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for TestTypeValue {
+impl std::convert::TryFrom<::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
-    fn try_from(value: String) -> Result<Self, self::error::ConversionError> {
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct TestType {
+        value: ::std::result::Result<
+            ::std::option::Option<super::TestTypeValue>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for TestType {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl TestType {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::TestTypeValue>>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestType> for super::TestType {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestType) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::TestType> for TestType {
+        fn from(value: super::TestType) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
     }
 }
 fn main() {}

@@ -44,14 +44,19 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct AllTheThings {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub option_marker: Option<::std::option::Option<Marker>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<::std::path::PathBuf>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub option_marker: ::std::option::Option<::std::option::Option<Marker>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub path: ::std::option::Option<::std::path::PathBuf>,
 }
 impl From<&AllTheThings> for AllTheThings {
     fn from(value: &AllTheThings) -> Self {
         value.clone()
+    }
+}
+impl AllTheThings {
+    pub fn builder() -> builder::AllTheThings {
+        Default::default()
     }
 }
 #[doc = "Marker"]
@@ -79,6 +84,69 @@ pub enum Marker {}
 impl From<&Marker> for Marker {
     fn from(value: &Marker) -> Self {
         value.clone()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct AllTheThings {
+        option_marker: ::std::result::Result<
+            ::std::option::Option<::std::option::Option<super::Marker>>,
+            ::std::string::String,
+        >,
+        path: ::std::result::Result<
+            ::std::option::Option<::std::path::PathBuf>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for AllTheThings {
+        fn default() -> Self {
+            Self {
+                option_marker: Ok(Default::default()),
+                path: Ok(Default::default()),
+            }
+        }
+    }
+    impl AllTheThings {
+        pub fn option_marker<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::option::Option<super::Marker>>>,
+            T::Error: std::fmt::Display,
+        {
+            self.option_marker = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for option_marker: {}", e));
+            self
+        }
+        pub fn path<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::path::PathBuf>>,
+            T::Error: std::fmt::Display,
+        {
+            self.path = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for path: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<AllTheThings> for super::AllTheThings {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: AllTheThings,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                option_marker: value.option_marker?,
+                path: value.path?,
+            })
+        }
+    }
+    impl From<super::AllTheThings> for AllTheThings {
+        fn from(value: super::AllTheThings) -> Self {
+            Self {
+                option_marker: Ok(value.option_marker),
+                path: Ok(value.path),
+            }
+        }
     }
 }
 fn main() {}

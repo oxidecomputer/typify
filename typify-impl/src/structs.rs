@@ -373,12 +373,12 @@ pub(crate) fn generate_serde_attr(
     let default_fn = match (state, &prop_type.details) {
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
+            serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
+            serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
@@ -588,6 +588,9 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
         let output = ty.type_name(&type_space).replace(" ", "");
-        assert_eq!(output, "::serde_json::Map<String,::serde_json::Value>");
+        assert_eq!(
+            output,
+            "::serde_json::Map<::std::string::String,::serde_json::Value>"
+        );
     }
 }

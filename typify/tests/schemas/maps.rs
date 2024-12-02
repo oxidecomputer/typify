@@ -37,14 +37,14 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct DeadSimple(pub ::serde_json::Map<String, ::serde_json::Value>);
+pub struct DeadSimple(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for DeadSimple {
-    type Target = ::serde_json::Map<String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<String, ::serde_json::Value> {
+    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
+    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
         &self.0
     }
 }
-impl From<DeadSimple> for ::serde_json::Map<String, ::serde_json::Value> {
+impl From<DeadSimple> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
     fn from(value: DeadSimple) -> Self {
         value.0
     }
@@ -54,8 +54,8 @@ impl From<&DeadSimple> for DeadSimple {
         value.clone()
     }
 }
-impl From<::serde_json::Map<String, ::serde_json::Value>> for DeadSimple {
-    fn from(value: ::serde_json::Map<String, ::serde_json::Value>) -> Self {
+impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for DeadSimple {
+    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -81,14 +81,14 @@ impl From<::serde_json::Map<String, ::serde_json::Value>> for DeadSimple {
     PartialEq,
     PartialOrd,
 )]
-pub struct Eh(pub String);
+pub struct Eh(pub ::std::string::String);
 impl ::std::ops::Deref for Eh {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<Eh> for String {
+impl From<Eh> for ::std::string::String {
     fn from(value: Eh) -> Self {
         value.0
     }
@@ -98,14 +98,14 @@ impl From<&Eh> for Eh {
         value.clone()
     }
 }
-impl From<String> for Eh {
-    fn from(value: String) -> Self {
+impl From<::std::string::String> for Eh {
+    fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for Eh {
-    type Err = std::convert::Infallible;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+impl ::std::str::FromStr for Eh {
+    type Err = ::std::convert::Infallible;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
     }
 }
@@ -262,14 +262,14 @@ impl From<::std::collections::HashMap<Eh, Value>> for MapWithKeys {
     PartialEq,
     PartialOrd,
 )]
-pub struct Value(pub String);
+pub struct Value(pub ::std::string::String);
 impl ::std::ops::Deref for Value {
-    type Target = String;
-    fn deref(&self) -> &String {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl From<Value> for String {
+impl From<Value> for ::std::string::String {
     fn from(value: Value) -> Self {
         value.0
     }
@@ -279,14 +279,14 @@ impl From<&Value> for Value {
         value.clone()
     }
 }
-impl From<String> for Value {
-    fn from(value: String) -> Self {
+impl From<::std::string::String> for Value {
+    fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for Value {
-    type Err = std::convert::Infallible;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+impl ::std::str::FromStr for Value {
+    type Err = ::std::convert::Infallible;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
     }
 }
