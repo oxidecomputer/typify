@@ -980,8 +980,8 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
-            #(#extra_attrs)*
             #serde
+            #(#extra_attrs)*
             pub enum #type_name {
                 #(#variants_decl)*
             }
@@ -1099,8 +1099,8 @@ impl TypeEntry {
             quote! {
                 #doc
                 #[derive(#(#derives),*)]
-                #(#extra_attrs)*
                 #serde
+                #(#extra_attrs)*
                 pub struct #type_name {
                     #(
                         #prop_doc
@@ -1528,8 +1528,8 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
-            #(#extra_attrs)*
             #serde
+            #(#extra_attrs)*
             pub struct #type_name(#vis #inner_type_name);
 
             impl ::std::ops::Deref for #type_name {
