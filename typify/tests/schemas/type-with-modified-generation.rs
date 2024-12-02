@@ -66,6 +66,11 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
+impl TestType {
+    pub fn builder() -> builder::TestType {
+        Default::default()
+    }
+}
 #[doc = "TypeThatHasMoreDerives"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -108,6 +113,75 @@ impl From<::std::collections::HashMap<::std::string::String, ::std::string::Stri
         value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
     ) -> Self {
         Self(value)
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct TestType {
+        converted_type: ::std::result::Result<serde_json::Value, ::std::string::String>,
+        patched_type: ::std::result::Result<super::TypeThatHasMoreDerives, ::std::string::String>,
+        replaced_type: ::std::result::Result<String, ::std::string::String>,
+    }
+    impl Default for TestType {
+        fn default() -> Self {
+            Self {
+                converted_type: Err("no value supplied for converted_type".to_string()),
+                patched_type: Err("no value supplied for patched_type".to_string()),
+                replaced_type: Err("no value supplied for replaced_type".to_string()),
+            }
+        }
+    }
+    impl TestType {
+        pub fn converted_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<serde_json::Value>,
+            T::Error: std::fmt::Display,
+        {
+            self.converted_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for converted_type: {}", e));
+            self
+        }
+        pub fn patched_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TypeThatHasMoreDerives>,
+            T::Error: std::fmt::Display,
+        {
+            self.patched_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for patched_type: {}", e));
+            self
+        }
+        pub fn replaced_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<String>,
+            T::Error: std::fmt::Display,
+        {
+            self.replaced_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for replaced_type: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestType> for super::TestType {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestType) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                converted_type: value.converted_type?,
+                patched_type: value.patched_type?,
+                replaced_type: value.replaced_type?,
+            })
+        }
+    }
+    impl From<super::TestType> for TestType {
+        fn from(value: super::TestType) -> Self {
+            Self {
+                converted_type: Ok(value.converted_type),
+                patched_type: Ok(value.patched_type),
+                replaced_type: Ok(value.replaced_type),
+            }
+        }
     }
 }
 fn main() {}

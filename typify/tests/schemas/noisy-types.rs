@@ -166,4 +166,46 @@ impl From<&ObjectBs> for ObjectBs {
         value.clone()
     }
 }
+impl ObjectBs {
+    pub fn builder() -> builder::ObjectBs {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct ObjectBs {
+        ok: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ObjectBs {
+        fn default() -> Self {
+            Self {
+                ok: Ok(Default::default()),
+            }
+        }
+    }
+    impl ObjectBs {
+        pub fn ok<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.ok = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for ok: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ObjectBs> for super::ObjectBs {
+        type Error = super::error::ConversionError;
+        fn try_from(value: ObjectBs) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { ok: value.ok? })
+        }
+    }
+    impl From<super::ObjectBs> for ObjectBs {
+        fn from(value: super::ObjectBs) -> Self {
+            Self { ok: Ok(value.ok) }
+        }
+    }
+}
 fn main() {}

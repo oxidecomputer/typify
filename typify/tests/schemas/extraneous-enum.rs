@@ -56,6 +56,11 @@ impl From<&LetterBox> for LetterBox {
         value.clone()
     }
 }
+impl LetterBox {
+    pub fn builder() -> builder::LetterBox {
+        Default::default()
+    }
+}
 #[doc = "LetterBoxLetter"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -133,6 +138,52 @@ impl std::convert::TryFrom<::std::string::String> for LetterBoxLetter {
         value: ::std::string::String,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct LetterBox {
+        letter: ::std::result::Result<
+            ::std::option::Option<super::LetterBoxLetter>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for LetterBox {
+        fn default() -> Self {
+            Self {
+                letter: Ok(Default::default()),
+            }
+        }
+    }
+    impl LetterBox {
+        pub fn letter<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::LetterBoxLetter>>,
+            T::Error: std::fmt::Display,
+        {
+            self.letter = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for letter: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<LetterBox> for super::LetterBox {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: LetterBox,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                letter: value.letter?,
+            })
+        }
+    }
+    impl From<super::LetterBox> for LetterBox {
+        fn from(value: super::LetterBox) -> Self {
+            Self {
+                letter: Ok(value.letter),
+            }
+        }
     }
 }
 fn main() {}

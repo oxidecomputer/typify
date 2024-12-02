@@ -65,6 +65,11 @@ impl From<&Annotated> for Annotated {
         value.clone()
     }
 }
+impl Annotated {
+    pub fn builder() -> builder::Annotated {
+        Default::default()
+    }
+}
 #[doc = "AnnotatedAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -101,6 +106,11 @@ pub struct AnnotatedAnnotations {
 impl From<&AnnotatedAnnotations> for AnnotatedAnnotations {
     fn from(value: &AnnotatedAnnotations) -> Self {
         value.clone()
+    }
+}
+impl AnnotatedAnnotations {
+    pub fn builder() -> builder::AnnotatedAnnotations {
+        Default::default()
     }
 }
 #[doc = "BlobResourceContents"]
@@ -152,6 +162,11 @@ impl From<&BlobResourceContents> for BlobResourceContents {
         value.clone()
     }
 }
+impl BlobResourceContents {
+    pub fn builder() -> builder::BlobResourceContents {
+        Default::default()
+    }
+}
 #[doc = "Used by the client to invoke a tool provided by the server."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -198,6 +213,11 @@ impl From<&CallToolRequest> for CallToolRequest {
         value.clone()
     }
 }
+impl CallToolRequest {
+    pub fn builder() -> builder::CallToolRequest {
+        Default::default()
+    }
+}
 #[doc = "CallToolRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -229,6 +249,11 @@ pub struct CallToolRequestParams {
 impl From<&CallToolRequestParams> for CallToolRequestParams {
     fn from(value: &CallToolRequestParams) -> Self {
         value.clone()
+    }
+}
+impl CallToolRequestParams {
+    pub fn builder() -> builder::CallToolRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a tool call.\n\nAny errors that originate from the tool SHOULD be reported inside the result\nobject, with `isError` set to true, _not_ as an MCP protocol-level error\nresponse. Otherwise, the LLM would not be able to see that an error occurred\nand self-correct.\n\nHowever, any errors in _finding_ the tool, an error indicating that the\nserver does not support tool calls, or any other exceptional conditions,\nshould be reported as an MCP error response."]
@@ -293,6 +318,11 @@ pub struct CallToolResult {
 impl From<&CallToolResult> for CallToolResult {
     fn from(value: &CallToolResult) -> Self {
         value.clone()
+    }
+}
+impl CallToolResult {
+    pub fn builder() -> builder::CallToolResult {
+        Default::default()
     }
 }
 #[doc = "CallToolResultContentItem"]
@@ -389,6 +419,11 @@ impl From<&CancelledNotification> for CancelledNotification {
         value.clone()
     }
 }
+impl CancelledNotification {
+    pub fn builder() -> builder::CancelledNotification {
+        Default::default()
+    }
+}
 #[doc = "CancelledNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -424,6 +459,11 @@ pub struct CancelledNotificationParams {
 impl From<&CancelledNotificationParams> for CancelledNotificationParams {
     fn from(value: &CancelledNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl CancelledNotificationParams {
+    pub fn builder() -> builder::CancelledNotificationParams {
+        Default::default()
     }
 }
 #[doc = "Capabilities a client may support. Known capabilities are defined here, in this schema, but this is not a closed set: any client can define its own, additional capabilities."]
@@ -481,6 +521,11 @@ impl From<&ClientCapabilities> for ClientCapabilities {
         value.clone()
     }
 }
+impl ClientCapabilities {
+    pub fn builder() -> builder::ClientCapabilities {
+        Default::default()
+    }
+}
 #[doc = "Present if the client supports listing roots."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -511,6 +556,11 @@ pub struct ClientCapabilitiesRoots {
 impl From<&ClientCapabilitiesRoots> for ClientCapabilitiesRoots {
     fn from(value: &ClientCapabilitiesRoots) -> Self {
         value.clone()
+    }
+}
+impl ClientCapabilitiesRoots {
+    pub fn builder() -> builder::ClientCapabilitiesRoots {
+        Default::default()
     }
 }
 #[doc = "ClientNotification"]
@@ -812,6 +862,11 @@ impl From<&CompleteRequest> for CompleteRequest {
         value.clone()
     }
 }
+impl CompleteRequest {
+    pub fn builder() -> builder::CompleteRequest {
+        Default::default()
+    }
+}
 #[doc = "CompleteRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -867,6 +922,11 @@ impl From<&CompleteRequestParams> for CompleteRequestParams {
         value.clone()
     }
 }
+impl CompleteRequestParams {
+    pub fn builder() -> builder::CompleteRequestParams {
+        Default::default()
+    }
+}
 #[doc = "The argument's information"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -902,6 +962,11 @@ pub struct CompleteRequestParamsArgument {
 impl From<&CompleteRequestParamsArgument> for CompleteRequestParamsArgument {
     fn from(value: &CompleteRequestParamsArgument) -> Self {
         value.clone()
+    }
+}
+impl CompleteRequestParamsArgument {
+    pub fn builder() -> builder::CompleteRequestParamsArgument {
+        Default::default()
     }
 }
 #[doc = "CompleteRequestParamsRef"]
@@ -1002,6 +1067,11 @@ impl From<&CompleteResult> for CompleteResult {
         value.clone()
     }
 }
+impl CompleteResult {
+    pub fn builder() -> builder::CompleteResult {
+        Default::default()
+    }
+}
 #[doc = "CompleteResultCompletion"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1050,6 +1120,11 @@ pub struct CompleteResultCompletion {
 impl From<&CompleteResultCompletion> for CompleteResultCompletion {
     fn from(value: &CompleteResultCompletion) -> Self {
         value.clone()
+    }
+}
+impl CompleteResultCompletion {
+    pub fn builder() -> builder::CompleteResultCompletion {
+        Default::default()
     }
 }
 #[doc = "A request from the server to sample an LLM via the client. The client has full discretion over which model to select. The client should also inform the user before beginning sampling, to allow them to inspect the request (human in the loop) and decide whether to approve it."]
@@ -1131,6 +1206,11 @@ pub struct CreateMessageRequest {
 impl From<&CreateMessageRequest> for CreateMessageRequest {
     fn from(value: &CreateMessageRequest) -> Self {
         value.clone()
+    }
+}
+impl CreateMessageRequest {
+    pub fn builder() -> builder::CreateMessageRequest {
+        Default::default()
     }
 }
 #[doc = "CreateMessageRequestParams"]
@@ -1232,6 +1312,11 @@ pub struct CreateMessageRequestParams {
 impl From<&CreateMessageRequestParams> for CreateMessageRequestParams {
     fn from(value: &CreateMessageRequestParams) -> Self {
         value.clone()
+    }
+}
+impl CreateMessageRequestParams {
+    pub fn builder() -> builder::CreateMessageRequestParams {
+        Default::default()
     }
 }
 #[doc = "A request to include context from one or more MCP servers (including the caller), to be attached to the prompt. The client MAY ignore this request."]
@@ -1385,6 +1470,11 @@ pub struct CreateMessageResult {
 impl From<&CreateMessageResult> for CreateMessageResult {
     fn from(value: &CreateMessageResult) -> Self {
         value.clone()
+    }
+}
+impl CreateMessageResult {
+    pub fn builder() -> builder::CreateMessageResult {
+        Default::default()
     }
 }
 #[doc = "CreateMessageResultContent"]
@@ -1542,6 +1632,11 @@ impl From<&EmbeddedResource> for EmbeddedResource {
         value.clone()
     }
 }
+impl EmbeddedResource {
+    pub fn builder() -> builder::EmbeddedResource {
+        Default::default()
+    }
+}
 #[doc = "EmbeddedResourceAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1578,6 +1673,11 @@ pub struct EmbeddedResourceAnnotations {
 impl From<&EmbeddedResourceAnnotations> for EmbeddedResourceAnnotations {
     fn from(value: &EmbeddedResourceAnnotations) -> Self {
         value.clone()
+    }
+}
+impl EmbeddedResourceAnnotations {
+    pub fn builder() -> builder::EmbeddedResourceAnnotations {
+        Default::default()
     }
 }
 #[doc = "EmbeddedResourceResource"]
@@ -1701,6 +1801,11 @@ impl From<&GetPromptRequest> for GetPromptRequest {
         value.clone()
     }
 }
+impl GetPromptRequest {
+    pub fn builder() -> builder::GetPromptRequest {
+        Default::default()
+    }
+}
 #[doc = "GetPromptRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1738,6 +1843,11 @@ pub struct GetPromptRequestParams {
 impl From<&GetPromptRequestParams> for GetPromptRequestParams {
     fn from(value: &GetPromptRequestParams) -> Self {
         value.clone()
+    }
+}
+impl GetPromptRequestParams {
+    pub fn builder() -> builder::GetPromptRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a prompts/get request from the client."]
@@ -1788,6 +1898,11 @@ pub struct GetPromptResult {
 impl From<&GetPromptResult> for GetPromptResult {
     fn from(value: &GetPromptResult) -> Self {
         value.clone()
+    }
+}
+impl GetPromptResult {
+    pub fn builder() -> builder::GetPromptResult {
+        Default::default()
     }
 }
 #[doc = "An image provided to or from an LLM."]
@@ -1856,6 +1971,11 @@ impl From<&ImageContent> for ImageContent {
         value.clone()
     }
 }
+impl ImageContent {
+    pub fn builder() -> builder::ImageContent {
+        Default::default()
+    }
+}
 #[doc = "ImageContentAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1894,6 +2014,11 @@ impl From<&ImageContentAnnotations> for ImageContentAnnotations {
         value.clone()
     }
 }
+impl ImageContentAnnotations {
+    pub fn builder() -> builder::ImageContentAnnotations {
+        Default::default()
+    }
+}
 #[doc = "Describes the name and version of an MCP implementation."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1925,6 +2050,11 @@ pub struct Implementation {
 impl From<&Implementation> for Implementation {
     fn from(value: &Implementation) -> Self {
         value.clone()
+    }
+}
+impl Implementation {
+    pub fn builder() -> builder::Implementation {
+        Default::default()
     }
 }
 #[doc = "This request is sent from the client to the server when it first connects, asking it to begin initialization."]
@@ -1978,6 +2108,11 @@ impl From<&InitializeRequest> for InitializeRequest {
         value.clone()
     }
 }
+impl InitializeRequest {
+    pub fn builder() -> builder::InitializeRequest {
+        Default::default()
+    }
+}
 #[doc = "InitializeRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2017,6 +2152,11 @@ pub struct InitializeRequestParams {
 impl From<&InitializeRequestParams> for InitializeRequestParams {
     fn from(value: &InitializeRequestParams) -> Self {
         value.clone()
+    }
+}
+impl InitializeRequestParams {
+    pub fn builder() -> builder::InitializeRequestParams {
+        Default::default()
     }
 }
 #[doc = "After receiving an initialize request from the client, the server sends this response."]
@@ -2080,6 +2220,11 @@ impl From<&InitializeResult> for InitializeResult {
         value.clone()
     }
 }
+impl InitializeResult {
+    pub fn builder() -> builder::InitializeResult {
+        Default::default()
+    }
+}
 #[doc = "This notification is sent from the client to the server after initialization has finished."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2122,6 +2267,11 @@ impl From<&InitializedNotification> for InitializedNotification {
         value.clone()
     }
 }
+impl InitializedNotification {
+    pub fn builder() -> builder::InitializedNotification {
+        Default::default()
+    }
+}
 #[doc = "InitializedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2153,6 +2303,11 @@ pub struct InitializedNotificationParams {
 impl From<&InitializedNotificationParams> for InitializedNotificationParams {
     fn from(value: &InitializedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl InitializedNotificationParams {
+    pub fn builder() -> builder::InitializedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "A response to a request that indicates an error occurred."]
@@ -2211,6 +2366,11 @@ impl From<&JsonrpcError> for JsonrpcError {
         value.clone()
     }
 }
+impl JsonrpcError {
+    pub fn builder() -> builder::JsonrpcError {
+        Default::default()
+    }
+}
 #[doc = "JsonrpcErrorError"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2251,6 +2411,11 @@ pub struct JsonrpcErrorError {
 impl From<&JsonrpcErrorError> for JsonrpcErrorError {
     fn from(value: &JsonrpcErrorError) -> Self {
         value.clone()
+    }
+}
+impl JsonrpcErrorError {
+    pub fn builder() -> builder::JsonrpcErrorError {
+        Default::default()
     }
 }
 #[doc = "JsonrpcMessage"]
@@ -2356,6 +2521,11 @@ impl From<&JsonrpcNotification> for JsonrpcNotification {
         value.clone()
     }
 }
+impl JsonrpcNotification {
+    pub fn builder() -> builder::JsonrpcNotification {
+        Default::default()
+    }
+}
 #[doc = "JsonrpcNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2387,6 +2557,11 @@ pub struct JsonrpcNotificationParams {
 impl From<&JsonrpcNotificationParams> for JsonrpcNotificationParams {
     fn from(value: &JsonrpcNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl JsonrpcNotificationParams {
+    pub fn builder() -> builder::JsonrpcNotificationParams {
+        Default::default()
     }
 }
 #[doc = "A request that expects a response."]
@@ -2445,6 +2620,11 @@ impl From<&JsonrpcRequest> for JsonrpcRequest {
         value.clone()
     }
 }
+impl JsonrpcRequest {
+    pub fn builder() -> builder::JsonrpcRequest {
+        Default::default()
+    }
+}
 #[doc = "JsonrpcRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2481,6 +2661,11 @@ impl From<&JsonrpcRequestParams> for JsonrpcRequestParams {
         value.clone()
     }
 }
+impl JsonrpcRequestParams {
+    pub fn builder() -> builder::JsonrpcRequestParams {
+        Default::default()
+    }
+}
 #[doc = "JsonrpcRequestParamsMeta"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2510,6 +2695,11 @@ pub struct JsonrpcRequestParamsMeta {
 impl From<&JsonrpcRequestParamsMeta> for JsonrpcRequestParamsMeta {
     fn from(value: &JsonrpcRequestParamsMeta) -> Self {
         value.clone()
+    }
+}
+impl JsonrpcRequestParamsMeta {
+    pub fn builder() -> builder::JsonrpcRequestParamsMeta {
+        Default::default()
     }
 }
 #[doc = "A successful (non-error) response to a request."]
@@ -2549,6 +2739,11 @@ pub struct JsonrpcResponse {
 impl From<&JsonrpcResponse> for JsonrpcResponse {
     fn from(value: &JsonrpcResponse) -> Self {
         value.clone()
+    }
+}
+impl JsonrpcResponse {
+    pub fn builder() -> builder::JsonrpcResponse {
+        Default::default()
     }
 }
 #[doc = "Sent from the client to request a list of prompts and prompt templates the server has."]
@@ -2591,6 +2786,11 @@ impl From<&ListPromptsRequest> for ListPromptsRequest {
         value.clone()
     }
 }
+impl ListPromptsRequest {
+    pub fn builder() -> builder::ListPromptsRequest {
+        Default::default()
+    }
+}
 #[doc = "ListPromptsRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2616,6 +2816,11 @@ pub struct ListPromptsRequestParams {
 impl From<&ListPromptsRequestParams> for ListPromptsRequestParams {
     fn from(value: &ListPromptsRequestParams) -> Self {
         value.clone()
+    }
+}
+impl ListPromptsRequestParams {
+    pub fn builder() -> builder::ListPromptsRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a prompts/list request from the client."]
@@ -2672,6 +2877,11 @@ impl From<&ListPromptsResult> for ListPromptsResult {
         value.clone()
     }
 }
+impl ListPromptsResult {
+    pub fn builder() -> builder::ListPromptsResult {
+        Default::default()
+    }
+}
 #[doc = "Sent from the client to request a list of resource templates the server has."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2712,6 +2922,11 @@ impl From<&ListResourceTemplatesRequest> for ListResourceTemplatesRequest {
         value.clone()
     }
 }
+impl ListResourceTemplatesRequest {
+    pub fn builder() -> builder::ListResourceTemplatesRequest {
+        Default::default()
+    }
+}
 #[doc = "ListResourceTemplatesRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2737,6 +2952,11 @@ pub struct ListResourceTemplatesRequestParams {
 impl From<&ListResourceTemplatesRequestParams> for ListResourceTemplatesRequestParams {
     fn from(value: &ListResourceTemplatesRequestParams) -> Self {
         value.clone()
+    }
+}
+impl ListResourceTemplatesRequestParams {
+    pub fn builder() -> builder::ListResourceTemplatesRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a resources/templates/list request from the client."]
@@ -2794,6 +3014,11 @@ impl From<&ListResourceTemplatesResult> for ListResourceTemplatesResult {
         value.clone()
     }
 }
+impl ListResourceTemplatesResult {
+    pub fn builder() -> builder::ListResourceTemplatesResult {
+        Default::default()
+    }
+}
 #[doc = "Sent from the client to request a list of resources the server has."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2834,6 +3059,11 @@ impl From<&ListResourcesRequest> for ListResourcesRequest {
         value.clone()
     }
 }
+impl ListResourcesRequest {
+    pub fn builder() -> builder::ListResourcesRequest {
+        Default::default()
+    }
+}
 #[doc = "ListResourcesRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2859,6 +3089,11 @@ pub struct ListResourcesRequestParams {
 impl From<&ListResourcesRequestParams> for ListResourcesRequestParams {
     fn from(value: &ListResourcesRequestParams) -> Self {
         value.clone()
+    }
+}
+impl ListResourcesRequestParams {
+    pub fn builder() -> builder::ListResourcesRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a resources/list request from the client."]
@@ -2915,6 +3150,11 @@ impl From<&ListResourcesResult> for ListResourcesResult {
         value.clone()
     }
 }
+impl ListResourcesResult {
+    pub fn builder() -> builder::ListResourcesResult {
+        Default::default()
+    }
+}
 #[doc = "Sent from the server to request a list of root URIs from the client. Roots allow\nservers to ask for specific directories or files to operate on. A common example\nfor roots is providing a set of repositories or directories a server should operate\non.\n\nThis request is typically used when the server needs to understand the file system\nstructure or access specific locations that the client has permission to read from."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2961,6 +3201,11 @@ impl From<&ListRootsRequest> for ListRootsRequest {
         value.clone()
     }
 }
+impl ListRootsRequest {
+    pub fn builder() -> builder::ListRootsRequest {
+        Default::default()
+    }
+}
 #[doc = "ListRootsRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -2997,6 +3242,11 @@ impl From<&ListRootsRequestParams> for ListRootsRequestParams {
         value.clone()
     }
 }
+impl ListRootsRequestParams {
+    pub fn builder() -> builder::ListRootsRequestParams {
+        Default::default()
+    }
+}
 #[doc = "ListRootsRequestParamsMeta"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3026,6 +3276,11 @@ pub struct ListRootsRequestParamsMeta {
 impl From<&ListRootsRequestParamsMeta> for ListRootsRequestParamsMeta {
     fn from(value: &ListRootsRequestParamsMeta) -> Self {
         value.clone()
+    }
+}
+impl ListRootsRequestParamsMeta {
+    pub fn builder() -> builder::ListRootsRequestParamsMeta {
+        Default::default()
     }
 }
 #[doc = "The client's response to a roots/list request from the server.\nThis result contains an array of Root objects, each representing a root directory\nor file that the server can operate on."]
@@ -3071,6 +3326,11 @@ impl From<&ListRootsResult> for ListRootsResult {
         value.clone()
     }
 }
+impl ListRootsResult {
+    pub fn builder() -> builder::ListRootsResult {
+        Default::default()
+    }
+}
 #[doc = "Sent from the client to request a list of tools the server has."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3111,6 +3371,11 @@ impl From<&ListToolsRequest> for ListToolsRequest {
         value.clone()
     }
 }
+impl ListToolsRequest {
+    pub fn builder() -> builder::ListToolsRequest {
+        Default::default()
+    }
+}
 #[doc = "ListToolsRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3136,6 +3401,11 @@ pub struct ListToolsRequestParams {
 impl From<&ListToolsRequestParams> for ListToolsRequestParams {
     fn from(value: &ListToolsRequestParams) -> Self {
         value.clone()
+    }
+}
+impl ListToolsRequestParams {
+    pub fn builder() -> builder::ListToolsRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a tools/list request from the client."]
@@ -3190,6 +3460,11 @@ pub struct ListToolsResult {
 impl From<&ListToolsResult> for ListToolsResult {
     fn from(value: &ListToolsResult) -> Self {
         value.clone()
+    }
+}
+impl ListToolsResult {
+    pub fn builder() -> builder::ListToolsResult {
+        Default::default()
     }
 }
 #[doc = "The severity of a log message.\n\nThese map to syslog message severities, as specified in RFC-5424:\nhttps://datatracker.ietf.org/doc/html/rfc5424#section-6.2.1"]
@@ -3351,6 +3626,11 @@ impl From<&LoggingMessageNotification> for LoggingMessageNotification {
         value.clone()
     }
 }
+impl LoggingMessageNotification {
+    pub fn builder() -> builder::LoggingMessageNotification {
+        Default::default()
+    }
+}
 #[doc = "LoggingMessageNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3393,6 +3673,11 @@ impl From<&LoggingMessageNotificationParams> for LoggingMessageNotificationParam
         value.clone()
     }
 }
+impl LoggingMessageNotificationParams {
+    pub fn builder() -> builder::LoggingMessageNotificationParams {
+        Default::default()
+    }
+}
 #[doc = "Hints to use for model selection.\n\nKeys not declared here are currently left unspecified by the spec and are up\nto the client to interpret."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3419,6 +3704,11 @@ pub struct ModelHint {
 impl From<&ModelHint> for ModelHint {
     fn from(value: &ModelHint) -> Self {
         value.clone()
+    }
+}
+impl ModelHint {
+    pub fn builder() -> builder::ModelHint {
+        Default::default()
     }
 }
 #[doc = "The server's preferences for model selection, requested of the client during sampling.\n\nBecause LLMs can vary along multiple dimensions, choosing the \"best\" model is\nrarely straightforward.  Different models excel in different areas—some are\nfaster but less capable, others are more capable but more expensive, and so\non. This interface allows servers to express their priorities across multiple\ndimensions to help clients make an appropriate selection for their use case.\n\nThese preferences are always advisory. The client MAY ignore them. It is also\nup to the client to decide how to interpret these preferences and how to\nbalance them against other considerations."]
@@ -3488,6 +3778,11 @@ impl From<&ModelPreferences> for ModelPreferences {
         value.clone()
     }
 }
+impl ModelPreferences {
+    pub fn builder() -> builder::ModelPreferences {
+        Default::default()
+    }
+}
 #[doc = "Notification"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3528,6 +3823,11 @@ impl From<&Notification> for Notification {
         value.clone()
     }
 }
+impl Notification {
+    pub fn builder() -> builder::Notification {
+        Default::default()
+    }
+}
 #[doc = "NotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3559,6 +3859,11 @@ pub struct NotificationParams {
 impl From<&NotificationParams> for NotificationParams {
     fn from(value: &NotificationParams) -> Self {
         value.clone()
+    }
+}
+impl NotificationParams {
+    pub fn builder() -> builder::NotificationParams {
+        Default::default()
     }
 }
 #[doc = "PaginatedRequest"]
@@ -3599,6 +3904,11 @@ impl From<&PaginatedRequest> for PaginatedRequest {
         value.clone()
     }
 }
+impl PaginatedRequest {
+    pub fn builder() -> builder::PaginatedRequest {
+        Default::default()
+    }
+}
 #[doc = "PaginatedRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3624,6 +3934,11 @@ pub struct PaginatedRequestParams {
 impl From<&PaginatedRequestParams> for PaginatedRequestParams {
     fn from(value: &PaginatedRequestParams) -> Self {
         value.clone()
+    }
+}
+impl PaginatedRequestParams {
+    pub fn builder() -> builder::PaginatedRequestParams {
+        Default::default()
     }
 }
 #[doc = "PaginatedResult"]
@@ -3667,6 +3982,11 @@ pub struct PaginatedResult {
 impl From<&PaginatedResult> for PaginatedResult {
     fn from(value: &PaginatedResult) -> Self {
         value.clone()
+    }
+}
+impl PaginatedResult {
+    pub fn builder() -> builder::PaginatedResult {
+        Default::default()
     }
 }
 #[doc = "A ping, issued by either the server or the client, to check that the other party is still alive. The receiver must promptly respond, or else may be disconnected."]
@@ -3715,6 +4035,11 @@ impl From<&PingRequest> for PingRequest {
         value.clone()
     }
 }
+impl PingRequest {
+    pub fn builder() -> builder::PingRequest {
+        Default::default()
+    }
+}
 #[doc = "PingRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3751,6 +4076,11 @@ impl From<&PingRequestParams> for PingRequestParams {
         value.clone()
     }
 }
+impl PingRequestParams {
+    pub fn builder() -> builder::PingRequestParams {
+        Default::default()
+    }
+}
 #[doc = "PingRequestParamsMeta"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3780,6 +4110,11 @@ pub struct PingRequestParamsMeta {
 impl From<&PingRequestParamsMeta> for PingRequestParamsMeta {
     fn from(value: &PingRequestParamsMeta) -> Self {
         value.clone()
+    }
+}
+impl PingRequestParamsMeta {
+    pub fn builder() -> builder::PingRequestParamsMeta {
+        Default::default()
     }
 }
 #[doc = "An out-of-band notification used to inform the receiver of a progress update for a long-running request."]
@@ -3834,6 +4169,11 @@ impl From<&ProgressNotification> for ProgressNotification {
         value.clone()
     }
 }
+impl ProgressNotification {
+    pub fn builder() -> builder::ProgressNotification {
+        Default::default()
+    }
+}
 #[doc = "ProgressNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -3874,6 +4214,11 @@ pub struct ProgressNotificationParams {
 impl From<&ProgressNotificationParams> for ProgressNotificationParams {
     fn from(value: &ProgressNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl ProgressNotificationParams {
+    pub fn builder() -> builder::ProgressNotificationParams {
+        Default::default()
     }
 }
 #[doc = "A progress token, used to associate progress notifications with the original request."]
@@ -3995,6 +4340,11 @@ impl From<&Prompt> for Prompt {
         value.clone()
     }
 }
+impl Prompt {
+    pub fn builder() -> builder::Prompt {
+        Default::default()
+    }
+}
 #[doc = "Describes an argument that a prompt can accept."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4039,6 +4389,11 @@ impl From<&PromptArgument> for PromptArgument {
         value.clone()
     }
 }
+impl PromptArgument {
+    pub fn builder() -> builder::PromptArgument {
+        Default::default()
+    }
+}
 #[doc = "An optional notification from the server to the client, informing it that the list of prompts it offers has changed. This may be issued by servers without any previous subscription from the client."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4081,6 +4436,11 @@ impl From<&PromptListChangedNotification> for PromptListChangedNotification {
         value.clone()
     }
 }
+impl PromptListChangedNotification {
+    pub fn builder() -> builder::PromptListChangedNotification {
+        Default::default()
+    }
+}
 #[doc = "PromptListChangedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4112,6 +4472,11 @@ pub struct PromptListChangedNotificationParams {
 impl From<&PromptListChangedNotificationParams> for PromptListChangedNotificationParams {
     fn from(value: &PromptListChangedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl PromptListChangedNotificationParams {
+    pub fn builder() -> builder::PromptListChangedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "Describes a message returned as part of a prompt.\n\nThis is similar to `SamplingMessage`, but also supports the embedding of\nresources from the MCP server."]
@@ -4155,6 +4520,11 @@ pub struct PromptMessage {
 impl From<&PromptMessage> for PromptMessage {
     fn from(value: &PromptMessage) -> Self {
         value.clone()
+    }
+}
+impl PromptMessage {
+    pub fn builder() -> builder::PromptMessage {
+        Default::default()
     }
 }
 #[doc = "PromptMessageContent"]
@@ -4241,6 +4611,11 @@ impl From<&PromptReference> for PromptReference {
         value.clone()
     }
 }
+impl PromptReference {
+    pub fn builder() -> builder::PromptReference {
+        Default::default()
+    }
+}
 #[doc = "Sent from the client to the server, to read a specific resource URI."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4285,6 +4660,11 @@ impl From<&ReadResourceRequest> for ReadResourceRequest {
         value.clone()
     }
 }
+impl ReadResourceRequest {
+    pub fn builder() -> builder::ReadResourceRequest {
+        Default::default()
+    }
+}
 #[doc = "ReadResourceRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4313,6 +4693,11 @@ pub struct ReadResourceRequestParams {
 impl From<&ReadResourceRequestParams> for ReadResourceRequestParams {
     fn from(value: &ReadResourceRequestParams) -> Self {
         value.clone()
+    }
+}
+impl ReadResourceRequestParams {
+    pub fn builder() -> builder::ReadResourceRequestParams {
+        Default::default()
     }
 }
 #[doc = "The server's response to a resources/read request from the client."]
@@ -4363,6 +4748,11 @@ pub struct ReadResourceResult {
 impl From<&ReadResourceResult> for ReadResourceResult {
     fn from(value: &ReadResourceResult) -> Self {
         value.clone()
+    }
+}
+impl ReadResourceResult {
+    pub fn builder() -> builder::ReadResourceResult {
+        Default::default()
     }
 }
 #[doc = "ReadResourceResultContentsItem"]
@@ -4445,6 +4835,11 @@ pub struct Request {
 impl From<&Request> for Request {
     fn from(value: &Request) -> Self {
         value.clone()
+    }
+}
+impl Request {
+    pub fn builder() -> builder::Request {
+        Default::default()
     }
 }
 #[doc = "A uniquely identifying ID for a request in JSON-RPC."]
@@ -4555,6 +4950,11 @@ impl From<&RequestParams> for RequestParams {
         value.clone()
     }
 }
+impl RequestParams {
+    pub fn builder() -> builder::RequestParams {
+        Default::default()
+    }
+}
 #[doc = "RequestParamsMeta"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4584,6 +4984,11 @@ pub struct RequestParamsMeta {
 impl From<&RequestParamsMeta> for RequestParamsMeta {
     fn from(value: &RequestParamsMeta) -> Self {
         value.clone()
+    }
+}
+impl RequestParamsMeta {
+    pub fn builder() -> builder::RequestParamsMeta {
+        Default::default()
     }
 }
 #[doc = "A known resource that the server is capable of reading."]
@@ -4662,6 +5067,11 @@ impl From<&Resource> for Resource {
         value.clone()
     }
 }
+impl Resource {
+    pub fn builder() -> builder::Resource {
+        Default::default()
+    }
+}
 #[doc = "ResourceAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4698,6 +5108,11 @@ pub struct ResourceAnnotations {
 impl From<&ResourceAnnotations> for ResourceAnnotations {
     fn from(value: &ResourceAnnotations) -> Self {
         value.clone()
+    }
+}
+impl ResourceAnnotations {
+    pub fn builder() -> builder::ResourceAnnotations {
+        Default::default()
     }
 }
 #[doc = "The contents of a specific resource or sub-resource."]
@@ -4742,6 +5157,11 @@ impl From<&ResourceContents> for ResourceContents {
         value.clone()
     }
 }
+impl ResourceContents {
+    pub fn builder() -> builder::ResourceContents {
+        Default::default()
+    }
+}
 #[doc = "An optional notification from the server to the client, informing it that the list of resources it can read from has changed. This may be issued by servers without any previous subscription from the client."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4784,6 +5204,11 @@ impl From<&ResourceListChangedNotification> for ResourceListChangedNotification 
         value.clone()
     }
 }
+impl ResourceListChangedNotification {
+    pub fn builder() -> builder::ResourceListChangedNotification {
+        Default::default()
+    }
+}
 #[doc = "ResourceListChangedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4815,6 +5240,11 @@ pub struct ResourceListChangedNotificationParams {
 impl From<&ResourceListChangedNotificationParams> for ResourceListChangedNotificationParams {
     fn from(value: &ResourceListChangedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl ResourceListChangedNotificationParams {
+    pub fn builder() -> builder::ResourceListChangedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "A reference to a resource or resource template definition."]
@@ -4853,6 +5283,11 @@ pub struct ResourceReference {
 impl From<&ResourceReference> for ResourceReference {
     fn from(value: &ResourceReference) -> Self {
         value.clone()
+    }
+}
+impl ResourceReference {
+    pub fn builder() -> builder::ResourceReference {
+        Default::default()
     }
 }
 #[doc = "A template description for resources available on the server."]
@@ -4932,6 +5367,11 @@ impl From<&ResourceTemplate> for ResourceTemplate {
         value.clone()
     }
 }
+impl ResourceTemplate {
+    pub fn builder() -> builder::ResourceTemplate {
+        Default::default()
+    }
+}
 #[doc = "ResourceTemplateAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -4968,6 +5408,11 @@ pub struct ResourceTemplateAnnotations {
 impl From<&ResourceTemplateAnnotations> for ResourceTemplateAnnotations {
     fn from(value: &ResourceTemplateAnnotations) -> Self {
         value.clone()
+    }
+}
+impl ResourceTemplateAnnotations {
+    pub fn builder() -> builder::ResourceTemplateAnnotations {
+        Default::default()
     }
 }
 #[doc = "A notification from the server to the client, informing it that a resource has changed and may need to be read again. This should only be sent if the client previously sent a resources/subscribe request."]
@@ -5014,6 +5459,11 @@ impl From<&ResourceUpdatedNotification> for ResourceUpdatedNotification {
         value.clone()
     }
 }
+impl ResourceUpdatedNotification {
+    pub fn builder() -> builder::ResourceUpdatedNotification {
+        Default::default()
+    }
+}
 #[doc = "ResourceUpdatedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5042,6 +5492,11 @@ pub struct ResourceUpdatedNotificationParams {
 impl From<&ResourceUpdatedNotificationParams> for ResourceUpdatedNotificationParams {
     fn from(value: &ResourceUpdatedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl ResourceUpdatedNotificationParams {
+    pub fn builder() -> builder::ResourceUpdatedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "Result"]
@@ -5075,6 +5530,11 @@ pub struct Result {
 impl From<&Result> for Result {
     fn from(value: &Result) -> Self {
         value.clone()
+    }
+}
+impl Result {
+    pub fn builder() -> builder::Result {
+        Default::default()
     }
 }
 #[doc = "The sender or recipient of messages and data in a conversation."]
@@ -5193,6 +5653,11 @@ impl From<&Root> for Root {
         value.clone()
     }
 }
+impl Root {
+    pub fn builder() -> builder::Root {
+        Default::default()
+    }
+}
 #[doc = "A notification from the client to the server, informing it that the list of roots has changed.\nThis notification should be sent whenever the client adds, removes, or modifies any root.\nThe server should then request an updated list of roots using the ListRootsRequest."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5235,6 +5700,11 @@ impl From<&RootsListChangedNotification> for RootsListChangedNotification {
         value.clone()
     }
 }
+impl RootsListChangedNotification {
+    pub fn builder() -> builder::RootsListChangedNotification {
+        Default::default()
+    }
+}
 #[doc = "RootsListChangedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5266,6 +5736,11 @@ pub struct RootsListChangedNotificationParams {
 impl From<&RootsListChangedNotificationParams> for RootsListChangedNotificationParams {
     fn from(value: &RootsListChangedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl RootsListChangedNotificationParams {
+    pub fn builder() -> builder::RootsListChangedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "Describes a message issued to or received from an LLM API."]
@@ -5306,6 +5781,11 @@ pub struct SamplingMessage {
 impl From<&SamplingMessage> for SamplingMessage {
     fn from(value: &SamplingMessage) -> Self {
         value.clone()
+    }
+}
+impl SamplingMessage {
+    pub fn builder() -> builder::SamplingMessage {
+        Default::default()
     }
 }
 #[doc = "SamplingMessageContent"]
@@ -5429,6 +5909,11 @@ impl From<&ServerCapabilities> for ServerCapabilities {
         value.clone()
     }
 }
+impl ServerCapabilities {
+    pub fn builder() -> builder::ServerCapabilities {
+        Default::default()
+    }
+}
 #[doc = "Present if the server offers any prompt templates."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5459,6 +5944,11 @@ pub struct ServerCapabilitiesPrompts {
 impl From<&ServerCapabilitiesPrompts> for ServerCapabilitiesPrompts {
     fn from(value: &ServerCapabilitiesPrompts) -> Self {
         value.clone()
+    }
+}
+impl ServerCapabilitiesPrompts {
+    pub fn builder() -> builder::ServerCapabilitiesPrompts {
+        Default::default()
     }
 }
 #[doc = "Present if the server offers any resources to read."]
@@ -5500,6 +5990,11 @@ impl From<&ServerCapabilitiesResources> for ServerCapabilitiesResources {
         value.clone()
     }
 }
+impl ServerCapabilitiesResources {
+    pub fn builder() -> builder::ServerCapabilitiesResources {
+        Default::default()
+    }
+}
 #[doc = "Present if the server offers any tools to call."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5530,6 +6025,11 @@ pub struct ServerCapabilitiesTools {
 impl From<&ServerCapabilitiesTools> for ServerCapabilitiesTools {
     fn from(value: &ServerCapabilitiesTools) -> Self {
         value.clone()
+    }
+}
+impl ServerCapabilitiesTools {
+    pub fn builder() -> builder::ServerCapabilitiesTools {
+        Default::default()
     }
 }
 #[doc = "ServerNotification"]
@@ -5806,6 +6306,11 @@ impl From<&SetLevelRequest> for SetLevelRequest {
         value.clone()
     }
 }
+impl SetLevelRequest {
+    pub fn builder() -> builder::SetLevelRequest {
+        Default::default()
+    }
+}
 #[doc = "SetLevelRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5833,6 +6338,11 @@ pub struct SetLevelRequestParams {
 impl From<&SetLevelRequestParams> for SetLevelRequestParams {
     fn from(value: &SetLevelRequestParams) -> Self {
         value.clone()
+    }
+}
+impl SetLevelRequestParams {
+    pub fn builder() -> builder::SetLevelRequestParams {
+        Default::default()
     }
 }
 #[doc = "Sent from the client to request resources/updated notifications from the server whenever a particular resource changes."]
@@ -5879,6 +6389,11 @@ impl From<&SubscribeRequest> for SubscribeRequest {
         value.clone()
     }
 }
+impl SubscribeRequest {
+    pub fn builder() -> builder::SubscribeRequest {
+        Default::default()
+    }
+}
 #[doc = "SubscribeRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -5907,6 +6422,11 @@ pub struct SubscribeRequestParams {
 impl From<&SubscribeRequestParams> for SubscribeRequestParams {
     fn from(value: &SubscribeRequestParams) -> Self {
         value.clone()
+    }
+}
+impl SubscribeRequestParams {
+    pub fn builder() -> builder::SubscribeRequestParams {
+        Default::default()
     }
 }
 #[doc = "Text provided to or from an LLM."]
@@ -5966,6 +6486,11 @@ impl From<&TextContent> for TextContent {
         value.clone()
     }
 }
+impl TextContent {
+    pub fn builder() -> builder::TextContent {
+        Default::default()
+    }
+}
 #[doc = "TextContentAnnotations"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -6002,6 +6527,11 @@ pub struct TextContentAnnotations {
 impl From<&TextContentAnnotations> for TextContentAnnotations {
     fn from(value: &TextContentAnnotations) -> Self {
         value.clone()
+    }
+}
+impl TextContentAnnotations {
+    pub fn builder() -> builder::TextContentAnnotations {
+        Default::default()
     }
 }
 #[doc = "TextResourceContents"]
@@ -6050,6 +6580,11 @@ pub struct TextResourceContents {
 impl From<&TextResourceContents> for TextResourceContents {
     fn from(value: &TextResourceContents) -> Self {
         value.clone()
+    }
+}
+impl TextResourceContents {
+    pub fn builder() -> builder::TextResourceContents {
+        Default::default()
     }
 }
 #[doc = "Definition for a tool the client can call."]
@@ -6112,6 +6647,11 @@ impl From<&Tool> for Tool {
         value.clone()
     }
 }
+impl Tool {
+    pub fn builder() -> builder::Tool {
+        Default::default()
+    }
+}
 #[doc = "A JSON Schema object defining the expected parameters for the tool."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -6152,6 +6692,11 @@ pub struct ToolInputSchema {
 impl From<&ToolInputSchema> for ToolInputSchema {
     fn from(value: &ToolInputSchema) -> Self {
         value.clone()
+    }
+}
+impl ToolInputSchema {
+    pub fn builder() -> builder::ToolInputSchema {
+        Default::default()
     }
 }
 #[doc = "An optional notification from the server to the client, informing it that the list of tools it offers has changed. This may be issued by servers without any previous subscription from the client."]
@@ -6196,6 +6741,11 @@ impl From<&ToolListChangedNotification> for ToolListChangedNotification {
         value.clone()
     }
 }
+impl ToolListChangedNotification {
+    pub fn builder() -> builder::ToolListChangedNotification {
+        Default::default()
+    }
+}
 #[doc = "ToolListChangedNotificationParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -6227,6 +6777,11 @@ pub struct ToolListChangedNotificationParams {
 impl From<&ToolListChangedNotificationParams> for ToolListChangedNotificationParams {
     fn from(value: &ToolListChangedNotificationParams) -> Self {
         value.clone()
+    }
+}
+impl ToolListChangedNotificationParams {
+    pub fn builder() -> builder::ToolListChangedNotificationParams {
+        Default::default()
     }
 }
 #[doc = "Sent from the client to request cancellation of resources/updated notifications from the server. This should follow a previous resources/subscribe request."]
@@ -6273,6 +6828,11 @@ impl From<&UnsubscribeRequest> for UnsubscribeRequest {
         value.clone()
     }
 }
+impl UnsubscribeRequest {
+    pub fn builder() -> builder::UnsubscribeRequest {
+        Default::default()
+    }
+}
 #[doc = "UnsubscribeRequestParams"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -6301,6 +6861,6684 @@ pub struct UnsubscribeRequestParams {
 impl From<&UnsubscribeRequestParams> for UnsubscribeRequestParams {
     fn from(value: &UnsubscribeRequestParams) -> Self {
         value.clone()
+    }
+}
+impl UnsubscribeRequestParams {
+    pub fn builder() -> builder::UnsubscribeRequestParams {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct Annotated {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::AnnotatedAnnotations>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for Annotated {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+            }
+        }
+    }
+    impl Annotated {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::AnnotatedAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Annotated> for super::Annotated {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: Annotated,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+            })
+        }
+    }
+    impl From<super::Annotated> for Annotated {
+        fn from(value: super::Annotated) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct AnnotatedAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for AnnotatedAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl AnnotatedAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<AnnotatedAnnotations> for super::AnnotatedAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: AnnotatedAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::AnnotatedAnnotations> for AnnotatedAnnotations {
+        fn from(value: super::AnnotatedAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct BlobResourceContents {
+        blob: ::std::result::Result<::std::string::String, ::std::string::String>,
+        mime_type: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for BlobResourceContents {
+        fn default() -> Self {
+            Self {
+                blob: Err("no value supplied for blob".to_string()),
+                mime_type: Ok(Default::default()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl BlobResourceContents {
+        pub fn blob<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.blob = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for blob: {}", e));
+            self
+        }
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<BlobResourceContents> for super::BlobResourceContents {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: BlobResourceContents,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                blob: value.blob?,
+                mime_type: value.mime_type?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::BlobResourceContents> for BlobResourceContents {
+        fn from(value: super::BlobResourceContents) -> Self {
+            Self {
+                blob: Ok(value.blob),
+                mime_type: Ok(value.mime_type),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CallToolRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::CallToolRequestParams, ::std::string::String>,
+    }
+    impl Default for CallToolRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl CallToolRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CallToolRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CallToolRequest> for super::CallToolRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CallToolRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::CallToolRequest> for CallToolRequest {
+        fn from(value: super::CallToolRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CallToolRequestParams {
+        arguments: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for CallToolRequestParams {
+        fn default() -> Self {
+            Self {
+                arguments: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+            }
+        }
+    }
+    impl CallToolRequestParams {
+        pub fn arguments<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.arguments = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for arguments: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CallToolRequestParams> for super::CallToolRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CallToolRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                arguments: value.arguments?,
+                name: value.name?,
+            })
+        }
+    }
+    impl From<super::CallToolRequestParams> for CallToolRequestParams {
+        fn from(value: super::CallToolRequestParams) -> Self {
+            Self {
+                arguments: Ok(value.arguments),
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CallToolResult {
+        content: ::std::result::Result<
+            ::std::vec::Vec<super::CallToolResultContentItem>,
+            ::std::string::String,
+        >,
+        is_error: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for CallToolResult {
+        fn default() -> Self {
+            Self {
+                content: Err("no value supplied for content".to_string()),
+                is_error: Ok(Default::default()),
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl CallToolResult {
+        pub fn content<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::CallToolResultContentItem>>,
+            T::Error: std::fmt::Display,
+        {
+            self.content = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for content: {}", e));
+            self
+        }
+        pub fn is_error<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.is_error = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for is_error: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CallToolResult> for super::CallToolResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CallToolResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                content: value.content?,
+                is_error: value.is_error?,
+                meta: value.meta?,
+            })
+        }
+    }
+    impl From<super::CallToolResult> for CallToolResult {
+        fn from(value: super::CallToolResult) -> Self {
+            Self {
+                content: Ok(value.content),
+                is_error: Ok(value.is_error),
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CancelledNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::CancelledNotificationParams, ::std::string::String>,
+    }
+    impl Default for CancelledNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl CancelledNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CancelledNotificationParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CancelledNotification> for super::CancelledNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CancelledNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::CancelledNotification> for CancelledNotification {
+        fn from(value: super::CancelledNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CancelledNotificationParams {
+        reason: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        request_id: ::std::result::Result<super::RequestId, ::std::string::String>,
+    }
+    impl Default for CancelledNotificationParams {
+        fn default() -> Self {
+            Self {
+                reason: Ok(Default::default()),
+                request_id: Err("no value supplied for request_id".to_string()),
+            }
+        }
+    }
+    impl CancelledNotificationParams {
+        pub fn reason<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.reason = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for reason: {}", e));
+            self
+        }
+        pub fn request_id<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::RequestId>,
+            T::Error: std::fmt::Display,
+        {
+            self.request_id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for request_id: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CancelledNotificationParams> for super::CancelledNotificationParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CancelledNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                reason: value.reason?,
+                request_id: value.request_id?,
+            })
+        }
+    }
+    impl From<super::CancelledNotificationParams> for CancelledNotificationParams {
+        fn from(value: super::CancelledNotificationParams) -> Self {
+            Self {
+                reason: Ok(value.reason),
+                request_id: Ok(value.request_id),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ClientCapabilities {
+        experimental: ::std::result::Result<
+            ::std::collections::HashMap<
+                ::std::string::String,
+                ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            >,
+            ::std::string::String,
+        >,
+        roots: ::std::result::Result<
+            ::std::option::Option<super::ClientCapabilitiesRoots>,
+            ::std::string::String,
+        >,
+        sampling: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ClientCapabilities {
+        fn default() -> Self {
+            Self {
+                experimental: Ok(Default::default()),
+                roots: Ok(Default::default()),
+                sampling: Ok(Default::default()),
+            }
+        }
+    }
+    impl ClientCapabilities {
+        pub fn experimental<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<
+                    ::std::string::String,
+                    ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+                >,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.experimental = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for experimental: {}", e));
+            self
+        }
+        pub fn roots<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ClientCapabilitiesRoots>>,
+            T::Error: std::fmt::Display,
+        {
+            self.roots = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for roots: {}", e));
+            self
+        }
+        pub fn sampling<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.sampling = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for sampling: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ClientCapabilities> for super::ClientCapabilities {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ClientCapabilities,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                experimental: value.experimental?,
+                roots: value.roots?,
+                sampling: value.sampling?,
+            })
+        }
+    }
+    impl From<super::ClientCapabilities> for ClientCapabilities {
+        fn from(value: super::ClientCapabilities) -> Self {
+            Self {
+                experimental: Ok(value.experimental),
+                roots: Ok(value.roots),
+                sampling: Ok(value.sampling),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ClientCapabilitiesRoots {
+        list_changed: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ClientCapabilitiesRoots {
+        fn default() -> Self {
+            Self {
+                list_changed: Ok(Default::default()),
+            }
+        }
+    }
+    impl ClientCapabilitiesRoots {
+        pub fn list_changed<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.list_changed = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for list_changed: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ClientCapabilitiesRoots> for super::ClientCapabilitiesRoots {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ClientCapabilitiesRoots,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                list_changed: value.list_changed?,
+            })
+        }
+    }
+    impl From<super::ClientCapabilitiesRoots> for ClientCapabilitiesRoots {
+        fn from(value: super::ClientCapabilitiesRoots) -> Self {
+            Self {
+                list_changed: Ok(value.list_changed),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CompleteRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::CompleteRequestParams, ::std::string::String>,
+    }
+    impl Default for CompleteRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl CompleteRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CompleteRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CompleteRequest> for super::CompleteRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CompleteRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::CompleteRequest> for CompleteRequest {
+        fn from(value: super::CompleteRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CompleteRequestParams {
+        argument:
+            ::std::result::Result<super::CompleteRequestParamsArgument, ::std::string::String>,
+        ref_: ::std::result::Result<super::CompleteRequestParamsRef, ::std::string::String>,
+    }
+    impl Default for CompleteRequestParams {
+        fn default() -> Self {
+            Self {
+                argument: Err("no value supplied for argument".to_string()),
+                ref_: Err("no value supplied for ref_".to_string()),
+            }
+        }
+    }
+    impl CompleteRequestParams {
+        pub fn argument<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CompleteRequestParamsArgument>,
+            T::Error: std::fmt::Display,
+        {
+            self.argument = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for argument: {}", e));
+            self
+        }
+        pub fn ref_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CompleteRequestParamsRef>,
+            T::Error: std::fmt::Display,
+        {
+            self.ref_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for ref_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CompleteRequestParams> for super::CompleteRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CompleteRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                argument: value.argument?,
+                ref_: value.ref_?,
+            })
+        }
+    }
+    impl From<super::CompleteRequestParams> for CompleteRequestParams {
+        fn from(value: super::CompleteRequestParams) -> Self {
+            Self {
+                argument: Ok(value.argument),
+                ref_: Ok(value.ref_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CompleteRequestParamsArgument {
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for CompleteRequestParamsArgument {
+        fn default() -> Self {
+            Self {
+                name: Err("no value supplied for name".to_string()),
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl CompleteRequestParamsArgument {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CompleteRequestParamsArgument>
+        for super::CompleteRequestParamsArgument
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CompleteRequestParamsArgument,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                name: value.name?,
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::CompleteRequestParamsArgument> for CompleteRequestParamsArgument {
+        fn from(value: super::CompleteRequestParamsArgument) -> Self {
+            Self {
+                name: Ok(value.name),
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CompleteResult {
+        completion: ::std::result::Result<super::CompleteResultCompletion, ::std::string::String>,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for CompleteResult {
+        fn default() -> Self {
+            Self {
+                completion: Err("no value supplied for completion".to_string()),
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl CompleteResult {
+        pub fn completion<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CompleteResultCompletion>,
+            T::Error: std::fmt::Display,
+        {
+            self.completion = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for completion: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CompleteResult> for super::CompleteResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CompleteResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                completion: value.completion?,
+                meta: value.meta?,
+            })
+        }
+    }
+    impl From<super::CompleteResult> for CompleteResult {
+        fn from(value: super::CompleteResult) -> Self {
+            Self {
+                completion: Ok(value.completion),
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CompleteResultCompletion {
+        has_more: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+        total: ::std::result::Result<::std::option::Option<i64>, ::std::string::String>,
+        values:
+            ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
+    }
+    impl Default for CompleteResultCompletion {
+        fn default() -> Self {
+            Self {
+                has_more: Ok(Default::default()),
+                total: Ok(Default::default()),
+                values: Err("no value supplied for values".to_string()),
+            }
+        }
+    }
+    impl CompleteResultCompletion {
+        pub fn has_more<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.has_more = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for has_more: {}", e));
+            self
+        }
+        pub fn total<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<i64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.total = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for total: {}", e));
+            self
+        }
+        pub fn values<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.values = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for values: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CompleteResultCompletion> for super::CompleteResultCompletion {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CompleteResultCompletion,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                has_more: value.has_more?,
+                total: value.total?,
+                values: value.values?,
+            })
+        }
+    }
+    impl From<super::CompleteResultCompletion> for CompleteResultCompletion {
+        fn from(value: super::CompleteResultCompletion) -> Self {
+            Self {
+                has_more: Ok(value.has_more),
+                total: Ok(value.total),
+                values: Ok(value.values),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CreateMessageRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::CreateMessageRequestParams, ::std::string::String>,
+    }
+    impl Default for CreateMessageRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl CreateMessageRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CreateMessageRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CreateMessageRequest> for super::CreateMessageRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CreateMessageRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::CreateMessageRequest> for CreateMessageRequest {
+        fn from(value: super::CreateMessageRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CreateMessageRequestParams {
+        include_context: ::std::result::Result<
+            ::std::option::Option<super::CreateMessageRequestParamsIncludeContext>,
+            ::std::string::String,
+        >,
+        max_tokens: ::std::result::Result<i64, ::std::string::String>,
+        messages:
+            ::std::result::Result<::std::vec::Vec<super::SamplingMessage>, ::std::string::String>,
+        metadata: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        model_preferences: ::std::result::Result<
+            ::std::option::Option<super::ModelPreferences>,
+            ::std::string::String,
+        >,
+        stop_sequences:
+            ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
+        system_prompt: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        temperature: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for CreateMessageRequestParams {
+        fn default() -> Self {
+            Self {
+                include_context: Ok(Default::default()),
+                max_tokens: Err("no value supplied for max_tokens".to_string()),
+                messages: Err("no value supplied for messages".to_string()),
+                metadata: Ok(Default::default()),
+                model_preferences: Ok(Default::default()),
+                stop_sequences: Ok(Default::default()),
+                system_prompt: Ok(Default::default()),
+                temperature: Ok(Default::default()),
+            }
+        }
+    }
+    impl CreateMessageRequestParams {
+        pub fn include_context<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::CreateMessageRequestParamsIncludeContext>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.include_context = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for include_context: {}", e));
+            self
+        }
+        pub fn max_tokens<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<i64>,
+            T::Error: std::fmt::Display,
+        {
+            self.max_tokens = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for max_tokens: {}", e));
+            self
+        }
+        pub fn messages<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::SamplingMessage>>,
+            T::Error: std::fmt::Display,
+        {
+            self.messages = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for messages: {}", e));
+            self
+        }
+        pub fn metadata<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.metadata = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for metadata: {}", e));
+            self
+        }
+        pub fn model_preferences<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ModelPreferences>>,
+            T::Error: std::fmt::Display,
+        {
+            self.model_preferences = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for model_preferences: {}",
+                    e
+                )
+            });
+            self
+        }
+        pub fn stop_sequences<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.stop_sequences = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for stop_sequences: {}", e));
+            self
+        }
+        pub fn system_prompt<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.system_prompt = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for system_prompt: {}", e));
+            self
+        }
+        pub fn temperature<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.temperature = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for temperature: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CreateMessageRequestParams> for super::CreateMessageRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CreateMessageRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                include_context: value.include_context?,
+                max_tokens: value.max_tokens?,
+                messages: value.messages?,
+                metadata: value.metadata?,
+                model_preferences: value.model_preferences?,
+                stop_sequences: value.stop_sequences?,
+                system_prompt: value.system_prompt?,
+                temperature: value.temperature?,
+            })
+        }
+    }
+    impl From<super::CreateMessageRequestParams> for CreateMessageRequestParams {
+        fn from(value: super::CreateMessageRequestParams) -> Self {
+            Self {
+                include_context: Ok(value.include_context),
+                max_tokens: Ok(value.max_tokens),
+                messages: Ok(value.messages),
+                metadata: Ok(value.metadata),
+                model_preferences: Ok(value.model_preferences),
+                stop_sequences: Ok(value.stop_sequences),
+                system_prompt: Ok(value.system_prompt),
+                temperature: Ok(value.temperature),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct CreateMessageResult {
+        content: ::std::result::Result<super::CreateMessageResultContent, ::std::string::String>,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        model: ::std::result::Result<::std::string::String, ::std::string::String>,
+        role: ::std::result::Result<super::Role, ::std::string::String>,
+        stop_reason: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for CreateMessageResult {
+        fn default() -> Self {
+            Self {
+                content: Err("no value supplied for content".to_string()),
+                meta: Ok(Default::default()),
+                model: Err("no value supplied for model".to_string()),
+                role: Err("no value supplied for role".to_string()),
+                stop_reason: Ok(Default::default()),
+            }
+        }
+    }
+    impl CreateMessageResult {
+        pub fn content<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::CreateMessageResultContent>,
+            T::Error: std::fmt::Display,
+        {
+            self.content = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for content: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn model<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.model = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for model: {}", e));
+            self
+        }
+        pub fn role<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Role>,
+            T::Error: std::fmt::Display,
+        {
+            self.role = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for role: {}", e));
+            self
+        }
+        pub fn stop_reason<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.stop_reason = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for stop_reason: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<CreateMessageResult> for super::CreateMessageResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: CreateMessageResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                content: value.content?,
+                meta: value.meta?,
+                model: value.model?,
+                role: value.role?,
+                stop_reason: value.stop_reason?,
+            })
+        }
+    }
+    impl From<super::CreateMessageResult> for CreateMessageResult {
+        fn from(value: super::CreateMessageResult) -> Self {
+            Self {
+                content: Ok(value.content),
+                meta: Ok(value.meta),
+                model: Ok(value.model),
+                role: Ok(value.role),
+                stop_reason: Ok(value.stop_reason),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct EmbeddedResource {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::EmbeddedResourceAnnotations>,
+            ::std::string::String,
+        >,
+        resource: ::std::result::Result<super::EmbeddedResourceResource, ::std::string::String>,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for EmbeddedResource {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+                resource: Err("no value supplied for resource".to_string()),
+                type_: Err("no value supplied for type_".to_string()),
+            }
+        }
+    }
+    impl EmbeddedResource {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::EmbeddedResourceAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+        pub fn resource<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::EmbeddedResourceResource>,
+            T::Error: std::fmt::Display,
+        {
+            self.resource = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for resource: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<EmbeddedResource> for super::EmbeddedResource {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: EmbeddedResource,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+                resource: value.resource?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::EmbeddedResource> for EmbeddedResource {
+        fn from(value: super::EmbeddedResource) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+                resource: Ok(value.resource),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct EmbeddedResourceAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for EmbeddedResourceAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl EmbeddedResourceAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<EmbeddedResourceAnnotations> for super::EmbeddedResourceAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: EmbeddedResourceAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::EmbeddedResourceAnnotations> for EmbeddedResourceAnnotations {
+        fn from(value: super::EmbeddedResourceAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct GetPromptRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::GetPromptRequestParams, ::std::string::String>,
+    }
+    impl Default for GetPromptRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl GetPromptRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::GetPromptRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<GetPromptRequest> for super::GetPromptRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: GetPromptRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::GetPromptRequest> for GetPromptRequest {
+        fn from(value: super::GetPromptRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct GetPromptRequestParams {
+        arguments: ::std::result::Result<
+            ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for GetPromptRequestParams {
+        fn default() -> Self {
+            Self {
+                arguments: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+            }
+        }
+    }
+    impl GetPromptRequestParams {
+        pub fn arguments<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.arguments = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for arguments: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<GetPromptRequestParams> for super::GetPromptRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: GetPromptRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                arguments: value.arguments?,
+                name: value.name?,
+            })
+        }
+    }
+    impl From<super::GetPromptRequestParams> for GetPromptRequestParams {
+        fn from(value: super::GetPromptRequestParams) -> Self {
+            Self {
+                arguments: Ok(value.arguments),
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct GetPromptResult {
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        messages:
+            ::std::result::Result<::std::vec::Vec<super::PromptMessage>, ::std::string::String>,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for GetPromptResult {
+        fn default() -> Self {
+            Self {
+                description: Ok(Default::default()),
+                messages: Err("no value supplied for messages".to_string()),
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl GetPromptResult {
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn messages<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::PromptMessage>>,
+            T::Error: std::fmt::Display,
+        {
+            self.messages = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for messages: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<GetPromptResult> for super::GetPromptResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: GetPromptResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                description: value.description?,
+                messages: value.messages?,
+                meta: value.meta?,
+            })
+        }
+    }
+    impl From<super::GetPromptResult> for GetPromptResult {
+        fn from(value: super::GetPromptResult) -> Self {
+            Self {
+                description: Ok(value.description),
+                messages: Ok(value.messages),
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ImageContent {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::ImageContentAnnotations>,
+            ::std::string::String,
+        >,
+        data: ::std::result::Result<::std::string::String, ::std::string::String>,
+        mime_type: ::std::result::Result<::std::string::String, ::std::string::String>,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ImageContent {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+                data: Err("no value supplied for data".to_string()),
+                mime_type: Err("no value supplied for mime_type".to_string()),
+                type_: Err("no value supplied for type_".to_string()),
+            }
+        }
+    }
+    impl ImageContent {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ImageContentAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+        pub fn data<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.data = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for data: {}", e));
+            self
+        }
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ImageContent> for super::ImageContent {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ImageContent,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+                data: value.data?,
+                mime_type: value.mime_type?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::ImageContent> for ImageContent {
+        fn from(value: super::ImageContent) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+                data: Ok(value.data),
+                mime_type: Ok(value.mime_type),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ImageContentAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for ImageContentAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl ImageContentAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ImageContentAnnotations> for super::ImageContentAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ImageContentAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::ImageContentAnnotations> for ImageContentAnnotations {
+        fn from(value: super::ImageContentAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Implementation {
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        version: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Implementation {
+        fn default() -> Self {
+            Self {
+                name: Err("no value supplied for name".to_string()),
+                version: Err("no value supplied for version".to_string()),
+            }
+        }
+    }
+    impl Implementation {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn version<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.version = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for version: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Implementation> for super::Implementation {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: Implementation,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                name: value.name?,
+                version: value.version?,
+            })
+        }
+    }
+    impl From<super::Implementation> for Implementation {
+        fn from(value: super::Implementation) -> Self {
+            Self {
+                name: Ok(value.name),
+                version: Ok(value.version),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct InitializeRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::InitializeRequestParams, ::std::string::String>,
+    }
+    impl Default for InitializeRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl InitializeRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::InitializeRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<InitializeRequest> for super::InitializeRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: InitializeRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::InitializeRequest> for InitializeRequest {
+        fn from(value: super::InitializeRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct InitializeRequestParams {
+        capabilities: ::std::result::Result<super::ClientCapabilities, ::std::string::String>,
+        client_info: ::std::result::Result<super::Implementation, ::std::string::String>,
+        protocol_version: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for InitializeRequestParams {
+        fn default() -> Self {
+            Self {
+                capabilities: Err("no value supplied for capabilities".to_string()),
+                client_info: Err("no value supplied for client_info".to_string()),
+                protocol_version: Err("no value supplied for protocol_version".to_string()),
+            }
+        }
+    }
+    impl InitializeRequestParams {
+        pub fn capabilities<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ClientCapabilities>,
+            T::Error: std::fmt::Display,
+        {
+            self.capabilities = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for capabilities: {}", e));
+            self
+        }
+        pub fn client_info<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Implementation>,
+            T::Error: std::fmt::Display,
+        {
+            self.client_info = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for client_info: {}", e));
+            self
+        }
+        pub fn protocol_version<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.protocol_version = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for protocol_version: {}",
+                    e
+                )
+            });
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<InitializeRequestParams> for super::InitializeRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: InitializeRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                capabilities: value.capabilities?,
+                client_info: value.client_info?,
+                protocol_version: value.protocol_version?,
+            })
+        }
+    }
+    impl From<super::InitializeRequestParams> for InitializeRequestParams {
+        fn from(value: super::InitializeRequestParams) -> Self {
+            Self {
+                capabilities: Ok(value.capabilities),
+                client_info: Ok(value.client_info),
+                protocol_version: Ok(value.protocol_version),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct InitializeResult {
+        capabilities: ::std::result::Result<super::ServerCapabilities, ::std::string::String>,
+        instructions: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        protocol_version: ::std::result::Result<::std::string::String, ::std::string::String>,
+        server_info: ::std::result::Result<super::Implementation, ::std::string::String>,
+    }
+    impl Default for InitializeResult {
+        fn default() -> Self {
+            Self {
+                capabilities: Err("no value supplied for capabilities".to_string()),
+                instructions: Ok(Default::default()),
+                meta: Ok(Default::default()),
+                protocol_version: Err("no value supplied for protocol_version".to_string()),
+                server_info: Err("no value supplied for server_info".to_string()),
+            }
+        }
+    }
+    impl InitializeResult {
+        pub fn capabilities<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ServerCapabilities>,
+            T::Error: std::fmt::Display,
+        {
+            self.capabilities = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for capabilities: {}", e));
+            self
+        }
+        pub fn instructions<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.instructions = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for instructions: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn protocol_version<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.protocol_version = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for protocol_version: {}",
+                    e
+                )
+            });
+            self
+        }
+        pub fn server_info<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Implementation>,
+            T::Error: std::fmt::Display,
+        {
+            self.server_info = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for server_info: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<InitializeResult> for super::InitializeResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: InitializeResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                capabilities: value.capabilities?,
+                instructions: value.instructions?,
+                meta: value.meta?,
+                protocol_version: value.protocol_version?,
+                server_info: value.server_info?,
+            })
+        }
+    }
+    impl From<super::InitializeResult> for InitializeResult {
+        fn from(value: super::InitializeResult) -> Self {
+            Self {
+                capabilities: Ok(value.capabilities),
+                instructions: Ok(value.instructions),
+                meta: Ok(value.meta),
+                protocol_version: Ok(value.protocol_version),
+                server_info: Ok(value.server_info),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct InitializedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::InitializedNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for InitializedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl InitializedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::InitializedNotificationParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<InitializedNotification> for super::InitializedNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: InitializedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::InitializedNotification> for InitializedNotification {
+        fn from(value: super::InitializedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct InitializedNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for InitializedNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl InitializedNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<InitializedNotificationParams>
+        for super::InitializedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: InitializedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::InitializedNotificationParams> for InitializedNotificationParams {
+        fn from(value: super::InitializedNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcError {
+        error: ::std::result::Result<super::JsonrpcErrorError, ::std::string::String>,
+        id: ::std::result::Result<super::RequestId, ::std::string::String>,
+        jsonrpc: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for JsonrpcError {
+        fn default() -> Self {
+            Self {
+                error: Err("no value supplied for error".to_string()),
+                id: Err("no value supplied for id".to_string()),
+                jsonrpc: Err("no value supplied for jsonrpc".to_string()),
+            }
+        }
+    }
+    impl JsonrpcError {
+        pub fn error<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::JsonrpcErrorError>,
+            T::Error: std::fmt::Display,
+        {
+            self.error = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for error: {}", e));
+            self
+        }
+        pub fn id<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::RequestId>,
+            T::Error: std::fmt::Display,
+        {
+            self.id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for id: {}", e));
+            self
+        }
+        pub fn jsonrpc<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.jsonrpc = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for jsonrpc: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcError> for super::JsonrpcError {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcError,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                error: value.error?,
+                id: value.id?,
+                jsonrpc: value.jsonrpc?,
+            })
+        }
+    }
+    impl From<super::JsonrpcError> for JsonrpcError {
+        fn from(value: super::JsonrpcError) -> Self {
+            Self {
+                error: Ok(value.error),
+                id: Ok(value.id),
+                jsonrpc: Ok(value.jsonrpc),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcErrorError {
+        code: ::std::result::Result<i64, ::std::string::String>,
+        data: ::std::result::Result<
+            ::std::option::Option<::serde_json::Value>,
+            ::std::string::String,
+        >,
+        message: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for JsonrpcErrorError {
+        fn default() -> Self {
+            Self {
+                code: Err("no value supplied for code".to_string()),
+                data: Ok(Default::default()),
+                message: Err("no value supplied for message".to_string()),
+            }
+        }
+    }
+    impl JsonrpcErrorError {
+        pub fn code<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<i64>,
+            T::Error: std::fmt::Display,
+        {
+            self.code = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for code: {}", e));
+            self
+        }
+        pub fn data<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.data = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for data: {}", e));
+            self
+        }
+        pub fn message<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.message = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for message: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcErrorError> for super::JsonrpcErrorError {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcErrorError,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                code: value.code?,
+                data: value.data?,
+                message: value.message?,
+            })
+        }
+    }
+    impl From<super::JsonrpcErrorError> for JsonrpcErrorError {
+        fn from(value: super::JsonrpcErrorError) -> Self {
+            Self {
+                code: Ok(value.code),
+                data: Ok(value.data),
+                message: Ok(value.message),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcNotification {
+        jsonrpc: ::std::result::Result<::std::string::String, ::std::string::String>,
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::JsonrpcNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for JsonrpcNotification {
+        fn default() -> Self {
+            Self {
+                jsonrpc: Err("no value supplied for jsonrpc".to_string()),
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl JsonrpcNotification {
+        pub fn jsonrpc<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.jsonrpc = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for jsonrpc: {}", e));
+            self
+        }
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::JsonrpcNotificationParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcNotification> for super::JsonrpcNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                jsonrpc: value.jsonrpc?,
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::JsonrpcNotification> for JsonrpcNotification {
+        fn from(value: super::JsonrpcNotification) -> Self {
+            Self {
+                jsonrpc: Ok(value.jsonrpc),
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for JsonrpcNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl JsonrpcNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcNotificationParams> for super::JsonrpcNotificationParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::JsonrpcNotificationParams> for JsonrpcNotificationParams {
+        fn from(value: super::JsonrpcNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcRequest {
+        id: ::std::result::Result<super::RequestId, ::std::string::String>,
+        jsonrpc: ::std::result::Result<::std::string::String, ::std::string::String>,
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::JsonrpcRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for JsonrpcRequest {
+        fn default() -> Self {
+            Self {
+                id: Err("no value supplied for id".to_string()),
+                jsonrpc: Err("no value supplied for jsonrpc".to_string()),
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl JsonrpcRequest {
+        pub fn id<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::RequestId>,
+            T::Error: std::fmt::Display,
+        {
+            self.id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for id: {}", e));
+            self
+        }
+        pub fn jsonrpc<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.jsonrpc = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for jsonrpc: {}", e));
+            self
+        }
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::JsonrpcRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcRequest> for super::JsonrpcRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                id: value.id?,
+                jsonrpc: value.jsonrpc?,
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::JsonrpcRequest> for JsonrpcRequest {
+        fn from(value: super::JsonrpcRequest) -> Self {
+            Self {
+                id: Ok(value.id),
+                jsonrpc: Ok(value.jsonrpc),
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcRequestParams {
+        meta: ::std::result::Result<
+            ::std::option::Option<super::JsonrpcRequestParamsMeta>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for JsonrpcRequestParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl JsonrpcRequestParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::JsonrpcRequestParamsMeta>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcRequestParams> for super::JsonrpcRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::JsonrpcRequestParams> for JsonrpcRequestParams {
+        fn from(value: super::JsonrpcRequestParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcRequestParamsMeta {
+        progress_token: ::std::result::Result<
+            ::std::option::Option<super::ProgressToken>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for JsonrpcRequestParamsMeta {
+        fn default() -> Self {
+            Self {
+                progress_token: Ok(Default::default()),
+            }
+        }
+    }
+    impl JsonrpcRequestParamsMeta {
+        pub fn progress_token<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ProgressToken>>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress_token = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress_token: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcRequestParamsMeta> for super::JsonrpcRequestParamsMeta {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcRequestParamsMeta,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                progress_token: value.progress_token?,
+            })
+        }
+    }
+    impl From<super::JsonrpcRequestParamsMeta> for JsonrpcRequestParamsMeta {
+        fn from(value: super::JsonrpcRequestParamsMeta) -> Self {
+            Self {
+                progress_token: Ok(value.progress_token),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct JsonrpcResponse {
+        id: ::std::result::Result<super::RequestId, ::std::string::String>,
+        jsonrpc: ::std::result::Result<::std::string::String, ::std::string::String>,
+        result: ::std::result::Result<super::Result, ::std::string::String>,
+    }
+    impl Default for JsonrpcResponse {
+        fn default() -> Self {
+            Self {
+                id: Err("no value supplied for id".to_string()),
+                jsonrpc: Err("no value supplied for jsonrpc".to_string()),
+                result: Err("no value supplied for result".to_string()),
+            }
+        }
+    }
+    impl JsonrpcResponse {
+        pub fn id<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::RequestId>,
+            T::Error: std::fmt::Display,
+        {
+            self.id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for id: {}", e));
+            self
+        }
+        pub fn jsonrpc<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.jsonrpc = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for jsonrpc: {}", e));
+            self
+        }
+        pub fn result<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Result>,
+            T::Error: std::fmt::Display,
+        {
+            self.result = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for result: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<JsonrpcResponse> for super::JsonrpcResponse {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: JsonrpcResponse,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                id: value.id?,
+                jsonrpc: value.jsonrpc?,
+                result: value.result?,
+            })
+        }
+    }
+    impl From<super::JsonrpcResponse> for JsonrpcResponse {
+        fn from(value: super::JsonrpcResponse) -> Self {
+            Self {
+                id: Ok(value.id),
+                jsonrpc: Ok(value.jsonrpc),
+                result: Ok(value.result),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListPromptsRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ListPromptsRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListPromptsRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListPromptsRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ListPromptsRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListPromptsRequest> for super::ListPromptsRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListPromptsRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ListPromptsRequest> for ListPromptsRequest {
+        fn from(value: super::ListPromptsRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListPromptsRequestParams {
+        cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListPromptsRequestParams {
+        fn default() -> Self {
+            Self {
+                cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListPromptsRequestParams {
+        pub fn cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListPromptsRequestParams> for super::ListPromptsRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListPromptsRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cursor: value.cursor?,
+            })
+        }
+    }
+    impl From<super::ListPromptsRequestParams> for ListPromptsRequestParams {
+        fn from(value: super::ListPromptsRequestParams) -> Self {
+            Self {
+                cursor: Ok(value.cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListPromptsResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        next_cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        prompts: ::std::result::Result<::std::vec::Vec<super::Prompt>, ::std::string::String>,
+    }
+    impl Default for ListPromptsResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                next_cursor: Ok(Default::default()),
+                prompts: Err("no value supplied for prompts".to_string()),
+            }
+        }
+    }
+    impl ListPromptsResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn next_cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.next_cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for next_cursor: {}", e));
+            self
+        }
+        pub fn prompts<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Prompt>>,
+            T::Error: std::fmt::Display,
+        {
+            self.prompts = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for prompts: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListPromptsResult> for super::ListPromptsResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListPromptsResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                next_cursor: value.next_cursor?,
+                prompts: value.prompts?,
+            })
+        }
+    }
+    impl From<super::ListPromptsResult> for ListPromptsResult {
+        fn from(value: super::ListPromptsResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                next_cursor: Ok(value.next_cursor),
+                prompts: Ok(value.prompts),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourceTemplatesRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ListResourceTemplatesRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListResourceTemplatesRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListResourceTemplatesRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::ListResourceTemplatesRequestParams>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourceTemplatesRequest> for super::ListResourceTemplatesRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourceTemplatesRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ListResourceTemplatesRequest> for ListResourceTemplatesRequest {
+        fn from(value: super::ListResourceTemplatesRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourceTemplatesRequestParams {
+        cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListResourceTemplatesRequestParams {
+        fn default() -> Self {
+            Self {
+                cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListResourceTemplatesRequestParams {
+        pub fn cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourceTemplatesRequestParams>
+        for super::ListResourceTemplatesRequestParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourceTemplatesRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cursor: value.cursor?,
+            })
+        }
+    }
+    impl From<super::ListResourceTemplatesRequestParams> for ListResourceTemplatesRequestParams {
+        fn from(value: super::ListResourceTemplatesRequestParams) -> Self {
+            Self {
+                cursor: Ok(value.cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourceTemplatesResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        next_cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        resource_templates:
+            ::std::result::Result<::std::vec::Vec<super::ResourceTemplate>, ::std::string::String>,
+    }
+    impl Default for ListResourceTemplatesResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                next_cursor: Ok(Default::default()),
+                resource_templates: Err("no value supplied for resource_templates".to_string()),
+            }
+        }
+    }
+    impl ListResourceTemplatesResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn next_cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.next_cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for next_cursor: {}", e));
+            self
+        }
+        pub fn resource_templates<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::ResourceTemplate>>,
+            T::Error: std::fmt::Display,
+        {
+            self.resource_templates = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for resource_templates: {}",
+                    e
+                )
+            });
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourceTemplatesResult> for super::ListResourceTemplatesResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourceTemplatesResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                next_cursor: value.next_cursor?,
+                resource_templates: value.resource_templates?,
+            })
+        }
+    }
+    impl From<super::ListResourceTemplatesResult> for ListResourceTemplatesResult {
+        fn from(value: super::ListResourceTemplatesResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                next_cursor: Ok(value.next_cursor),
+                resource_templates: Ok(value.resource_templates),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourcesRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ListResourcesRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListResourcesRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListResourcesRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ListResourcesRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourcesRequest> for super::ListResourcesRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourcesRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ListResourcesRequest> for ListResourcesRequest {
+        fn from(value: super::ListResourcesRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourcesRequestParams {
+        cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListResourcesRequestParams {
+        fn default() -> Self {
+            Self {
+                cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListResourcesRequestParams {
+        pub fn cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourcesRequestParams> for super::ListResourcesRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourcesRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cursor: value.cursor?,
+            })
+        }
+    }
+    impl From<super::ListResourcesRequestParams> for ListResourcesRequestParams {
+        fn from(value: super::ListResourcesRequestParams) -> Self {
+            Self {
+                cursor: Ok(value.cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListResourcesResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        next_cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        resources: ::std::result::Result<::std::vec::Vec<super::Resource>, ::std::string::String>,
+    }
+    impl Default for ListResourcesResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                next_cursor: Ok(Default::default()),
+                resources: Err("no value supplied for resources".to_string()),
+            }
+        }
+    }
+    impl ListResourcesResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn next_cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.next_cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for next_cursor: {}", e));
+            self
+        }
+        pub fn resources<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Resource>>,
+            T::Error: std::fmt::Display,
+        {
+            self.resources = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for resources: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListResourcesResult> for super::ListResourcesResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListResourcesResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                next_cursor: value.next_cursor?,
+                resources: value.resources?,
+            })
+        }
+    }
+    impl From<super::ListResourcesResult> for ListResourcesResult {
+        fn from(value: super::ListResourcesResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                next_cursor: Ok(value.next_cursor),
+                resources: Ok(value.resources),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListRootsRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ListRootsRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListRootsRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListRootsRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ListRootsRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListRootsRequest> for super::ListRootsRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListRootsRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ListRootsRequest> for ListRootsRequest {
+        fn from(value: super::ListRootsRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListRootsRequestParams {
+        meta: ::std::result::Result<
+            ::std::option::Option<super::ListRootsRequestParamsMeta>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListRootsRequestParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListRootsRequestParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ListRootsRequestParamsMeta>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListRootsRequestParams> for super::ListRootsRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListRootsRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::ListRootsRequestParams> for ListRootsRequestParams {
+        fn from(value: super::ListRootsRequestParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListRootsRequestParamsMeta {
+        progress_token: ::std::result::Result<
+            ::std::option::Option<super::ProgressToken>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListRootsRequestParamsMeta {
+        fn default() -> Self {
+            Self {
+                progress_token: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListRootsRequestParamsMeta {
+        pub fn progress_token<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ProgressToken>>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress_token = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress_token: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListRootsRequestParamsMeta> for super::ListRootsRequestParamsMeta {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListRootsRequestParamsMeta,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                progress_token: value.progress_token?,
+            })
+        }
+    }
+    impl From<super::ListRootsRequestParamsMeta> for ListRootsRequestParamsMeta {
+        fn from(value: super::ListRootsRequestParamsMeta) -> Self {
+            Self {
+                progress_token: Ok(value.progress_token),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListRootsResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        roots: ::std::result::Result<::std::vec::Vec<super::Root>, ::std::string::String>,
+    }
+    impl Default for ListRootsResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                roots: Err("no value supplied for roots".to_string()),
+            }
+        }
+    }
+    impl ListRootsResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn roots<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Root>>,
+            T::Error: std::fmt::Display,
+        {
+            self.roots = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for roots: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListRootsResult> for super::ListRootsResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListRootsResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                roots: value.roots?,
+            })
+        }
+    }
+    impl From<super::ListRootsResult> for ListRootsResult {
+        fn from(value: super::ListRootsResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                roots: Ok(value.roots),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListToolsRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ListToolsRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListToolsRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListToolsRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ListToolsRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListToolsRequest> for super::ListToolsRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListToolsRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ListToolsRequest> for ListToolsRequest {
+        fn from(value: super::ListToolsRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListToolsRequestParams {
+        cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ListToolsRequestParams {
+        fn default() -> Self {
+            Self {
+                cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl ListToolsRequestParams {
+        pub fn cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListToolsRequestParams> for super::ListToolsRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListToolsRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cursor: value.cursor?,
+            })
+        }
+    }
+    impl From<super::ListToolsRequestParams> for ListToolsRequestParams {
+        fn from(value: super::ListToolsRequestParams) -> Self {
+            Self {
+                cursor: Ok(value.cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ListToolsResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        next_cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        tools: ::std::result::Result<::std::vec::Vec<super::Tool>, ::std::string::String>,
+    }
+    impl Default for ListToolsResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                next_cursor: Ok(Default::default()),
+                tools: Err("no value supplied for tools".to_string()),
+            }
+        }
+    }
+    impl ListToolsResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn next_cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.next_cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for next_cursor: {}", e));
+            self
+        }
+        pub fn tools<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Tool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.tools = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for tools: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ListToolsResult> for super::ListToolsResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ListToolsResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                next_cursor: value.next_cursor?,
+                tools: value.tools?,
+            })
+        }
+    }
+    impl From<super::ListToolsResult> for ListToolsResult {
+        fn from(value: super::ListToolsResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                next_cursor: Ok(value.next_cursor),
+                tools: Ok(value.tools),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct LoggingMessageNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params:
+            ::std::result::Result<super::LoggingMessageNotificationParams, ::std::string::String>,
+    }
+    impl Default for LoggingMessageNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl LoggingMessageNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::LoggingMessageNotificationParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<LoggingMessageNotification> for super::LoggingMessageNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: LoggingMessageNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::LoggingMessageNotification> for LoggingMessageNotification {
+        fn from(value: super::LoggingMessageNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct LoggingMessageNotificationParams {
+        data: ::std::result::Result<::serde_json::Value, ::std::string::String>,
+        level: ::std::result::Result<super::LoggingLevel, ::std::string::String>,
+        logger: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for LoggingMessageNotificationParams {
+        fn default() -> Self {
+            Self {
+                data: Err("no value supplied for data".to_string()),
+                level: Err("no value supplied for level".to_string()),
+                logger: Ok(Default::default()),
+            }
+        }
+    }
+    impl LoggingMessageNotificationParams {
+        pub fn data<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Value>,
+            T::Error: std::fmt::Display,
+        {
+            self.data = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for data: {}", e));
+            self
+        }
+        pub fn level<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::LoggingLevel>,
+            T::Error: std::fmt::Display,
+        {
+            self.level = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for level: {}", e));
+            self
+        }
+        pub fn logger<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.logger = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for logger: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<LoggingMessageNotificationParams>
+        for super::LoggingMessageNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: LoggingMessageNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                data: value.data?,
+                level: value.level?,
+                logger: value.logger?,
+            })
+        }
+    }
+    impl From<super::LoggingMessageNotificationParams> for LoggingMessageNotificationParams {
+        fn from(value: super::LoggingMessageNotificationParams) -> Self {
+            Self {
+                data: Ok(value.data),
+                level: Ok(value.level),
+                logger: Ok(value.logger),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ModelHint {
+        name: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ModelHint {
+        fn default() -> Self {
+            Self {
+                name: Ok(Default::default()),
+            }
+        }
+    }
+    impl ModelHint {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ModelHint> for super::ModelHint {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ModelHint,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { name: value.name? })
+        }
+    }
+    impl From<super::ModelHint> for ModelHint {
+        fn from(value: super::ModelHint) -> Self {
+            Self {
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ModelPreferences {
+        cost_priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+        hints: ::std::result::Result<::std::vec::Vec<super::ModelHint>, ::std::string::String>,
+        intelligence_priority:
+            ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+        speed_priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for ModelPreferences {
+        fn default() -> Self {
+            Self {
+                cost_priority: Ok(Default::default()),
+                hints: Ok(Default::default()),
+                intelligence_priority: Ok(Default::default()),
+                speed_priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl ModelPreferences {
+        pub fn cost_priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cost_priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cost_priority: {}", e));
+            self
+        }
+        pub fn hints<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::ModelHint>>,
+            T::Error: std::fmt::Display,
+        {
+            self.hints = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for hints: {}", e));
+            self
+        }
+        pub fn intelligence_priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.intelligence_priority = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for intelligence_priority: {}",
+                    e
+                )
+            });
+            self
+        }
+        pub fn speed_priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.speed_priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for speed_priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ModelPreferences> for super::ModelPreferences {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ModelPreferences,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cost_priority: value.cost_priority?,
+                hints: value.hints?,
+                intelligence_priority: value.intelligence_priority?,
+                speed_priority: value.speed_priority?,
+            })
+        }
+    }
+    impl From<super::ModelPreferences> for ModelPreferences {
+        fn from(value: super::ModelPreferences) -> Self {
+            Self {
+                cost_priority: Ok(value.cost_priority),
+                hints: Ok(value.hints),
+                intelligence_priority: Ok(value.intelligence_priority),
+                speed_priority: Ok(value.speed_priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Notification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::NotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for Notification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl Notification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::NotificationParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Notification> for super::Notification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: Notification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::Notification> for Notification {
+        fn from(value: super::Notification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct NotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for NotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl NotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<NotificationParams> for super::NotificationParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: NotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::NotificationParams> for NotificationParams {
+        fn from(value: super::NotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PaginatedRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::PaginatedRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PaginatedRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl PaginatedRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::PaginatedRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PaginatedRequest> for super::PaginatedRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PaginatedRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::PaginatedRequest> for PaginatedRequest {
+        fn from(value: super::PaginatedRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PaginatedRequestParams {
+        cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PaginatedRequestParams {
+        fn default() -> Self {
+            Self {
+                cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl PaginatedRequestParams {
+        pub fn cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PaginatedRequestParams> for super::PaginatedRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PaginatedRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cursor: value.cursor?,
+            })
+        }
+    }
+    impl From<super::PaginatedRequestParams> for PaginatedRequestParams {
+        fn from(value: super::PaginatedRequestParams) -> Self {
+            Self {
+                cursor: Ok(value.cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PaginatedResult {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        next_cursor: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PaginatedResult {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+                next_cursor: Ok(Default::default()),
+            }
+        }
+    }
+    impl PaginatedResult {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+        pub fn next_cursor<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.next_cursor = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for next_cursor: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PaginatedResult> for super::PaginatedResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PaginatedResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                meta: value.meta?,
+                next_cursor: value.next_cursor?,
+            })
+        }
+    }
+    impl From<super::PaginatedResult> for PaginatedResult {
+        fn from(value: super::PaginatedResult) -> Self {
+            Self {
+                meta: Ok(value.meta),
+                next_cursor: Ok(value.next_cursor),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PingRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::PingRequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PingRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl PingRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::PingRequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PingRequest> for super::PingRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PingRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::PingRequest> for PingRequest {
+        fn from(value: super::PingRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PingRequestParams {
+        meta: ::std::result::Result<
+            ::std::option::Option<super::PingRequestParamsMeta>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PingRequestParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl PingRequestParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::PingRequestParamsMeta>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PingRequestParams> for super::PingRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PingRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::PingRequestParams> for PingRequestParams {
+        fn from(value: super::PingRequestParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PingRequestParamsMeta {
+        progress_token: ::std::result::Result<
+            ::std::option::Option<super::ProgressToken>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PingRequestParamsMeta {
+        fn default() -> Self {
+            Self {
+                progress_token: Ok(Default::default()),
+            }
+        }
+    }
+    impl PingRequestParamsMeta {
+        pub fn progress_token<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ProgressToken>>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress_token = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress_token: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PingRequestParamsMeta> for super::PingRequestParamsMeta {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PingRequestParamsMeta,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                progress_token: value.progress_token?,
+            })
+        }
+    }
+    impl From<super::PingRequestParamsMeta> for PingRequestParamsMeta {
+        fn from(value: super::PingRequestParamsMeta) -> Self {
+            Self {
+                progress_token: Ok(value.progress_token),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ProgressNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::ProgressNotificationParams, ::std::string::String>,
+    }
+    impl Default for ProgressNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl ProgressNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ProgressNotificationParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ProgressNotification> for super::ProgressNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ProgressNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ProgressNotification> for ProgressNotification {
+        fn from(value: super::ProgressNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ProgressNotificationParams {
+        progress: ::std::result::Result<f64, ::std::string::String>,
+        progress_token: ::std::result::Result<super::ProgressToken, ::std::string::String>,
+        total: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for ProgressNotificationParams {
+        fn default() -> Self {
+            Self {
+                progress: Err("no value supplied for progress".to_string()),
+                progress_token: Err("no value supplied for progress_token".to_string()),
+                total: Ok(Default::default()),
+            }
+        }
+    }
+    impl ProgressNotificationParams {
+        pub fn progress<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<f64>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress: {}", e));
+            self
+        }
+        pub fn progress_token<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ProgressToken>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress_token = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress_token: {}", e));
+            self
+        }
+        pub fn total<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.total = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for total: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ProgressNotificationParams> for super::ProgressNotificationParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ProgressNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                progress: value.progress?,
+                progress_token: value.progress_token?,
+                total: value.total?,
+            })
+        }
+    }
+    impl From<super::ProgressNotificationParams> for ProgressNotificationParams {
+        fn from(value: super::ProgressNotificationParams) -> Self {
+            Self {
+                progress: Ok(value.progress),
+                progress_token: Ok(value.progress_token),
+                total: Ok(value.total),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Prompt {
+        arguments:
+            ::std::result::Result<::std::vec::Vec<super::PromptArgument>, ::std::string::String>,
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Prompt {
+        fn default() -> Self {
+            Self {
+                arguments: Ok(Default::default()),
+                description: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+            }
+        }
+    }
+    impl Prompt {
+        pub fn arguments<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::PromptArgument>>,
+            T::Error: std::fmt::Display,
+        {
+            self.arguments = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for arguments: {}", e));
+            self
+        }
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Prompt> for super::Prompt {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Prompt) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                arguments: value.arguments?,
+                description: value.description?,
+                name: value.name?,
+            })
+        }
+    }
+    impl From<super::Prompt> for Prompt {
+        fn from(value: super::Prompt) -> Self {
+            Self {
+                arguments: Ok(value.arguments),
+                description: Ok(value.description),
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PromptArgument {
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        required: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for PromptArgument {
+        fn default() -> Self {
+            Self {
+                description: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+                required: Ok(Default::default()),
+            }
+        }
+    }
+    impl PromptArgument {
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn required<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.required = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for required: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PromptArgument> for super::PromptArgument {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PromptArgument,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                description: value.description?,
+                name: value.name?,
+                required: value.required?,
+            })
+        }
+    }
+    impl From<super::PromptArgument> for PromptArgument {
+        fn from(value: super::PromptArgument) -> Self {
+            Self {
+                description: Ok(value.description),
+                name: Ok(value.name),
+                required: Ok(value.required),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PromptListChangedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::PromptListChangedNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PromptListChangedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl PromptListChangedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::PromptListChangedNotificationParams>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PromptListChangedNotification>
+        for super::PromptListChangedNotification
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PromptListChangedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::PromptListChangedNotification> for PromptListChangedNotification {
+        fn from(value: super::PromptListChangedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PromptListChangedNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for PromptListChangedNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl PromptListChangedNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PromptListChangedNotificationParams>
+        for super::PromptListChangedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PromptListChangedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::PromptListChangedNotificationParams> for PromptListChangedNotificationParams {
+        fn from(value: super::PromptListChangedNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PromptMessage {
+        content: ::std::result::Result<super::PromptMessageContent, ::std::string::String>,
+        role: ::std::result::Result<super::Role, ::std::string::String>,
+    }
+    impl Default for PromptMessage {
+        fn default() -> Self {
+            Self {
+                content: Err("no value supplied for content".to_string()),
+                role: Err("no value supplied for role".to_string()),
+            }
+        }
+    }
+    impl PromptMessage {
+        pub fn content<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::PromptMessageContent>,
+            T::Error: std::fmt::Display,
+        {
+            self.content = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for content: {}", e));
+            self
+        }
+        pub fn role<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Role>,
+            T::Error: std::fmt::Display,
+        {
+            self.role = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for role: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PromptMessage> for super::PromptMessage {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PromptMessage,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                content: value.content?,
+                role: value.role?,
+            })
+        }
+    }
+    impl From<super::PromptMessage> for PromptMessage {
+        fn from(value: super::PromptMessage) -> Self {
+            Self {
+                content: Ok(value.content),
+                role: Ok(value.role),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct PromptReference {
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for PromptReference {
+        fn default() -> Self {
+            Self {
+                name: Err("no value supplied for name".to_string()),
+                type_: Err("no value supplied for type_".to_string()),
+            }
+        }
+    }
+    impl PromptReference {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<PromptReference> for super::PromptReference {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: PromptReference,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                name: value.name?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::PromptReference> for PromptReference {
+        fn from(value: super::PromptReference) -> Self {
+            Self {
+                name: Ok(value.name),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ReadResourceRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::ReadResourceRequestParams, ::std::string::String>,
+    }
+    impl Default for ReadResourceRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl ReadResourceRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ReadResourceRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ReadResourceRequest> for super::ReadResourceRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ReadResourceRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ReadResourceRequest> for ReadResourceRequest {
+        fn from(value: super::ReadResourceRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ReadResourceRequestParams {
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ReadResourceRequestParams {
+        fn default() -> Self {
+            Self {
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl ReadResourceRequestParams {
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ReadResourceRequestParams> for super::ReadResourceRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ReadResourceRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { uri: value.uri? })
+        }
+    }
+    impl From<super::ReadResourceRequestParams> for ReadResourceRequestParams {
+        fn from(value: super::ReadResourceRequestParams) -> Self {
+            Self { uri: Ok(value.uri) }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ReadResourceResult {
+        contents: ::std::result::Result<
+            ::std::vec::Vec<super::ReadResourceResultContentsItem>,
+            ::std::string::String,
+        >,
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ReadResourceResult {
+        fn default() -> Self {
+            Self {
+                contents: Err("no value supplied for contents".to_string()),
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl ReadResourceResult {
+        pub fn contents<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::ReadResourceResultContentsItem>>,
+            T::Error: std::fmt::Display,
+        {
+            self.contents = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for contents: {}", e));
+            self
+        }
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ReadResourceResult> for super::ReadResourceResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ReadResourceResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                contents: value.contents?,
+                meta: value.meta?,
+            })
+        }
+    }
+    impl From<super::ReadResourceResult> for ReadResourceResult {
+        fn from(value: super::ReadResourceResult) -> Self {
+            Self {
+                contents: Ok(value.contents),
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Request {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::RequestParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for Request {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl Request {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::RequestParams>>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Request> for super::Request {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Request) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::Request> for Request {
+        fn from(value: super::Request) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct RequestParams {
+        meta: ::std::result::Result<
+            ::std::option::Option<super::RequestParamsMeta>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for RequestParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl RequestParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::RequestParamsMeta>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RequestParams> for super::RequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::RequestParams> for RequestParams {
+        fn from(value: super::RequestParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct RequestParamsMeta {
+        progress_token: ::std::result::Result<
+            ::std::option::Option<super::ProgressToken>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for RequestParamsMeta {
+        fn default() -> Self {
+            Self {
+                progress_token: Ok(Default::default()),
+            }
+        }
+    }
+    impl RequestParamsMeta {
+        pub fn progress_token<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ProgressToken>>,
+            T::Error: std::fmt::Display,
+        {
+            self.progress_token = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for progress_token: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RequestParamsMeta> for super::RequestParamsMeta {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RequestParamsMeta,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                progress_token: value.progress_token?,
+            })
+        }
+    }
+    impl From<super::RequestParamsMeta> for RequestParamsMeta {
+        fn from(value: super::RequestParamsMeta) -> Self {
+            Self {
+                progress_token: Ok(value.progress_token),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Resource {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::ResourceAnnotations>,
+            ::std::string::String,
+        >,
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        mime_type: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Resource {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+                description: Ok(Default::default()),
+                mime_type: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl Resource {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ResourceAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Resource> for super::Resource {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Resource) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+                description: value.description?,
+                mime_type: value.mime_type?,
+                name: value.name?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::Resource> for Resource {
+        fn from(value: super::Resource) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+                description: Ok(value.description),
+                mime_type: Ok(value.mime_type),
+                name: Ok(value.name),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for ResourceAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl ResourceAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceAnnotations> for super::ResourceAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::ResourceAnnotations> for ResourceAnnotations {
+        fn from(value: super::ResourceAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceContents {
+        mime_type: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ResourceContents {
+        fn default() -> Self {
+            Self {
+                mime_type: Ok(Default::default()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl ResourceContents {
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceContents> for super::ResourceContents {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceContents,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                mime_type: value.mime_type?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::ResourceContents> for ResourceContents {
+        fn from(value: super::ResourceContents) -> Self {
+            Self {
+                mime_type: Ok(value.mime_type),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceListChangedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ResourceListChangedNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ResourceListChangedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ResourceListChangedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::ResourceListChangedNotificationParams>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceListChangedNotification>
+        for super::ResourceListChangedNotification
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceListChangedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ResourceListChangedNotification> for ResourceListChangedNotification {
+        fn from(value: super::ResourceListChangedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceListChangedNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ResourceListChangedNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl ResourceListChangedNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceListChangedNotificationParams>
+        for super::ResourceListChangedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceListChangedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::ResourceListChangedNotificationParams> for ResourceListChangedNotificationParams {
+        fn from(value: super::ResourceListChangedNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceReference {
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ResourceReference {
+        fn default() -> Self {
+            Self {
+                type_: Err("no value supplied for type_".to_string()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl ResourceReference {
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceReference> for super::ResourceReference {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceReference,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                type_: value.type_?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::ResourceReference> for ResourceReference {
+        fn from(value: super::ResourceReference) -> Self {
+            Self {
+                type_: Ok(value.type_),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceTemplate {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::ResourceTemplateAnnotations>,
+            ::std::string::String,
+        >,
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        mime_type: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+        uri_template: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ResourceTemplate {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+                description: Ok(Default::default()),
+                mime_type: Ok(Default::default()),
+                name: Err("no value supplied for name".to_string()),
+                uri_template: Err("no value supplied for uri_template".to_string()),
+            }
+        }
+    }
+    impl ResourceTemplate {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ResourceTemplateAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn uri_template<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri_template = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri_template: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceTemplate> for super::ResourceTemplate {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceTemplate,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+                description: value.description?,
+                mime_type: value.mime_type?,
+                name: value.name?,
+                uri_template: value.uri_template?,
+            })
+        }
+    }
+    impl From<super::ResourceTemplate> for ResourceTemplate {
+        fn from(value: super::ResourceTemplate) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+                description: Ok(value.description),
+                mime_type: Ok(value.mime_type),
+                name: Ok(value.name),
+                uri_template: Ok(value.uri_template),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceTemplateAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for ResourceTemplateAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl ResourceTemplateAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceTemplateAnnotations> for super::ResourceTemplateAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceTemplateAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::ResourceTemplateAnnotations> for ResourceTemplateAnnotations {
+        fn from(value: super::ResourceTemplateAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceUpdatedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params:
+            ::std::result::Result<super::ResourceUpdatedNotificationParams, ::std::string::String>,
+    }
+    impl Default for ResourceUpdatedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl ResourceUpdatedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ResourceUpdatedNotificationParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceUpdatedNotification> for super::ResourceUpdatedNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceUpdatedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ResourceUpdatedNotification> for ResourceUpdatedNotification {
+        fn from(value: super::ResourceUpdatedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ResourceUpdatedNotificationParams {
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ResourceUpdatedNotificationParams {
+        fn default() -> Self {
+            Self {
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl ResourceUpdatedNotificationParams {
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ResourceUpdatedNotificationParams>
+        for super::ResourceUpdatedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ResourceUpdatedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { uri: value.uri? })
+        }
+    }
+    impl From<super::ResourceUpdatedNotificationParams> for ResourceUpdatedNotificationParams {
+        fn from(value: super::ResourceUpdatedNotificationParams) -> Self {
+            Self { uri: Ok(value.uri) }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Result {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for Result {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl Result {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Result> for super::Result {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Result) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::Result> for Result {
+        fn from(value: super::Result) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Root {
+        name: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Root {
+        fn default() -> Self {
+            Self {
+                name: Ok(Default::default()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl Root {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Root> for super::Root {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Root) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                name: value.name?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::Root> for Root {
+        fn from(value: super::Root) -> Self {
+            Self {
+                name: Ok(value.name),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct RootsListChangedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::RootsListChangedNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for RootsListChangedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl RootsListChangedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::RootsListChangedNotificationParams>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RootsListChangedNotification> for super::RootsListChangedNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RootsListChangedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::RootsListChangedNotification> for RootsListChangedNotification {
+        fn from(value: super::RootsListChangedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct RootsListChangedNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for RootsListChangedNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl RootsListChangedNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RootsListChangedNotificationParams>
+        for super::RootsListChangedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RootsListChangedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::RootsListChangedNotificationParams> for RootsListChangedNotificationParams {
+        fn from(value: super::RootsListChangedNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SamplingMessage {
+        content: ::std::result::Result<super::SamplingMessageContent, ::std::string::String>,
+        role: ::std::result::Result<super::Role, ::std::string::String>,
+    }
+    impl Default for SamplingMessage {
+        fn default() -> Self {
+            Self {
+                content: Err("no value supplied for content".to_string()),
+                role: Err("no value supplied for role".to_string()),
+            }
+        }
+    }
+    impl SamplingMessage {
+        pub fn content<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::SamplingMessageContent>,
+            T::Error: std::fmt::Display,
+        {
+            self.content = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for content: {}", e));
+            self
+        }
+        pub fn role<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Role>,
+            T::Error: std::fmt::Display,
+        {
+            self.role = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for role: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SamplingMessage> for super::SamplingMessage {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SamplingMessage,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                content: value.content?,
+                role: value.role?,
+            })
+        }
+    }
+    impl From<super::SamplingMessage> for SamplingMessage {
+        fn from(value: super::SamplingMessage) -> Self {
+            Self {
+                content: Ok(value.content),
+                role: Ok(value.role),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ServerCapabilities {
+        experimental: ::std::result::Result<
+            ::std::collections::HashMap<
+                ::std::string::String,
+                ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            >,
+            ::std::string::String,
+        >,
+        logging: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+        prompts: ::std::result::Result<
+            ::std::option::Option<super::ServerCapabilitiesPrompts>,
+            ::std::string::String,
+        >,
+        resources: ::std::result::Result<
+            ::std::option::Option<super::ServerCapabilitiesResources>,
+            ::std::string::String,
+        >,
+        tools: ::std::result::Result<
+            ::std::option::Option<super::ServerCapabilitiesTools>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ServerCapabilities {
+        fn default() -> Self {
+            Self {
+                experimental: Ok(Default::default()),
+                logging: Ok(Default::default()),
+                prompts: Ok(Default::default()),
+                resources: Ok(Default::default()),
+                tools: Ok(Default::default()),
+            }
+        }
+    }
+    impl ServerCapabilities {
+        pub fn experimental<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<
+                    ::std::string::String,
+                    ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+                >,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.experimental = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for experimental: {}", e));
+            self
+        }
+        pub fn logging<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.logging = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for logging: {}", e));
+            self
+        }
+        pub fn prompts<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ServerCapabilitiesPrompts>>,
+            T::Error: std::fmt::Display,
+        {
+            self.prompts = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for prompts: {}", e));
+            self
+        }
+        pub fn resources<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ServerCapabilitiesResources>>,
+            T::Error: std::fmt::Display,
+        {
+            self.resources = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for resources: {}", e));
+            self
+        }
+        pub fn tools<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::ServerCapabilitiesTools>>,
+            T::Error: std::fmt::Display,
+        {
+            self.tools = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for tools: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ServerCapabilities> for super::ServerCapabilities {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ServerCapabilities,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                experimental: value.experimental?,
+                logging: value.logging?,
+                prompts: value.prompts?,
+                resources: value.resources?,
+                tools: value.tools?,
+            })
+        }
+    }
+    impl From<super::ServerCapabilities> for ServerCapabilities {
+        fn from(value: super::ServerCapabilities) -> Self {
+            Self {
+                experimental: Ok(value.experimental),
+                logging: Ok(value.logging),
+                prompts: Ok(value.prompts),
+                resources: Ok(value.resources),
+                tools: Ok(value.tools),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ServerCapabilitiesPrompts {
+        list_changed: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ServerCapabilitiesPrompts {
+        fn default() -> Self {
+            Self {
+                list_changed: Ok(Default::default()),
+            }
+        }
+    }
+    impl ServerCapabilitiesPrompts {
+        pub fn list_changed<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.list_changed = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for list_changed: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ServerCapabilitiesPrompts> for super::ServerCapabilitiesPrompts {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ServerCapabilitiesPrompts,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                list_changed: value.list_changed?,
+            })
+        }
+    }
+    impl From<super::ServerCapabilitiesPrompts> for ServerCapabilitiesPrompts {
+        fn from(value: super::ServerCapabilitiesPrompts) -> Self {
+            Self {
+                list_changed: Ok(value.list_changed),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ServerCapabilitiesResources {
+        list_changed: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+        subscribe: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ServerCapabilitiesResources {
+        fn default() -> Self {
+            Self {
+                list_changed: Ok(Default::default()),
+                subscribe: Ok(Default::default()),
+            }
+        }
+    }
+    impl ServerCapabilitiesResources {
+        pub fn list_changed<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.list_changed = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for list_changed: {}", e));
+            self
+        }
+        pub fn subscribe<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.subscribe = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for subscribe: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ServerCapabilitiesResources> for super::ServerCapabilitiesResources {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ServerCapabilitiesResources,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                list_changed: value.list_changed?,
+                subscribe: value.subscribe?,
+            })
+        }
+    }
+    impl From<super::ServerCapabilitiesResources> for ServerCapabilitiesResources {
+        fn from(value: super::ServerCapabilitiesResources) -> Self {
+            Self {
+                list_changed: Ok(value.list_changed),
+                subscribe: Ok(value.subscribe),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ServerCapabilitiesTools {
+        list_changed: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
+    }
+    impl Default for ServerCapabilitiesTools {
+        fn default() -> Self {
+            Self {
+                list_changed: Ok(Default::default()),
+            }
+        }
+    }
+    impl ServerCapabilitiesTools {
+        pub fn list_changed<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: std::fmt::Display,
+        {
+            self.list_changed = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for list_changed: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ServerCapabilitiesTools> for super::ServerCapabilitiesTools {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ServerCapabilitiesTools,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                list_changed: value.list_changed?,
+            })
+        }
+    }
+    impl From<super::ServerCapabilitiesTools> for ServerCapabilitiesTools {
+        fn from(value: super::ServerCapabilitiesTools) -> Self {
+            Self {
+                list_changed: Ok(value.list_changed),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SetLevelRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::SetLevelRequestParams, ::std::string::String>,
+    }
+    impl Default for SetLevelRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl SetLevelRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::SetLevelRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SetLevelRequest> for super::SetLevelRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SetLevelRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::SetLevelRequest> for SetLevelRequest {
+        fn from(value: super::SetLevelRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SetLevelRequestParams {
+        level: ::std::result::Result<super::LoggingLevel, ::std::string::String>,
+    }
+    impl Default for SetLevelRequestParams {
+        fn default() -> Self {
+            Self {
+                level: Err("no value supplied for level".to_string()),
+            }
+        }
+    }
+    impl SetLevelRequestParams {
+        pub fn level<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::LoggingLevel>,
+            T::Error: std::fmt::Display,
+        {
+            self.level = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for level: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SetLevelRequestParams> for super::SetLevelRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SetLevelRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                level: value.level?,
+            })
+        }
+    }
+    impl From<super::SetLevelRequestParams> for SetLevelRequestParams {
+        fn from(value: super::SetLevelRequestParams) -> Self {
+            Self {
+                level: Ok(value.level),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SubscribeRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::SubscribeRequestParams, ::std::string::String>,
+    }
+    impl Default for SubscribeRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl SubscribeRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::SubscribeRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SubscribeRequest> for super::SubscribeRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SubscribeRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::SubscribeRequest> for SubscribeRequest {
+        fn from(value: super::SubscribeRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SubscribeRequestParams {
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for SubscribeRequestParams {
+        fn default() -> Self {
+            Self {
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl SubscribeRequestParams {
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SubscribeRequestParams> for super::SubscribeRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SubscribeRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { uri: value.uri? })
+        }
+    }
+    impl From<super::SubscribeRequestParams> for SubscribeRequestParams {
+        fn from(value: super::SubscribeRequestParams) -> Self {
+            Self { uri: Ok(value.uri) }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TextContent {
+        annotations: ::std::result::Result<
+            ::std::option::Option<super::TextContentAnnotations>,
+            ::std::string::String,
+        >,
+        text: ::std::result::Result<::std::string::String, ::std::string::String>,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for TextContent {
+        fn default() -> Self {
+            Self {
+                annotations: Ok(Default::default()),
+                text: Err("no value supplied for text".to_string()),
+                type_: Err("no value supplied for type_".to_string()),
+            }
+        }
+    }
+    impl TextContent {
+        pub fn annotations<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::TextContentAnnotations>>,
+            T::Error: std::fmt::Display,
+        {
+            self.annotations = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for annotations: {}", e));
+            self
+        }
+        pub fn text<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.text = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for text: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TextContent> for super::TextContent {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: TextContent,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                annotations: value.annotations?,
+                text: value.text?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::TextContent> for TextContent {
+        fn from(value: super::TextContent) -> Self {
+            Self {
+                annotations: Ok(value.annotations),
+                text: Ok(value.text),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TextContentAnnotations {
+        audience: ::std::result::Result<::std::vec::Vec<super::Role>, ::std::string::String>,
+        priority: ::std::result::Result<::std::option::Option<f64>, ::std::string::String>,
+    }
+    impl Default for TextContentAnnotations {
+        fn default() -> Self {
+            Self {
+                audience: Ok(Default::default()),
+                priority: Ok(Default::default()),
+            }
+        }
+    }
+    impl TextContentAnnotations {
+        pub fn audience<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Role>>,
+            T::Error: std::fmt::Display,
+        {
+            self.audience = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for audience: {}", e));
+            self
+        }
+        pub fn priority<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<f64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.priority = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priority: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TextContentAnnotations> for super::TextContentAnnotations {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: TextContentAnnotations,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                audience: value.audience?,
+                priority: value.priority?,
+            })
+        }
+    }
+    impl From<super::TextContentAnnotations> for TextContentAnnotations {
+        fn from(value: super::TextContentAnnotations) -> Self {
+            Self {
+                audience: Ok(value.audience),
+                priority: Ok(value.priority),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TextResourceContents {
+        mime_type: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        text: ::std::result::Result<::std::string::String, ::std::string::String>,
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for TextResourceContents {
+        fn default() -> Self {
+            Self {
+                mime_type: Ok(Default::default()),
+                text: Err("no value supplied for text".to_string()),
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl TextResourceContents {
+        pub fn mime_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.mime_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mime_type: {}", e));
+            self
+        }
+        pub fn text<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.text = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for text: {}", e));
+            self
+        }
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TextResourceContents> for super::TextResourceContents {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: TextResourceContents,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                mime_type: value.mime_type?,
+                text: value.text?,
+                uri: value.uri?,
+            })
+        }
+    }
+    impl From<super::TextResourceContents> for TextResourceContents {
+        fn from(value: super::TextResourceContents) -> Self {
+            Self {
+                mime_type: Ok(value.mime_type),
+                text: Ok(value.text),
+                uri: Ok(value.uri),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Tool {
+        description: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        input_schema: ::std::result::Result<super::ToolInputSchema, ::std::string::String>,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Tool {
+        fn default() -> Self {
+            Self {
+                description: Ok(Default::default()),
+                input_schema: Err("no value supplied for input_schema".to_string()),
+                name: Err("no value supplied for name".to_string()),
+            }
+        }
+    }
+    impl Tool {
+        pub fn description<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.description = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for description: {}", e));
+            self
+        }
+        pub fn input_schema<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::ToolInputSchema>,
+            T::Error: std::fmt::Display,
+        {
+            self.input_schema = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for input_schema: {}", e));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Tool> for super::Tool {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Tool) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                description: value.description?,
+                input_schema: value.input_schema?,
+                name: value.name?,
+            })
+        }
+    }
+    impl From<super::Tool> for Tool {
+        fn from(value: super::Tool) -> Self {
+            Self {
+                description: Ok(value.description),
+                input_schema: Ok(value.input_schema),
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ToolInputSchema {
+        properties: ::std::result::Result<
+            ::std::collections::HashMap<
+                ::std::string::String,
+                ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            >,
+            ::std::string::String,
+        >,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for ToolInputSchema {
+        fn default() -> Self {
+            Self {
+                properties: Ok(Default::default()),
+                type_: Err("no value supplied for type_".to_string()),
+            }
+        }
+    }
+    impl ToolInputSchema {
+        pub fn properties<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<
+                    ::std::string::String,
+                    ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+                >,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.properties = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for properties: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ToolInputSchema> for super::ToolInputSchema {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ToolInputSchema,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                properties: value.properties?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::ToolInputSchema> for ToolInputSchema {
+        fn from(value: super::ToolInputSchema) -> Self {
+            Self {
+                properties: Ok(value.properties),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ToolListChangedNotification {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<
+            ::std::option::Option<super::ToolListChangedNotificationParams>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ToolListChangedNotification {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Ok(Default::default()),
+            }
+        }
+    }
+    impl ToolListChangedNotification {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::option::Option<super::ToolListChangedNotificationParams>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ToolListChangedNotification> for super::ToolListChangedNotification {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ToolListChangedNotification,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::ToolListChangedNotification> for ToolListChangedNotification {
+        fn from(value: super::ToolListChangedNotification) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ToolListChangedNotificationParams {
+        meta: ::std::result::Result<
+            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for ToolListChangedNotificationParams {
+        fn default() -> Self {
+            Self {
+                meta: Ok(Default::default()),
+            }
+        }
+    }
+    impl ToolListChangedNotificationParams {
+        pub fn meta<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
+            T::Error: std::fmt::Display,
+        {
+            self.meta = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for meta: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ToolListChangedNotificationParams>
+        for super::ToolListChangedNotificationParams
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ToolListChangedNotificationParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { meta: value.meta? })
+        }
+    }
+    impl From<super::ToolListChangedNotificationParams> for ToolListChangedNotificationParams {
+        fn from(value: super::ToolListChangedNotificationParams) -> Self {
+            Self {
+                meta: Ok(value.meta),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UnsubscribeRequest {
+        method: ::std::result::Result<::std::string::String, ::std::string::String>,
+        params: ::std::result::Result<super::UnsubscribeRequestParams, ::std::string::String>,
+    }
+    impl Default for UnsubscribeRequest {
+        fn default() -> Self {
+            Self {
+                method: Err("no value supplied for method".to_string()),
+                params: Err("no value supplied for params".to_string()),
+            }
+        }
+    }
+    impl UnsubscribeRequest {
+        pub fn method<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.method = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for method: {}", e));
+            self
+        }
+        pub fn params<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::UnsubscribeRequestParams>,
+            T::Error: std::fmt::Display,
+        {
+            self.params = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for params: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UnsubscribeRequest> for super::UnsubscribeRequest {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UnsubscribeRequest,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                method: value.method?,
+                params: value.params?,
+            })
+        }
+    }
+    impl From<super::UnsubscribeRequest> for UnsubscribeRequest {
+        fn from(value: super::UnsubscribeRequest) -> Self {
+            Self {
+                method: Ok(value.method),
+                params: Ok(value.params),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UnsubscribeRequestParams {
+        uri: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for UnsubscribeRequestParams {
+        fn default() -> Self {
+            Self {
+                uri: Err("no value supplied for uri".to_string()),
+            }
+        }
+    }
+    impl UnsubscribeRequestParams {
+        pub fn uri<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.uri = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for uri: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UnsubscribeRequestParams> for super::UnsubscribeRequestParams {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UnsubscribeRequestParams,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { uri: value.uri? })
+        }
+    }
+    impl From<super::UnsubscribeRequestParams> for UnsubscribeRequestParams {
+        fn from(value: super::UnsubscribeRequestParams) -> Self {
+            Self { uri: Ok(value.uri) }
+        }
     }
 }
 fn main() {}

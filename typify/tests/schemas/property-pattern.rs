@@ -61,6 +61,11 @@ impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties 
         value.clone()
     }
 }
+impl TestGrammarForPatternProperties {
+    pub fn builder() -> builder::TestGrammarForPatternProperties {
+        Default::default()
+    }
+}
 #[doc = "TestGrammarForPatternPropertiesRulesKey"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -135,6 +140,62 @@ impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey 
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct TestGrammarForPatternProperties {
+        rules: ::std::result::Result<
+            ::std::collections::HashMap<
+                super::TestGrammarForPatternPropertiesRulesKey,
+                ::std::string::String,
+            >,
+            ::std::string::String,
+        >,
+    }
+    impl Default for TestGrammarForPatternProperties {
+        fn default() -> Self {
+            Self {
+                rules: Err("no value supplied for rules".to_string()),
+            }
+        }
+    }
+    impl TestGrammarForPatternProperties {
+        pub fn rules<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<
+                    super::TestGrammarForPatternPropertiesRulesKey,
+                    ::std::string::String,
+                >,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.rules = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for rules: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestGrammarForPatternProperties>
+        for super::TestGrammarForPatternProperties
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: TestGrammarForPatternProperties,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                rules: value.rules?,
+            })
+        }
+    }
+    impl From<super::TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
+        fn from(value: super::TestGrammarForPatternProperties) -> Self {
+            Self {
+                rules: Ok(value.rules),
+            }
+        }
     }
 }
 fn main() {}

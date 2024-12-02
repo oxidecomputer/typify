@@ -241,6 +241,11 @@ impl From<&DiskAttachment> for DiskAttachment {
         value.clone()
     }
 }
+impl DiskAttachment {
+    pub fn builder() -> builder::DiskAttachment {
+        Default::default()
+    }
+}
 #[doc = "DiskAttachmentState"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -352,6 +357,11 @@ pub struct EmptyObject {
 impl From<&EmptyObject> for EmptyObject {
     fn from(value: &EmptyObject) -> Self {
         value.clone()
+    }
+}
+impl EmptyObject {
+    pub fn builder() -> builder::EmptyObject {
+        Default::default()
     }
 }
 #[doc = "EmptyObjectProp"]
@@ -1278,6 +1288,104 @@ impl ::std::str::FromStr for StringVersion {
 impl ::std::fmt::Display for StringVersion {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         self.0.fmt(f)
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct DiskAttachment {
+        alternate: ::std::result::Result<super::AlternativeEnum, ::std::string::String>,
+        state: ::std::result::Result<super::DiskAttachmentState, ::std::string::String>,
+    }
+    impl Default for DiskAttachment {
+        fn default() -> Self {
+            Self {
+                alternate: Err("no value supplied for alternate".to_string()),
+                state: Err("no value supplied for state".to_string()),
+            }
+        }
+    }
+    impl DiskAttachment {
+        pub fn alternate<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::AlternativeEnum>,
+            T::Error: std::fmt::Display,
+        {
+            self.alternate = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for alternate: {}", e));
+            self
+        }
+        pub fn state<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::DiskAttachmentState>,
+            T::Error: std::fmt::Display,
+        {
+            self.state = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for state: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<DiskAttachment> for super::DiskAttachment {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: DiskAttachment,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                alternate: value.alternate?,
+                state: value.state?,
+            })
+        }
+    }
+    impl From<super::DiskAttachment> for DiskAttachment {
+        fn from(value: super::DiskAttachment) -> Self {
+            Self {
+                alternate: Ok(value.alternate),
+                state: Ok(value.state),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct EmptyObject {
+        prop: ::std::result::Result<
+            ::std::option::Option<super::EmptyObjectProp>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for EmptyObject {
+        fn default() -> Self {
+            Self {
+                prop: Ok(Default::default()),
+            }
+        }
+    }
+    impl EmptyObject {
+        pub fn prop<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::EmptyObjectProp>>,
+            T::Error: std::fmt::Display,
+        {
+            self.prop = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for prop: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<EmptyObject> for super::EmptyObject {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: EmptyObject,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { prop: value.prop? })
+        }
+    }
+    impl From<super::EmptyObject> for EmptyObject {
+        fn from(value: super::EmptyObject) -> Self {
+            Self {
+                prop: Ok(value.prop),
+            }
+        }
     }
 }
 fn main() {}

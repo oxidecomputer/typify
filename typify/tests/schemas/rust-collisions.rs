@@ -51,6 +51,11 @@ impl From<&Box> for Box {
         value.clone()
     }
 }
+impl Box {
+    pub fn builder() -> builder::Box {
+        Default::default()
+    }
+}
 #[doc = "Copy"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -76,6 +81,11 @@ pub struct Copy {
 impl From<&Copy> for Copy {
     fn from(value: &Copy) -> Self {
         value.clone()
+    }
+}
+impl Copy {
+    pub fn builder() -> builder::Copy {
+        Default::default()
     }
 }
 #[doc = "DoubleOptionCollision"]
@@ -114,6 +124,11 @@ impl From<&DoubleOptionCollision> for DoubleOptionCollision {
         value.clone()
     }
 }
+impl DoubleOptionCollision {
+    pub fn builder() -> builder::DoubleOptionCollision {
+        Default::default()
+    }
+}
 #[doc = "DoubleOptionCollisionOption"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -142,6 +157,11 @@ impl From<&DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
         value.clone()
     }
 }
+impl DoubleOptionCollisionOption {
+    pub fn builder() -> builder::DoubleOptionCollisionOption {
+        Default::default()
+    }
+}
 #[doc = "Drop"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -167,6 +187,11 @@ pub struct Drop {
 impl From<&Drop> for Drop {
     fn from(value: &Drop) -> Self {
         value.clone()
+    }
+}
+impl Drop {
+    pub fn builder() -> builder::Drop {
+        Default::default()
     }
 }
 #[doc = "FlattenedKeywords"]
@@ -199,6 +224,11 @@ pub struct FlattenedKeywords {
 impl From<&FlattenedKeywords> for FlattenedKeywords {
     fn from(value: &FlattenedKeywords) -> Self {
         value.clone()
+    }
+}
+impl FlattenedKeywords {
+    pub fn builder() -> builder::FlattenedKeywords {
+        Default::default()
     }
 }
 #[doc = "KeywordFieldsEnum"]
@@ -314,6 +344,11 @@ pub struct MapOfKeywords {
 impl From<&MapOfKeywords> for MapOfKeywords {
     fn from(value: &MapOfKeywords) -> Self {
         value.clone()
+    }
+}
+impl MapOfKeywords {
+    pub fn builder() -> builder::MapOfKeywords {
+        Default::default()
     }
 }
 #[doc = "MapOfKeywordsKeywordMapValue"]
@@ -502,6 +537,11 @@ impl From<&NestedTypeCollisions> for NestedTypeCollisions {
         value.clone()
     }
 }
+impl NestedTypeCollisions {
+    pub fn builder() -> builder::NestedTypeCollisions {
+        Default::default()
+    }
+}
 #[doc = "NestedTypeCollisionsOptionType"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -531,6 +571,11 @@ impl From<&NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
         value.clone()
     }
 }
+impl NestedTypeCollisionsOptionType {
+    pub fn builder() -> builder::NestedTypeCollisionsOptionType {
+        Default::default()
+    }
+}
 #[doc = "Option"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -558,6 +603,11 @@ impl From<&Option> for Option {
         value.clone()
     }
 }
+impl Option {
+    pub fn builder() -> builder::Option {
+        Default::default()
+    }
+}
 #[doc = "Pin"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -583,6 +633,11 @@ pub struct Pin {
 impl From<&Pin> for Pin {
     fn from(value: &Pin) -> Self {
         value.clone()
+    }
+}
+impl Pin {
+    pub fn builder() -> builder::Pin {
+        Default::default()
     }
 }
 #[doc = "RustKeywordMonster"]
@@ -907,6 +962,11 @@ impl From<&RustKeywordMonster> for RustKeywordMonster {
         value.clone()
     }
 }
+impl RustKeywordMonster {
+    pub fn builder() -> builder::RustKeywordMonster {
+        Default::default()
+    }
+}
 #[doc = "Send"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -932,6 +992,11 @@ pub struct Send {
 impl From<&Send> for Send {
     fn from(value: &Send) -> Self {
         value.clone()
+    }
+}
+impl Send {
+    pub fn builder() -> builder::Send {
+        Default::default()
     }
 }
 #[doc = "Std"]
@@ -1047,6 +1112,11 @@ impl From<&Std> for Std {
         value.clone()
     }
 }
+impl Std {
+    pub fn builder() -> builder::Std {
+        Default::default()
+    }
+}
 #[doc = "StdBoxed"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1072,6 +1142,11 @@ pub struct StdBoxed {
 impl From<&StdBoxed> for StdBoxed {
     fn from(value: &StdBoxed) -> Self {
         value.clone()
+    }
+}
+impl StdBoxed {
+    pub fn builder() -> builder::StdBoxed {
+        Default::default()
     }
 }
 #[doc = "StdConvert"]
@@ -1101,6 +1176,11 @@ impl From<&StdConvert> for StdConvert {
         value.clone()
     }
 }
+impl StdConvert {
+    pub fn builder() -> builder::StdConvert {
+        Default::default()
+    }
+}
 #[doc = "StdFmt"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1126,6 +1206,11 @@ pub struct StdFmt {
 impl From<&StdFmt> for StdFmt {
     fn from(value: &StdFmt) -> Self {
         value.clone()
+    }
+}
+impl StdFmt {
+    pub fn builder() -> builder::StdFmt {
+        Default::default()
     }
 }
 #[doc = "StdOption"]
@@ -1155,6 +1240,11 @@ impl From<&StdOption> for StdOption {
         value.clone()
     }
 }
+impl StdOption {
+    pub fn builder() -> builder::StdOption {
+        Default::default()
+    }
+}
 #[doc = "StdResult"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1180,6 +1270,11 @@ pub struct StdResult {
 impl From<&StdResult> for StdResult {
     fn from(value: &StdResult) -> Self {
         value.clone()
+    }
+}
+impl StdResult {
+    pub fn builder() -> builder::StdResult {
+        Default::default()
     }
 }
 #[doc = "StdStr"]
@@ -1209,6 +1304,11 @@ impl From<&StdStr> for StdStr {
         value.clone()
     }
 }
+impl StdStr {
+    pub fn builder() -> builder::StdStr {
+        Default::default()
+    }
+}
 #[doc = "StdString"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1236,6 +1336,11 @@ impl From<&StdString> for StdString {
         value.clone()
     }
 }
+impl StdString {
+    pub fn builder() -> builder::StdString {
+        Default::default()
+    }
+}
 #[doc = "String"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1261,6 +1366,11 @@ pub struct String {
 impl From<&String> for String {
     fn from(value: &String) -> Self {
         value.clone()
+    }
+}
+impl String {
+    pub fn builder() -> builder::String {
+        Default::default()
     }
 }
 #[doc = "StringEnum"]
@@ -1448,6 +1558,11 @@ impl From<&Sync> for Sync {
         value.clone()
     }
 }
+impl Sync {
+    pub fn builder() -> builder::Sync {
+        Default::default()
+    }
+}
 #[doc = "TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1501,6 +1616,11 @@ impl From<&TypeWithOptionField> for TypeWithOptionField {
         value.clone()
     }
 }
+impl TypeWithOptionField {
+    pub fn builder() -> builder::TypeWithOptionField {
+        Default::default()
+    }
+}
 #[doc = "Vec"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1529,6 +1649,1841 @@ pub struct Vec {
 impl From<&Vec> for Vec {
     fn from(value: &Vec) -> Self {
         value.clone()
+    }
+}
+impl Vec {
+    pub fn builder() -> builder::Vec {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct Box {
+        data: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Box {
+        fn default() -> Self {
+            Self {
+                data: Err("no value supplied for data".to_string()),
+            }
+        }
+    }
+    impl Box {
+        pub fn data<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.data = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for data: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Box> for super::Box {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Box) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { data: value.data? })
+        }
+    }
+    impl From<super::Box> for Box {
+        fn from(value: super::Box) -> Self {
+            Self {
+                data: Ok(value.data),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Copy {
+        value: ::std::result::Result<i64, ::std::string::String>,
+    }
+    impl Default for Copy {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl Copy {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<i64>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Copy> for super::Copy {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Copy) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::Copy> for Copy {
+        fn from(value: super::Copy) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct DoubleOptionCollision {
+        option: ::std::result::Result<
+            ::std::option::Option<super::DoubleOptionCollisionOption>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for DoubleOptionCollision {
+        fn default() -> Self {
+            Self {
+                option: Ok(Default::default()),
+            }
+        }
+    }
+    impl DoubleOptionCollision {
+        pub fn option<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::DoubleOptionCollisionOption>>,
+            T::Error: std::fmt::Display,
+        {
+            self.option = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for option: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<DoubleOptionCollision> for super::DoubleOptionCollision {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: DoubleOptionCollision,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                option: value.option?,
+            })
+        }
+    }
+    impl From<super::DoubleOptionCollision> for DoubleOptionCollision {
+        fn from(value: super::DoubleOptionCollision) -> Self {
+            Self {
+                option: Ok(value.option),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct DoubleOptionCollisionOption {
+        option: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for DoubleOptionCollisionOption {
+        fn default() -> Self {
+            Self {
+                option: Ok(Default::default()),
+            }
+        }
+    }
+    impl DoubleOptionCollisionOption {
+        pub fn option<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.option = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for option: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<DoubleOptionCollisionOption> for super::DoubleOptionCollisionOption {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: DoubleOptionCollisionOption,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                option: value.option?,
+            })
+        }
+    }
+    impl From<super::DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
+        fn from(value: super::DoubleOptionCollisionOption) -> Self {
+            Self {
+                option: Ok(value.option),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Drop {
+        cleanup: ::std::result::Result<bool, ::std::string::String>,
+    }
+    impl Default for Drop {
+        fn default() -> Self {
+            Self {
+                cleanup: Err("no value supplied for cleanup".to_string()),
+            }
+        }
+    }
+    impl Drop {
+        pub fn cleanup<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<bool>,
+            T::Error: std::fmt::Display,
+        {
+            self.cleanup = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for cleanup: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Drop> for super::Drop {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Drop) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                cleanup: value.cleanup?,
+            })
+        }
+    }
+    impl From<super::Drop> for Drop {
+        fn from(value: super::Drop) -> Self {
+            Self {
+                cleanup: Ok(value.cleanup),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct FlattenedKeywords {
+        normal: ::std::result::Result<::std::string::String, ::std::string::String>,
+        extra: ::std::result::Result<
+            ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for FlattenedKeywords {
+        fn default() -> Self {
+            Self {
+                normal: Err("no value supplied for normal".to_string()),
+                extra: Err("no value supplied for extra".to_string()),
+            }
+        }
+    }
+    impl FlattenedKeywords {
+        pub fn normal<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.normal = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for normal: {}", e));
+            self
+        }
+        pub fn extra<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.extra = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for extra: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<FlattenedKeywords> for super::FlattenedKeywords {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: FlattenedKeywords,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                normal: value.normal?,
+                extra: value.extra?,
+            })
+        }
+    }
+    impl From<super::FlattenedKeywords> for FlattenedKeywords {
+        fn from(value: super::FlattenedKeywords) -> Self {
+            Self {
+                normal: Ok(value.normal),
+                extra: Ok(value.extra),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct MapOfKeywords {
+        keyword_map: ::std::result::Result<
+            ::std::collections::HashMap<::std::string::String, super::MapOfKeywordsKeywordMapValue>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for MapOfKeywords {
+        fn default() -> Self {
+            Self {
+                keyword_map: Err("no value supplied for keyword_map".to_string()),
+            }
+        }
+    }
+    impl MapOfKeywords {
+        pub fn keyword_map<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<
+                ::std::collections::HashMap<
+                    ::std::string::String,
+                    super::MapOfKeywordsKeywordMapValue,
+                >,
+            >,
+            T::Error: std::fmt::Display,
+        {
+            self.keyword_map = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for keyword_map: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<MapOfKeywords> for super::MapOfKeywords {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: MapOfKeywords,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                keyword_map: value.keyword_map?,
+            })
+        }
+    }
+    impl From<super::MapOfKeywords> for MapOfKeywords {
+        fn from(value: super::MapOfKeywords) -> Self {
+            Self {
+                keyword_map: Ok(value.keyword_map),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct NestedTypeCollisions {
+        option_type: ::std::result::Result<
+            ::std::option::Option<super::NestedTypeCollisionsOptionType>,
+            ::std::string::String,
+        >,
+        type_: ::std::result::Result<super::TypeWithOptionField, ::std::string::String>,
+        types: ::std::result::Result<
+            ::std::vec::Vec<super::TypeWithOptionField>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for NestedTypeCollisions {
+        fn default() -> Self {
+            Self {
+                option_type: Ok(Default::default()),
+                type_: Err("no value supplied for type_".to_string()),
+                types: Err("no value supplied for types".to_string()),
+            }
+        }
+    }
+    impl NestedTypeCollisions {
+        pub fn option_type<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<super::NestedTypeCollisionsOptionType>>,
+            T::Error: std::fmt::Display,
+        {
+            self.option_type = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for option_type: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TypeWithOptionField>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+        pub fn types<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::TypeWithOptionField>>,
+            T::Error: std::fmt::Display,
+        {
+            self.types = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for types: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<NestedTypeCollisions> for super::NestedTypeCollisions {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: NestedTypeCollisions,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                option_type: value.option_type?,
+                type_: value.type_?,
+                types: value.types?,
+            })
+        }
+    }
+    impl From<super::NestedTypeCollisions> for NestedTypeCollisions {
+        fn from(value: super::NestedTypeCollisions) -> Self {
+            Self {
+                option_type: Ok(value.option_type),
+                type_: Ok(value.type_),
+                types: Ok(value.types),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct NestedTypeCollisionsOptionType {
+        type_: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for NestedTypeCollisionsOptionType {
+        fn default() -> Self {
+            Self {
+                type_: Ok(Default::default()),
+            }
+        }
+    }
+    impl NestedTypeCollisionsOptionType {
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<NestedTypeCollisionsOptionType>
+        for super::NestedTypeCollisionsOptionType
+    {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: NestedTypeCollisionsOptionType,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                type_: value.type_?,
+            })
+        }
+    }
+    impl From<super::NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
+        fn from(value: super::NestedTypeCollisionsOptionType) -> Self {
+            Self {
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Option {
+        maybe: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Option {
+        fn default() -> Self {
+            Self {
+                maybe: Err("no value supplied for maybe".to_string()),
+            }
+        }
+    }
+    impl Option {
+        pub fn maybe<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.maybe = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for maybe: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Option> for super::Option {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Option) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                maybe: value.maybe?,
+            })
+        }
+    }
+    impl From<super::Option> for Option {
+        fn from(value: super::Option) -> Self {
+            Self {
+                maybe: Ok(value.maybe),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Pin {
+        pointer: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Pin {
+        fn default() -> Self {
+            Self {
+                pointer: Err("no value supplied for pointer".to_string()),
+            }
+        }
+    }
+    impl Pin {
+        pub fn pointer<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.pointer = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for pointer: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Pin> for super::Pin {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Pin) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                pointer: value.pointer?,
+            })
+        }
+    }
+    impl From<super::Pin> for Pin {
+        fn from(value: super::Pin) -> Self {
+            Self {
+                pointer: Ok(value.pointer),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct RustKeywordMonster {
+        abstract_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        as_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        async_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        await_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        become_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        box_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        break_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        const_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        continue_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        crate_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        do_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        dyn_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        else_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        enum_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        extern_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        false_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        final_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        fn_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        for_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        if_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        impl_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        in_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        let_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        loop_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        macro_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        match_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        mod_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        move_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        mut_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        override_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        priv_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        pub_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        ref_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        return_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        self_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        static_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        struct_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        super_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        trait_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        true_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        try_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        type_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        typeof_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        unsafe_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        unsized_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        use_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        virtual_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        where_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        while_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        yield_: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for RustKeywordMonster {
+        fn default() -> Self {
+            Self {
+                abstract_: Err("no value supplied for abstract_".to_string()),
+                as_: Err("no value supplied for as_".to_string()),
+                async_: Err("no value supplied for async_".to_string()),
+                await_: Err("no value supplied for await_".to_string()),
+                become_: Err("no value supplied for become_".to_string()),
+                box_: Err("no value supplied for box_".to_string()),
+                break_: Err("no value supplied for break_".to_string()),
+                const_: Err("no value supplied for const_".to_string()),
+                continue_: Err("no value supplied for continue_".to_string()),
+                crate_: Err("no value supplied for crate_".to_string()),
+                do_: Err("no value supplied for do_".to_string()),
+                dyn_: Err("no value supplied for dyn_".to_string()),
+                else_: Err("no value supplied for else_".to_string()),
+                enum_: Err("no value supplied for enum_".to_string()),
+                extern_: Err("no value supplied for extern_".to_string()),
+                false_: Err("no value supplied for false_".to_string()),
+                final_: Err("no value supplied for final_".to_string()),
+                fn_: Err("no value supplied for fn_".to_string()),
+                for_: Err("no value supplied for for_".to_string()),
+                if_: Err("no value supplied for if_".to_string()),
+                impl_: Err("no value supplied for impl_".to_string()),
+                in_: Err("no value supplied for in_".to_string()),
+                let_: Err("no value supplied for let_".to_string()),
+                loop_: Err("no value supplied for loop_".to_string()),
+                macro_: Err("no value supplied for macro_".to_string()),
+                match_: Err("no value supplied for match_".to_string()),
+                mod_: Err("no value supplied for mod_".to_string()),
+                move_: Err("no value supplied for move_".to_string()),
+                mut_: Err("no value supplied for mut_".to_string()),
+                override_: Err("no value supplied for override_".to_string()),
+                priv_: Err("no value supplied for priv_".to_string()),
+                pub_: Err("no value supplied for pub_".to_string()),
+                ref_: Err("no value supplied for ref_".to_string()),
+                return_: Err("no value supplied for return_".to_string()),
+                self_: Err("no value supplied for self_".to_string()),
+                static_: Err("no value supplied for static_".to_string()),
+                struct_: Err("no value supplied for struct_".to_string()),
+                super_: Err("no value supplied for super_".to_string()),
+                trait_: Err("no value supplied for trait_".to_string()),
+                true_: Err("no value supplied for true_".to_string()),
+                try_: Err("no value supplied for try_".to_string()),
+                type_: Err("no value supplied for type_".to_string()),
+                typeof_: Err("no value supplied for typeof_".to_string()),
+                unsafe_: Err("no value supplied for unsafe_".to_string()),
+                unsized_: Err("no value supplied for unsized_".to_string()),
+                use_: Err("no value supplied for use_".to_string()),
+                virtual_: Err("no value supplied for virtual_".to_string()),
+                where_: Err("no value supplied for where_".to_string()),
+                while_: Err("no value supplied for while_".to_string()),
+                yield_: Err("no value supplied for yield_".to_string()),
+            }
+        }
+    }
+    impl RustKeywordMonster {
+        pub fn abstract_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.abstract_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for abstract_: {}", e));
+            self
+        }
+        pub fn as_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.as_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for as_: {}", e));
+            self
+        }
+        pub fn async_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.async_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for async_: {}", e));
+            self
+        }
+        pub fn await_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.await_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for await_: {}", e));
+            self
+        }
+        pub fn become_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.become_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for become_: {}", e));
+            self
+        }
+        pub fn box_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.box_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for box_: {}", e));
+            self
+        }
+        pub fn break_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.break_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for break_: {}", e));
+            self
+        }
+        pub fn const_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.const_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for const_: {}", e));
+            self
+        }
+        pub fn continue_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.continue_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for continue_: {}", e));
+            self
+        }
+        pub fn crate_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.crate_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for crate_: {}", e));
+            self
+        }
+        pub fn do_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.do_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for do_: {}", e));
+            self
+        }
+        pub fn dyn_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.dyn_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for dyn_: {}", e));
+            self
+        }
+        pub fn else_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.else_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for else_: {}", e));
+            self
+        }
+        pub fn enum_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.enum_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for enum_: {}", e));
+            self
+        }
+        pub fn extern_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.extern_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for extern_: {}", e));
+            self
+        }
+        pub fn false_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.false_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for false_: {}", e));
+            self
+        }
+        pub fn final_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.final_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for final_: {}", e));
+            self
+        }
+        pub fn fn_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.fn_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for fn_: {}", e));
+            self
+        }
+        pub fn for_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.for_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for for_: {}", e));
+            self
+        }
+        pub fn if_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.if_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for if_: {}", e));
+            self
+        }
+        pub fn impl_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.impl_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for impl_: {}", e));
+            self
+        }
+        pub fn in_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.in_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for in_: {}", e));
+            self
+        }
+        pub fn let_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.let_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for let_: {}", e));
+            self
+        }
+        pub fn loop_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.loop_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for loop_: {}", e));
+            self
+        }
+        pub fn macro_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.macro_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for macro_: {}", e));
+            self
+        }
+        pub fn match_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.match_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for match_: {}", e));
+            self
+        }
+        pub fn mod_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.mod_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mod_: {}", e));
+            self
+        }
+        pub fn move_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.move_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for move_: {}", e));
+            self
+        }
+        pub fn mut_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.mut_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for mut_: {}", e));
+            self
+        }
+        pub fn override_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.override_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for override_: {}", e));
+            self
+        }
+        pub fn priv_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.priv_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for priv_: {}", e));
+            self
+        }
+        pub fn pub_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.pub_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for pub_: {}", e));
+            self
+        }
+        pub fn ref_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.ref_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for ref_: {}", e));
+            self
+        }
+        pub fn return_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.return_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for return_: {}", e));
+            self
+        }
+        pub fn self_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.self_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for self_: {}", e));
+            self
+        }
+        pub fn static_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.static_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for static_: {}", e));
+            self
+        }
+        pub fn struct_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.struct_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for struct_: {}", e));
+            self
+        }
+        pub fn super_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.super_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for super_: {}", e));
+            self
+        }
+        pub fn trait_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.trait_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for trait_: {}", e));
+            self
+        }
+        pub fn true_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.true_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for true_: {}", e));
+            self
+        }
+        pub fn try_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.try_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for try_: {}", e));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+            self
+        }
+        pub fn typeof_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.typeof_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for typeof_: {}", e));
+            self
+        }
+        pub fn unsafe_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.unsafe_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for unsafe_: {}", e));
+            self
+        }
+        pub fn unsized_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.unsized_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for unsized_: {}", e));
+            self
+        }
+        pub fn use_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.use_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for use_: {}", e));
+            self
+        }
+        pub fn virtual_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.virtual_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for virtual_: {}", e));
+            self
+        }
+        pub fn where_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.where_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for where_: {}", e));
+            self
+        }
+        pub fn while_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.while_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for while_: {}", e));
+            self
+        }
+        pub fn yield_<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.yield_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for yield_: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RustKeywordMonster> for super::RustKeywordMonster {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RustKeywordMonster,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                abstract_: value.abstract_?,
+                as_: value.as_?,
+                async_: value.async_?,
+                await_: value.await_?,
+                become_: value.become_?,
+                box_: value.box_?,
+                break_: value.break_?,
+                const_: value.const_?,
+                continue_: value.continue_?,
+                crate_: value.crate_?,
+                do_: value.do_?,
+                dyn_: value.dyn_?,
+                else_: value.else_?,
+                enum_: value.enum_?,
+                extern_: value.extern_?,
+                false_: value.false_?,
+                final_: value.final_?,
+                fn_: value.fn_?,
+                for_: value.for_?,
+                if_: value.if_?,
+                impl_: value.impl_?,
+                in_: value.in_?,
+                let_: value.let_?,
+                loop_: value.loop_?,
+                macro_: value.macro_?,
+                match_: value.match_?,
+                mod_: value.mod_?,
+                move_: value.move_?,
+                mut_: value.mut_?,
+                override_: value.override_?,
+                priv_: value.priv_?,
+                pub_: value.pub_?,
+                ref_: value.ref_?,
+                return_: value.return_?,
+                self_: value.self_?,
+                static_: value.static_?,
+                struct_: value.struct_?,
+                super_: value.super_?,
+                trait_: value.trait_?,
+                true_: value.true_?,
+                try_: value.try_?,
+                type_: value.type_?,
+                typeof_: value.typeof_?,
+                unsafe_: value.unsafe_?,
+                unsized_: value.unsized_?,
+                use_: value.use_?,
+                virtual_: value.virtual_?,
+                where_: value.where_?,
+                while_: value.while_?,
+                yield_: value.yield_?,
+            })
+        }
+    }
+    impl From<super::RustKeywordMonster> for RustKeywordMonster {
+        fn from(value: super::RustKeywordMonster) -> Self {
+            Self {
+                abstract_: Ok(value.abstract_),
+                as_: Ok(value.as_),
+                async_: Ok(value.async_),
+                await_: Ok(value.await_),
+                become_: Ok(value.become_),
+                box_: Ok(value.box_),
+                break_: Ok(value.break_),
+                const_: Ok(value.const_),
+                continue_: Ok(value.continue_),
+                crate_: Ok(value.crate_),
+                do_: Ok(value.do_),
+                dyn_: Ok(value.dyn_),
+                else_: Ok(value.else_),
+                enum_: Ok(value.enum_),
+                extern_: Ok(value.extern_),
+                false_: Ok(value.false_),
+                final_: Ok(value.final_),
+                fn_: Ok(value.fn_),
+                for_: Ok(value.for_),
+                if_: Ok(value.if_),
+                impl_: Ok(value.impl_),
+                in_: Ok(value.in_),
+                let_: Ok(value.let_),
+                loop_: Ok(value.loop_),
+                macro_: Ok(value.macro_),
+                match_: Ok(value.match_),
+                mod_: Ok(value.mod_),
+                move_: Ok(value.move_),
+                mut_: Ok(value.mut_),
+                override_: Ok(value.override_),
+                priv_: Ok(value.priv_),
+                pub_: Ok(value.pub_),
+                ref_: Ok(value.ref_),
+                return_: Ok(value.return_),
+                self_: Ok(value.self_),
+                static_: Ok(value.static_),
+                struct_: Ok(value.struct_),
+                super_: Ok(value.super_),
+                trait_: Ok(value.trait_),
+                true_: Ok(value.true_),
+                try_: Ok(value.try_),
+                type_: Ok(value.type_),
+                typeof_: Ok(value.typeof_),
+                unsafe_: Ok(value.unsafe_),
+                unsized_: Ok(value.unsized_),
+                use_: Ok(value.use_),
+                virtual_: Ok(value.virtual_),
+                where_: Ok(value.where_),
+                while_: Ok(value.while_),
+                yield_: Ok(value.yield_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Send {
+        message: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Send {
+        fn default() -> Self {
+            Self {
+                message: Err("no value supplied for message".to_string()),
+            }
+        }
+    }
+    impl Send {
+        pub fn message<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.message = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for message: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Send> for super::Send {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Send) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                message: value.message?,
+            })
+        }
+    }
+    impl From<super::Send> for Send {
+        fn from(value: super::Send) -> Self {
+            Self {
+                message: Ok(value.message),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Std {
+        boxed: ::std::result::Result<super::StdBoxed, ::std::string::String>,
+        convert: ::std::result::Result<super::StdConvert, ::std::string::String>,
+        fmt: ::std::result::Result<super::StdFmt, ::std::string::String>,
+        option: ::std::result::Result<super::StdOption, ::std::string::String>,
+        result: ::std::result::Result<super::StdResult, ::std::string::String>,
+        str: ::std::result::Result<super::StdStr, ::std::string::String>,
+        string: ::std::result::Result<super::StdString, ::std::string::String>,
+    }
+    impl Default for Std {
+        fn default() -> Self {
+            Self {
+                boxed: Err("no value supplied for boxed".to_string()),
+                convert: Err("no value supplied for convert".to_string()),
+                fmt: Err("no value supplied for fmt".to_string()),
+                option: Err("no value supplied for option".to_string()),
+                result: Err("no value supplied for result".to_string()),
+                str: Err("no value supplied for str".to_string()),
+                string: Err("no value supplied for string".to_string()),
+            }
+        }
+    }
+    impl Std {
+        pub fn boxed<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdBoxed>,
+            T::Error: std::fmt::Display,
+        {
+            self.boxed = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for boxed: {}", e));
+            self
+        }
+        pub fn convert<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdConvert>,
+            T::Error: std::fmt::Display,
+        {
+            self.convert = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for convert: {}", e));
+            self
+        }
+        pub fn fmt<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdFmt>,
+            T::Error: std::fmt::Display,
+        {
+            self.fmt = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for fmt: {}", e));
+            self
+        }
+        pub fn option<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdOption>,
+            T::Error: std::fmt::Display,
+        {
+            self.option = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for option: {}", e));
+            self
+        }
+        pub fn result<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdResult>,
+            T::Error: std::fmt::Display,
+        {
+            self.result = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for result: {}", e));
+            self
+        }
+        pub fn str<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdStr>,
+            T::Error: std::fmt::Display,
+        {
+            self.str = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for str: {}", e));
+            self
+        }
+        pub fn string<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::StdString>,
+            T::Error: std::fmt::Display,
+        {
+            self.string = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for string: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Std> for super::Std {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Std) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                boxed: value.boxed?,
+                convert: value.convert?,
+                fmt: value.fmt?,
+                option: value.option?,
+                result: value.result?,
+                str: value.str?,
+                string: value.string?,
+            })
+        }
+    }
+    impl From<super::Std> for Std {
+        fn from(value: super::Std) -> Self {
+            Self {
+                boxed: Ok(value.boxed),
+                convert: Ok(value.convert),
+                fmt: Ok(value.fmt),
+                option: Ok(value.option),
+                result: Ok(value.result),
+                str: Ok(value.str),
+                string: Ok(value.string),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdBoxed {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdBoxed {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdBoxed {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdBoxed> for super::StdBoxed {
+        type Error = super::error::ConversionError;
+        fn try_from(value: StdBoxed) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdBoxed> for StdBoxed {
+        fn from(value: super::StdBoxed) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdConvert {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdConvert {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdConvert {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdConvert> for super::StdConvert {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: StdConvert,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdConvert> for StdConvert {
+        fn from(value: super::StdConvert) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdFmt {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdFmt {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdFmt {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdFmt> for super::StdFmt {
+        type Error = super::error::ConversionError;
+        fn try_from(value: StdFmt) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdFmt> for StdFmt {
+        fn from(value: super::StdFmt) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdOption {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdOption {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdOption {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdOption> for super::StdOption {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: StdOption,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdOption> for StdOption {
+        fn from(value: super::StdOption) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdResult {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdResult {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdResult {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdResult> for super::StdResult {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: StdResult,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdResult> for StdResult {
+        fn from(value: super::StdResult) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdStr {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdStr {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdStr {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdStr> for super::StdStr {
+        type Error = super::error::ConversionError;
+        fn try_from(value: StdStr) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdStr> for StdStr {
+        fn from(value: super::StdStr) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct StdString {
+        value: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for StdString {
+        fn default() -> Self {
+            Self {
+                value: Err("no value supplied for value".to_string()),
+            }
+        }
+    }
+    impl StdString {
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<StdString> for super::StdString {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: StdString,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::StdString> for StdString {
+        fn from(value: super::StdString) -> Self {
+            Self {
+                value: Ok(value.value),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct String {
+        text: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for String {
+        fn default() -> Self {
+            Self {
+                text: Err("no value supplied for text".to_string()),
+            }
+        }
+    }
+    impl String {
+        pub fn text<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.text = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for text: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<String> for super::String {
+        type Error = super::error::ConversionError;
+        fn try_from(value: String) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { text: value.text? })
+        }
+    }
+    impl From<super::String> for String {
+        fn from(value: super::String) -> Self {
+            Self {
+                text: Ok(value.text),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Sync {
+        data: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl Default for Sync {
+        fn default() -> Self {
+            Self {
+                data: Err("no value supplied for data".to_string()),
+            }
+        }
+    }
+    impl Sync {
+        pub fn data<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::string::String>,
+            T::Error: std::fmt::Display,
+        {
+            self.data = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for data: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Sync> for super::Sync {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Sync) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { data: value.data? })
+        }
+    }
+    impl From<super::Sync> for Sync {
+        fn from(value: super::Sync) -> Self {
+            Self {
+                data: Ok(value.data),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TypeWithOptionField {
+        boxed_field: ::std::result::Result<super::Box, ::std::string::String>,
+        optional_field: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl Default for TypeWithOptionField {
+        fn default() -> Self {
+            Self {
+                boxed_field: Err("no value supplied for boxed_field".to_string()),
+                optional_field: Ok(Default::default()),
+            }
+        }
+    }
+    impl TypeWithOptionField {
+        pub fn boxed_field<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::Box>,
+            T::Error: std::fmt::Display,
+        {
+            self.boxed_field = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for boxed_field: {}", e));
+            self
+        }
+        pub fn optional_field<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.optional_field = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for optional_field: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TypeWithOptionField> for super::TypeWithOptionField {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: TypeWithOptionField,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                boxed_field: value.boxed_field?,
+                optional_field: value.optional_field?,
+            })
+        }
+    }
+    impl From<super::TypeWithOptionField> for TypeWithOptionField {
+        fn from(value: super::TypeWithOptionField) -> Self {
+            Self {
+                boxed_field: Ok(value.boxed_field),
+                optional_field: Ok(value.optional_field),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct Vec {
+        items: ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
+    }
+    impl Default for Vec {
+        fn default() -> Self {
+            Self {
+                items: Err("no value supplied for items".to_string()),
+            }
+        }
+    }
+    impl Vec {
+        pub fn items<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
+            T::Error: std::fmt::Display,
+        {
+            self.items = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for items: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Vec> for super::Vec {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Vec) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                items: value.items?,
+            })
+        }
+    }
+    impl From<super::Vec> for Vec {
+        fn from(value: super::Vec) -> Self {
+            Self {
+                items: Ok(value.items),
+            }
+        }
     }
 }
 fn main() {}

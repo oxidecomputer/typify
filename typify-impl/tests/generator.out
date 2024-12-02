@@ -231,7 +231,7 @@ mod types {
     pub mod builder {
         #[derive(Clone, Debug)]
         pub struct AllTheTraits {
-            ok: ::std::result::Result<::std::string::String, String>,
+            ok: ::std::result::Result<::std::string::String, ::std::string::String>,
         }
         impl Default for AllTheTraits {
             fn default() -> Self {
@@ -267,8 +267,8 @@ mod types {
         }
         #[derive(Clone, Debug)]
         pub struct CompoundType {
-            value1: ::std::result::Result<::std::string::String, String>,
-            value2: ::std::result::Result<u64, String>,
+            value1: ::std::result::Result<::std::string::String, ::std::string::String>,
+            value2: ::std::result::Result<u64, ::std::string::String>,
         }
         impl Default for CompoundType {
             fn default() -> Self {
@@ -321,8 +321,8 @@ mod types {
         }
         #[derive(Clone, Debug)]
         pub struct Pair {
-            a: ::std::result::Result<super::StringEnum, String>,
-            b: ::std::result::Result<super::StringEnum, String>,
+            a: ::std::result::Result<super::StringEnum, ::std::string::String>,
+            b: ::std::result::Result<super::StringEnum, ::std::string::String>,
         }
         impl Default for Pair {
             fn default() -> Self {

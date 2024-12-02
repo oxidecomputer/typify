@@ -201,8 +201,8 @@ impl Veggies {
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Veggie {
-        veggie_like: ::std::result::Result<bool, String>,
-        veggie_name: ::std::result::Result<::std::string::String, String>,
+        veggie_like: ::std::result::Result<bool, ::std::string::String>,
+        veggie_name: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
     impl Default for Veggie {
         fn default() -> Self {
@@ -253,8 +253,9 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Veggies {
-        fruits: ::std::result::Result<::std::vec::Vec<::std::string::String>, String>,
-        vegetables: ::std::result::Result<::std::vec::Vec<super::Veggie>, String>,
+        fruits:
+            ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
+        vegetables: ::std::result::Result<::std::vec::Vec<super::Veggie>, ::std::string::String>,
     }
     impl Default for Veggies {
         fn default() -> Self {

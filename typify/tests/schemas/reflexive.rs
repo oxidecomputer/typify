@@ -59,4 +59,64 @@ impl From<&Node> for Node {
         value.clone()
     }
 }
+impl Node {
+    pub fn builder() -> builder::Node {
+        Default::default()
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct Node {
+        children: ::std::result::Result<::std::vec::Vec<super::Node>, ::std::string::String>,
+        value: ::std::result::Result<::std::option::Option<i64>, ::std::string::String>,
+    }
+    impl Default for Node {
+        fn default() -> Self {
+            Self {
+                children: Ok(Default::default()),
+                value: Ok(Default::default()),
+            }
+        }
+    }
+    impl Node {
+        pub fn children<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::vec::Vec<super::Node>>,
+            T::Error: std::fmt::Display,
+        {
+            self.children = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for children: {}", e));
+            self
+        }
+        pub fn value<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<::std::option::Option<i64>>,
+            T::Error: std::fmt::Display,
+        {
+            self.value = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for value: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Node> for super::Node {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Node) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                children: value.children?,
+                value: value.value?,
+            })
+        }
+    }
+    impl From<super::Node> for Node {
+        fn from(value: super::Node) -> Self {
+            Self {
+                children: Ok(value.children),
+                value: Ok(value.value),
+            }
+        }
+    }
+}
 fn main() {}

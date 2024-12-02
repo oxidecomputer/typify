@@ -69,6 +69,11 @@ impl From<&TestType> for TestType {
         value.clone()
     }
 }
+impl TestType {
+    pub fn builder() -> builder::TestType {
+        Default::default()
+    }
+}
 #[doc = "TestTypeWhereNot"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -176,6 +181,61 @@ impl<'de> ::serde::Deserialize<'de> for TestTypeWhyNot {
     {
         Self::try_from(<::std::string::String>::deserialize(deserializer)?)
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[doc = r" Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct TestType {
+        where_not: ::std::result::Result<super::TestTypeWhereNot, ::std::string::String>,
+        why_not: ::std::result::Result<super::TestTypeWhyNot, ::std::string::String>,
+    }
+    impl Default for TestType {
+        fn default() -> Self {
+            Self {
+                where_not: Err("no value supplied for where_not".to_string()),
+                why_not: Err("no value supplied for why_not".to_string()),
+            }
+        }
+    }
+    impl TestType {
+        pub fn where_not<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TestTypeWhereNot>,
+            T::Error: std::fmt::Display,
+        {
+            self.where_not = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for where_not: {}", e));
+            self
+        }
+        pub fn why_not<T>(mut self, value: T) -> Self
+        where
+            T: std::convert::TryInto<super::TestTypeWhyNot>,
+            T::Error: std::fmt::Display,
+        {
+            self.why_not = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for why_not: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestType> for super::TestType {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestType) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                where_not: value.where_not?,
+                why_not: value.why_not?,
+            })
+        }
+    }
+    impl From<super::TestType> for TestType {
+        fn from(value: super::TestType) -> Self {
+            Self {
+                where_not: Ok(value.where_not),
+                why_not: Ok(value.why_not),
+            }
+        }
     }
 }
 fn main() {}
