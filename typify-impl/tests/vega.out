@@ -22331,8 +22331,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant2FormatVariant0Subtype1"]
@@ -22839,8 +22842,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant2FormatVariant0Subtype1Type"]
@@ -23416,8 +23422,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant2FormatVariant0Subtype2Type"]
@@ -24002,8 +24011,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant2FormatVariant0Subtype3Type"]
@@ -25201,8 +25213,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant3FormatVariant0Subtype1"]
@@ -25709,8 +25724,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant3FormatVariant0Subtype1Type"]
@@ -26286,8 +26304,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant3FormatVariant0Subtype2Type"]
@@ -26872,8 +26893,11 @@ impl<'de> ::serde::Deserialize<'de>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "DataVariant3FormatVariant0Subtype3Type"]
@@ -31265,8 +31289,11 @@ impl<'de> ::serde::Deserialize<'de> for EncodeKey {
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "Everything"]
@@ -107497,8 +107524,11 @@ impl<'de> ::serde::Deserialize<'de> for TitleVariant1EncodeSubtype0Key {
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "TitleVariant1EncodeSubtype1"]

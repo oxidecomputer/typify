@@ -355,8 +355,11 @@ impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
@@ -428,8 +431,11 @@ impl<'de> ::serde::Deserialize<'de> for Name {
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 fn main() {}

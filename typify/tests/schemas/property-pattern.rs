@@ -130,8 +130,11 @@ impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey 
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::std::string::String>::deserialize(deserializer)?)
-            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 fn main() {}
