@@ -480,6 +480,11 @@ impl TypeSpacePatch {
         self.derives.push(derive.to_string());
         self
     }
+    /// Specify an additional attribute to apply to the patched type.
+    pub fn with_attr<S: ToString>(&mut self, attr: S) -> &mut Self {
+        self.attrs.push(attr.to_string());
+        self
+    }
 }
 
 impl TypeSpace {
