@@ -1155,7 +1155,7 @@ impl TypeEntry {
                     #[derive(Clone, Debug)]
                     pub struct #type_name {
                         #(
-                            #prop_name: ::std::result::Result<#prop_type_scoped, String>,
+                            #prop_name: ::std::result::Result<#prop_type_scoped, ::std::string::String>,
                         )*
                     }
 
