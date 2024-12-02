@@ -1490,10 +1490,9 @@ impl TypeEntry {
                         where
                             D: ::serde::Deserializer<'de>,
                         {
-                            Self::try_from(
-                                <#inner_type_name>::deserialize(deserializer)?,
-                            )
-                            .map_err(|e| {
+                            ::std::string::String::deserialize(deserializer)?
+                            .parse()
+                            .map_err(|e: self::error::ConversionError| {
                                 <D::Error as ::serde::de::Error>::custom(
                                     e.to_string(),
                                 )
