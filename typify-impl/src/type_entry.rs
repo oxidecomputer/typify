@@ -1855,10 +1855,7 @@ fn attrs_from_type_space(type_space: &TypeSpace) -> Vec<TokenStream> {
             .extra_attrs
             .clone()
             .into_iter()
-            .map(|attr| {
-                let s: proc_macro2::TokenStream = attr.parse().unwrap();
-                s
-            })
+            .map(|attr| attr.parse::<proc_macro2::TokenStream>().unwrap())
             .collect()
     };
     extra_attrs
