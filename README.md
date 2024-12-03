@@ -56,6 +56,13 @@ applied. Non-required properties with types that already have a default value
 (such as a `Vec<T>`) simply get the `#[serde(default)]` attribute (so you won't
 see e.g. `Option<Vec<T>>`).
 
+### IndexMap
+
+By default, Typify uses `HashMap` for objects. If you prefer to use `IndexMap`
+or some other object, you can specify this by calling `with_map_to_use` on the
+`TypeSpaceSettings` object, and providing the full path to the type you want to
+use. E.g. `::std::collections::HashMap` or `::indexmap::IndexMap`.
+
 ### OneOf
 
 The `oneOf` construct maps to a Rust enum. Typify maps this to the various

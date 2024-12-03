@@ -7,6 +7,7 @@ edition = "2021"
 regress = "0.10.1"
 serde = "1.0.215"
 serde_json = "1.0.133"
+indexmap = { version = "2.7.0", features = ["serde"]}
 
 [build-dependencies]
 ipnetwork = { version = "0.20.0", features = ["schemars"] }
@@ -14,4 +15,4 @@ prettyplease = "0.2.25"
 schemars = "0.8.21"
 serde = "1.0.215"
 syn = "2.0.90"
-typify = { path = "../typify" }
+typify = { path = "../typify"}

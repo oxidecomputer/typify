@@ -119,6 +119,7 @@ impl TypeSpace {
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
                 let map_type = self.make_map(
+                    self.settings.map_to_use.clone(),
                     sub_type_name,
                     &validation.property_names,
                     additional_properties,
@@ -205,6 +206,7 @@ impl TypeSpace {
 
     pub(crate) fn make_map(
         &mut self,
+        map_to_use: String,
         type_name: Option<String>,
         property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
@@ -237,7 +239,12 @@ impl TypeSpace {
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok(TypeEntryDetails::Map(key_id, value_id).into())
+        Ok(TypeEntryDetails::Map {
+            map_to_use,
+            key_id,
+            value_id,
+        }
+        .into())
     }
 
     /// Perform a schema conversion for a type that must be string-like.
@@ -381,7 +388,14 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
+        (
+            StructPropertyState::Optional,
+            TypeEntryDetails::Map {
+                map_to_use,
+                key_id,
+                value_id,
+            },
+        ) => {
             serde_options.push(quote! { default });
 
             let key_ty = type_space
@@ -400,8 +414,10 @@ pub(crate) fn generate_serde_attr(
                     skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
+                // Append ::is_empty to the string.
+                let map_to_use = format!("{}::is_empty", map_to_use);
                 serde_options.push(quote! {
-                    skip_serializing_if = "::std::collections::HashMap::is_empty"
+                    skip_serializing_if = #map_to_use
                 });
             }
             DefaultFunction::Default
@@ -458,7 +474,7 @@ fn has_default(
         // No default specified.
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Map { .. }), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
@@ -471,7 +487,9 @@ fn has_default(
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}
-        (Some(TypeEntryDetails::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
+        (Some(TypeEntryDetails::Map { .. }), Some(serde_json::Value::Object(m)))
+            if m.is_empty() =>
+        {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: false

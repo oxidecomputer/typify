@@ -49,3 +49,29 @@ fn test_unknown_format() {
         pancakes: String::new(),
     };
 }
+
+mod hashmap {
+    include!(concat!(env!("OUT_DIR"), "/codegen_hashmap.rs"));
+
+    #[test]
+    fn test_with_map() {
+        // Validate that a map is currently represented as a HashMap by default.
+        let _ = WithMap {
+            map: std::collections::HashMap::new(),
+        };
+    }
+}
+
+mod indexmap {
+    use indexmap::IndexMap;
+
+    include!(concat!(env!("OUT_DIR"), "/codegen_indexmap.rs"));
+
+    #[test]
+    fn test_with_map() {
+        // Validate that a map is represented as an IndexMap when requested.
+        let _ = WithMap {
+            map: IndexMap::new(),
+        };
+    }
+}

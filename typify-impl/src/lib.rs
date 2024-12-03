@@ -238,7 +238,7 @@ pub(crate) enum DefaultImpl {
 }
 
 /// Settings that alter type generation.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
@@ -246,10 +246,27 @@ pub struct TypeSpaceSettings {
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
+    map_to_use: String,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+impl Default for TypeSpaceSettings {
+    fn default() -> Self {
+        Self {
+            map_to_use: "::std::collections::HashMap".to_string(),
+            type_mod: Default::default(),
+            extra_derives: Default::default(),
+            struct_builder: Default::default(),
+            unknown_crates: Default::default(),
+            crates: Default::default(),
+            patch: Default::default(),
+            replace: Default::default(),
+            convert: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -452,6 +469,13 @@ impl TypeSpaceSettings {
                 rename: rename.cloned(),
             },
         );
+        self
+    }
+
+    /// Specify the map implementation to use in generated types. The default is
+    /// `std::collections::HashMap`.
+    pub fn with_map_to_use(&mut self, map_to_use: String) -> &mut Self {
+        self.map_to_use = map_to_use;
         self
     }
 }
@@ -970,9 +994,9 @@ impl<'a> Type<'a> {
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
             TypeEntryDetails::Vec(type_id) => TypeDetails::Vec(type_id.clone()),
-            TypeEntryDetails::Map(key_id, value_id) => {
-                TypeDetails::Map(key_id.clone(), value_id.clone())
-            }
+            TypeEntryDetails::Map {
+                key_id, value_id, ..
+            } => TypeDetails::Map(key_id.clone(), value_id.clone()),
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),

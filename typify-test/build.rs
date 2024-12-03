@@ -1,10 +1,10 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
 
 use schemars::schema::Schema;
 use schemars::JsonSchema;
 use serde::Serialize;
-use typify::TypeSpace;
+use typify::{TypeSpace, TypeSpaceSettings};
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -51,6 +51,12 @@ fn things() -> Things {
 #[derive(JsonSchema)]
 struct WithSet {
     set: HashSet<TestStruct>,
+}
+
+#[allow(dead_code)]
+#[derive(JsonSchema)]
+struct WithMap {
+    map: HashMap<String, TestStruct>,
 }
 
 struct LoginName;
@@ -111,6 +117,32 @@ fn main() {
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");
+    fs::write(out_file, contents).unwrap();
+
+    // Generate with HashMap
+    let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
+
+    WithMap::add(&mut type_space);
+
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push("codegen_hashmap.rs");
+    fs::write(out_file, contents).unwrap();
+
+    // Generate with IndexMap
+    let mut settings = TypeSpaceSettings::default();
+    settings.with_map_to_use("::indexmap::IndexMap".to_string());
+    let mut type_space = TypeSpace::new(&settings);
+
+    WithMap::add(&mut type_space);
+
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push("codegen_indexmap.rs");
     fs::write(out_file, contents).unwrap();
 }
 

@@ -146,7 +146,11 @@ pub(crate) enum TypeEntryDetails {
     Option(TypeId),
     Box(TypeId),
     Vec(TypeId),
-    Map(TypeId, TypeId),
+    Map {
+        map_to_use: String,
+        key_id: TypeId,
+        value_id: TypeId,
+    },
     Set(TypeId),
     Array(TypeId, usize),
     Tuple(Vec<TypeId>),
@@ -595,7 +599,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Vec(_)
-            | TypeEntryDetails::Map(_, _)
+            | TypeEntryDetails::Map { .. }
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
             }
@@ -1618,7 +1622,11 @@ impl TypeEntry {
                 quote! { ::std::vec::Vec<#item> }
             }
 
-            TypeEntryDetails::Map(key_id, value_id) => {
+            TypeEntryDetails::Map {
+                map_to_use,
+                key_id,
+                value_id,
+            } => {
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -1635,7 +1643,10 @@ impl TypeEntry {
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
-                    quote! { ::std::collections::HashMap<#key_ident, #value_ident> }
+
+                    let map_to_use = syn::parse_str::<syn::TypePath>(map_to_use)
+                        .expect("map type path wasn't valid");
+                    quote! { #map_to_use<#key_ident, #value_ident> }
                 }
             }
 
@@ -1746,7 +1757,7 @@ impl TypeEntry {
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
             | TypeEntryDetails::Vec(_)
-            | TypeEntryDetails::Map(..)
+            | TypeEntryDetails::Map { .. }
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Native(_)
@@ -1815,7 +1826,9 @@ impl TypeEntry {
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeEntryDetails::Vec(type_id) => format!("vec {}", type_id.0),
-            TypeEntryDetails::Map(key_id, value_id) => {
+            TypeEntryDetails::Map {
+                key_id, value_id, ..
+            } => {
                 format!("map {} {}", key_id.0, value_id.0)
             }
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
