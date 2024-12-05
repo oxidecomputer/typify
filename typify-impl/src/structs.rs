@@ -119,7 +119,7 @@ impl TypeSpace {
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
                 let map_type = self.make_map(
-                    self.settings.map_to_use.clone(),
+                    self.settings.map_type.clone(),
                     sub_type_name,
                     &validation.property_names,
                     additional_properties,

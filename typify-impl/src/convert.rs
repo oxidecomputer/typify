@@ -1200,7 +1200,7 @@ impl TypeSpace {
                     != Some(&Schema::Bool(false)) =>
             {
                 let type_entry = self.make_map(
-                    self.settings.map_to_use.clone(),
+                    self.settings.map_type.clone(),
                     type_name.into_option(),
                     property_names,
                     additional_properties,
@@ -1237,7 +1237,7 @@ impl TypeSpace {
                 ));
 
                 let type_entry = self.make_map(
-                    self.settings.map_to_use.clone(),
+                    self.settings.map_type.clone(),
                     type_name.into_option(),
                     &property_names,
                     &additional_properties,
@@ -1248,7 +1248,7 @@ impl TypeSpace {
 
             None => {
                 let type_entry = self.make_map(
-                    self.settings.map_to_use.clone(),
+                    self.settings.map_type.clone(),
                     type_name.into_option(),
                     &None,
                     &None,

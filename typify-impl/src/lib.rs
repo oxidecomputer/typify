@@ -246,7 +246,7 @@ pub struct TypeSpaceSettings {
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
-    map_to_use: String,
+    map_type: String,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
@@ -256,7 +256,7 @@ pub struct TypeSpaceSettings {
 impl Default for TypeSpaceSettings {
     fn default() -> Self {
         Self {
-            map_to_use: "::std::collections::HashMap".to_string(),
+            map_type: "::std::collections::HashMap".to_string(),
             type_mod: Default::default(),
             extra_derives: Default::default(),
             struct_builder: Default::default(),
@@ -472,10 +472,21 @@ impl TypeSpaceSettings {
         self
     }
 
-    /// Specify the map implementation to use in generated types. The default is
-    /// `std::collections::HashMap`.
-    pub fn with_map_to_use(&mut self, map_to_use: String) -> &mut Self {
-        self.map_to_use = map_to_use;
+    /// Specify the map-like type to be used in generated code.
+    ///
+    /// ## Requirements
+    ///
+    /// - The type must have an `is_empty` method that returns a boolean.
+    /// - The type must have two generic parameters, `K` and `V`.
+    ///
+    /// ## Examples
+    ///
+    /// - `::std::collections::HashMap`
+    /// - `::std::collections::BTreeMap`
+    /// - `::indexmap::IndexMap`
+    ///
+    pub fn with_map_type(&mut self, map_type: String) -> &mut Self {
+        self.map_type = map_type;
         self
     }
 }

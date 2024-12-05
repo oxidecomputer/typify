@@ -133,7 +133,7 @@ fn main() {
 
     // Generate with IndexMap
     let mut settings = TypeSpaceSettings::default();
-    settings.with_map_to_use("::indexmap::IndexMap".to_string());
+    settings.with_map_type("::indexmap::IndexMap".to_string());
     let mut type_space = TypeSpace::new(&settings);
 
     WithMap::add(&mut type_space);
