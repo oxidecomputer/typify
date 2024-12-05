@@ -666,6 +666,7 @@ impl TypeEntry {
         enum_details: &TypeEntryEnum,
         mut derive_set: BTreeSet<&str>,
     ) {
+        let extra_attrs = attrs_from_type_space(type_space);
         let TypeEntryEnum {
             name,
             rename,
@@ -986,6 +987,7 @@ impl TypeEntry {
             #doc
             #[derive(#(#derives),*)]
             #serde
+            #(#extra_attrs)*
             pub enum #type_name {
                 #(#variants_decl)*
             }
@@ -1023,6 +1025,7 @@ impl TypeEntry {
         } = struct_details;
         let doc = make_doc(name, description.as_ref(), schema);
 
+        let extra_attrs = attrs_from_type_space(type_space);
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
         if let Some(old_name) = rename {
@@ -1103,6 +1106,7 @@ impl TypeEntry {
                 #doc
                 #[derive(#(#derives),*)]
                 #serde
+                #(#extra_attrs)*
                 pub struct #type_name {
                     #(
                         #prop_doc
@@ -1232,6 +1236,7 @@ impl TypeEntry {
             schema: SchemaWrapper(schema),
         } = newtype_details;
         let doc = make_doc(name, description.as_ref(), schema);
+        let extra_attrs = attrs_from_type_space(type_space);
 
         let serde = rename.as_ref().map(|old_name| {
             quote! {
@@ -1530,6 +1535,7 @@ impl TypeEntry {
             #doc
             #[derive(#(#derives),*)]
             #serde
+            #(#extra_attrs)*
             pub struct #type_name(#vis #inner_type_name);
 
             impl ::std::ops::Deref for #type_name {
@@ -1846,6 +1852,19 @@ impl TypeEntry {
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
     }
+}
+
+fn attrs_from_type_space(type_space: &TypeSpace) -> Vec<TokenStream> {
+    let extra_attrs: Vec<TokenStream> = {
+        type_space
+            .settings
+            .extra_attrs
+            .clone()
+            .into_iter()
+            .map(|attr| attr.parse::<proc_macro2::TokenStream>().unwrap())
+            .collect()
+    };
+    extra_attrs
 }
 
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
