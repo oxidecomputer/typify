@@ -199,9 +199,7 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Map {
-                key_id, value_id, ..
-            } => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 if let serde_json::Value::Object(m) = default {
                     if m.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -622,7 +620,7 @@ fn all_props<'a>(
 
             // TODO Rather than an option, this should probably be something
             // that lets us say "explicit name" or "type to validate against"
-            TypeEntryDetails::Map { value_id, .. } => return vec![(None, value_id, false)],
+            TypeEntryDetails::Map(value_id, _) => return vec![(None, value_id, false)],
             _ => unreachable!(),
         };
 

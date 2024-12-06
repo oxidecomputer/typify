@@ -62,16 +62,24 @@ mod hashmap {
     }
 }
 
-mod indexmap {
-    use indexmap::IndexMap;
+mod custom_map {
+    #[allow(private_interfaces)]
+    #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+    pub struct CustomMap<K, V> {
+        key: K,
+        value: V,
+    }
 
-    include!(concat!(env!("OUT_DIR"), "/codegen_indexmap.rs"));
+    include!(concat!(env!("OUT_DIR"), "/codegen_custommap.rs"));
 
     #[test]
     fn test_with_map() {
-        // Validate that a map is represented as an IndexMap when requested.
+        // Validate that a map is represented as an CustomMap when requested.
         let _ = WithMap {
-            map: IndexMap::new(),
+            map: CustomMap {
+                key: String::new(),
+                value: String::new(),
+            },
         };
     }
 }

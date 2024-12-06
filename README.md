@@ -56,12 +56,17 @@ applied. Non-required properties with types that already have a default value
 (such as a `Vec<T>`) simply get the `#[serde(default)]` attribute (so you won't
 see e.g. `Option<Vec<T>>`).
 
-### IndexMap
+#### Alternate Map types
 
-By default, Typify uses `HashMap` for objects. If you prefer to use `IndexMap`
-or some other object, you can specify this by calling `with_map_to_use` on the
+By default, Typify uses `std::collections::HashMap` as described above.
+
+If you prefer to use `std::collections::BTreeMap` or map type from a crate such
+as `indexmap::IndexMap`, you can specify this by calling `with_map_type` on the
 `TypeSpaceSettings` object, and providing the full path to the type you want to
-use. E.g. `::std::collections::HashMap` or `::indexmap::IndexMap`.
+use. E.g. `::std::collections::BTreeMap` or `::indexmap::IndexMap`.
+
+See the documentation for `TypeSpaceSettings::with_map_type` for the
+requirements for a map type.
 
 ### OneOf
 

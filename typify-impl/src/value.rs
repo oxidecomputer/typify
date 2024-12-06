@@ -95,9 +95,7 @@ impl TypeEntry {
                     .collect::<Option<Vec<_>>>()?;
                 quote! { vec![#(#values),*] }
             }
-            TypeEntryDetails::Map {
-                key_id, value_id, ..
-            } => {
+            TypeEntryDetails::Map(key_id, value_id, ..) => {
                 let obj = value.as_object()?;
                 let key_ty = type_space.id_to_entry.get(key_id).unwrap();
                 let value_ty = type_space.id_to_entry.get(value_id).unwrap();

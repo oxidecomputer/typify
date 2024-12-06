@@ -476,14 +476,18 @@ impl TypeSpaceSettings {
     ///
     /// ## Requirements
     ///
-    /// - The type must have an `is_empty` method that returns a boolean.
-    /// - The type must have two generic parameters, `K` and `V`.
+    /// - Have an `is_empty` method that returns a boolean.
+    /// - Have two generic parameters, `K` and `V`.
+    /// - Have a [`std::fmt::Debug`] impl.
+    /// - Have a [`serde::Serialize``] impl.
+    /// - Have a [`serde::Deserialize``] impl.
+    /// - Have a [`Clone`] impl.
     ///
     /// ## Examples
     ///
-    /// - `::std::collections::HashMap`
-    /// - `::std::collections::BTreeMap`
-    /// - `::indexmap::IndexMap`
+    /// - [`::std::collections::HashMap`]
+    /// - [`::std::collections::BTreeMap`]
+    /// - [`::indexmap::IndexMap`]
     ///
     pub fn with_map_type(&mut self, map_type: String) -> &mut Self {
         self.map_type = map_type;
@@ -1005,9 +1009,9 @@ impl<'a> Type<'a> {
             // Compound types
             TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
             TypeEntryDetails::Vec(type_id) => TypeDetails::Vec(type_id.clone()),
-            TypeEntryDetails::Map {
-                key_id, value_id, ..
-            } => TypeDetails::Map(key_id.clone(), value_id.clone()),
+            TypeEntryDetails::Map(key_id, value_id) => {
+                TypeDetails::Map(key_id.clone(), value_id.clone())
+            }
             TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
             TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
             TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),

@@ -56,7 +56,7 @@ struct WithSet {
 #[allow(dead_code)]
 #[derive(JsonSchema)]
 struct WithMap {
-    map: HashMap<String, TestStruct>,
+    map: HashMap<String, String>,
 }
 
 struct LoginName;
@@ -131,9 +131,9 @@ fn main() {
     out_file.push("codegen_hashmap.rs");
     fs::write(out_file, contents).unwrap();
 
-    // Generate with IndexMap
+    // Generate with a custom map type to validate requirements.
     let mut settings = TypeSpaceSettings::default();
-    settings.with_map_type("::indexmap::IndexMap".to_string());
+    settings.with_map_type("CustomMap".to_string());
     let mut type_space = TypeSpace::new(&settings);
 
     WithMap::add(&mut type_space);
@@ -142,7 +142,7 @@ fn main() {
         prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
-    out_file.push("codegen_indexmap.rs");
+    out_file.push("codegen_custommap.rs");
     fs::write(out_file, contents).unwrap();
 }
 

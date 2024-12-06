@@ -146,11 +146,7 @@ pub(crate) enum TypeEntryDetails {
     Option(TypeId),
     Box(TypeId),
     Vec(TypeId),
-    Map {
-        map_to_use: String,
-        key_id: TypeId,
-        value_id: TypeId,
-    },
+    Map(TypeId, TypeId),
     Set(TypeId),
     Array(TypeId, usize),
     Tuple(Vec<TypeId>),
@@ -1622,11 +1618,8 @@ impl TypeEntry {
                 quote! { ::std::vec::Vec<#item> }
             }
 
-            TypeEntryDetails::Map {
-                map_to_use,
-                key_id,
-                value_id,
-            } => {
+            TypeEntryDetails::Map(key_id, value_id) => {
+                let map_to_use = &type_space.settings.map_type;
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -1826,9 +1819,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit => "()".to_string(),
             TypeEntryDetails::Option(type_id) => format!("option {}", type_id.0),
             TypeEntryDetails::Vec(type_id) => format!("vec {}", type_id.0),
-            TypeEntryDetails::Map {
-                key_id, value_id, ..
-            } => {
+            TypeEntryDetails::Map(key_id, value_id) => {
                 format!("map {} {}", key_id.0, value_id.0)
             }
             TypeEntryDetails::Set(type_id) => format!("set {}", type_id.0),
