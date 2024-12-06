@@ -595,7 +595,7 @@ impl TypeEntry {
             TypeEntryDetails::Unit
             | TypeEntryDetails::Option(_)
             | TypeEntryDetails::Vec(_)
-            | TypeEntryDetails::Map { .. }
+            | TypeEntryDetails::Map(_, _)
             | TypeEntryDetails::Set(_) => {
                 matches!(impl_name, TypeSpaceImpl::Default)
             }
@@ -1750,7 +1750,7 @@ impl TypeEntry {
             | TypeEntryDetails::Struct(_)
             | TypeEntryDetails::Newtype(_)
             | TypeEntryDetails::Vec(_)
-            | TypeEntryDetails::Map { .. }
+            | TypeEntryDetails::Map(..)
             | TypeEntryDetails::Set(_)
             | TypeEntryDetails::Box(_)
             | TypeEntryDetails::Native(_)

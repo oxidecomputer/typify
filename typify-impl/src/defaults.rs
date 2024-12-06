@@ -620,7 +620,7 @@ fn all_props<'a>(
 
             // TODO Rather than an option, this should probably be something
             // that lets us say "explicit name" or "type to validate against"
-            TypeEntryDetails::Map(value_id, _) => return vec![(None, value_id, false)],
+            TypeEntryDetails::Map(_, value_id) => return vec![(None, value_id, false)],
             _ => unreachable!(),
         };
 

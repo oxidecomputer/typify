@@ -21,6 +21,7 @@ syn = { version = "2.0.90", features = ["full"] }
 thiserror = "2.0.3"
 unicode-ident = "1.0.14"
 
+
 [dev-dependencies]
 env_logger = "0.10.2"
 expectorate = "1.1.0"

@@ -460,7 +460,7 @@ fn has_default(
         // No default specified.
         (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map { .. }), None) => StructPropertyState::Optional,
+        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
         (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
@@ -473,9 +473,7 @@ fn has_default(
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}
-        (Some(TypeEntryDetails::Map { .. }), Some(serde_json::Value::Object(m)))
-            if m.is_empty() =>
-        {
+        (Some(TypeEntryDetails::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: false
