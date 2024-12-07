@@ -60,7 +60,7 @@ see e.g. `Option<Vec<T>>`).
 
 By default, Typify uses `std::collections::HashMap` as described above.
 
-If you prefer to use `std::collections::BTreeMap` or map type from a crate such
+If you prefer to use `std::collections::BTreeMap` or a map type from a crate such
 as `indexmap::IndexMap`, you can specify this by calling `with_map_type` on the
 `TypeSpaceSettings` object, and providing the full path to the type you want to
 use. E.g. `::std::collections::BTreeMap` or `::indexmap::IndexMap`.
