@@ -37,7 +37,10 @@
       }
     },
     "fruit": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "fruit-or-veg": {
       "oneOf": [

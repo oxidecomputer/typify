@@ -15,17 +15,33 @@ fn test_schemas() {
     env_logger::init();
     // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
-        validate_schema(entry.unwrap()).unwrap();
+        let entry = entry.unwrap();
+        let out_path = entry.clone().with_extension("rs");
+        validate_schema(entry, out_path, &mut TypeSpaceSettings::default()).unwrap();
     }
 
     // Make sure it all compiles.
     trybuild::TestCases::new().pass("tests/schemas/*.rs");
 }
 
-fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
-    let mut out_path = path.clone();
-    out_path.set_extension("rs");
+/// Ensure that setting the global config to use a custom map type works.
+#[test]
+fn test_custom_map() {
+    validate_schema(
+        "tests/schemas/maps.json".into(),
+        "tests/schemas/maps_custom.rs".into(),
+        TypeSpaceSettings::default().with_map_type("std::collections::BTreeMap".to_string()),
+    )
+    .unwrap();
 
+    trybuild::TestCases::new().pass("tests/schemas/maps_custom.rs");
+}
+
+fn validate_schema(
+    path: std::path::PathBuf,
+    out_path: std::path::PathBuf,
+    typespace: &mut TypeSpaceSettings,
+) -> Result<(), Box<dyn Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
@@ -40,7 +56,7 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
     let schema = serde_json::from_value(schema_raw).unwrap();
 
     let mut type_space = TypeSpace::new(
-        TypeSpaceSettings::default()
+        typespace
             .with_replacement(
                 "HandGeneratedType",
                 "String",

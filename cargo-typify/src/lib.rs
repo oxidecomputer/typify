@@ -46,6 +46,10 @@ pub struct CliArgs {
     #[arg(long = "crate")]
     crates: Vec<CrateSpec>,
 
+    /// Specify the map like type to use.
+    #[arg(long = "map-type")]
+    map_type: Option<String>,
+
     /// Specify the policy unknown crates found in schemas with the
     /// x-rust-type extension.
     #[arg(
@@ -151,6 +155,10 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         settings.with_crate(name, version.clone(), rename.as_ref());
     }
 
+    if let Some(map_type) = &args.map_type {
+        settings.with_map_type(map_type.clone());
+    }
+
     if let Some(unknown_crates) = &args.unknown_crates {
         let unknown_crates = match unknown_crates.as_str() {
             "generate" => UnknownPolicy::Generate,
@@ -192,6 +200,7 @@ mod tests {
             output: Some(PathBuf::from("-")),
             no_builder: false,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 
@@ -207,6 +216,7 @@ mod tests {
             output: Some(PathBuf::from("some_file.rs")),
             no_builder: false,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 
@@ -222,10 +232,30 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
+    }
+
+    #[test]
+    fn test_use_btree_map() {
+        let args = CliArgs {
+            input: PathBuf::from("input.json"),
+            builder: false,
+            additional_derives: vec![],
+            output: None,
+            no_builder: false,
+            crates: vec![],
+            map_type: Some("::std::collections::BTreeMap".to_string()),
+            unknown_crates: Default::default(),
+        };
+
+        assert_eq!(
+            args.map_type,
+            Some("::std::collections::BTreeMap".to_string())
+        );
     }
 
     #[test]
@@ -237,6 +267,7 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 
@@ -252,6 +283,7 @@ mod tests {
             output: None,
             no_builder: true,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 
@@ -267,6 +299,7 @@ mod tests {
             output: None,
             no_builder: false,
             crates: vec![],
+            map_type: None,
             unknown_crates: Default::default(),
         };
 

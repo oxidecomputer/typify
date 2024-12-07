@@ -237,8 +237,19 @@ pub(crate) enum DefaultImpl {
     NZU64,
 }
 
+/// Type name to use in generated code.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(transparent)]
+pub struct MapType(pub String);
+
+impl Default for MapType {
+    fn default() -> Self {
+        Self("::std::collections::HashMap".to_string())
+    }
+}
+
 /// Settings that alter type generation.
-#[derive(Debug, Default, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
@@ -246,6 +257,7 @@ pub struct TypeSpaceSettings {
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
+    map_type: MapType,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
@@ -452,6 +464,28 @@ impl TypeSpaceSettings {
                 rename: rename.cloned(),
             },
         );
+        self
+    }
+
+    /// Specify the map-like type to be used in generated code.
+    ///
+    /// ## Requirements
+    ///
+    /// - Have an `is_empty` method that returns a boolean.
+    /// - Have two generic parameters, `K` and `V`.
+    /// - Have a [`std::fmt::Debug`] impl.
+    /// - Have a [`serde::Serialize``] impl.
+    /// - Have a [`serde::Deserialize``] impl.
+    /// - Have a [`Clone`] impl.
+    ///
+    /// ## Examples
+    ///
+    /// - [`::std::collections::HashMap`]
+    /// - [`::std::collections::BTreeMap`]
+    /// - [`::indexmap::IndexMap`]
+    ///
+    pub fn with_map_type(&mut self, map_type: String) -> &mut Self {
+        self.map_type = MapType(map_type);
         self
     }
 }
