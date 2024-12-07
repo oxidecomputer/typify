@@ -35,21 +35,24 @@ pub mod error {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"object\""]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"additionalProperties\": {"]
+#[doc = "    \"type\": \"string\""]
+#[doc = "  }"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
-pub struct Fruit(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
+pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
 impl ::std::ops::Deref for Fruit {
-    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
+    type Target = ::std::collections::HashMap<::std::string::String, ::std::string::String>;
+    fn deref(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.0
     }
 }
-impl From<Fruit> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
+impl From<Fruit> for ::std::collections::HashMap<::std::string::String, ::std::string::String> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -59,8 +62,10 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for Fruit {
-    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
+impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>> for Fruit {
+    fn from(
+        value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) -> Self {
         Self(value)
     }
 }

@@ -237,8 +237,19 @@ pub(crate) enum DefaultImpl {
     NZU64,
 }
 
+/// Type name to use in generated code.
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(transparent)]
+pub struct MapType(pub String);
+
+impl Default for MapType {
+    fn default() -> Self {
+        Self("::std::collections::HashMap".to_string())
+    }
+}
+
 /// Settings that alter type generation.
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
@@ -246,27 +257,11 @@ pub struct TypeSpaceSettings {
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
-    map_type: String,
+    map_type: MapType,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
-}
-
-impl Default for TypeSpaceSettings {
-    fn default() -> Self {
-        Self {
-            map_type: "::std::collections::HashMap".to_string(),
-            type_mod: Default::default(),
-            extra_derives: Default::default(),
-            struct_builder: Default::default(),
-            unknown_crates: Default::default(),
-            crates: Default::default(),
-            patch: Default::default(),
-            replace: Default::default(),
-            convert: Default::default(),
-        }
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -490,7 +485,7 @@ impl TypeSpaceSettings {
     /// - [`::indexmap::IndexMap`]
     ///
     pub fn with_map_type(&mut self, map_type: String) -> &mut Self {
-        self.map_type = map_type;
+        self.map_type = MapType(map_type);
         self
     }
 }

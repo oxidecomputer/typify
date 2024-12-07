@@ -24,6 +24,9 @@ Options:
       --crate <CRATES>
           Specify each crate@version that can be assumed to be in use for types found in the schema with the x-rust-type extension
 
+      --map-type <MAP_TYPE>
+          Specify the map like type to use
+
       --unknown-crates <UNKNOWN_CRATES>
           Specify the policy unknown crates found in schemas with the x-rust-type extension
           

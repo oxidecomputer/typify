@@ -12,7 +12,9 @@ use serde::Deserialize;
 use serde_tokenstream::ParseWrapper;
 use syn::LitStr;
 use token_utils::TypeAndImpls;
-use typify_impl::{CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy};
+use typify_impl::{
+    CrateVers, MapType, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
+};
 
 mod token_utils;
 
@@ -81,6 +83,8 @@ struct MacroSettings {
     unknown_crates: UnknownPolicy,
     #[serde(default)]
     crates: HashMap<CrateName, MacroCrateSpec>,
+    #[serde(default)]
+    map_type: MapType,
 
     #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
@@ -188,6 +192,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             convert,
             unknown_crates,
             crates,
+            map_type,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
@@ -217,6 +222,8 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             },
         );
         settings.with_unknown_crates(unknown_crates);
+
+        settings.with_map_type(map_type.0);
 
         (schema.into_inner(), settings)
     };

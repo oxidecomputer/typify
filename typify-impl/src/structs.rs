@@ -401,7 +401,7 @@ pub(crate) fn generate_serde_attr(
                     skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
-                let is_empty = format!("{}::is_empty", map_to_use);
+                let is_empty = format!("{}::is_empty", map_to_use.0);
                 serde_options.push(quote! {
                     skip_serializing_if = #is_empty
                 });
