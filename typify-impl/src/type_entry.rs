@@ -1636,9 +1636,8 @@ impl TypeEntry {
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
+                    let map_to_use = &map_to_use.0;
 
-                    let map_to_use = syn::parse_str::<syn::TypePath>(&map_to_use.0)
-                        .expect("map type path wasn't valid");
                     quote! { #map_to_use<#key_ident, #value_ident> }
                 }
             }

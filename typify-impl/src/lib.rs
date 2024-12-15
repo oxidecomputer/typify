@@ -238,13 +238,60 @@ pub(crate) enum DefaultImpl {
 }
 
 /// Type name to use in generated code.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(transparent)]
-pub struct MapType(pub String);
+#[derive(Clone)]
+pub struct MapType(pub syn::Type);
+
+impl MapType {
+    /// Create a new MapType from a [`str`].
+    pub fn new(s: &str) -> Self {
+        let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
+        Self(map_type)
+    }
+}
 
 impl Default for MapType {
     fn default() -> Self {
-        Self("::std::collections::HashMap".to_string())
+        Self::new("::std::collections::HashMap")
+    }
+}
+
+impl std::fmt::Debug for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "MapType({})", self.0.to_token_stream())
+    }
+}
+
+impl std::fmt::Display for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.to_token_stream().fmt(f)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for MapType {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Ok(Self::new(s))
+    }
+}
+
+impl From<String> for MapType {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
+
+impl From<&str> for MapType {
+    fn from(s: &str) -> Self {
+        Self::new(s)
+    }
+}
+
+impl From<syn::Type> for MapType {
+    fn from(t: syn::Type) -> Self {
+        Self(t)
     }
 }
 
@@ -484,8 +531,8 @@ impl TypeSpaceSettings {
     /// - [`::std::collections::BTreeMap`]
     /// - [`::indexmap::IndexMap`]
     ///
-    pub fn with_map_type(&mut self, map_type: String) -> &mut Self {
-        self.map_type = MapType(map_type);
+    pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
+        self.map_type = map_type.into();
         self
     }
 }

@@ -223,7 +223,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         );
         settings.with_unknown_crates(unknown_crates);
 
-        settings.with_map_type(map_type.0);
+        settings.with_map_type(map_type);
 
         (schema.into_inner(), settings)
     };
