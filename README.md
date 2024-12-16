@@ -56,6 +56,22 @@ applied. Non-required properties with types that already have a default value
 (such as a `Vec<T>`) simply get the `#[serde(default)]` attribute (so you won't
 see e.g. `Option<Vec<T>>`).
 
+#### Alternate Map types
+
+By default, Typify uses `std::collections::HashMap` as described above.
+
+If you prefer to use `std::collections::BTreeMap` or a map type from a crate such
+as `indexmap::IndexMap`, you can specify this by calling `with_map_type` on the
+`TypeSpaceSettings` object, and providing the full path to the type you want to
+use. E.g. `::std::collections::BTreeMap` or `::indexmap::IndexMap`.
+
+Note that for a custom map type to work you must have `T` defined to generate
+a struct as described in [Objects](#objects). If `T` is not defined, typify
+will generate code using a `serde_json::Map<String, serde_json::Value>` instead.
+
+See the documentation for `TypeSpaceSettings::with_map_type` for the
+requirements for a map type.
+
 ### OneOf
 
 The `oneOf` construct maps to a Rust enum. Typify maps this to the various

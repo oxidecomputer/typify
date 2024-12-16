@@ -384,6 +384,7 @@ pub(crate) fn generate_serde_attr(
         (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
             serde_options.push(quote! { default });
 
+            let map_to_use = &type_space.settings.map_type;
             let key_ty = type_space
                 .id_to_entry
                 .get(key_id)
@@ -400,8 +401,9 @@ pub(crate) fn generate_serde_attr(
                     skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
+                let is_empty = format!("{}::is_empty", map_to_use);
                 serde_options.push(quote! {
-                    skip_serializing_if = "::std::collections::HashMap::is_empty"
+                    skip_serializing_if = #is_empty
                 });
             }
             DefaultFunction::Default

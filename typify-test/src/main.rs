@@ -49,3 +49,37 @@ fn test_unknown_format() {
         pancakes: String::new(),
     };
 }
+
+mod hashmap {
+    include!(concat!(env!("OUT_DIR"), "/codegen_hashmap.rs"));
+
+    #[test]
+    fn test_with_map() {
+        // Validate that a map is currently represented as a HashMap by default.
+        let _ = WithMap {
+            map: std::collections::HashMap::new(),
+        };
+    }
+}
+
+mod custom_map {
+    #[allow(private_interfaces)]
+    #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+    pub struct CustomMap<K, V> {
+        key: K,
+        value: V,
+    }
+
+    include!(concat!(env!("OUT_DIR"), "/codegen_custommap.rs"));
+
+    #[test]
+    fn test_with_map() {
+        // Validate that a map is represented as an CustomMap when requested.
+        let _ = WithMap {
+            map: CustomMap {
+                key: String::new(),
+                value: String::new(),
+            },
+        };
+    }
+}
