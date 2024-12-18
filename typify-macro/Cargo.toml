@@ -14,7 +14,7 @@ proc-macro = true
 proc-macro2 = "1.0.89"
 quote = "1.0.37"
 schemars = "0.8.21"
-semver = { version = "1.0.23", features = ["serde"] }
+semver = { version = "1.0.24", features = ["serde"] }
 serde = "1.0.216"
 serde_json = "1.0.133"
 serde_tokenstream = "0.2.2"
