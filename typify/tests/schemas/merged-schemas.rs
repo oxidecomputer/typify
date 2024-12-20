@@ -1,3 +1,4 @@
+#![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -441,6 +442,61 @@ impl std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
         value.parse()
     }
 }
+#[doc = "MergeEmpty"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"action\": {"]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"foo\""]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"token\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"additionalProperties\": false"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"action\": {"]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"bar\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"token\": {"]
+#[doc = "        \"type\": \"integer\""]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"properties conflict but are not required so we end up with an empty object\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(deny_unknown_fields)]
+pub struct MergeEmpty {}
+impl From<&MergeEmpty> for MergeEmpty {
+    fn from(value: &MergeEmpty) -> Self {
+        value.clone()
+    }
+}
+impl MergeEmpty {
+    pub fn builder() -> builder::MergeEmpty {
+        Default::default()
+    }
+}
 #[doc = "NarrowNumber"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -870,6 +926,9 @@ impl From<&Unsatisfiable1> for Unsatisfiable1 {
 #[doc = "  \"allOf\": ["]
 #[doc = "    {"]
 #[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"action\""]
+#[doc = "      ],"]
 #[doc = "      \"properties\": {"]
 #[doc = "        \"action\": {"]
 #[doc = "          \"type\": \"string\","]
@@ -892,21 +951,28 @@ impl From<&Unsatisfiable1> for Unsatisfiable1 {
 #[doc = "      },"]
 #[doc = "      \"additionalProperties\": false"]
 #[doc = "    }"]
-#[doc = "  ]"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"can't be satisfied because required properties conflict in their enum values\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 #[serde(deny_unknown_fields)]
-pub struct Unsatisfiable2 {}
+pub enum Unsatisfiable2 {}
 impl From<&Unsatisfiable2> for Unsatisfiable2 {
     fn from(value: &Unsatisfiable2) -> Self {
         value.clone()
-    }
-}
-impl Unsatisfiable2 {
-    pub fn builder() -> builder::Unsatisfiable2 {
-        Default::default()
     }
 }
 #[doc = "Unsatisfiable3"]
@@ -921,26 +987,37 @@ impl Unsatisfiable2 {
 #[doc = "    },"]
 #[doc = "    {"]
 #[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"action\""]
+#[doc = "      ],"]
 #[doc = "      \"properties\": {"]
 #[doc = "        \"action\": {"]
 #[doc = "          \"$ref\": \"#/definitions/unsatisfiable-3-b\""]
 #[doc = "        }"]
 #[doc = "      }"]
 #[doc = "    }"]
-#[doc = "  ]"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"tests a complex merge that can't be satisfied; it's basically the same as unsatisfiable-2, but is broken into multiple pieces\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct Unsatisfiable3 {}
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum Unsatisfiable3 {}
 impl From<&Unsatisfiable3> for Unsatisfiable3 {
     fn from(value: &Unsatisfiable3) -> Self {
         value.clone()
-    }
-}
-impl Unsatisfiable3 {
-    pub fn builder() -> builder::Unsatisfiable3 {
-        Default::default()
     }
 }
 #[doc = "Unsatisfiable3A"]
@@ -1552,6 +1629,27 @@ pub mod builder {
         }
     }
     #[derive(Clone, Debug)]
+    pub struct MergeEmpty {}
+    impl Default for MergeEmpty {
+        fn default() -> Self {
+            Self {}
+        }
+    }
+    impl MergeEmpty {}
+    impl ::std::convert::TryFrom<MergeEmpty> for super::MergeEmpty {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            _value: MergeEmpty,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {})
+        }
+    }
+    impl From<super::MergeEmpty> for MergeEmpty {
+        fn from(_value: super::MergeEmpty) -> Self {
+            Self {}
+        }
+    }
+    #[derive(Clone, Debug)]
     pub struct OrderDependentMerge {
         bar: ::std::result::Result<
             ::std::option::Option<::serde_json::Value>,
@@ -1809,48 +1907,6 @@ pub mod builder {
     impl From<super::TrimFat> for TrimFat {
         fn from(value: super::TrimFat) -> Self {
             Self { a: Ok(value.a) }
-        }
-    }
-    #[derive(Clone, Debug)]
-    pub struct Unsatisfiable2 {}
-    impl Default for Unsatisfiable2 {
-        fn default() -> Self {
-            Self {}
-        }
-    }
-    impl Unsatisfiable2 {}
-    impl ::std::convert::TryFrom<Unsatisfiable2> for super::Unsatisfiable2 {
-        type Error = super::error::ConversionError;
-        fn try_from(
-            value: Unsatisfiable2,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
-            Ok(Self {})
-        }
-    }
-    impl From<super::Unsatisfiable2> for Unsatisfiable2 {
-        fn from(value: super::Unsatisfiable2) -> Self {
-            Self {}
-        }
-    }
-    #[derive(Clone, Debug)]
-    pub struct Unsatisfiable3 {}
-    impl Default for Unsatisfiable3 {
-        fn default() -> Self {
-            Self {}
-        }
-    }
-    impl Unsatisfiable3 {}
-    impl ::std::convert::TryFrom<Unsatisfiable3> for super::Unsatisfiable3 {
-        type Error = super::error::ConversionError;
-        fn try_from(
-            value: Unsatisfiable3,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
-            Ok(Self {})
-        }
-    }
-    impl From<super::Unsatisfiable3> for Unsatisfiable3 {
-        fn from(value: super::Unsatisfiable3) -> Self {
-            Self {}
         }
     }
     #[derive(Clone, Debug)]

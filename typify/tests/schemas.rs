@@ -87,6 +87,8 @@ fn validate_schema(
 
     // Make a file with the generated code.
     let code = quote! {
+        #![deny(warnings)]
+
         #type_space
 
         fn main() {}

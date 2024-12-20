@@ -226,6 +226,7 @@
       ]
     },
     "unsatisfiable-2": {
+      "$comment": "can't be satisfied because required properties conflict in their enum values",
       "allOf": [
         {
           "type": "object",
@@ -237,6 +238,9 @@
               ]
             }
           },
+          "required": [
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -254,6 +258,7 @@
       ]
     },
     "unsatisfiable-3": {
+      "$comment": "tests a complex merge that can't be satisfied; it's basically the same as unsatisfiable-2, but is broken into multiple pieces",
       "allOf": [
         {
           "$ref": "#/definitions/unsatisfiable-3-a"
@@ -264,7 +269,10 @@
             "action": {
               "$ref": "#/definitions/unsatisfiable-3-b"
             }
-          }
+          },
+          "required": [
+            "action"
+          ]
         }
       ]
     },
@@ -445,6 +453,41 @@
               "type": "string"
             }
           }
+        }
+      ]
+    },
+    "merge-empty": {
+      "$comment": "properties conflict but are not required so we end up with an empty object",
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "foo"
+              ]
+            },
+            "token": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "bar"
+              ]
+            }
+          },
+          "token": {
+            "type": "integer"
+          },
+          "additionalProperties": false
         }
       ]
     }
