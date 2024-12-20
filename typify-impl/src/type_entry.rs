@@ -1148,6 +1148,14 @@ impl TypeEntry {
                 },
             );
 
+            // If there are no properties, all of this is kind of pointless,
+            // but at least lets avoid the lint warning.
+            let value_ident = if prop_name.is_empty() {
+                quote! { _value }
+            } else {
+                quote! { value }
+            };
+
             output.add_item(
                 OutputSpaceMod::Builder,
                 name,
@@ -1189,7 +1197,7 @@ impl TypeEntry {
                     {
                         type Error = super::error::ConversionError;
 
-                        fn try_from(value: #type_name)
+                        fn try_from(#value_ident: #type_name)
                             -> ::std::result::Result<Self, super::error::ConversionError>
                         {
                             Ok(Self {
@@ -1202,7 +1210,7 @@ impl TypeEntry {
 
                     // Construct a builder from the item.
                     impl From<super::#type_name> for #type_name {
-                        fn from(value: super::#type_name) -> Self {
+                        fn from(#value_ident: super::#type_name) -> Self {
                             Self {
                                 #(
                                     #prop_name: Ok(value.#prop_name),
