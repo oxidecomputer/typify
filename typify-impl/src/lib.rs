@@ -237,8 +237,66 @@ pub(crate) enum DefaultImpl {
     NZU64,
 }
 
+/// Type name to use in generated code.
+#[derive(Clone)]
+pub struct MapType(pub syn::Type);
+
+impl MapType {
+    /// Create a new MapType from a [`str`].
+    pub fn new(s: &str) -> Self {
+        let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
+        Self(map_type)
+    }
+}
+
+impl Default for MapType {
+    fn default() -> Self {
+        Self::new("::std::collections::HashMap")
+    }
+}
+
+impl std::fmt::Debug for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "MapType({})", self.0.to_token_stream())
+    }
+}
+
+impl std::fmt::Display for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.to_token_stream().fmt(f)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for MapType {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Ok(Self::new(s))
+    }
+}
+
+impl From<String> for MapType {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
+
+impl From<&str> for MapType {
+    fn from(s: &str) -> Self {
+        Self::new(s)
+    }
+}
+
+impl From<syn::Type> for MapType {
+    fn from(t: syn::Type) -> Self {
+        Self(t)
+    }
+}
+
 /// Settings that alter type generation.
-#[derive(Debug, Default, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
@@ -246,6 +304,7 @@ pub struct TypeSpaceSettings {
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
+    map_type: MapType,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
@@ -452,6 +511,28 @@ impl TypeSpaceSettings {
                 rename: rename.cloned(),
             },
         );
+        self
+    }
+
+    /// Specify the map-like type to be used in generated code.
+    ///
+    /// ## Requirements
+    ///
+    /// - Have an `is_empty` method that returns a boolean.
+    /// - Have two generic parameters, `K` and `V`.
+    /// - Have a [`std::fmt::Debug`] impl.
+    /// - Have a [`serde::Serialize``] impl.
+    /// - Have a [`serde::Deserialize``] impl.
+    /// - Have a [`Clone`] impl.
+    ///
+    /// ## Examples
+    ///
+    /// - [`::std::collections::HashMap`]
+    /// - [`::std::collections::BTreeMap`]
+    /// - [`::indexmap::IndexMap`]
+    ///
+    pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
+        self.map_type = map_type.into();
         self
     }
 }

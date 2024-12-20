@@ -43,14 +43,14 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
+pub struct Fruit(pub ::std::collections::BTreeMap<::std::string::String, ::std::string::String>);
 impl ::std::ops::Deref for Fruit {
-    type Target = ::std::collections::HashMap<::std::string::String, ::std::string::String>;
-    fn deref(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    type Target = ::std::collections::BTreeMap<::std::string::String, ::std::string::String>;
+    fn deref(&self) -> &::std::collections::BTreeMap<::std::string::String, ::std::string::String> {
         &self.0
     }
 }
-impl From<Fruit> for ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+impl From<Fruit> for ::std::collections::BTreeMap<::std::string::String, ::std::string::String> {
     fn from(value: Fruit) -> Self {
         value.0
     }
@@ -60,9 +60,9 @@ impl From<&Fruit> for Fruit {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>> for Fruit {
+impl From<::std::collections::BTreeMap<::std::string::String, ::std::string::String>> for Fruit {
     fn from(
-        value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+        value: ::std::collections::BTreeMap<::std::string::String, ::std::string::String>,
     ) -> Self {
         Self(value)
     }

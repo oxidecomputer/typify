@@ -1619,6 +1619,7 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Map(key_id, value_id) => {
+                let map_to_use = &type_space.settings.map_type;
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -1635,7 +1636,9 @@ impl TypeEntry {
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
-                    quote! { ::std::collections::HashMap<#key_ident, #value_ident> }
+                    let map_to_use = &map_to_use.0;
+
+                    quote! { #map_to_use<#key_ident, #value_ident> }
                 }
             }
 

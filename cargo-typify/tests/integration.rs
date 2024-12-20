@@ -158,3 +158,29 @@ fn test_help() {
     assert!(output.status.success());
     assert_contents("tests/outputs/help.txt", &actual);
 }
+
+#[test]
+fn test_btree_map() {
+    use assert_cmd::Command;
+
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let temp = TempDir::new("cargo-typify").unwrap();
+    let output_file = temp.path().join("output.rs");
+
+    let mut cmd = Command::cargo_bin("cargo-typify").unwrap();
+    cmd.args([
+        "typify",
+        input,
+        "--map-type",
+        "::std::collections::BTreeMap",
+        "--output",
+        output_file.to_str().unwrap(),
+    ])
+    .assert()
+    .success();
+
+    let actual = std::fs::read_to_string(output_file).unwrap();
+
+    assert_contents("tests/outputs/custom_btree_map.rs", &actual);
+}
