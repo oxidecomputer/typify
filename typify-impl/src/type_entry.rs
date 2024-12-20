@@ -1149,7 +1149,7 @@ impl TypeEntry {
             );
 
             // If there are no properties, all of this is kind of pointless,
-            // but at least lets avoid the lint warning.
+            // but at least this lets us avoid the lint warning.
             let value_ident = if prop_name.is_empty() {
                 quote! { _value }
             } else {
