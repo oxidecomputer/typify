@@ -33,3 +33,4 @@ schema = "0.1.0"
 schemars = { version = "0.8.21", features = ["uuid1", "impl_json_schema"] }
 syn = { version = "2.0.90", features = ["full", "extra-traits", "visit-mut"] }
 uuid = "1.11.0"
+typify-macro = { path = "../typify-macro" }

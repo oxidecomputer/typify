@@ -57,6 +57,9 @@ pub struct CliArgs {
         value_parser = ["generate", "allow", "deny"]
     )]
     unknown_crates: Option<String>,
+
+    #[arg(short = 'D', long, default_value = "false")]
+    distinct_definitions: bool,
 }
 
 impl CliArgs {
@@ -170,6 +173,8 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     }
 
     let mut type_space = TypeSpace::new(&settings);
+    type_space.with_path(&args.input);
+    type_space.distinct_defs(args.distinct_definitions);
     type_space
         .add_root_schema(schema)
         .wrap_err("Schema conversion failed")?;
@@ -202,6 +207,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert_eq!(args.output_path(), None);
@@ -218,6 +224,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -234,6 +241,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -250,6 +258,7 @@ mod tests {
             crates: vec![],
             map_type: Some("::std::collections::BTreeMap".to_string()),
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert_eq!(
@@ -269,6 +278,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert!(args.use_builder());
@@ -285,6 +295,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert!(!args.use_builder());
@@ -301,6 +312,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            distinct_definitions: false,
         };
 
         assert!(args.use_builder());

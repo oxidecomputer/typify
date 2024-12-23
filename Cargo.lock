@@ -1539,6 +1539,7 @@ dependencies = [
  "serde_json",
  "syn 2.0.90",
  "thiserror 2.0.9",
+ "typify-macro",
  "unicode-ident",
  "uuid",
 ]

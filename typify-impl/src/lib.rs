@@ -864,6 +864,7 @@ impl TypeSpace {
         // recursively fetch external references from definitions
         let mut external_references = BTreeMap::new();
 
+        dbg!(&self.file_path);
         for (_, def) in &defs {
             fetch_external_definitions(
                 &schema,
@@ -1217,6 +1218,7 @@ fn fetch_external_definitions(
                 .collect::<Vec<_>>(); // Process the fragment part of the reference
             let relpath =
                 diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str()).unwrap(); // Determine the relative path
+            dbg!(&base_path);
             let file_path = base_path.parent().unwrap().join(&relpath); // Construct the file path
             let content = std::fs::read_to_string(&file_path).expect(&format!(
                 "Failed to open input file: {}",

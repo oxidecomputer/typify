@@ -59,7 +59,7 @@ mod token_utils;
 /// - `replace`: optional map from definition name to a replacement type. This
 ///   may be used to skip generation of the named type and use a existing Rust
 ///   type.
-///   
+///
 /// - `convert`: optional map from a JSON schema type defined in `$defs` to a
 ///   replacement type. This may be used to skip generation of the schema and
 ///   use an existing Rust type.
