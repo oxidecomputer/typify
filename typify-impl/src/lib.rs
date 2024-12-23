@@ -1258,7 +1258,7 @@ fn fetch_defenition(
     if fragment.is_empty() {
         return Schema::Object(base_schema.schema.clone());
     }
-    let definition_schema = if fragment[0] == "definitions" {
+    let definition_schema = if ["definitions", "$defs"].contains(&fragment[0].as_str()) {
         base_schema
             .definitions
             .get(
