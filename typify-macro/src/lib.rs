@@ -59,7 +59,7 @@ mod token_utils;
 /// - `replace`: optional map from definition name to a replacement type. This
 ///   may be used to skip generation of the named type and use a existing Rust
 ///   type.
-///   
+///
 /// - `convert`: optional map from a JSON schema type defined in `$defs` to a
 ///   replacement type. This may be used to skip generation of the schema and
 ///   use an existing Rust type.
@@ -245,6 +245,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         .unwrap();
 
     let mut type_space = TypeSpace::new(&settings);
+    type_space.with_path_raw(&path);
     type_space
         .add_root_schema(root_schema)
         .map_err(|e| into_syn_err(e, schema.span()))?;
