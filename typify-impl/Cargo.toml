@@ -9,7 +9,9 @@ readme = "../README.md"
 
 [dependencies]
 heck = "0.5.0"
+iref = "3.1.4"
 log = "0.4.22"
+pathdiff = "0.2.1"
 proc-macro2 = "1.0.89"
 quote = "1.0.37"
 regress = "0.10.1"

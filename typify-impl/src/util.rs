@@ -533,9 +533,13 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     if ref_name == "#" {
         RefKey::Root
     } else if let Some(idx) = ref_name.rfind('/') {
-        RefKey::Def(ref_name[idx + 1..].to_string())
+        if ref_name.starts_with("#") {
+            RefKey::Def(ref_name[idx + 1..].to_string())
+        } else {
+            RefKey::Def(ref_name.to_string())
+        }
     } else {
-        panic!("expected a '/' in $ref: {}", ref_name)
+        RefKey::Def(ref_name.to_string())
     }
 }
 
