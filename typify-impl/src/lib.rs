@@ -605,6 +605,12 @@ impl TypeSpace {
         self.file_path = path.into().canonicalize().unwrap();
     }
 
+    /// Sets the file path for the `TypeSpace` instance.
+    /// This is a raw path and does not canonicalize the path.
+    pub fn with_path_raw<T: Into<PathBuf>>(&mut self, path: T) {
+        self.file_path = path.into();
+    }
+
     /// Configures whether the `TypeSpace` instance should use distinct definitions.
     pub fn distinct_defs(&mut self, value: bool) {
         self.distinct_definitions = value;
@@ -657,7 +663,7 @@ impl TypeSpace {
         for (index, (ref_name, schema)) in definitions.into_iter().enumerate() {
             info!(
                 "converting type: {:?} with schema {} {}",
-                ref_name,
+                &ref_name,
                 serde_json::to_string(&schema).unwrap(),
                 line!()
             );
@@ -864,7 +870,6 @@ impl TypeSpace {
         // recursively fetch external references from definitions
         let mut external_references = BTreeMap::new();
 
-        dbg!(&self.file_path);
         for (_, def) in &defs {
             fetch_external_definitions(
                 &schema,
@@ -1218,7 +1223,6 @@ fn fetch_external_definitions(
                 .collect::<Vec<_>>(); // Process the fragment part of the reference
             let relpath =
                 diff_paths(reff.path().as_str(), id.path().parent_or_empty().as_str()).unwrap(); // Determine the relative path
-            dbg!(&base_path);
             let file_path = base_path.parent().unwrap().join(&relpath); // Construct the file path
             let content = std::fs::read_to_string(&file_path).expect(&format!(
                 "Failed to open input file: {}",

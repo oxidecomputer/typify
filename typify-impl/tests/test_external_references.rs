@@ -24,7 +24,7 @@ fn test_external_references() {
     expectorate::assert_contents("tests/external_references.out", fmt.as_str());
 }
 
-// #[test]
-// fn test_external_references_from_macro() {
-//     import_types!(schema = "tests/external_references.json");
-// }
+#[test]
+fn test_external_references_from_macro() {
+    import_types!(schema = "tests/external_references.json");
+}

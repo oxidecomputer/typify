@@ -245,6 +245,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         .unwrap();
 
     let mut type_space = TypeSpace::new(&settings);
+    type_space.with_path_raw(&path);
     type_space
         .add_root_schema(root_schema)
         .map_err(|e| into_syn_err(e, schema.span()))?;
