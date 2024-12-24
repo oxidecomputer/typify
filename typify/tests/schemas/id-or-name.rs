@@ -59,12 +59,12 @@ pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
 }
-impl From<&IdOrName> for IdOrName {
+impl ::std::convert::From<&IdOrName> for IdOrName {
     fn from(value: &IdOrName) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for IdOrName {
+impl ::std::str::FromStr for IdOrName {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -76,13 +76,13 @@ impl std::str::FromStr for IdOrName {
         }
     }
 }
-impl std::convert::TryFrom<&str> for IdOrName {
+impl ::std::convert::TryFrom<&str> for IdOrName {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for IdOrName {
+impl ::std::convert::TryFrom<&::std::string::String> for IdOrName {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -90,7 +90,7 @@ impl std::convert::TryFrom<&::std::string::String> for IdOrName {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for IdOrName {
+impl ::std::convert::TryFrom<::std::string::String> for IdOrName {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -106,12 +106,12 @@ impl ::std::fmt::Display for IdOrName {
         }
     }
 }
-impl From<uuid::Uuid> for IdOrName {
+impl ::std::convert::From<uuid::Uuid> for IdOrName {
     fn from(value: uuid::Uuid) -> Self {
         Self::Id(value)
     }
 }
-impl From<Name> for IdOrName {
+impl ::std::convert::From<Name> for IdOrName {
     fn from(value: Name) -> Self {
         Self::Name(value)
     }
@@ -142,12 +142,12 @@ pub enum IdOrNameRedundant {
     Variant0(uuid::Uuid),
     Variant1(Name),
 }
-impl From<&IdOrNameRedundant> for IdOrNameRedundant {
+impl ::std::convert::From<&IdOrNameRedundant> for IdOrNameRedundant {
     fn from(value: &IdOrNameRedundant) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for IdOrNameRedundant {
+impl ::std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -159,13 +159,13 @@ impl std::str::FromStr for IdOrNameRedundant {
         }
     }
 }
-impl std::convert::TryFrom<&str> for IdOrNameRedundant {
+impl ::std::convert::TryFrom<&str> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for IdOrNameRedundant {
+impl ::std::convert::TryFrom<&::std::string::String> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -173,7 +173,7 @@ impl std::convert::TryFrom<&::std::string::String> for IdOrNameRedundant {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
+impl ::std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -189,12 +189,12 @@ impl ::std::fmt::Display for IdOrNameRedundant {
         }
     }
 }
-impl From<uuid::Uuid> for IdOrNameRedundant {
+impl ::std::convert::From<uuid::Uuid> for IdOrNameRedundant {
     fn from(value: uuid::Uuid) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<Name> for IdOrNameRedundant {
+impl ::std::convert::From<Name> for IdOrNameRedundant {
     fn from(value: Name) -> Self {
         Self::Variant1(value)
     }
@@ -234,12 +234,12 @@ pub enum IdOrYolo {
     Id(uuid::Uuid),
     Yolo(IdOrYoloYolo),
 }
-impl From<&IdOrYolo> for IdOrYolo {
+impl ::std::convert::From<&IdOrYolo> for IdOrYolo {
     fn from(value: &IdOrYolo) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for IdOrYolo {
+impl ::std::str::FromStr for IdOrYolo {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -251,13 +251,13 @@ impl std::str::FromStr for IdOrYolo {
         }
     }
 }
-impl std::convert::TryFrom<&str> for IdOrYolo {
+impl ::std::convert::TryFrom<&str> for IdOrYolo {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for IdOrYolo {
+impl ::std::convert::TryFrom<&::std::string::String> for IdOrYolo {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -265,7 +265,7 @@ impl std::convert::TryFrom<&::std::string::String> for IdOrYolo {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for IdOrYolo {
+impl ::std::convert::TryFrom<::std::string::String> for IdOrYolo {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -281,12 +281,12 @@ impl ::std::fmt::Display for IdOrYolo {
         }
     }
 }
-impl From<uuid::Uuid> for IdOrYolo {
+impl ::std::convert::From<uuid::Uuid> for IdOrYolo {
     fn from(value: uuid::Uuid) -> Self {
         Self::Id(value)
     }
 }
-impl From<IdOrYoloYolo> for IdOrYolo {
+impl ::std::convert::From<IdOrYoloYolo> for IdOrYolo {
     fn from(value: IdOrYoloYolo) -> Self {
         Self::Yolo(value)
     }
@@ -310,12 +310,12 @@ impl ::std::ops::Deref for IdOrYoloYolo {
         &self.0
     }
 }
-impl From<IdOrYoloYolo> for ::std::string::String {
+impl ::std::convert::From<IdOrYoloYolo> for ::std::string::String {
     fn from(value: IdOrYoloYolo) -> Self {
         value.0
     }
 }
-impl From<&IdOrYoloYolo> for IdOrYoloYolo {
+impl ::std::convert::From<&IdOrYoloYolo> for IdOrYoloYolo {
     fn from(value: &IdOrYoloYolo) -> Self {
         value.clone()
     }
@@ -385,12 +385,12 @@ impl ::std::ops::Deref for Name {
         &self.0
     }
 }
-impl From<Name> for ::std::string::String {
+impl ::std::convert::From<Name> for ::std::string::String {
     fn from(value: Name) -> Self {
         value.0
     }
 }
-impl From<&Name> for Name {
+impl ::std::convert::From<&Name> for Name {
     fn from(value: &Name) -> Self {
         value.clone()
     }

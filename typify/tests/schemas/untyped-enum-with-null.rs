@@ -54,7 +54,7 @@ pub mod error {
 pub struct TestType {
     pub value: ::std::option::Option<TestTypeValue>,
 }
-impl From<&TestType> for TestType {
+impl ::std::convert::From<&TestType> for TestType {
     fn from(value: &TestType) -> Self {
         value.clone()
     }
@@ -99,7 +99,7 @@ pub enum TestTypeValue {
     #[serde(rename = "end")]
     End,
 }
-impl From<&TestTypeValue> for TestTypeValue {
+impl ::std::convert::From<&TestTypeValue> for TestTypeValue {
     fn from(value: &TestTypeValue) -> Self {
         value.clone()
     }
@@ -113,7 +113,7 @@ impl ::std::fmt::Display for TestTypeValue {
         }
     }
 }
-impl std::str::FromStr for TestTypeValue {
+impl ::std::str::FromStr for TestTypeValue {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -124,13 +124,13 @@ impl std::str::FromStr for TestTypeValue {
         }
     }
 }
-impl std::convert::TryFrom<&str> for TestTypeValue {
+impl ::std::convert::TryFrom<&str> for TestTypeValue {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for TestTypeValue {
+impl ::std::convert::TryFrom<&::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -138,7 +138,7 @@ impl std::convert::TryFrom<&::std::string::String> for TestTypeValue {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for TestTypeValue {
+impl ::std::convert::TryFrom<::std::string::String> for TestTypeValue {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -155,7 +155,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for TestType {
+    impl ::std::default::Default for TestType {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -165,8 +165,8 @@ pub mod builder {
     impl TestType {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::TestTypeValue>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::TestTypeValue>>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -182,7 +182,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TestType> for TestType {
+    impl ::std::convert::From<super::TestType> for TestType {
         fn from(value: super::TestType) -> Self {
             Self {
                 value: Ok(value.value),

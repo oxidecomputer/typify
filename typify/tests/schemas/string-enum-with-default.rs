@@ -61,7 +61,7 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&TestEnum> for TestEnum {
+impl ::std::convert::From<&TestEnum> for TestEnum {
     fn from(value: &TestEnum) -> Self {
         value.clone()
     }
@@ -75,7 +75,7 @@ impl ::std::fmt::Display for TestEnum {
         }
     }
 }
-impl std::str::FromStr for TestEnum {
+impl ::std::str::FromStr for TestEnum {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -86,13 +86,13 @@ impl std::str::FromStr for TestEnum {
         }
     }
 }
-impl std::convert::TryFrom<&str> for TestEnum {
+impl ::std::convert::TryFrom<&str> for TestEnum {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for TestEnum {
+impl ::std::convert::TryFrom<&::std::string::String> for TestEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -100,7 +100,7 @@ impl std::convert::TryFrom<&::std::string::String> for TestEnum {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for TestEnum {
+impl ::std::convert::TryFrom<::std::string::String> for TestEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -108,7 +108,7 @@ impl std::convert::TryFrom<::std::string::String> for TestEnum {
         value.parse()
     }
 }
-impl Default for TestEnum {
+impl ::std::default::Default for TestEnum {
     fn default() -> Self {
         TestEnum::Failure
     }

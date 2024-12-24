@@ -58,7 +58,7 @@ pub enum AlternativeEnum {
     Choice2,
     Choice3,
 }
-impl From<&AlternativeEnum> for AlternativeEnum {
+impl ::std::convert::From<&AlternativeEnum> for AlternativeEnum {
     fn from(value: &AlternativeEnum) -> Self {
         value.clone()
     }
@@ -72,7 +72,7 @@ impl ::std::fmt::Display for AlternativeEnum {
         }
     }
 }
-impl std::str::FromStr for AlternativeEnum {
+impl ::std::str::FromStr for AlternativeEnum {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -83,13 +83,13 @@ impl std::str::FromStr for AlternativeEnum {
         }
     }
 }
-impl std::convert::TryFrom<&str> for AlternativeEnum {
+impl ::std::convert::TryFrom<&str> for AlternativeEnum {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for AlternativeEnum {
+impl ::std::convert::TryFrom<&::std::string::String> for AlternativeEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -97,7 +97,7 @@ impl std::convert::TryFrom<&::std::string::String> for AlternativeEnum {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for AlternativeEnum {
+impl ::std::convert::TryFrom<::std::string::String> for AlternativeEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -105,7 +105,7 @@ impl std::convert::TryFrom<::std::string::String> for AlternativeEnum {
         value.parse()
     }
 }
-impl Default for AlternativeEnum {
+impl ::std::default::Default for AlternativeEnum {
     fn default() -> Self {
         AlternativeEnum::Choice2
     }
@@ -157,7 +157,7 @@ pub enum CommentedVariants {
     #[doc = "a pirate's favorite letter"]
     C,
 }
-impl From<&CommentedVariants> for CommentedVariants {
+impl ::std::convert::From<&CommentedVariants> for CommentedVariants {
     fn from(value: &CommentedVariants) -> Self {
         value.clone()
     }
@@ -171,7 +171,7 @@ impl ::std::fmt::Display for CommentedVariants {
         }
     }
 }
-impl std::str::FromStr for CommentedVariants {
+impl ::std::str::FromStr for CommentedVariants {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -182,13 +182,13 @@ impl std::str::FromStr for CommentedVariants {
         }
     }
 }
-impl std::convert::TryFrom<&str> for CommentedVariants {
+impl ::std::convert::TryFrom<&str> for CommentedVariants {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for CommentedVariants {
+impl ::std::convert::TryFrom<&::std::string::String> for CommentedVariants {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -196,7 +196,7 @@ impl std::convert::TryFrom<&::std::string::String> for CommentedVariants {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for CommentedVariants {
+impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -237,7 +237,7 @@ pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
 }
-impl From<&DiskAttachment> for DiskAttachment {
+impl ::std::convert::From<&DiskAttachment> for DiskAttachment {
     fn from(value: &DiskAttachment) -> Self {
         value.clone()
     }
@@ -280,7 +280,7 @@ pub enum DiskAttachmentState {
     Destroyed,
     Faulted,
 }
-impl From<&DiskAttachmentState> for DiskAttachmentState {
+impl ::std::convert::From<&DiskAttachmentState> for DiskAttachmentState {
     fn from(value: &DiskAttachmentState) -> Self {
         value.clone()
     }
@@ -294,7 +294,7 @@ impl ::std::fmt::Display for DiskAttachmentState {
         }
     }
 }
-impl std::str::FromStr for DiskAttachmentState {
+impl ::std::str::FromStr for DiskAttachmentState {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -305,13 +305,13 @@ impl std::str::FromStr for DiskAttachmentState {
         }
     }
 }
-impl std::convert::TryFrom<&str> for DiskAttachmentState {
+impl ::std::convert::TryFrom<&str> for DiskAttachmentState {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for DiskAttachmentState {
+impl ::std::convert::TryFrom<&::std::string::String> for DiskAttachmentState {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -319,7 +319,7 @@ impl std::convert::TryFrom<&::std::string::String> for DiskAttachmentState {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for DiskAttachmentState {
+impl ::std::convert::TryFrom<::std::string::String> for DiskAttachmentState {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -327,7 +327,7 @@ impl std::convert::TryFrom<::std::string::String> for DiskAttachmentState {
         value.parse()
     }
 }
-impl Default for DiskAttachmentState {
+impl ::std::default::Default for DiskAttachmentState {
     fn default() -> Self {
         DiskAttachmentState::Detached
     }
@@ -355,9 +355,16 @@ pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub prop: ::std::option::Option<EmptyObjectProp>,
 }
-impl From<&EmptyObject> for EmptyObject {
+impl ::std::convert::From<&EmptyObject> for EmptyObject {
     fn from(value: &EmptyObject) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for EmptyObject {
+    fn default() -> Self {
+        Self {
+            prop: Default::default(),
+        }
     }
 }
 impl EmptyObject {
@@ -386,12 +393,14 @@ impl ::std::ops::Deref for EmptyObjectProp {
         &self.0
     }
 }
-impl From<EmptyObjectProp> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
+impl ::std::convert::From<EmptyObjectProp>
+    for ::serde_json::Map<::std::string::String, ::serde_json::Value>
+{
     fn from(value: EmptyObjectProp) -> Self {
         value.0
     }
 }
-impl From<&EmptyObjectProp> for EmptyObjectProp {
+impl ::std::convert::From<&EmptyObjectProp> for EmptyObjectProp {
     fn from(value: &EmptyObjectProp) -> Self {
         value.clone()
     }
@@ -511,7 +520,7 @@ pub enum EnumAndConstant {
     #[serde(rename = "fish")]
     Fish { float: ::std::string::String },
 }
-impl From<&EnumAndConstant> for EnumAndConstant {
+impl ::std::convert::From<&EnumAndConstant> for EnumAndConstant {
     fn from(value: &EnumAndConstant) -> Self {
         value.clone()
     }
@@ -550,12 +559,12 @@ pub enum IpNet {
     V4(Ipv4Net),
     V6(Ipv6Net),
 }
-impl From<&IpNet> for IpNet {
+impl ::std::convert::From<&IpNet> for IpNet {
     fn from(value: &IpNet) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for IpNet {
+impl ::std::str::FromStr for IpNet {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -567,13 +576,13 @@ impl std::str::FromStr for IpNet {
         }
     }
 }
-impl std::convert::TryFrom<&str> for IpNet {
+impl ::std::convert::TryFrom<&str> for IpNet {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for IpNet {
+impl ::std::convert::TryFrom<&::std::string::String> for IpNet {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -581,7 +590,7 @@ impl std::convert::TryFrom<&::std::string::String> for IpNet {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for IpNet {
+impl ::std::convert::TryFrom<::std::string::String> for IpNet {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -597,12 +606,12 @@ impl ::std::fmt::Display for IpNet {
         }
     }
 }
-impl From<Ipv4Net> for IpNet {
+impl ::std::convert::From<Ipv4Net> for IpNet {
     fn from(value: Ipv4Net) -> Self {
         Self::V4(value)
     }
 }
-impl From<Ipv6Net> for IpNet {
+impl ::std::convert::From<Ipv6Net> for IpNet {
     fn from(value: Ipv6Net) -> Self {
         Self::V6(value)
     }
@@ -635,17 +644,17 @@ impl ::std::ops::Deref for Ipv4Net {
         &self.0
     }
 }
-impl From<Ipv4Net> for ::std::string::String {
+impl ::std::convert::From<Ipv4Net> for ::std::string::String {
     fn from(value: Ipv4Net) -> Self {
         value.0
     }
 }
-impl From<&Ipv4Net> for Ipv4Net {
+impl ::std::convert::From<&Ipv4Net> for Ipv4Net {
     fn from(value: &Ipv4Net) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for Ipv4Net {
+impl ::std::convert::From<::std::string::String> for Ipv4Net {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -689,17 +698,17 @@ impl ::std::ops::Deref for Ipv6Net {
         &self.0
     }
 }
-impl From<Ipv6Net> for ::std::string::String {
+impl ::std::convert::From<Ipv6Net> for ::std::string::String {
     fn from(value: Ipv6Net) -> Self {
         value.0
     }
 }
-impl From<&Ipv6Net> for Ipv6Net {
+impl ::std::convert::From<&Ipv6Net> for Ipv6Net {
     fn from(value: &Ipv6Net) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for Ipv6Net {
+impl ::std::convert::From<::std::string::String> for Ipv6Net {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -754,19 +763,21 @@ pub enum JankNames {
     Variant1(::std::collections::HashMap<::std::string::String, ::std::string::String>),
     Variant2(::std::collections::HashMap<::std::string::String, i64>),
 }
-impl From<&JankNames> for JankNames {
+impl ::std::convert::From<&JankNames> for JankNames {
     fn from(value: &JankNames) -> Self {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>> for JankNames {
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
+    for JankNames
+{
     fn from(
         value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, i64>> for JankNames {
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64>> for JankNames {
     fn from(value: ::std::collections::HashMap<::std::string::String, i64>) -> Self {
         Self::Variant2(value)
     }
@@ -793,7 +804,7 @@ impl From<::std::collections::HashMap<::std::string::String, i64>> for JankNames
 )]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
-impl From<&Never> for Never {
+impl ::std::convert::From<&Never> for Never {
     fn from(value: &Never) -> Self {
         value.clone()
     }
@@ -820,7 +831,7 @@ impl From<&Never> for Never {
 )]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
-impl From<&NeverEver> for NeverEver {
+impl ::std::convert::From<&NeverEver> for NeverEver {
     fn from(value: &NeverEver) -> Self {
         value.clone()
     }
@@ -854,19 +865,19 @@ impl ::std::ops::Deref for NullStringEnumWithUnknownFormat {
         &self.0
     }
 }
-impl From<NullStringEnumWithUnknownFormat>
+impl ::std::convert::From<NullStringEnumWithUnknownFormat>
     for ::std::option::Option<NullStringEnumWithUnknownFormatInner>
 {
     fn from(value: NullStringEnumWithUnknownFormat) -> Self {
         value.0
     }
 }
-impl From<&NullStringEnumWithUnknownFormat> for NullStringEnumWithUnknownFormat {
+impl ::std::convert::From<&NullStringEnumWithUnknownFormat> for NullStringEnumWithUnknownFormat {
     fn from(value: &NullStringEnumWithUnknownFormat) -> Self {
         value.clone()
     }
 }
-impl From<::std::option::Option<NullStringEnumWithUnknownFormatInner>>
+impl ::std::convert::From<::std::option::Option<NullStringEnumWithUnknownFormatInner>>
     for NullStringEnumWithUnknownFormat
 {
     fn from(value: ::std::option::Option<NullStringEnumWithUnknownFormatInner>) -> Self {
@@ -909,7 +920,9 @@ pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "c")]
     C,
 }
-impl From<&NullStringEnumWithUnknownFormatInner> for NullStringEnumWithUnknownFormatInner {
+impl ::std::convert::From<&NullStringEnumWithUnknownFormatInner>
+    for NullStringEnumWithUnknownFormatInner
+{
     fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
         value.clone()
     }
@@ -923,7 +936,7 @@ impl ::std::fmt::Display for NullStringEnumWithUnknownFormatInner {
         }
     }
 }
-impl std::str::FromStr for NullStringEnumWithUnknownFormatInner {
+impl ::std::str::FromStr for NullStringEnumWithUnknownFormatInner {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -934,13 +947,13 @@ impl std::str::FromStr for NullStringEnumWithUnknownFormatInner {
         }
     }
 }
-impl std::convert::TryFrom<&str> for NullStringEnumWithUnknownFormatInner {
+impl ::std::convert::TryFrom<&str> for NullStringEnumWithUnknownFormatInner {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for NullStringEnumWithUnknownFormatInner {
+impl ::std::convert::TryFrom<&::std::string::String> for NullStringEnumWithUnknownFormatInner {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -948,7 +961,7 @@ impl std::convert::TryFrom<&::std::string::String> for NullStringEnumWithUnknown
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknownFormatInner {
+impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknownFormatInner {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -995,12 +1008,12 @@ pub enum OneOfTypes {
     #[serde(rename = "foo")]
     Foo(::std::string::String),
 }
-impl From<&OneOfTypes> for OneOfTypes {
+impl ::std::convert::From<&OneOfTypes> for OneOfTypes {
     fn from(value: &OneOfTypes) -> Self {
         value.clone()
     }
 }
-impl From<i64> for OneOfTypes {
+impl ::std::convert::From<i64> for OneOfTypes {
     fn from(value: i64) -> Self {
         Self::Bar(value)
     }
@@ -1033,17 +1046,17 @@ impl ::std::ops::Deref for ReferenceDef {
         &self.0
     }
 }
-impl From<ReferenceDef> for ::std::string::String {
+impl ::std::convert::From<ReferenceDef> for ::std::string::String {
     fn from(value: ReferenceDef) -> Self {
         value.0
     }
 }
-impl From<&ReferenceDef> for ReferenceDef {
+impl ::std::convert::From<&ReferenceDef> for ReferenceDef {
     fn from(value: &ReferenceDef) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for ReferenceDef {
+impl ::std::convert::From<::std::string::String> for ReferenceDef {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -1097,18 +1110,20 @@ pub enum References {
     Variant0(::std::vec::Vec<::std::string::String>),
     Variant1(::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>),
 }
-impl From<&References> for References {
+impl ::std::convert::From<&References> for References {
     fn from(value: &References) -> Self {
         value.clone()
     }
 }
-impl From<::std::vec::Vec<::std::string::String>> for References {
+impl ::std::convert::From<::std::vec::Vec<::std::string::String>> for References {
     fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
         Self::Variant0(value)
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>>
-    for References
+impl
+    ::std::convert::From<
+        ::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>,
+    > for References
 {
     fn from(
         value: ::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>,
@@ -1139,12 +1154,12 @@ pub enum ReferencesVariant1Value {
     StringVersion(StringVersion),
     ReferenceDef(ReferenceDef),
 }
-impl From<&ReferencesVariant1Value> for ReferencesVariant1Value {
+impl ::std::convert::From<&ReferencesVariant1Value> for ReferencesVariant1Value {
     fn from(value: &ReferencesVariant1Value) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for ReferencesVariant1Value {
+impl ::std::str::FromStr for ReferencesVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -1156,13 +1171,13 @@ impl std::str::FromStr for ReferencesVariant1Value {
         }
     }
 }
-impl std::convert::TryFrom<&str> for ReferencesVariant1Value {
+impl ::std::convert::TryFrom<&str> for ReferencesVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for ReferencesVariant1Value {
+impl ::std::convert::TryFrom<&::std::string::String> for ReferencesVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -1170,7 +1185,7 @@ impl std::convert::TryFrom<&::std::string::String> for ReferencesVariant1Value {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for ReferencesVariant1Value {
+impl ::std::convert::TryFrom<::std::string::String> for ReferencesVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -1186,12 +1201,12 @@ impl ::std::fmt::Display for ReferencesVariant1Value {
         }
     }
 }
-impl From<StringVersion> for ReferencesVariant1Value {
+impl ::std::convert::From<StringVersion> for ReferencesVariant1Value {
     fn from(value: StringVersion) -> Self {
         Self::StringVersion(value)
     }
 }
-impl From<ReferenceDef> for ReferencesVariant1Value {
+impl ::std::convert::From<ReferenceDef> for ReferencesVariant1Value {
     fn from(value: ReferenceDef) -> Self {
         Self::ReferenceDef(value)
     }
@@ -1232,7 +1247,7 @@ pub enum ShouldBeExclusive {
     Variant0 { id: ::std::string::String },
     Variant1 { reference: ::std::string::String },
 }
-impl From<&ShouldBeExclusive> for ShouldBeExclusive {
+impl ::std::convert::From<&ShouldBeExclusive> for ShouldBeExclusive {
     fn from(value: &ShouldBeExclusive) -> Self {
         value.clone()
     }
@@ -1265,17 +1280,17 @@ impl ::std::ops::Deref for StringVersion {
         &self.0
     }
 }
-impl From<StringVersion> for ::std::string::String {
+impl ::std::convert::From<StringVersion> for ::std::string::String {
     fn from(value: StringVersion) -> Self {
         value.0
     }
 }
-impl From<&StringVersion> for StringVersion {
+impl ::std::convert::From<&StringVersion> for StringVersion {
     fn from(value: &StringVersion) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for StringVersion {
+impl ::std::convert::From<::std::string::String> for StringVersion {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -1298,7 +1313,7 @@ pub mod builder {
         alternate: ::std::result::Result<super::AlternativeEnum, ::std::string::String>,
         state: ::std::result::Result<super::DiskAttachmentState, ::std::string::String>,
     }
-    impl Default for DiskAttachment {
+    impl ::std::default::Default for DiskAttachment {
         fn default() -> Self {
             Self {
                 alternate: Err("no value supplied for alternate".to_string()),
@@ -1309,8 +1324,8 @@ pub mod builder {
     impl DiskAttachment {
         pub fn alternate<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::AlternativeEnum>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::AlternativeEnum>,
+            T::Error: ::std::fmt::Display,
         {
             self.alternate = value
                 .try_into()
@@ -1319,8 +1334,8 @@ pub mod builder {
         }
         pub fn state<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::DiskAttachmentState>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::DiskAttachmentState>,
+            T::Error: ::std::fmt::Display,
         {
             self.state = value
                 .try_into()
@@ -1339,7 +1354,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::DiskAttachment> for DiskAttachment {
+    impl ::std::convert::From<super::DiskAttachment> for DiskAttachment {
         fn from(value: super::DiskAttachment) -> Self {
             Self {
                 alternate: Ok(value.alternate),
@@ -1354,7 +1369,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for EmptyObject {
+    impl ::std::default::Default for EmptyObject {
         fn default() -> Self {
             Self {
                 prop: Ok(Default::default()),
@@ -1364,8 +1379,8 @@ pub mod builder {
     impl EmptyObject {
         pub fn prop<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::EmptyObjectProp>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::EmptyObjectProp>>,
+            T::Error: ::std::fmt::Display,
         {
             self.prop = value
                 .try_into()
@@ -1381,7 +1396,7 @@ pub mod builder {
             Ok(Self { prop: value.prop? })
         }
     }
-    impl From<super::EmptyObject> for EmptyObject {
+    impl ::std::convert::From<super::EmptyObject> for EmptyObject {
         fn from(value: super::EmptyObject) -> Self {
             Self {
                 prop: Ok(value.prop),

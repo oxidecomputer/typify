@@ -57,7 +57,7 @@ pub struct TestGrammarForPatternProperties {
     pub rules:
         ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, ::std::string::String>,
 }
-impl From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
+impl ::std::convert::From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
     fn from(value: &TestGrammarForPatternProperties) -> Self {
         value.clone()
     }
@@ -86,12 +86,14 @@ impl ::std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
         &self.0
     }
 }
-impl From<TestGrammarForPatternPropertiesRulesKey> for ::std::string::String {
+impl ::std::convert::From<TestGrammarForPatternPropertiesRulesKey> for ::std::string::String {
     fn from(value: TestGrammarForPatternPropertiesRulesKey) -> Self {
         value.0
     }
 }
-impl From<&TestGrammarForPatternPropertiesRulesKey> for TestGrammarForPatternPropertiesRulesKey {
+impl ::std::convert::From<&TestGrammarForPatternPropertiesRulesKey>
+    for TestGrammarForPatternPropertiesRulesKey
+{
     fn from(value: &TestGrammarForPatternPropertiesRulesKey) -> Self {
         value.clone()
     }
@@ -155,7 +157,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for TestGrammarForPatternProperties {
+    impl ::std::default::Default for TestGrammarForPatternProperties {
         fn default() -> Self {
             Self {
                 rules: Err("no value supplied for rules".to_string()),
@@ -165,13 +167,13 @@ pub mod builder {
     impl TestGrammarForPatternProperties {
         pub fn rules<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<
+            T: ::std::convert::TryInto<
                 ::std::collections::HashMap<
                     super::TestGrammarForPatternPropertiesRulesKey,
                     ::std::string::String,
                 >,
             >,
-            T::Error: std::fmt::Display,
+            T::Error: ::std::fmt::Display,
         {
             self.rules = value
                 .try_into()
@@ -191,7 +193,9 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
+    impl ::std::convert::From<super::TestGrammarForPatternProperties>
+        for TestGrammarForPatternProperties
+    {
         fn from(value: super::TestGrammarForPatternProperties) -> Self {
             Self {
                 rules: Ok(value.rules),
