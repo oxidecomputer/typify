@@ -288,6 +288,10 @@ pub(crate) fn try_merge_with_subschemas(
     };
 
     if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&maybe_subschemas).unwrap()
+        );
         unimplemented!("if/then/else schemas are not supported");
     }
 

@@ -62,7 +62,7 @@ pub struct TestType {
     pub patched_type: TypeThatHasMoreDerives,
     pub replaced_type: String,
 }
-impl From<&TestType> for TestType {
+impl ::std::convert::From<&TestType> for TestType {
     fn from(value: &TestType) -> Self {
         value.clone()
     }
@@ -95,19 +95,19 @@ impl ::std::ops::Deref for TypeThatHasMoreDerives {
         &self.0
     }
 }
-impl From<TypeThatHasMoreDerives>
+impl ::std::convert::From<TypeThatHasMoreDerives>
     for ::std::collections::HashMap<::std::string::String, ::std::string::String>
 {
     fn from(value: TypeThatHasMoreDerives) -> Self {
         value.0
     }
 }
-impl From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
+impl ::std::convert::From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
     fn from(value: &TypeThatHasMoreDerives) -> Self {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
     for TypeThatHasMoreDerives
 {
     fn from(
@@ -124,7 +124,7 @@ pub mod builder {
         patched_type: ::std::result::Result<super::TypeThatHasMoreDerives, ::std::string::String>,
         replaced_type: ::std::result::Result<String, ::std::string::String>,
     }
-    impl Default for TestType {
+    impl ::std::default::Default for TestType {
         fn default() -> Self {
             Self {
                 converted_type: Err("no value supplied for converted_type".to_string()),
@@ -136,8 +136,8 @@ pub mod builder {
     impl TestType {
         pub fn converted_type<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<serde_json::Value>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<serde_json::Value>,
+            T::Error: ::std::fmt::Display,
         {
             self.converted_type = value
                 .try_into()
@@ -146,8 +146,8 @@ pub mod builder {
         }
         pub fn patched_type<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::TypeThatHasMoreDerives>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::TypeThatHasMoreDerives>,
+            T::Error: ::std::fmt::Display,
         {
             self.patched_type = value
                 .try_into()
@@ -156,8 +156,8 @@ pub mod builder {
         }
         pub fn replaced_type<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<String>,
+            T::Error: ::std::fmt::Display,
         {
             self.replaced_type = value
                 .try_into()
@@ -175,7 +175,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TestType> for TestType {
+    impl ::std::convert::From<super::TestType> for TestType {
         fn from(value: super::TestType) -> Self {
             Self {
                 converted_type: Ok(value.converted_type),

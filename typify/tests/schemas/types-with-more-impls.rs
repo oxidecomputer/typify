@@ -44,12 +44,12 @@ impl ::std::ops::Deref for PatternString {
         &self.0
     }
 }
-impl From<PatternString> for ::std::string::String {
+impl ::std::convert::From<PatternString> for ::std::string::String {
     fn from(value: PatternString) -> Self {
         value.0
     }
 }
-impl From<&PatternString> for PatternString {
+impl ::std::convert::From<&PatternString> for PatternString {
     fn from(value: &PatternString) -> Self {
         value.clone()
     }
@@ -122,12 +122,12 @@ impl ::std::ops::Deref for Sub10Primes {
         &self.0
     }
 }
-impl From<Sub10Primes> for u32 {
+impl ::std::convert::From<Sub10Primes> for u32 {
     fn from(value: Sub10Primes) -> Self {
         value.0
     }
 }
-impl From<&Sub10Primes> for Sub10Primes {
+impl ::std::convert::From<&Sub10Primes> for Sub10Primes {
     fn from(value: &Sub10Primes) -> Self {
         value.clone()
     }

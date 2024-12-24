@@ -47,7 +47,7 @@ pub mod error {
 pub struct Box {
     pub data: ::std::string::String,
 }
-impl From<&Box> for Box {
+impl ::std::convert::From<&Box> for Box {
     fn from(value: &Box) -> Self {
         value.clone()
     }
@@ -79,7 +79,7 @@ impl Box {
 pub struct Copy {
     pub value: i64,
 }
-impl From<&Copy> for Copy {
+impl ::std::convert::From<&Copy> for Copy {
     fn from(value: &Copy) -> Self {
         value.clone()
     }
@@ -120,9 +120,16 @@ pub struct DoubleOptionCollision {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
 }
-impl From<&DoubleOptionCollision> for DoubleOptionCollision {
+impl ::std::convert::From<&DoubleOptionCollision> for DoubleOptionCollision {
     fn from(value: &DoubleOptionCollision) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for DoubleOptionCollision {
+    fn default() -> Self {
+        Self {
+            option: Default::default(),
+        }
     }
 }
 impl DoubleOptionCollision {
@@ -153,9 +160,16 @@ pub struct DoubleOptionCollisionOption {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
 }
-impl From<&DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
+impl ::std::convert::From<&DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
     fn from(value: &DoubleOptionCollisionOption) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for DoubleOptionCollisionOption {
+    fn default() -> Self {
+        Self {
+            option: Default::default(),
+        }
     }
 }
 impl DoubleOptionCollisionOption {
@@ -185,7 +199,7 @@ impl DoubleOptionCollisionOption {
 pub struct Drop {
     pub cleanup: bool,
 }
-impl From<&Drop> for Drop {
+impl ::std::convert::From<&Drop> for Drop {
     fn from(value: &Drop) -> Self {
         value.clone()
     }
@@ -222,7 +236,7 @@ pub struct FlattenedKeywords {
     #[serde(flatten)]
     pub extra: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
 }
-impl From<&FlattenedKeywords> for FlattenedKeywords {
+impl ::std::convert::From<&FlattenedKeywords> for FlattenedKeywords {
     fn from(value: &FlattenedKeywords) -> Self {
         value.clone()
     }
@@ -290,12 +304,12 @@ pub enum KeywordFieldsEnum {
     },
     Variant1([::std::string::String; 2usize]),
 }
-impl From<&KeywordFieldsEnum> for KeywordFieldsEnum {
+impl ::std::convert::From<&KeywordFieldsEnum> for KeywordFieldsEnum {
     fn from(value: &KeywordFieldsEnum) -> Self {
         value.clone()
     }
 }
-impl From<[::std::string::String; 2usize]> for KeywordFieldsEnum {
+impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum {
     fn from(value: [::std::string::String; 2usize]) -> Self {
         Self::Variant1(value)
     }
@@ -342,7 +356,7 @@ pub struct MapOfKeywords {
     pub keyword_map:
         ::std::collections::HashMap<::std::string::String, MapOfKeywordsKeywordMapValue>,
 }
-impl From<&MapOfKeywords> for MapOfKeywords {
+impl ::std::convert::From<&MapOfKeywords> for MapOfKeywords {
     fn from(value: &MapOfKeywords) -> Self {
         value.clone()
     }
@@ -420,7 +434,7 @@ pub enum MapOfKeywordsKeywordMapValue {
     #[serde(rename = "where")]
     Where,
 }
-impl From<&MapOfKeywordsKeywordMapValue> for MapOfKeywordsKeywordMapValue {
+impl ::std::convert::From<&MapOfKeywordsKeywordMapValue> for MapOfKeywordsKeywordMapValue {
     fn from(value: &MapOfKeywordsKeywordMapValue) -> Self {
         value.clone()
     }
@@ -445,7 +459,7 @@ impl ::std::fmt::Display for MapOfKeywordsKeywordMapValue {
         }
     }
 }
-impl std::str::FromStr for MapOfKeywordsKeywordMapValue {
+impl ::std::str::FromStr for MapOfKeywordsKeywordMapValue {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -467,13 +481,13 @@ impl std::str::FromStr for MapOfKeywordsKeywordMapValue {
         }
     }
 }
-impl std::convert::TryFrom<&str> for MapOfKeywordsKeywordMapValue {
+impl ::std::convert::TryFrom<&str> for MapOfKeywordsKeywordMapValue {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for MapOfKeywordsKeywordMapValue {
+impl ::std::convert::TryFrom<&::std::string::String> for MapOfKeywordsKeywordMapValue {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -481,7 +495,7 @@ impl std::convert::TryFrom<&::std::string::String> for MapOfKeywordsKeywordMapVa
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapValue {
+impl ::std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapValue {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -533,7 +547,7 @@ pub struct NestedTypeCollisions {
     pub type_: TypeWithOptionField,
     pub types: ::std::vec::Vec<TypeWithOptionField>,
 }
-impl From<&NestedTypeCollisions> for NestedTypeCollisions {
+impl ::std::convert::From<&NestedTypeCollisions> for NestedTypeCollisions {
     fn from(value: &NestedTypeCollisions) -> Self {
         value.clone()
     }
@@ -567,9 +581,16 @@ pub struct NestedTypeCollisionsOptionType {
     )]
     pub type_: ::std::option::Option<::std::string::String>,
 }
-impl From<&NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
+impl ::std::convert::From<&NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
     fn from(value: &NestedTypeCollisionsOptionType) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for NestedTypeCollisionsOptionType {
+    fn default() -> Self {
+        Self {
+            type_: Default::default(),
+        }
     }
 }
 impl NestedTypeCollisionsOptionType {
@@ -599,7 +620,7 @@ impl NestedTypeCollisionsOptionType {
 pub struct Option {
     pub maybe: ::std::string::String,
 }
-impl From<&Option> for Option {
+impl ::std::convert::From<&Option> for Option {
     fn from(value: &Option) -> Self {
         value.clone()
     }
@@ -631,7 +652,7 @@ impl Option {
 pub struct Pin {
     pub pointer: ::std::string::String,
 }
-impl From<&Pin> for Pin {
+impl ::std::convert::From<&Pin> for Pin {
     fn from(value: &Pin) -> Self {
         value.clone()
     }
@@ -958,7 +979,7 @@ pub struct RustKeywordMonster {
     #[serde(rename = "yield")]
     pub yield_: ::std::string::String,
 }
-impl From<&RustKeywordMonster> for RustKeywordMonster {
+impl ::std::convert::From<&RustKeywordMonster> for RustKeywordMonster {
     fn from(value: &RustKeywordMonster) -> Self {
         value.clone()
     }
@@ -990,7 +1011,7 @@ impl RustKeywordMonster {
 pub struct Send {
     pub message: ::std::string::String,
 }
-impl From<&Send> for Send {
+impl ::std::convert::From<&Send> for Send {
     fn from(value: &Send) -> Self {
         value.clone()
     }
@@ -1108,7 +1129,7 @@ pub struct Std {
     pub str: StdStr,
     pub string: StdString,
 }
-impl From<&Std> for Std {
+impl ::std::convert::From<&Std> for Std {
     fn from(value: &Std) -> Self {
         value.clone()
     }
@@ -1140,7 +1161,7 @@ impl Std {
 pub struct StdBoxed {
     pub value: ::std::string::String,
 }
-impl From<&StdBoxed> for StdBoxed {
+impl ::std::convert::From<&StdBoxed> for StdBoxed {
     fn from(value: &StdBoxed) -> Self {
         value.clone()
     }
@@ -1172,7 +1193,7 @@ impl StdBoxed {
 pub struct StdConvert {
     pub value: ::std::string::String,
 }
-impl From<&StdConvert> for StdConvert {
+impl ::std::convert::From<&StdConvert> for StdConvert {
     fn from(value: &StdConvert) -> Self {
         value.clone()
     }
@@ -1204,7 +1225,7 @@ impl StdConvert {
 pub struct StdFmt {
     pub value: ::std::string::String,
 }
-impl From<&StdFmt> for StdFmt {
+impl ::std::convert::From<&StdFmt> for StdFmt {
     fn from(value: &StdFmt) -> Self {
         value.clone()
     }
@@ -1236,7 +1257,7 @@ impl StdFmt {
 pub struct StdOption {
     pub value: ::std::string::String,
 }
-impl From<&StdOption> for StdOption {
+impl ::std::convert::From<&StdOption> for StdOption {
     fn from(value: &StdOption) -> Self {
         value.clone()
     }
@@ -1268,7 +1289,7 @@ impl StdOption {
 pub struct StdResult {
     pub value: ::std::string::String,
 }
-impl From<&StdResult> for StdResult {
+impl ::std::convert::From<&StdResult> for StdResult {
     fn from(value: &StdResult) -> Self {
         value.clone()
     }
@@ -1300,7 +1321,7 @@ impl StdResult {
 pub struct StdStr {
     pub value: ::std::string::String,
 }
-impl From<&StdStr> for StdStr {
+impl ::std::convert::From<&StdStr> for StdStr {
     fn from(value: &StdStr) -> Self {
         value.clone()
     }
@@ -1332,7 +1353,7 @@ impl StdStr {
 pub struct StdString {
     pub value: ::std::string::String,
 }
-impl From<&StdString> for StdString {
+impl ::std::convert::From<&StdString> for StdString {
     fn from(value: &StdString) -> Self {
         value.clone()
     }
@@ -1364,7 +1385,7 @@ impl StdString {
 pub struct String {
     pub text: ::std::string::String,
 }
-impl From<&String> for String {
+impl ::std::convert::From<&String> for String {
     fn from(value: &String) -> Self {
         value.clone()
     }
@@ -1409,7 +1430,7 @@ pub enum StringEnum {
     #[serde(rename = "three")]
     Three,
 }
-impl From<&StringEnum> for StringEnum {
+impl ::std::convert::From<&StringEnum> for StringEnum {
     fn from(value: &StringEnum) -> Self {
         value.clone()
     }
@@ -1423,7 +1444,7 @@ impl ::std::fmt::Display for StringEnum {
         }
     }
 }
-impl std::str::FromStr for StringEnum {
+impl ::std::str::FromStr for StringEnum {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -1434,13 +1455,13 @@ impl std::str::FromStr for StringEnum {
         }
     }
 }
-impl std::convert::TryFrom<&str> for StringEnum {
+impl ::std::convert::TryFrom<&str> for StringEnum {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for StringEnum {
+impl ::std::convert::TryFrom<&::std::string::String> for StringEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -1448,7 +1469,7 @@ impl std::convert::TryFrom<&::std::string::String> for StringEnum {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for StringEnum {
+impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -1476,12 +1497,12 @@ impl ::std::ops::Deref for StringNewtype {
         &self.0
     }
 }
-impl From<StringNewtype> for ::std::string::String {
+impl ::std::convert::From<StringNewtype> for ::std::string::String {
     fn from(value: StringNewtype) -> Self {
         value.0
     }
 }
-impl From<&StringNewtype> for StringNewtype {
+impl ::std::convert::From<&StringNewtype> for StringNewtype {
     fn from(value: &StringNewtype) -> Self {
         value.clone()
     }
@@ -1554,7 +1575,7 @@ impl<'de> ::serde::Deserialize<'de> for StringNewtype {
 pub struct Sync {
     pub data: ::std::string::String,
 }
-impl From<&Sync> for Sync {
+impl ::std::convert::From<&Sync> for Sync {
     fn from(value: &Sync) -> Self {
         value.clone()
     }
@@ -1579,9 +1600,9 @@ pub struct TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConfl
     pub ::serde_json::Value,
 );
 impl :: std :: ops :: Deref for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { type Target = :: serde_json :: Value ; fn deref (& self) -> & :: serde_json :: Value { & self . 0 } }
-impl From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
-impl From < & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . clone () } }
-impl From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
+impl :: std :: convert :: From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
+impl :: std :: convert :: From < & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . clone () } }
+impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
 #[doc = "TypeWithOptionField"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1612,7 +1633,7 @@ pub struct TypeWithOptionField {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub optional_field: ::std::option::Option<::std::string::String>,
 }
-impl From<&TypeWithOptionField> for TypeWithOptionField {
+impl ::std::convert::From<&TypeWithOptionField> for TypeWithOptionField {
     fn from(value: &TypeWithOptionField) -> Self {
         value.clone()
     }
@@ -1647,7 +1668,7 @@ impl TypeWithOptionField {
 pub struct Vec {
     pub items: ::std::vec::Vec<::std::string::String>,
 }
-impl From<&Vec> for Vec {
+impl ::std::convert::From<&Vec> for Vec {
     fn from(value: &Vec) -> Self {
         value.clone()
     }
@@ -1663,7 +1684,7 @@ pub mod builder {
     pub struct Box {
         data: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Box {
+    impl ::std::default::Default for Box {
         fn default() -> Self {
             Self {
                 data: Err("no value supplied for data".to_string()),
@@ -1673,8 +1694,8 @@ pub mod builder {
     impl Box {
         pub fn data<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.data = value
                 .try_into()
@@ -1688,7 +1709,7 @@ pub mod builder {
             Ok(Self { data: value.data? })
         }
     }
-    impl From<super::Box> for Box {
+    impl ::std::convert::From<super::Box> for Box {
         fn from(value: super::Box) -> Self {
             Self {
                 data: Ok(value.data),
@@ -1699,7 +1720,7 @@ pub mod builder {
     pub struct Copy {
         value: ::std::result::Result<i64, ::std::string::String>,
     }
-    impl Default for Copy {
+    impl ::std::default::Default for Copy {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -1709,8 +1730,8 @@ pub mod builder {
     impl Copy {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<i64>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<i64>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -1726,7 +1747,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Copy> for Copy {
+    impl ::std::convert::From<super::Copy> for Copy {
         fn from(value: super::Copy) -> Self {
             Self {
                 value: Ok(value.value),
@@ -1740,7 +1761,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for DoubleOptionCollision {
+    impl ::std::default::Default for DoubleOptionCollision {
         fn default() -> Self {
             Self {
                 option: Ok(Default::default()),
@@ -1750,8 +1771,8 @@ pub mod builder {
     impl DoubleOptionCollision {
         pub fn option<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::DoubleOptionCollisionOption>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::DoubleOptionCollisionOption>>,
+            T::Error: ::std::fmt::Display,
         {
             self.option = value
                 .try_into()
@@ -1769,7 +1790,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::DoubleOptionCollision> for DoubleOptionCollision {
+    impl ::std::convert::From<super::DoubleOptionCollision> for DoubleOptionCollision {
         fn from(value: super::DoubleOptionCollision) -> Self {
             Self {
                 option: Ok(value.option),
@@ -1783,7 +1804,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for DoubleOptionCollisionOption {
+    impl ::std::default::Default for DoubleOptionCollisionOption {
         fn default() -> Self {
             Self {
                 option: Ok(Default::default()),
@@ -1793,8 +1814,8 @@ pub mod builder {
     impl DoubleOptionCollisionOption {
         pub fn option<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.option = value
                 .try_into()
@@ -1812,7 +1833,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
+    impl ::std::convert::From<super::DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
         fn from(value: super::DoubleOptionCollisionOption) -> Self {
             Self {
                 option: Ok(value.option),
@@ -1823,7 +1844,7 @@ pub mod builder {
     pub struct Drop {
         cleanup: ::std::result::Result<bool, ::std::string::String>,
     }
-    impl Default for Drop {
+    impl ::std::default::Default for Drop {
         fn default() -> Self {
             Self {
                 cleanup: Err("no value supplied for cleanup".to_string()),
@@ -1833,8 +1854,8 @@ pub mod builder {
     impl Drop {
         pub fn cleanup<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<bool>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<bool>,
+            T::Error: ::std::fmt::Display,
         {
             self.cleanup = value
                 .try_into()
@@ -1850,7 +1871,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Drop> for Drop {
+    impl ::std::convert::From<super::Drop> for Drop {
         fn from(value: super::Drop) -> Self {
             Self {
                 cleanup: Ok(value.cleanup),
@@ -1865,7 +1886,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for FlattenedKeywords {
+    impl ::std::default::Default for FlattenedKeywords {
         fn default() -> Self {
             Self {
                 normal: Err("no value supplied for normal".to_string()),
@@ -1876,8 +1897,8 @@ pub mod builder {
     impl FlattenedKeywords {
         pub fn normal<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.normal = value
                 .try_into()
@@ -1886,10 +1907,10 @@ pub mod builder {
         }
         pub fn extra<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<
+            T: ::std::convert::TryInto<
                 ::std::collections::HashMap<::std::string::String, ::std::string::String>,
             >,
-            T::Error: std::fmt::Display,
+            T::Error: ::std::fmt::Display,
         {
             self.extra = value
                 .try_into()
@@ -1908,7 +1929,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::FlattenedKeywords> for FlattenedKeywords {
+    impl ::std::convert::From<super::FlattenedKeywords> for FlattenedKeywords {
         fn from(value: super::FlattenedKeywords) -> Self {
             Self {
                 normal: Ok(value.normal),
@@ -1923,7 +1944,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for MapOfKeywords {
+    impl ::std::default::Default for MapOfKeywords {
         fn default() -> Self {
             Self {
                 keyword_map: Err("no value supplied for keyword_map".to_string()),
@@ -1933,13 +1954,13 @@ pub mod builder {
     impl MapOfKeywords {
         pub fn keyword_map<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<
+            T: ::std::convert::TryInto<
                 ::std::collections::HashMap<
                     ::std::string::String,
                     super::MapOfKeywordsKeywordMapValue,
                 >,
             >,
-            T::Error: std::fmt::Display,
+            T::Error: ::std::fmt::Display,
         {
             self.keyword_map = value
                 .try_into()
@@ -1957,7 +1978,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::MapOfKeywords> for MapOfKeywords {
+    impl ::std::convert::From<super::MapOfKeywords> for MapOfKeywords {
         fn from(value: super::MapOfKeywords) -> Self {
             Self {
                 keyword_map: Ok(value.keyword_map),
@@ -1976,7 +1997,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for NestedTypeCollisions {
+    impl ::std::default::Default for NestedTypeCollisions {
         fn default() -> Self {
             Self {
                 option_type: Ok(Default::default()),
@@ -1988,8 +2009,10 @@ pub mod builder {
     impl NestedTypeCollisions {
         pub fn option_type<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::NestedTypeCollisionsOptionType>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                ::std::option::Option<super::NestedTypeCollisionsOptionType>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.option_type = value
                 .try_into()
@@ -1998,8 +2021,8 @@ pub mod builder {
         }
         pub fn type_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::TypeWithOptionField>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::TypeWithOptionField>,
+            T::Error: ::std::fmt::Display,
         {
             self.type_ = value
                 .try_into()
@@ -2008,8 +2031,8 @@ pub mod builder {
         }
         pub fn types<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<super::TypeWithOptionField>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::TypeWithOptionField>>,
+            T::Error: ::std::fmt::Display,
         {
             self.types = value
                 .try_into()
@@ -2029,7 +2052,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::NestedTypeCollisions> for NestedTypeCollisions {
+    impl ::std::convert::From<super::NestedTypeCollisions> for NestedTypeCollisions {
         fn from(value: super::NestedTypeCollisions) -> Self {
             Self {
                 option_type: Ok(value.option_type),
@@ -2045,7 +2068,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for NestedTypeCollisionsOptionType {
+    impl ::std::default::Default for NestedTypeCollisionsOptionType {
         fn default() -> Self {
             Self {
                 type_: Ok(Default::default()),
@@ -2055,8 +2078,8 @@ pub mod builder {
     impl NestedTypeCollisionsOptionType {
         pub fn type_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.type_ = value
                 .try_into()
@@ -2076,7 +2099,9 @@ pub mod builder {
             })
         }
     }
-    impl From<super::NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
+    impl ::std::convert::From<super::NestedTypeCollisionsOptionType>
+        for NestedTypeCollisionsOptionType
+    {
         fn from(value: super::NestedTypeCollisionsOptionType) -> Self {
             Self {
                 type_: Ok(value.type_),
@@ -2087,7 +2112,7 @@ pub mod builder {
     pub struct Option {
         maybe: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Option {
+    impl ::std::default::Default for Option {
         fn default() -> Self {
             Self {
                 maybe: Err("no value supplied for maybe".to_string()),
@@ -2097,8 +2122,8 @@ pub mod builder {
     impl Option {
         pub fn maybe<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.maybe = value
                 .try_into()
@@ -2114,7 +2139,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Option> for Option {
+    impl ::std::convert::From<super::Option> for Option {
         fn from(value: super::Option) -> Self {
             Self {
                 maybe: Ok(value.maybe),
@@ -2125,7 +2150,7 @@ pub mod builder {
     pub struct Pin {
         pointer: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Pin {
+    impl ::std::default::Default for Pin {
         fn default() -> Self {
             Self {
                 pointer: Err("no value supplied for pointer".to_string()),
@@ -2135,8 +2160,8 @@ pub mod builder {
     impl Pin {
         pub fn pointer<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.pointer = value
                 .try_into()
@@ -2152,7 +2177,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Pin> for Pin {
+    impl ::std::convert::From<super::Pin> for Pin {
         fn from(value: super::Pin) -> Self {
             Self {
                 pointer: Ok(value.pointer),
@@ -2212,7 +2237,7 @@ pub mod builder {
         while_: ::std::result::Result<::std::string::String, ::std::string::String>,
         yield_: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for RustKeywordMonster {
+    impl ::std::default::Default for RustKeywordMonster {
         fn default() -> Self {
             Self {
                 abstract_: Err("no value supplied for abstract_".to_string()),
@@ -2271,8 +2296,8 @@ pub mod builder {
     impl RustKeywordMonster {
         pub fn abstract_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.abstract_ = value
                 .try_into()
@@ -2281,8 +2306,8 @@ pub mod builder {
         }
         pub fn as_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.as_ = value
                 .try_into()
@@ -2291,8 +2316,8 @@ pub mod builder {
         }
         pub fn async_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.async_ = value
                 .try_into()
@@ -2301,8 +2326,8 @@ pub mod builder {
         }
         pub fn await_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.await_ = value
                 .try_into()
@@ -2311,8 +2336,8 @@ pub mod builder {
         }
         pub fn become_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.become_ = value
                 .try_into()
@@ -2321,8 +2346,8 @@ pub mod builder {
         }
         pub fn box_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.box_ = value
                 .try_into()
@@ -2331,8 +2356,8 @@ pub mod builder {
         }
         pub fn break_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.break_ = value
                 .try_into()
@@ -2341,8 +2366,8 @@ pub mod builder {
         }
         pub fn const_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.const_ = value
                 .try_into()
@@ -2351,8 +2376,8 @@ pub mod builder {
         }
         pub fn continue_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.continue_ = value
                 .try_into()
@@ -2361,8 +2386,8 @@ pub mod builder {
         }
         pub fn crate_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.crate_ = value
                 .try_into()
@@ -2371,8 +2396,8 @@ pub mod builder {
         }
         pub fn do_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.do_ = value
                 .try_into()
@@ -2381,8 +2406,8 @@ pub mod builder {
         }
         pub fn dyn_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.dyn_ = value
                 .try_into()
@@ -2391,8 +2416,8 @@ pub mod builder {
         }
         pub fn else_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.else_ = value
                 .try_into()
@@ -2401,8 +2426,8 @@ pub mod builder {
         }
         pub fn enum_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.enum_ = value
                 .try_into()
@@ -2411,8 +2436,8 @@ pub mod builder {
         }
         pub fn extern_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.extern_ = value
                 .try_into()
@@ -2421,8 +2446,8 @@ pub mod builder {
         }
         pub fn false_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.false_ = value
                 .try_into()
@@ -2431,8 +2456,8 @@ pub mod builder {
         }
         pub fn final_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.final_ = value
                 .try_into()
@@ -2441,8 +2466,8 @@ pub mod builder {
         }
         pub fn fn_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.fn_ = value
                 .try_into()
@@ -2451,8 +2476,8 @@ pub mod builder {
         }
         pub fn for_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.for_ = value
                 .try_into()
@@ -2461,8 +2486,8 @@ pub mod builder {
         }
         pub fn if_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.if_ = value
                 .try_into()
@@ -2471,8 +2496,8 @@ pub mod builder {
         }
         pub fn impl_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.impl_ = value
                 .try_into()
@@ -2481,8 +2506,8 @@ pub mod builder {
         }
         pub fn in_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.in_ = value
                 .try_into()
@@ -2491,8 +2516,8 @@ pub mod builder {
         }
         pub fn let_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.let_ = value
                 .try_into()
@@ -2501,8 +2526,8 @@ pub mod builder {
         }
         pub fn loop_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.loop_ = value
                 .try_into()
@@ -2511,8 +2536,8 @@ pub mod builder {
         }
         pub fn macro_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.macro_ = value
                 .try_into()
@@ -2521,8 +2546,8 @@ pub mod builder {
         }
         pub fn match_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.match_ = value
                 .try_into()
@@ -2531,8 +2556,8 @@ pub mod builder {
         }
         pub fn mod_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.mod_ = value
                 .try_into()
@@ -2541,8 +2566,8 @@ pub mod builder {
         }
         pub fn move_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.move_ = value
                 .try_into()
@@ -2551,8 +2576,8 @@ pub mod builder {
         }
         pub fn mut_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.mut_ = value
                 .try_into()
@@ -2561,8 +2586,8 @@ pub mod builder {
         }
         pub fn override_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.override_ = value
                 .try_into()
@@ -2571,8 +2596,8 @@ pub mod builder {
         }
         pub fn priv_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.priv_ = value
                 .try_into()
@@ -2581,8 +2606,8 @@ pub mod builder {
         }
         pub fn pub_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.pub_ = value
                 .try_into()
@@ -2591,8 +2616,8 @@ pub mod builder {
         }
         pub fn ref_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.ref_ = value
                 .try_into()
@@ -2601,8 +2626,8 @@ pub mod builder {
         }
         pub fn return_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.return_ = value
                 .try_into()
@@ -2611,8 +2636,8 @@ pub mod builder {
         }
         pub fn self_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.self_ = value
                 .try_into()
@@ -2621,8 +2646,8 @@ pub mod builder {
         }
         pub fn static_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.static_ = value
                 .try_into()
@@ -2631,8 +2656,8 @@ pub mod builder {
         }
         pub fn struct_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.struct_ = value
                 .try_into()
@@ -2641,8 +2666,8 @@ pub mod builder {
         }
         pub fn super_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.super_ = value
                 .try_into()
@@ -2651,8 +2676,8 @@ pub mod builder {
         }
         pub fn trait_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.trait_ = value
                 .try_into()
@@ -2661,8 +2686,8 @@ pub mod builder {
         }
         pub fn true_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.true_ = value
                 .try_into()
@@ -2671,8 +2696,8 @@ pub mod builder {
         }
         pub fn try_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.try_ = value
                 .try_into()
@@ -2681,8 +2706,8 @@ pub mod builder {
         }
         pub fn type_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.type_ = value
                 .try_into()
@@ -2691,8 +2716,8 @@ pub mod builder {
         }
         pub fn typeof_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.typeof_ = value
                 .try_into()
@@ -2701,8 +2726,8 @@ pub mod builder {
         }
         pub fn unsafe_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.unsafe_ = value
                 .try_into()
@@ -2711,8 +2736,8 @@ pub mod builder {
         }
         pub fn unsized_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.unsized_ = value
                 .try_into()
@@ -2721,8 +2746,8 @@ pub mod builder {
         }
         pub fn use_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.use_ = value
                 .try_into()
@@ -2731,8 +2756,8 @@ pub mod builder {
         }
         pub fn virtual_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.virtual_ = value
                 .try_into()
@@ -2741,8 +2766,8 @@ pub mod builder {
         }
         pub fn where_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.where_ = value
                 .try_into()
@@ -2751,8 +2776,8 @@ pub mod builder {
         }
         pub fn while_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.while_ = value
                 .try_into()
@@ -2761,8 +2786,8 @@ pub mod builder {
         }
         pub fn yield_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.yield_ = value
                 .try_into()
@@ -2829,7 +2854,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::RustKeywordMonster> for RustKeywordMonster {
+    impl ::std::convert::From<super::RustKeywordMonster> for RustKeywordMonster {
         fn from(value: super::RustKeywordMonster) -> Self {
             Self {
                 abstract_: Ok(value.abstract_),
@@ -2889,7 +2914,7 @@ pub mod builder {
     pub struct Send {
         message: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Send {
+    impl ::std::default::Default for Send {
         fn default() -> Self {
             Self {
                 message: Err("no value supplied for message".to_string()),
@@ -2899,8 +2924,8 @@ pub mod builder {
     impl Send {
         pub fn message<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.message = value
                 .try_into()
@@ -2916,7 +2941,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Send> for Send {
+    impl ::std::convert::From<super::Send> for Send {
         fn from(value: super::Send) -> Self {
             Self {
                 message: Ok(value.message),
@@ -2933,7 +2958,7 @@ pub mod builder {
         str: ::std::result::Result<super::StdStr, ::std::string::String>,
         string: ::std::result::Result<super::StdString, ::std::string::String>,
     }
-    impl Default for Std {
+    impl ::std::default::Default for Std {
         fn default() -> Self {
             Self {
                 boxed: Err("no value supplied for boxed".to_string()),
@@ -2949,8 +2974,8 @@ pub mod builder {
     impl Std {
         pub fn boxed<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdBoxed>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdBoxed>,
+            T::Error: ::std::fmt::Display,
         {
             self.boxed = value
                 .try_into()
@@ -2959,8 +2984,8 @@ pub mod builder {
         }
         pub fn convert<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdConvert>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdConvert>,
+            T::Error: ::std::fmt::Display,
         {
             self.convert = value
                 .try_into()
@@ -2969,8 +2994,8 @@ pub mod builder {
         }
         pub fn fmt<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdFmt>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdFmt>,
+            T::Error: ::std::fmt::Display,
         {
             self.fmt = value
                 .try_into()
@@ -2979,8 +3004,8 @@ pub mod builder {
         }
         pub fn option<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdOption>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdOption>,
+            T::Error: ::std::fmt::Display,
         {
             self.option = value
                 .try_into()
@@ -2989,8 +3014,8 @@ pub mod builder {
         }
         pub fn result<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdResult>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdResult>,
+            T::Error: ::std::fmt::Display,
         {
             self.result = value
                 .try_into()
@@ -2999,8 +3024,8 @@ pub mod builder {
         }
         pub fn str<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdStr>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdStr>,
+            T::Error: ::std::fmt::Display,
         {
             self.str = value
                 .try_into()
@@ -3009,8 +3034,8 @@ pub mod builder {
         }
         pub fn string<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::StdString>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::StdString>,
+            T::Error: ::std::fmt::Display,
         {
             self.string = value
                 .try_into()
@@ -3032,7 +3057,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Std> for Std {
+    impl ::std::convert::From<super::Std> for Std {
         fn from(value: super::Std) -> Self {
             Self {
                 boxed: Ok(value.boxed),
@@ -3049,7 +3074,7 @@ pub mod builder {
     pub struct StdBoxed {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdBoxed {
+    impl ::std::default::Default for StdBoxed {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3059,8 +3084,8 @@ pub mod builder {
     impl StdBoxed {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3076,7 +3101,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdBoxed> for StdBoxed {
+    impl ::std::convert::From<super::StdBoxed> for StdBoxed {
         fn from(value: super::StdBoxed) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3087,7 +3112,7 @@ pub mod builder {
     pub struct StdConvert {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdConvert {
+    impl ::std::default::Default for StdConvert {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3097,8 +3122,8 @@ pub mod builder {
     impl StdConvert {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3116,7 +3141,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdConvert> for StdConvert {
+    impl ::std::convert::From<super::StdConvert> for StdConvert {
         fn from(value: super::StdConvert) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3127,7 +3152,7 @@ pub mod builder {
     pub struct StdFmt {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdFmt {
+    impl ::std::default::Default for StdFmt {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3137,8 +3162,8 @@ pub mod builder {
     impl StdFmt {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3154,7 +3179,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdFmt> for StdFmt {
+    impl ::std::convert::From<super::StdFmt> for StdFmt {
         fn from(value: super::StdFmt) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3165,7 +3190,7 @@ pub mod builder {
     pub struct StdOption {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdOption {
+    impl ::std::default::Default for StdOption {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3175,8 +3200,8 @@ pub mod builder {
     impl StdOption {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3194,7 +3219,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdOption> for StdOption {
+    impl ::std::convert::From<super::StdOption> for StdOption {
         fn from(value: super::StdOption) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3205,7 +3230,7 @@ pub mod builder {
     pub struct StdResult {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdResult {
+    impl ::std::default::Default for StdResult {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3215,8 +3240,8 @@ pub mod builder {
     impl StdResult {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3234,7 +3259,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdResult> for StdResult {
+    impl ::std::convert::From<super::StdResult> for StdResult {
         fn from(value: super::StdResult) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3245,7 +3270,7 @@ pub mod builder {
     pub struct StdStr {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdStr {
+    impl ::std::default::Default for StdStr {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3255,8 +3280,8 @@ pub mod builder {
     impl StdStr {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3272,7 +3297,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdStr> for StdStr {
+    impl ::std::convert::From<super::StdStr> for StdStr {
         fn from(value: super::StdStr) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3283,7 +3308,7 @@ pub mod builder {
     pub struct StdString {
         value: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for StdString {
+    impl ::std::default::Default for StdString {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -3293,8 +3318,8 @@ pub mod builder {
     impl StdString {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -3312,7 +3337,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::StdString> for StdString {
+    impl ::std::convert::From<super::StdString> for StdString {
         fn from(value: super::StdString) -> Self {
             Self {
                 value: Ok(value.value),
@@ -3323,7 +3348,7 @@ pub mod builder {
     pub struct String {
         text: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for String {
+    impl ::std::default::Default for String {
         fn default() -> Self {
             Self {
                 text: Err("no value supplied for text".to_string()),
@@ -3333,8 +3358,8 @@ pub mod builder {
     impl String {
         pub fn text<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.text = value
                 .try_into()
@@ -3348,7 +3373,7 @@ pub mod builder {
             Ok(Self { text: value.text? })
         }
     }
-    impl From<super::String> for String {
+    impl ::std::convert::From<super::String> for String {
         fn from(value: super::String) -> Self {
             Self {
                 text: Ok(value.text),
@@ -3359,7 +3384,7 @@ pub mod builder {
     pub struct Sync {
         data: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Sync {
+    impl ::std::default::Default for Sync {
         fn default() -> Self {
             Self {
                 data: Err("no value supplied for data".to_string()),
@@ -3369,8 +3394,8 @@ pub mod builder {
     impl Sync {
         pub fn data<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.data = value
                 .try_into()
@@ -3384,7 +3409,7 @@ pub mod builder {
             Ok(Self { data: value.data? })
         }
     }
-    impl From<super::Sync> for Sync {
+    impl ::std::convert::From<super::Sync> for Sync {
         fn from(value: super::Sync) -> Self {
             Self {
                 data: Ok(value.data),
@@ -3399,7 +3424,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for TypeWithOptionField {
+    impl ::std::default::Default for TypeWithOptionField {
         fn default() -> Self {
             Self {
                 boxed_field: Err("no value supplied for boxed_field".to_string()),
@@ -3410,8 +3435,8 @@ pub mod builder {
     impl TypeWithOptionField {
         pub fn boxed_field<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::Box>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::Box>,
+            T::Error: ::std::fmt::Display,
         {
             self.boxed_field = value
                 .try_into()
@@ -3420,8 +3445,8 @@ pub mod builder {
         }
         pub fn optional_field<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.optional_field = value
                 .try_into()
@@ -3440,7 +3465,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TypeWithOptionField> for TypeWithOptionField {
+    impl ::std::convert::From<super::TypeWithOptionField> for TypeWithOptionField {
         fn from(value: super::TypeWithOptionField) -> Self {
             Self {
                 boxed_field: Ok(value.boxed_field),
@@ -3452,7 +3477,7 @@ pub mod builder {
     pub struct Vec {
         items: ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
     }
-    impl Default for Vec {
+    impl ::std::default::Default for Vec {
         fn default() -> Self {
             Self {
                 items: Err("no value supplied for items".to_string()),
@@ -3462,8 +3487,8 @@ pub mod builder {
     impl Vec {
         pub fn items<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.items = value
                 .try_into()
@@ -3479,7 +3504,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Vec> for Vec {
+    impl ::std::convert::From<super::Vec> for Vec {
         fn from(value: super::Vec) -> Self {
             Self {
                 items: Ok(value.items),

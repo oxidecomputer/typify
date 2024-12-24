@@ -518,19 +518,16 @@ impl TypeSpaceSettings {
     ///
     /// ## Requirements
     ///
-    /// - Have an `is_empty` method that returns a boolean.
-    /// - Have two generic parameters, `K` and `V`.
-    /// - Have a [`std::fmt::Debug`] impl.
-    /// - Have a [`serde::Serialize``] impl.
-    /// - Have a [`serde::Deserialize``] impl.
-    /// - Have a [`Clone`] impl.
+    /// - An `is_empty` method that returns a boolean
+    /// - Two generic parameters, `K` and `V`
+    /// - [`Default`] + [`Clone`] + [`Debug`] +
+    ///   [`Serialize`][serde::Serialize] + [`Deserialize`][serde::Deserialize]
     ///
     /// ## Examples
     ///
     /// - [`::std::collections::HashMap`]
     /// - [`::std::collections::BTreeMap`]
-    /// - [`::indexmap::IndexMap`]
-    ///
+    /// - [`::indexmap::IndexMap`](https://docs.rs/indexmap/latest/indexmap/map/struct.IndexMap.html)
     pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
         self.map_type = map_type.into();
         self

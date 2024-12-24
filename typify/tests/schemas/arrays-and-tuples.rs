@@ -45,17 +45,17 @@ impl ::std::ops::Deref for ArraySansItems {
         &self.0
     }
 }
-impl From<ArraySansItems> for Vec<::serde_json::Value> {
+impl ::std::convert::From<ArraySansItems> for Vec<::serde_json::Value> {
     fn from(value: ArraySansItems) -> Self {
         value.0
     }
 }
-impl From<&ArraySansItems> for ArraySansItems {
+impl ::std::convert::From<&ArraySansItems> for ArraySansItems {
     fn from(value: &ArraySansItems) -> Self {
         value.clone()
     }
 }
-impl From<Vec<::serde_json::Value>> for ArraySansItems {
+impl ::std::convert::From<Vec<::serde_json::Value>> for ArraySansItems {
     fn from(value: Vec<::serde_json::Value>) -> Self {
         Self(value)
     }
@@ -91,17 +91,17 @@ impl ::std::ops::Deref for LessSimpleTwoTuple {
         &self.0
     }
 }
-impl From<LessSimpleTwoTuple> for (::std::string::String, ::std::string::String) {
+impl ::std::convert::From<LessSimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: LessSimpleTwoTuple) -> Self {
         value.0
     }
 }
-impl From<&LessSimpleTwoTuple> for LessSimpleTwoTuple {
+impl ::std::convert::From<&LessSimpleTwoTuple> for LessSimpleTwoTuple {
     fn from(value: &LessSimpleTwoTuple) -> Self {
         value.clone()
     }
 }
-impl From<(::std::string::String, ::std::string::String)> for LessSimpleTwoTuple {
+impl ::std::convert::From<(::std::string::String, ::std::string::String)> for LessSimpleTwoTuple {
     fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
@@ -129,17 +129,17 @@ impl ::std::ops::Deref for SimpleTwoArray {
         &self.0
     }
 }
-impl From<SimpleTwoArray> for [::std::string::String; 2usize] {
+impl ::std::convert::From<SimpleTwoArray> for [::std::string::String; 2usize] {
     fn from(value: SimpleTwoArray) -> Self {
         value.0
     }
 }
-impl From<&SimpleTwoArray> for SimpleTwoArray {
+impl ::std::convert::From<&SimpleTwoArray> for SimpleTwoArray {
     fn from(value: &SimpleTwoArray) -> Self {
         value.clone()
     }
 }
-impl From<[::std::string::String; 2usize]> for SimpleTwoArray {
+impl ::std::convert::From<[::std::string::String; 2usize]> for SimpleTwoArray {
     fn from(value: [::std::string::String; 2usize]) -> Self {
         Self(value)
     }
@@ -172,17 +172,17 @@ impl ::std::ops::Deref for SimpleTwoTuple {
         &self.0
     }
 }
-impl From<SimpleTwoTuple> for (::std::string::String, ::std::string::String) {
+impl ::std::convert::From<SimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: SimpleTwoTuple) -> Self {
         value.0
     }
 }
-impl From<&SimpleTwoTuple> for SimpleTwoTuple {
+impl ::std::convert::From<&SimpleTwoTuple> for SimpleTwoTuple {
     fn from(value: &SimpleTwoTuple) -> Self {
         value.clone()
     }
 }
-impl From<(::std::string::String, ::std::string::String)> for SimpleTwoTuple {
+impl ::std::convert::From<(::std::string::String, ::std::string::String)> for SimpleTwoTuple {
     fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
@@ -215,17 +215,17 @@ impl ::std::ops::Deref for UnsimpleTwoTuple {
         &self.0
     }
 }
-impl From<UnsimpleTwoTuple> for (::std::string::String, ::std::string::String) {
+impl ::std::convert::From<UnsimpleTwoTuple> for (::std::string::String, ::std::string::String) {
     fn from(value: UnsimpleTwoTuple) -> Self {
         value.0
     }
 }
-impl From<&UnsimpleTwoTuple> for UnsimpleTwoTuple {
+impl ::std::convert::From<&UnsimpleTwoTuple> for UnsimpleTwoTuple {
     fn from(value: &UnsimpleTwoTuple) -> Self {
         value.clone()
     }
 }
-impl From<(::std::string::String, ::std::string::String)> for UnsimpleTwoTuple {
+impl ::std::convert::From<(::std::string::String, ::std::string::String)> for UnsimpleTwoTuple {
     fn from(value: (::std::string::String, ::std::string::String)) -> Self {
         Self(value)
     }
@@ -254,17 +254,17 @@ impl ::std::ops::Deref for YoloTwoArray {
         &self.0
     }
 }
-impl From<YoloTwoArray> for [::serde_json::Value; 2usize] {
+impl ::std::convert::From<YoloTwoArray> for [::serde_json::Value; 2usize] {
     fn from(value: YoloTwoArray) -> Self {
         value.0
     }
 }
-impl From<&YoloTwoArray> for YoloTwoArray {
+impl ::std::convert::From<&YoloTwoArray> for YoloTwoArray {
     fn from(value: &YoloTwoArray) -> Self {
         value.clone()
     }
 }
-impl From<[::serde_json::Value; 2usize]> for YoloTwoArray {
+impl ::std::convert::From<[::serde_json::Value; 2usize]> for YoloTwoArray {
     fn from(value: [::serde_json::Value; 2usize]) -> Self {
         Self(value)
     }

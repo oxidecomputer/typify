@@ -50,17 +50,21 @@ impl ::std::ops::Deref for Fruit {
         &self.0
     }
 }
-impl From<Fruit> for ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+impl ::std::convert::From<Fruit>
+    for ::std::collections::HashMap<::std::string::String, ::std::string::String>
+{
     fn from(value: Fruit) -> Self {
         value.0
     }
 }
-impl From<&Fruit> for Fruit {
+impl ::std::convert::From<&Fruit> for Fruit {
     fn from(value: &Fruit) -> Self {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>> for Fruit {
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
+    for Fruit
+{
     fn from(
         value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
     ) -> Self {
@@ -100,17 +104,17 @@ pub enum FruitOrVeg {
     Veg(Veggie),
     Fruit(Fruit),
 }
-impl From<&FruitOrVeg> for FruitOrVeg {
+impl ::std::convert::From<&FruitOrVeg> for FruitOrVeg {
     fn from(value: &FruitOrVeg) -> Self {
         value.clone()
     }
 }
-impl From<Veggie> for FruitOrVeg {
+impl ::std::convert::From<Veggie> for FruitOrVeg {
     fn from(value: Veggie) -> Self {
         Self::Veg(value)
     }
 }
-impl From<Fruit> for FruitOrVeg {
+impl ::std::convert::From<Fruit> for FruitOrVeg {
     fn from(value: Fruit) -> Self {
         Self::Fruit(value)
     }
@@ -148,7 +152,7 @@ pub struct Veggie {
     #[serde(rename = "veggieName")]
     pub veggie_name: ::std::string::String,
 }
-impl From<&Veggie> for Veggie {
+impl ::std::convert::From<&Veggie> for Veggie {
     fn from(value: &Veggie) -> Self {
         value.clone()
     }
@@ -192,9 +196,17 @@ pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
 }
-impl From<&Veggies> for Veggies {
+impl ::std::convert::From<&Veggies> for Veggies {
     fn from(value: &Veggies) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for Veggies {
+    fn default() -> Self {
+        Self {
+            fruits: Default::default(),
+            vegetables: Default::default(),
+        }
     }
 }
 impl Veggies {
@@ -209,7 +221,7 @@ pub mod builder {
         veggie_like: ::std::result::Result<bool, ::std::string::String>,
         veggie_name: ::std::result::Result<::std::string::String, ::std::string::String>,
     }
-    impl Default for Veggie {
+    impl ::std::default::Default for Veggie {
         fn default() -> Self {
             Self {
                 veggie_like: Err("no value supplied for veggie_like".to_string()),
@@ -220,8 +232,8 @@ pub mod builder {
     impl Veggie {
         pub fn veggie_like<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<bool>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<bool>,
+            T::Error: ::std::fmt::Display,
         {
             self.veggie_like = value
                 .try_into()
@@ -230,8 +242,8 @@ pub mod builder {
         }
         pub fn veggie_name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.veggie_name = value
                 .try_into()
@@ -248,7 +260,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Veggie> for Veggie {
+    impl ::std::convert::From<super::Veggie> for Veggie {
         fn from(value: super::Veggie) -> Self {
             Self {
                 veggie_like: Ok(value.veggie_like),
@@ -262,7 +274,7 @@ pub mod builder {
             ::std::result::Result<::std::vec::Vec<::std::string::String>, ::std::string::String>,
         vegetables: ::std::result::Result<::std::vec::Vec<super::Veggie>, ::std::string::String>,
     }
-    impl Default for Veggies {
+    impl ::std::default::Default for Veggies {
         fn default() -> Self {
             Self {
                 fruits: Ok(Default::default()),
@@ -273,8 +285,8 @@ pub mod builder {
     impl Veggies {
         pub fn fruits<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.fruits = value
                 .try_into()
@@ -283,8 +295,8 @@ pub mod builder {
         }
         pub fn vegetables<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<super::Veggie>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Veggie>>,
+            T::Error: ::std::fmt::Display,
         {
             self.vegetables = value
                 .try_into()
@@ -301,7 +313,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Veggies> for Veggies {
+    impl ::std::convert::From<super::Veggies> for Veggies {
         fn from(value: super::Veggies) -> Self {
             Self {
                 fruits: Ok(value.fruits),
