@@ -113,6 +113,7 @@ impl FloatsArentTerribleImTold {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct JustOne(pub ::std::string::String);
 impl ::std::ops::Deref for JustOne {
     type Target = ::std::string::String;

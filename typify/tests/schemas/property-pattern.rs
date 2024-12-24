@@ -79,6 +79,7 @@ impl TestGrammarForPatternProperties {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TestGrammarForPatternPropertiesRulesKey(::std::string::String);
 impl ::std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
     type Target = ::std::string::String;

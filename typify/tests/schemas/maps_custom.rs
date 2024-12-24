@@ -38,6 +38,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct DeadSimple(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for DeadSimple {
     type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
@@ -86,6 +87,7 @@ impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json:
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Eh(pub ::std::string::String);
 impl ::std::ops::Deref for Eh {
     type Target = ::std::string::String;
@@ -137,6 +139,7 @@ impl ::std::fmt::Display for Eh {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithDateKeys(pub std::collections::BTreeMap<chrono::naive::NaiveDate, Value>);
 impl ::std::ops::Deref for MapWithDateKeys {
     type Target = std::collections::BTreeMap<chrono::naive::NaiveDate, Value>;
@@ -181,6 +184,7 @@ impl ::std::convert::From<std::collections::BTreeMap<chrono::naive::NaiveDate, V
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithDateTimeKeys(
     pub std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>,
 );
@@ -228,6 +232,7 @@ impl ::std::convert::From<std::collections::BTreeMap<chrono::DateTime<chrono::of
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithKeys(pub std::collections::BTreeMap<Eh, Value>);
 impl ::std::ops::Deref for MapWithKeys {
     type Target = std::collections::BTreeMap<Eh, Value>;
@@ -271,6 +276,7 @@ impl ::std::convert::From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Value(pub ::std::string::String);
 impl ::std::ops::Deref for Value {
     type Target = ::std::string::String;

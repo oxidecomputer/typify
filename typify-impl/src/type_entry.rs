@@ -1266,7 +1266,7 @@ impl TypeEntry {
     ) {
         let TypeEntryNewtype {
             name,
-            rename,
+            rename: _,
             description,
             default,
             type_id,
@@ -1274,12 +1274,6 @@ impl TypeEntry {
             schema: SchemaWrapper(schema),
         } = newtype_details;
         let doc = make_doc(name, description.as_ref(), schema);
-
-        let serde = rename.as_ref().map(|old_name| {
-            quote! {
-                #[serde(rename = #old_name)]
-            }
-        });
 
         let type_name = format_ident!("{}", name);
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
@@ -1571,7 +1565,7 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
-            #serde
+            #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
 
             impl ::std::ops::Deref for #type_name {

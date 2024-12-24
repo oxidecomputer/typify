@@ -386,6 +386,7 @@ impl EmptyObject {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct EmptyObjectProp(::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for EmptyObjectProp {
     type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
@@ -637,6 +638,7 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Ipv4Net(pub ::std::string::String);
 impl ::std::ops::Deref for Ipv4Net {
     type Target = ::std::string::String;
@@ -691,6 +693,7 @@ impl ::std::fmt::Display for Ipv4Net {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Ipv6Net(pub ::std::string::String);
 impl ::std::ops::Deref for Ipv6Net {
     type Target = ::std::string::String;
@@ -856,6 +859,7 @@ impl ::std::convert::From<&NeverEver> for NeverEver {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct NullStringEnumWithUnknownFormat(
     pub ::std::option::Option<NullStringEnumWithUnknownFormatInner>,
 );
@@ -1039,6 +1043,7 @@ impl ::std::convert::From<i64> for OneOfTypes {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct ReferenceDef(pub ::std::string::String);
 impl ::std::ops::Deref for ReferenceDef {
     type Target = ::std::string::String;
@@ -1273,6 +1278,7 @@ impl ::std::convert::From<&ShouldBeExclusive> for ShouldBeExclusive {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct StringVersion(pub ::std::string::String);
 impl ::std::ops::Deref for StringVersion {
     type Target = ::std::string::String;

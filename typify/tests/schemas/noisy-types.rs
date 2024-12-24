@@ -47,6 +47,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ArrayBs(pub ::std::vec::Vec<bool>);
 impl ::std::ops::Deref for ArrayBs {
     type Target = ::std::vec::Vec<bool>;
@@ -88,6 +89,7 @@ impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct IntegerBs(pub u64);
 impl ::std::ops::Deref for IntegerBs {
     type Target = u64;

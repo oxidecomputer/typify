@@ -19531,6 +19531,7 @@ impl ::std::convert::From<&CommitCommentCreatedComment> for CommitCommentCreated
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct CommitCommentEvent(pub CommitCommentCreated);
 impl ::std::ops::Deref for CommitCommentEvent {
     type Target = CommitCommentCreated;
@@ -19875,6 +19876,7 @@ impl ::std::convert::From<&ContentReferenceCreatedContentReference>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ContentReferenceEvent(pub ContentReferenceCreated);
 impl ::std::ops::Deref for ContentReferenceEvent {
     type Target = ContentReferenceCreated;
@@ -21087,6 +21089,7 @@ impl ::std::default::Default for DeploymentCreatedDeploymentPayload {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct DeploymentEvent(pub DeploymentCreated);
 impl ::std::ops::Deref for DeploymentEvent {
     type Target = DeploymentCreated;
@@ -21664,6 +21667,7 @@ impl ::std::convert::From<&DeploymentStatusCreatedDeploymentStatus>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct DeploymentStatusEvent(pub DeploymentStatusCreated);
 impl ::std::ops::Deref for DeploymentStatusEvent {
     type Target = DeploymentStatusCreated;
@@ -28088,6 +28092,7 @@ impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for ForkEventFo
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct GithubAppAuthorizationEvent(pub GithubAppAuthorizationRevoked);
 impl ::std::ops::Deref for GithubAppAuthorizationEvent {
     type Target = GithubAppAuthorizationRevoked;
@@ -50743,6 +50748,7 @@ impl ::std::convert::From<&IssuesUnlockedIssue> for IssuesUnlockedIssue {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct IssuesUnlockedIssueActiveLockReason(());
 impl ::std::ops::Deref for IssuesUnlockedIssueActiveLockReason {
     type Target = ();
@@ -56601,6 +56607,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MetaDeletedHookConfigCon
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MetaEvent(pub MetaDeleted);
 impl ::std::ops::Deref for MetaEvent {
     type Target = MetaDeleted;
@@ -69491,6 +69498,7 @@ impl ::std::convert::From<&PullRequestOpenedPullRequest> for PullRequestOpenedPu
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct PullRequestOpenedPullRequestActiveLockReason(());
 impl ::std::ops::Deref for PullRequestOpenedPullRequestActiveLockReason {
     type Target = ();
@@ -81145,6 +81153,7 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryDeletedAction 
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct RepositoryDispatchEvent(pub RepositoryDispatchOnDemandTest);
 impl ::std::ops::Deref for RepositoryDispatchEvent {
     type Target = RepositoryDispatchOnDemandTest;
@@ -94890,6 +94899,7 @@ impl ::std::convert::TryFrom<::std::string::String> for UserType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct WatchEvent(pub WatchStarted);
 impl ::std::ops::Deref for WatchEvent {
     type Target = WatchStarted;
@@ -96842,6 +96852,7 @@ impl ::std::convert::From<&WorkflowJobStartedWorkflowJob> for WorkflowJobStarted
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct WorkflowJobStartedWorkflowJobConclusion(());
 impl ::std::ops::Deref for WorkflowJobStartedWorkflowJobConclusion {
     type Target = ();

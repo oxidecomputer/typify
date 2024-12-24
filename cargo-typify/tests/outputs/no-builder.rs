@@ -43,6 +43,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
 impl ::std::ops::Deref for Fruit {
     type Target = ::std::collections::HashMap<::std::string::String, ::std::string::String>;

@@ -92,6 +92,7 @@ impl TestType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TestTypeWhereNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhereNot {
     type Target = ::std::string::String;
@@ -146,6 +147,7 @@ impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TestTypeWhyNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhyNot {
     type Target = ::std::string::String;
