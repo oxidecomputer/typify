@@ -37,6 +37,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct PatternString(::std::string::String);
 impl ::std::ops::Deref for PatternString {
     type Target = ::std::string::String;
@@ -115,6 +116,7 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct Sub10Primes(u32);
 impl ::std::ops::Deref for Sub10Primes {
     type Target = u32;

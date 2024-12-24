@@ -86,6 +86,7 @@ impl TestType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Eq, PartialEq)]
+#[serde(transparent)]
 pub struct TypeThatHasMoreDerives(
     pub ::std::collections::HashMap<::std::string::String, ::std::string::String>,
 );

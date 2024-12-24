@@ -303,6 +303,7 @@ impl From<IdOrYoloYolo> for IdOrYolo {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct IdOrYoloYolo(::std::string::String);
 impl ::std::ops::Deref for IdOrYoloYolo {
     type Target = ::std::string::String;
@@ -378,6 +379,7 @@ impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct Name(::std::string::String);
 impl ::std::ops::Deref for Name {
     type Target = ::std::string::String;

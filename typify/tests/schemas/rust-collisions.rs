@@ -1469,6 +1469,7 @@ impl std::convert::TryFrom<::std::string::String> for StringEnum {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct StringNewtype(::std::string::String);
 impl ::std::ops::Deref for StringNewtype {
     type Target = ::std::string::String;
@@ -1575,6 +1576,7 @@ impl Sync {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords(
     pub ::serde_json::Value,
 );

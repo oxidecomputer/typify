@@ -38,6 +38,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ArraySansItems(pub Vec<::serde_json::Value>);
 impl ::std::ops::Deref for ArraySansItems {
     type Target = Vec<::serde_json::Value>;
@@ -84,6 +85,7 @@ impl From<Vec<::serde_json::Value>> for ArraySansItems {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct LessSimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for LessSimpleTwoTuple {
     type Target = (::std::string::String, ::std::string::String);
@@ -122,6 +124,7 @@ impl From<(::std::string::String, ::std::string::String)> for LessSimpleTwoTuple
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct SimpleTwoArray(pub [::std::string::String; 2usize]);
 impl ::std::ops::Deref for SimpleTwoArray {
     type Target = [::std::string::String; 2usize];
@@ -165,6 +168,7 @@ impl From<[::std::string::String; 2usize]> for SimpleTwoArray {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct SimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for SimpleTwoTuple {
     type Target = (::std::string::String, ::std::string::String);
@@ -208,6 +212,7 @@ impl From<(::std::string::String, ::std::string::String)> for SimpleTwoTuple {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct UnsimpleTwoTuple(pub (::std::string::String, ::std::string::String));
 impl ::std::ops::Deref for UnsimpleTwoTuple {
     type Target = (::std::string::String, ::std::string::String);
@@ -247,6 +252,7 @@ impl From<(::std::string::String, ::std::string::String)> for UnsimpleTwoTuple {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct YoloTwoArray(pub [::serde_json::Value; 2usize]);
 impl ::std::ops::Deref for YoloTwoArray {
     type Target = [::serde_json::Value; 2usize];

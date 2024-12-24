@@ -165,6 +165,7 @@ impl From<i64> for OneOfSeveral {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ReallyJustNull(pub ());
 impl ::std::ops::Deref for ReallyJustNull {
     type Target = ();
@@ -206,6 +207,7 @@ impl From<()> for ReallyJustNull {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct SeriouslyAnything(pub ::serde_json::Value);
 impl ::std::ops::Deref for SeriouslyAnything {
     type Target = ::serde_json::Value;

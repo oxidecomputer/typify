@@ -11353,6 +11353,7 @@ impl From<NumberValue> for AxisTranslate {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct Background(pub StringOrSignal);
 impl ::std::ops::Deref for Background {
     type Target = StringOrSignal;
@@ -15295,6 +15296,7 @@ impl std::convert::TryFrom<::std::string::String> for BindVariant2Input {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct BindVariant3Input(::std::string::String);
 impl ::std::ops::Deref for BindVariant3Input {
     type Target = ::std::string::String;
@@ -22264,6 +22266,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -22775,6 +22778,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -23355,6 +23359,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -23944,6 +23949,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -25146,6 +25152,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -25657,6 +25664,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -26237,6 +26245,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -26826,6 +26835,7 @@ impl std::convert::TryFrom<::std::string::String>
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1(::std::string::String);
 impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
@@ -30670,6 +30680,7 @@ impl std::convert::TryFrom<::std::string::String> for DotbinTransformType {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Element(pub ::std::string::String);
 impl ::std::ops::Deref for Element {
     type Target = ::std::string::String;
@@ -30720,6 +30731,7 @@ impl ::std::fmt::Display for Element {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct Encode(pub ::std::collections::HashMap<EncodeKey, EncodeEntry>);
 impl ::std::ops::Deref for Encode {
     type Target = ::std::collections::HashMap<EncodeKey, EncodeEntry>;
@@ -31236,6 +31248,7 @@ impl From<&EncodeEntry> for EncodeEntry {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct EncodeKey(::std::string::String);
 impl ::std::ops::Deref for EncodeKey {
     type Target = ::std::string::String;
@@ -31491,6 +31504,7 @@ impl From<&Expr> for Expr {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct ExprString(pub ::std::string::String);
 impl ::std::ops::Deref for ExprString {
     type Target = ::std::string::String;
@@ -37787,6 +37801,7 @@ impl std::convert::TryFrom<::std::string::String> for GeoshapeTransformType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct GradientStops(pub ::std::vec::Vec<GradientStopsItem>);
 impl ::std::ops::Deref for GradientStops {
     type Target = ::std::vec::Vec<GradientStopsItem>;
@@ -71994,6 +72009,7 @@ impl From<BooleanOrSignal> for Markclip {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Marktype(pub ::std::string::String);
 impl ::std::ops::Deref for Marktype {
     type Target = ::std::string::String;
@@ -76238,6 +76254,7 @@ impl From<::std::boxed::Box<NumberValue>> for NumberValueVariant1Variant3Offset 
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct OnEvents(pub ::std::vec::Vec<OnEventsItem>);
 impl ::std::ops::Deref for OnEvents {
     type Target = ::std::vec::Vec<OnEventsItem>;
@@ -76553,6 +76570,7 @@ impl From<SignalRef> for OnEventsItemVariant1Update {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct OnMarkTrigger(pub ::std::vec::Vec<OnMarkTriggerItem>);
 impl ::std::ops::Deref for OnMarkTrigger {
     type Target = ::std::vec::Vec<OnMarkTriggerItem>;
@@ -76659,6 +76677,7 @@ impl From<&OnMarkTriggerItem> for OnMarkTriggerItem {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct OnTrigger(pub ::std::vec::Vec<OnTriggerItem>);
 impl ::std::ops::Deref for OnTrigger {
     type Target = ::std::vec::Vec<OnTriggerItem>;
@@ -87552,6 +87571,7 @@ impl std::convert::TryFrom<::std::string::String> for ScaleDataVariant2SortVaria
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ScaleField(pub StringOrSignal);
 impl ::std::ops::Deref for ScaleField {
     type Target = StringOrSignal;
@@ -97083,6 +97103,7 @@ impl From<MarkVisual> for ScopeMarksItem {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Selector(pub ::std::string::String);
 impl ::std::ops::Deref for Selector {
     type Target = ::std::string::String;
@@ -97586,6 +97607,7 @@ impl From<&Signal> for Signal {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct SignalName(::std::string::String);
 impl ::std::ops::Deref for SignalName {
     type Target = ::std::string::String;
@@ -107467,6 +107489,7 @@ impl From<&TitleVariant1Encode> for TitleVariant1Encode {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TitleVariant1EncodeSubtype0Key(::std::string::String);
 impl ::std::ops::Deref for TitleVariant1EncodeSubtype0Key {
     type Target = ::std::string::String;

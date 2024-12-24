@@ -1538,6 +1538,7 @@ impl TypeEntry {
             #doc
             #[derive(#(#derives),*)]
             #serde
+            #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
 
             impl ::std::ops::Deref for #type_name {
