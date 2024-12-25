@@ -336,6 +336,7 @@ pub struct TypeSpaceSettings {
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+    distinct_definitions: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -560,6 +561,12 @@ impl TypeSpaceSettings {
     ///
     pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
         self.map_type = map_type.into();
+        self
+    }
+
+    /// Specify whether to generate distinct definitions for each type.
+    pub fn with_distinct_definitions(&mut self, distinct_definitions: bool) -> &mut Self {
+        self.distinct_definitions = distinct_definitions;
         self
     }
 }
@@ -927,7 +934,7 @@ impl TypeSpace {
         // merge internal and external schemas
         defs.extend(ext_refs.into_iter());
 
-        if self.distinct_definitions {
+        if self.settings.distinct_definitions {
             // recursevely distinct definition to strip count of definitions
             // for example:
             // ...

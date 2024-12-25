@@ -171,10 +171,10 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         };
         settings.with_unknown_crates(unknown_crates);
     }
+    settings.with_distinct_definitions(args.distinct_definitions);
 
     let mut type_space = TypeSpace::new(&settings);
     type_space.with_path(&args.input);
-    type_space.distinct_defs(args.distinct_definitions);
     type_space
         .add_root_schema(schema)
         .wrap_err("Schema conversion failed")?;
