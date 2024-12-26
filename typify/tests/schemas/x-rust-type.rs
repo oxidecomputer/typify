@@ -90,7 +90,7 @@ impl AllTheThings {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Marker {}
-impl ::std::convert::From<&Marker> for Marker {
+impl ::std::convert::From<&Self> for Marker {
     fn from(value: &Marker) -> Self {
         value.clone()
     }

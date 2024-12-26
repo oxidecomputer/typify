@@ -30,10 +30,7 @@ impl TypeSpace {
         // Gather up the properties that are required but for which we have no
         // schema. In those cases any value will do.
         let required_unspecified = validation.required.iter().filter_map(|prop_name| {
-            validation
-                .properties
-                .get(prop_name)
-                .is_none()
+            (!validation.properties.contains_key(prop_name))
                 .then_some((prop_name, &Schema::Bool(true)))
         });
 
