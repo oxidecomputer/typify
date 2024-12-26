@@ -304,7 +304,7 @@ pub enum KeywordFieldsEnum {
     },
     Variant1([::std::string::String; 2usize]),
 }
-impl ::std::convert::From<&KeywordFieldsEnum> for KeywordFieldsEnum {
+impl ::std::convert::From<&Self> for KeywordFieldsEnum {
     fn from(value: &KeywordFieldsEnum) -> Self {
         value.clone()
     }
@@ -434,7 +434,7 @@ pub enum MapOfKeywordsKeywordMapValue {
     #[serde(rename = "where")]
     Where,
 }
-impl ::std::convert::From<&MapOfKeywordsKeywordMapValue> for MapOfKeywordsKeywordMapValue {
+impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
     fn from(value: &MapOfKeywordsKeywordMapValue) -> Self {
         value.clone()
     }
@@ -1430,7 +1430,7 @@ pub enum StringEnum {
     #[serde(rename = "three")]
     Three,
 }
-impl ::std::convert::From<&StringEnum> for StringEnum {
+impl ::std::convert::From<&Self> for StringEnum {
     fn from(value: &StringEnum) -> Self {
         value.clone()
     }

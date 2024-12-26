@@ -412,7 +412,7 @@ fn value_for_struct_props(
     let extra_value = serde_json::Value::Object(
         map.clone()
             .into_iter()
-            .filter(|(name, _)| prop_map.get(name).is_none())
+            .filter(|(name, _)| !prop_map.contains_key(name))
             .collect(),
     );
 

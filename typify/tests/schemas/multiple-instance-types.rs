@@ -44,7 +44,7 @@ pub enum IntOrStr {
     String(::std::string::String),
     Integer(i64),
 }
-impl ::std::convert::From<&IntOrStr> for IntOrStr {
+impl ::std::convert::From<&Self> for IntOrStr {
     fn from(value: &IntOrStr) -> Self {
         value.clone()
     }
@@ -123,7 +123,7 @@ pub enum OneOfSeveral {
     String(::std::string::String),
     Integer(i64),
 }
-impl ::std::convert::From<&OneOfSeveral> for OneOfSeveral {
+impl ::std::convert::From<&Self> for OneOfSeveral {
     fn from(value: &OneOfSeveral) -> Self {
         value.clone()
     }
@@ -259,7 +259,7 @@ pub enum YesNoMaybe {
         value: ::std::option::Option<::std::string::String>,
     },
 }
-impl ::std::convert::From<&YesNoMaybe> for YesNoMaybe {
+impl ::std::convert::From<&Self> for YesNoMaybe {
     fn from(value: &YesNoMaybe) -> Self {
         value.clone()
     }

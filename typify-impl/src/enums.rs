@@ -1473,7 +1473,7 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl ::std::convert::From<&ResultX> for ResultX {
+            impl ::std::convert::From<&Self> for ResultX {
                 fn from(value: &ResultX) -> Self {
                     value.clone()
                 }
@@ -1525,7 +1525,7 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl ::std::convert::From<&ResultX> for ResultX {
+            impl ::std::convert::From<&Self> for ResultX {
                 fn from(value: &ResultX) -> Self {
                     value.clone()
                 }

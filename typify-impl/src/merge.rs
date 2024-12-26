@@ -613,7 +613,7 @@ fn merge_so_instance_type(
 ) -> Result<Option<SingleOrVec<InstanceType>>, ()> {
     match (a, b) {
         (None, None) => Ok(None),
-        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.map(Clone::clone)),
+        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.cloned()),
 
         // If each has a single type, it must match.
         (Some(SingleOrVec::Single(aa)), Some(SingleOrVec::Single(bb))) => {
