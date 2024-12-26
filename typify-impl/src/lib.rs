@@ -1,4 +1,8 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
+
+//! typify backend implementation.
+
+#![deny(missing_docs)]
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -26,12 +30,14 @@ mod defaults;
 mod enums;
 mod merge;
 mod output;
+mod rust_extension;
 mod structs;
 mod type_entry;
 mod util;
 mod validate;
 mod value;
 
+#[allow(missing_docs)]
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("unexpected value type")]
@@ -53,6 +59,7 @@ impl Error {
     }
 }
 
+#[allow(missing_docs)]
 pub type Result<T> = std::result::Result<T, Error>;
 
 fn show_type_name(type_name: Option<&str>) -> &str {
@@ -70,6 +77,7 @@ pub struct Type<'a> {
     type_entry: &'a TypeEntry,
 }
 
+#[allow(missing_docs)]
 /// Type details returned by Type::details() to inspect a type.
 pub enum TypeDetails<'a> {
     Enum(TypeEnum<'a>),
@@ -96,14 +104,21 @@ pub struct TypeEnum<'a> {
 
 /// Enum variant details.
 pub enum TypeEnumVariant<'a> {
+    /// Variant with no associated data.
     Simple,
+    /// Tuple-type variant with at least one associated type.
     Tuple(Vec<TypeId>),
+    /// Struct-type variant with named properties and types.
     Struct(Vec<(&'a str, TypeId)>),
 }
 
+/// Full information pertaining to an enum variant.
 pub struct TypeEnumVariantInfo<'a> {
+    /// Name.
     pub name: &'a str,
+    /// Description.
     pub description: Option<&'a str>,
+    /// Details for the enum variant.
     pub details: TypeEnumVariant<'a>,
 }
 
@@ -112,10 +127,15 @@ pub struct TypeStruct<'a> {
     details: &'a type_entry::TypeEntryStruct,
 }
 
+/// Full information pertaining to a struct property.
 pub struct TypeStructPropInfo<'a> {
+    /// Name.
     pub name: &'a str,
+    /// Description.
     pub description: Option<&'a str>,
+    /// Whether the propertty is required.
     pub required: bool,
+    /// Identifies the schema for the property.
     pub type_id: TypeId,
 }
 
@@ -214,18 +234,133 @@ pub(crate) enum DefaultImpl {
     Boolean,
     I64,
     U64,
+    NZU64,
+}
+
+/// Type name to use in generated code.
+#[derive(Clone)]
+pub struct MapType(pub syn::Type);
+
+impl MapType {
+    /// Create a new MapType from a [`str`].
+    pub fn new(s: &str) -> Self {
+        let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
+        Self(map_type)
+    }
+}
+
+impl Default for MapType {
+    fn default() -> Self {
+        Self::new("::std::collections::HashMap")
+    }
+}
+
+impl std::fmt::Debug for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "MapType({})", self.0.to_token_stream())
+    }
+}
+
+impl std::fmt::Display for MapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.to_token_stream().fmt(f)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for MapType {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Ok(Self::new(s))
+    }
+}
+
+impl From<String> for MapType {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
+
+impl From<&str> for MapType {
+    fn from(s: &str) -> Self {
+        Self::new(s)
+    }
+}
+
+impl From<syn::Type> for MapType {
+    fn from(t: syn::Type) -> Self {
+        Self(t)
+    }
 }
 
 /// Settings that alter type generation.
-#[derive(Debug, Default, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
     struct_builder: bool,
 
+    unknown_crates: UnknownPolicy,
+    crates: BTreeMap<String, CrateSpec>,
+    map_type: MapType,
+
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+#[derive(Debug, Clone)]
+struct CrateSpec {
+    version: CrateVers,
+    rename: Option<String>,
+}
+
+/// Policy to apply to external types described by schema extensions whose
+/// crates are not explicitly specified.
+#[derive(Default, Debug, Clone, Copy, Eq, PartialEq, serde::Deserialize)]
+pub enum UnknownPolicy {
+    /// Generate the type rather according to the schema.
+    #[default]
+    Generate,
+    /// Use the specified type by path (this will result in a compile error if
+    /// one of the crates is not an existing dependency). Note that this
+    /// ignores compatibility requirements specified by the schema extension
+    /// and may result in subtle failures if the crate used is incompatible
+    /// with the version that produced the schema.
+    Allow,
+    /// If an unknown crate is encountered, generate a compiler warning
+    /// indicating the crate that must be specified to proceed along with
+    /// version constraints. This affords users an opportunity to specify the
+    /// specific crate version to use (or the user may explicitly deny use of
+    /// that crate).
+    Deny,
+}
+
+/// Specify the version for a named crate to consider for type use (rather than
+/// generating types) in the presense of a schema extension.
+#[derive(Debug, Clone)]
+pub enum CrateVers {
+    /// An explicit version.
+    Version(semver::Version),
+    /// Any version.
+    Any,
+    /// Never use the given crate.
+    Never,
+}
+
+impl CrateVers {
+    /// Parse from a string
+    pub fn parse(s: &str) -> Option<Self> {
+        if s == "!" {
+            Some(Self::Never)
+        } else if s == "*" {
+            Some(Self::Any)
+        } else {
+            Some(Self::Version(semver::Version::parse(s).ok()?))
+        }
+    }
 }
 
 /// Contains a set of modifications that may be applied to an existing type.
@@ -251,6 +386,7 @@ struct TypeSpaceConversion {
     impls: Vec<TypeSpaceImpl>,
 }
 
+#[allow(missing_docs)]
 // TODO we can currently only address traits for which cycle analysis is not
 // required.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -343,6 +479,57 @@ impl TypeSpaceSettings {
             type_name: type_name.to_string(),
             impls: impls.collect(),
         });
+        self
+    }
+
+    /// Type schemas may contain an extension (`x-rust-type`) that indicates
+    /// the corresponding Rust type within a particular crate. This function
+    /// changes the disposition regarding crates not otherwise specified via
+    /// [`Self::with_crate`]. The default value is `false`.
+    pub fn with_unknown_crates(&mut self, policy: UnknownPolicy) -> &mut Self {
+        self.unknown_crates = policy;
+        self
+    }
+
+    /// Type schemas may contain an extension (`x-rust-type`) that indicates
+    /// the corresponding Rust type within a particular crate. This extension
+    /// indicates the crate, version compatibility, type path, and type
+    /// parameters. This function modifies settings to use (rather than
+    /// generate) types from the given crate and version. The version should
+    /// precisely match the version of the crate that you expect as a
+    /// dependency.
+    pub fn with_crate<S1: ToString>(
+        &mut self,
+        crate_name: S1,
+        version: CrateVers,
+        rename: Option<&String>,
+    ) -> &mut Self {
+        self.crates.insert(
+            crate_name.to_string(),
+            CrateSpec {
+                version,
+                rename: rename.cloned(),
+            },
+        );
+        self
+    }
+
+    /// Specify the map-like type to be used in generated code.
+    ///
+    /// ## Requirements
+    ///
+    /// - An `is_empty` method that returns a boolean
+    /// - Two generic parameters, `K` and `V`
+    /// - [`Default`] + [`Clone`] + [`Debug`] +
+    ///   [`Serialize`][serde::Serialize] + [`Deserialize`][serde::Deserialize]
+    ///
+    /// ## Examples
+    ///
+    /// - [`::std::collections::HashMap`]
+    /// - [`::std::collections::BTreeMap`]
+    /// - [`::indexmap::IndexMap`](https://docs.rs/indexmap/latest/indexmap/map/struct.IndexMap.html)
+    pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
+        self.map_type = map_type.into();
         self
     }
 }
@@ -507,9 +694,15 @@ impl TypeSpace {
             // simple alias to another type in this list of definitions
             // (which may nor may not have already been converted). We
             // simply create a newtype with that type ID.
-            TypeEntryDetails::Reference(type_id) => {
-                TypeEntryNewtype::from_metadata(self, type_name, metadata, type_id.clone())
-            }
+            TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+                self,
+                type_name,
+                metadata,
+                type_id.clone(),
+                schema.clone(),
+            ),
+
+            TypeEntryDetails::Native(native) if native.name_match(&type_name) => type_entry,
 
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
@@ -521,11 +714,19 @@ impl TypeSpace {
                     metadata
                 );
                 let subtype_id = self.assign_type(type_entry);
-                TypeEntryNewtype::from_metadata(self, type_name, metadata, subtype_id)
+                TypeEntryNewtype::from_metadata(
+                    self,
+                    type_name,
+                    metadata,
+                    subtype_id,
+                    schema.clone(),
+                )
             }
         };
-        let entry_name = type_entry.name().unwrap().clone();
-        self.name_to_id.insert(entry_name, type_id.clone());
+        // TODO need a type alias?
+        if let Some(entry_name) = type_entry.name() {
+            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+        }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
     }
@@ -606,18 +807,22 @@ impl TypeSpace {
         })
     }
 
+    /// Whether the generated code needs `chrono` crate.
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
     }
 
+    /// Whether the generated code needs [regress] crate.
     pub fn uses_regress(&self) -> bool {
         self.uses_regress
     }
 
+    /// Whether the generated code needs [serde_json] crate.
     pub fn uses_serde_json(&self) -> bool {
         self.uses_serde_json
     }
 
+    /// Whether the generated code needs `uuid` crate.
     pub fn uses_uuid(&self) -> bool {
         self.uses_uuid
     }
@@ -634,6 +839,44 @@ impl TypeSpace {
     /// All code for processed types.
     pub fn to_stream(&self) -> TokenStream {
         let mut output = OutputSpace::default();
+
+        // Add the error type we use for conversions; it's fine if this is
+        // unused.
+        output.add_item(
+            output::OutputSpaceMod::Error,
+            "",
+            quote! {
+                /// Error from a TryFrom or FromStr implementation.
+                pub struct ConversionError(::std::borrow::Cow<'static, str>);
+
+                impl ::std::error::Error for ConversionError {}
+                impl ::std::fmt::Display for ConversionError {
+                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
+                        -> Result<(), ::std::fmt::Error>
+                    {
+                        ::std::fmt::Display::fmt(&self.0, f)
+                    }
+                }
+
+                impl ::std::fmt::Debug for ConversionError {
+                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
+                        -> Result<(), ::std::fmt::Error>
+                    {
+                        ::std::fmt::Debug::fmt(&self.0, f)
+                    }
+                }
+                impl From<&'static str> for ConversionError {
+                    fn from(value: &'static str) -> Self {
+                        Self(value.into())
+                    }
+                }
+                impl From<String> for ConversionError {
+                    fn from(value: String) -> Self {
+                        Self(value.into())
+                    }
+                }
+            },
+        );
 
         // Add all types.
         self.id_to_entry
@@ -824,7 +1067,7 @@ impl<'a> Type<'a> {
             | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
             TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
             TypeEntryDetails::String => TypeDetails::String,
-            TypeEntryDetails::JsonValue => TypeDetails::Builtin("serde_json::Value"),
+            TypeEntryDetails::JsonValue => TypeDetails::Builtin("::serde_json::Value"),
 
             // Only used during processing; shouldn't be visible at this point
             TypeEntryDetails::Reference(_) => unreachable!(),
@@ -871,10 +1114,12 @@ impl<'a> Type<'a> {
 }
 
 impl<'a> TypeEnum<'a> {
+    /// Get name and information of each enum variant.
     pub fn variants(&'a self) -> impl Iterator<Item = (&'a str, TypeEnumVariant<'a>)> {
         self.variants_info().map(|info| (info.name, info.details))
     }
 
+    /// Get all information for each enum variant.
     pub fn variants_info(&'a self) -> impl Iterator<Item = TypeEnumVariantInfo<'a>> {
         self.details.variants.iter().map(move |variant| {
             let details = match &variant.details {
@@ -902,6 +1147,7 @@ impl<'a> TypeEnum<'a> {
 }
 
 impl<'a> TypeStruct<'a> {
+    /// Get name and type of each property.
     pub fn properties(&'a self) -> impl Iterator<Item = (&'a str, TypeId)> {
         self.details
             .properties
@@ -909,6 +1155,7 @@ impl<'a> TypeStruct<'a> {
             .map(move |prop| (prop.name.as_str(), prop.type_id.clone()))
     }
 
+    /// Get all information about each struct property.
     pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo> {
         self.details
             .properties
@@ -923,7 +1170,8 @@ impl<'a> TypeStruct<'a> {
 }
 
 impl<'a> TypeNewtype<'a> {
-    pub fn subtype(&self) -> TypeId {
+    /// Get the inner type of the newtype struct.
+    pub fn inner(&self) -> TypeId {
         self.details.type_id.clone()
     }
 }
@@ -995,7 +1243,11 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
 
         println!("{:#?}", ty);
@@ -1010,6 +1262,36 @@ mod tests {
             ty.output(&type_space, &mut output);
             println!("{}", output.into_stream());
         }
+    }
+
+    #[test]
+    fn test_external_references() {
+        let schema = json!({
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "definitions": {
+                "somename": {
+                    "$ref": "#/definitions/someothername",
+                    "required": [ "someproperty" ]
+                },
+                "someothername": {
+                    "type": "object",
+                    "properties": {
+                        "someproperty": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        });
+        let schema = serde_json::from_value(schema).unwrap();
+        println!("{:#?}", schema);
+        let settings = TypeSpaceSettings::default();
+        let mut type_space = TypeSpace::new(&settings);
+        type_space.add_root_schema(schema).unwrap();
+        let tokens = type_space.to_stream().to_string();
+        println!("{}", tokens);
+        assert!(tokens
+            .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"))
     }
 
     #[test]
@@ -1029,7 +1311,11 @@ mod tests {
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
 
         match ty.details {
@@ -1060,6 +1346,7 @@ mod tests {
 
     #[test]
     fn test_string_enum_with_null() {
+        let original_schema = json!({ "$ref": "xxx"});
         let enum_values = vec![
             json!("Shadrach"),
             json!("Meshach"),
@@ -1071,6 +1358,7 @@ mod tests {
         let (te, _) = type_space
             .convert_enum_string(
                 Name::Required("OnTheGo".to_string()),
+                &serde_json::from_value(original_schema).unwrap(),
                 &None,
                 &enum_values,
                 None,
@@ -1105,6 +1393,7 @@ mod tests {
 
     #[test]
     fn test_alias() {
+        #[allow(dead_code)]
         #[derive(JsonSchema, Schema)]
         struct Stuff(Vec<String>);
 

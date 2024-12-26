@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::{BTreeSet, HashSet};
 
@@ -44,7 +44,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
 /// **could** be merged (i.e. if they're compatible).
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
-    definitions: &schemars::Map<RefKey, Schema>,
+    definitions: &std::collections::BTreeMap<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
     // Consider all pairs
@@ -243,7 +243,8 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                     {
                         object_schemas_mutually_exclusive(a_validation, b_validation)
                     } else {
-                        todo!()
+                        // Could check further, but we'll be conservative.
+                        false
                     }
                 }
 
@@ -286,7 +287,8 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                     {
                         array_schemas_mutually_exclusive(a_validation, b_validation)
                     } else {
-                        todo!()
+                        // Could check further, but we'll be conservative.
+                        false
                     }
                 }
 
@@ -457,7 +459,7 @@ fn array_schemas_mutually_exclusive(
 /// otherwise return None.
 pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     match schema {
-        // Strings must be simple enumerations.
+        // Singleton, typed enumerated value.
         Schema::Object(SchemaObject {
             metadata: _,
             instance_type: Some(SingleOrVec::Single(single)),
@@ -471,13 +473,58 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
             object: None,
             reference: None,
             extensions: _,
-        }) if single.as_ref() == &InstanceType::String => {
-            if values.len() == 1 {
-                values.get(0).and_then(|value| value.as_str())
-            } else {
-                None
-            }
+        }) if single.as_ref() == &InstanceType::String && values.len() == 1 => {
+            values.first().unwrap().as_str()
         }
+
+        // Singleton, untyped enumerated value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: Some(values),
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) if values.len() == 1 => values.first().unwrap().as_str(),
+
+        // Constant value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: Some(SingleOrVec::Single(single)),
+            format: None,
+            enum_values: None,
+            const_value: Some(value),
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) if single.as_ref() == &InstanceType::String => value.as_str(),
+
+        // Constant, untyped value.
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: Some(value),
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: None,
+            extensions: _,
+        }) => value.as_str(),
+
         _ => None,
     }
 }
@@ -492,7 +539,10 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     }
 }
 
-fn resolve<'a>(schema: &'a Schema, definitions: &'a schemars::Map<RefKey, Schema>) -> &'a Schema {
+fn resolve<'a>(
+    schema: &'a Schema,
+    definitions: &'a std::collections::BTreeMap<RefKey, Schema>,
+) -> &'a Schema {
     match schema {
         Schema::Bool(_) => schema,
         Schema::Object(SchemaObject {

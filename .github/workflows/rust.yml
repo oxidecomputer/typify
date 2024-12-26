@@ -1,5 +1,5 @@
 #
-# Configuration for GitHub-based CI, based on the stock GitHub Rust config.
+# Configuration for GitHub-based CI
 #
 name: Build
 
@@ -29,6 +29,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: cargo build --tests --verbose
+      run: cargo build --locked --tests --verbose
     - name: Run tests
-      run: cargo test --verbose
+      run: cargo test --locked --verbose

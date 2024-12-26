@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -16,23 +16,28 @@ use crate::{util::ref_key, validate::schema_value_validate, RefKey};
 /// Merge all schemas in array of schemas. If the result is unsatisfiable, this
 /// returns `Schema::Bool(false)`.
 pub(crate) fn merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Schema {
-    let mut ss = schemas.iter();
-    let (Some(a), Some(b)) = (ss.next(), ss.next()) else {
-        panic!("merge_all requires at least two schemas")
-    };
+    try_merge_all(schemas, defs).unwrap_or(Schema::Bool(false))
+}
 
+fn try_merge_all(schemas: &[Schema], defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     debug!(
         "merge all {}",
         serde_json::to_string_pretty(schemas).unwrap(),
     );
 
-    try_merge_schema(a, b, defs)
-        .and_then(|start| {
-            ss.try_fold(start, |schema, other| {
-                try_merge_schema(&schema, other, defs)
-            })
-        })
-        .unwrap_or_else(|_| Schema::Bool(false))
+    let merged_schema = match schemas {
+        [] => panic!("we should not be trying to merge an empty array of schemas"),
+        [only] => only.clone(),
+        [first, second, rest @ ..] => {
+            let mut out = try_merge_schema(first, second, defs)?;
+            for schema in rest {
+                out = try_merge_schema(&out, schema, defs)?;
+            }
+            out
+        }
+    };
+
+    Ok(merged_schema)
 }
 
 /// Given two additionalItems schemas that might be None--which is equivalent
@@ -68,12 +73,16 @@ fn merge_additional_properties(
     }
 }
 
+fn merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Schema {
+    try_merge_schema(a, b, defs).unwrap_or(Schema::Bool(false))
+}
+
 /// Merge two schemas returning the resulting schema. If the two schemas are
 /// incompatible (i.e. if there is no data that can satisfy them both
 /// simultaneously) then this returns Err.
 fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> Result<Schema, ()> {
     match (a, b) {
-        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Ok(Schema::Bool(false)),
+        (Schema::Bool(false), _) | (_, Schema::Bool(false)) => Err(()),
         (Schema::Bool(true), other) | (other, Schema::Bool(true)) => Ok(other.clone()),
 
         // If we have two references to the same schema, that's easy!
@@ -138,6 +147,12 @@ fn merge_schema_object(
     b: &SchemaObject,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
+    debug!(
+        "merging {}\n{}",
+        serde_json::to_string_pretty(a).unwrap(),
+        serde_json::to_string_pretty(b).unwrap(),
+    );
+
     assert!(a.reference.is_none());
     assert!(b.reference.is_none());
 
@@ -149,14 +164,21 @@ fn merge_schema_object(
     let array = merge_so_array(a.array.as_deref(), b.array.as_deref(), defs)?;
     let object = merge_so_object(a.object.as_deref(), b.object.as_deref(), defs)?;
 
+    let enum_values = merge_so_enum_values(
+        a.enum_values.as_ref(),
+        a.const_value.as_ref(),
+        b.enum_values.as_ref(),
+        b.const_value.as_ref(),
+    )?;
+
     // We could clean up this schema to eliminate data irrelevant to the
     // instance type, but logic in the conversion path should already handle
     // that.
-    let merged_schema = SchemaObject {
+    let mut merged_schema = SchemaObject {
         metadata: None,
         instance_type,
         format,
-        enum_values: None,
+        enum_values,
         const_value: None,
         subschemas: None,
         number,
@@ -174,45 +196,37 @@ fn merge_schema_object(
     // two schemas and then do the appropriate merge with subschemas (i.e.
     // potentially twice). This is effectively an `allOf` between the merged
     // "body" schema and the component subschemas.
-    let merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
-    let merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
+    merged_schema = try_merge_with_subschemas(merged_schema, a.subschemas.as_deref(), defs)?;
+    merged_schema = try_merge_with_subschemas(merged_schema, b.subschemas.as_deref(), defs)?;
 
     assert_ne!(merged_schema, Schema::Bool(false).into_object());
 
-    let enum_values = merge_so_enum_values(
-        a.enum_values.as_ref(),
-        a.const_value.as_ref(),
-        b.enum_values.as_ref(),
-        b.const_value.as_ref(),
-    )?;
+    // Now that we've finalized the schemas, we take a pass through the
+    // enumerated values (if there are any) to weed out any that might be
+    // invalid.
+    if let Some(enum_values) = merged_schema.enum_values.take() {
+        let wrapped_schema = Schema::Object(merged_schema);
+        let enum_values = Some(
+            enum_values
+                .into_iter()
+                .filter(|value| schema_value_validate(&wrapped_schema, value, defs).is_ok())
+                .collect(),
+        );
+        let Schema::Object(new_merged_schema) = wrapped_schema else {
+            unreachable!()
+        };
+        merged_schema = new_merged_schema;
+        merged_schema.enum_values = enum_values;
+    }
 
     debug!(
-        "merging {}\n{}\n|\nv\n{}",
+        "merged {}\n{}\n|\nv\n{}",
         serde_json::to_string_pretty(a).unwrap(),
         serde_json::to_string_pretty(b).unwrap(),
         serde_json::to_string_pretty(&merged_schema).unwrap(),
     );
 
-    match enum_values {
-        None => Ok(merged_schema),
-        Some(enum_values) => {
-            let enum_values = enum_values
-                .into_iter()
-                .filter(|value| {
-                    schema_value_validate(&Schema::Object(merged_schema.clone()), value, defs)
-                        .is_ok()
-                })
-                .collect::<Vec<_>>();
-            if enum_values.is_empty() {
-                Err(())
-            } else {
-                Ok(SchemaObject {
-                    enum_values: Some(enum_values),
-                    ..merged_schema
-                })
-            }
-        }
-    }
+    Ok(merged_schema)
 }
 
 fn merge_so_enum_values(
@@ -252,148 +266,153 @@ fn merge_so_enum_values(
     }
 }
 
-pub(crate) fn merge_with_subschemas(
-    schema_object: SchemaObject,
-    maybe_subschemas: Option<&SubschemaValidation>,
-    defs: &BTreeMap<RefKey, Schema>,
-) -> SchemaObject {
-    try_merge_with_subschemas(schema_object, maybe_subschemas, defs).unwrap()
-}
-
 /// Merge the schema with a subschema validation object. It's important that
 /// the return value reduces the complexity of the problem so avoid infinite
 /// recursion.
-fn try_merge_with_subschemas(
-    schema_object: SchemaObject,
+pub(crate) fn try_merge_with_subschemas(
+    mut schema_object: SchemaObject,
     maybe_subschemas: Option<&SubschemaValidation>,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
-    // TODO conceivably these different subschema types could appear at the
-    // same time; maybe it's fine to just handle them distinctly?
-    match maybe_subschemas {
-        Some(SubschemaValidation {
-            all_of: Some(all_of),
-            any_of: None,
-            one_of: None,
-            not: None,
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        }) => {
-            let merged_schema = all_of
-                .iter()
-                .try_fold(schema_object.into(), |schema, other| {
-                    try_merge_schema(&schema, other, defs)
-                })?;
-            assert_ne!(merged_schema, Schema::Bool(false));
-            Ok(merged_schema.into_object())
-        }
+    let Some(SubschemaValidation {
+        all_of,
+        any_of,
+        one_of,
+        not,
+        if_schema,
+        then_schema,
+        else_schema,
+    }) = maybe_subschemas
+    else {
+        return Ok(schema_object);
+    };
 
-        Some(SubschemaValidation {
-            all_of: None,
-            any_of: Some(subschemas),
-            one_of: None,
-            not: None,
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        })
-        | Some(SubschemaValidation {
-            all_of: None,
-            any_of: None,
-            one_of: Some(subschemas),
-            not: None,
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        }) => {
-            let schema = Schema::Object(schema_object.clone());
-            // First we do a pairwise merge the schemas; if the result is
-            // invalid / unresolvable / never / whatever, we exclude it
-            // from the list. If it is valid, *then* we do the join to preserve
-            // information (though we probably only need to *that* if at least
-            // one schema contains a ref). This could probably be an
-            // opportunity for memoization, but this is an infrequent
-            // construction so... whatever.
-            let joined_schemas = subschemas
-                .iter()
-                .filter_map(|other| {
-                    // Skip if the merged schema is unsatisfiable.
-                    let merged_schema = try_merge_schema(&schema, other, defs).ok()?;
-                    if merged_schema.roughly(&schema) {
-                        Some(schema.clone())
-                    } else if merged_schema.roughly(other) {
-                        Some(other.clone())
-                    } else {
-                        Some(join_schema(&schema_object, other))
-                    }
-                })
-                .collect::<Vec<_>>();
+    if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&maybe_subschemas).unwrap()
+        );
+        unimplemented!("if/then/else schemas are not supported");
+    }
 
-            match (joined_schemas.first(), joined_schemas.len()) {
-                // All merges failed so this is unsatisfiable.
-                (None, _) => Err(()),
+    if let Some(all_of) = all_of {
+        let merged_schema = all_of
+            .iter()
+            .try_fold(schema_object.into(), |schema, other| {
+                try_merge_schema(&schema, other, defs)
+            })?;
+        assert_ne!(merged_schema, Schema::Bool(false));
+        schema_object = merged_schema.into_object();
+    }
 
-                // If there's a single schema left, just return that as our
-                // only option
-                (Some(only), 1) => Ok(only.clone().into_object()),
+    if let Some(not) = not {
+        schema_object = try_merge_schema_not(schema_object, not.as_ref(), defs)?;
+    }
 
-                // Otherwise return the appropriate `oneOf` or `anyOf`
-                _ => {
-                    let subschemas = match maybe_subschemas {
-                        Some(SubschemaValidation {
-                            any_of: Some(_), ..
-                        }) => SubschemaValidation {
-                            any_of: Some(joined_schemas),
-                            ..Default::default()
-                        },
-                        Some(SubschemaValidation {
-                            one_of: Some(_), ..
-                        }) => SubschemaValidation {
-                            one_of: Some(joined_schemas),
-                            ..Default::default()
-                        },
-                        _ => unreachable!(),
-                    };
-                    Ok(SchemaObject {
-                        metadata: schema_object.metadata,
-                        subschemas: Some(Box::new(subschemas)),
+    // TODO: we should be able to handle a combined one_of and any_of... but
+    // I don't want to do that now because that would be a very strange
+    // construction.
+    assert!(any_of.is_none() || one_of.is_none());
+
+    if let Some(any_of) = any_of {
+        let merged_subschemas = try_merge_with_each_subschema(&schema_object, any_of, defs);
+
+        match merged_subschemas.len() {
+            0 => return Err(()),
+            1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
+            _ => {
+                schema_object = SchemaObject {
+                    metadata: schema_object.metadata,
+                    subschemas: Some(Box::new(SubschemaValidation {
+                        any_of: Some(merged_subschemas),
                         ..Default::default()
-                    })
+                    })),
+                    ..Default::default()
                 }
             }
         }
-
-        Some(SubschemaValidation {
-            all_of: None,
-            any_of: None,
-            one_of: None,
-            not: Some(not),
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        }) => try_merge_schema_not(schema_object, not.as_ref(), defs),
-
-        // If it's any of the subschemas we don't know how to handle here,
-        // we'll try to leave them in place... probably to encounter an error
-        // later when we try to convert them...
-        Some(SubschemaValidation {
-            all_of: None,
-            any_of: None,
-            one_of: None,
-            not: None,
-            if_schema,
-            then_schema,
-            else_schema,
-        }) if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() => {
-            unimplemented!("if/then/else schemas are not supported")
-        }
-
-        Some(unknown) => {
-            todo!("{}", serde_json::to_string_pretty(unknown).unwrap());
-        }
-        None => Ok(schema_object),
     }
+
+    if let Some(one_of) = one_of {
+        let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
+
+        match merged_subschemas.len() {
+            0 => return Err(()),
+            1 => schema_object = merged_subschemas.into_iter().next().unwrap().into_object(),
+            _ => {
+                schema_object = SchemaObject {
+                    metadata: schema_object.metadata,
+                    subschemas: Some(Box::new(SubschemaValidation {
+                        one_of: Some(merged_subschemas),
+                        ..Default::default()
+                    })),
+                    ..Default::default()
+                }
+            }
+        }
+    }
+
+    Ok(schema_object)
+}
+
+fn try_merge_with_each_subschema(
+    schema_object: &SchemaObject,
+    subschemas: &[Schema],
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Vec<Schema> {
+    let schema = Schema::Object(schema_object.clone());
+    // First we do a pairwise merge the schemas; if the result is invalid /
+    // unresolvable / never / whatever, we exclude it from the list. If it is
+    // valid, *then* we do the join to preserve information (though we probably
+    // only need to to *that* if at least one schema contains a ref). This
+    // could probably be an opportunity for memoization, but this is an
+    // infrequent construction so... whatever for now.
+    let joined_schemas = subschemas
+        .iter()
+        .enumerate()
+        .filter_map(|(ii, other)| {
+            // Skip if the merged schema is unsatisfiable.
+            let merged_schema = try_merge_schema(&schema, other, defs).ok()?;
+            // If the merged schema is equivalent to one or other of the
+            // individual schemas, use that.
+            // TODO is this right? Should we be "subtracting" out other schemas as below?
+            if merged_schema.roughly(&schema) {
+                Some(schema.clone())
+            } else if merged_schema.roughly(other) {
+                Some(other.clone())
+            } else {
+                let not_others = subschemas
+                    .iter()
+                    .enumerate()
+                    .filter(|(jj, _)| *jj != ii)
+                    .map(|(_, not_schema)| {
+                        Schema::Object(SchemaObject {
+                            subschemas: Some(Box::new(SubschemaValidation {
+                                not: Some(Box::new(not_schema.clone())),
+                                ..Default::default()
+                            })),
+                            ..Default::default()
+                        })
+                    });
+                let joined_schema = [schema.clone(), other.clone()]
+                    .into_iter()
+                    .chain(not_others)
+                    .collect::<Vec<_>>();
+                Some(
+                    SchemaObject {
+                        subschemas: Some(Box::new(SubschemaValidation {
+                            all_of: Some(joined_schema),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                )
+            }
+        })
+        .collect::<Vec<_>>();
+
+    joined_schemas
 }
 
 /// "Subtract" the "not" schema from the schema object.
@@ -406,6 +425,11 @@ fn try_merge_schema_not(
     not_schema: &Schema,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
+    debug!(
+        "try_merge_schema_not {}\n not:{}",
+        serde_json::to_string_pretty(&schema_object).unwrap(),
+        serde_json::to_string_pretty(not_schema).unwrap(),
+    );
     match not_schema {
         // Subtracting everything leaves nothing...
         Schema::Bool(true) => Err(()),
@@ -413,55 +437,73 @@ fn try_merge_schema_not(
         Schema::Bool(false) => Ok(schema_object),
 
         Schema::Object(SchemaObject {
-            metadata: None,
-            instance_type: None,
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: None,
-            number: None,
-            string: None,
-            array: None,
-            object: Some(not_object),
-            reference: None,
+            // I don't think there's any significance to the schema metadata
+            // with respect to the types we might generate.
+            metadata: _,
+            // TODO we should should check instance_type and then walk through
+            // validation of each type based on the specific validation.
+            instance_type: _,
+            format: _,
+            enum_values: _,
+            const_value: _,
+            subschemas,
+            number: _,
+            string: _,
+            array: _,
+            object,
+            // TODO we might want to chase these references but need to take
+            // care to handle circular references.
+            reference: _,
             extensions: _,
         }) => {
-            // TODO this is incomplete, but seems sufficient for the schemas
-            // we've seen in the wild.
-            if let Some(ObjectValidation {
-                required,
-                properties,
-                ..
-            }) = schema_object.object.as_deref_mut()
-            {
-                not_object.required.iter().for_each(|not_required| {
-                    let _ = required.remove(not_required);
-                    let _ = properties.remove(not_required);
-                });
+            if let Some(not_object) = object {
+                // TODO this is incomplete, but seems sufficient for the
+                // schemas we've seen in the wild.
+                if let Some(ObjectValidation {
+                    required,
+                    properties,
+                    ..
+                }) = schema_object.object.as_deref_mut()
+                {
+                    // TODO This is completely wrong for arrays of len > 1.
+                    // We need to treat required: [x, y] like it's:
+                    //   not:
+                    //     allOf:
+                    //       required: [x]
+                    //       required: [y]
+                    // Then we can transform them into:
+                    //   anyOf:
+                    //     not:
+                    //       required: [x]
+                    //     not:
+                    //       required: [y]
+                    // Which in turn can become:
+                    //   oneOf:
+                    //     not:
+                    //       required: [x]
+                    //     not:
+                    //       required: [y]
+                    //     not:
+                    //       required: [x, y]
+                    for not_required in &not_object.required {
+                        // A property can't be both required and not required
+                        // therefore this schema is unsatisfiable.
+                        if required.contains(not_required) {
+                            return Err(());
+                        }
+                        // Set the property's schema to false i.e. that the
+                        // presence of any value would be invalid. We ignore
+                        // the return value as it doesn't matter if the
+                        // property was there previously or not.
+                        let _ = properties.insert(not_required.clone(), Schema::Bool(false));
+                    }
+                }
             }
 
-            Ok(schema_object)
-        }
+            if let Some(not_subschemas) = subschemas {
+                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
+            }
 
-        Schema::Object(SchemaObject {
-            metadata: None,
-            instance_type: None,
-            format: None,
-            enum_values: None,
-            const_value: None,
-            subschemas: Some(not_subschemas),
-            number: None,
-            string: None,
-            array: None,
-            object: None,
-            reference: None,
-            extensions: _,
-        }) => try_merge_with_subschemas_not(schema_object, not_subschemas, defs),
-
-        // If we can't usefully reduce the complexity, leave it for the
-        // coversion pass.
-        _ => {
-            schema_object.subschemas().not = Some(Box::new(not_schema.clone()));
             Ok(schema_object)
         }
     }
@@ -472,6 +514,7 @@ fn try_merge_with_subschemas_not(
     not_subschemas: &SubschemaValidation,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
+    debug!("try_merge_with_subschemas_not");
     match not_subschemas {
         SubschemaValidation {
             all_of: None,
@@ -510,25 +553,55 @@ fn try_merge_with_subschemas_not(
             all_of: None,
             any_of: None,
             one_of: None,
+            not: Some(not),
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => {
+            debug!("not not");
+            Ok(try_merge_schema(&schema_object.into(), not.as_ref(), defs)?.into_object())
+        }
+
+        // TODO this is a kludge
+        SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: Some(_),
             not: None,
             if_schema: None,
             then_schema: None,
             else_schema: None,
         } => Ok(schema_object),
 
-        _ => todo!(),
-    }
-}
+        SubschemaValidation {
+            all_of: None,
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => Ok(schema_object),
 
-fn join_schema(a: &SchemaObject, b: &Schema) -> Schema {
-    SchemaObject {
-        subschemas: Some(Box::new(SubschemaValidation {
-            all_of: Some(vec![Schema::Object(a.clone()), b.clone()]),
-            ..Default::default()
-        })),
-        ..Default::default()
+        SubschemaValidation {
+            all_of: Some(all_of),
+            any_of: None,
+            one_of: None,
+            not: None,
+            if_schema: None,
+            then_schema: None,
+            else_schema: None,
+        } => match try_merge_all(all_of, defs) {
+            Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
+            Err(_) => Ok(schema_object),
+        },
+
+        _ => todo!(
+            "{}\nnot: {}",
+            serde_json::to_string_pretty(&schema_object).unwrap(),
+            serde_json::to_string_pretty(&not_subschemas).unwrap(),
+        ),
     }
-    .into()
 }
 
 /// Merge instance types which could be None (meaning type is valid), a
@@ -617,6 +690,7 @@ fn merge_so_number(
 ) -> Result<Option<Box<NumberValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
         (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
@@ -629,6 +703,7 @@ fn merge_so_string(
 ) -> Result<Option<Box<StringValidation>>, ()> {
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
+        (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
         (Some(_), Some(_)) => {
             unimplemented!("this is fairly fussy and I don't want to do it")
         }
@@ -876,61 +951,99 @@ fn merge_so_object(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(aa), Some(bb)) => {
-            let a_props = aa.properties.iter().filter_map(|(name, a_schema)| {
-                let resolved_schema = if let Some(b_schema) = bb.properties.get(name) {
-                    try_merge_schema(a_schema, b_schema, defs)
-                } else {
-                    filter_prop(name, a_schema, bb)
-                };
-
-                match resolved_schema {
-                    // If a required field is incompatible with the
-                    // other schema, this object is unsatisfiable.
-                    Err(()) if aa.required.contains(name) => Some(Err(())),
-
-                    // We can ignore incompatible, non-required fields.
-                    Err(()) => None,
-
-                    // Compatible schema; proceed.
-                    Ok(schema) => Some(Ok((name.clone(), schema))),
-                }
-            });
-
-            let b_props = bb.properties.iter().filter_map(|(name, b_schema)| {
-                if aa.properties.contains_key(name) {
-                    // We handled the intersection above.
-                    None
-                } else {
-                    match filter_prop(name, b_schema, aa) {
-                        // If a required field is incompatible with the
-                        // other schema, this object is unsatisfiable.
-                        Err(()) if bb.required.contains(name) => Some(Err(())),
-
-                        // We can ignore incompatible, non-required fields.
-                        Err(()) => None,
-
-                        // Compatible schema; proceed.
-                        Ok(schema) => Some(Ok((name.clone(), schema))),
-                    }
-                }
-            });
-
-            let properties = a_props.chain(b_props).collect::<Result<_, ()>>()?;
-
-            let required = aa.required.union(&bb.required).cloned().collect();
+            let required = aa
+                .required
+                .union(&bb.required)
+                .cloned()
+                .collect::<BTreeSet<_>>();
             let additional_properties = merge_additional_properties(
                 aa.additional_properties.as_deref(),
                 bb.additional_properties.as_deref(),
                 defs,
-            )
-            .map(Box::new);
+            );
+
+            enum AOrB<'a> {
+                A(&'a Schema),
+                B(&'a Schema),
+                Both(&'a Schema, &'a Schema),
+            }
+
+            let properties = aa
+                .properties
+                .iter()
+                // First characterize properties as being in a, b, or both.
+                .map(|(name, a_schema)| {
+                    if let Some(b_schema) = bb.properties.get(name) {
+                        (name, AOrB::Both(a_schema, b_schema))
+                    } else {
+                        (name, AOrB::A(a_schema))
+                    }
+                })
+                .chain(bb.properties.iter().filter_map(|(name, b_schema)| {
+                    if aa.properties.contains_key(name) {
+                        None
+                    } else {
+                        Some((name, AOrB::B(b_schema)))
+                    }
+                }))
+                // Then resolve properties against the other full schema or
+                // against the schemas for the properties if it appears in
+                // both.
+                .filter_map(|(name, ab_schema)| {
+                    let resolved_schema = match ab_schema {
+                        AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
+                        AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
+                        AOrB::Both(a_schema, b_schema) => merge_schema(a_schema, b_schema, defs),
+                    };
+                    match resolved_schema {
+                        // If a required field is incompatible with the
+                        // other schema, this object is unsatisfiable.
+                        Schema::Bool(false) if required.contains(name) => Some(Err(())),
+
+                        // For incompatible, non-required fields we need to
+                        // exclude the property from any values. If
+                        // `additionalProperties` is `false` (i.e. excludes all
+                        // other properties) then we can simply omit the
+                        // property knowing that it (like all other unnamed
+                        // properties) will not be permitted. Otherwise we
+                        // include the optional property but with the `false`
+                        // schema that means that no value will satisfy that
+                        // property--the value would always be None and any
+                        // serialization that included the named property would
+                        // fail to deserialize.
+                        //
+                        // If we ever make use of `propertyNames`, it's
+                        // conceivable that we might check it or modify it in
+                        // this case, but that may be overly complex.
+                        Schema::Bool(false) => {
+                            if let Some(Schema::Bool(false)) = additional_properties {
+                                None
+                            } else {
+                                Some(Ok((name.clone(), Schema::Bool(false))))
+                            }
+                        }
+
+                        // Compatible schema; proceed.
+                        schema => Some(Ok((name.clone(), schema))),
+                    }
+                })
+                .collect::<Result<schemars::Map<_, _>, _>>()?;
+
+            let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
+            let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
+
+            if let (Some(min), Some(max)) = (min_properties, max_properties) {
+                if min > max {
+                    return Err(());
+                }
+            }
 
             let object_validation = ObjectValidation {
                 required,
                 properties,
-                additional_properties,
-                max_properties: Default::default(),     // TODO
-                min_properties: Default::default(),     // TODO
+                additional_properties: additional_properties.map(Box::new),
+                max_properties,
+                min_properties,
                 pattern_properties: Default::default(), // TODO
                 property_names: Default::default(),     // TODO
             };
@@ -939,11 +1052,7 @@ fn merge_so_object(
     }
 }
 
-fn filter_prop(
-    name: &str,
-    prop_schema: &Schema,
-    object_schema: &ObjectValidation,
-) -> Result<Schema, ()> {
+fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidation) -> Schema {
     // We're only considering properties we *know* do not appear in the other
     // object's schema.
     assert!(!object_schema.properties.contains_key(name));
@@ -959,6 +1068,7 @@ fn filter_prop(
     assert!(object_schema.pattern_properties.is_empty());
 
     merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+        .unwrap_or(Schema::Bool(false))
 }
 
 fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result<Schema, ()> {
@@ -1108,7 +1218,10 @@ fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) ->
     }
 }
 
-fn roughly_properties(a: &BTreeMap<String, Schema>, b: &BTreeMap<String, Schema>) -> bool {
+fn roughly_properties(
+    a: &schemars::Map<String, Schema>,
+    b: &schemars::Map<String, Schema>,
+) -> bool {
     a.len() == b.len()
         && a.iter()
             .zip(b.iter())

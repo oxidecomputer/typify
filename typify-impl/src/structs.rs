@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
@@ -27,16 +27,49 @@ impl TypeSpace {
         //assert!(validation.pattern_properties.is_empty());
         //assert!(validation.property_names.is_none());
 
+        // Gather up the properties that are required but for which we have no
+        // schema. In those cases any value will do.
+        let required_unspecified = validation.required.iter().filter_map(|prop_name| {
+            validation
+                .properties
+                .get(prop_name)
+                .is_none()
+                .then_some((prop_name, &Schema::Bool(true)))
+        });
+
         let mut properties = validation
             .properties
             .iter()
-            .map(|(name, ty)| {
-                // Generate a name we can use for the type of this property
-                // should there not be a one defined in the schema.
-                let sub_type_name = type_name
-                    .as_ref()
-                    .map(|base| format!("{}_{}", base, name.to_snake_case()));
-                self.struct_property(sub_type_name, &validation.required, name, ty)
+            .chain(required_unspecified)
+            .filter_map(|(prop_name, schema)| {
+                match schema {
+                    // TODO We use the schema `false` to indicate an
+                    // unsatisfiable schema. We take a shortcut here and simply
+                    // ignore these. This is wrong in two subtle and important
+                    // ways that we'll need to address at some point. First,
+                    // there are other schemas in some non-trivial,
+                    // non-canonical form that might indicate the same thing.
+                    // We should handle those in the same way. In addition,
+                    // ignoring them isn't really right. We need to actively
+                    // exclude them. Specifically this would look like a custom
+                    // serde::Deserialize implementation that failed in the
+                    // presence of these values.
+                    Schema::Bool(false) => None,
+                    _ => {
+                        // Generate a name we can use for the type of this
+                        // property should there not be one specified by the
+                        // schema itself (i.e. via the title field).
+                        let sub_type_name = type_name
+                            .as_ref()
+                            .map(|base| format!("{}_{}", base, prop_name.to_snake_case()));
+                        Some(self.struct_property(
+                            sub_type_name,
+                            &validation.required,
+                            prop_name,
+                            schema,
+                        ))
+                    }
+                }
             })
             .collect::<Result<Vec<_>>>()?;
 
@@ -107,7 +140,7 @@ impl TypeSpace {
         Ok((properties, deny_unknown_fields))
     }
 
-    pub(crate) fn struct_property(
+    fn struct_property(
         &mut self,
         type_name: Option<String>,
         required: &schemars::Set<String>,
@@ -256,6 +289,7 @@ impl TypeSpace {
     pub(crate) fn flattened_union_struct<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
         optional: bool,
@@ -293,7 +327,14 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()?;
 
         Ok((
-            TypeEntryStruct::from_metadata(self, type_name, metadata, properties, false),
+            TypeEntryStruct::from_metadata(
+                self,
+                type_name,
+                metadata,
+                properties,
+                false,
+                original_schema.clone(),
+            ),
             metadata,
         ))
     }
@@ -332,17 +373,18 @@ pub(crate) fn generate_serde_attr(
     let default_fn = match (state, &prop_type.details) {
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "Option::is_none" });
+            serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
             serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "Vec::is_empty" });
+            serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
             serde_options.push(quote! { default });
 
+            let map_to_use = &type_space.settings.map_type;
             let key_ty = type_space
                 .id_to_entry
                 .get(key_id)
@@ -356,11 +398,12 @@ pub(crate) fn generate_serde_attr(
                 && value_ty.details == TypeEntryDetails::JsonValue
             {
                 serde_options.push(quote! {
-                    skip_serializing_if = "serde_json::Map::is_empty"
+                    skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
+                let is_empty = format!("{}::is_empty", map_to_use);
                 serde_options.push(quote! {
-                    skip_serializing_if = "std::collections::HashMap::is_empty"
+                    skip_serializing_if = #is_empty
                 });
             }
             DefaultFunction::Default
@@ -501,8 +544,8 @@ mod tests {
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
     struct SomeMaps {
-        strings: std::collections::HashMap<String, String>,
-        things: serde_json::Map<String, serde_json::Value>,
+        strings: ::std::collections::HashMap<String, String>,
+        things: ::serde_json::Map<String, ::serde_json::Value>,
     }
 
     #[test]
@@ -516,7 +559,7 @@ mod tests {
     struct FlattenStuff {
         number: i32,
         #[serde(flatten)]
-        extra: std::collections::HashMap<String, String>,
+        extra: ::std::collections::HashMap<String, String>,
     }
 
     #[test]
@@ -547,6 +590,9 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
         let output = ty.type_name(&type_space).replace(" ", "");
-        assert_eq!(output, "serde_json::Map<String,serde_json::Value>");
+        assert_eq!(
+            output,
+            "::serde_json::Map<::std::string::String,::serde_json::Value>"
+        );
     }
 }

@@ -1,10 +1,10 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
 
 use schemars::schema::Schema;
 use schemars::JsonSchema;
 use serde::Serialize;
-use typify::TypeSpace;
+use typify::{TypeSpace, TypeSpaceSettings};
 
 #[allow(dead_code)]
 #[derive(JsonSchema)]
@@ -53,7 +53,13 @@ struct WithSet {
     set: HashSet<TestStruct>,
 }
 
-struct LoginName(String);
+#[allow(dead_code)]
+#[derive(JsonSchema)]
+struct WithMap {
+    map: HashMap<String, String>,
+}
+
+struct LoginName;
 impl JsonSchema for LoginName {
     fn schema_name() -> String {
         "LoginName".to_string()
@@ -72,7 +78,7 @@ impl JsonSchema for LoginName {
     }
 }
 
-struct Pancakes(String);
+struct Pancakes;
 impl JsonSchema for Pancakes {
     fn schema_name() -> String {
         "Pancakes".to_string()
@@ -106,14 +112,37 @@ fn main() {
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
 
-    let contents = format!(
-        "{}\n{}",
-        "use serde::{Deserialize, Serialize};",
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap())
-    );
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");
+    fs::write(out_file, contents).unwrap();
+
+    // Generate with HashMap
+    let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
+
+    WithMap::add(&mut type_space);
+
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push("codegen_hashmap.rs");
+    fs::write(out_file, contents).unwrap();
+
+    // Generate with a custom map type to validate requirements.
+    let mut settings = TypeSpaceSettings::default();
+    settings.with_map_type("CustomMap".to_string());
+    let mut type_space = TypeSpace::new(&settings);
+
+    WithMap::add(&mut type_space);
+
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push("codegen_custommap.rs");
     fs::write(out_file, contents).unwrap();
 }
 

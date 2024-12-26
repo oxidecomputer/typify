@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -66,14 +66,14 @@ impl TypeEntry {
 
             TypeEntryDetails::Option(type_id) => {
                 if let serde_json::Value::Null = value {
-                    quote! { None }
+                    quote! { ::std::option::Option::None }
                 } else {
                     let inner = type_space
                         .id_to_entry
                         .get(type_id)
                         .unwrap()
                         .output_value(type_space, value, scope)?;
-                    quote! { Some(#inner) }
+                    quote! { ::std::option::Option::Some(#inner) }
                 }
             }
             TypeEntryDetails::Box(type_id) => {
@@ -82,7 +82,7 @@ impl TypeEntry {
                     .get(type_id)
                     .unwrap()
                     .output_value(type_space, value, scope)?;
-                quote! { Box::new(#inner) }
+                quote! { ::std::boxed::Box::new(#inner) }
             }
             // TODO: this should become a HashSet<_> once we figure out the
             // derives more precisely.
@@ -139,15 +139,13 @@ impl TypeEntry {
             TypeEntryDetails::Native(TypeEntryNative { type_name, .. }) => {
                 // Serialize value to a string... not hard.
                 let text = value.to_string();
-                let type_path = type_name
-                    .split("::")
-                    .map(|component| format_ident!("{}", component));
+                let type_path = syn::parse_str::<syn::TypePath>(type_name).unwrap();
 
                 // Deserialize the string to the type; the unwrap() is
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    serde_json::from_str::< #( #type_path )::* >(#text).unwrap()
+                    serde_json::from_str::< #type_path >(#text).unwrap()
                 }
             }
             TypeEntryDetails::JsonValue => {
@@ -379,6 +377,25 @@ fn value_for_struct_props(
 ) -> Option<Vec<TokenStream>> {
     let map = value.as_object()?;
 
+    let direct_props = properties.iter().filter_map(|prop| {
+        let name = match &prop.rename {
+            StructPropertyRename::None => &prop.name,
+            StructPropertyRename::Rename(rename) => rename,
+            StructPropertyRename::Flatten => return None,
+        };
+
+        let name_ident = format_ident!("{}", &prop.name);
+
+        if let Some(value) = map.get(name) {
+            let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+            let prop_value = type_entry.output_value(type_space, value, scope)?;
+
+            Some(quote! { #name_ident: #prop_value })
+        } else {
+            Some(quote! { #name_ident: Default::default() })
+        }
+    });
+
     let prop_map = properties
         .iter()
         .filter_map(|prop| {
@@ -391,17 +408,6 @@ fn value_for_struct_props(
             Some((name, prop))
         })
         .collect::<BTreeMap<_, _>>();
-
-    let direct_props = map.iter().filter_map(|(name, value)| {
-        // It's okay if the property isn't in the prop_map... it must be part
-        // of one of the flattened properties.
-        let prop = prop_map.get(name)?;
-        let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-        let prop_value = type_entry.output_value(type_space, value, scope)?;
-        let name_ident = format_ident!("{}", name);
-
-        Some(quote! { #name_ident: #prop_value })
-    });
 
     let extra_value = serde_json::Value::Object(
         map.clone()
@@ -451,13 +457,13 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("None".to_string()),
+            Some(":: std :: option :: Option :: None".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (42_u32)".to_string()),
+            Some(":: std :: option :: Option :: Some (42_u32)".to_string()),
         );
     }
 
@@ -474,13 +480,16 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Box :: new (None)".to_string()),
+            Some(":: std :: boxed :: Box :: new (:: std :: option :: Option :: None)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(42), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Box :: new (Some (42_u32))".to_string()),
+            Some(
+                ":: std :: boxed :: Box :: new (:: std :: option :: Option :: Some (42_u32))"
+                    .to_string()
+            ),
         );
     }
 
@@ -562,19 +571,19 @@ mod tests {
             type_entry
                 .output_value(&type_space, &json!(true), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (true)".to_string()),
+            Some(":: std :: option :: Option :: Some (true)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(false), &quote! {})
                 .map(|x| x.to_string()),
-            Some("Some (false)".to_string()),
+            Some(":: std :: option :: Option :: Some (false)".to_string()),
         );
         assert_eq!(
             type_entry
                 .output_value(&type_space, &json!(null), &quote! {})
                 .map(|x| x.to_string()),
-            Some("None".to_string()),
+            Some(":: std :: option :: Option :: None".to_string()),
         );
     }
 
@@ -624,7 +633,8 @@ mod tests {
                     super::Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string())
+                        c: ::std::option::Option::Some("cccc".to_string()),
+                        d: Default::default()
                     }
                 }
                 .to_string()
@@ -665,7 +675,8 @@ mod tests {
                     Test {
                         a: "aaaa".to_string(),
                         b: 7_u32,
-                        c: Some("cccc".to_string())
+                        c: ::std::option::Option::Some("cccc".to_string()),
+                        d: Default::default()
                     }
                 }
                 .to_string()

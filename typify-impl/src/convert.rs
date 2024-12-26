@@ -1,14 +1,14 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::BTreeSet;
 
-use crate::merge::{merge_all, merge_with_subschemas};
+use crate::merge::{merge_all, try_merge_with_subschemas};
 use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
 use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
-use log::info;
+use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -34,21 +34,25 @@ impl TypeSpace {
                 if let Some(type_entry) = self.cache.lookup(obj) {
                     Ok((type_entry, &obj.metadata))
                 } else {
-                    self.convert_schema_object(type_name, obj)
+                    self.convert_schema_object(type_name, schema, obj)
                 }
             }
 
             Schema::Bool(true) => self.convert_permissive(&None),
-            // TODO Not sure what to do here... need to return something toxic?
-            Schema::Bool(false) => todo!(),
+            Schema::Bool(false) => self.convert_never(type_name, schema),
         }
     }
 
     pub(crate) fn convert_schema_object<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         schema: &'a SchemaObject,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if let Some(type_entry) = self.convert_rust_extension(schema) {
+            return Ok((type_entry, &schema.metadata));
+        }
+
         match schema {
             // If we have a schema that has an instance type array that's
             // exactly two elements and one of them is Null, we have the
@@ -75,8 +79,8 @@ impl TypeSpace {
                     let enum_values = enum_values.clone().map(|values| {
                         values
                             .iter()
+                            .filter(|&value| !value.is_null())
                             .cloned()
-                            .filter(|value| !value.is_null())
                             .collect()
                     });
                     let ss = Schema::Object(SchemaObject {
@@ -100,7 +104,7 @@ impl TypeSpace {
                         instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Null))),
                         ..schema.clone()
                     };
-                    self.convert_schema_object(type_name, &new_schema)
+                    self.convert_schema_object(type_name, original_schema, &new_schema)
                         .map(|(te, m)| match m {
                             Some(_) if m == metadata => (te, metadata),
                             Some(_) => panic!("unexpected metadata value"),
@@ -125,6 +129,7 @@ impl TypeSpace {
                 extensions: _,
             } if single.as_ref() == &InstanceType::String => self.convert_string(
                 type_name,
+                original_schema,
                 metadata,
                 format,
                 string.as_ref().map(Box::as_ref),
@@ -146,6 +151,7 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_string(
                 type_name,
+                original_schema,
                 metadata,
                 format,
                 string.as_ref().map(Box::as_ref),
@@ -172,6 +178,7 @@ impl TypeSpace {
                 extensions: _,
             } if single.as_ref() == &InstanceType::String => self.convert_enum_string(
                 type_name,
+                original_schema,
                 metadata,
                 enum_values,
                 string.as_ref().map(Box::as_ref),
@@ -244,7 +251,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Object => {
-                self.convert_object(type_name, metadata, validation)
+                self.convert_object(type_name, original_schema, metadata, validation)
             }
 
             // Object with the type omitted, but validation present
@@ -261,7 +268,7 @@ impl TypeSpace {
                 object: validation @ Some(_),
                 reference: None,
                 extensions: _,
-            } => self.convert_object(type_name, metadata, validation),
+            } => self.convert_object(type_name, original_schema, metadata, validation),
 
             // Array
             SchemaObject {
@@ -390,12 +397,54 @@ impl TypeSpace {
                 self.convert_reference(metadata, reference)
             }
 
+            SchemaObject {
+                metadata,
+                instance_type: _,
+                format: _,
+                enum_values: _,
+                const_value: _,
+                subschemas: _,
+                number: _,
+                string: _,
+                array: _,
+                object: _,
+                reference: Some(reference),
+                extensions: _,
+            } => {
+                let mut def = self.definitions.get(&ref_key(reference)).unwrap();
+                let mut new_schema = Schema::Object(SchemaObject {
+                    reference: None,
+                    ..schema.clone()
+                });
+                while let Schema::Object(SchemaObject { reference: r, .. }) = def {
+                    let schema_only_ref = Schema::Object(SchemaObject {
+                        reference: r.clone(),
+                        ..Default::default()
+                    });
+                    let schema_without_ref = Schema::Object(SchemaObject {
+                        reference: None,
+                        ..def.clone().into_object()
+                    });
+                    new_schema = merge_all(
+                        &[schema_without_ref, schema_only_ref, new_schema],
+                        &self.definitions,
+                    );
+                    if let Some(r) = r {
+                        def = self.definitions.get(&ref_key(r)).unwrap();
+                    } else {
+                        break;
+                    }
+                }
+                let (type_entry, _) = self.convert_schema(type_name, &new_schema).unwrap();
+                Ok((type_entry, metadata))
+            }
+
             // Enum of a single, known, non-String type (strings above).
             SchemaObject {
                 instance_type: Some(SingleOrVec::Single(_)),
                 enum_values: Some(enum_values),
                 ..
-            } => self.convert_typed_enum(type_name, schema, enum_values),
+            } => self.convert_typed_enum(type_name, original_schema, schema, enum_values),
 
             // Enum of unknown type
             SchemaObject {
@@ -411,7 +460,7 @@ impl TypeSpace {
                 object: None,
                 reference: None,
                 extensions: _,
-            } => self.convert_unknown_enum(type_name, metadata, enum_values),
+            } => self.convert_unknown_enum(type_name, original_schema, metadata, enum_values),
 
             // Subschemas
             SchemaObject {
@@ -437,7 +486,7 @@ impl TypeSpace {
                     if_schema: None,
                     then_schema: None,
                     else_schema: None,
-                } => self.convert_all_of(type_name, metadata, subschemas),
+                } => self.convert_all_of(type_name, original_schema, metadata, subschemas),
                 SubschemaValidation {
                     all_of: None,
                     any_of: Some(subschemas),
@@ -446,7 +495,7 @@ impl TypeSpace {
                     if_schema: None,
                     then_schema: None,
                     else_schema: None,
-                } => self.convert_any_of(type_name, metadata, subschemas),
+                } => self.convert_any_of(type_name, original_schema, metadata, subschemas),
                 SubschemaValidation {
                     all_of: None,
                     any_of: None,
@@ -455,7 +504,7 @@ impl TypeSpace {
                     if_schema: None,
                     then_schema: None,
                     else_schema: None,
-                } => self.convert_one_of(type_name, metadata, subschemas),
+                } => self.convert_one_of(type_name, original_schema, metadata, subschemas),
                 SubschemaValidation {
                     all_of: None,
                     any_of: None,
@@ -464,28 +513,71 @@ impl TypeSpace {
                     if_schema: None,
                     then_schema: None,
                     else_schema: None,
-                } => self.convert_not(type_name, metadata, subschema),
+                } => self.convert_not(type_name, original_schema, metadata, subschema),
 
-                // Unknown
-                _ => todo!("{:#?}", subschemas),
+                // Multiple subschemas may be present at the same time; attempt
+                // to merge and then convert.
+                subschemas => {
+                    // Remove the subschemas so we can merge into the rest.
+                    let schema_object = SchemaObject {
+                        subschemas: None,
+                        ..schema.clone()
+                    };
+                    let merged_schema = try_merge_with_subschemas(
+                        schema_object,
+                        Some(subschemas),
+                        &self.definitions,
+                    );
+                    match merged_schema {
+                        Ok(s) => {
+                            let (type_entry, _) =
+                                self.convert_schema_object(type_name, original_schema, &s)?;
+                            Ok((type_entry, &None))
+                        }
+                        // An error indicates that the schema is unresolvable.
+                        Err(_) => self.convert_never(type_name, original_schema),
+                    }
+                }
             },
 
             // Subschemas with other stuff.
             SchemaObject {
-                subschemas: Some(_),
+                metadata,
+                subschemas: subschemas @ Some(_),
                 ..
             } => {
                 let without_subschemas = SchemaObject {
                     subschemas: None,
+                    metadata: None,
                     ..schema.clone()
                 };
-                let merged_schema = merge_with_subschemas(
-                    without_subschemas,
-                    schema.subschemas.as_deref(),
-                    &self.definitions,
+                debug!(
+                    "pre merged schema {}",
+                    serde_json::to_string_pretty(schema).unwrap(),
                 );
-                let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
-                Ok((type_entry, &None))
+                match try_merge_with_subschemas(
+                    without_subschemas,
+                    subschemas.as_deref(),
+                    &self.definitions,
+                ) {
+                    Ok(merged_schema) => {
+                        // Preserve metadata from the outer schema.
+                        let merged_schema = SchemaObject {
+                            metadata: metadata.clone(),
+                            ..merged_schema
+                        };
+                        debug!(
+                            "merged schema {}",
+                            serde_json::to_string_pretty(&merged_schema).unwrap(),
+                        );
+
+                        let (type_entry, _) =
+                            self.convert_schema_object(type_name, original_schema, &merged_schema)?;
+                        Ok((type_entry, &None))
+                    }
+
+                    Err(_) => self.convert_never(type_name, original_schema),
+                }
             }
 
             // TODO let's not bother with const values at the moment. In the
@@ -502,7 +594,7 @@ impl TypeSpace {
                     const_value: None,
                     ..schema.clone()
                 };
-                self.convert_schema_object(type_name, &new_schema)
+                self.convert_schema_object(type_name, original_schema, &new_schema)
                     .map(|(te, m)| match m {
                         Some(_) if m == metadata => (te, metadata),
                         Some(_) => panic!("unexpected metadata value"),
@@ -528,8 +620,29 @@ impl TypeSpace {
             {
                 let (type_entry, _) = self.convert_schema_object(
                     type_name,
+                    original_schema,
                     &SchemaObject {
                         instance_type: None,
+                        ..schema.clone()
+                    },
+                )?;
+                Ok((type_entry, metadata))
+            }
+
+            // Treat a singleton type array like a singleton type.
+            SchemaObject {
+                metadata,
+                instance_type: Some(SingleOrVec::Vec(instance_types)),
+                ..
+            } if instance_types.len() == 1 => {
+                let [it] = instance_types.as_slice() else {
+                    unreachable!()
+                };
+                let (type_entry, _) = self.convert_schema_object(
+                    type_name,
+                    original_schema,
+                    &SchemaObject {
+                        instance_type: Some(SingleOrVec::Single((*it).into())),
                         ..schema.clone()
                     },
                 )?;
@@ -555,7 +668,8 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } => {
-                // Eliminate duplicates (they hold no significance).
+                // Eliminate duplicates (they hold no significance); they
+                // aren't supposed to be there, but we can still handle it.
                 let unique_types = instance_types.iter().collect::<BTreeSet<_>>();
 
                 // Massage the data into labeled subschemas with the following
@@ -655,7 +769,8 @@ impl TypeSpace {
                     })
                     .collect::<Vec<_>>();
 
-                let type_entry = self.untagged_enum(type_name, metadata, &subschemas)?;
+                let type_entry =
+                    self.untagged_enum(type_name, original_schema, metadata, &subschemas)?;
                 Ok((type_entry, metadata))
             }
 
@@ -670,6 +785,7 @@ impl TypeSpace {
     fn convert_string<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         format: &Option<String>,
         validation: Option<&StringValidation>,
@@ -698,7 +814,12 @@ impl TypeSpace {
                     let type_id = self.assign_type(string);
                     Ok((
                         TypeEntryNewtype::from_metadata_with_string_validation(
-                            self, type_name, metadata, type_id, validation,
+                            self,
+                            type_name,
+                            metadata,
+                            type_id,
+                            validation,
+                            original_schema.clone(),
                         ),
                         metadata,
                     ))
@@ -720,7 +841,7 @@ impl TypeSpace {
                 self.uses_chrono = true;
                 Ok((
                     TypeEntry::new_native(
-                        "chrono::Date<chrono::offset::Utc>",
+                        "chrono::naive::NaiveDate",
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -769,6 +890,7 @@ impl TypeSpace {
     pub(crate) fn convert_enum_string<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
         validation: Option<&StringValidation>,
@@ -833,6 +955,7 @@ impl TypeSpace {
                 EnumTagType::External,
                 variants,
                 false,
+                original_schema.clone(),
             );
 
             if has_null {
@@ -976,12 +1099,12 @@ impl TypeSpace {
         }
     }
 
-    // TODO deal with metadata and format
+    // TODO deal with metadata
     fn convert_number<'a>(
         &self,
         _metadata: &'a Option<Box<Metadata>>,
         _validation: &Option<Box<schemars::schema::NumberValidation>>,
-        _format: &Option<String>,
+        format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         /*
         See https://github.com/oxidecomputer/typify/issues/169
@@ -994,7 +1117,10 @@ impl TypeSpace {
         }
         */
 
-        Ok((TypeEntry::new_float("f64"), &None))
+        match format.as_deref() {
+            Some("float") => Ok((TypeEntry::new_float("f32"), &None)),
+            _ => Ok((TypeEntry::new_float("f64"), &None)),
+        }
     }
 
     /// If we have a schema that's just the Null instance type, it represents a
@@ -1006,9 +1132,53 @@ impl TypeSpace {
         Ok((TypeEntryDetails::Unit.into(), metadata))
     }
 
+    /// Determine whether a schema's property name validation constraints can be handled
+    fn can_handle_pattern_properties(validation: &ObjectValidation) -> bool {
+        if !validation.required.is_empty() {
+            return false;
+        }
+
+        if !validation.properties.is_empty() {
+            return false;
+        }
+
+        // Ensure we have at least one pattern property and all pattern property
+        // schemas are the same
+        let Some(first_schema) = validation.pattern_properties.values().next() else {
+            return false;
+        };
+
+        if !validation
+            .pattern_properties
+            .values()
+            .all(|schema| schema == first_schema)
+        {
+            return false;
+        }
+
+        // Ensure any additional properties are a false or null schema
+        if validation.additional_properties.as_ref().map(AsRef::as_ref) == Some(&Schema::Bool(true))
+            || matches!(
+                validation.additional_properties.as_ref().map(AsRef::as_ref),
+                Some(&Schema::Object(_))
+            )
+        {
+            return false;
+        }
+
+        // Ensure there are no additional property names constraints, to avoid a
+        // collision between different types of constraints interacting unexpectedly
+        if validation.property_names.is_some() {
+            return false;
+        }
+
+        true
+    }
+
     fn convert_object<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         validation: &Option<Box<ObjectValidation>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1036,6 +1206,44 @@ impl TypeSpace {
                 )?;
                 Ok((type_entry, metadata))
             }
+
+            Some(validation) if Self::can_handle_pattern_properties(validation) => {
+                let pattern = validation
+                    .pattern_properties
+                    .keys()
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join("|");
+
+                // Construct a schema to use for property name validation
+                let property_names = Some(Box::new(Schema::Object(SchemaObject {
+                    string: Some(Box::new(StringValidation {
+                        max_length: None,
+                        min_length: None,
+                        pattern: Some(pattern),
+                    })),
+                    ..Default::default()
+                })));
+
+                // Construct schema to use for property value validation
+                let additional_properties = Some(Box::new(
+                    validation
+                        .pattern_properties
+                        .values()
+                        .next()
+                        .cloned()
+                        .unwrap_or_else(|| unreachable!("pattern_properties cannot be empty here")),
+                ));
+
+                let type_entry = self.make_map(
+                    type_name.into_option(),
+                    &property_names,
+                    &additional_properties,
+                )?;
+
+                Ok((type_entry, metadata))
+            }
+
             None => {
                 let type_entry = self.make_map(type_name.into_option(), &None, &None)?;
                 Ok((type_entry, metadata))
@@ -1054,6 +1262,7 @@ impl TypeSpace {
                         metadata,
                         properties,
                         deny_unknown_fields,
+                        original_schema.clone(),
                     ),
                     &None,
                 ))
@@ -1083,30 +1292,49 @@ impl TypeSpace {
     fn convert_all_of<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        if let Some(ty) = self.maybe_singleton_subschema(type_name.clone(), subschemas) {
+        debug!(
+            "all_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
+        if let Some(ty) =
+            self.maybe_singleton_subschema(type_name.clone(), original_schema, subschemas)
+        {
             return Ok((ty, metadata));
         }
 
         // In the general case, we merge all schemas in the array. The merged
-        // schema will reflect all definitions and constraints. For example, it
-        // will have the union of all properties for an object, recursively
-        // merging properties defined in multiple schemas; it will have the
-        // union of all required object properties; and it will enforce the
-        // greater of all numeric constraints (e.g. the greater of all
-        // specified minimum values).
+        // schema will reflect all definitions and constraints, the
+        // intersection of all schemas. For example, it will have the union of
+        // all properties for an object, recursively merging properties defined
+        // in multiple schemas; it will have the union of all required object
+        // properties; and it will enforce the greater of all numeric
+        // constraints (e.g. the greater of all specified minimum values).
         //
         // Sometimes merging types will produce a result for which no data is
         // valid, the schema is unsatisfiable. Consider this trivial case:
         //
-        // "allOf": [
+        // {
+        //   "allOf": [
         //     { "type": "integer", "minimum": 5 },
         //     { "type": "integer", "maximum": 3 }
-        // ]
+        //   ]
+        // }
         //
-        // No number is >= 5 *and* <= 3! Good luck with that schema!
+        // No number is >= 5 *and* <= 3! Good luck with that schema! Similarly
+        // for this case:
+        //
+        // {
+        //   "allOf": [
+        //     { "type": "string" },
+        //     { "type": "object" }
+        //   ]
+        // }
+        //
+        // A value cannot be both a string and an object!
         //
         // Note that we will effectively "embed" any referenced types. Consider
         // a construction like this:
@@ -1117,10 +1345,10 @@ impl TypeSpace {
         // ]
         //
         // The resulting merged schema will include all properties of
-        // "SuperClass" as well as "another_prop" (which we assume to not have
-        // been present in the original). This is suboptimal in that we would
-        // like the generated types to reflect some association with the
-        // original sub-type.
+        // "SuperClass" as well as "another_prop" (which we assume for this
+        // example to not have been present in the original). This is
+        // suboptimal in that we would like the generated types to reflect some
+        // association with the original sub-type.
         //
         // TODO
         // In cases where we have a named type, we would like to provide
@@ -1135,18 +1363,23 @@ impl TypeSpace {
         // the more expansive numeric type.
 
         let merged_schema = merge_all(subschemas, &self.definitions);
-        assert_ne!(merged_schema, Schema::Bool(false));
-        let mut merged_schema = merged_schema.into_object();
-        assert!(merged_schema.metadata.is_none());
-        merged_schema.metadata = metadata.clone();
+        if let Schema::Bool(false) = &merged_schema {
+            self.convert_never(type_name, original_schema)
+        } else {
+            let mut merged_schema = merged_schema.into_object();
+            assert!(merged_schema.metadata.is_none());
+            merged_schema.metadata = metadata.clone();
 
-        let (type_entry, _) = self.convert_schema(type_name, &merged_schema.into())?;
-        Ok((type_entry, &None))
+            let (type_entry, _) =
+                self.convert_schema_object(type_name, original_schema, &merged_schema)?;
+            Ok((type_entry, &None))
+        }
     }
 
     fn convert_any_of<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1162,7 +1395,7 @@ impl TypeSpace {
         // occurs if each subschema is mutually exclusive i.e. so that exactly
         // one of them can match.
         if all_mutually_exclusive(subschemas, &self.definitions) {
-            self.convert_one_of(type_name, metadata, subschemas)
+            self.convert_one_of(type_name, original_schema, metadata, subschemas)
         } else {
             // We'll want to build a struct that looks like this:
             // struct Name {
@@ -1173,7 +1406,7 @@ impl TypeSpace {
             //     ...
             // }
 
-            self.flattened_union_struct(type_name, metadata, subschemas, true)
+            self.flattened_union_struct(type_name, original_schema, metadata, subschemas, true)
         }
     }
 
@@ -1234,9 +1467,15 @@ impl TypeSpace {
     pub(crate) fn convert_one_of<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        debug!(
+            "one_of {}",
+            serde_json::to_string_pretty(subschemas).unwrap()
+        );
+
         // TODO it would probably be smart to do a pass through the schema
         // given to us and either put it into some canonical form or move to
         // some sort of intermediate representation.
@@ -1249,11 +1488,37 @@ impl TypeSpace {
 
         let ty = self
             .maybe_option(type_name.clone(), metadata, subschemas)
-            .or_else(|| self.maybe_externally_tagged_enum(type_name.clone(), metadata, subschemas))
-            .or_else(|| self.maybe_adjacently_tagged_enum(type_name.clone(), metadata, subschemas))
-            .or_else(|| self.maybe_internally_tagged_enum(type_name.clone(), metadata, subschemas))
-            .or_else(|| self.maybe_singleton_subschema(type_name.clone(), subschemas))
-            .map_or_else(|| self.untagged_enum(type_name, metadata, subschemas), Ok)?;
+            .or_else(|| {
+                self.maybe_externally_tagged_enum(
+                    type_name.clone(),
+                    original_schema,
+                    metadata,
+                    subschemas,
+                )
+            })
+            .or_else(|| {
+                self.maybe_adjacently_tagged_enum(
+                    type_name.clone(),
+                    original_schema,
+                    metadata,
+                    subschemas,
+                )
+            })
+            .or_else(|| {
+                self.maybe_internally_tagged_enum(
+                    type_name.clone(),
+                    original_schema,
+                    metadata,
+                    subschemas,
+                )
+            })
+            .or_else(|| {
+                self.maybe_singleton_subschema(type_name.clone(), original_schema, subschemas)
+            })
+            .map_or_else(
+                || self.untagged_enum(type_name, original_schema, metadata, subschemas),
+                Ok,
+            )?;
 
         Ok((ty, metadata))
     }
@@ -1277,6 +1542,7 @@ impl TypeSpace {
     pub(crate) fn convert_not<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<schemars::schema::Metadata>>,
         subschema: &'a Schema,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1300,7 +1566,8 @@ impl TypeSpace {
                     ..schema.clone()
                 };
 
-                let (type_entry, _) = self.convert_schema_object(Name::Unknown, &type_schema)?;
+                let (type_entry, _) =
+                    self.convert_schema_object(Name::Unknown, original_schema, &type_schema)?;
 
                 // Make sure all the values are valid.
                 // TODO this isn't strictly legal since we may not yet have
@@ -1317,6 +1584,7 @@ impl TypeSpace {
                     metadata,
                     type_id,
                     enum_values,
+                    original_schema.clone(),
                 );
 
                 Ok((newtype_entry, metadata))
@@ -1362,8 +1630,11 @@ impl TypeSpace {
                             ..Default::default()
                         };
 
-                        let (type_entry, _) =
-                            self.convert_schema_object(Name::Unknown, &typed_schema)?;
+                        let (type_entry, _) = self.convert_schema_object(
+                            Name::Unknown,
+                            original_schema,
+                            &typed_schema,
+                        )?;
                         // Make sure all the values are valid.
                         // TODO this isn't strictly legal since we may not yet
                         // have resolved references.
@@ -1379,6 +1650,7 @@ impl TypeSpace {
                             metadata,
                             type_id,
                             enum_values,
+                            original_schema.clone(),
                         );
 
                         Ok((newtype_entry, metadata))
@@ -1537,9 +1809,27 @@ impl TypeSpace {
         Ok((TypeEntryDetails::JsonValue.into(), metadata))
     }
 
+    fn convert_never<'a>(
+        &mut self,
+        type_name: Name,
+        schema: &'a Schema,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        let ty = TypeEntryEnum::from_metadata(
+            self,
+            type_name,
+            &None,
+            EnumTagType::External,
+            vec![],
+            true,
+            schema.clone(),
+        );
+        Ok((ty, &None))
+    }
+
     fn convert_typed_enum<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         schema: &'a SchemaObject,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1553,7 +1843,8 @@ impl TypeSpace {
             None => Name::Unknown,
         };
 
-        let (type_entry, metadata) = self.convert_schema_object(inner_type_name, &type_schema)?;
+        let (type_entry, metadata) =
+            self.convert_schema_object(inner_type_name, original_schema, &type_schema)?;
 
         // Make sure all the values are valid.
         enum_values
@@ -1568,6 +1859,7 @@ impl TypeSpace {
             metadata,
             type_id,
             enum_values,
+            original_schema.clone(),
         );
 
         Ok((
@@ -1583,6 +1875,7 @@ impl TypeSpace {
     fn convert_unknown_enum<'a>(
         &mut self,
         type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1610,19 +1903,23 @@ impl TypeSpace {
             // convert the resulting type to be optional.
             let enum_values = enum_values
                 .iter()
-                .cloned()
                 .filter(|v| !v.is_null())
+                .cloned()
                 .collect::<Vec<_>>();
 
             let (type_entry, metadata) =
-                self.convert_unknown_enum(type_name, metadata, &enum_values)?;
+                self.convert_unknown_enum(type_name, original_schema, metadata, &enum_values)?;
             let type_entry = self.type_to_option(type_entry);
             Ok((type_entry, metadata))
         } else {
             match (instance_types.len(), instance_types.iter().next()) {
-                (1, Some(InstanceType::String)) => {
-                    self.convert_enum_string(type_name, metadata, enum_values, None)
-                }
+                (1, Some(InstanceType::String)) => self.convert_enum_string(
+                    type_name,
+                    original_schema,
+                    metadata,
+                    enum_values,
+                    None,
+                ),
 
                 // TODO We're ignoring enumerated values for the boolean
                 // type--at least for the moment--because some of the tests
@@ -1636,8 +1933,12 @@ impl TypeSpace {
                         ))),
                         ..Default::default()
                     };
-                    let (type_entry, new_metadata) =
-                        self.convert_typed_enum(type_name, &typed_schema, enum_values)?;
+                    let (type_entry, new_metadata) = self.convert_typed_enum(
+                        type_name,
+                        original_schema,
+                        &typed_schema,
+                        enum_values,
+                    )?;
                     Ok((
                         type_entry,
                         if new_metadata.is_some() {
@@ -1673,6 +1974,7 @@ impl TypeSpace {
     pub(crate) fn maybe_singleton_subschema(
         &mut self,
         type_name: Name,
+        _original_schema: &Schema,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
         match (subschemas.len(), subschemas.first()) {
@@ -1687,7 +1989,7 @@ mod tests {
     use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
     use paste::paste;
-    use quote::quote;
+    use quote::{quote, ToTokens};
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, Metadata, NumberValidation, RootSchema, SchemaObject},
@@ -1701,7 +2003,7 @@ mod tests {
     };
 
     #[track_caller]
-    fn int_helper<T: JsonSchema>() {
+    fn int_helper<T: JsonSchema>(type_name: &'static str) {
         let schema = schema_for!(T);
 
         let mut type_space = TypeSpace::default();
@@ -1709,17 +2011,15 @@ mod tests {
             .add_ref_types(schema.definitions.clone())
             .unwrap();
         let (ty, _) = type_space
-            .convert_schema_object(Name::Unknown, &schema.schema)
+            .convert_schema_object(
+                Name::Unknown,
+                &schemars::schema::Schema::Object(schema.schema.clone()),
+                &schema.schema,
+            )
             .unwrap();
         let output = ty.type_name(&type_space);
-        let actual = output
-            .rsplit_once("::")
-            .map(|(_, x)| x.trim())
-            .unwrap_or(&output);
-        let expected = std::any::type_name::<T>()
-            .rsplit_once("::")
-            .map(|(_, x)| x.trim())
-            .unwrap_or(&output);
+        let actual = output.split("::").last().unwrap().trim();
+        let expected = type_name.split("::").last().unwrap();
         assert_eq!(actual, expected);
     }
 
@@ -1728,7 +2028,7 @@ mod tests {
             paste! {
                 #[test]
                 fn [<test_int_ $t:lower>]() {
-                    int_helper::<$t>()
+                    int_helper::<$t>(stringify!($t))
                 }
             }
         };
@@ -1832,7 +2132,11 @@ mod tests {
         };
 
         let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(Name::Unknown, &schema) {
+        match type_space.convert_schema_object(
+            Name::Unknown,
+            &schemars::schema::Schema::Object(schema.clone()),
+            &schema,
+        ) {
             Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }
@@ -1860,7 +2164,11 @@ mod tests {
         };
 
         let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(Name::Unknown, &schema) {
+        match type_space.convert_schema_object(
+            Name::Unknown,
+            &schemars::schema::Schema::Object(schema.clone()),
+            &schema,
+        ) {
             Err(Error::InvalidValue) => (),
             _ => panic!("unexpected result"),
         }
@@ -1882,8 +2190,11 @@ mod tests {
         let _ = type_space.add_type(&schema.schema.into()).unwrap();
 
         let actual = type_space.to_stream();
-        let expected = quote! {};
-        assert_eq!(actual.to_string(), expected.to_string());
+        let file = syn::parse2::<syn::File>(actual).expect("type space should emit a valid file");
+        match file.items.as_slice() {
+            [syn::Item::Mod(error)] if error.ident == "error" => {}
+            _ => panic!("unexpected file contents {}", file.to_token_stream()),
+        }
     }
 
     #[test]

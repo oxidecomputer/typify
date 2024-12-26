@@ -140,15 +140,15 @@ impl ::std::fmt::Display for Eh {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct MapWithDateKeys(pub ::std::collections::HashMap<chrono::naive::NaiveDate, Value>);
+pub struct MapWithDateKeys(pub std::collections::BTreeMap<chrono::naive::NaiveDate, Value>);
 impl ::std::ops::Deref for MapWithDateKeys {
-    type Target = ::std::collections::HashMap<chrono::naive::NaiveDate, Value>;
-    fn deref(&self) -> &::std::collections::HashMap<chrono::naive::NaiveDate, Value> {
+    type Target = std::collections::BTreeMap<chrono::naive::NaiveDate, Value>;
+    fn deref(&self) -> &std::collections::BTreeMap<chrono::naive::NaiveDate, Value> {
         &self.0
     }
 }
 impl ::std::convert::From<MapWithDateKeys>
-    for ::std::collections::HashMap<chrono::naive::NaiveDate, Value>
+    for std::collections::BTreeMap<chrono::naive::NaiveDate, Value>
 {
     fn from(value: MapWithDateKeys) -> Self {
         value.0
@@ -159,10 +159,10 @@ impl ::std::convert::From<&MapWithDateKeys> for MapWithDateKeys {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::collections::HashMap<chrono::naive::NaiveDate, Value>>
+impl ::std::convert::From<std::collections::BTreeMap<chrono::naive::NaiveDate, Value>>
     for MapWithDateKeys
 {
-    fn from(value: ::std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
+    fn from(value: std::collections::BTreeMap<chrono::naive::NaiveDate, Value>) -> Self {
         Self(value)
     }
 }
@@ -186,16 +186,16 @@ impl ::std::convert::From<::std::collections::HashMap<chrono::naive::NaiveDate, 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MapWithDateTimeKeys(
-    pub ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+    pub std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>,
 );
 impl ::std::ops::Deref for MapWithDateTimeKeys {
-    type Target = ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
-    fn deref(&self) -> &::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+    type Target = std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>;
+    fn deref(&self) -> &std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value> {
         &self.0
     }
 }
 impl ::std::convert::From<MapWithDateTimeKeys>
-    for ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+    for std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>
 {
     fn from(value: MapWithDateTimeKeys) -> Self {
         value.0
@@ -206,11 +206,11 @@ impl ::std::convert::From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
+impl ::std::convert::From<std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>>
     for MapWithDateTimeKeys
 {
     fn from(
-        value: ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+        value: std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>,
     ) -> Self {
         Self(value)
     }
@@ -233,14 +233,14 @@ impl ::std::convert::From<::std::collections::HashMap<chrono::DateTime<chrono::o
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct MapWithKeys(pub ::std::collections::HashMap<Eh, Value>);
+pub struct MapWithKeys(pub std::collections::BTreeMap<Eh, Value>);
 impl ::std::ops::Deref for MapWithKeys {
-    type Target = ::std::collections::HashMap<Eh, Value>;
-    fn deref(&self) -> &::std::collections::HashMap<Eh, Value> {
+    type Target = std::collections::BTreeMap<Eh, Value>;
+    fn deref(&self) -> &std::collections::BTreeMap<Eh, Value> {
         &self.0
     }
 }
-impl ::std::convert::From<MapWithKeys> for ::std::collections::HashMap<Eh, Value> {
+impl ::std::convert::From<MapWithKeys> for std::collections::BTreeMap<Eh, Value> {
     fn from(value: MapWithKeys) -> Self {
         value.0
     }
@@ -250,8 +250,8 @@ impl ::std::convert::From<&MapWithKeys> for MapWithKeys {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::collections::HashMap<Eh, Value>> for MapWithKeys {
-    fn from(value: ::std::collections::HashMap<Eh, Value>) -> Self {
+impl ::std::convert::From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys {
+    fn from(value: std::collections::BTreeMap<Eh, Value>) -> Self {
         Self(value)
     }
 }

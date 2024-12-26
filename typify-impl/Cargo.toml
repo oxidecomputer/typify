@@ -1,6 +1,6 @@
 [package]
 name = "typify-impl"
-version = "0.0.14"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "typify backend implementation"
@@ -8,24 +8,26 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
 [dependencies]
-heck = "0.4.1"
-log = "0.4"
-proc-macro2 = "1.0"
-quote = "1.0"
-regress = "0.7.1"
-schemars = "0.8.13"
-serde_json = "1.0"
-syn = { version = "2.0", features = ["full"] }
-thiserror = "1.0"
-unicode-ident = "1.0.12"
+heck = "0.5.0"
+log = "0.4.22"
+proc-macro2 = "1.0.89"
+quote = "1.0.37"
+regress = "0.10.1"
+schemars = "0.8.21"
+semver = "1.0.24"
+serde = "1.0.216"
+serde_json = "1.0.134"
+syn = { version = "2.0.91", features = ["full"] }
+thiserror = "2.0.9"
+unicode-ident = "1.0.14"
+
 
 [dev-dependencies]
-env_logger = "0.10.0"
-expectorate = "1.0"
-paste = "1.0"
-rustfmt-wrapper = "0.2"
+env_logger = "0.11.6"
+expectorate = "1.1.0"
+paste = "1.0.15"
+rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
-schemars = { version = "0.8.13", features = ["uuid1"] }
-serde = "1.0"
-syn = { version = "2.0", features = ["full", "extra-traits"] }
-uuid = "1.4.1"
+schemars = { version = "0.8.21", features = ["uuid1", "impl_json_schema"] }
+syn = { version = "2.0.91", features = ["full", "extra-traits", "visit-mut"] }
+uuid = "1.11.0"

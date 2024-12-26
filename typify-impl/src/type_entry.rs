@@ -1,10 +1,10 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
-use schemars::schema::Metadata;
+use schemars::schema::{Metadata, Schema};
 use syn::Path;
 
 use crate::{
@@ -14,6 +14,22 @@ use crate::{
     util::{get_type_name, metadata_description, type_patch},
     DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) struct SchemaWrapper(Schema);
+
+impl Eq for SchemaWrapper {}
+
+impl Ord for SchemaWrapper {
+    fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
+impl PartialOrd for SchemaWrapper {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct TypeEntryEnum {
@@ -25,6 +41,7 @@ pub(crate) struct TypeEntryEnum {
     pub variants: Vec<Variant>,
     pub deny_unknown_fields: bool,
     pub bespoke_impls: BTreeSet<TypeEntryEnumImpl>,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -42,6 +59,7 @@ pub(crate) struct TypeEntryStruct {
     pub default: Option<WrappedValue>,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -52,6 +70,7 @@ pub(crate) struct TypeEntryNewtype {
     pub default: Option<WrappedValue>,
     pub type_id: TypeId,
     pub constraints: TypeEntryNewtypeConstraints,
+    pub schema: SchemaWrapper,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -70,6 +89,17 @@ pub(crate) enum TypeEntryNewtypeConstraints {
 pub(crate) struct TypeEntryNative {
     pub type_name: String,
     impls: Vec<TypeSpaceImpl>,
+    // TODO to support const generics, this can be some sort of TypeOrValue,
+    // but note that we may some day need to disambiguate char and &'static str
+    // since schemars represents a char as a string of length 1.
+    pub parameters: Vec<TypeId>,
+}
+impl TypeEntryNative {
+    pub(crate) fn name_match(&self, type_name: &Name) -> bool {
+        let native_name = self.type_name.rsplit("::").next().unwrap();
+        !self.parameters.is_empty()
+            || matches!(type_name, Name::Required(req) if req == native_name)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -86,8 +116,8 @@ impl Ord for WrappedValue {
     }
 }
 impl PartialOrd for WrappedValue {
-    fn partial_cmp(&self, _: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -199,6 +229,7 @@ impl TypeEntryEnum {
         tag_type: EnumTagType,
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -215,6 +246,7 @@ impl TypeEntryEnum {
             variants,
             deny_unknown_fields,
             bespoke_impls: Default::default(),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -227,6 +259,7 @@ impl TypeEntryEnum {
         self.bespoke_impls = [
             // Not untagged with all simple variants.
             (self.tag_type != EnumTagType::Untagged
+                && !self.variants.is_empty()
                 && self
                     .variants
                     .iter()
@@ -262,6 +295,7 @@ impl TypeEntryStruct {
         metadata: &Option<Box<Metadata>>,
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -281,6 +315,7 @@ impl TypeEntryStruct {
             default,
             properties,
             deny_unknown_fields,
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -296,6 +331,7 @@ impl TypeEntryNewtype {
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -310,6 +346,7 @@ impl TypeEntryNewtype {
             default: None,
             type_id,
             constraints: TypeEntryNewtypeConstraints::None,
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -324,6 +361,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -340,6 +378,7 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::EnumValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -354,6 +393,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -370,6 +410,7 @@ impl TypeEntryNewtype {
             constraints: TypeEntryNewtypeConstraints::DenyValue(
                 enum_values.iter().cloned().map(WrappedValue::new).collect(),
             ),
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -384,6 +425,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
+        schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
@@ -408,6 +450,7 @@ impl TypeEntryNewtype {
                 min_length,
                 pattern,
             },
+            schema: SchemaWrapper(schema),
         });
 
         TypeEntry {
@@ -432,6 +475,17 @@ impl TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: impls.to_vec(),
+                parameters: Default::default(),
+            }),
+            extra_derives: Default::default(),
+        }
+    }
+    pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
+        TypeEntry {
+            details: TypeEntryDetails::Native(TypeEntryNative {
+                type_name: type_name.to_string(),
+                impls: Default::default(),
+                parameters: params.to_vec(),
             }),
             extra_derives: Default::default(),
         }
@@ -576,9 +630,14 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
-        let derive_set = ["Serialize", "Deserialize", "Debug", "Clone"]
-            .into_iter()
-            .collect::<BTreeSet<_>>();
+        let derive_set = [
+            "::serde::Serialize",
+            "::serde::Deserialize",
+            "Debug",
+            "Clone",
+        ]
+        .into_iter()
+        .collect::<BTreeSet<_>>();
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
@@ -616,9 +675,10 @@ impl TypeEntry {
             variants,
             deny_unknown_fields,
             bespoke_impls,
+            schema: SchemaWrapper(schema),
         } = enum_details;
 
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         // TODO this is a one-off for some useful traits; this should move into
         // the creation of the enum type.
@@ -673,7 +733,7 @@ impl TypeEntry {
             )
         }
 
-        // ToString and FromStr impls for enums that are made exclusively of
+        // Display and FromStr impls for enums that are made exclusively of
         // simple variants (and are not untagged).
         let simple_enum_impl = bespoke_impls
             .contains(&TypeEntryEnumImpl::AllSimpleVariants)
@@ -691,41 +751,47 @@ impl TypeEntry {
                     .unzip();
 
                 quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
+                    impl ::std::fmt::Display for #type_name {
+                        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                             match *self {
-                                #(Self::#match_variants => #match_strs.to_string(),)*
+                                #(Self::#match_variants => write!(f, #match_strs),)*
                             }
                         }
                     }
-                    impl std::str::FromStr for #type_name {
-                        type Err = &'static str;
+                    impl ::std::str::FromStr for #type_name {
+                        type Err = self::error::ConversionError;
 
-                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
                             match value {
                                 #(#match_strs => Ok(Self::#match_variants),)*
-                                _ => Err("invalid value"),
+                                _ => Err("invalid value".into()),
                             }
                         }
                     }
-                    impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&str> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: &str) -> Result<Self, &'static str> {
+                        fn try_from(value: &str) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) -> Result<Self, &'static str> {
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) -> Result<Self, &'static str> {
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             value.parse()
                         }
                     }
@@ -735,7 +801,7 @@ impl TypeEntry {
         let default_impl = default.as_ref().map(|value| {
             let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
             quote! {
-                impl Default for #type_name {
+                impl ::std::default::Default for #type_name {
                     fn default() -> Self {
                         #default_stream
                     }
@@ -751,11 +817,11 @@ impl TypeEntry {
                     .map(|variant| format_ident!("{}", variant.name));
 
                 quote! {
-                    impl std::str::FromStr for #type_name {
-                        type Err = &'static str;
+                    impl ::std::str::FromStr for #type_name {
+                        type Err = self::error::ConversionError;
 
                         fn from_str(value: &str) ->
-                            Result<Self, &'static str>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             #(
                                 // Try to parse() into each variant.
@@ -764,33 +830,33 @@ impl TypeEntry {
                                 } else
                             )*
                             {
-                                Err("string conversion failed for all variants")
+                                Err("string conversion failed for all variants".into())
                             }
                         }
                     }
-                    impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&str> for #type_name {
+                        type Error = self::error::ConversionError;
 
                         fn try_from(value: &str) ->
-                            Result<Self, &'static str>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) ->
-                            Result<Self, &'static str>
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) ->
-                            Result<Self, &'static str>
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
@@ -806,10 +872,10 @@ impl TypeEntry {
                     .map(|variant| format_ident!("{}", variant.name));
 
                 quote! {
-                    impl ToString for #type_name {
-                        fn to_string(&self) -> String {
+                    impl ::std::fmt::Display for #type_name {
+                        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                             match self {
-                                #(Self::#variant_name(x) => x.to_string(),)*
+                                #(Self::#variant_name(x) => x.fmt(f),)*
                             }
                         }
                     }
@@ -865,7 +931,7 @@ impl TypeEntry {
                                 let variant_type_ident = variant_type.type_ident(type_space, &None);
                                 let variant_name = format_ident!("{}", variant.name);
                                 quote! {
-                                    impl From<#variant_type_ident> for #type_name {
+                                    impl ::std::convert::From<#variant_type_ident> for #type_name {
                                         fn from(value: #variant_type_ident)
                                             -> Self
                                         {
@@ -893,7 +959,7 @@ impl TypeEntry {
                             let variant_name = format_ident!("{}", variant.name);
                             let ii = (0..type_ids.len()).map(syn::Index::from);
                             Some(quote! {
-                                impl From<#variant_type_ident> for #type_name {
+                                impl ::std::convert::From<#variant_type_ident> for #type_name {
                                     fn from(value: #variant_type_ident) -> Self {
                                         Self::#variant_name(
                                             #( value.#ii, )*
@@ -924,7 +990,7 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
-            impl From<&#type_name> for #type_name {
+            impl ::std::convert::From<&#type_name> for #type_name {
                 fn from(value: &#type_name) -> Self {
                     value.clone()
                 }
@@ -946,6 +1012,12 @@ impl TypeEntry {
         struct_details: &TypeEntryStruct,
         derive_set: BTreeSet<&str>,
     ) {
+        enum PropDefault {
+            None(String),
+            Default(TokenStream),
+            Custom(TokenStream),
+        }
+
         let TypeEntryStruct {
             name,
             rename,
@@ -953,8 +1025,9 @@ impl TypeEntry {
             default,
             properties,
             deny_unknown_fields,
+            schema: SchemaWrapper(schema),
         } = struct_details;
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
@@ -1003,22 +1076,18 @@ impl TypeEntry {
 
             prop_serde.push(serde);
             prop_default.push(match default_fn {
-                DefaultFunction::Default => {
-                    quote! {
-                        Ok(Default::default())
-                    }
-                }
+                DefaultFunction::Default => PropDefault::Default(quote! {
+                    Default::default()
+                }),
                 DefaultFunction::Custom(fn_name) => {
                     let default_fn = syn::parse_str::<Path>(&fn_name).unwrap();
-                    quote! {
-                        Ok(super::#default_fn())
-                    }
+                    PropDefault::Custom(quote! {
+                        #default_fn()
+                    })
                 }
                 DefaultFunction::None => {
                     let err_msg = format!("no value supplied for {}", prop.name);
-                    quote! {
-                        Err(#err_msg.to_string())
-                    }
+                    PropDefault::None(err_msg)
                 }
             });
         });
@@ -1027,8 +1096,7 @@ impl TypeEntry {
             derive_set,
             &self.extra_derives,
             &type_space.settings.extra_derives,
-        )
-        .collect::<Vec<_>>();
+        );
 
         output.add_item(
             OutputSpaceMod::Crate,
@@ -1045,7 +1113,7 @@ impl TypeEntry {
                     )*
                 }
 
-                impl From<&#type_name> for #type_name {
+                impl ::std::convert::From<&#type_name> for #type_name {
                     fn from(value: &#type_name) -> Self {
                         value.clone()
                     }
@@ -1060,13 +1128,39 @@ impl TypeEntry {
                 OutputSpaceMod::Crate,
                 name,
                 quote! {
-                    impl Default for #type_name {
+                    impl ::std::default::Default for #type_name {
                         fn default() -> Self {
                             #default_stream
                         }
                     }
                 },
             );
+        } else if let Some(prop_default) = prop_default
+            .iter()
+            .map(|pd| match pd {
+                PropDefault::None(_) => None,
+                PropDefault::Default(token_stream) | PropDefault::Custom(token_stream) => {
+                    Some(token_stream)
+                }
+            })
+            .collect::<Option<Vec<_>>>()
+        {
+            // If all properties have a default, we can generate a Default impl
+            output.add_item(
+                OutputSpaceMod::Crate,
+                name,
+                quote! {
+                    impl ::std::default::Default for #type_name {
+                        fn default() -> Self {
+                            Self {
+                                #(
+                                    #prop_name: #prop_default,
+                                )*
+                            }
+                        }
+                    }
+                },
+            )
         }
 
         if type_space.settings.struct_builder {
@@ -1076,11 +1170,25 @@ impl TypeEntry {
                 quote! {
                     impl #type_name {
                         pub fn builder() -> builder::#type_name {
-                            builder::#type_name::default()
+                            Default::default()
                         }
                     }
                 },
             );
+
+            // If there are no properties, all of this is kind of pointless,
+            // but at least this lets us avoid the lint warning.
+            let value_ident = if prop_name.is_empty() {
+                quote! { _value }
+            } else {
+                quote! { value }
+            };
+
+            let prop_default = prop_default.iter().map(|pd| match pd {
+                PropDefault::None(err_msg) => quote! { Err(#err_msg.to_string()) },
+                PropDefault::Default(default_fn) => quote! { Ok(#default_fn) },
+                PropDefault::Custom(custom_fn) => quote! { Ok(super::#custom_fn) },
+            });
 
             output.add_item(
                 OutputSpaceMod::Builder,
@@ -1089,11 +1197,11 @@ impl TypeEntry {
                     #[derive(Clone, Debug)]
                     pub struct #type_name {
                         #(
-                            #prop_name: Result<#prop_type_scoped, String>,
+                            #prop_name: ::std::result::Result<#prop_type_scoped, ::std::string::String>,
                         )*
                     }
 
-                    impl Default for #type_name {
+                    impl ::std::default::Default for #type_name {
                         fn default() -> Self {
                             Self {
                                 #(
@@ -1107,8 +1215,8 @@ impl TypeEntry {
                         #(
                             pub fn #prop_name<T>(mut self, value: T) -> Self
                                 where
-                                    T: std::convert::TryInto<#prop_type_scoped>,
-                                    T::Error: std::fmt::Display,
+                                    T: ::std::convert::TryInto<#prop_type_scoped>,
+                                    T::Error: ::std::fmt::Display,
                             {
                                 self.#prop_name = value.try_into()
                                     .map_err(|e| format!(#prop_error, e));
@@ -1118,13 +1226,13 @@ impl TypeEntry {
                     }
 
                     // This is how the item is built.
-                    impl std::convert::TryFrom<#type_name>
+                    impl ::std::convert::TryFrom<#type_name>
                         for super::#type_name
                     {
-                        type Error = String;
+                        type Error = super::error::ConversionError;
 
-                        fn try_from(value: #type_name)
-                            -> Result<Self, String>
+                        fn try_from(#value_ident: #type_name)
+                            -> ::std::result::Result<Self, super::error::ConversionError>
                         {
                             Ok(Self {
                                 #(
@@ -1135,8 +1243,8 @@ impl TypeEntry {
                     }
 
                     // Construct a builder from the item.
-                    impl From<super::#type_name> for #type_name {
-                        fn from(value: super::#type_name) -> Self {
+                    impl ::std::convert::From<super::#type_name> for #type_name {
+                        fn from(#value_ident: super::#type_name) -> Self {
                             Self {
                                 #(
                                     #prop_name: Ok(value.#prop_name),
@@ -1158,19 +1266,14 @@ impl TypeEntry {
     ) {
         let TypeEntryNewtype {
             name,
-            rename,
+            rename: _,
             description,
             default,
             type_id,
             constraints,
+            schema: SchemaWrapper(schema),
         } = newtype_details;
-        let doc = description.as_ref().map(|desc| quote! { #[doc = #desc] });
-
-        let serde = rename.as_ref().map(|old_name| {
-            quote! {
-                #[serde(rename = #old_name)]
-            }
-        });
+        let doc = make_doc(name, description.as_ref(), schema);
 
         let type_name = format_ident!("{}", name);
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
@@ -1189,11 +1292,11 @@ impl TypeEntry {
             TypeEntryNewtypeConstraints::None => {
                 let str_impl = is_str.then(|| {
                     quote! {
-                        impl std::str::FromStr for #type_name {
-                            type Err = std::convert::Infallible;
+                        impl ::std::str::FromStr for #type_name {
+                            type Err = ::std::convert::Infallible;
 
                             fn from_str(value: &str) ->
-                                Result<Self, Self::Err>
+                                ::std::result::Result<Self, Self::Err>
                             {
                                 Ok(Self(value.to_string()))
                             }
@@ -1206,42 +1309,42 @@ impl TypeEntry {
                     && !is_str)
                     .then(|| {
                         quote! {
-                            impl std::str::FromStr for #type_name {
+                            impl ::std::str::FromStr for #type_name {
                                 type Err = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                    ::std::str::FromStr>::Err;
 
                                 fn from_str(value: &str) ->
-                                    Result<Self, Self::Err>
+                                    ::std::result::Result<Self, Self::Err>
                                 {
                                     Ok(Self(value.parse()?))
                                 }
                             }
-                            impl std::convert::TryFrom<&str> for #type_name {
+                            impl ::std::convert::TryFrom<&str> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                    ::std::str::FromStr>::Err;
 
                                 fn try_from(value: &str) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
                             }
-                            impl std::convert::TryFrom<&String> for #type_name {
+                            impl ::std::convert::TryFrom<&String> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                    ::std::str::FromStr>::Err;
 
                                 fn try_from(value: &String) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
                             }
-                            impl std::convert::TryFrom<String> for #type_name {
+                            impl ::std::convert::TryFrom<String> for #type_name {
                                 type Error = <#inner_type_name as
-                                    std::str::FromStr>::Err;
+                                    ::std::str::FromStr>::Err;
 
                                 fn try_from(value: String) ->
-                                    Result<Self, Self::Error>
+                                    ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
                                 }
@@ -1253,16 +1356,16 @@ impl TypeEntry {
                     .has_impl(type_space, TypeSpaceImpl::Display)
                     .then(|| {
                         quote! {
-                            impl ToString for #type_name {
-                                fn to_string(&self) -> String {
-                                    self.0.to_string()
+                            impl ::std::fmt::Display for #type_name {
+                                fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+                                    self.0.fmt(f)
                                 }
                             }
                         }
                     });
 
                 quote! {
-                    impl From<#inner_type_name> for #type_name {
+                    impl ::std::convert::From<#inner_type_name> for #type_name {
                         fn from(value: #inner_type_name) -> Self {
                             Self(value)
                         }
@@ -1288,7 +1391,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("Deserialize");
+                derive_set.remove("::serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
@@ -1301,35 +1404,35 @@ impl TypeEntry {
                 // TODO maybe we want to handle JsonSchema here
                 quote! {
                     // This is effectively the constructor for this type.
-                    impl std::convert::TryFrom<#inner_type_name> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<#inner_type_name> for #type_name {
+                        type Error = self::error::ConversionError;
 
                         fn try_from(
                             value: #inner_type_name
-                        ) -> Result<Self, &'static str>
+                        ) -> ::std::result::Result<Self, self::error::ConversionError>
                         {
                             if #not [
                                 #(#value_output,)*
                             ].contains(&value) {
-                                Err("invalid value")
+                                Err("invalid value".into())
                             } else {
                                 Ok(Self(value))
                             }
                         }
                     }
 
-                    impl<'de> serde::Deserialize<'de> for #type_name {
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
-                        ) -> Result<Self, D::Error>
+                        ) -> ::std::result::Result<Self, D::Error>
                         where
-                            D: serde::Deserializer<'de>,
+                            D: ::serde::Deserializer<'de>,
                         {
                             Self::try_from(
                                 <#inner_type_name>::deserialize(deserializer)?,
                             )
                             .map_err(|e| {
-                                <D::Error as serde::de::Error>::custom(
+                                <D::Error as ::serde::de::Error>::custom(
                                     e.to_string(),
                                 )
                             })
@@ -1348,7 +1451,7 @@ impl TypeEntry {
                     let err = format!("longer than {} characters", v);
                     quote! {
                         if value.len() > #v {
-                            return Err(#err);
+                            return Err(#err.into());
                         }
                     }
                 });
@@ -1357,7 +1460,7 @@ impl TypeEntry {
                     let err = format!("shorter than {} characters", v);
                     quote! {
                         if value.len() < #v {
-                            return Err(#err);
+                            return Err(#err.into());
                         }
                     }
                 });
@@ -1365,22 +1468,22 @@ impl TypeEntry {
                     let err = format!("doesn't match pattern \"{}\"", p);
                     quote! {
                         if regress::Regex::new(#p).unwrap().find(value).is_none() {
-                            return Err(#err);
+                            return Err(#err.into());
                         }
                     }
                 });
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("Deserialize");
+                derive_set.remove("::serde::Deserialize");
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
                 quote! {
-                    impl std::str::FromStr for #type_name {
-                        type Err = &'static str;
+                    impl ::std::str::FromStr for #type_name {
+                        type Err = self::error::ConversionError;
 
-                        fn from_str(value: &str) -> Result<Self, &'static str> {
+                        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
                             #max
                             #min
                             #pat
@@ -1388,48 +1491,48 @@ impl TypeEntry {
                             Ok(Self(value.to_string()))
                         }
                     }
-                    impl std::convert::TryFrom<&str> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&str> for #type_name {
+                        type Error = self::error::ConversionError;
 
                         fn try_from(value: &str) ->
-                            Result<Self, &'static str>
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<&String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<&::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: &String) ->
-                            Result<Self, &'static str>
+                        fn try_from(value: &::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
-                    impl std::convert::TryFrom<String> for #type_name {
-                        type Error = &'static str;
+                    impl ::std::convert::TryFrom<::std::string::String> for #type_name {
+                        type Error = self::error::ConversionError;
 
-                        fn try_from(value: String) ->
-                            Result<Self, &'static str>
+                        fn try_from(value: ::std::string::String) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
                         {
                             value.parse()
                         }
                     }
 
-                    impl<'de> serde::Deserialize<'de> for #type_name {
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
-                        ) -> Result<Self, D::Error>
+                        ) -> ::std::result::Result<Self, D::Error>
                         where
-                            D: serde::Deserializer<'de>,
+                            D: ::serde::Deserializer<'de>,
                         {
-                            String::deserialize(deserializer)?
-                                .parse()
-                                .map_err(|e: &'static str| {
-                                    <D::Error as serde::de::Error>::custom(
-                                        e.to_string(),
-                                    )
-                                })
+                            ::std::string::String::deserialize(deserializer)?
+                            .parse()
+                            .map_err(|e: self::error::ConversionError| {
+                                <D::Error as ::serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
                         }
                     }
                 }
@@ -1445,7 +1548,7 @@ impl TypeEntry {
         let default_impl = default.as_ref().map(|value| {
             let default_stream = self.output_value(type_space, &value.0, &quote! {}).unwrap();
             quote! {
-                impl Default for #type_name {
+                impl ::std::default::Default for #type_name {
                     fn default() -> Self {
                         #default_stream
                     }
@@ -1462,23 +1565,23 @@ impl TypeEntry {
         let item = quote! {
             #doc
             #[derive(#(#derives),*)]
-            #serde
+            #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
 
-            impl std::ops::Deref for #type_name {
+            impl ::std::ops::Deref for #type_name {
                 type Target = #inner_type_name;
                 fn deref(&self) -> &#inner_type_name {
                     &self.0
                 }
             }
 
-            impl From<#type_name> for #inner_type_name {
+            impl ::std::convert::From<#type_name> for #inner_type_name {
                 fn from(value: #type_name) -> Self {
                     value.0
                 }
             }
 
-            impl From<&#type_name> for #type_name {
+            impl ::std::convert::From<&#type_name> for #type_name {
                 fn from(value: &#type_name) -> Self {
                     value.clone()
                 }
@@ -1526,7 +1629,7 @@ impl TypeEntry {
                 // schema encoded it; it's an odd construction.
                 match &inner_ty.details {
                     TypeEntryDetails::Option(_) => inner_ident,
-                    _ => quote! { Option<#inner_ident> },
+                    _ => quote! { ::std::option::Option<#inner_ident> },
                 }
             }
 
@@ -1538,7 +1641,7 @@ impl TypeEntry {
 
                 let item = inner_ty.type_ident(type_space, type_mod);
 
-                quote! { Box<#item> }
+                quote! { ::std::boxed::Box<#item> }
             }
 
             TypeEntryDetails::Vec(id) => {
@@ -1548,10 +1651,11 @@ impl TypeEntry {
                     .expect("unresolved type id for array");
                 let item = inner_ty.type_ident(type_space, type_mod);
 
-                quote! { Vec<#item> }
+                quote! { ::std::vec::Vec<#item> }
             }
 
             TypeEntryDetails::Map(key_id, value_id) => {
+                let map_to_use = &type_space.settings.map_type;
                 let key_ty = type_space
                     .id_to_entry
                     .get(key_id)
@@ -1564,11 +1668,13 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { serde_json::Map<String, serde_json::Value> }
+                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
-                    quote! { std::collections::HashMap<#key_ident, #value_ident> }
+                    let map_to_use = &map_to_use.0;
+
+                    quote! { #map_to_use<#key_ident, #value_ident> }
                 }
             }
 
@@ -1610,17 +1716,40 @@ impl TypeEntry {
                 quote! { [#item_ident; #length]}
             }
 
-            TypeEntryDetails::Unit => quote! { () },
-            TypeEntryDetails::String => quote! { String },
-            TypeEntryDetails::Boolean => quote! { bool },
-            TypeEntryDetails::JsonValue => quote! { serde_json::Value },
             TypeEntryDetails::Native(TypeEntryNative {
-                type_name: name, ..
-            })
-            | TypeEntryDetails::Integer(name)
-            | TypeEntryDetails::Float(name) => syn::parse_str::<syn::TypePath>(name)
-                .unwrap()
-                .to_token_stream(),
+                type_name,
+                impls: _,
+                parameters,
+            }) => {
+                let path =
+                    syn::parse_str::<syn::TypePath>(type_name).expect("type path wasn't valid");
+
+                let type_idents = (!parameters.is_empty()).then(|| {
+                    let type_idents = parameters.iter().map(|type_id| {
+                        type_space
+                            .id_to_entry
+                            .get(type_id)
+                            .expect("unresolved type id for tuple")
+                            .type_ident(type_space, type_mod)
+                    });
+                    quote! { < #(#type_idents,)* > }
+                });
+
+                quote! {
+                    #path
+                    #type_idents
+                }
+            }
+
+            TypeEntryDetails::Unit => quote! { () },
+            TypeEntryDetails::String => quote! { ::std::string::String },
+            TypeEntryDetails::Boolean => quote! { bool },
+            TypeEntryDetails::JsonValue => quote! { ::serde_json::Value },
+            TypeEntryDetails::Integer(name) | TypeEntryDetails::Float(name) => {
+                syn::parse_str::<syn::TypePath>(name)
+                    .unwrap()
+                    .to_token_stream()
+            }
 
             TypeEntryDetails::Reference(_) => panic!("references should be resolved by now"),
         }
@@ -1758,6 +1887,24 @@ impl TypeEntry {
     }
 }
 
+fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
+    let desc = description.map_or(name, |desc| desc.as_str());
+    let schema_json = serde_json::to_string_pretty(schema).unwrap();
+    let schema_lines = schema_json.lines();
+    quote! {
+        #[doc = #desc]
+        ///
+        /// <details><summary>JSON schema</summary>
+        ///
+        /// ```json
+        #(
+            #[doc = #schema_lines]
+        )*
+        /// ```
+        /// </details>
+    }
+}
+
 fn strings_to_derives<'a>(
     derive_set: BTreeSet<&'a str>,
     type_derives: &'a BTreeSet<String>,
@@ -1804,7 +1951,7 @@ fn untagged_newtype_variants(
 #[cfg(test)]
 mod tests {
     use crate::{
-        type_entry::{TypeEntry, TypeEntryStruct},
+        type_entry::{SchemaWrapper, TypeEntry, TypeEntryStruct},
         TypeEntryDetails, TypeSpace,
     };
 
@@ -1812,7 +1959,7 @@ mod tests {
     fn test_ident() {
         let ts = TypeSpace::default();
 
-        let type_mod = Some("tha_mod".to_string());
+        let type_mod = Some("the_mod".to_string());
 
         let t = TypeEntry::new_integer("u32");
         let ident = t.type_ident(&ts, &type_mod);
@@ -1822,7 +1969,7 @@ mod tests {
 
         let t = TypeEntry::from(TypeEntryDetails::String);
         let ident = t.type_ident(&ts, &type_mod);
-        assert_eq!(ident.to_string(), "String");
+        assert_eq!(ident.to_string(), ":: std :: string :: String");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& str");
         let parameter = t.type_parameter_ident(&ts, Some("static"));
@@ -1841,10 +1988,11 @@ mod tests {
             default: None,
             properties: vec![],
             deny_unknown_fields: false,
+            schema: SchemaWrapper(schemars::schema::Schema::Bool(false)),
         }));
 
         let ident = t.type_ident(&ts, &type_mod);
-        assert_eq!(ident.to_string(), "tha_mod :: SomeType");
+        assert_eq!(ident.to_string(), "the_mod :: SomeType");
         let parameter = t.type_parameter_ident(&ts, None);
         assert_eq!(parameter.to_string(), "& SomeType");
         let parameter = t.type_parameter_ident(&ts, Some("a"));

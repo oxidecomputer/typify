@@ -27,8 +27,9 @@ fn test_github() {
 
 #[test]
 fn test_vega() {
+    env_logger::init();
     let mut settings = TypeSpaceSettings::default();
-    let raw_schema = serde_json::json! {
+    let raw_schema = serde_json::json!(
         {
             "enum": [
               null,
@@ -56,9 +57,15 @@ fn test_vega() {
               900
             ]
           }
-    };
+    );
     let schema = serde_json::from_value(raw_schema).unwrap();
-    settings.with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter());
+    settings
+        .with_conversion(schema, "MyEnum", [TypeSpaceImpl::FromStr].into_iter())
+        // TODO ColorValue has resulted in an extremely expensive type; to
+        // resolve this we need to do a better job of canonicalizing the schema
+        // once rather than repeatedly doing quadratic expansions over it.
+        // Alternatively we can memoize conversions rather than repeating them.
+        .with_replacement("ColorValue", "ColorValue", [].into_iter());
 
     let mut type_space = TypeSpace::new(&settings);
 

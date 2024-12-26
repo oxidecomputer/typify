@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 //! # Typify
 //!
@@ -8,7 +8,6 @@
 //! A typical use looks like this:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!("../example.json");
 //! ```
 //!
@@ -21,7 +20,6 @@
 //! Alternatively, you may use the expanded form:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(schema = "../example.json");
 //! ```
 //!
@@ -29,7 +27,6 @@
 //! specify them with the `derives` property of the expanded form:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     derives = [schemars::JsonSchema],
@@ -40,7 +37,6 @@
 //! ```
 //! # mod x {
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     struct_builder = true,
@@ -52,7 +48,6 @@
 //! ```
 //! # mod x {
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! # import_types!(
 //! #    schema = "../example.json",
 //! #    struct_builder = true,
@@ -75,7 +70,6 @@
 //! types using the `patch` syntax:
 //! ```
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     patch = {
@@ -97,7 +91,6 @@
 //! # pub struct Ipv6Cidr(String);
 //! # }
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     replace = {
@@ -116,7 +109,6 @@
 //! # pub struct MyUuid(String);
 //! # }
 //! # use typify_macro::import_types;
-//! # use serde::{Deserialize,Serialize};
 //! import_types!(
 //!     schema = "../example.json",
 //!     convert = {
@@ -154,6 +146,9 @@
 //! more information, see the project's
 //! [README.md](https://github.com/oxidecomputer/typify).
 
+#![deny(missing_docs)]
+
+pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::Type;
 pub use typify_impl::TypeDetails;
@@ -167,5 +162,6 @@ pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::TypeStruct;
 pub use typify_impl::TypeStructPropInfo;
+pub use typify_impl::UnknownPolicy;
 #[cfg(feature = "macro")]
 pub use typify_macro::import_types;

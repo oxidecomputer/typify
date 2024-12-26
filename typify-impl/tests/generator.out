@@ -1,109 +1,247 @@
 mod types {
+    #[doc = r" Error types."]
+    pub mod error {
+        #[doc = r" Error from a TryFrom or FromStr implementation."]
+        pub struct ConversionError(::std::borrow::Cow<'static, str>);
+        impl ::std::error::Error for ConversionError {}
+        impl ::std::fmt::Display for ConversionError {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+                ::std::fmt::Display::fmt(&self.0, f)
+            }
+        }
+        impl ::std::fmt::Debug for ConversionError {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+                ::std::fmt::Debug::fmt(&self.0, f)
+            }
+        }
+        impl From<&'static str> for ConversionError {
+            fn from(value: &'static str) -> Self {
+                Self(value.into())
+            }
+        }
+        impl From<String> for ConversionError {
+            fn from(value: String) -> Self {
+                Self(value.into())
+            }
+        }
+    }
+    #[doc = "AllTheTraits"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{"]
+    #[doc = "  \"title\": \"AllTheTraits\","]
+    #[doc = "  \"type\": \"object\","]
+    #[doc = "  \"required\": ["]
+    #[doc = "    \"ok\""]
+    #[doc = "  ],"]
+    #[doc = "  \"properties\": {"]
+    #[doc = "    \"ok\": {"]
+    #[doc = "      \"type\": \"string\""]
+    #[doc = "    }"]
+    #[doc = "  }"]
+    #[doc = "}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(
-        Clone, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
+        :: serde :: Deserialize,
+        :: serde :: Serialize,
+        Clone,
+        Debug,
+        Eq,
+        Hash,
+        JsonSchema,
+        Ord,
+        PartialEq,
+        PartialOrd,
     )]
     pub struct AllTheTraits {
-        pub ok: String,
+        pub ok: ::std::string::String,
     }
-    impl From<&AllTheTraits> for AllTheTraits {
+    impl ::std::convert::From<&AllTheTraits> for AllTheTraits {
         fn from(value: &AllTheTraits) -> Self {
             value.clone()
         }
     }
     impl AllTheTraits {
         pub fn builder() -> builder::AllTheTraits {
-            builder::AllTheTraits::default()
+            Default::default()
         }
     }
-    #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
+    #[doc = "CompoundType"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{"]
+    #[doc = "  \"title\": \"CompoundType\","]
+    #[doc = "  \"type\": \"object\","]
+    #[doc = "  \"required\": ["]
+    #[doc = "    \"value1\","]
+    #[doc = "    \"value2\""]
+    #[doc = "  ],"]
+    #[doc = "  \"properties\": {"]
+    #[doc = "    \"value1\": {"]
+    #[doc = "      \"type\": \"string\""]
+    #[doc = "    },"]
+    #[doc = "    \"value2\": {"]
+    #[doc = "      \"type\": \"integer\","]
+    #[doc = "      \"format\": \"uint64\","]
+    #[doc = "      \"minimum\": 0.0"]
+    #[doc = "    }"]
+    #[doc = "  }"]
+    #[doc = "}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
+    #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
     pub struct CompoundType {
-        pub value1: String,
+        pub value1: ::std::string::String,
         pub value2: u64,
     }
-    impl From<&CompoundType> for CompoundType {
+    impl ::std::convert::From<&CompoundType> for CompoundType {
         fn from(value: &CompoundType) -> Self {
             value.clone()
         }
     }
     impl CompoundType {
         pub fn builder() -> builder::CompoundType {
-            builder::CompoundType::default()
+            Default::default()
         }
     }
-    #[derive(Clone, Debug, Deserialize, JsonSchema, Serialize)]
+    #[doc = "Pair"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{"]
+    #[doc = "  \"title\": \"Pair\","]
+    #[doc = "  \"type\": \"object\","]
+    #[doc = "  \"properties\": {"]
+    #[doc = "    \"a\": {"]
+    #[doc = "      \"default\": \"One\","]
+    #[doc = "      \"$ref\": \"#/definitions/StringEnum\""]
+    #[doc = "    },"]
+    #[doc = "    \"b\": {"]
+    #[doc = "      \"default\": \"Two\","]
+    #[doc = "      \"$ref\": \"#/definitions/StringEnum\""]
+    #[doc = "    }"]
+    #[doc = "  }"]
+    #[doc = "}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
+    #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
     pub struct Pair {
         #[serde(default = "defaults::pair_a")]
         pub a: StringEnum,
         #[serde(default = "defaults::pair_b")]
         pub b: StringEnum,
     }
-    impl From<&Pair> for Pair {
+    impl ::std::convert::From<&Pair> for Pair {
         fn from(value: &Pair) -> Self {
             value.clone()
         }
     }
-    impl Pair {
-        pub fn builder() -> builder::Pair {
-            builder::Pair::default()
+    impl ::std::default::Default for Pair {
+        fn default() -> Self {
+            Self {
+                a: defaults::pair_a(),
+                b: defaults::pair_b(),
+            }
         }
     }
+    impl Pair {
+        pub fn builder() -> builder::Pair {
+            Default::default()
+        }
+    }
+    #[doc = "StringEnum"]
+    #[doc = r""]
+    #[doc = r" <details><summary>JSON schema</summary>"]
+    #[doc = r""]
+    #[doc = r" ```json"]
+    #[doc = "{"]
+    #[doc = "  \"type\": \"string\","]
+    #[doc = "  \"enum\": ["]
+    #[doc = "    \"One\","]
+    #[doc = "    \"Two\","]
+    #[doc = "    \"BuckleMyShoe\""]
+    #[doc = "  ]"]
+    #[doc = "}"]
+    #[doc = r" ```"]
+    #[doc = r" </details>"]
     #[derive(
-        Clone, Copy, Debug, Deserialize, Eq, Hash, JsonSchema, Ord, PartialEq, PartialOrd, Serialize,
+        :: serde :: Deserialize,
+        :: serde :: Serialize,
+        Clone,
+        Copy,
+        Debug,
+        Eq,
+        Hash,
+        JsonSchema,
+        Ord,
+        PartialEq,
+        PartialOrd,
     )]
     pub enum StringEnum {
         One,
         Two,
         BuckleMyShoe,
     }
-    impl From<&StringEnum> for StringEnum {
+    impl ::std::convert::From<&StringEnum> for StringEnum {
         fn from(value: &StringEnum) -> Self {
             value.clone()
         }
     }
-    impl ToString for StringEnum {
-        fn to_string(&self) -> String {
+    impl ::std::fmt::Display for StringEnum {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::One => "One".to_string(),
-                Self::Two => "Two".to_string(),
-                Self::BuckleMyShoe => "BuckleMyShoe".to_string(),
+                Self::One => write!(f, "One"),
+                Self::Two => write!(f, "Two"),
+                Self::BuckleMyShoe => write!(f, "BuckleMyShoe"),
             }
         }
     }
-    impl std::str::FromStr for StringEnum {
-        type Err = &'static str;
-        fn from_str(value: &str) -> Result<Self, &'static str> {
+    impl ::std::str::FromStr for StringEnum {
+        type Err = self::error::ConversionError;
+        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             match value {
                 "One" => Ok(Self::One),
                 "Two" => Ok(Self::Two),
                 "BuckleMyShoe" => Ok(Self::BuckleMyShoe),
-                _ => Err("invalid value"),
+                _ => Err("invalid value".into()),
             }
         }
     }
-    impl std::convert::TryFrom<&str> for StringEnum {
-        type Error = &'static str;
-        fn try_from(value: &str) -> Result<Self, &'static str> {
+    impl ::std::convert::TryFrom<&str> for StringEnum {
+        type Error = self::error::ConversionError;
+        fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
-    impl std::convert::TryFrom<&String> for StringEnum {
-        type Error = &'static str;
-        fn try_from(value: &String) -> Result<Self, &'static str> {
+    impl ::std::convert::TryFrom<&::std::string::String> for StringEnum {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: &::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
-    impl std::convert::TryFrom<String> for StringEnum {
-        type Error = &'static str;
-        fn try_from(value: String) -> Result<Self, &'static str> {
+    impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
+        type Error = self::error::ConversionError;
+        fn try_from(
+            value: ::std::string::String,
+        ) -> ::std::result::Result<Self, self::error::ConversionError> {
             value.parse()
         }
     }
+    #[doc = r" Types for composing complex structures."]
     pub mod builder {
         #[derive(Clone, Debug)]
         pub struct AllTheTraits {
-            ok: Result<String, String>,
+            ok: ::std::result::Result<::std::string::String, ::std::string::String>,
         }
-        impl Default for AllTheTraits {
+        impl ::std::default::Default for AllTheTraits {
             fn default() -> Self {
                 Self {
                     ok: Err("no value supplied for ok".to_string()),
@@ -113,8 +251,8 @@ mod types {
         impl AllTheTraits {
             pub fn ok<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<String>,
-                T::Error: std::fmt::Display,
+                T: ::std::convert::TryInto<::std::string::String>,
+                T::Error: ::std::fmt::Display,
             {
                 self.ok = value
                     .try_into()
@@ -122,23 +260,25 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
-            type Error = String;
-            fn try_from(value: AllTheTraits) -> Result<Self, String> {
+        impl ::std::convert::TryFrom<AllTheTraits> for super::AllTheTraits {
+            type Error = super::error::ConversionError;
+            fn try_from(
+                value: AllTheTraits,
+            ) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self { ok: value.ok? })
             }
         }
-        impl From<super::AllTheTraits> for AllTheTraits {
+        impl ::std::convert::From<super::AllTheTraits> for AllTheTraits {
             fn from(value: super::AllTheTraits) -> Self {
                 Self { ok: Ok(value.ok) }
             }
         }
         #[derive(Clone, Debug)]
         pub struct CompoundType {
-            value1: Result<String, String>,
-            value2: Result<u64, String>,
+            value1: ::std::result::Result<::std::string::String, ::std::string::String>,
+            value2: ::std::result::Result<u64, ::std::string::String>,
         }
-        impl Default for CompoundType {
+        impl ::std::default::Default for CompoundType {
             fn default() -> Self {
                 Self {
                     value1: Err("no value supplied for value1".to_string()),
@@ -149,8 +289,8 @@ mod types {
         impl CompoundType {
             pub fn value1<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<String>,
-                T::Error: std::fmt::Display,
+                T: ::std::convert::TryInto<::std::string::String>,
+                T::Error: ::std::fmt::Display,
             {
                 self.value1 = value
                     .try_into()
@@ -159,8 +299,8 @@ mod types {
             }
             pub fn value2<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<u64>,
-                T::Error: std::fmt::Display,
+                T: ::std::convert::TryInto<u64>,
+                T::Error: ::std::fmt::Display,
             {
                 self.value2 = value
                     .try_into()
@@ -168,16 +308,18 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<CompoundType> for super::CompoundType {
-            type Error = String;
-            fn try_from(value: CompoundType) -> Result<Self, String> {
+        impl ::std::convert::TryFrom<CompoundType> for super::CompoundType {
+            type Error = super::error::ConversionError;
+            fn try_from(
+                value: CompoundType,
+            ) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self {
                     value1: value.value1?,
                     value2: value.value2?,
                 })
             }
         }
-        impl From<super::CompoundType> for CompoundType {
+        impl ::std::convert::From<super::CompoundType> for CompoundType {
             fn from(value: super::CompoundType) -> Self {
                 Self {
                     value1: Ok(value.value1),
@@ -187,10 +329,10 @@ mod types {
         }
         #[derive(Clone, Debug)]
         pub struct Pair {
-            a: Result<super::StringEnum, String>,
-            b: Result<super::StringEnum, String>,
+            a: ::std::result::Result<super::StringEnum, ::std::string::String>,
+            b: ::std::result::Result<super::StringEnum, ::std::string::String>,
         }
-        impl Default for Pair {
+        impl ::std::default::Default for Pair {
             fn default() -> Self {
                 Self {
                     a: Ok(super::defaults::pair_a()),
@@ -201,8 +343,8 @@ mod types {
         impl Pair {
             pub fn a<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<super::StringEnum>,
-                T::Error: std::fmt::Display,
+                T: ::std::convert::TryInto<super::StringEnum>,
+                T::Error: ::std::fmt::Display,
             {
                 self.a = value
                     .try_into()
@@ -211,8 +353,8 @@ mod types {
             }
             pub fn b<T>(mut self, value: T) -> Self
             where
-                T: std::convert::TryInto<super::StringEnum>,
-                T::Error: std::fmt::Display,
+                T: ::std::convert::TryInto<super::StringEnum>,
+                T::Error: ::std::fmt::Display,
             {
                 self.b = value
                     .try_into()
@@ -220,16 +362,16 @@ mod types {
                 self
             }
         }
-        impl std::convert::TryFrom<Pair> for super::Pair {
-            type Error = String;
-            fn try_from(value: Pair) -> Result<Self, String> {
+        impl ::std::convert::TryFrom<Pair> for super::Pair {
+            type Error = super::error::ConversionError;
+            fn try_from(value: Pair) -> ::std::result::Result<Self, super::error::ConversionError> {
                 Ok(Self {
                     a: value.a?,
                     b: value.b?,
                 })
             }
         }
-        impl From<super::Pair> for Pair {
+        impl ::std::convert::From<super::Pair> for Pair {
             fn from(value: super::Pair) -> Self {
                 Self {
                     a: Ok(value.a),
@@ -238,6 +380,7 @@ mod types {
             }
         }
     }
+    #[doc = r" Generation of default values for serde."]
     pub mod defaults {
         pub(super) fn pair_a() -> super::StringEnum {
             super::StringEnum::One

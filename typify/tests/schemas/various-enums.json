@@ -100,7 +100,9 @@
       "properties": {
         "prop": {
           "type": "object",
-          "enum": [{}]
+          "enum": [
+            {}
+          ]
         }
       }
     },
@@ -159,6 +161,123 @@
     },
     "ReferenceDef": {
       "type": "string"
+    },
+    "Never": false,
+    "NeverEver": {
+      "not": true
+    },
+    "ShouldBeExclusive": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "id"
+          ]
+        },
+        {
+          "required": [
+            "reference"
+          ]
+        }
+      ]
+    },
+    "enum-and-constant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "bark"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "enum": [
+                "dog"
+              ]
+            },
+            "bark": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "purr"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "const": "cat"
+            },
+            "purr": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "help"
+          ],
+          "properties": {
+            "petType": {
+              "const": "monkey"
+            },
+            "help": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "float"
+          ],
+          "properties": {
+            "petType": {
+              "enum": [
+                "fish"
+              ]
+            },
+            "float": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "commented-variants": {
+      "oneOf": [
+        {
+          "enum": [
+            "A"
+          ],
+          "description": "An A"
+        },
+        {
+          "enum": [
+            "B"
+          ],
+          "description": "A B"
+        },
+        {
+          "const": "C",
+          "description": "a pirate's favorite letter"
+        }
+      ]
     }
   }
 }

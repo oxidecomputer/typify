@@ -13,7 +13,43 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.14\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.2.0\...HEAD[Full list of commits]
+
+== 0.2.0 (released 2024-09-26)
+
+https://github.com/oxidecomputer/typify/compare/v0.1.0\...v0.2.0[Full list of commits]
+
+* Migrate from `ToString` to `std::fmt::Display` (#663)
+* fully qualify types and traits (#647)
+* Add support for `patternProperties` in particular circumstances (#637)
+* Fully qualify `serde::Deserialize`` and `serde::Serialize` in outputs (#634)
+* Fix panic in `all_mutually_exclusive` and allow multiple subschema types in a single schema (#627)
+* handle default values for fields represented as `NonZeroU{8,16,32}`` (#608)
+
+== 0.1.0 (released 2024-05-13)
+
+* Improvements and bug fixes around schema merging
+* Fixes for various bugs with defaults
+* Support for the `x-rust-type` extension (#584)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.16\...v0.1.0[Full list of commits]
+
+== 0.0.16 (released 2024-02-28)
+
+* Introduce a proper Error type for various conversions (#475)
+* Add docs to generated mods (#476)
+* Various enum improvements
+
+https://github.com/oxidecomputer/typify/compare/v0.0.15\...v0.0.16[Full list of commits]
+
+== 0.0.15 (released 2023-12-15)
+
+* Improvements to array merging and mutual exclusivity checks (#412)
+* Support for 32-bit floating-point numbers (#440)
+* Better handling for unsatisfiable merged schemas (#447)
+* Show original JSON Schema in generated type docs (#454)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.14\...v0.0.15[Full list of commits]
 
 == 0.0.14 (released 2023-09-25)
 
@@ -86,7 +122,7 @@ https://github.com/oxidecomputer/typify/compare/v0.0.9\...v0.0.10[Full list of c
 * Add support for string types with `format` set to `ip`, `ipv4`, or `ipv6` (#76)
 * Be more accommodating in the face of a missing `type` field #(79)
 * The order of derives on types has stabilized (and therefore has changed) (#81)
-* Specific `From` and `Deserialize` implementations for constrainted string types (#81)
+* Specific `From` and `Deserialize` implementations for constrained string types (#81)
 * Specific `From` implementation for untagged enums with constrained string variants (#81)
 * `FromStr` implementation for simple-variant-only `enum`s (#81)
 * Ignore unknown `format` values (#81)

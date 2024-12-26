@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2024 Oxide Computer Company
 
 use std::{error::Error, fs::File, io::BufReader};
 
@@ -15,32 +15,48 @@ fn test_schemas() {
     env_logger::init();
     // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
-        validate_schema(entry.unwrap()).unwrap();
+        let entry = entry.unwrap();
+        let out_path = entry.clone().with_extension("rs");
+        validate_schema(entry, out_path, &mut TypeSpaceSettings::default()).unwrap();
     }
 
     // Make sure it all compiles.
     trybuild::TestCases::new().pass("tests/schemas/*.rs");
 }
 
-fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
-    let mut out_path = path.clone();
-    out_path.set_extension("rs");
+/// Ensure that setting the global config to use a custom map type works.
+#[test]
+fn test_custom_map() {
+    validate_schema(
+        "tests/schemas/maps.json".into(),
+        "tests/schemas/maps_custom.rs".into(),
+        TypeSpaceSettings::default().with_map_type("std::collections::BTreeMap".to_string()),
+    )
+    .unwrap();
 
+    trybuild::TestCases::new().pass("tests/schemas/maps_custom.rs");
+}
+
+fn validate_schema(
+    path: std::path::PathBuf,
+    out_path: std::path::PathBuf,
+    typespace: &mut TypeSpaceSettings,
+) -> Result<(), Box<dyn Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
     // Read the JSON contents of the file as an instance of `User`.
     let root_schema: RootSchema = serde_json::from_reader(reader)?;
 
-    let schema_raw = json! {
+    let schema_raw = json!(
         {
             "enum": [ 1, "one" ]
         }
-    };
+    );
     let schema = serde_json::from_value(schema_raw).unwrap();
 
     let mut type_space = TypeSpace::new(
-        TypeSpaceSettings::default()
+        typespace
             .with_replacement(
                 "HandGeneratedType",
                 "String",
@@ -57,15 +73,21 @@ fn validate_schema(path: std::path::PathBuf) -> Result<(), Box<dyn Error>> {
                 schema,
                 "serde_json::Value",
                 [TypeSpaceImpl::Display].into_iter(),
-            ),
+            )
+            // Our test use of the x-rust-type extension only refers to things
+            // in std.
+            .with_crate(
+                "std",
+                typify::CrateVers::Version("1.0.0".parse().unwrap()),
+                None,
+            )
+            .with_struct_builder(true),
     );
     type_space.add_root_schema(root_schema)?;
 
     // Make a file with the generated code.
     let code = quote! {
-        // Some types impl their own Deserialize and fully qualify the name.
-        #[allow(unused_imports)]
-        use serde::{Deserialize, Serialize};
+        #![deny(warnings)]
 
         #type_space
 
