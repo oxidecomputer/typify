@@ -103,7 +103,7 @@ pub enum LetterBoxLetter {
     #[serde(rename = "b")]
     B,
 }
-impl ::std::convert::From<&LetterBoxLetter> for LetterBoxLetter {
+impl ::std::convert::From<&Self> for LetterBoxLetter {
     fn from(value: &LetterBoxLetter) -> Self {
         value.clone()
     }

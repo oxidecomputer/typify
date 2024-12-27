@@ -61,7 +61,7 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
-impl ::std::convert::From<&TestEnum> for TestEnum {
+impl ::std::convert::From<&Self> for TestEnum {
     fn from(value: &TestEnum) -> Self {
         value.clone()
     }

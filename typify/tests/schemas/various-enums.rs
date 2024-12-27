@@ -58,7 +58,7 @@ pub enum AlternativeEnum {
     Choice2,
     Choice3,
 }
-impl ::std::convert::From<&AlternativeEnum> for AlternativeEnum {
+impl ::std::convert::From<&Self> for AlternativeEnum {
     fn from(value: &AlternativeEnum) -> Self {
         value.clone()
     }
@@ -157,7 +157,7 @@ pub enum CommentedVariants {
     #[doc = "a pirate's favorite letter"]
     C,
 }
-impl ::std::convert::From<&CommentedVariants> for CommentedVariants {
+impl ::std::convert::From<&Self> for CommentedVariants {
     fn from(value: &CommentedVariants) -> Self {
         value.clone()
     }
@@ -280,7 +280,7 @@ pub enum DiskAttachmentState {
     Destroyed,
     Faulted,
 }
-impl ::std::convert::From<&DiskAttachmentState> for DiskAttachmentState {
+impl ::std::convert::From<&Self> for DiskAttachmentState {
     fn from(value: &DiskAttachmentState) -> Self {
         value.clone()
     }
@@ -521,7 +521,7 @@ pub enum EnumAndConstant {
     #[serde(rename = "fish")]
     Fish { float: ::std::string::String },
 }
-impl ::std::convert::From<&EnumAndConstant> for EnumAndConstant {
+impl ::std::convert::From<&Self> for EnumAndConstant {
     fn from(value: &EnumAndConstant) -> Self {
         value.clone()
     }
@@ -560,7 +560,7 @@ pub enum IpNet {
     V4(Ipv4Net),
     V6(Ipv6Net),
 }
-impl ::std::convert::From<&IpNet> for IpNet {
+impl ::std::convert::From<&Self> for IpNet {
     fn from(value: &IpNet) -> Self {
         value.clone()
     }
@@ -766,7 +766,7 @@ pub enum JankNames {
     Variant1(::std::collections::HashMap<::std::string::String, ::std::string::String>),
     Variant2(::std::collections::HashMap<::std::string::String, i64>),
 }
-impl ::std::convert::From<&JankNames> for JankNames {
+impl ::std::convert::From<&Self> for JankNames {
     fn from(value: &JankNames) -> Self {
         value.clone()
     }
@@ -807,7 +807,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64
 )]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
-impl ::std::convert::From<&Never> for Never {
+impl ::std::convert::From<&Self> for Never {
     fn from(value: &Never) -> Self {
         value.clone()
     }
@@ -834,7 +834,7 @@ impl ::std::convert::From<&Never> for Never {
 )]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
-impl ::std::convert::From<&NeverEver> for NeverEver {
+impl ::std::convert::From<&Self> for NeverEver {
     fn from(value: &NeverEver) -> Self {
         value.clone()
     }
@@ -924,9 +924,7 @@ pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "c")]
     C,
 }
-impl ::std::convert::From<&NullStringEnumWithUnknownFormatInner>
-    for NullStringEnumWithUnknownFormatInner
-{
+impl ::std::convert::From<&Self> for NullStringEnumWithUnknownFormatInner {
     fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
         value.clone()
     }
@@ -1012,7 +1010,7 @@ pub enum OneOfTypes {
     #[serde(rename = "foo")]
     Foo(::std::string::String),
 }
-impl ::std::convert::From<&OneOfTypes> for OneOfTypes {
+impl ::std::convert::From<&Self> for OneOfTypes {
     fn from(value: &OneOfTypes) -> Self {
         value.clone()
     }
@@ -1115,7 +1113,7 @@ pub enum References {
     Variant0(::std::vec::Vec<::std::string::String>),
     Variant1(::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>),
 }
-impl ::std::convert::From<&References> for References {
+impl ::std::convert::From<&Self> for References {
     fn from(value: &References) -> Self {
         value.clone()
     }
@@ -1159,7 +1157,7 @@ pub enum ReferencesVariant1Value {
     StringVersion(StringVersion),
     ReferenceDef(ReferenceDef),
 }
-impl ::std::convert::From<&ReferencesVariant1Value> for ReferencesVariant1Value {
+impl ::std::convert::From<&Self> for ReferencesVariant1Value {
     fn from(value: &ReferencesVariant1Value) -> Self {
         value.clone()
     }
@@ -1252,7 +1250,7 @@ pub enum ShouldBeExclusive {
     Variant0 { id: ::std::string::String },
     Variant1 { reference: ::std::string::String },
 }
-impl ::std::convert::From<&ShouldBeExclusive> for ShouldBeExclusive {
+impl ::std::convert::From<&Self> for ShouldBeExclusive {
     fn from(value: &ShouldBeExclusive) -> Self {
         value.clone()
     }

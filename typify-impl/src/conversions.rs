@@ -30,9 +30,8 @@ impl SchemaCache {
         };
         self.schemas
             .iter()
-            .filter_map(|(schema, type_entry)| {
-                (&search_schema == schema).then(|| type_entry.clone())
-            })
+            .filter(|(schema, _)| &search_schema == schema)
+            .map(|(_, type_entry)| type_entry.clone())
             .next()
     }
 }

@@ -990,7 +990,7 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
-            impl ::std::convert::From<&#type_name> for #type_name {
+            impl ::std::convert::From<&Self> for #type_name {
                 fn from(value: &#type_name) -> Self {
                     value.clone()
                 }

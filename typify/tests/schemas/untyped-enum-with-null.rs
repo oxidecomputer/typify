@@ -99,7 +99,7 @@ pub enum TestTypeValue {
     #[serde(rename = "end")]
     End,
 }
-impl ::std::convert::From<&TestTypeValue> for TestTypeValue {
+impl ::std::convert::From<&Self> for TestTypeValue {
     fn from(value: &TestTypeValue) -> Self {
         value.clone()
     }

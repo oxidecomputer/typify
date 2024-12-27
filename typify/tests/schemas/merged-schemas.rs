@@ -202,7 +202,7 @@ pub enum HereAndThere {
         foo: ::std::option::Option<::std::string::String>,
     },
 }
-impl ::std::convert::From<&HereAndThere> for HereAndThere {
+impl ::std::convert::From<&Self> for HereAndThere {
     fn from(value: &HereAndThere) -> Self {
         value.clone()
     }
@@ -356,7 +356,7 @@ pub enum JsonSuccessBaseResult {
     #[serde(rename = "success")]
     Success,
 }
-impl ::std::convert::From<&JsonSuccessBaseResult> for JsonSuccessBaseResult {
+impl ::std::convert::From<&Self> for JsonSuccessBaseResult {
     fn from(value: &JsonSuccessBaseResult) -> Self {
         value.clone()
     }
@@ -428,7 +428,7 @@ pub enum JsonSuccessResult {
     #[serde(rename = "success")]
     Success,
 }
-impl ::std::convert::From<&JsonSuccessResult> for JsonSuccessResult {
+impl ::std::convert::From<&Self> for JsonSuccessResult {
     fn from(value: &JsonSuccessResult) -> Self {
         value.clone()
     }
@@ -926,7 +926,7 @@ impl TrimFat {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unresolvable {}
-impl ::std::convert::From<&Unresolvable> for Unresolvable {
+impl ::std::convert::From<&Self> for Unresolvable {
     fn from(value: &Unresolvable) -> Self {
         value.clone()
     }
@@ -968,7 +968,7 @@ impl ::std::convert::From<&Unresolvable> for Unresolvable {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
-impl ::std::convert::From<&Unsatisfiable1> for Unsatisfiable1 {
+impl ::std::convert::From<&Self> for Unsatisfiable1 {
     fn from(value: &Unsatisfiable1) -> Self {
         value.clone()
     }
@@ -1026,7 +1026,7 @@ impl ::std::convert::From<&Unsatisfiable1> for Unsatisfiable1 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable2 {}
-impl ::std::convert::From<&Unsatisfiable2> for Unsatisfiable2 {
+impl ::std::convert::From<&Self> for Unsatisfiable2 {
     fn from(value: &Unsatisfiable2) -> Self {
         value.clone()
     }
@@ -1071,7 +1071,7 @@ impl ::std::convert::From<&Unsatisfiable2> for Unsatisfiable2 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable3 {}
-impl ::std::convert::From<&Unsatisfiable3> for Unsatisfiable3 {
+impl ::std::convert::From<&Self> for Unsatisfiable3 {
     fn from(value: &Unsatisfiable3) -> Self {
         value.clone()
     }
@@ -1146,7 +1146,7 @@ pub enum Unsatisfiable3B {
     #[serde(rename = "bar")]
     Bar,
 }
-impl ::std::convert::From<&Unsatisfiable3B> for Unsatisfiable3B {
+impl ::std::convert::From<&Self> for Unsatisfiable3B {
     fn from(value: &Unsatisfiable3B) -> Self {
         value.clone()
     }
@@ -1218,7 +1218,7 @@ pub enum Unsatisfiable3C {
     #[serde(rename = "foo")]
     Foo,
 }
-impl ::std::convert::From<&Unsatisfiable3C> for Unsatisfiable3C {
+impl ::std::convert::From<&Self> for Unsatisfiable3C {
     fn from(value: &Unsatisfiable3C) -> Self {
         value.clone()
     }
@@ -1401,7 +1401,7 @@ pub enum WeirdEnum {
         pattern_regex: ::std::string::String,
     },
 }
-impl ::std::convert::From<&WeirdEnum> for WeirdEnum {
+impl ::std::convert::From<&Self> for WeirdEnum {
     fn from(value: &WeirdEnum) -> Self {
         value.clone()
     }
