@@ -449,7 +449,7 @@ pub enum CoreSchemaMetaSchema {
         unique_items: bool,
     },
 }
-impl ::std::convert::From<&CoreSchemaMetaSchema> for CoreSchemaMetaSchema {
+impl ::std::convert::From<&Self> for CoreSchemaMetaSchema {
     fn from(value: &CoreSchemaMetaSchema) -> Self {
         value.clone()
     }
@@ -487,9 +487,7 @@ pub enum CoreSchemaMetaSchemaObjectDependenciesValue {
     Variant0(CoreSchemaMetaSchema),
     Variant1(StringArray),
 }
-impl ::std::convert::From<&CoreSchemaMetaSchemaObjectDependenciesValue>
-    for CoreSchemaMetaSchemaObjectDependenciesValue
-{
+impl ::std::convert::From<&Self> for CoreSchemaMetaSchemaObjectDependenciesValue {
     fn from(value: &CoreSchemaMetaSchemaObjectDependenciesValue) -> Self {
         value.clone()
     }
@@ -528,7 +526,7 @@ pub enum CoreSchemaMetaSchemaObjectItems {
     Variant0(::std::boxed::Box<CoreSchemaMetaSchema>),
     Variant1(SchemaArray),
 }
-impl ::std::convert::From<&CoreSchemaMetaSchemaObjectItems> for CoreSchemaMetaSchemaObjectItems {
+impl ::std::convert::From<&Self> for CoreSchemaMetaSchemaObjectItems {
     fn from(value: &CoreSchemaMetaSchemaObjectItems) -> Self {
         value.clone()
     }
@@ -580,7 +578,7 @@ pub enum CoreSchemaMetaSchemaObjectType {
     Variant0(SimpleTypes),
     Variant1(Vec<SimpleTypes>),
 }
-impl ::std::convert::From<&CoreSchemaMetaSchemaObjectType> for CoreSchemaMetaSchemaObjectType {
+impl ::std::convert::From<&Self> for CoreSchemaMetaSchemaObjectType {
     fn from(value: &CoreSchemaMetaSchemaObjectType) -> Self {
         value.clone()
     }
@@ -813,7 +811,7 @@ pub enum SimpleTypes {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::convert::From<&SimpleTypes> for SimpleTypes {
+impl ::std::convert::From<&Self> for SimpleTypes {
     fn from(value: &SimpleTypes) -> Self {
         value.clone()
     }
