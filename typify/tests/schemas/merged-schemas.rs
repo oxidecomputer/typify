@@ -44,9 +44,16 @@ pub struct BarProp {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
 }
-impl From<&BarProp> for BarProp {
+impl ::std::convert::From<&BarProp> for BarProp {
     fn from(value: &BarProp) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for BarProp {
+    fn default() -> Self {
+        Self {
+            bar: Default::default(),
+        }
     }
 }
 impl BarProp {
@@ -78,9 +85,16 @@ pub struct ButNotThat {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
 }
-impl From<&ButNotThat> for ButNotThat {
+impl ::std::convert::From<&ButNotThat> for ButNotThat {
     fn from(value: &ButNotThat) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for ButNotThat {
+    fn default() -> Self {
+        Self {
+            this: Default::default(),
+        }
     }
 }
 impl ButNotThat {
@@ -117,9 +131,17 @@ pub struct CommentedTypeMerged {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
 }
-impl From<&CommentedTypeMerged> for CommentedTypeMerged {
+impl ::std::convert::From<&CommentedTypeMerged> for CommentedTypeMerged {
     fn from(value: &CommentedTypeMerged) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for CommentedTypeMerged {
+    fn default() -> Self {
+        Self {
+            x: Default::default(),
+            y: Default::default(),
+        }
     }
 }
 impl CommentedTypeMerged {
@@ -180,7 +202,7 @@ pub enum HereAndThere {
         foo: ::std::option::Option<::std::string::String>,
     },
 }
-impl From<&HereAndThere> for HereAndThere {
+impl ::std::convert::From<&Self> for HereAndThere {
     fn from(value: &HereAndThere) -> Self {
         value.clone()
     }
@@ -205,9 +227,16 @@ pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
 }
-impl From<&JsonResponseBase> for JsonResponseBase {
+impl ::std::convert::From<&JsonResponseBase> for JsonResponseBase {
     fn from(value: &JsonResponseBase) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for JsonResponseBase {
+    fn default() -> Self {
+        Self {
+            result: Default::default(),
+        }
     }
 }
 impl JsonResponseBase {
@@ -242,7 +271,7 @@ pub struct JsonSuccess {
     pub msg: ::std::string::String,
     pub result: JsonSuccessResult,
 }
-impl From<&JsonSuccess> for JsonSuccess {
+impl ::std::convert::From<&JsonSuccess> for JsonSuccess {
     fn from(value: &JsonSuccess) -> Self {
         value.clone()
     }
@@ -288,7 +317,7 @@ pub struct JsonSuccessBase {
     pub msg: ::std::string::String,
     pub result: JsonSuccessBaseResult,
 }
-impl From<&JsonSuccessBase> for JsonSuccessBase {
+impl ::std::convert::From<&JsonSuccessBase> for JsonSuccessBase {
     fn from(value: &JsonSuccessBase) -> Self {
         value.clone()
     }
@@ -327,7 +356,7 @@ pub enum JsonSuccessBaseResult {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&JsonSuccessBaseResult> for JsonSuccessBaseResult {
+impl ::std::convert::From<&Self> for JsonSuccessBaseResult {
     fn from(value: &JsonSuccessBaseResult) -> Self {
         value.clone()
     }
@@ -339,7 +368,7 @@ impl ::std::fmt::Display for JsonSuccessBaseResult {
         }
     }
 }
-impl std::str::FromStr for JsonSuccessBaseResult {
+impl ::std::str::FromStr for JsonSuccessBaseResult {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -348,13 +377,13 @@ impl std::str::FromStr for JsonSuccessBaseResult {
         }
     }
 }
-impl std::convert::TryFrom<&str> for JsonSuccessBaseResult {
+impl ::std::convert::TryFrom<&str> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for JsonSuccessBaseResult {
+impl ::std::convert::TryFrom<&::std::string::String> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -362,7 +391,7 @@ impl std::convert::TryFrom<&::std::string::String> for JsonSuccessBaseResult {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
+impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -399,7 +428,7 @@ pub enum JsonSuccessResult {
     #[serde(rename = "success")]
     Success,
 }
-impl From<&JsonSuccessResult> for JsonSuccessResult {
+impl ::std::convert::From<&Self> for JsonSuccessResult {
     fn from(value: &JsonSuccessResult) -> Self {
         value.clone()
     }
@@ -411,7 +440,7 @@ impl ::std::fmt::Display for JsonSuccessResult {
         }
     }
 }
-impl std::str::FromStr for JsonSuccessResult {
+impl ::std::str::FromStr for JsonSuccessResult {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -420,13 +449,13 @@ impl std::str::FromStr for JsonSuccessResult {
         }
     }
 }
-impl std::convert::TryFrom<&str> for JsonSuccessResult {
+impl ::std::convert::TryFrom<&str> for JsonSuccessResult {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for JsonSuccessResult {
+impl ::std::convert::TryFrom<&::std::string::String> for JsonSuccessResult {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -434,7 +463,7 @@ impl std::convert::TryFrom<&::std::string::String> for JsonSuccessResult {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
+impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -487,9 +516,14 @@ impl std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MergeEmpty {}
-impl From<&MergeEmpty> for MergeEmpty {
+impl ::std::convert::From<&MergeEmpty> for MergeEmpty {
     fn from(value: &MergeEmpty) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for MergeEmpty {
+    fn default() -> Self {
+        Self {}
     }
 }
 impl MergeEmpty {
@@ -515,6 +549,7 @@ impl MergeEmpty {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct NarrowNumber(pub std::num::NonZeroU64);
 impl ::std::ops::Deref for NarrowNumber {
     type Target = std::num::NonZeroU64;
@@ -522,40 +557,40 @@ impl ::std::ops::Deref for NarrowNumber {
         &self.0
     }
 }
-impl From<NarrowNumber> for std::num::NonZeroU64 {
+impl ::std::convert::From<NarrowNumber> for std::num::NonZeroU64 {
     fn from(value: NarrowNumber) -> Self {
         value.0
     }
 }
-impl From<&NarrowNumber> for NarrowNumber {
+impl ::std::convert::From<&NarrowNumber> for NarrowNumber {
     fn from(value: &NarrowNumber) -> Self {
         value.clone()
     }
 }
-impl From<std::num::NonZeroU64> for NarrowNumber {
+impl ::std::convert::From<std::num::NonZeroU64> for NarrowNumber {
     fn from(value: std::num::NonZeroU64) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for NarrowNumber {
+impl ::std::str::FromStr for NarrowNumber {
     type Err = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
-impl std::convert::TryFrom<&str> for NarrowNumber {
+impl ::std::convert::TryFrom<&str> for NarrowNumber {
     type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for NarrowNumber {
+impl ::std::convert::TryFrom<&String> for NarrowNumber {
     type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for NarrowNumber {
+impl ::std::convert::TryFrom<String> for NarrowNumber {
     type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
@@ -596,7 +631,7 @@ pub struct OrderDependentMerge {
     pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
-impl From<&OrderDependentMerge> for OrderDependentMerge {
+impl ::std::convert::From<&OrderDependentMerge> for OrderDependentMerge {
     fn from(value: &OrderDependentMerge) -> Self {
         value.clone()
     }
@@ -636,7 +671,7 @@ impl OrderDependentMerge {
 pub struct Pickingone {
     pub suspended_by: PickingoneSuspendedBy,
 }
-impl From<&Pickingone> for Pickingone {
+impl ::std::convert::From<&Pickingone> for Pickingone {
     fn from(value: &Pickingone) -> Self {
         value.clone()
     }
@@ -673,9 +708,16 @@ pub struct PickingoneInstallation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
 }
-impl From<&PickingoneInstallation> for PickingoneInstallation {
+impl ::std::convert::From<&PickingoneInstallation> for PickingoneInstallation {
     fn from(value: &PickingoneInstallation) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for PickingoneInstallation {
+    fn default() -> Self {
+        Self {
+            suspended_by: Default::default(),
+        }
     }
 }
 impl PickingoneInstallation {
@@ -718,9 +760,16 @@ pub struct PickingoneSuspendedBy {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
-impl From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
+impl ::std::convert::From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
     fn from(value: &PickingoneSuspendedBy) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for PickingoneSuspendedBy {
+    fn default() -> Self {
+        Self {
+            email: Default::default(),
+        }
     }
 }
 impl PickingoneSuspendedBy {
@@ -751,9 +800,16 @@ pub struct PickingoneUser {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
-impl From<&PickingoneUser> for PickingoneUser {
+impl ::std::convert::From<&PickingoneUser> for PickingoneUser {
     fn from(value: &PickingoneUser) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for PickingoneUser {
+    fn default() -> Self {
+        Self {
+            email: Default::default(),
+        }
     }
 }
 impl PickingoneUser {
@@ -797,7 +853,7 @@ impl PickingoneUser {
 pub struct TrimFat {
     pub a: ::serde_json::Value,
 }
-impl From<&TrimFat> for TrimFat {
+impl ::std::convert::From<&TrimFat> for TrimFat {
     fn from(value: &TrimFat) -> Self {
         value.clone()
     }
@@ -870,7 +926,7 @@ impl TrimFat {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unresolvable {}
-impl From<&Unresolvable> for Unresolvable {
+impl ::std::convert::From<&Self> for Unresolvable {
     fn from(value: &Unresolvable) -> Self {
         value.clone()
     }
@@ -912,7 +968,7 @@ impl From<&Unresolvable> for Unresolvable {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
-impl From<&Unsatisfiable1> for Unsatisfiable1 {
+impl ::std::convert::From<&Self> for Unsatisfiable1 {
     fn from(value: &Unsatisfiable1) -> Self {
         value.clone()
     }
@@ -970,7 +1026,7 @@ impl From<&Unsatisfiable1> for Unsatisfiable1 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable2 {}
-impl From<&Unsatisfiable2> for Unsatisfiable2 {
+impl ::std::convert::From<&Self> for Unsatisfiable2 {
     fn from(value: &Unsatisfiable2) -> Self {
         value.clone()
     }
@@ -1015,7 +1071,7 @@ impl From<&Unsatisfiable2> for Unsatisfiable2 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable3 {}
-impl From<&Unsatisfiable3> for Unsatisfiable3 {
+impl ::std::convert::From<&Self> for Unsatisfiable3 {
     fn from(value: &Unsatisfiable3) -> Self {
         value.clone()
     }
@@ -1044,9 +1100,16 @@ pub struct Unsatisfiable3A {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
 }
-impl From<&Unsatisfiable3A> for Unsatisfiable3A {
+impl ::std::convert::From<&Unsatisfiable3A> for Unsatisfiable3A {
     fn from(value: &Unsatisfiable3A) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for Unsatisfiable3A {
+    fn default() -> Self {
+        Self {
+            action: Default::default(),
+        }
     }
 }
 impl Unsatisfiable3A {
@@ -1083,7 +1146,7 @@ pub enum Unsatisfiable3B {
     #[serde(rename = "bar")]
     Bar,
 }
-impl From<&Unsatisfiable3B> for Unsatisfiable3B {
+impl ::std::convert::From<&Self> for Unsatisfiable3B {
     fn from(value: &Unsatisfiable3B) -> Self {
         value.clone()
     }
@@ -1095,7 +1158,7 @@ impl ::std::fmt::Display for Unsatisfiable3B {
         }
     }
 }
-impl std::str::FromStr for Unsatisfiable3B {
+impl ::std::str::FromStr for Unsatisfiable3B {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -1104,13 +1167,13 @@ impl std::str::FromStr for Unsatisfiable3B {
         }
     }
 }
-impl std::convert::TryFrom<&str> for Unsatisfiable3B {
+impl ::std::convert::TryFrom<&str> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3B {
+impl ::std::convert::TryFrom<&::std::string::String> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -1118,7 +1181,7 @@ impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3B {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
+impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -1155,7 +1218,7 @@ pub enum Unsatisfiable3C {
     #[serde(rename = "foo")]
     Foo,
 }
-impl From<&Unsatisfiable3C> for Unsatisfiable3C {
+impl ::std::convert::From<&Self> for Unsatisfiable3C {
     fn from(value: &Unsatisfiable3C) -> Self {
         value.clone()
     }
@@ -1167,7 +1230,7 @@ impl ::std::fmt::Display for Unsatisfiable3C {
         }
     }
 }
-impl std::str::FromStr for Unsatisfiable3C {
+impl ::std::str::FromStr for Unsatisfiable3C {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -1176,13 +1239,13 @@ impl std::str::FromStr for Unsatisfiable3C {
         }
     }
 }
-impl std::convert::TryFrom<&str> for Unsatisfiable3C {
+impl ::std::convert::TryFrom<&str> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3C {
+impl ::std::convert::TryFrom<&::std::string::String> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -1190,7 +1253,7 @@ impl std::convert::TryFrom<&::std::string::String> for Unsatisfiable3C {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
+impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -1338,7 +1401,7 @@ pub enum WeirdEnum {
         pattern_regex: ::std::string::String,
     },
 }
-impl From<&WeirdEnum> for WeirdEnum {
+impl ::std::convert::From<&Self> for WeirdEnum {
     fn from(value: &WeirdEnum) -> Self {
         value.clone()
     }
@@ -1352,7 +1415,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for BarProp {
+    impl ::std::default::Default for BarProp {
         fn default() -> Self {
             Self {
                 bar: Ok(Default::default()),
@@ -1362,8 +1425,8 @@ pub mod builder {
     impl BarProp {
         pub fn bar<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.bar = value
                 .try_into()
@@ -1377,7 +1440,7 @@ pub mod builder {
             Ok(Self { bar: value.bar? })
         }
     }
-    impl From<super::BarProp> for BarProp {
+    impl ::std::convert::From<super::BarProp> for BarProp {
         fn from(value: super::BarProp) -> Self {
             Self { bar: Ok(value.bar) }
         }
@@ -1389,7 +1452,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for ButNotThat {
+    impl ::std::default::Default for ButNotThat {
         fn default() -> Self {
             Self {
                 this: Ok(Default::default()),
@@ -1399,8 +1462,8 @@ pub mod builder {
     impl ButNotThat {
         pub fn this<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.this = value
                 .try_into()
@@ -1416,7 +1479,7 @@ pub mod builder {
             Ok(Self { this: value.this? })
         }
     }
-    impl From<super::ButNotThat> for ButNotThat {
+    impl ::std::convert::From<super::ButNotThat> for ButNotThat {
         fn from(value: super::ButNotThat) -> Self {
             Self {
                 this: Ok(value.this),
@@ -1428,7 +1491,7 @@ pub mod builder {
         x: ::std::result::Result<::std::option::Option<::serde_json::Value>, ::std::string::String>,
         y: ::std::result::Result<::std::option::Option<::serde_json::Value>, ::std::string::String>,
     }
-    impl Default for CommentedTypeMerged {
+    impl ::std::default::Default for CommentedTypeMerged {
         fn default() -> Self {
             Self {
                 x: Ok(Default::default()),
@@ -1439,8 +1502,8 @@ pub mod builder {
     impl CommentedTypeMerged {
         pub fn x<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.x = value
                 .try_into()
@@ -1449,8 +1512,8 @@ pub mod builder {
         }
         pub fn y<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.y = value
                 .try_into()
@@ -1469,7 +1532,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::CommentedTypeMerged> for CommentedTypeMerged {
+    impl ::std::convert::From<super::CommentedTypeMerged> for CommentedTypeMerged {
         fn from(value: super::CommentedTypeMerged) -> Self {
             Self {
                 x: Ok(value.x),
@@ -1484,7 +1547,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for JsonResponseBase {
+    impl ::std::default::Default for JsonResponseBase {
         fn default() -> Self {
             Self {
                 result: Ok(Default::default()),
@@ -1494,8 +1557,8 @@ pub mod builder {
     impl JsonResponseBase {
         pub fn result<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.result = value
                 .try_into()
@@ -1513,7 +1576,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::JsonResponseBase> for JsonResponseBase {
+    impl ::std::convert::From<super::JsonResponseBase> for JsonResponseBase {
         fn from(value: super::JsonResponseBase) -> Self {
             Self {
                 result: Ok(value.result),
@@ -1525,7 +1588,7 @@ pub mod builder {
         msg: ::std::result::Result<::std::string::String, ::std::string::String>,
         result: ::std::result::Result<super::JsonSuccessResult, ::std::string::String>,
     }
-    impl Default for JsonSuccess {
+    impl ::std::default::Default for JsonSuccess {
         fn default() -> Self {
             Self {
                 msg: Err("no value supplied for msg".to_string()),
@@ -1536,8 +1599,8 @@ pub mod builder {
     impl JsonSuccess {
         pub fn msg<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.msg = value
                 .try_into()
@@ -1546,8 +1609,8 @@ pub mod builder {
         }
         pub fn result<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::JsonSuccessResult>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::JsonSuccessResult>,
+            T::Error: ::std::fmt::Display,
         {
             self.result = value
                 .try_into()
@@ -1566,7 +1629,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::JsonSuccess> for JsonSuccess {
+    impl ::std::convert::From<super::JsonSuccess> for JsonSuccess {
         fn from(value: super::JsonSuccess) -> Self {
             Self {
                 msg: Ok(value.msg),
@@ -1579,7 +1642,7 @@ pub mod builder {
         msg: ::std::result::Result<::std::string::String, ::std::string::String>,
         result: ::std::result::Result<super::JsonSuccessBaseResult, ::std::string::String>,
     }
-    impl Default for JsonSuccessBase {
+    impl ::std::default::Default for JsonSuccessBase {
         fn default() -> Self {
             Self {
                 msg: Err("no value supplied for msg".to_string()),
@@ -1590,8 +1653,8 @@ pub mod builder {
     impl JsonSuccessBase {
         pub fn msg<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::string::String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
         {
             self.msg = value
                 .try_into()
@@ -1600,8 +1663,8 @@ pub mod builder {
         }
         pub fn result<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::JsonSuccessBaseResult>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::JsonSuccessBaseResult>,
+            T::Error: ::std::fmt::Display,
         {
             self.result = value
                 .try_into()
@@ -1620,7 +1683,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::JsonSuccessBase> for JsonSuccessBase {
+    impl ::std::convert::From<super::JsonSuccessBase> for JsonSuccessBase {
         fn from(value: super::JsonSuccessBase) -> Self {
             Self {
                 msg: Ok(value.msg),
@@ -1630,7 +1693,7 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct MergeEmpty {}
-    impl Default for MergeEmpty {
+    impl ::std::default::Default for MergeEmpty {
         fn default() -> Self {
             Self {}
         }
@@ -1644,7 +1707,7 @@ pub mod builder {
             Ok(Self {})
         }
     }
-    impl From<super::MergeEmpty> for MergeEmpty {
+    impl ::std::convert::From<super::MergeEmpty> for MergeEmpty {
         fn from(_value: super::MergeEmpty) -> Self {
             Self {}
         }
@@ -1657,7 +1720,7 @@ pub mod builder {
         >,
         baz: ::std::result::Result<bool, ::std::string::String>,
     }
-    impl Default for OrderDependentMerge {
+    impl ::std::default::Default for OrderDependentMerge {
         fn default() -> Self {
             Self {
                 bar: Ok(Default::default()),
@@ -1668,8 +1731,8 @@ pub mod builder {
     impl OrderDependentMerge {
         pub fn bar<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.bar = value
                 .try_into()
@@ -1678,8 +1741,8 @@ pub mod builder {
         }
         pub fn baz<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<bool>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<bool>,
+            T::Error: ::std::fmt::Display,
         {
             self.baz = value
                 .try_into()
@@ -1698,7 +1761,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::OrderDependentMerge> for OrderDependentMerge {
+    impl ::std::convert::From<super::OrderDependentMerge> for OrderDependentMerge {
         fn from(value: super::OrderDependentMerge) -> Self {
             Self {
                 bar: Ok(value.bar),
@@ -1710,7 +1773,7 @@ pub mod builder {
     pub struct Pickingone {
         suspended_by: ::std::result::Result<super::PickingoneSuspendedBy, ::std::string::String>,
     }
-    impl Default for Pickingone {
+    impl ::std::default::Default for Pickingone {
         fn default() -> Self {
             Self {
                 suspended_by: Err("no value supplied for suspended_by".to_string()),
@@ -1720,8 +1783,8 @@ pub mod builder {
     impl Pickingone {
         pub fn suspended_by<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::PickingoneSuspendedBy>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::PickingoneSuspendedBy>,
+            T::Error: ::std::fmt::Display,
         {
             self.suspended_by = value
                 .try_into()
@@ -1739,7 +1802,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Pickingone> for Pickingone {
+    impl ::std::convert::From<super::Pickingone> for Pickingone {
         fn from(value: super::Pickingone) -> Self {
             Self {
                 suspended_by: Ok(value.suspended_by),
@@ -1753,7 +1816,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for PickingoneInstallation {
+    impl ::std::default::Default for PickingoneInstallation {
         fn default() -> Self {
             Self {
                 suspended_by: Ok(Default::default()),
@@ -1763,8 +1826,8 @@ pub mod builder {
     impl PickingoneInstallation {
         pub fn suspended_by<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::PickingoneUser>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::PickingoneUser>>,
+            T::Error: ::std::fmt::Display,
         {
             self.suspended_by = value
                 .try_into()
@@ -1782,7 +1845,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::PickingoneInstallation> for PickingoneInstallation {
+    impl ::std::convert::From<super::PickingoneInstallation> for PickingoneInstallation {
         fn from(value: super::PickingoneInstallation) -> Self {
             Self {
                 suspended_by: Ok(value.suspended_by),
@@ -1796,7 +1859,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for PickingoneSuspendedBy {
+    impl ::std::default::Default for PickingoneSuspendedBy {
         fn default() -> Self {
             Self {
                 email: Ok(Default::default()),
@@ -1806,8 +1869,8 @@ pub mod builder {
     impl PickingoneSuspendedBy {
         pub fn email<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.email = value
                 .try_into()
@@ -1825,7 +1888,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::PickingoneSuspendedBy> for PickingoneSuspendedBy {
+    impl ::std::convert::From<super::PickingoneSuspendedBy> for PickingoneSuspendedBy {
         fn from(value: super::PickingoneSuspendedBy) -> Self {
             Self {
                 email: Ok(value.email),
@@ -1839,7 +1902,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for PickingoneUser {
+    impl ::std::default::Default for PickingoneUser {
         fn default() -> Self {
             Self {
                 email: Ok(Default::default()),
@@ -1849,8 +1912,8 @@ pub mod builder {
     impl PickingoneUser {
         pub fn email<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.email = value
                 .try_into()
@@ -1868,7 +1931,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::PickingoneUser> for PickingoneUser {
+    impl ::std::convert::From<super::PickingoneUser> for PickingoneUser {
         fn from(value: super::PickingoneUser) -> Self {
             Self {
                 email: Ok(value.email),
@@ -1879,7 +1942,7 @@ pub mod builder {
     pub struct TrimFat {
         a: ::std::result::Result<::serde_json::Value, ::std::string::String>,
     }
-    impl Default for TrimFat {
+    impl ::std::default::Default for TrimFat {
         fn default() -> Self {
             Self {
                 a: Err("no value supplied for a".to_string()),
@@ -1889,8 +1952,8 @@ pub mod builder {
     impl TrimFat {
         pub fn a<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::serde_json::Value>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::serde_json::Value>,
+            T::Error: ::std::fmt::Display,
         {
             self.a = value
                 .try_into()
@@ -1904,7 +1967,7 @@ pub mod builder {
             Ok(Self { a: value.a? })
         }
     }
-    impl From<super::TrimFat> for TrimFat {
+    impl ::std::convert::From<super::TrimFat> for TrimFat {
         fn from(value: super::TrimFat) -> Self {
             Self { a: Ok(value.a) }
         }
@@ -1916,7 +1979,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for Unsatisfiable3A {
+    impl ::std::default::Default for Unsatisfiable3A {
         fn default() -> Self {
             Self {
                 action: Ok(Default::default()),
@@ -1926,8 +1989,8 @@ pub mod builder {
     impl Unsatisfiable3A {
         pub fn action<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::Unsatisfiable3C>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::Unsatisfiable3C>>,
+            T::Error: ::std::fmt::Display,
         {
             self.action = value
                 .try_into()
@@ -1945,7 +2008,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Unsatisfiable3A> for Unsatisfiable3A {
+    impl ::std::convert::From<super::Unsatisfiable3A> for Unsatisfiable3A {
         fn from(value: super::Unsatisfiable3A) -> Self {
             Self {
                 action: Ok(value.action),

@@ -288,6 +288,10 @@ pub(crate) fn try_merge_with_subschemas(
     };
 
     if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&maybe_subschemas).unwrap()
+        );
         unimplemented!("if/then/else schemas are not supported");
     }
 
@@ -609,7 +613,7 @@ fn merge_so_instance_type(
 ) -> Result<Option<SingleOrVec<InstanceType>>, ()> {
     match (a, b) {
         (None, None) => Ok(None),
-        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.map(Clone::clone)),
+        (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.cloned()),
 
         // If each has a single type, it must match.
         (Some(SingleOrVec::Single(aa)), Some(SingleOrVec::Single(bb))) => {

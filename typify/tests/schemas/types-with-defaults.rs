@@ -47,9 +47,16 @@ pub struct Doodad {
     #[serde(default = "defaults::doodad_when")]
     pub when: chrono::DateTime<chrono::offset::Utc>,
 }
-impl From<&Doodad> for Doodad {
+impl ::std::convert::From<&Doodad> for Doodad {
     fn from(value: &Doodad) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for Doodad {
+    fn default() -> Self {
+        Self {
+            when: defaults::doodad_when(),
+        }
     }
 }
 impl Doodad {
@@ -88,9 +95,17 @@ pub struct MrDefaultNumbers {
     #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU8, 2>")]
     pub little_u8: std::num::NonZeroU8,
 }
-impl From<&MrDefaultNumbers> for MrDefaultNumbers {
+impl ::std::convert::From<&MrDefaultNumbers> for MrDefaultNumbers {
     fn from(value: &MrDefaultNumbers) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for MrDefaultNumbers {
+    fn default() -> Self {
+        Self {
+            little_u16: defaults::default_nzu64::<std::num::NonZeroU16, 3>(),
+            little_u8: defaults::default_nzu64::<std::num::NonZeroU8, 2>(),
+        }
     }
 }
 impl MrDefaultNumbers {
@@ -131,9 +146,16 @@ pub struct OuterThing {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub thing: ::std::option::Option<ThingWithDefaults>,
 }
-impl From<&OuterThing> for OuterThing {
+impl ::std::convert::From<&OuterThing> for OuterThing {
     fn from(value: &OuterThing) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for OuterThing {
+    fn default() -> Self {
+        Self {
+            thing: Default::default(),
+        }
     }
 }
 impl OuterThing {
@@ -182,9 +204,17 @@ pub struct TestBed {
     #[serde(default = "defaults::test_bed_id")]
     pub id: uuid::Uuid,
 }
-impl From<&TestBed> for TestBed {
+impl ::std::convert::From<&TestBed> for TestBed {
     fn from(value: &TestBed) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for TestBed {
+    fn default() -> Self {
+        Self {
+            any: defaults::test_bed_any(),
+            id: defaults::test_bed_id(),
+        }
     }
 }
 impl TestBed {
@@ -227,12 +257,12 @@ pub struct ThingWithDefaults {
     )]
     pub type_: ::std::option::Option<::std::string::String>,
 }
-impl From<&ThingWithDefaults> for ThingWithDefaults {
+impl ::std::convert::From<&ThingWithDefaults> for ThingWithDefaults {
     fn from(value: &ThingWithDefaults) -> Self {
         value.clone()
     }
 }
-impl Default for ThingWithDefaults {
+impl ::std::default::Default for ThingWithDefaults {
     fn default() -> Self {
         ThingWithDefaults {
             a: Default::default(),
@@ -251,7 +281,7 @@ pub mod builder {
     pub struct Doodad {
         when: ::std::result::Result<chrono::DateTime<chrono::offset::Utc>, ::std::string::String>,
     }
-    impl Default for Doodad {
+    impl ::std::default::Default for Doodad {
         fn default() -> Self {
             Self {
                 when: Ok(super::defaults::doodad_when()),
@@ -261,8 +291,8 @@ pub mod builder {
     impl Doodad {
         pub fn when<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<chrono::DateTime<chrono::offset::Utc>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<chrono::DateTime<chrono::offset::Utc>>,
+            T::Error: ::std::fmt::Display,
         {
             self.when = value
                 .try_into()
@@ -276,7 +306,7 @@ pub mod builder {
             Ok(Self { when: value.when? })
         }
     }
-    impl From<super::Doodad> for Doodad {
+    impl ::std::convert::From<super::Doodad> for Doodad {
         fn from(value: super::Doodad) -> Self {
             Self {
                 when: Ok(value.when),
@@ -288,7 +318,7 @@ pub mod builder {
         little_u16: ::std::result::Result<std::num::NonZeroU16, ::std::string::String>,
         little_u8: ::std::result::Result<std::num::NonZeroU8, ::std::string::String>,
     }
-    impl Default for MrDefaultNumbers {
+    impl ::std::default::Default for MrDefaultNumbers {
         fn default() -> Self {
             Self {
                 little_u16: Ok(super::defaults::default_nzu64::<std::num::NonZeroU16, 3>()),
@@ -299,8 +329,8 @@ pub mod builder {
     impl MrDefaultNumbers {
         pub fn little_u16<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<std::num::NonZeroU16>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<std::num::NonZeroU16>,
+            T::Error: ::std::fmt::Display,
         {
             self.little_u16 = value
                 .try_into()
@@ -309,8 +339,8 @@ pub mod builder {
         }
         pub fn little_u8<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<std::num::NonZeroU8>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<std::num::NonZeroU8>,
+            T::Error: ::std::fmt::Display,
         {
             self.little_u8 = value
                 .try_into()
@@ -329,7 +359,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::MrDefaultNumbers> for MrDefaultNumbers {
+    impl ::std::convert::From<super::MrDefaultNumbers> for MrDefaultNumbers {
         fn from(value: super::MrDefaultNumbers) -> Self {
             Self {
                 little_u16: Ok(value.little_u16),
@@ -344,7 +374,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for OuterThing {
+    impl ::std::default::Default for OuterThing {
         fn default() -> Self {
             Self {
                 thing: Ok(Default::default()),
@@ -354,8 +384,8 @@ pub mod builder {
     impl OuterThing {
         pub fn thing<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::ThingWithDefaults>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::ThingWithDefaults>>,
+            T::Error: ::std::fmt::Display,
         {
             self.thing = value
                 .try_into()
@@ -373,7 +403,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::OuterThing> for OuterThing {
+    impl ::std::convert::From<super::OuterThing> for OuterThing {
         fn from(value: super::OuterThing) -> Self {
             Self {
                 thing: Ok(value.thing),
@@ -385,7 +415,7 @@ pub mod builder {
         any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
         id: ::std::result::Result<uuid::Uuid, ::std::string::String>,
     }
-    impl Default for TestBed {
+    impl ::std::default::Default for TestBed {
         fn default() -> Self {
             Self {
                 any: Ok(super::defaults::test_bed_any()),
@@ -396,8 +426,8 @@ pub mod builder {
     impl TestBed {
         pub fn any<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<::serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
             self.any = value
                 .try_into()
@@ -406,8 +436,8 @@ pub mod builder {
         }
         pub fn id<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<uuid::Uuid>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<uuid::Uuid>,
+            T::Error: ::std::fmt::Display,
         {
             self.id = value
                 .try_into()
@@ -424,7 +454,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TestBed> for TestBed {
+    impl ::std::convert::From<super::TestBed> for TestBed {
         fn from(value: super::TestBed) -> Self {
             Self {
                 any: Ok(value.any),
@@ -443,7 +473,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for ThingWithDefaults {
+    impl ::std::default::Default for ThingWithDefaults {
         fn default() -> Self {
             Self {
                 a: Ok(Default::default()),
@@ -454,8 +484,8 @@ pub mod builder {
     impl ThingWithDefaults {
         pub fn a<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.a = value
                 .try_into()
@@ -464,8 +494,8 @@ pub mod builder {
         }
         pub fn type_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::string::String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.type_ = value
                 .try_into()
@@ -484,7 +514,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::ThingWithDefaults> for ThingWithDefaults {
+    impl ::std::convert::From<super::ThingWithDefaults> for ThingWithDefaults {
         fn from(value: super::ThingWithDefaults) -> Self {
             Self {
                 a: Ok(value.a),

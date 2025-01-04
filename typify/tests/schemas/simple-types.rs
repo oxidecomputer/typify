@@ -42,7 +42,7 @@ pub mod error {
 pub struct AnythingWorks {
     pub value: ::serde_json::Value,
 }
-impl From<&AnythingWorks> for AnythingWorks {
+impl ::std::convert::From<&AnythingWorks> for AnythingWorks {
     fn from(value: &AnythingWorks) -> Self {
         value.clone()
     }
@@ -73,9 +73,16 @@ pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub flush_timeout: ::std::option::Option<f32>,
 }
-impl From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
+impl ::std::convert::From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
     fn from(value: &FloatsArentTerribleImTold) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for FloatsArentTerribleImTold {
+    fn default() -> Self {
+        Self {
+            flush_timeout: Default::default(),
+        }
     }
 }
 impl FloatsArentTerribleImTold {
@@ -106,6 +113,7 @@ impl FloatsArentTerribleImTold {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct JustOne(pub ::std::string::String);
 impl ::std::ops::Deref for JustOne {
     type Target = ::std::string::String;
@@ -113,17 +121,17 @@ impl ::std::ops::Deref for JustOne {
         &self.0
     }
 }
-impl From<JustOne> for ::std::string::String {
+impl ::std::convert::From<JustOne> for ::std::string::String {
     fn from(value: JustOne) -> Self {
         value.0
     }
 }
-impl From<&JustOne> for JustOne {
+impl ::std::convert::From<&JustOne> for JustOne {
     fn from(value: &JustOne) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for JustOne {
+impl ::std::convert::From<::std::string::String> for JustOne {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -145,7 +153,7 @@ pub mod builder {
     pub struct AnythingWorks {
         value: ::std::result::Result<::serde_json::Value, ::std::string::String>,
     }
-    impl Default for AnythingWorks {
+    impl ::std::default::Default for AnythingWorks {
         fn default() -> Self {
             Self {
                 value: Err("no value supplied for value".to_string()),
@@ -155,8 +163,8 @@ pub mod builder {
     impl AnythingWorks {
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::serde_json::Value>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::serde_json::Value>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -174,7 +182,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::AnythingWorks> for AnythingWorks {
+    impl ::std::convert::From<super::AnythingWorks> for AnythingWorks {
         fn from(value: super::AnythingWorks) -> Self {
             Self {
                 value: Ok(value.value),
@@ -185,7 +193,7 @@ pub mod builder {
     pub struct FloatsArentTerribleImTold {
         flush_timeout: ::std::result::Result<::std::option::Option<f32>, ::std::string::String>,
     }
-    impl Default for FloatsArentTerribleImTold {
+    impl ::std::default::Default for FloatsArentTerribleImTold {
         fn default() -> Self {
             Self {
                 flush_timeout: Ok(Default::default()),
@@ -195,8 +203,8 @@ pub mod builder {
     impl FloatsArentTerribleImTold {
         pub fn flush_timeout<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<f32>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<f32>>,
+            T::Error: ::std::fmt::Display,
         {
             self.flush_timeout = value
                 .try_into()
@@ -214,7 +222,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
+    impl ::std::convert::From<super::FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
         fn from(value: super::FloatsArentTerribleImTold) -> Self {
             Self {
                 flush_timeout: Ok(value.flush_timeout),

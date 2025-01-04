@@ -1,6 +1,6 @@
 [package]
 name = "typify-impl"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "typify backend implementation"
@@ -13,13 +13,13 @@ iref = "3.1.4"
 log = "0.4.22"
 pathdiff = "0.2.1"
 proc-macro2 = "1.0.89"
-quote = "1.0.37"
+quote = "1.0.38"
 regress = "0.10.1"
 schemars = "0.8.21"
 semver = "1.0.24"
-serde = "1.0.216"
+serde = "1.0.217"
 serde_json = "1.0.134"
-syn = { version = "2.0.90", features = ["full"] }
+syn = { version = "2.0.93", features = ["full"] }
 thiserror = "2.0.9"
 unicode-ident = "1.0.14"
 
@@ -31,6 +31,6 @@ paste = "1.0.15"
 rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
 schemars = { version = "0.8.21", features = ["uuid1", "impl_json_schema"] }
-syn = { version = "2.0.90", features = ["full", "extra-traits", "visit-mut"] }
+syn = { version = "2.0.93", features = ["full", "extra-traits", "visit-mut"] }
 uuid = "1.11.0"
 typify-macro = { path = "../typify-macro" }

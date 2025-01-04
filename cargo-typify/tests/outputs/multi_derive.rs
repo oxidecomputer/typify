@@ -45,6 +45,7 @@ pub mod error {
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
+#[serde(transparent)]
 pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
 impl ::std::ops::Deref for Fruit {
     type Target = ::std::collections::HashMap<::std::string::String, ::std::string::String>;
@@ -52,17 +53,21 @@ impl ::std::ops::Deref for Fruit {
         &self.0
     }
 }
-impl From<Fruit> for ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+impl ::std::convert::From<Fruit>
+    for ::std::collections::HashMap<::std::string::String, ::std::string::String>
+{
     fn from(value: Fruit) -> Self {
         value.0
     }
 }
-impl From<&Fruit> for Fruit {
+impl ::std::convert::From<&Fruit> for Fruit {
     fn from(value: &Fruit) -> Self {
         value.clone()
     }
 }
-impl From<::std::collections::HashMap<::std::string::String, ::std::string::String>> for Fruit {
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
+    for Fruit
+{
     fn from(
         value: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
     ) -> Self {
@@ -104,17 +109,17 @@ pub enum FruitOrVeg {
     Veg(Veggie),
     Fruit(Fruit),
 }
-impl From<&FruitOrVeg> for FruitOrVeg {
+impl ::std::convert::From<&Self> for FruitOrVeg {
     fn from(value: &FruitOrVeg) -> Self {
         value.clone()
     }
 }
-impl From<Veggie> for FruitOrVeg {
+impl ::std::convert::From<Veggie> for FruitOrVeg {
     fn from(value: Veggie) -> Self {
         Self::Veg(value)
     }
 }
-impl From<Fruit> for FruitOrVeg {
+impl ::std::convert::From<Fruit> for FruitOrVeg {
     fn from(value: Fruit) -> Self {
         Self::Fruit(value)
     }
@@ -154,7 +159,7 @@ pub struct Veggie {
     #[serde(rename = "veggieName")]
     pub veggie_name: ::std::string::String,
 }
-impl From<&Veggie> for Veggie {
+impl ::std::convert::From<&Veggie> for Veggie {
     fn from(value: &Veggie) -> Self {
         value.clone()
     }
@@ -195,8 +200,16 @@ pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
 }
-impl From<&Veggies> for Veggies {
+impl ::std::convert::From<&Veggies> for Veggies {
     fn from(value: &Veggies) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for Veggies {
+    fn default() -> Self {
+        Self {
+            fruits: Default::default(),
+            vegetables: Default::default(),
+        }
     }
 }

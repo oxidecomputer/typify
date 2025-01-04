@@ -50,9 +50,17 @@ pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::path::PathBuf>,
 }
-impl From<&AllTheThings> for AllTheThings {
+impl ::std::convert::From<&AllTheThings> for AllTheThings {
     fn from(value: &AllTheThings) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for AllTheThings {
+    fn default() -> Self {
+        Self {
+            option_marker: Default::default(),
+            path: Default::default(),
+        }
     }
 }
 impl AllTheThings {
@@ -82,7 +90,7 @@ impl AllTheThings {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Marker {}
-impl From<&Marker> for Marker {
+impl ::std::convert::From<&Self> for Marker {
     fn from(value: &Marker) -> Self {
         value.clone()
     }
@@ -100,7 +108,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for AllTheThings {
+    impl ::std::default::Default for AllTheThings {
         fn default() -> Self {
             Self {
                 option_marker: Ok(Default::default()),
@@ -111,8 +119,8 @@ pub mod builder {
     impl AllTheThings {
         pub fn option_marker<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::option::Option<super::Marker>>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::option::Option<super::Marker>>>,
+            T::Error: ::std::fmt::Display,
         {
             self.option_marker = value
                 .try_into()
@@ -121,8 +129,8 @@ pub mod builder {
         }
         pub fn path<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<::std::path::PathBuf>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<::std::path::PathBuf>>,
+            T::Error: ::std::fmt::Display,
         {
             self.path = value
                 .try_into()
@@ -141,7 +149,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::AllTheThings> for AllTheThings {
+    impl ::std::convert::From<super::AllTheThings> for AllTheThings {
         fn from(value: super::AllTheThings) -> Self {
             Self {
                 option_marker: Ok(value.option_marker),

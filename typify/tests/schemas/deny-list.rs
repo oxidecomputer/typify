@@ -65,7 +65,7 @@ pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-impl From<&TestType> for TestType {
+impl ::std::convert::From<&TestType> for TestType {
     fn from(value: &TestType) -> Self {
         value.clone()
     }
@@ -92,6 +92,7 @@ impl TestType {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TestTypeWhereNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhereNot {
     type Target = ::std::string::String;
@@ -99,12 +100,12 @@ impl ::std::ops::Deref for TestTypeWhereNot {
         &self.0
     }
 }
-impl From<TestTypeWhereNot> for ::std::string::String {
+impl ::std::convert::From<TestTypeWhereNot> for ::std::string::String {
     fn from(value: TestTypeWhereNot) -> Self {
         value.0
     }
 }
-impl From<&TestTypeWhereNot> for TestTypeWhereNot {
+impl ::std::convert::From<&TestTypeWhereNot> for TestTypeWhereNot {
     fn from(value: &TestTypeWhereNot) -> Self {
         value.clone()
     }
@@ -146,6 +147,7 @@ impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct TestTypeWhyNot(::std::string::String);
 impl ::std::ops::Deref for TestTypeWhyNot {
     type Target = ::std::string::String;
@@ -153,12 +155,12 @@ impl ::std::ops::Deref for TestTypeWhyNot {
         &self.0
     }
 }
-impl From<TestTypeWhyNot> for ::std::string::String {
+impl ::std::convert::From<TestTypeWhyNot> for ::std::string::String {
     fn from(value: TestTypeWhyNot) -> Self {
         value.0
     }
 }
-impl From<&TestTypeWhyNot> for TestTypeWhyNot {
+impl ::std::convert::From<&TestTypeWhyNot> for TestTypeWhyNot {
     fn from(value: &TestTypeWhyNot) -> Self {
         value.clone()
     }
@@ -191,7 +193,7 @@ pub mod builder {
         where_not: ::std::result::Result<super::TestTypeWhereNot, ::std::string::String>,
         why_not: ::std::result::Result<super::TestTypeWhyNot, ::std::string::String>,
     }
-    impl Default for TestType {
+    impl ::std::default::Default for TestType {
         fn default() -> Self {
             Self {
                 where_not: Err("no value supplied for where_not".to_string()),
@@ -202,8 +204,8 @@ pub mod builder {
     impl TestType {
         pub fn where_not<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::TestTypeWhereNot>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::TestTypeWhereNot>,
+            T::Error: ::std::fmt::Display,
         {
             self.where_not = value
                 .try_into()
@@ -212,8 +214,8 @@ pub mod builder {
         }
         pub fn why_not<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::TestTypeWhyNot>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::TestTypeWhyNot>,
+            T::Error: ::std::fmt::Display,
         {
             self.why_not = value
                 .try_into()
@@ -230,7 +232,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::TestType> for TestType {
+    impl ::std::convert::From<super::TestType> for TestType {
         fn from(value: super::TestType) -> Self {
             Self {
                 where_not: Ok(value.where_not),

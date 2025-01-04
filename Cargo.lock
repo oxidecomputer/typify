@@ -228,7 +228,7 @@ checksum = "7f30e7476521f6f8af1a1c4c0b8cc94f0bee37d91763d0ca2665f299b6cd8aec"
 
 [[package]]
 name = "cargo-typify"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -341,7 +341,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -514,7 +514,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.90",
+ "syn 2.0.93",
  "typify",
 ]
 
@@ -578,9 +578,9 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 
 [[package]]
 name = "glob"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
+checksum = "a8d1add55171497b4705a648c6b583acafb01d58050a51727785f0b2c8e0a2b2"
 
 [[package]]
 name = "half"
@@ -892,7 +892,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64d1ec885c64d0457d564db4ec299b2dae3f9c02808b8ad9c3a089c591b18033"
 dependencies = [
  "proc-macro2",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -930,9 +930,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.37"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5b9d34b8991d19d98081b46eacdd8eb58c6f2b201139f7c5f643cc155a633af"
+checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
 dependencies = [
  "proc-macro2",
 ]
@@ -1093,7 +1093,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1105,7 +1105,7 @@ dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1130,7 +1130,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde_derive_internals",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1144,22 +1144,22 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.216"
+version = "1.0.217"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b9781016e935a97e8beecf0c933758c97a5520d32930e460142b4cd80c6338e"
+checksum = "02fc4265df13d6fa1d00ecff087228cc0a2b5f3c0e87e258d8b94a156e984c70"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.216"
+version = "1.0.217"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "46f859dbbf73865c6627ed570e78961cd3ac92407a2d117204c49232485da55e"
+checksum = "5a9bf7cf98d04a2b28aead066b7496853d4779c9cc183c440dbac457641e19a0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1170,7 +1170,7 @@ checksum = "330f01ce65a3a5fe59a60c82f3c9a024b573b8a6e875bd233fe5f934e71d54e3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1203,7 +1203,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1263,7 +1263,7 @@ dependencies = [
  "quote",
  "serde",
  "sha2",
- "syn 2.0.90",
+ "syn 2.0.93",
  "thiserror 1.0.69",
 ]
 
@@ -1285,9 +1285,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.90"
+version = "2.0.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "919d3b74a5dd0ccd15aeb8f93e7006bd9e14c295087c9896a110f490752bcf31"
+checksum = "9c786062daee0d6db1132800e623df74274a0a87322d8e183338e01b3d98d058"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1364,7 +1364,7 @@ checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1375,7 +1375,7 @@ checksum = "7b50fa271071aae2e6ee85f842e2e28ba8cd2c5fb67f11fcb1fd70b276f9e7d4"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]
 
 [[package]]
@@ -1499,7 +1499,7 @@ checksum = "42ff0bf0c66b8238c6f3b578df37d0b7848e55df8577b3f74f92a69acceeb825"
 
 [[package]]
 name = "typify"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "env_logger",
@@ -1519,7 +1519,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "env_logger",
  "expectorate",
@@ -1537,7 +1537,7 @@ dependencies = [
  "semver",
  "serde",
  "serde_json",
- "syn 2.0.90",
+ "syn 2.0.93",
  "thiserror 2.0.9",
  "typify-macro",
  "unicode-ident",
@@ -1546,7 +1546,7 @@ dependencies = [
 
 [[package]]
 name = "typify-macro"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1555,7 +1555,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 2.0.90",
+ "syn 2.0.93",
  "typify-impl",
 ]
 
@@ -1569,7 +1569,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.90",
+ "syn 2.0.93",
  "typify",
 ]
 
@@ -1664,7 +1664,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
  "wasm-bindgen-shared",
 ]
 
@@ -1686,7 +1686,7 @@ checksum = "f0eb82fcb7930ae6219a7ecfd55b217f5f0893484b7a13022ebb2b2bf20b5283"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -1961,5 +1961,5 @@ checksum = "b3c129550b3e6de3fd0ba67ba5c81818f9805e58b8d7fee80a3a59d2c9fc601a"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.90",
+ "syn 2.0.93",
 ]

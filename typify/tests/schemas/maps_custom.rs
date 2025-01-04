@@ -38,6 +38,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct DeadSimple(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for DeadSimple {
     type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
@@ -45,17 +46,21 @@ impl ::std::ops::Deref for DeadSimple {
         &self.0
     }
 }
-impl From<DeadSimple> for ::serde_json::Map<::std::string::String, ::serde_json::Value> {
+impl ::std::convert::From<DeadSimple>
+    for ::serde_json::Map<::std::string::String, ::serde_json::Value>
+{
     fn from(value: DeadSimple) -> Self {
         value.0
     }
 }
-impl From<&DeadSimple> for DeadSimple {
+impl ::std::convert::From<&DeadSimple> for DeadSimple {
     fn from(value: &DeadSimple) -> Self {
         value.clone()
     }
 }
-impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for DeadSimple {
+impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+    for DeadSimple
+{
     fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
         Self(value)
     }
@@ -82,6 +87,7 @@ impl From<::serde_json::Map<::std::string::String, ::serde_json::Value>> for Dea
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Eh(pub ::std::string::String);
 impl ::std::ops::Deref for Eh {
     type Target = ::std::string::String;
@@ -89,17 +95,17 @@ impl ::std::ops::Deref for Eh {
         &self.0
     }
 }
-impl From<Eh> for ::std::string::String {
+impl ::std::convert::From<Eh> for ::std::string::String {
     fn from(value: Eh) -> Self {
         value.0
     }
 }
-impl From<&Eh> for Eh {
+impl ::std::convert::From<&Eh> for Eh {
     fn from(value: &Eh) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for Eh {
+impl ::std::convert::From<::std::string::String> for Eh {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }
@@ -133,6 +139,7 @@ impl ::std::fmt::Display for Eh {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithDateKeys(pub std::collections::BTreeMap<chrono::naive::NaiveDate, Value>);
 impl ::std::ops::Deref for MapWithDateKeys {
     type Target = std::collections::BTreeMap<chrono::naive::NaiveDate, Value>;
@@ -140,17 +147,21 @@ impl ::std::ops::Deref for MapWithDateKeys {
         &self.0
     }
 }
-impl From<MapWithDateKeys> for std::collections::BTreeMap<chrono::naive::NaiveDate, Value> {
+impl ::std::convert::From<MapWithDateKeys>
+    for std::collections::BTreeMap<chrono::naive::NaiveDate, Value>
+{
     fn from(value: MapWithDateKeys) -> Self {
         value.0
     }
 }
-impl From<&MapWithDateKeys> for MapWithDateKeys {
+impl ::std::convert::From<&MapWithDateKeys> for MapWithDateKeys {
     fn from(value: &MapWithDateKeys) -> Self {
         value.clone()
     }
 }
-impl From<std::collections::BTreeMap<chrono::naive::NaiveDate, Value>> for MapWithDateKeys {
+impl ::std::convert::From<std::collections::BTreeMap<chrono::naive::NaiveDate, Value>>
+    for MapWithDateKeys
+{
     fn from(value: std::collections::BTreeMap<chrono::naive::NaiveDate, Value>) -> Self {
         Self(value)
     }
@@ -173,6 +184,7 @@ impl From<std::collections::BTreeMap<chrono::naive::NaiveDate, Value>> for MapWi
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithDateTimeKeys(
     pub std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>,
 );
@@ -182,19 +194,19 @@ impl ::std::ops::Deref for MapWithDateTimeKeys {
         &self.0
     }
 }
-impl From<MapWithDateTimeKeys>
+impl ::std::convert::From<MapWithDateTimeKeys>
     for std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>
 {
     fn from(value: MapWithDateTimeKeys) -> Self {
         value.0
     }
 }
-impl From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
+impl ::std::convert::From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
     fn from(value: &MapWithDateTimeKeys) -> Self {
         value.clone()
     }
 }
-impl From<std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>>
+impl ::std::convert::From<std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Value>>
     for MapWithDateTimeKeys
 {
     fn from(
@@ -220,6 +232,7 @@ impl From<std::collections::BTreeMap<chrono::DateTime<chrono::offset::Utc>, Valu
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct MapWithKeys(pub std::collections::BTreeMap<Eh, Value>);
 impl ::std::ops::Deref for MapWithKeys {
     type Target = std::collections::BTreeMap<Eh, Value>;
@@ -227,17 +240,17 @@ impl ::std::ops::Deref for MapWithKeys {
         &self.0
     }
 }
-impl From<MapWithKeys> for std::collections::BTreeMap<Eh, Value> {
+impl ::std::convert::From<MapWithKeys> for std::collections::BTreeMap<Eh, Value> {
     fn from(value: MapWithKeys) -> Self {
         value.0
     }
 }
-impl From<&MapWithKeys> for MapWithKeys {
+impl ::std::convert::From<&MapWithKeys> for MapWithKeys {
     fn from(value: &MapWithKeys) -> Self {
         value.clone()
     }
 }
-impl From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys {
+impl ::std::convert::From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys {
     fn from(value: std::collections::BTreeMap<Eh, Value>) -> Self {
         Self(value)
     }
@@ -263,6 +276,7 @@ impl From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys {
     PartialEq,
     PartialOrd,
 )]
+#[serde(transparent)]
 pub struct Value(pub ::std::string::String);
 impl ::std::ops::Deref for Value {
     type Target = ::std::string::String;
@@ -270,17 +284,17 @@ impl ::std::ops::Deref for Value {
         &self.0
     }
 }
-impl From<Value> for ::std::string::String {
+impl ::std::convert::From<Value> for ::std::string::String {
     fn from(value: Value) -> Self {
         value.0
     }
 }
-impl From<&Value> for Value {
+impl ::std::convert::From<&Value> for Value {
     fn from(value: &Value) -> Self {
         value.clone()
     }
 }
-impl From<::std::string::String> for Value {
+impl ::std::convert::From<::std::string::String> for Value {
     fn from(value: ::std::string::String) -> Self {
         Self(value)
     }

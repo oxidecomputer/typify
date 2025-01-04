@@ -52,9 +52,16 @@ pub struct LetterBox {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub letter: ::std::option::Option<LetterBoxLetter>,
 }
-impl From<&LetterBox> for LetterBox {
+impl ::std::convert::From<&LetterBox> for LetterBox {
     fn from(value: &LetterBox) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for LetterBox {
+    fn default() -> Self {
+        Self {
+            letter: Default::default(),
+        }
     }
 }
 impl LetterBox {
@@ -96,7 +103,7 @@ pub enum LetterBoxLetter {
     #[serde(rename = "b")]
     B,
 }
-impl From<&LetterBoxLetter> for LetterBoxLetter {
+impl ::std::convert::From<&Self> for LetterBoxLetter {
     fn from(value: &LetterBoxLetter) -> Self {
         value.clone()
     }
@@ -109,7 +116,7 @@ impl ::std::fmt::Display for LetterBoxLetter {
         }
     }
 }
-impl std::str::FromStr for LetterBoxLetter {
+impl ::std::str::FromStr for LetterBoxLetter {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -119,13 +126,13 @@ impl std::str::FromStr for LetterBoxLetter {
         }
     }
 }
-impl std::convert::TryFrom<&str> for LetterBoxLetter {
+impl ::std::convert::TryFrom<&str> for LetterBoxLetter {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&::std::string::String> for LetterBoxLetter {
+impl ::std::convert::TryFrom<&::std::string::String> for LetterBoxLetter {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -133,7 +140,7 @@ impl std::convert::TryFrom<&::std::string::String> for LetterBoxLetter {
         value.parse()
     }
 }
-impl std::convert::TryFrom<::std::string::String> for LetterBoxLetter {
+impl ::std::convert::TryFrom<::std::string::String> for LetterBoxLetter {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -150,7 +157,7 @@ pub mod builder {
             ::std::string::String,
         >,
     }
-    impl Default for LetterBox {
+    impl ::std::default::Default for LetterBox {
         fn default() -> Self {
             Self {
                 letter: Ok(Default::default()),
@@ -160,8 +167,8 @@ pub mod builder {
     impl LetterBox {
         pub fn letter<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<super::LetterBoxLetter>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<super::LetterBoxLetter>>,
+            T::Error: ::std::fmt::Display,
         {
             self.letter = value
                 .try_into()
@@ -179,7 +186,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::LetterBox> for LetterBox {
+    impl ::std::convert::From<super::LetterBox> for LetterBox {
         fn from(value: super::LetterBox) -> Self {
             Self {
                 letter: Ok(value.letter),

@@ -13,7 +13,20 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.2.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.3.0\...HEAD[Full list of commits]
+
+== 0.3.0 (released 2024-12-27)
+
+https://github.com/oxidecomputer/typify/compare/v0.2.0\...v0.3.0[Full list of commits]
+
+* Mark newtype wrappers as `#[serde(transparent)]` (#724)
+* impl `Default` for structs where all properties have a default (#725)
+* Add support specifying the map type to use (#708)
+* Fully qualify more type names e.g. from `std` (#705)
+
+These changes may break users of previous versions in particular if you were to
+implement `Default` by hand for types for which the implementation is now
+generated.
 
 == 0.2.0 (released 2024-09-26)
 

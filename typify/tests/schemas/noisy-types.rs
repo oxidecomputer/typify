@@ -47,6 +47,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct ArrayBs(pub ::std::vec::Vec<bool>);
 impl ::std::ops::Deref for ArrayBs {
     type Target = ::std::vec::Vec<bool>;
@@ -54,17 +55,17 @@ impl ::std::ops::Deref for ArrayBs {
         &self.0
     }
 }
-impl From<ArrayBs> for ::std::vec::Vec<bool> {
+impl ::std::convert::From<ArrayBs> for ::std::vec::Vec<bool> {
     fn from(value: ArrayBs) -> Self {
         value.0
     }
 }
-impl From<&ArrayBs> for ArrayBs {
+impl ::std::convert::From<&ArrayBs> for ArrayBs {
     fn from(value: &ArrayBs) -> Self {
         value.clone()
     }
 }
-impl From<::std::vec::Vec<bool>> for ArrayBs {
+impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
     fn from(value: ::std::vec::Vec<bool>) -> Self {
         Self(value)
     }
@@ -88,6 +89,7 @@ impl From<::std::vec::Vec<bool>> for ArrayBs {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct IntegerBs(pub u64);
 impl ::std::ops::Deref for IntegerBs {
     type Target = u64;
@@ -95,40 +97,40 @@ impl ::std::ops::Deref for IntegerBs {
         &self.0
     }
 }
-impl From<IntegerBs> for u64 {
+impl ::std::convert::From<IntegerBs> for u64 {
     fn from(value: IntegerBs) -> Self {
         value.0
     }
 }
-impl From<&IntegerBs> for IntegerBs {
+impl ::std::convert::From<&IntegerBs> for IntegerBs {
     fn from(value: &IntegerBs) -> Self {
         value.clone()
     }
 }
-impl From<u64> for IntegerBs {
+impl ::std::convert::From<u64> for IntegerBs {
     fn from(value: u64) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for IntegerBs {
+impl ::std::str::FromStr for IntegerBs {
     type Err = <u64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
-impl std::convert::TryFrom<&str> for IntegerBs {
+impl ::std::convert::TryFrom<&str> for IntegerBs {
     type Error = <u64 as ::std::str::FromStr>::Err;
     fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IntegerBs {
+impl ::std::convert::TryFrom<&String> for IntegerBs {
     type Error = <u64 as ::std::str::FromStr>::Err;
     fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for IntegerBs {
+impl ::std::convert::TryFrom<String> for IntegerBs {
     type Error = <u64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
@@ -162,9 +164,16 @@ pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
 }
-impl From<&ObjectBs> for ObjectBs {
+impl ::std::convert::From<&ObjectBs> for ObjectBs {
     fn from(value: &ObjectBs) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for ObjectBs {
+    fn default() -> Self {
+        Self {
+            ok: Default::default(),
+        }
     }
 }
 impl ObjectBs {
@@ -178,7 +187,7 @@ pub mod builder {
     pub struct ObjectBs {
         ok: ::std::result::Result<::std::option::Option<bool>, ::std::string::String>,
     }
-    impl Default for ObjectBs {
+    impl ::std::default::Default for ObjectBs {
         fn default() -> Self {
             Self {
                 ok: Ok(Default::default()),
@@ -188,8 +197,8 @@ pub mod builder {
     impl ObjectBs {
         pub fn ok<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<bool>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<bool>>,
+            T::Error: ::std::fmt::Display,
         {
             self.ok = value
                 .try_into()
@@ -203,7 +212,7 @@ pub mod builder {
             Ok(Self { ok: value.ok? })
         }
     }
-    impl From<super::ObjectBs> for ObjectBs {
+    impl ::std::convert::From<super::ObjectBs> for ObjectBs {
         fn from(value: super::ObjectBs) -> Self {
             Self { ok: Ok(value.ok) }
         }

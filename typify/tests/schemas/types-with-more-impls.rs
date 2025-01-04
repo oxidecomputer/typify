@@ -37,6 +37,7 @@ pub mod error {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct PatternString(::std::string::String);
 impl ::std::ops::Deref for PatternString {
     type Target = ::std::string::String;
@@ -44,12 +45,12 @@ impl ::std::ops::Deref for PatternString {
         &self.0
     }
 }
-impl From<PatternString> for ::std::string::String {
+impl ::std::convert::From<PatternString> for ::std::string::String {
     fn from(value: PatternString) -> Self {
         value.0
     }
 }
-impl From<&PatternString> for PatternString {
+impl ::std::convert::From<&PatternString> for PatternString {
     fn from(value: &PatternString) -> Self {
         value.clone()
     }
@@ -115,6 +116,7 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct Sub10Primes(u32);
 impl ::std::ops::Deref for Sub10Primes {
     type Target = u32;
@@ -122,12 +124,12 @@ impl ::std::ops::Deref for Sub10Primes {
         &self.0
     }
 }
-impl From<Sub10Primes> for u32 {
+impl ::std::convert::From<Sub10Primes> for u32 {
     fn from(value: Sub10Primes) -> Self {
         value.0
     }
 }
-impl From<&Sub10Primes> for Sub10Primes {
+impl ::std::convert::From<&Sub10Primes> for Sub10Primes {
     fn from(value: &Sub10Primes) -> Self {
         value.clone()
     }

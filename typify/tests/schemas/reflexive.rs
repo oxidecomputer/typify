@@ -55,9 +55,17 @@ pub struct Node {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub value: ::std::option::Option<i64>,
 }
-impl From<&Node> for Node {
+impl ::std::convert::From<&Node> for Node {
     fn from(value: &Node) -> Self {
         value.clone()
+    }
+}
+impl ::std::default::Default for Node {
+    fn default() -> Self {
+        Self {
+            children: Default::default(),
+            value: Default::default(),
+        }
     }
 }
 impl Node {
@@ -72,7 +80,7 @@ pub mod builder {
         children: ::std::result::Result<::std::vec::Vec<super::Node>, ::std::string::String>,
         value: ::std::result::Result<::std::option::Option<i64>, ::std::string::String>,
     }
-    impl Default for Node {
+    impl ::std::default::Default for Node {
         fn default() -> Self {
             Self {
                 children: Ok(Default::default()),
@@ -83,8 +91,8 @@ pub mod builder {
     impl Node {
         pub fn children<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::vec::Vec<super::Node>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Node>>,
+            T::Error: ::std::fmt::Display,
         {
             self.children = value
                 .try_into()
@@ -93,8 +101,8 @@ pub mod builder {
         }
         pub fn value<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<::std::option::Option<i64>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::option::Option<i64>>,
+            T::Error: ::std::fmt::Display,
         {
             self.value = value
                 .try_into()
@@ -111,7 +119,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Node> for Node {
+    impl ::std::convert::From<super::Node> for Node {
         fn from(value: super::Node) -> Self {
             Self {
                 children: Ok(value.children),

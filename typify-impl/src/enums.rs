@@ -1473,13 +1473,13 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl From<&ResultX> for ResultX {
+            impl ::std::convert::From<&Self> for ResultX {
                 fn from(value: &ResultX) -> Self {
                     value.clone()
                 }
             }
 
-            impl From<u32> for ResultX {
+            impl ::std::convert::From<u32> for ResultX {
                 fn from(value: u32) -> Self {
                     Self::Ok(value)
                 }
@@ -1525,13 +1525,13 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl From<&ResultX> for ResultX {
+            impl ::std::convert::From<&Self> for ResultX {
                 fn from(value: &ResultX) -> Self {
                     value.clone()
                 }
             }
 
-            impl From<u32> for ResultX {
+            impl ::std::convert::From<u32> for ResultX {
                 fn from(value: u32) -> Self {
                     Self::Ok(value)
                 }
