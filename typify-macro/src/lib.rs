@@ -59,7 +59,7 @@ mod token_utils;
 /// - `replace`: optional map from definition name to a replacement type. This
 ///   may be used to skip generation of the named type and use a existing Rust
 ///   type.
-///   
+///
 /// - `convert`: optional map from a JSON schema type defined in `$defs` to a
 ///   replacement type. This may be used to skip generation of the schema and
 ///   use an existing Rust type.
@@ -93,6 +93,8 @@ struct MacroSettings {
     #[serde(default)]
     convert:
         serde_tokenstream::OrderedMap<schemars::schema::SchemaObject, ParseWrapper<TypeAndImpls>>,
+    #[serde(default)]
+    distinct_definitions: bool,
 }
 
 struct MacroCrateSpec {
@@ -193,6 +195,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             unknown_crates,
             crates,
             map_type,
+            distinct_definitions,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
@@ -225,6 +228,8 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
         settings.with_map_type(map_type);
 
+        settings.with_distinct_definitions(distinct_definitions);
+
         (schema.into_inner(), settings)
     };
 
@@ -245,6 +250,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         .unwrap();
 
     let mut type_space = TypeSpace::new(&settings);
+    type_space.with_path_raw(&path);
     type_space
         .add_root_schema(root_schema)
         .map_err(|e| into_syn_err(e, schema.span()))?;
