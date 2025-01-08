@@ -1997,11 +1997,11 @@ mod tests {
     };
     use serde_json::json;
 
+    use crate::type_entry::TypeEntryDetails;
     use crate::{
         test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceImpl,
         TypeSpaceSettings,
     };
-    use crate::type_entry::TypeEntryDetails;
 
     #[track_caller]
     fn int_helper<T: JsonSchema>(type_name: &'static str) {
@@ -2128,7 +2128,7 @@ mod tests {
                     maximum: Some(256.0),
                     ..Default::default()
                 }
-                    .into(),
+                .into(),
             ),
             ..Default::default()
         };
@@ -2141,7 +2141,7 @@ mod tests {
         ) {
             Ok((te, _ob)) => {
                 assert_eq!(te.details, TypeEntryDetails::Integer("u64".to_string()));
-            },
+            }
             _ => panic!("unexpected result"),
         }
     }
