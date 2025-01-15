@@ -27,6 +27,6 @@ regress = "0.10.1"
 rustfmt-wrapper = "0.2.1"
 schemars = "0.8.21"
 serde = "1.0.217"
-serde_json = "1.0.134"
+serde_json = "1.0.135"
 trybuild = "1.0.101"
 uuid = { version = "1.11.0", features = ["serde"] }
