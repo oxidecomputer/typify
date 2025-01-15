@@ -10,7 +10,7 @@ serde_json = "1.0.134"
 
 [build-dependencies]
 ipnetwork = { version = "0.21.0", features = ["schemars"] }
-prettyplease = "0.2.25"
+prettyplease = "0.2.27"
 schemars = "0.8.21"
 serde = "1.0.217"
 syn = "2.0.95"
