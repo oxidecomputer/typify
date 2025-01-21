@@ -18,7 +18,7 @@ clap = { version = "4.5.26", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11"
 rustfmt-wrapper = "0.2.1"
-semver = "1.0.24"
+semver = "1.0.25"
 serde_json = "1.0.135"
 schemars = "0.8.21"
 
