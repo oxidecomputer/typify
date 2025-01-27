@@ -14,7 +14,7 @@ default-run = "cargo-typify"
 [dependencies]
 typify = { version = "0.3.0", path = "../typify" }
 
-clap = { version = "4.5.26", features = ["derive"] }
+clap = { version = "4.5.27", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11"
 rustfmt-wrapper = "0.2.1"
