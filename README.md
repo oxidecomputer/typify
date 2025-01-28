@@ -144,8 +144,8 @@ For the macro:
 ```rust
 typify::import_types!(
   schema = "schema.json",
-  unknown_types = Allow,
-  crates {
+  unknown_crates = Allow,
+  crates = {
     "oxnet" = "1.0.0"
   }
 )

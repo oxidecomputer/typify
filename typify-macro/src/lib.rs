@@ -40,10 +40,10 @@ mod token_utils;
 ///
 /// - `unknown_crates`: optional policy regarding the handling of schemas that
 ///   contain the `x-rust-type` extension whose crates are not explicitly named
-///   in the `crates` section. The options are `generate` to ignore the
-///   extension and generate a *de novo* type, `allow` to use the named type
+///   in the `crates` section. The options are `Generate` to ignore the
+///   extension and generate a *de novo* type, `Allow` to use the named type
 ///   (which may require the addition of a new dependency to compile, and which
-///   ignores version compatibility checks), or `deny` to produce a
+///   ignores version compatibility checks), or `Deny` to produce a
 ///   compile-time error (requiring the user to specify the crate's disposition
 ///   in the `crates` section).
 ///
