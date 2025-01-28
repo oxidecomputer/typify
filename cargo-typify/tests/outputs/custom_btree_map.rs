@@ -5,7 +5,7 @@
 
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
