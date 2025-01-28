@@ -29,7 +29,7 @@ pub mod error {
         }
     }
 }
-#[doc = "Fruit"]
+#[doc = "`Fruit`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -74,7 +74,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::s
         Self(value)
     }
 }
-#[doc = "FruitOrVeg"]
+#[doc = "`FruitOrVeg`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -124,7 +124,7 @@ impl ::std::convert::From<Fruit> for FruitOrVeg {
         Self::Fruit(value)
     }
 }
-#[doc = "Veggie"]
+#[doc = "`Veggie`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

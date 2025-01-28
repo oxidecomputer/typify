@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "TestType"]
+#[doc = "`TestType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -75,7 +75,7 @@ impl TestType {
         Default::default()
     }
 }
-#[doc = "TestTypeWhereNot"]
+#[doc = "`TestTypeWhereNot`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -131,7 +131,7 @@ impl<'de> ::serde::Deserialize<'de> for TestTypeWhereNot {
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
-#[doc = "TestTypeWhyNot"]
+#[doc = "`TestTypeWhyNot`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

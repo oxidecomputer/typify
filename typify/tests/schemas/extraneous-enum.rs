@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "LetterBox"]
+#[doc = "`LetterBox`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -69,7 +69,7 @@ impl LetterBox {
         Default::default()
     }
 }
-#[doc = "LetterBoxLetter"]
+#[doc = "`LetterBoxLetter`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

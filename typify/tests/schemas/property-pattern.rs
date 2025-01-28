@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "TestGrammarForPatternProperties"]
+#[doc = "`TestGrammarForPatternProperties`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -67,7 +67,7 @@ impl TestGrammarForPatternProperties {
         Default::default()
     }
 }
-#[doc = "TestGrammarForPatternPropertiesRulesKey"]
+#[doc = "`TestGrammarForPatternPropertiesRulesKey`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

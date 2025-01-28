@@ -1457,7 +1457,7 @@ mod tests {
         let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
         let schema_lines = schema_json.lines();
         let expected = quote! {
-            #[doc = "ResultX"]
+            #[doc = "`ResultX`"]
             ///
             /// <details><summary>JSON schema</summary>
             ///
@@ -1511,7 +1511,7 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[doc = "ResultX"]
+            #[doc = "`ResultX`"]
             ///
             /// <details><summary>JSON schema</summary>
             ///

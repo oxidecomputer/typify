@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "Doodad"]
+#[doc = "`Doodad`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -64,7 +64,7 @@ impl Doodad {
         Default::default()
     }
 }
-#[doc = "MrDefaultNumbers"]
+#[doc = "`MrDefaultNumbers`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -113,7 +113,7 @@ impl MrDefaultNumbers {
         Default::default()
     }
 }
-#[doc = "OuterThing"]
+#[doc = "`OuterThing`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -163,7 +163,7 @@ impl OuterThing {
         Default::default()
     }
 }
-#[doc = "TestBed"]
+#[doc = "`TestBed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -222,7 +222,7 @@ impl TestBed {
         Default::default()
     }
 }
-#[doc = "ThingWithDefaults"]
+#[doc = "`ThingWithDefaults`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

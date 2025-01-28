@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "AlternativeEnum"]
+#[doc = "`AlternativeEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -110,7 +110,7 @@ impl ::std::default::Default for AlternativeEnum {
         AlternativeEnum::Choice2
     }
 }
-#[doc = "CommentedVariants"]
+#[doc = "`CommentedVariants`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -204,7 +204,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
         value.parse()
     }
 }
-#[doc = "DiskAttachment"]
+#[doc = "`DiskAttachment`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -247,7 +247,7 @@ impl DiskAttachment {
         Default::default()
     }
 }
-#[doc = "DiskAttachmentState"]
+#[doc = "`DiskAttachmentState`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -332,7 +332,7 @@ impl ::std::default::Default for DiskAttachmentState {
         DiskAttachmentState::Detached
     }
 }
-#[doc = "EmptyObject"]
+#[doc = "`EmptyObject`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -372,7 +372,7 @@ impl EmptyObject {
         Default::default()
     }
 }
-#[doc = "EmptyObjectProp"]
+#[doc = "`EmptyObjectProp`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -432,7 +432,7 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
         .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
-#[doc = "EnumAndConstant"]
+#[doc = "`EnumAndConstant`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -526,7 +526,7 @@ impl ::std::convert::From<&Self> for EnumAndConstant {
         value.clone()
     }
 }
-#[doc = "IpNet"]
+#[doc = "`IpNet`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -617,7 +617,7 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
         Self::V6(value)
     }
 }
-#[doc = "Ipv4Net"]
+#[doc = "`Ipv4Net`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -672,7 +672,7 @@ impl ::std::fmt::Display for Ipv4Net {
         self.0.fmt(f)
     }
 }
-#[doc = "Ipv6Net"]
+#[doc = "`Ipv6Net`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -727,7 +727,7 @@ impl ::std::fmt::Display for Ipv6Net {
         self.0.fmt(f)
     }
 }
-#[doc = "JankNames"]
+#[doc = "`JankNames`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -785,7 +785,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64
         Self::Variant2(value)
     }
 }
-#[doc = "Never"]
+#[doc = "`Never`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -812,7 +812,7 @@ impl ::std::convert::From<&Self> for Never {
         value.clone()
     }
 }
-#[doc = "NeverEver"]
+#[doc = "`NeverEver`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -839,7 +839,7 @@ impl ::std::convert::From<&Self> for NeverEver {
         value.clone()
     }
 }
-#[doc = "NullStringEnumWithUnknownFormat"]
+#[doc = "`NullStringEnumWithUnknownFormat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -888,7 +888,7 @@ impl ::std::convert::From<::std::option::Option<NullStringEnumWithUnknownFormatI
         Self(value)
     }
 }
-#[doc = "NullStringEnumWithUnknownFormatInner"]
+#[doc = "`NullStringEnumWithUnknownFormatInner`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -971,7 +971,7 @@ impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknow
         value.parse()
     }
 }
-#[doc = "OneOfTypes"]
+#[doc = "`OneOfTypes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1020,7 +1020,7 @@ impl ::std::convert::From<i64> for OneOfTypes {
         Self::Bar(value)
     }
 }
-#[doc = "ReferenceDef"]
+#[doc = "`ReferenceDef`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1134,7 +1134,7 @@ impl
         Self::Variant1(value)
     }
 }
-#[doc = "ReferencesVariant1Value"]
+#[doc = "`ReferencesVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1214,7 +1214,7 @@ impl ::std::convert::From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
-#[doc = "ShouldBeExclusive"]
+#[doc = "`ShouldBeExclusive`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1255,7 +1255,7 @@ impl ::std::convert::From<&Self> for ShouldBeExclusive {
         value.clone()
     }
 }
-#[doc = "StringVersion"]
+#[doc = "`StringVersion`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

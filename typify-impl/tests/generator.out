@@ -25,7 +25,7 @@ mod types {
             }
         }
     }
-    #[doc = "AllTheTraits"]
+    #[doc = "`AllTheTraits`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -69,7 +69,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "CompoundType"]
+    #[doc = "`CompoundType`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -109,7 +109,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "Pair"]
+    #[doc = "`Pair`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -155,7 +155,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "StringEnum"]
+    #[doc = "`StringEnum`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]

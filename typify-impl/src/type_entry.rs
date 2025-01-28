@@ -1888,7 +1888,10 @@ impl TypeEntry {
 }
 
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
-    let desc = description.map_or(name, |desc| desc.as_str());
+    let desc = match description {
+        Some(desc) => desc,
+        None => &format!("`{}`", name),
+    };
     let schema_json = serde_json::to_string_pretty(schema).unwrap();
     let schema_lines = schema_json.lines();
     quote! {

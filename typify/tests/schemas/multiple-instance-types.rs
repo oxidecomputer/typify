@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "IntOrStr"]
+#[doc = "`IntOrStr`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -96,7 +96,7 @@ impl ::std::convert::From<i64> for IntOrStr {
         Self::Integer(value)
     }
 }
-#[doc = "OneOfSeveral"]
+#[doc = "`OneOfSeveral`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -150,7 +150,7 @@ impl ::std::convert::From<i64> for OneOfSeveral {
         Self::Integer(value)
     }
 }
-#[doc = "ReallyJustNull"]
+#[doc = "`ReallyJustNull`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -190,7 +190,7 @@ impl ::std::convert::From<()> for ReallyJustNull {
         Self(value)
     }
 }
-#[doc = "SeriouslyAnything"]
+#[doc = "`SeriouslyAnything`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -232,7 +232,7 @@ impl ::std::convert::From<::serde_json::Value> for SeriouslyAnything {
         Self(value)
     }
 }
-#[doc = "YesNoMaybe"]
+#[doc = "`YesNoMaybe`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

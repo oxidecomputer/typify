@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "IdOrName"]
+#[doc = "`IdOrName`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -116,7 +116,7 @@ impl ::std::convert::From<Name> for IdOrName {
         Self::Name(value)
     }
 }
-#[doc = "IdOrNameRedundant"]
+#[doc = "`IdOrNameRedundant`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -199,7 +199,7 @@ impl ::std::convert::From<Name> for IdOrNameRedundant {
         Self::Variant1(value)
     }
 }
-#[doc = "IdOrYolo"]
+#[doc = "`IdOrYolo`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -291,7 +291,7 @@ impl ::std::convert::From<IdOrYoloYolo> for IdOrYolo {
         Self::Yolo(value)
     }
 }
-#[doc = "IdOrYoloYolo"]
+#[doc = "`IdOrYoloYolo`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "PatternString"]
+#[doc = "`PatternString`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -98,7 +98,7 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
             })
     }
 }
-#[doc = "Sub10Primes"]
+#[doc = "`Sub10Primes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
