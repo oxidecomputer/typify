@@ -468,6 +468,26 @@ impl TypeSpaceSettings {
     /// Typical usage is to map a schema definition to a builtin type or type
     /// provided by a crate, such as `'rust_decimal::Decimal'`. If the same schema
     /// is specified multiple times, the first one is honored.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// // Setup 'number' json type to be translated into 'rust_decimal::Decimal'
+    /// use schemars::schema::{InstanceType, SchemaObject};
+    /// use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
+    /// let mut type_space = TypeSpace::new(
+    ///        TypeSpaceSettings::default()
+    ///            .with_struct_builder(true)
+    ///            .with_conversion(
+    ///                SchemaObject {
+    ///                    instance_type: Some(InstanceType::Number.into()),
+    ///                    ..Default::default()
+    ///                },
+    ///                "rust_decimal::Decimal",
+    ///                [TypeSpaceImpl::Display].into_iter(),
+    ///            ),
+    ///    );
+    /// ```
     pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
