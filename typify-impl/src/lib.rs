@@ -846,7 +846,7 @@ impl TypeSpace {
             output::OutputSpaceMod::Error,
             "",
             quote! {
-                /// Error from a TryFrom or FromStr implementation.
+                /// Error from a `TryFrom` or `FromStr` implementation.
                 pub struct ConversionError(::std::borrow::Cow<'static, str>);
 
                 impl ::std::error::Error for ConversionError {}
