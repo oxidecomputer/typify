@@ -237,7 +237,7 @@ fn value_for_internal_enum(
     let ser_name = map.get(tag).and_then(serde_json::Value::as_str)?;
     let variant = variants
         .iter()
-        .find(|variant| ser_name == &variant.raw_name)?;
+        .find(|variant| ser_name == variant.raw_name)?;
     let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
     let type_ident = format_ident!("{}", type_name);
 
@@ -283,7 +283,7 @@ fn value_for_adjacent_enum(
 
     let variant = variants
         .iter()
-        .find(|variant| tag_value == &variant.raw_name)?;
+        .find(|variant| tag_value == variant.raw_name)?;
     let type_ident = format_ident!("{}", type_name);
     let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
     match (&variant.details, content_value) {

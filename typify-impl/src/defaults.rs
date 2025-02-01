@@ -384,7 +384,7 @@ pub(crate) fn validate_default_for_external_enum(
     if let Some(simple_name) = default.as_str() {
         let variant = variants
             .iter()
-            .find(|variant| simple_name == &variant.raw_name)?;
+            .find(|variant| simple_name == variant.raw_name)?;
         matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
 
         Some(DefaultKind::Specific)
@@ -417,7 +417,7 @@ pub(crate) fn validate_default_for_internal_enum(
 ) -> Option<DefaultKind> {
     let map = default.as_object()?;
     let name = map.get(tag).and_then(serde_json::Value::as_str)?;
-    let variant = variants.iter().find(|variant| name == &variant.raw_name)?;
+    let variant = variants.iter().find(|variant| name == variant.raw_name)?;
 
     match &variant.details {
         VariantDetails::Simple => Some(DefaultKind::Specific),
@@ -458,7 +458,7 @@ pub(crate) fn validate_default_for_adjacent_enum(
 
     let variant = variants
         .iter()
-        .find(|variant| tag_value == &variant.raw_name)?;
+        .find(|variant| tag_value == variant.raw_name)?;
 
     match (&variant.details, content_value) {
         (VariantDetails::Simple, None) => Some(DefaultKind::Specific),
