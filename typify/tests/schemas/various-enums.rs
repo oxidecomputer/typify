@@ -1310,6 +1310,87 @@ impl ::std::fmt::Display for StringVersion {
         self.0.fmt(f)
     }
 }
+#[doc = "VariantsDifferByPunct"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"2.5G\","]
+#[doc = "    \"25G\","]
+#[doc = "    \"2,5,G\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum VariantsDifferByPunct {
+    #[serde(rename = "2.5G")]
+    _25g,
+    #[serde(rename = "25G")]
+    _25g,
+    #[serde(rename = "2,5,G")]
+    _25G,
+}
+impl ::std::convert::From<&Self> for VariantsDifferByPunct {
+    fn from(value: &VariantsDifferByPunct) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for VariantsDifferByPunct {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::_25g => write!(f, "2.5G"),
+            Self::_25g => write!(f, "25G"),
+            Self::_25G => write!(f, "2,5,G"),
+        }
+    }
+}
+impl ::std::str::FromStr for VariantsDifferByPunct {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "2.5G" => Ok(Self::_25g),
+            "25G" => Ok(Self::_25g),
+            "2,5,G" => Ok(Self::_25G),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
