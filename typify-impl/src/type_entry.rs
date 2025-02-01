@@ -10,9 +10,10 @@ use syn::Path;
 use crate::{
     enums::output_variant,
     output::{OutputSpace, OutputSpaceMod},
+    sanitize,
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, type_patch},
-    DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
+    Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -177,8 +178,8 @@ pub(crate) enum EnumTagType {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) struct Variant {
-    pub name: String,
-    pub rename: Option<String>,
+    pub raw_name: String,
+    pub ident_name: Option<String>,
     pub description: Option<String>,
     pub details: VariantDetails,
 }
@@ -227,10 +228,15 @@ impl TypeEntryEnum {
         type_name: Name,
         metadata: &Option<Box<Metadata>>,
         tag_type: EnumTagType,
-        variants: Vec<Variant>,
+        mut variants: Vec<Variant>,
         deny_unknown_fields: bool,
         schema: Schema,
     ) -> TypeEntry {
+        variants.iter_mut().for_each(|x| {
+            let xxx = sanitize(&x.raw_name, Case::Pascal);
+            x.ident_name = Some(xxx);
+        });
+
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
@@ -285,6 +291,21 @@ impl TypeEntryEnum {
         .into_iter()
         .flatten()
         .collect();
+    }
+}
+
+impl Variant {
+    pub(crate) fn new(
+        raw_name: String,
+        description: Option<String>,
+        details: VariantDetails,
+    ) -> Self {
+        Self {
+            raw_name,
+            ident_name: None,
+            description,
+            details,
+        }
     }
 }
 
@@ -741,12 +762,9 @@ impl TypeEntry {
                 let (match_variants, match_strs): (Vec<_>, Vec<_>) = variants
                     .iter()
                     .map(|variant| {
-                        let variant_name = format_ident!("{}", variant.name);
-                        let variant_str = match &variant.rename {
-                            Some(s) => s,
-                            None => &variant.name,
-                        };
-                        (variant_name, variant_str)
+                        let ident_name = variant.ident_name.as_ref().unwrap();
+                        let variant_name = format_ident!("{}", ident_name);
+                        (variant_name, &variant.raw_name)
                     })
                     .unzip();
 
@@ -814,7 +832,7 @@ impl TypeEntry {
             .then(|| {
                 let variant_name = variants
                     .iter()
-                    .map(|variant| format_ident!("{}", variant.name));
+                    .map(|variant| format_ident!("{}", variant.ident_name.as_ref().unwrap()));
 
                 quote! {
                     impl ::std::str::FromStr for #type_name {
@@ -869,7 +887,7 @@ impl TypeEntry {
             .then(|| {
                 let variant_name = variants
                     .iter()
-                    .map(|variant| format_ident!("{}", variant.name));
+                    .map(|variant| format_ident!("{}", variant.ident_name.as_ref().unwrap()));
 
                 quote! {
                     impl ::std::fmt::Display for #type_name {
@@ -918,58 +936,59 @@ impl TypeEntry {
 
             // Generate a `From<VariantType>` impl block that converts the type
             // into the appropriate variant of the enum.
-            let variant_from =
-                ordered_variants
-                    .into_values()
-                    .map(|variant| match &variant.details {
-                        VariantDetails::Item(type_id) => {
-                            let variant_type = type_space.id_to_entry.get(type_id).unwrap();
+            let variant_from = ordered_variants.into_values().map(|variant| {
+                match &variant.details {
+                    VariantDetails::Item(type_id) => {
+                        let variant_type = type_space.id_to_entry.get(type_id).unwrap();
 
-                            // TODO Strings might conflict with the way we're
-                            // dealing with TryFrom<String> right now.
-                            (variant_type.details != TypeEntryDetails::String).then(|| {
-                                let variant_type_ident = variant_type.type_ident(type_space, &None);
-                                let variant_name = format_ident!("{}", variant.name);
-                                quote! {
-                                    impl ::std::convert::From<#variant_type_ident> for #type_name {
-                                        fn from(value: #variant_type_ident)
-                                            -> Self
-                                        {
-                                            Self::#variant_name(value)
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                        VariantDetails::Tuple(type_ids) => {
-                            let variant_type_idents = type_ids.iter().map(|type_id| {
-                                type_space
-                                    .id_to_entry
-                                    .get(type_id)
-                                    .unwrap()
-                                    .type_ident(type_space, &None)
-                            });
-                            let variant_type_ident = if type_ids.len() != 1 {
-                                quote! { ( #(#variant_type_idents),* ) }
-                            } else {
-                                // A single-item tuple requires a trailing
-                                // comma.
-                                quote! { ( #(#variant_type_idents,)* ) }
-                            };
-                            let variant_name = format_ident!("{}", variant.name);
-                            let ii = (0..type_ids.len()).map(syn::Index::from);
-                            Some(quote! {
+                        // TODO Strings might conflict with the way we're
+                        // dealing with TryFrom<String> right now.
+                        (variant_type.details != TypeEntryDetails::String).then(|| {
+                            let variant_type_ident = variant_type.type_ident(type_space, &None);
+                            let variant_name =
+                                format_ident!("{}", variant.ident_name.as_ref().unwrap());
+                            quote! {
                                 impl ::std::convert::From<#variant_type_ident> for #type_name {
-                                    fn from(value: #variant_type_ident) -> Self {
-                                        Self::#variant_name(
-                                            #( value.#ii, )*
-                                        )
+                                    fn from(value: #variant_type_ident)
+                                        -> Self
+                                    {
+                                        Self::#variant_name(value)
                                     }
                                 }
-                            })
-                        }
-                        _ => None,
-                    });
+                            }
+                        })
+                    }
+                    VariantDetails::Tuple(type_ids) => {
+                        let variant_type_idents = type_ids.iter().map(|type_id| {
+                            type_space
+                                .id_to_entry
+                                .get(type_id)
+                                .unwrap()
+                                .type_ident(type_space, &None)
+                        });
+                        let variant_type_ident = if type_ids.len() != 1 {
+                            quote! { ( #(#variant_type_idents),* ) }
+                        } else {
+                            // A single-item tuple requires a trailing
+                            // comma.
+                            quote! { ( #(#variant_type_idents,)* ) }
+                        };
+                        let variant_name =
+                            format_ident!("{}", variant.ident_name.as_ref().unwrap());
+                        let ii = (0..type_ids.len()).map(syn::Index::from);
+                        Some(quote! {
+                            impl ::std::convert::From<#variant_type_ident> for #type_name {
+                                fn from(value: #variant_type_ident) -> Self {
+                                    Self::#variant_name(
+                                        #( value.#ii, )*
+                                    )
+                                }
+                            }
+                        })
+                    }
+                    _ => None,
+                }
+            });
 
             quote! {
                 #( #variant_from )*

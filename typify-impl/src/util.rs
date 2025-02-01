@@ -850,11 +850,13 @@ impl StringValidator {
 
 #[cfg(test)]
 mod tests {
+    use heck::ToPascalCase;
     use schemars::{
         gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
         schema_for, JsonSchema,
     };
+    use unicode_ident::is_xid_continue;
 
     use crate::{
         util::{sanitize, schemas_mutually_exclusive, Case},
@@ -1025,5 +1027,24 @@ mod tests {
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));
         assert!(!ach.is_valid("Abednego"));
+    }
+
+    #[test]
+    fn test_recase_dots() {
+        let x = sanitize("2.5G", Case::Pascal);
+        println!("{:#?}", x);
+        let x = sanitize("25G", Case::Pascal);
+        println!("{:#?}", x);
+        let x = sanitize("2,5,g", Case::Pascal);
+        println!("{:#?}", x);
+
+        println!();
+        println!(
+            "{}",
+            "2.5G"
+                .replace(|c| !is_xid_continue(c), "x")
+                .to_pascal_case()
+        );
+        panic!();
     }
 }
