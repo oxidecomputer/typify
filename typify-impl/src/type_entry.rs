@@ -1,18 +1,19 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, Schema};
 use syn::Path;
+use unicode_ident::is_xid_continue;
 
 use crate::{
     enums::output_variant,
     output::{OutputSpace, OutputSpaceMod},
     sanitize,
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description, type_patch},
+    util::{get_type_name, metadata_description, type_patch, unique},
     Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
@@ -222,6 +223,14 @@ pub(crate) enum DefaultKind {
     Generic(DefaultImpl),
 }
 
+fn variants_unique(variants: &[Variant]) -> bool {
+    unique(
+        variants
+            .iter()
+            .map(|variant| variant.ident_name.as_ref().unwrap()),
+    )
+}
+
 impl TypeEntryEnum {
     pub(crate) fn from_metadata(
         type_space: &TypeSpace,
@@ -232,10 +241,45 @@ impl TypeEntryEnum {
         deny_unknown_fields: bool,
         schema: Schema,
     ) -> TypeEntry {
-        variants.iter_mut().for_each(|x| {
-            let xxx = sanitize(&x.raw_name, Case::Pascal);
-            x.ident_name = Some(xxx);
+        // Let's find some decent names for variants. We first try the simple
+        // sanitization.
+        variants.iter_mut().for_each(|variant| {
+            let ident_name = sanitize(&variant.raw_name, Case::Pascal);
+            variant.ident_name = Some(ident_name);
         });
+
+        // If variants aren't unique, we're turn the elided characters into
+        // 'x's.
+        if !variants_unique(&variants) {
+            variants.iter_mut().for_each(|variant| {
+                let ident_name = sanitize(
+                    &variant
+                        .raw_name
+                        .replace(|c| c == '_' || !is_xid_continue(c), "X"),
+                    Case::Pascal,
+                );
+                variant.ident_name = Some(ident_name);
+            });
+        }
+
+        // If variants still aren't unique, we fail: we'd rather not emit code
+        // that can't compile
+        if !variants_unique(&variants) {
+            let mut counts = HashMap::new();
+            variants.iter().for_each(|variant| {
+                counts
+                    .entry(variant.ident_name.as_ref().unwrap())
+                    .and_modify(|xxx| *xxx += 1)
+                    .or_insert(0);
+            });
+            let dups = variants
+                .iter()
+                .filter(|variant| *counts.get(variant.ident_name.as_ref().unwrap()).unwrap() > 0)
+                .map(|variant| variant.raw_name.as_str())
+                .collect::<Vec<_>>()
+                .join(",");
+            panic!("Failed to make unique variant names for [{}]", dups);
+        }
 
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;

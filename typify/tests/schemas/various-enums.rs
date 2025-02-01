@@ -1317,9 +1317,9 @@ impl ::std::fmt::Display for StringVersion {
 #[doc = r" ```json"]
 #[doc = "{"]
 #[doc = "  \"enum\": ["]
-#[doc = "    \"2.5G\","]
-#[doc = "    \"25G\","]
-#[doc = "    \"2,5,G\""]
+#[doc = "    \"2.5GBASE-T\","]
+#[doc = "    \"25GBASE-T\","]
+#[doc = "    \"2,5,GBASE,T\""]
 #[doc = "  ]"]
 #[doc = "}"]
 #[doc = r" ```"]
@@ -1337,12 +1337,12 @@ impl ::std::fmt::Display for StringVersion {
     PartialOrd,
 )]
 pub enum VariantsDifferByPunct {
-    #[serde(rename = "2.5G")]
-    _25g,
-    #[serde(rename = "25G")]
-    _25g,
-    #[serde(rename = "2,5,G")]
-    _25G,
+    #[serde(rename = "2.5GBASE-T")]
+    X2x5gbasext,
+    #[serde(rename = "25GBASE-T")]
+    X25gbasext,
+    #[serde(rename = "2,5,GBASE,T")]
+    X2x5xgbasext,
 }
 impl ::std::convert::From<&Self> for VariantsDifferByPunct {
     fn from(value: &VariantsDifferByPunct) -> Self {
@@ -1352,9 +1352,9 @@ impl ::std::convert::From<&Self> for VariantsDifferByPunct {
 impl ::std::fmt::Display for VariantsDifferByPunct {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::_25g => write!(f, "2.5G"),
-            Self::_25g => write!(f, "25G"),
-            Self::_25G => write!(f, "2,5,G"),
+            Self::X2x5gbasext => write!(f, "2.5GBASE-T"),
+            Self::X25gbasext => write!(f, "25GBASE-T"),
+            Self::X2x5xgbasext => write!(f, "2,5,GBASE,T"),
         }
     }
 }
@@ -1362,9 +1362,9 @@ impl ::std::str::FromStr for VariantsDifferByPunct {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
-            "2.5G" => Ok(Self::_25g),
-            "25G" => Ok(Self::_25g),
-            "2,5,G" => Ok(Self::_25G),
+            "2.5GBASE-T" => Ok(Self::X2x5gbasext),
+            "25GBASE-T" => Ok(Self::X25gbasext),
+            "2,5,GBASE,T" => Ok(Self::X2x5xgbasext),
             _ => Err("invalid value".into()),
         }
     }

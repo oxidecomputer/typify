@@ -281,9 +281,9 @@
     },
     "variants-differ-by-punct": {
       "enum": [
-        "2.5G",
-        "25G",
-        "2,5,g"
+        "2.5GBASE-T",
+        "25GBASE-T",
+        "2,5,GBASE,T"
       ]
     }
   }

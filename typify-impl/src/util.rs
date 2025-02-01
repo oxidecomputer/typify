@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::collections::{BTreeSet, HashSet};
 
@@ -752,10 +752,12 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
         _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
     };
 
+    let prefix = to_case("x");
+
     let out = match out.chars().next() {
-        None => to_case("x"),
+        None => prefix,
         Some(c) if is_xid_start(c) => out,
-        Some(_) => format!("_{}", out),
+        Some(_) => format!("{}{}", prefix, out),
     };
 
     // Make sure the string is a valid Rust identifier.
@@ -774,6 +776,15 @@ pub(crate) fn recase(input: &str, case: Case) -> (String, Option<String>) {
         Some(input.to_string())
     };
     (new, rename)
+}
+
+pub(crate) fn unique<I, T>(items: I) -> bool
+where
+    I: IntoIterator<Item = T>,
+    T: Eq + std::hash::Hash,
+{
+    let mut unique = HashSet::new();
+    items.into_iter().all(|item| unique.insert(item))
 }
 
 pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) -> Option<String> {
@@ -850,13 +861,11 @@ impl StringValidator {
 
 #[cfg(test)]
 mod tests {
-    use heck::ToPascalCase;
     use schemars::{
         gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
         schema_for, JsonSchema,
     };
-    use unicode_ident::is_xid_continue;
 
     use crate::{
         util::{sanitize, schemas_mutually_exclusive, Case},
@@ -1027,24 +1036,5 @@ mod tests {
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));
         assert!(!ach.is_valid("Abednego"));
-    }
-
-    #[test]
-    fn test_recase_dots() {
-        let x = sanitize("2.5G", Case::Pascal);
-        println!("{:#?}", x);
-        let x = sanitize("25G", Case::Pascal);
-        println!("{:#?}", x);
-        let x = sanitize("2,5,g", Case::Pascal);
-        println!("{:#?}", x);
-
-        println!();
-        println!(
-            "{}",
-            "2.5G"
-                .replace(|c| !is_xid_continue(c), "x")
-                .to_pascal_case()
-        );
-        panic!();
     }
 }
