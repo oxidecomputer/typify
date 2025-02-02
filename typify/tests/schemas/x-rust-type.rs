@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "AllTheThings"]
+#[doc = "`AllTheThings`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -68,7 +68,7 @@ impl AllTheThings {
         Default::default()
     }
 }
-#[doc = "Marker"]
+#[doc = "`Marker`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

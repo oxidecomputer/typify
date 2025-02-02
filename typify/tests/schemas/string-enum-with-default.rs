@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "TestEnum"]
+#[doc = "`TestEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

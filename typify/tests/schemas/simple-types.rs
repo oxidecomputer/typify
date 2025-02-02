@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "AnythingWorks"]
+#[doc = "`AnythingWorks`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -52,7 +52,7 @@ impl AnythingWorks {
         Default::default()
     }
 }
-#[doc = "FloatsArentTerribleImTold"]
+#[doc = "`FloatsArentTerribleImTold`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -90,7 +90,7 @@ impl FloatsArentTerribleImTold {
         Default::default()
     }
 }
-#[doc = "JustOne"]
+#[doc = "`JustOne`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

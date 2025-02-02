@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "Box"]
+#[doc = "`Box`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -57,7 +57,7 @@ impl Box {
         Default::default()
     }
 }
-#[doc = "Copy"]
+#[doc = "`Copy`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -89,7 +89,7 @@ impl Copy {
         Default::default()
     }
 }
-#[doc = "DoubleOptionCollision"]
+#[doc = "`DoubleOptionCollision`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -137,7 +137,7 @@ impl DoubleOptionCollision {
         Default::default()
     }
 }
-#[doc = "DoubleOptionCollisionOption"]
+#[doc = "`DoubleOptionCollisionOption`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -177,7 +177,7 @@ impl DoubleOptionCollisionOption {
         Default::default()
     }
 }
-#[doc = "Drop"]
+#[doc = "`Drop`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -209,7 +209,7 @@ impl Drop {
         Default::default()
     }
 }
-#[doc = "FlattenedKeywords"]
+#[doc = "`FlattenedKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -246,7 +246,7 @@ impl FlattenedKeywords {
         Default::default()
     }
 }
-#[doc = "KeywordFieldsEnum"]
+#[doc = "`KeywordFieldsEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -314,7 +314,7 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum
         Self::Variant1(value)
     }
 }
-#[doc = "MapOfKeywords"]
+#[doc = "`MapOfKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -366,7 +366,7 @@ impl MapOfKeywords {
         Default::default()
     }
 }
-#[doc = "MapOfKeywordsKeywordMapValue"]
+#[doc = "`MapOfKeywordsKeywordMapValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -503,7 +503,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapV
         value.parse()
     }
 }
-#[doc = "NestedTypeCollisions"]
+#[doc = "`NestedTypeCollisions`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -557,7 +557,7 @@ impl NestedTypeCollisions {
         Default::default()
     }
 }
-#[doc = "NestedTypeCollisionsOptionType"]
+#[doc = "`NestedTypeCollisionsOptionType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -598,7 +598,7 @@ impl NestedTypeCollisionsOptionType {
         Default::default()
     }
 }
-#[doc = "Option"]
+#[doc = "`Option`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -630,7 +630,7 @@ impl Option {
         Default::default()
     }
 }
-#[doc = "Pin"]
+#[doc = "`Pin`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -662,7 +662,7 @@ impl Pin {
         Default::default()
     }
 }
-#[doc = "RustKeywordMonster"]
+#[doc = "`RustKeywordMonster`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -989,7 +989,7 @@ impl RustKeywordMonster {
         Default::default()
     }
 }
-#[doc = "Send"]
+#[doc = "`Send`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1021,7 +1021,7 @@ impl Send {
         Default::default()
     }
 }
-#[doc = "Std"]
+#[doc = "`Std`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1139,7 +1139,7 @@ impl Std {
         Default::default()
     }
 }
-#[doc = "StdBoxed"]
+#[doc = "`StdBoxed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1171,7 +1171,7 @@ impl StdBoxed {
         Default::default()
     }
 }
-#[doc = "StdConvert"]
+#[doc = "`StdConvert`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1203,7 +1203,7 @@ impl StdConvert {
         Default::default()
     }
 }
-#[doc = "StdFmt"]
+#[doc = "`StdFmt`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1235,7 +1235,7 @@ impl StdFmt {
         Default::default()
     }
 }
-#[doc = "StdOption"]
+#[doc = "`StdOption`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1267,7 +1267,7 @@ impl StdOption {
         Default::default()
     }
 }
-#[doc = "StdResult"]
+#[doc = "`StdResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1299,7 +1299,7 @@ impl StdResult {
         Default::default()
     }
 }
-#[doc = "StdStr"]
+#[doc = "`StdStr`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1331,7 +1331,7 @@ impl StdStr {
         Default::default()
     }
 }
-#[doc = "StdString"]
+#[doc = "`StdString`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1363,7 +1363,7 @@ impl StdString {
         Default::default()
     }
 }
-#[doc = "String"]
+#[doc = "`String`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1395,7 +1395,7 @@ impl String {
         Default::default()
     }
 }
-#[doc = "StringEnum"]
+#[doc = "`StringEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1477,7 +1477,7 @@ impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
         value.parse()
     }
 }
-#[doc = "StringNewtype"]
+#[doc = "`StringNewtype`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1554,7 +1554,7 @@ impl<'de> ::serde::Deserialize<'de> for StringNewtype {
             })
     }
 }
-#[doc = "Sync"]
+#[doc = "`Sync`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1586,7 +1586,7 @@ impl Sync {
         Default::default()
     }
 }
-#[doc = "TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords"]
+#[doc = "`TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1605,7 +1605,7 @@ impl :: std :: ops :: Deref for TestSchemaWithVariousDefinitionsTypeNamesAndProp
 impl :: std :: convert :: From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
 impl :: std :: convert :: From < & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . clone () } }
 impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
-#[doc = "TypeWithOptionField"]
+#[doc = "`TypeWithOptionField`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1645,7 +1645,7 @@ impl TypeWithOptionField {
         Default::default()
     }
 }
-#[doc = "Vec"]
+#[doc = "`Vec`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

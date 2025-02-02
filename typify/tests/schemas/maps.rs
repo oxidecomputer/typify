@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "DeadSimple"]
+#[doc = "`DeadSimple`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -65,7 +65,7 @@ impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json:
         Self(value)
     }
 }
-#[doc = "Eh"]
+#[doc = "`Eh`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -121,7 +121,7 @@ impl ::std::fmt::Display for Eh {
         self.0.fmt(f)
     }
 }
-#[doc = "MapWithDateKeys"]
+#[doc = "`MapWithDateKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -166,7 +166,7 @@ impl ::std::convert::From<::std::collections::HashMap<chrono::naive::NaiveDate, 
         Self(value)
     }
 }
-#[doc = "MapWithDateTimeKeys"]
+#[doc = "`MapWithDateTimeKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -215,7 +215,7 @@ impl ::std::convert::From<::std::collections::HashMap<chrono::DateTime<chrono::o
         Self(value)
     }
 }
-#[doc = "MapWithKeys"]
+#[doc = "`MapWithKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -255,7 +255,7 @@ impl ::std::convert::From<::std::collections::HashMap<Eh, Value>> for MapWithKey
         Self(value)
     }
 }
-#[doc = "Value"]
+#[doc = "`Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

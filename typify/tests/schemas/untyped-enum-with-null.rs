@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "TestType"]
+#[doc = "`TestType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -64,7 +64,7 @@ impl TestType {
         Default::default()
     }
 }
-#[doc = "TestTypeValue"]
+#[doc = "`TestTypeValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "BarProp"]
+#[doc = "`BarProp`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -61,7 +61,7 @@ impl BarProp {
         Default::default()
     }
 }
-#[doc = "ButNotThat"]
+#[doc = "`ButNotThat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -149,7 +149,7 @@ impl CommentedTypeMerged {
         Default::default()
     }
 }
-#[doc = "HereAndThere"]
+#[doc = "`HereAndThere`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -207,7 +207,7 @@ impl ::std::convert::From<&Self> for HereAndThere {
         value.clone()
     }
 }
-#[doc = "JsonResponseBase"]
+#[doc = "`JsonResponseBase`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -244,7 +244,7 @@ impl JsonResponseBase {
         Default::default()
     }
 }
-#[doc = "JsonSuccess"]
+#[doc = "`JsonSuccess`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -327,7 +327,7 @@ impl JsonSuccessBase {
         Default::default()
     }
 }
-#[doc = "JsonSuccessBaseResult"]
+#[doc = "`JsonSuccessBaseResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -399,7 +399,7 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
         value.parse()
     }
 }
-#[doc = "JsonSuccessResult"]
+#[doc = "`JsonSuccessResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -471,7 +471,7 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
         value.parse()
     }
 }
-#[doc = "MergeEmpty"]
+#[doc = "`MergeEmpty`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -531,7 +531,7 @@ impl MergeEmpty {
         Default::default()
     }
 }
-#[doc = "NarrowNumber"]
+#[doc = "`NarrowNumber`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -601,7 +601,7 @@ impl ::std::fmt::Display for NarrowNumber {
         self.0.fmt(f)
     }
 }
-#[doc = "OrderDependentMerge"]
+#[doc = "`OrderDependentMerge`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -641,7 +641,7 @@ impl OrderDependentMerge {
         Default::default()
     }
 }
-#[doc = "Pickingone"]
+#[doc = "`Pickingone`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -681,7 +681,7 @@ impl Pickingone {
         Default::default()
     }
 }
-#[doc = "PickingoneInstallation"]
+#[doc = "`PickingoneInstallation`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -725,7 +725,7 @@ impl PickingoneInstallation {
         Default::default()
     }
 }
-#[doc = "PickingoneSuspendedBy"]
+#[doc = "`PickingoneSuspendedBy`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -777,7 +777,7 @@ impl PickingoneSuspendedBy {
         Default::default()
     }
 }
-#[doc = "PickingoneUser"]
+#[doc = "`PickingoneUser`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -817,7 +817,7 @@ impl PickingoneUser {
         Default::default()
     }
 }
-#[doc = "TrimFat"]
+#[doc = "`TrimFat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -863,7 +863,7 @@ impl TrimFat {
         Default::default()
     }
 }
-#[doc = "Unresolvable"]
+#[doc = "`Unresolvable`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -931,7 +931,7 @@ impl ::std::convert::From<&Self> for Unresolvable {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable1"]
+#[doc = "`Unsatisfiable1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -973,7 +973,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable1 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable2"]
+#[doc = "`Unsatisfiable2`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1031,7 +1031,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable2 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable3"]
+#[doc = "`Unsatisfiable3`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1076,7 +1076,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable3A"]
+#[doc = "`Unsatisfiable3A`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1117,7 +1117,7 @@ impl Unsatisfiable3A {
         Default::default()
     }
 }
-#[doc = "Unsatisfiable3B"]
+#[doc = "`Unsatisfiable3B`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1189,7 +1189,7 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
         value.parse()
     }
 }
-#[doc = "Unsatisfiable3C"]
+#[doc = "`Unsatisfiable3C`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1261,7 +1261,7 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
         value.parse()
     }
 }
-#[doc = "WeirdEnum"]
+#[doc = "`WeirdEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
