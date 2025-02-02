@@ -483,7 +483,7 @@ impl TypeSpaceSettings {
     ///                    instance_type: Some(InstanceType::Number.into()),
     ///                    ..Default::default()
     ///                },
-    ///                "rust_decimal::Decimal",
+    ///                "::rust_decimal::Decimal",
     ///                [TypeSpaceImpl::Display].into_iter(),
     ///            ),
     ///    );
