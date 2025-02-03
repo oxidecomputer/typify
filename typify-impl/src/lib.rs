@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 //! typify backend implementation.
 
@@ -1158,7 +1158,7 @@ impl<'a> TypeEnum<'a> {
                 ),
             };
             TypeEnumVariantInfo {
-                name: variant.name.as_str(),
+                name: variant.ident_name.as_ref().unwrap(),
                 description: variant.description.as_deref(),
                 details,
             }
@@ -1345,7 +1345,7 @@ mod tests {
                 }
                 let var_names = variants
                     .iter()
-                    .map(|variant| variant.name.clone())
+                    .map(|variant| variant.ident_name.as_ref().unwrap().clone())
                     .collect::<HashSet<_>>();
                 assert_eq!(
                     var_names,
@@ -1391,7 +1391,7 @@ mod tests {
                 let variants = variants
                     .iter()
                     .map(|v| match v.details {
-                        VariantDetails::Simple => v.name.clone(),
+                        VariantDetails::Simple => v.ident_name.as_ref().unwrap().clone(),
                         _ => panic!("unexpected variant type"),
                     })
                     .collect::<HashSet<_>>();

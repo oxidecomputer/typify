@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::collections::BTreeSet;
 
@@ -7,7 +7,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, recase, ref_key, Case, StringValidator};
+use crate::util::{all_mutually_exclusive, ref_key, StringValidator};
 use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -918,14 +918,12 @@ impl TypeSpace {
                     has_null = true;
                     None
                 }
-                serde_json::Value::String(value) if validator.is_valid(value) => {
-                    let (name, rename) = recase(value, Case::Pascal);
-                    Some(Ok(Variant {
-                        name,
-                        rename,
-                        description: None,
-                        details: VariantDetails::Simple,
-                    }))
+                serde_json::Value::String(variant_name) if validator.is_valid(variant_name) => {
+                    Some(Ok(Variant::new(
+                        variant_name.clone(),
+                        None,
+                        VariantDetails::Simple,
+                    )))
                 }
 
                 // Ignore enum variants whose strings don't match the given

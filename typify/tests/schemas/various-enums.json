@@ -278,6 +278,13 @@
           "description": "a pirate's favorite letter"
         }
       ]
+    },
+    "variants-differ-by-punct": {
+      "enum": [
+        "2.5GBASE-T",
+        "25GBASE-T",
+        "2,5,GBASE,T"
+      ]
     }
   }
 }

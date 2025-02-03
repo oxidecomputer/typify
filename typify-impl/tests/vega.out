@@ -849,7 +849,7 @@ pub enum AggregateTransformOpsVariant0ItemVariant0 {
     #[serde(rename = "count")]
     Count,
     #[serde(rename = "__count__")]
-    Count,
+    XXcountXx,
     #[serde(rename = "missing")]
     Missing,
     #[serde(rename = "valid")]
@@ -903,7 +903,7 @@ impl ::std::fmt::Display for AggregateTransformOpsVariant0ItemVariant0 {
         match *self {
             Self::Values => write!(f, "values"),
             Self::Count => write!(f, "count"),
-            Self::Count => write!(f, "__count__"),
+            Self::XXcountXx => write!(f, "__count__"),
             Self::Missing => write!(f, "missing"),
             Self::Valid => write!(f, "valid"),
             Self::Sum => write!(f, "sum"),
@@ -934,7 +934,7 @@ impl ::std::str::FromStr for AggregateTransformOpsVariant0ItemVariant0 {
         match value {
             "values" => Ok(Self::Values),
             "count" => Ok(Self::Count),
-            "__count__" => Ok(Self::Count),
+            "__count__" => Ok(Self::XXcountXx),
             "missing" => Ok(Self::Missing),
             "valid" => Ok(Self::Valid),
             "sum" => Ok(Self::Sum),
@@ -41659,7 +41659,7 @@ pub enum JoinaggregateTransformOpsVariant0ItemVariant0 {
     #[serde(rename = "count")]
     Count,
     #[serde(rename = "__count__")]
-    Count,
+    XXcountXx,
     #[serde(rename = "missing")]
     Missing,
     #[serde(rename = "valid")]
@@ -41713,7 +41713,7 @@ impl ::std::fmt::Display for JoinaggregateTransformOpsVariant0ItemVariant0 {
         match *self {
             Self::Values => write!(f, "values"),
             Self::Count => write!(f, "count"),
-            Self::Count => write!(f, "__count__"),
+            Self::XXcountXx => write!(f, "__count__"),
             Self::Missing => write!(f, "missing"),
             Self::Valid => write!(f, "valid"),
             Self::Sum => write!(f, "sum"),
@@ -41744,7 +41744,7 @@ impl ::std::str::FromStr for JoinaggregateTransformOpsVariant0ItemVariant0 {
         match value {
             "values" => Ok(Self::Values),
             "count" => Ok(Self::Count),
-            "__count__" => Ok(Self::Count),
+            "__count__" => Ok(Self::XXcountXx),
             "missing" => Ok(Self::Missing),
             "valid" => Ok(Self::Valid),
             "sum" => Ok(Self::Sum),
@@ -80803,7 +80803,7 @@ pub enum PivotTransformOpVariant0 {
     #[serde(rename = "count")]
     Count,
     #[serde(rename = "__count__")]
-    Count,
+    XXcountXx,
     #[serde(rename = "missing")]
     Missing,
     #[serde(rename = "valid")]
@@ -80857,7 +80857,7 @@ impl ::std::fmt::Display for PivotTransformOpVariant0 {
         match *self {
             Self::Values => write!(f, "values"),
             Self::Count => write!(f, "count"),
-            Self::Count => write!(f, "__count__"),
+            Self::XXcountXx => write!(f, "__count__"),
             Self::Missing => write!(f, "missing"),
             Self::Valid => write!(f, "valid"),
             Self::Sum => write!(f, "sum"),
@@ -80888,7 +80888,7 @@ impl ::std::str::FromStr for PivotTransformOpVariant0 {
         match value {
             "values" => Ok(Self::Values),
             "count" => Ok(Self::Count),
-            "__count__" => Ok(Self::Count),
+            "__count__" => Ok(Self::XXcountXx),
             "missing" => Ok(Self::Missing),
             "valid" => Ok(Self::Valid),
             "sum" => Ok(Self::Sum),
@@ -112827,15 +112827,15 @@ impl ::std::convert::From<SignalRef> for WindowTransformOpsVariant0Item {
 )]
 pub enum WindowTransformOpsVariant0ItemVariant0 {
     #[serde(rename = "row_number")]
-    RowNumber,
+    RowXnumber,
     #[serde(rename = "rank")]
     Rank,
     #[serde(rename = "dense_rank")]
-    DenseRank,
+    DenseXrank,
     #[serde(rename = "percent_rank")]
-    PercentRank,
+    PercentXrank,
     #[serde(rename = "cume_dist")]
-    CumeDist,
+    CumeXdist,
     #[serde(rename = "ntile")]
     Ntile,
     #[serde(rename = "lag")]
@@ -112843,21 +112843,21 @@ pub enum WindowTransformOpsVariant0ItemVariant0 {
     #[serde(rename = "lead")]
     Lead,
     #[serde(rename = "first_value")]
-    FirstValue,
+    FirstXvalue,
     #[serde(rename = "last_value")]
-    LastValue,
+    LastXvalue,
     #[serde(rename = "nth_value")]
-    NthValue,
+    NthXvalue,
     #[serde(rename = "prev_value")]
-    PrevValue,
+    PrevXvalue,
     #[serde(rename = "next_value")]
-    NextValue,
+    NextXvalue,
     #[serde(rename = "values")]
     Values,
     #[serde(rename = "count")]
     Count,
     #[serde(rename = "__count__")]
-    Count,
+    XXcountXx,
     #[serde(rename = "missing")]
     Missing,
     #[serde(rename = "valid")]
@@ -112909,22 +112909,22 @@ impl ::std::convert::From<&Self> for WindowTransformOpsVariant0ItemVariant0 {
 impl ::std::fmt::Display for WindowTransformOpsVariant0ItemVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::RowNumber => write!(f, "row_number"),
+            Self::RowXnumber => write!(f, "row_number"),
             Self::Rank => write!(f, "rank"),
-            Self::DenseRank => write!(f, "dense_rank"),
-            Self::PercentRank => write!(f, "percent_rank"),
-            Self::CumeDist => write!(f, "cume_dist"),
+            Self::DenseXrank => write!(f, "dense_rank"),
+            Self::PercentXrank => write!(f, "percent_rank"),
+            Self::CumeXdist => write!(f, "cume_dist"),
             Self::Ntile => write!(f, "ntile"),
             Self::Lag => write!(f, "lag"),
             Self::Lead => write!(f, "lead"),
-            Self::FirstValue => write!(f, "first_value"),
-            Self::LastValue => write!(f, "last_value"),
-            Self::NthValue => write!(f, "nth_value"),
-            Self::PrevValue => write!(f, "prev_value"),
-            Self::NextValue => write!(f, "next_value"),
+            Self::FirstXvalue => write!(f, "first_value"),
+            Self::LastXvalue => write!(f, "last_value"),
+            Self::NthXvalue => write!(f, "nth_value"),
+            Self::PrevXvalue => write!(f, "prev_value"),
+            Self::NextXvalue => write!(f, "next_value"),
             Self::Values => write!(f, "values"),
             Self::Count => write!(f, "count"),
-            Self::Count => write!(f, "__count__"),
+            Self::XXcountXx => write!(f, "__count__"),
             Self::Missing => write!(f, "missing"),
             Self::Valid => write!(f, "valid"),
             Self::Sum => write!(f, "sum"),
@@ -112953,22 +112953,22 @@ impl ::std::str::FromStr for WindowTransformOpsVariant0ItemVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
-            "row_number" => Ok(Self::RowNumber),
+            "row_number" => Ok(Self::RowXnumber),
             "rank" => Ok(Self::Rank),
-            "dense_rank" => Ok(Self::DenseRank),
-            "percent_rank" => Ok(Self::PercentRank),
-            "cume_dist" => Ok(Self::CumeDist),
+            "dense_rank" => Ok(Self::DenseXrank),
+            "percent_rank" => Ok(Self::PercentXrank),
+            "cume_dist" => Ok(Self::CumeXdist),
             "ntile" => Ok(Self::Ntile),
             "lag" => Ok(Self::Lag),
             "lead" => Ok(Self::Lead),
-            "first_value" => Ok(Self::FirstValue),
-            "last_value" => Ok(Self::LastValue),
-            "nth_value" => Ok(Self::NthValue),
-            "prev_value" => Ok(Self::PrevValue),
-            "next_value" => Ok(Self::NextValue),
+            "first_value" => Ok(Self::FirstXvalue),
+            "last_value" => Ok(Self::LastXvalue),
+            "nth_value" => Ok(Self::NthXvalue),
+            "prev_value" => Ok(Self::PrevXvalue),
+            "next_value" => Ok(Self::NextXvalue),
             "values" => Ok(Self::Values),
             "count" => Ok(Self::Count),
-            "__count__" => Ok(Self::Count),
+            "__count__" => Ok(Self::XXcountXx),
             "missing" => Ok(Self::Missing),
             "valid" => Ok(Self::Valid),
             "sum" => Ok(Self::Sum),
