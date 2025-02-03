@@ -1310,7 +1310,7 @@ impl ::std::fmt::Display for StringVersion {
         self.0.fmt(f)
     }
 }
-#[doc = "VariantsDifferByPunct"]
+#[doc = "`VariantsDifferByPunct`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
