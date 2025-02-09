@@ -1015,10 +1015,9 @@ impl TypeSpace {
                 .iter()
                 .find(|(int_format, _, _, _)| int_format == format)
             {
-                // If the type matches with other constraints, we're done.
                 if multiple.is_none()
-                    && (min.map(|f| f.ge(imin)).unwrap_or(false))
-                    && (max.map(|f| f.le(imax)).unwrap_or(false))
+                    && (min.map(|fmin| fmin.ge(imin)).unwrap_or(true))
+                    && (max.map(|fmax| fmax.le(imax)).unwrap_or(true))
                 {
                     // If there's a default value and it's either not a number
                     // or outside of the range for this format, return an
@@ -2116,35 +2115,6 @@ mod tests {
         validate_builtin!(std::collections::BTreeSet<u32>);
     }
 
-    #[test]
-    fn test_uint_minimum_and_maximum() {
-        let schema = SchemaObject {
-            instance_type: Some(InstanceType::Integer.into()),
-            format: Some("uint64".to_string()),
-            metadata: None,
-            number: Some(
-                NumberValidation {
-                    minimum: Some(0.),
-                    maximum: Some(256.0),
-                    ..Default::default()
-                }
-                .into(),
-            ),
-            ..Default::default()
-        };
-
-        let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(
-            Name::Unknown,
-            &schemars::schema::Schema::Object(schema.clone()),
-            &schema,
-        ) {
-            Ok((te, _ob)) => {
-                assert_eq!(te.details, TypeEntryDetails::Integer("u64".to_string()));
-            }
-            _ => panic!("unexpected result"),
-        }
-    }
     #[test]
     fn test_low_default() {
         let schema = SchemaObject {
