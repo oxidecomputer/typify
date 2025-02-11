@@ -18,6 +18,8 @@ use crate::util::get_type_name;
 
 use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
 
+pub const STD_NUM_NONZERO_PREFIX: &str = "std::num::NonZero";
+
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
         &mut self,

@@ -6,6 +6,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::{
+    convert::STD_NUM_NONZERO_PREFIX,
     type_entry::{
         DefaultKind, EnumTagType, StructProperty, StructPropertyRename, StructPropertyState,
         TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant,
@@ -336,7 +337,7 @@ impl TypeEntry {
             TypeEntryDetails::Boolean => Some("defaults::default_bool::<true>".to_string()),
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
-                    if name.starts_with("std::num::NonZero") {
+                    if name.starts_with(STD_NUM_NONZERO_PREFIX) {
                         Some(format!("defaults::default_nzu64::<{}, {}>", name, value))
                     } else {
                         Some(format!("defaults::default_u64::<{}, {}>", name, value))

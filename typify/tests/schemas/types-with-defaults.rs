@@ -72,6 +72,15 @@ impl Doodad {
 #[doc = "{"]
 #[doc = "  \"type\": \"object\","]
 #[doc = "  \"properties\": {"]
+#[doc = "    \"big_nullable\": {"]
+#[doc = "      \"default\": 1,"]
+#[doc = "      \"type\": ["]
+#[doc = "        \"integer\","]
+#[doc = "        \"null\""]
+#[doc = "      ],"]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
 #[doc = "    \"little_u16\": {"]
 #[doc = "      \"default\": 3,"]
 #[doc = "      \"type\": \"integer\","]
@@ -90,6 +99,8 @@ impl Doodad {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MrDefaultNumbers {
+    #[serde(default = "defaults::mr_default_numbers_big_nullable")]
+    pub big_nullable: ::std::option::Option<std::num::NonZeroU64>,
     #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU16, 3>")]
     pub little_u16: std::num::NonZeroU16,
     #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU8, 2>")]
@@ -103,6 +114,7 @@ impl ::std::convert::From<&MrDefaultNumbers> for MrDefaultNumbers {
 impl ::std::default::Default for MrDefaultNumbers {
     fn default() -> Self {
         Self {
+            big_nullable: defaults::mr_default_numbers_big_nullable(),
             little_u16: defaults::default_nzu64::<std::num::NonZeroU16, 3>(),
             little_u8: defaults::default_nzu64::<std::num::NonZeroU8, 2>(),
         }
@@ -315,18 +327,33 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct MrDefaultNumbers {
+        big_nullable: ::std::result::Result<
+            ::std::option::Option<std::num::NonZeroU64>,
+            ::std::string::String,
+        >,
         little_u16: ::std::result::Result<std::num::NonZeroU16, ::std::string::String>,
         little_u8: ::std::result::Result<std::num::NonZeroU8, ::std::string::String>,
     }
     impl ::std::default::Default for MrDefaultNumbers {
         fn default() -> Self {
             Self {
+                big_nullable: Ok(super::defaults::mr_default_numbers_big_nullable()),
                 little_u16: Ok(super::defaults::default_nzu64::<std::num::NonZeroU16, 3>()),
                 little_u8: Ok(super::defaults::default_nzu64::<std::num::NonZeroU8, 2>()),
             }
         }
     }
     impl MrDefaultNumbers {
+        pub fn big_nullable<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<std::num::NonZeroU64>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.big_nullable = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for big_nullable: {}", e));
+            self
+        }
         pub fn little_u16<T>(mut self, value: T) -> Self
         where
             T: ::std::convert::TryInto<std::num::NonZeroU16>,
@@ -354,6 +381,7 @@ pub mod builder {
             value: MrDefaultNumbers,
         ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
+                big_nullable: value.big_nullable?,
                 little_u16: value.little_u16?,
                 little_u8: value.little_u8?,
             })
@@ -362,6 +390,7 @@ pub mod builder {
     impl ::std::convert::From<super::MrDefaultNumbers> for MrDefaultNumbers {
         fn from(value: super::MrDefaultNumbers) -> Self {
             Self {
+                big_nullable: Ok(value.big_nullable),
                 little_u16: Ok(value.little_u16),
                 little_u8: Ok(value.little_u8),
             }
@@ -535,6 +564,9 @@ pub mod defaults {
     pub(super) fn doodad_when() -> chrono::DateTime<chrono::offset::Utc> {
         serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
             .unwrap()
+    }
+    pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<std::num::NonZeroU64> {
+        ::std::option::Option::Some(std::num::NonZeroU64::new(1).unwrap())
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
