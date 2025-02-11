@@ -56,7 +56,7 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrName {
-    Id(uuid::Uuid),
+    Id(::uuid::Uuid),
     Name(Name),
 }
 impl ::std::convert::From<&Self> for IdOrName {
@@ -106,8 +106,8 @@ impl ::std::fmt::Display for IdOrName {
         }
     }
 }
-impl ::std::convert::From<uuid::Uuid> for IdOrName {
-    fn from(value: uuid::Uuid) -> Self {
+impl ::std::convert::From<::uuid::Uuid> for IdOrName {
+    fn from(value: ::uuid::Uuid) -> Self {
         Self::Id(value)
     }
 }
@@ -139,7 +139,7 @@ impl ::std::convert::From<Name> for IdOrName {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
-    Variant0(uuid::Uuid),
+    Variant0(::uuid::Uuid),
     Variant1(Name),
 }
 impl ::std::convert::From<&Self> for IdOrNameRedundant {
@@ -189,8 +189,8 @@ impl ::std::fmt::Display for IdOrNameRedundant {
         }
     }
 }
-impl ::std::convert::From<uuid::Uuid> for IdOrNameRedundant {
-    fn from(value: uuid::Uuid) -> Self {
+impl ::std::convert::From<::uuid::Uuid> for IdOrNameRedundant {
+    fn from(value: ::uuid::Uuid) -> Self {
         Self::Variant0(value)
     }
 }
@@ -231,7 +231,7 @@ impl ::std::convert::From<Name> for IdOrNameRedundant {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrYolo {
-    Id(uuid::Uuid),
+    Id(::uuid::Uuid),
     Yolo(IdOrYoloYolo),
 }
 impl ::std::convert::From<&Self> for IdOrYolo {
@@ -281,8 +281,8 @@ impl ::std::fmt::Display for IdOrYolo {
         }
     }
 }
-impl ::std::convert::From<uuid::Uuid> for IdOrYolo {
-    fn from(value: uuid::Uuid) -> Self {
+impl ::std::convert::From<::uuid::Uuid> for IdOrYolo {
+    fn from(value: ::uuid::Uuid) -> Self {
         Self::Id(value)
     }
 }

@@ -674,7 +674,7 @@ impl ::std::convert::TryFrom<::std::string::String> for AlertInstanceState {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct App {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The list of events for the GitHub app"]
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
@@ -692,7 +692,7 @@ pub struct App {
     #[doc = "The slug name of the GitHub app"]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub slug: ::std::option::Option<::std::string::String>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
 }
 impl ::std::convert::From<&App> for App {
     fn from(value: &App) -> Self {
@@ -4265,7 +4265,7 @@ pub struct BranchProtectionRule {
     pub authorized_actor_names: ::std::vec::Vec<::std::string::String>,
     pub authorized_actors_only: bool,
     pub authorized_dismissal_actors_only: bool,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub dismiss_stale_reviews_on_push: bool,
     pub id: i64,
     pub ignore_approvals_from_contributors: bool,
@@ -4288,7 +4288,7 @@ pub struct BranchProtectionRule {
     pub signature_requirement_enforcement_level:
         BranchProtectionRuleSignatureRequirementEnforcementLevel,
     pub strict_required_status_checks_policy: bool,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
 }
 impl ::std::convert::From<&BranchProtectionRule> for BranchProtectionRule {
     fn from(value: &BranchProtectionRule) -> Self {
@@ -6439,7 +6439,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     pub app: App,
     pub before: ::std::option::Option<::std::string::String>,
     pub conclusion: ::std::option::Option<CheckRunCompletedCheckRunCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
     pub head_branch: ::std::option::Option<::std::string::String>,
@@ -6452,7 +6452,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunCompletedCheckRunCheckSuiteStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&CheckRunCompletedCheckRunCheckSuite>
@@ -7695,7 +7695,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     pub app: App,
     pub before: ::std::option::Option<::std::string::String>,
     pub conclusion: ::std::option::Option<CheckRunCreatedCheckRunCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
     pub head_branch: ::std::option::Option<::std::string::String>,
@@ -7708,7 +7708,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunCreatedCheckRunCheckSuiteStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&CheckRunCreatedCheckRunCheckSuite>
@@ -8266,7 +8266,7 @@ impl ::std::default::Default for CheckRunCreatedRequestedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunDeployment {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::option::Option<::std::string::String>,
     pub environment: ::std::string::String,
     pub id: i64,
@@ -8275,7 +8275,7 @@ pub struct CheckRunDeployment {
     pub repository_url: ::std::string::String,
     pub statuses_url: ::std::string::String,
     pub task: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&CheckRunDeployment> for CheckRunDeployment {
@@ -9269,7 +9269,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     pub app: App,
     pub before: ::std::option::Option<::std::string::String>,
     pub conclusion: ::std::option::Option<CheckRunRequestedActionCheckRunCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
     pub head_branch: ::std::option::Option<::std::string::String>,
@@ -9282,7 +9282,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunRequestedActionCheckRunCheckSuiteStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&CheckRunRequestedActionCheckRunCheckSuite>
@@ -10515,7 +10515,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     pub app: App,
     pub before: ::std::option::Option<::std::string::String>,
     pub conclusion: CheckRunRerequestedCheckRunCheckSuiteConclusion,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
     pub head_branch: ::std::option::Option<::std::string::String>,
@@ -10528,7 +10528,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunRerequestedCheckRunCheckSuiteStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&CheckRunRerequestedCheckRunCheckSuite>
@@ -11375,7 +11375,7 @@ pub struct CheckSuiteCompletedCheckSuite {
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
     pub conclusion: ::std::option::Option<CheckSuiteCompletedCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
@@ -11388,7 +11388,7 @@ pub struct CheckSuiteCompletedCheckSuite {
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
     pub status: ::std::option::Option<CheckSuiteCompletedCheckSuiteStatus>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
     pub url: ::std::string::String,
 }
@@ -12009,7 +12009,7 @@ pub struct CheckSuiteRequestedCheckSuite {
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
     pub conclusion: ::std::option::Option<CheckSuiteRequestedCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
@@ -12022,7 +12022,7 @@ pub struct CheckSuiteRequestedCheckSuite {
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
     pub status: ::std::option::Option<CheckSuiteRequestedCheckSuiteStatus>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
     pub url: ::std::string::String,
 }
@@ -12596,7 +12596,7 @@ pub struct CheckSuiteRerequestedCheckSuite {
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
     pub conclusion: ::std::option::Option<CheckSuiteRerequestedCheckSuiteConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
@@ -12609,7 +12609,7 @@ pub struct CheckSuiteRerequestedCheckSuite {
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
     pub status: ::std::option::Option<CheckSuiteRerequestedCheckSuiteStatus>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
     pub url: ::std::string::String,
 }
@@ -13247,9 +13247,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertAppeare
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertAppearedInBranchAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
-    pub dismissed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub dismissed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub dismissed_by: ::std::option::Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
     pub dismissed_reason:
@@ -14120,9 +14120,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertClosedB
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
-    pub dismissed_at: chrono::DateTime<chrono::offset::Utc>,
+    pub dismissed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub dismissed_by: User,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
     pub dismissed_reason: ::std::option::Option<CodeScanningAlertClosedByUserAlertDismissedReason>,
@@ -15225,7 +15225,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertCreated
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub dismissed_at: (),
     pub dismissed_by: (),
@@ -16365,9 +16365,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertFixedAc
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
-    pub dismissed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub dismissed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub dismissed_by: ::std::option::Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
     pub dismissed_reason: ::std::option::Option<CodeScanningAlertFixedAlertDismissedReason>,
@@ -17459,7 +17459,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertReopene
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub dismissed_at: (),
     pub dismissed_by: (),
@@ -18442,7 +18442,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CodeScanningAlertReopene
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub dismissed_at: (),
     pub dismissed_by: (),
@@ -19533,7 +19533,7 @@ impl ::std::convert::From<&CommitSimple> for CommitSimple {
 #[serde(deny_unknown_fields)]
 pub struct Committer {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub date: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub date: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The git author's email address."]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
@@ -21735,7 +21735,7 @@ pub struct Discussion {
     pub body: ::std::string::String,
     pub category: DiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -21744,7 +21744,7 @@ pub struct Discussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&Discussion> for Discussion {
@@ -22056,14 +22056,14 @@ pub struct DiscussionAnsweredAnswer {
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
     pub child_comment_count: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub discussion_id: i64,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
     pub parent_id: (),
     pub repository_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionAnsweredAnswer> for DiscussionAnsweredAnswer {
@@ -22127,14 +22127,14 @@ impl ::std::convert::From<&DiscussionAnsweredAnswer> for DiscussionAnsweredAnswe
 #[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredDiscussion {
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
-    pub answer_chosen_at: chrono::DateTime<chrono::offset::Utc>,
+    pub answer_chosen_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub answer_chosen_by: DiscussionAnsweredDiscussionAnswerChosenBy,
     pub answer_html_url: ::std::string::String,
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
     pub category: DiscussionAnsweredDiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -22143,7 +22143,7 @@ pub struct DiscussionAnsweredDiscussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionAnsweredDiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionAnsweredDiscussion> for DiscussionAnsweredDiscussion {
@@ -22451,7 +22451,7 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredDiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -22605,7 +22605,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionAnsweredDiscus
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -23024,7 +23024,7 @@ impl ::std::convert::From<&DiscussionCategoryChangedChangesCategory>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCategoryChangedChangesCategoryFrom {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -24247,7 +24247,7 @@ pub struct DiscussionCreatedDiscussion {
     pub body: ::std::string::String,
     pub category: DiscussionCreatedDiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -24256,7 +24256,7 @@ pub struct DiscussionCreatedDiscussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionCreatedDiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionCreatedDiscussion> for DiscussionCreatedDiscussion {
@@ -24319,7 +24319,7 @@ impl ::std::convert::From<&DiscussionCreatedDiscussion> for DiscussionCreatedDis
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCreatedDiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -25300,7 +25300,7 @@ pub struct DiscussionLockedDiscussion {
     pub body: ::std::string::String,
     pub category: DiscussionLockedDiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -25309,7 +25309,7 @@ pub struct DiscussionLockedDiscussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionLockedDiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionLockedDiscussion> for DiscussionLockedDiscussion {
@@ -25372,7 +25372,7 @@ impl ::std::convert::From<&DiscussionLockedDiscussion> for DiscussionLockedDiscu
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionLockedDiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -26149,7 +26149,7 @@ pub struct DiscussionUnansweredDiscussion {
     pub body: ::std::string::String,
     pub category: DiscussionUnansweredDiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -26158,7 +26158,7 @@ pub struct DiscussionUnansweredDiscussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionUnansweredDiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionUnansweredDiscussion> for DiscussionUnansweredDiscussion {
@@ -26224,7 +26224,7 @@ impl ::std::convert::From<&DiscussionUnansweredDiscussion> for DiscussionUnanswe
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnansweredDiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -26394,14 +26394,14 @@ pub struct DiscussionUnansweredOldAnswer {
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
     pub child_comment_count: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub discussion_id: i64,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
     pub parent_id: (),
     pub repository_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionUnansweredOldAnswer> for DiscussionUnansweredOldAnswer {
@@ -26749,7 +26749,7 @@ pub struct DiscussionUnlockedDiscussion {
     pub body: ::std::string::String,
     pub category: DiscussionUnlockedDiscussionCategory,
     pub comments: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub locked: bool,
@@ -26758,7 +26758,7 @@ pub struct DiscussionUnlockedDiscussion {
     pub repository_url: ::std::string::String,
     pub state: DiscussionUnlockedDiscussionState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&DiscussionUnlockedDiscussion> for DiscussionUnlockedDiscussion {
@@ -26821,7 +26821,7 @@ impl ::std::convert::From<&DiscussionUnlockedDiscussion> for DiscussionUnlockedD
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnlockedDiscussionCategory {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub description: ::std::string::String,
     pub emoji: ::std::string::String,
     pub id: i64,
@@ -27762,7 +27762,7 @@ pub struct ForkEventForkee {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -27794,7 +27794,7 @@ impl ::std::convert::From<&ForkEventForkee> for ForkEventForkee {
 #[serde(untagged)]
 pub enum ForkEventForkeeCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for ForkEventForkeeCreatedAt {
     fn from(value: &ForkEventForkeeCreatedAt) -> Self {
@@ -27848,8 +27848,8 @@ impl ::std::convert::From<i64> for ForkEventForkeeCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for ForkEventForkeeCreatedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for ForkEventForkeeCreatedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -27927,7 +27927,7 @@ impl ::std::convert::From<&ForkEventForkeePermissions> for ForkEventForkeePermis
 #[serde(untagged)]
 pub enum ForkEventForkeePushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for ForkEventForkeePushedAt {
@@ -27940,8 +27940,8 @@ impl ::std::convert::From<i64> for ForkEventForkeePushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for ForkEventForkeePushedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for ForkEventForkeePushedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -28953,7 +28953,7 @@ pub struct Installation {
     pub single_file_name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub single_file_paths: ::std::vec::Vec<::std::string::String>,
-    pub suspended_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub suspended_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub suspended_by: ::std::option::Option<User>,
     #[doc = "The ID of the user or organization this token is being scoped to."]
     pub target_id: i64,
@@ -29145,7 +29145,7 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationCreatedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationCreatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationCreatedAt {
@@ -29195,8 +29195,8 @@ impl ::std::fmt::Display for InstallationCreatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for InstallationCreatedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for InstallationCreatedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -34377,7 +34377,7 @@ pub struct InstallationSuspendInstallation {
     pub single_file_name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub single_file_paths: ::std::vec::Vec<::std::string::String>,
-    pub suspended_at: chrono::DateTime<chrono::offset::Utc>,
+    pub suspended_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub suspended_by: InstallationSuspendInstallationSuspendedBy,
     #[doc = "The ID of the user or organization this token is being scoped to."]
     pub target_id: i64,
@@ -34410,7 +34410,7 @@ impl ::std::convert::From<&InstallationSuspendInstallation> for InstallationSusp
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationSuspendInstallationCreatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationCreatedAt {
@@ -34460,10 +34460,10 @@ impl ::std::fmt::Display for InstallationSuspendInstallationCreatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationSuspendInstallationCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -38461,7 +38461,7 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationSuspendInsta
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationSuspendInstallationUpdatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationUpdatedAt {
@@ -38511,10 +38511,10 @@ impl ::std::fmt::Display for InstallationSuspendInstallationUpdatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationSuspendInstallationUpdatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -38921,7 +38921,7 @@ impl ::std::convert::From<&InstallationUnsuspendInstallation>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUnsuspendInstallationCreatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationCreatedAt {
@@ -38973,10 +38973,10 @@ impl ::std::fmt::Display for InstallationUnsuspendInstallationCreatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationUnsuspendInstallationCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -42762,7 +42762,7 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUnsuspendInstallationUpdatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationUpdatedAt {
@@ -42814,10 +42814,10 @@ impl ::std::fmt::Display for InstallationUnsuspendInstallationUpdatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationUnsuspendInstallationUpdatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -42904,7 +42904,7 @@ impl ::std::convert::From<&InstallationUnsuspendRepositoriesItem>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUpdatedAt {
-    Variant0(chrono::DateTime<chrono::offset::Utc>),
+    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
     Variant1(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUpdatedAt {
@@ -42954,8 +42954,8 @@ impl ::std::fmt::Display for InstallationUpdatedAt {
         }
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for InstallationUpdatedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for InstallationUpdatedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant0(value)
     }
 }
@@ -43169,10 +43169,10 @@ pub struct Issue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -43194,7 +43194,7 @@ pub struct Issue {
     pub state: ::std::option::Option<IssueState>,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -43374,14 +43374,14 @@ pub struct IssueComment {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue comment"]
     pub body: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the issue comment"]
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub node_id: ::std::string::String,
     pub performed_via_github_app: ::std::option::Option<App>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue comment"]
     pub url: ::std::string::String,
     pub user: User,
@@ -43690,10 +43690,10 @@ pub struct IssueCommentCreatedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -43711,7 +43711,7 @@ pub struct IssueCommentCreatedIssue {
     pub state: IssueCommentCreatedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -44374,10 +44374,10 @@ pub struct IssueCommentDeletedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -44395,7 +44395,7 @@ pub struct IssueCommentDeletedIssue {
     pub state: IssueCommentDeletedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -45156,10 +45156,10 @@ pub struct IssueCommentEditedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -45177,7 +45177,7 @@ pub struct IssueCommentEditedIssue {
     pub state: IssueCommentEditedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -46073,10 +46073,10 @@ pub struct IssuesClosedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: chrono::DateTime<chrono::offset::Utc>,
+    pub closed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -46096,7 +46096,7 @@ pub struct IssuesClosedIssue {
     pub state: IssuesClosedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -46640,10 +46640,10 @@ pub struct IssuesDemilestonedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -46665,7 +46665,7 @@ pub struct IssuesDemilestonedIssue {
     pub state: ::std::option::Option<IssuesDemilestonedIssueState>,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -47711,10 +47711,10 @@ pub struct IssuesLockedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -47735,7 +47735,7 @@ pub struct IssuesLockedIssue {
     pub state: ::std::option::Option<IssuesLockedIssueState>,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -48154,10 +48154,10 @@ pub struct IssuesMilestonedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -48179,7 +48179,7 @@ pub struct IssuesMilestonedIssue {
     pub state: ::std::option::Option<IssuesMilestonedIssueState>,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -48393,12 +48393,12 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesMilestonedIssueAct
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesMilestonedIssueMilestone {
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub closed_issues: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub description: ::std::option::Option<::std::string::String>,
-    pub due_on: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub labels_url: ::std::string::String,
@@ -48407,7 +48407,7 @@ pub struct IssuesMilestonedIssueMilestone {
     pub open_issues: i64,
     pub state: IssuesMilestonedIssueMilestoneState,
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&IssuesMilestonedIssueMilestone> for IssuesMilestonedIssueMilestone {
@@ -48878,7 +48878,7 @@ pub struct IssuesOpenedIssue {
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -48898,7 +48898,7 @@ pub struct IssuesOpenedIssue {
     pub state: IssuesOpenedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -49443,10 +49443,10 @@ pub struct IssuesReopenedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -49466,7 +49466,7 @@ pub struct IssuesReopenedIssue {
     pub state: IssuesReopenedIssueState,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -50357,10 +50357,10 @@ pub struct IssuesUnlockedIssue {
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
     pub body: ::std::option::Option<::std::string::String>,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -50381,7 +50381,7 @@ pub struct IssuesUnlockedIssue {
     pub state: ::std::option::Option<IssuesUnlockedIssueState>,
     #[doc = "Title of the issue"]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue"]
     pub url: ::std::string::String,
     pub user: User,
@@ -56387,12 +56387,12 @@ impl ::std::convert::From<MetaDeleted> for MetaEvent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Milestone {
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub closed_issues: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub description: ::std::option::Option<::std::string::String>,
-    pub due_on: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub labels_url: ::std::string::String,
@@ -56404,7 +56404,7 @@ pub struct Milestone {
     pub state: MilestoneState,
     #[doc = "The title of the milestone."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&Milestone> for Milestone {
@@ -56602,12 +56602,12 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneClosedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneClosedMilestone {
-    pub closed_at: chrono::DateTime<chrono::offset::Utc>,
+    pub closed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub closed_issues: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub description: ::std::option::Option<::std::string::String>,
-    pub due_on: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub labels_url: ::std::string::String,
@@ -56618,7 +56618,7 @@ pub struct MilestoneClosedMilestone {
     pub state: MilestoneClosedMilestoneState,
     #[doc = "The title of the milestone."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&MilestoneClosedMilestone> for MilestoneClosedMilestone {
@@ -56890,10 +56890,10 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneCreatedAction {
 pub struct MilestoneCreatedMilestone {
     pub closed_at: (),
     pub closed_issues: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub description: ::std::option::Option<::std::string::String>,
-    pub due_on: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub labels_url: ::std::string::String,
@@ -56904,7 +56904,7 @@ pub struct MilestoneCreatedMilestone {
     pub state: MilestoneCreatedMilestoneState,
     #[doc = "The title of the milestone."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&MilestoneCreatedMilestone> for MilestoneCreatedMilestone {
@@ -57723,10 +57723,10 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneOpenedAction {
 pub struct MilestoneOpenedMilestone {
     pub closed_at: (),
     pub closed_issues: i64,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub description: ::std::option::Option<::std::string::String>,
-    pub due_on: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub labels_url: ::std::string::String,
@@ -57737,7 +57737,7 @@ pub struct MilestoneOpenedMilestone {
     pub state: MilestoneOpenedMilestoneState,
     #[doc = "The title of the milestone."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&MilestoneOpenedMilestone> for MilestoneOpenedMilestone {
@@ -58885,9 +58885,9 @@ impl ::std::convert::TryFrom<::std::string::String> for OrganizationMemberInvite
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvitedInvitation {
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub email: ::std::option::Option<::std::string::String>,
-    pub failed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub failed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub failed_reason: ::std::option::Option<::std::string::String>,
     pub id: f64,
     pub invitation_teams_url: ::std::string::String,
@@ -62368,7 +62368,7 @@ pub struct Project {
     #[doc = "Body of the project"]
     pub body: ::std::option::Option<::std::string::String>,
     pub columns_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -62379,7 +62379,7 @@ pub struct Project {
     pub owner_url: ::std::string::String,
     #[doc = "State of the project; either 'open' or 'closed'"]
     pub state: ProjectState,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&Project> for Project {
@@ -62476,14 +62476,14 @@ pub struct ProjectCard {
     pub column_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub content_url: ::std::option::Option<::std::string::String>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     #[doc = "The project card's ID"]
     pub id: i64,
     pub node_id: ::std::string::String,
     pub note: ::std::option::Option<::std::string::String>,
     pub project_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&ProjectCard> for ProjectCard {
@@ -63539,14 +63539,14 @@ pub struct ProjectCardMovedProjectCard {
     pub column_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub content_url: ::std::option::Option<::std::string::String>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
     #[doc = "The project card's ID"]
     pub id: i64,
     pub node_id: ::std::string::String,
     pub note: ::std::option::Option<::std::string::String>,
     pub project_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&ProjectCardMovedProjectCard> for ProjectCardMovedProjectCard {
@@ -63745,14 +63745,14 @@ impl ::std::convert::TryFrom<::std::string::String> for ProjectClosedAction {
 #[serde(deny_unknown_fields)]
 pub struct ProjectColumn {
     pub cards_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The unique identifier of the project column"]
     pub id: i64,
     #[doc = "Name of the project column"]
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
     pub project_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
 }
 impl ::std::convert::From<&ProjectColumn> for ProjectColumn {
@@ -65462,7 +65462,7 @@ pub struct PublicEventRepository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -65494,7 +65494,7 @@ impl ::std::convert::From<&PublicEventRepository> for PublicEventRepository {
 #[serde(untagged)]
 pub enum PublicEventRepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryCreatedAt {
     fn from(value: &PublicEventRepositoryCreatedAt) -> Self {
@@ -65548,10 +65548,10 @@ impl ::std::convert::From<i64> for PublicEventRepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for PublicEventRepositoryCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -65629,7 +65629,7 @@ impl ::std::convert::From<&PublicEventRepositoryPermissions> for PublicEventRepo
 #[serde(untagged)]
 pub enum PublicEventRepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryPushedAt {
@@ -65642,8 +65642,10 @@ impl ::std::convert::From<i64> for PublicEventRepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for PublicEventRepositoryPushedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
+    for PublicEventRepositoryPushedAt
+{
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -66049,12 +66051,12 @@ pub struct PullRequest {
     pub base: PullRequestBase,
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
-    pub closed_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     #[doc = "Indicates whether or not the pull request is a draft."]
@@ -66073,7 +66075,7 @@ pub struct PullRequest {
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: ::std::option::Option<bool>,
-    pub merged_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub merged_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub merged_by: ::std::option::Option<User>,
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
@@ -66091,7 +66093,7 @@ pub struct PullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -66870,12 +66872,12 @@ pub struct PullRequestClosedPullRequest {
     pub base: PullRequestClosedPullRequestBase,
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
-    pub closed_at: chrono::DateTime<chrono::offset::Utc>,
+    pub closed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     #[doc = "Indicates whether or not the pull request is a draft."]
@@ -66894,7 +66896,7 @@ pub struct PullRequestClosedPullRequest {
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: bool,
-    pub merged_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub merged_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub merged_by: ::std::option::Option<User>,
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
@@ -66911,7 +66913,7 @@ pub struct PullRequestClosedPullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -67532,7 +67534,7 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     pub draft: bool,
@@ -67569,7 +67571,7 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -69070,7 +69072,7 @@ pub struct PullRequestOpenedPullRequest {
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     #[doc = "Indicates whether or not the pull request is a draft."]
@@ -69106,7 +69108,7 @@ pub struct PullRequestOpenedPullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -69697,7 +69699,7 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     pub draft: bool,
@@ -69733,7 +69735,7 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -70359,7 +70361,7 @@ pub struct PullRequestReopenedPullRequest {
     pub comments_url: ::std::string::String,
     pub commits: i64,
     pub commits_url: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub deletions: i64,
     pub diff_url: ::std::string::String,
     #[doc = "Indicates whether or not the pull request is a draft."]
@@ -70395,7 +70397,7 @@ pub struct PullRequestReopenedPullRequest {
     pub statuses_url: ::std::string::String,
     #[doc = "The title of the pull request."]
     pub title: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub user: User,
 }
@@ -71006,7 +71008,7 @@ pub struct PullRequestReviewComment {
     pub body: ::std::string::String,
     #[doc = "The SHA of the commit to which the comment applies."]
     pub commit_id: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The diff of the line that the comment refers to."]
     pub diff_hunk: ::std::string::String,
     #[doc = "HTML URL for the pull request review comment."]
@@ -71044,7 +71046,7 @@ pub struct PullRequestReviewComment {
     pub start_line: ::std::option::Option<i64>,
     #[doc = "The side of the first line of the range for a multi-line comment."]
     pub start_side: ::std::option::Option<PullRequestReviewCommentStartSide>,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the pull request review comment"]
     pub url: ::std::string::String,
     pub user: User,
@@ -75267,7 +75269,7 @@ pub struct PullRequestReviewDismissedReview {
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: PullRequestReviewDismissedReviewState,
-    pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
+    pub submitted_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&PullRequestReviewDismissedReview> for PullRequestReviewDismissedReview {
@@ -75787,7 +75789,7 @@ pub struct PullRequestReviewEditedReview {
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: ::std::string::String,
-    pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
+    pub submitted_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&PullRequestReviewEditedReview> for PullRequestReviewEditedReview {
@@ -76744,7 +76746,7 @@ pub struct PullRequestReviewSubmittedReview {
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: ::std::string::String,
-    pub submitted_at: chrono::DateTime<chrono::offset::Utc>,
+    pub submitted_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub user: User,
 }
 impl ::std::convert::From<&PullRequestReviewSubmittedReview> for PullRequestReviewSubmittedReview {
@@ -77685,7 +77687,7 @@ pub struct Release {
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
-    pub created_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
     pub html_url: ::std::string::String,
@@ -77694,7 +77696,7 @@ pub struct Release {
     pub node_id: ::std::string::String,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
-    pub published_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub published_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
     pub tarball_url: ::std::option::Option<::std::string::String>,
@@ -77795,7 +77797,7 @@ impl ::std::convert::From<&Release> for Release {
 pub struct ReleaseAsset {
     pub browser_download_url: ::std::string::String,
     pub content_type: ::std::string::String,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub download_count: i64,
     pub id: i64,
     pub label: ::std::option::Option<::std::string::String>,
@@ -77805,7 +77807,7 @@ pub struct ReleaseAsset {
     pub size: i64,
     #[doc = "State of the release asset."]
     pub state: ReleaseAssetState,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub uploader: ::std::option::Option<User>,
     pub url: ::std::string::String,
@@ -78708,7 +78710,7 @@ pub struct ReleasePrereleasedRelease {
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
-    pub created_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
     pub html_url: ::std::string::String,
@@ -78716,7 +78718,7 @@ pub struct ReleasePrereleasedRelease {
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
     pub prerelease: bool,
-    pub published_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub published_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
     pub tarball_url: ::std::option::Option<::std::string::String>,
@@ -78913,7 +78915,7 @@ pub struct ReleasePublishedRelease {
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
-    pub created_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
     pub html_url: ::std::string::String,
@@ -78922,7 +78924,7 @@ pub struct ReleasePublishedRelease {
     pub node_id: ::std::string::String,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
-    pub published_at: chrono::DateTime<chrono::offset::Utc>,
+    pub published_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
     pub tarball_url: ::std::option::Option<::std::string::String>,
@@ -79248,7 +79250,7 @@ pub struct ReleaseUnpublishedRelease {
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
-    pub created_at: ::std::option::Option<chrono::DateTime<chrono::offset::Utc>>,
+    pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
     pub html_url: ::std::string::String,
@@ -79897,7 +79899,7 @@ pub struct Repository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -80195,7 +80197,7 @@ pub struct RepositoryArchivedRepository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -80227,7 +80229,7 @@ impl ::std::convert::From<&RepositoryArchivedRepository> for RepositoryArchivedR
 #[serde(untagged)]
 pub enum RepositoryArchivedRepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryCreatedAt {
     fn from(value: &RepositoryArchivedRepositoryCreatedAt) -> Self {
@@ -80281,10 +80283,10 @@ impl ::std::convert::From<i64> for RepositoryArchivedRepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryArchivedRepositoryCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -80364,7 +80366,7 @@ impl ::std::convert::From<&RepositoryArchivedRepositoryPermissions>
 #[serde(untagged)]
 pub enum RepositoryArchivedRepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryPushedAt {
@@ -80377,10 +80379,10 @@ impl ::std::convert::From<i64> for RepositoryArchivedRepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryArchivedRepositoryPushedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -80532,7 +80534,7 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryCreatedAction 
 #[serde(untagged)]
 pub enum RepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryCreatedAt {
     fn from(value: &RepositoryCreatedAt) -> Self {
@@ -80586,8 +80588,8 @@ impl ::std::convert::From<i64> for RepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for RepositoryCreatedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for RepositoryCreatedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -82121,7 +82123,7 @@ pub struct RepositoryPrivatizedRepository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -82153,7 +82155,7 @@ impl ::std::convert::From<&RepositoryPrivatizedRepository> for RepositoryPrivati
 #[serde(untagged)]
 pub enum RepositoryPrivatizedRepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryCreatedAt {
     fn from(value: &RepositoryPrivatizedRepositoryCreatedAt) -> Self {
@@ -82207,10 +82209,10 @@ impl ::std::convert::From<i64> for RepositoryPrivatizedRepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPrivatizedRepositoryCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -82290,7 +82292,7 @@ impl ::std::convert::From<&RepositoryPrivatizedRepositoryPermissions>
 #[serde(untagged)]
 pub enum RepositoryPrivatizedRepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryPushedAt {
@@ -82303,10 +82305,10 @@ impl ::std::convert::From<i64> for RepositoryPrivatizedRepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPrivatizedRepositoryPushedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -82596,7 +82598,7 @@ pub struct RepositoryPublicizedRepository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -82628,7 +82630,7 @@ impl ::std::convert::From<&RepositoryPublicizedRepository> for RepositoryPublici
 #[serde(untagged)]
 pub enum RepositoryPublicizedRepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryCreatedAt {
     fn from(value: &RepositoryPublicizedRepositoryCreatedAt) -> Self {
@@ -82682,10 +82684,10 @@ impl ::std::convert::From<i64> for RepositoryPublicizedRepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPublicizedRepositoryCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -82765,7 +82767,7 @@ impl ::std::convert::From<&RepositoryPublicizedRepositoryPermissions>
 #[serde(untagged)]
 pub enum RepositoryPublicizedRepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryPushedAt {
@@ -82778,10 +82780,10 @@ impl ::std::convert::From<i64> for RepositoryPublicizedRepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPublicizedRepositoryPushedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -82810,7 +82812,7 @@ impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
 #[serde(untagged)]
 pub enum RepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for RepositoryPushedAt {
@@ -82823,8 +82825,8 @@ impl ::std::convert::From<i64> for RepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>> for RepositoryPushedAt {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for RepositoryPushedAt {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -83664,7 +83666,7 @@ pub struct RepositoryUnarchivedRepository {
     pub tags_url: ::std::string::String,
     pub teams_url: ::std::string::String,
     pub trees_url: ::std::string::String,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub watchers: i64,
     pub watchers_count: i64,
@@ -83696,7 +83698,7 @@ impl ::std::convert::From<&RepositoryUnarchivedRepository> for RepositoryUnarchi
 #[serde(untagged)]
 pub enum RepositoryUnarchivedRepositoryCreatedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryCreatedAt {
     fn from(value: &RepositoryUnarchivedRepositoryCreatedAt) -> Self {
@@ -83750,10 +83752,10 @@ impl ::std::convert::From<i64> for RepositoryUnarchivedRepositoryCreatedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryUnarchivedRepositoryCreatedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -83833,7 +83835,7 @@ impl ::std::convert::From<&RepositoryUnarchivedRepositoryPermissions>
 #[serde(untagged)]
 pub enum RepositoryUnarchivedRepositoryPushedAt {
     Variant0(i64),
-    Variant1(chrono::DateTime<chrono::offset::Utc>),
+    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
     Variant2,
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryPushedAt {
@@ -83846,10 +83848,10 @@ impl ::std::convert::From<i64> for RepositoryUnarchivedRepositoryPushedAt {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<chrono::DateTime<chrono::offset::Utc>>
+impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryUnarchivedRepositoryPushedAt
 {
-    fn from(value: chrono::DateTime<chrono::offset::Utc>) -> Self {
+    fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
         Self::Variant1(value)
     }
 }
@@ -92121,7 +92123,7 @@ impl ::std::convert::From<&StatusEventCommitCommit> for StatusEventCommitCommit 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitAuthor {
-    pub date: chrono::DateTime<chrono::offset::Utc>,
+    pub date: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The git author's email address."]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
@@ -92163,7 +92165,7 @@ impl ::std::convert::From<&StatusEventCommitCommitAuthor> for StatusEventCommitC
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitCommitter {
-    pub date: chrono::DateTime<chrono::offset::Utc>,
+    pub date: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The git author's email address."]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
@@ -96068,7 +96070,7 @@ pub struct WorkflowJobQueuedWorkflowJob {
     pub node_id: ::std::string::String,
     pub run_id: f64,
     pub run_url: ::std::string::String,
-    pub started_at: chrono::DateTime<chrono::offset::Utc>,
+    pub started_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub status: WorkflowJobQueuedWorkflowJobStatus,
     pub steps: ::std::vec::Vec<WorkflowStep>,
     pub url: ::std::string::String,
@@ -96817,7 +96819,7 @@ pub struct WorkflowRun {
     pub check_suite_node_id: ::std::string::String,
     pub check_suite_url: ::std::string::String,
     pub conclusion: ::std::option::Option<WorkflowRunConclusion>,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub event: ::std::string::String,
     pub head_branch: ::std::string::String,
     pub head_commit: CommitSimple,
@@ -96834,7 +96836,7 @@ pub struct WorkflowRun {
     pub rerun_url: ::std::string::String,
     pub run_number: i64,
     pub status: WorkflowRunStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub workflow_id: i64,
     pub workflow_url: ::std::string::String,
@@ -97049,7 +97051,7 @@ pub struct WorkflowRunCompletedWorkflowRun {
     pub check_suite_node_id: ::std::string::String,
     pub check_suite_url: ::std::string::String,
     pub conclusion: WorkflowRunCompletedWorkflowRunConclusion,
-    pub created_at: chrono::DateTime<chrono::offset::Utc>,
+    pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub event: ::std::string::String,
     pub head_branch: ::std::string::String,
     pub head_commit: CommitSimple,
@@ -97066,7 +97068,7 @@ pub struct WorkflowRunCompletedWorkflowRun {
     pub rerun_url: ::std::string::String,
     pub run_number: i64,
     pub status: WorkflowRunCompletedWorkflowRunStatus,
-    pub updated_at: chrono::DateTime<chrono::offset::Utc>,
+    pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub url: ::std::string::String,
     pub workflow_id: i64,
     pub workflow_url: ::std::string::String,

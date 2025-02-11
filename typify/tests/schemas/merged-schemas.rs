@@ -550,14 +550,14 @@ impl MergeEmpty {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct NarrowNumber(pub std::num::NonZeroU64);
+pub struct NarrowNumber(pub ::std::num::NonZeroU64);
 impl ::std::ops::Deref for NarrowNumber {
-    type Target = std::num::NonZeroU64;
-    fn deref(&self) -> &std::num::NonZeroU64 {
+    type Target = ::std::num::NonZeroU64;
+    fn deref(&self) -> &::std::num::NonZeroU64 {
         &self.0
     }
 }
-impl ::std::convert::From<NarrowNumber> for std::num::NonZeroU64 {
+impl ::std::convert::From<NarrowNumber> for ::std::num::NonZeroU64 {
     fn from(value: NarrowNumber) -> Self {
         value.0
     }
@@ -567,31 +567,31 @@ impl ::std::convert::From<&NarrowNumber> for NarrowNumber {
         value.clone()
     }
 }
-impl ::std::convert::From<std::num::NonZeroU64> for NarrowNumber {
-    fn from(value: std::num::NonZeroU64) -> Self {
+impl ::std::convert::From<::std::num::NonZeroU64> for NarrowNumber {
+    fn from(value: ::std::num::NonZeroU64) -> Self {
         Self(value)
     }
 }
 impl ::std::str::FromStr for NarrowNumber {
-    type Err = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Err = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
 impl ::std::convert::TryFrom<&str> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }

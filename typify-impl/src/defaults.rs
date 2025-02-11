@@ -29,8 +29,8 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::I64 => quote! {
                 pub(super) fn default_i64<T, const V: i64>() -> T
                 where
-                    T: std::convert::TryFrom<i64>,
-                    <T as std::convert::TryFrom<i64>>::Error: std::fmt::Debug,
+                    T: ::std::convert::TryFrom<i64>,
+                    <T as ::std::convert::TryFrom<i64>>::Error: ::std::fmt::Debug,
                 {
                     T::try_from(V).unwrap()
                 }
@@ -38,8 +38,8 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::U64 => quote! {
                 pub(super) fn default_u64<T, const V: u64>() -> T
                 where
-                    T: std::convert::TryFrom<u64>,
-                    <T as std::convert::TryFrom<u64>>::Error: std::fmt::Debug,
+                    T: ::std::convert::TryFrom<u64>,
+                    <T as ::std::convert::TryFrom<u64>>::Error: ::std::fmt::Debug,
                 {
                     T::try_from(V).unwrap()
                 }
@@ -47,11 +47,11 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::NZU64 => quote! {
                 pub(super) fn default_nzu64<T, const V: u64>() -> T
                 where
-                    T: std::convert::TryFrom<std::num::NonZeroU64>,
-                    <T as std::convert::TryFrom<std::num::NonZeroU64>>::Error:
-                        std::fmt::Debug,
+                    T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
+                    <T as ::std::convert::TryFrom<::std::num::NonZeroU64>>::Error:
+                        ::std::fmt::Debug,
                 {
-                    T::try_from(std::num::NonZeroU64::try_from(V).unwrap())
+                    T::try_from(::std::num::NonZeroU64::try_from(V).unwrap())
                         .unwrap()
                 }
             },
@@ -289,7 +289,7 @@ impl TypeEntry {
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
                 (_, Some(0)) => unreachable!(),
                 (Some(_), _) => {
-                    if itype.starts_with("std::num::NonZero") {
+                    if itype.starts_with(STD_NUM_NONZERO_PREFIX) {
                         Ok(DefaultKind::Generic(DefaultImpl::NZU64))
                     } else {
                         Ok(DefaultKind::Generic(DefaultImpl::U64))
