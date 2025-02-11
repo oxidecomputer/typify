@@ -111637,8 +111637,8 @@ impl ::std::convert::From<&Self> for VoronoiTransformExtent {
 impl ::std::default::Default for VoronoiTransformExtent {
     fn default() -> Self {
         VoronoiTransformExtent::Variant0([
-            serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
-            serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]").unwrap(),
         ])
     }
 }
@@ -114256,8 +114256,8 @@ pub mod defaults {
     }
     pub(super) fn default_i64<T, const V: i64>() -> T
     where
-        T: std::convert::TryFrom<i64>,
-        <T as std::convert::TryFrom<i64>>::Error: std::fmt::Debug,
+        T: ::std::convert::TryFrom<i64>,
+        <T as ::std::convert::TryFrom<i64>>::Error: ::std::fmt::Debug,
     {
         T::try_from(V).unwrap()
     }
@@ -114660,8 +114660,8 @@ pub mod defaults {
     }
     pub(super) fn voronoi_transform_extent() -> super::VoronoiTransformExtent {
         super::VoronoiTransformExtent::Variant0([
-            serde_json::from_str::<serde_json::Value>("[-100000,-100000]").unwrap(),
-            serde_json::from_str::<serde_json::Value>("[100000,100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]").unwrap(),
         ])
     }
     pub(super) fn window_transform_frame() -> super::WindowTransformFrame {

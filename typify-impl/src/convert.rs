@@ -18,6 +18,8 @@ use crate::util::get_type_name;
 
 use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
 
+pub const STD_NUM_NONZERO_PREFIX: &str = "::std::num::NonZero";
+
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
         &mut self,
@@ -830,7 +832,7 @@ impl TypeSpace {
                 self.uses_uuid = true;
                 Ok((
                     TypeEntry::new_native(
-                        "uuid::Uuid",
+                        "::uuid::Uuid",
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -841,7 +843,7 @@ impl TypeSpace {
                 self.uses_chrono = true;
                 Ok((
                     TypeEntry::new_native(
-                        "chrono::naive::NaiveDate",
+                        "::chrono::naive::NaiveDate",
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -851,7 +853,7 @@ impl TypeSpace {
                 self.uses_chrono = true;
                 Ok((
                     TypeEntry::new_native(
-                        "chrono::DateTime<chrono::offset::Utc>",
+                        "::chrono::DateTime<::chrono::offset::Utc>",
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -860,21 +862,21 @@ impl TypeSpace {
 
             Some("ip") => Ok((
                 TypeEntry::new_native(
-                    "std::net::IpAddr",
+                    "::std::net::IpAddr",
                     &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                 ),
                 metadata,
             )),
             Some("ipv4") => Ok((
                 TypeEntry::new_native(
-                    "std::net::Ipv4Addr",
+                    "::std::net::Ipv4Addr",
                     &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                 ),
                 metadata,
             )),
             Some("ipv6") => Ok((
                 TypeEntry::new_native(
-                    "std::net::Ipv6Addr",
+                    "::std::net::Ipv6Addr",
                     &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                 ),
                 metadata,
@@ -991,20 +993,20 @@ impl TypeSpace {
         // Ordered from most- to least-restrictive.
         let formats: &[(&str, &str, f64, f64)] = &[
             ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
-            ("", "std::num::NonZeroU8", 1.0, u8::MAX as f64),
+            ("", "::std::num::NonZeroU8", 1.0, u8::MAX as f64),
             ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
             ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
-            ("", "std::num::NonZeroU16", 1.0, u16::MAX as f64),
+            ("", "::std::num::NonZeroU16", 1.0, u16::MAX as f64),
             ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
             ("int", "i32", i32::MIN as f64, i32::MAX as f64),
             ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("", "std::num::NonZeroU32", 1.0, u32::MAX as f64),
+            ("", "::std::num::NonZeroU32", 1.0, u32::MAX as f64),
             ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
             ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
             // TODO all these are wrong as casting to an f64 loses precision.
             // However, schemars stores everything as an f64 so... meh for now.
             ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
-            ("", "std::num::NonZeroU64", 1.0, u64::MAX as f64),
+            ("", "::std::num::NonZeroU64", 1.0, u64::MAX as f64),
             ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
         ];
 

@@ -6,6 +6,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::{
+    convert::STD_NUM_NONZERO_PREFIX,
     type_entry::{
         EnumTagType, StructProperty, StructPropertyRename, TypeEntry, TypeEntryDetails,
         TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
@@ -145,13 +146,13 @@ impl TypeEntry {
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    serde_json::from_str::< #type_path >(#text).unwrap()
+                    ::serde_json::from_str::< #type_path >(#text).unwrap()
                 }
             }
             TypeEntryDetails::JsonValue => {
                 let text = value.to_string();
                 quote! {
-                    serde_json::from_str::<serde_json::Value>(#text).unwrap()
+                    ::serde_json::from_str::<::serde_json::Value>(#text).unwrap()
                 }
             }
             TypeEntryDetails::Boolean => {
@@ -162,12 +163,21 @@ impl TypeEntry {
                 if !value.is_number() {
                     return None;
                 }
-                let val = match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name))
-                {
-                    Ok(v) => v,
-                    Err(_) => unreachable!(),
-                };
-                TokenStream::from(proc_macro2::TokenTree::from(val))
+                if type_name.starts_with(STD_NUM_NONZERO_PREFIX) {
+                    let type_path = syn::parse_str::<syn::TypePath>(type_name).unwrap();
+                    let num = proc_macro2::Literal::from_str(value.to_string().as_str()).unwrap();
+
+                    quote! {
+                        #type_path::new(#num).unwrap()
+                    }
+                } else {
+                    let val =
+                        match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name)) {
+                            Ok(v) => v,
+                            Err(_) => unreachable!(),
+                        };
+                    TokenStream::from(proc_macro2::TokenTree::from(val))
+                }
             }
             TypeEntryDetails::String => {
                 let s = value.as_str()?;
@@ -553,7 +563,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    serde_json::from_str::<uuid::Uuid>("\"not-a-uuid\"").unwrap()
+                    ::serde_json::from_str::<::uuid::Uuid>("\"not-a-uuid\"").unwrap()
                 }
                 .to_string()
             ),
