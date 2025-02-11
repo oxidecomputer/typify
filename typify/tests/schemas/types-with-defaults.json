@@ -74,6 +74,15 @@
           "format": "uint16",
           "minimum": 1,
           "default": 3
+        },
+        "big_nullable": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 1,
+          "default": 1
         }
       }
     }
