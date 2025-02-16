@@ -1,0 +1,62 @@
+{
+  "$comment": "dumping ground for various types",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ObjectWithNoExtra": {
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo"
+      ],
+      "additionalProperties": false
+    },
+    "ObjectWithOkExtra": {
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo"
+      ]
+    },
+    "ObjectWithYesExtra": {
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo"
+      ],
+      "additionalProperties": true
+    },
+    "ObjectWithWhichExtra": {
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo"
+      ],
+      "additionalProperties": {}
+    },
+    "ObjectWithStringExtra": {
+      "properties": {
+        "foo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
