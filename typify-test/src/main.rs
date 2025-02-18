@@ -43,6 +43,12 @@ fn test_string_constraints() {
 }
 
 #[test]
+fn test_string_constraints_for_non_ascii_chars() {
+    assert!(NonAsciiChars::try_from("🍔🍔🍔🍔🍔🍔🍔🍔").is_ok());
+    assert!(NonAsciiChars::try_from("🍔").is_err());
+}
+
+#[test]
 fn test_unknown_format() {
     // An unknown format string should just render as a string.
     let _ = UnknownFormat {

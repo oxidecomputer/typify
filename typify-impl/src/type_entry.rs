@@ -1513,7 +1513,7 @@ impl TypeEntry {
                     let v = v as usize;
                     let err = format!("longer than {} characters", v);
                     quote! {
-                        if value.len() > #v {
+                        if value.chars().count() > #v {
                             return Err(#err.into());
                         }
                     }
@@ -1522,7 +1522,7 @@ impl TypeEntry {
                     let v = v as usize;
                     let err = format!("shorter than {} characters", v);
                     quote! {
-                        if value.len() < #v {
+                        if value.chars().count() < #v {
                             return Err(#err.into());
                         }
                     }
