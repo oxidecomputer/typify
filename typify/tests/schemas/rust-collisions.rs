@@ -1511,10 +1511,10 @@ impl ::std::convert::From<&StringNewtype> for StringNewtype {
 impl ::std::str::FromStr for StringNewtype {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if value.len() > 100usize {
+        if value.chars().count() > 100usize {
             return Err("longer than 100 characters".into());
         }
-        if value.len() < 1usize {
+        if value.chars().count() < 1usize {
             return Err("shorter than 1 characters".into());
         }
         Ok(Self(value.to_string()))
