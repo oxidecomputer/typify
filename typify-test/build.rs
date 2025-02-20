@@ -93,7 +93,7 @@ impl JsonSchema for NonAsciiChars {
             })),
             ..Default::default()
         }
-            .into()
+        .into()
     }
 }
 
