@@ -1011,14 +1011,13 @@ impl TypeSpace {
         ];
 
         if let Some(format) = format {
-            if let Some((_, ty, imin, imax)) = formats
+            if let Some((_fmt, ty, imin, imax)) = formats
                 .iter()
                 .find(|(int_format, _, _, _)| int_format == format)
             {
-                // If the type matches with other constraints, we're done.
                 if multiple.is_none()
-                    && (min.is_none() || min == Some(*imin))
-                    && (max.is_none() || max == Some(*imax))
+                    && (min.map(|fmin| fmin.ge(imin)).unwrap_or(true))
+                    && (max.map(|fmax| fmax.le(imax)).unwrap_or(true))
                 {
                     // If there's a default value and it's either not a number
                     // or outside of the range for this format, return an
@@ -1997,6 +1996,7 @@ mod tests {
     };
     use serde_json::json;
 
+    use crate::type_entry::TypeEntryDetails;
     use crate::{
         test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceImpl,
         TypeSpaceSettings,
