@@ -23,7 +23,7 @@ unicode-ident = "1.0.17"
 
 
 [dev-dependencies]
-env_logger = "0.11.6"
+env_logger = "0.11.7"
 expectorate = "1.1.0"
 paste = "1.0.15"
 rustfmt-wrapper = "0.2.1"
