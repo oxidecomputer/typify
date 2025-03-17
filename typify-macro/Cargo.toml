@@ -12,7 +12,7 @@ proc-macro = true
 
 [dependencies]
 proc-macro2 = "1.0.94"
-quote = "1.0.39"
+quote = "1.0.40"
 schemars = "0.8.22"
 semver = { version = "1.0.25", features = ["serde"] }
 serde = "1.0.219"
