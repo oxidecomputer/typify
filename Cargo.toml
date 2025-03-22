@@ -11,6 +11,36 @@ members = [
 
 resolver = "2"
 
-#[patch.crates-io]
-#serde_tokenstream = { path = "../serde_tokenstream" }
+[workspace.dependencies]
+typify = { version = "0.3.0", path = "typify" }
+typify-impl = { version = "0.3.0", path = "typify-impl" }
+typify-macro = { version = "0.3.0", path = "typify-macro" }
 
+assert_cmd = "2.0.16"
+chrono = { version = "0.4.39", features = ["serde"] }
+clap = { version = "4.5.32", features = ["derive"] }
+color-eyre = "0.6"
+env_logger = "0.11"
+expectorate = "1.1.0"
+glob = "0.3.2"
+heck = "0.5.0"
+ipnetwork = { version = "0.21.1", features = ["schemars"] }
+log = "0.4.26"
+newline-converter = "0.3.0"
+paste = "1.0.15"
+prettyplease = "0.2.29"
+proc-macro2 = "1.0.94"
+quote = "1.0.40"
+regress = "0.10.3"
+rustfmt-wrapper = "0.2.1"
+schema = "0.1.0"
+schemars = "0.8.22"
+semver = "1.0.26"
+serde = "1.0.219"
+serde_json = "1.0.140"
+syn = { version = "2.0.100", features = ["full"] }
+tempdir = "0.3.7"
+thiserror = "2.0.12"
+trybuild = "1.0.104"
+unicode-ident = "1.0.17"
+uuid = "1.16.0"
