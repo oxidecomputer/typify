@@ -1064,7 +1064,7 @@ impl TypeSpace {
 
         // See if the value bounds fit within a known type.
         let maybe_type = match (min, max) {
-            (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, nz_ty, _, imax)| {
+            (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, _nz_ty, _, imax)| {
                 if (imax - max).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
@@ -1081,7 +1081,9 @@ impl TypeSpace {
                 }
             }),
             (Some(min), Some(max)) => formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
-                if (imax - max).abs() <= f64::EPSILON && (imin - min).abs() <= f64::EPSILON {
+                if min == 1. {
+                    Some(nz_ty.to_string())
+                } else if (imax - max).abs() <= f64::EPSILON && (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
