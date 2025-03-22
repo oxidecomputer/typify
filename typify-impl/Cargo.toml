@@ -8,26 +8,25 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
 [dependencies]
-heck = "0.5.0"
-log = "0.4.26"
-proc-macro2 = "1.0.94"
-quote = "1.0.40"
-regress = "0.10.3"
-schemars = "0.8.22"
-semver = "1.0.26"
-serde = "1.0.219"
-serde_json = "1.0.140"
-syn = { version = "2.0.100", features = ["full"] }
-thiserror = "2.0.12"
-unicode-ident = "1.0.17"
-
+heck = { workspace = true }
+log = { workspace = true }
+proc-macro2 = { workspace = true }
+quote = { workspace = true }
+regress = { workspace = true }
+schemars = { workspace = true }
+semver = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+syn = { workspace = true }
+thiserror = { workspace = true }
+unicode-ident = { workspace = true }
 
 [dev-dependencies]
-env_logger = "0.11.7"
-expectorate = "1.1.0"
-paste = "1.0.15"
-rustfmt-wrapper = "0.2.1"
-schema = "0.1.0"
-schemars = { version = "0.8.22", features = ["uuid1", "impl_json_schema"] }
-syn = { version = "2.0.100", features = ["full", "extra-traits", "visit-mut"] }
-uuid = "1.16.0"
+env_logger = { workspace = true }
+expectorate = { workspace = true }
+paste = { workspace = true }
+rustfmt-wrapper = { workspace = true }
+schema = { workspace = true }
+schemars = { workspace = true, features = ["uuid1", "impl_json_schema"] }
+syn = { workspace = true, features = ["full", "extra-traits", "visit-mut"] }
+uuid = { workspace = true }
