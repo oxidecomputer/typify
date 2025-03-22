@@ -990,9 +990,6 @@ impl TypeSpace {
             (None, None, None)
         };
 
-        // Use NonZero types for minimum 1
-        let min_is_one = min == Some(1.);
-
         // Ordered from most- to least-restrictive.
         // JSONSchema format, Rust Type, Rust NonZero Type, Rust type min, Rust type max
         let formats: &[(&str, &str, &str, f64, f64)] = &[
@@ -1016,7 +1013,7 @@ impl TypeSpace {
                 .find(|(int_format, _, _, _, _)| int_format == format)
             {
                 let valid_min = min.is_none() || min.map(|fmin| fmin.ge(imin)).unwrap_or(false);
-                let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(true);
+                let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(false);
                 if multiple.is_none() && valid_min && valid_max {
                     // If there's a default value and it's either not a number
                     // or outside of the range for this format, return an
@@ -1030,7 +1027,9 @@ impl TypeSpace {
                             return Err(Error::InvalidValue);
                         }
                     }
-                    if min_is_one {
+
+                    // Use NonZero types for minimum 1
+                    if min == Some(1.) {
                         return Ok((TypeEntry::new_integer(nz_ty), metadata));
                     } else {
                         return Ok((TypeEntry::new_integer(ty), metadata));
