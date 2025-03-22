@@ -147,7 +147,7 @@ impl ::std::fmt::Display for JustOne {
         self.0.fmt(f)
     }
 }
-#[doc = "UintMinimumAndMaximum"]
+#[doc = "`UintMinimumAndMaximum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -200,9 +200,9 @@ impl ::std::fmt::Display for JustOne {
 pub struct UintMinimumAndMaximum {
     pub max: u64,
     pub min: u64,
-    pub min_and_max: std::num::NonZeroU64,
-    pub min_non_zero: std::num::NonZeroU64,
-    pub min_uint_non_zero: std::num::NonZeroU64,
+    pub min_and_max: ::std::num::NonZeroU64,
+    pub min_non_zero: ::std::num::NonZeroU64,
+    pub min_uint_non_zero: ::std::num::NonZeroU64,
     pub no_bounds: u64,
 }
 impl ::std::convert::From<&UintMinimumAndMaximum> for UintMinimumAndMaximum {
@@ -301,9 +301,9 @@ pub mod builder {
     pub struct UintMinimumAndMaximum {
         max: ::std::result::Result<u64, ::std::string::String>,
         min: ::std::result::Result<u64, ::std::string::String>,
-        min_and_max: ::std::result::Result<std::num::NonZeroU64, ::std::string::String>,
-        min_non_zero: ::std::result::Result<std::num::NonZeroU64, ::std::string::String>,
-        min_uint_non_zero: ::std::result::Result<std::num::NonZeroU64, ::std::string::String>,
+        min_and_max: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        min_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        min_uint_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
         no_bounds: ::std::result::Result<u64, ::std::string::String>,
     }
     impl ::std::default::Default for UintMinimumAndMaximum {
@@ -341,7 +341,7 @@ pub mod builder {
         }
         pub fn min_and_max<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<std::num::NonZeroU64>,
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
             T::Error: ::std::fmt::Display,
         {
             self.min_and_max = value
@@ -351,7 +351,7 @@ pub mod builder {
         }
         pub fn min_non_zero<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<std::num::NonZeroU64>,
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
             T::Error: ::std::fmt::Display,
         {
             self.min_non_zero = value
@@ -361,7 +361,7 @@ pub mod builder {
         }
         pub fn min_uint_non_zero<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<std::num::NonZeroU64>,
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
             T::Error: ::std::fmt::Display,
         {
             self.min_uint_non_zero = value.try_into().map_err(|e| {
