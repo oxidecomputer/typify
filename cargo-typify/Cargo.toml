@@ -12,18 +12,18 @@ categories = ["api-bindings", "compilers"]
 default-run = "cargo-typify"
 
 [dependencies]
-typify = { version = "0.3.0", path = "../typify" }
+typify = { workspace = true }
 
-clap = { version = "4.5.32", features = ["derive"] }
-color-eyre = "0.6"
-env_logger = "0.11"
-rustfmt-wrapper = "0.2.1"
-semver = "1.0.26"
-serde_json = "1.0.140"
-schemars = "0.8.22"
+clap = { workspace = true }
+color-eyre = { workspace = true }
+env_logger = { workspace = true }
+rustfmt-wrapper = { workspace = true }
+semver = { workspace = true }
+serde_json = { workspace = true }
+schemars = { workspace = true }
 
 [dev-dependencies]
-assert_cmd = "2.0.16"
-expectorate = "1.1.0"
-newline-converter = "0.3.0"
-tempdir = "0.3.7"
+assert_cmd = { workspace = true }
+expectorate = { workspace = true }
+newline-converter = { workspace = true }
+tempdir = { workspace = true }
