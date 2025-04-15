@@ -993,18 +993,78 @@ impl TypeSpace {
         // Ordered from most- to least-restrictive.
         // JSONSchema format, Rust Type, Rust NonZero Type, Rust type min, Rust type max
         let formats: &[(&str, &str, &str, f64, f64)] = &[
-            ("int8", "i8", "::std::num::NonZeroU8", i8::MIN as f64, i8::MAX as f64),
-            ("uint8", "u8", "::std::num::NonZeroU8", u8::MIN as f64, u8::MAX as f64),
-            ("int16", "i16", "::std::num::NonZeroU16", i16::MIN as f64, i16::MAX as f64),
-            ("uint16", "u16", "::std::num::NonZeroU16", u16::MIN as f64, u16::MAX as f64),
-            ("int", "i32", "::std::num::NonZeroU32", i32::MIN as f64, i32::MAX as f64),
-            ("int32", "i32", "::std::num::NonZeroU32", i32::MIN as f64, i32::MAX as f64),
-            ("uint", "u32", "::std::num::NonZeroU32", u32::MIN as f64, u32::MAX as f64),
-            ("uint32", "u32", "::std::num::NonZeroU32", u32::MIN as f64, u32::MAX as f64),
+            (
+                "int8",
+                "i8",
+                "::std::num::NonZeroU8",
+                i8::MIN as f64,
+                i8::MAX as f64,
+            ),
+            (
+                "uint8",
+                "u8",
+                "::std::num::NonZeroU8",
+                u8::MIN as f64,
+                u8::MAX as f64,
+            ),
+            (
+                "int16",
+                "i16",
+                "::std::num::NonZeroU16",
+                i16::MIN as f64,
+                i16::MAX as f64,
+            ),
+            (
+                "uint16",
+                "u16",
+                "::std::num::NonZeroU16",
+                u16::MIN as f64,
+                u16::MAX as f64,
+            ),
+            (
+                "int",
+                "i32",
+                "::std::num::NonZeroU32",
+                i32::MIN as f64,
+                i32::MAX as f64,
+            ),
+            (
+                "int32",
+                "i32",
+                "::std::num::NonZeroU32",
+                i32::MIN as f64,
+                i32::MAX as f64,
+            ),
+            (
+                "uint",
+                "u32",
+                "::std::num::NonZeroU32",
+                u32::MIN as f64,
+                u32::MAX as f64,
+            ),
+            (
+                "uint32",
+                "u32",
+                "::std::num::NonZeroU32",
+                u32::MIN as f64,
+                u32::MAX as f64,
+            ),
             // TODO all these are wrong as casting to an f64 loses precision.
             // However, schemars stores everything as an f64 so... meh for now.
-            ("int64", "i64", "::std::num::NonZeroU64", i64::MIN as f64, i64::MAX as f64),
-            ("uint64", "u64", "::std::num::NonZeroU64", u64::MIN as f64, u64::MAX as f64),
+            (
+                "int64",
+                "i64",
+                "::std::num::NonZeroU64",
+                i64::MIN as f64,
+                i64::MAX as f64,
+            ),
+            (
+                "uint64",
+                "u64",
+                "::std::num::NonZeroU64",
+                u64::MIN as f64,
+                u64::MAX as f64,
+            ),
         ];
 
         if let Some(format) = format {
@@ -1080,15 +1140,19 @@ impl TypeSpace {
                     None
                 }
             }),
-            (Some(min), Some(max)) => formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
-                if min == 1. {
-                    Some(nz_ty.to_string())
-                } else if (imax - max).abs() <= f64::EPSILON && (imin - min).abs() <= f64::EPSILON {
-                    Some(ty.to_string())
-                } else {
-                    None
-                }
-            }),
+            (Some(min), Some(max)) => {
+                formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
+                    if min == 1. {
+                        Some(nz_ty.to_string())
+                    } else if (imax - max).abs() <= f64::EPSILON
+                        && (imin - min).abs() <= f64::EPSILON
+                    {
+                        Some(ty.to_string())
+                    } else {
+                        None
+                    }
+                })
+            }
             (None, None) => None,
         };
 
