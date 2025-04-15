@@ -991,35 +991,90 @@ impl TypeSpace {
         };
 
         // Ordered from most- to least-restrictive.
-        let formats: &[(&str, &str, f64, f64)] = &[
-            ("int8", "i8", i8::MIN as f64, i8::MAX as f64),
-            ("", "::std::num::NonZeroU8", 1.0, u8::MAX as f64),
-            ("uint8", "u8", u8::MIN as f64, u8::MAX as f64),
-            ("int16", "i16", i16::MIN as f64, i16::MAX as f64),
-            ("", "::std::num::NonZeroU16", 1.0, u16::MAX as f64),
-            ("uint16", "u16", u16::MIN as f64, u16::MAX as f64),
-            ("int", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("int32", "i32", i32::MIN as f64, i32::MAX as f64),
-            ("", "::std::num::NonZeroU32", 1.0, u32::MAX as f64),
-            ("uint", "u32", u32::MIN as f64, u32::MAX as f64),
-            ("uint32", "u32", u32::MIN as f64, u32::MAX as f64),
+        // JSONSchema format, Rust Type, Rust NonZero Type, Rust type min, Rust type max
+        let formats: &[(&str, &str, &str, f64, f64)] = &[
+            (
+                "int8",
+                "i8",
+                "::std::num::NonZeroU8",
+                i8::MIN as f64,
+                i8::MAX as f64,
+            ),
+            (
+                "uint8",
+                "u8",
+                "::std::num::NonZeroU8",
+                u8::MIN as f64,
+                u8::MAX as f64,
+            ),
+            (
+                "int16",
+                "i16",
+                "::std::num::NonZeroU16",
+                i16::MIN as f64,
+                i16::MAX as f64,
+            ),
+            (
+                "uint16",
+                "u16",
+                "::std::num::NonZeroU16",
+                u16::MIN as f64,
+                u16::MAX as f64,
+            ),
+            (
+                "int",
+                "i32",
+                "::std::num::NonZeroU32",
+                i32::MIN as f64,
+                i32::MAX as f64,
+            ),
+            (
+                "int32",
+                "i32",
+                "::std::num::NonZeroU32",
+                i32::MIN as f64,
+                i32::MAX as f64,
+            ),
+            (
+                "uint",
+                "u32",
+                "::std::num::NonZeroU32",
+                u32::MIN as f64,
+                u32::MAX as f64,
+            ),
+            (
+                "uint32",
+                "u32",
+                "::std::num::NonZeroU32",
+                u32::MIN as f64,
+                u32::MAX as f64,
+            ),
             // TODO all these are wrong as casting to an f64 loses precision.
             // However, schemars stores everything as an f64 so... meh for now.
-            ("int64", "i64", i64::MIN as f64, i64::MAX as f64),
-            ("", "::std::num::NonZeroU64", 1.0, u64::MAX as f64),
-            ("uint64", "u64", u64::MIN as f64, u64::MAX as f64),
+            (
+                "int64",
+                "i64",
+                "::std::num::NonZeroU64",
+                i64::MIN as f64,
+                i64::MAX as f64,
+            ),
+            (
+                "uint64",
+                "u64",
+                "::std::num::NonZeroU64",
+                u64::MIN as f64,
+                u64::MAX as f64,
+            ),
         ];
 
         if let Some(format) = format {
-            if let Some((_, ty, imin, imax)) = formats
+            if let Some((_fmt, ty, nz_ty, imin, imax)) = formats
                 .iter()
-                .find(|(int_format, _, _, _)| int_format == format)
+                .find(|(int_format, _, _, _, _)| int_format == format)
             {
-                // If the type matches with other constraints, we're done.
-                if multiple.is_none()
-                    && (min.is_none() || min == Some(*imin))
-                    && (max.is_none() || max == Some(*imax))
-                {
+                let valid_min = min.is_none() || min.map(|fmin| fmin.ge(imin)).unwrap_or(false);
+                let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(false);
+                if multiple.is_none() && valid_min && valid_max {
                     // If there's a default value and it's either not a number
                     // or outside of the range for this format, return an
                     // error.
@@ -1032,7 +1087,13 @@ impl TypeSpace {
                             return Err(Error::InvalidValue);
                         }
                     }
-                    return Ok((TypeEntry::new_integer(ty), metadata));
+
+                    // Use NonZero types for minimum 1
+                    if min == Some(1.) {
+                        return Ok((TypeEntry::new_integer(nz_ty), metadata));
+                    } else {
+                        return Ok((TypeEntry::new_integer(ty), metadata));
+                    }
                 }
 
                 if min.is_none() {
@@ -1063,27 +1124,35 @@ impl TypeSpace {
 
         // See if the value bounds fit within a known type.
         let maybe_type = match (min, max) {
-            (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, _, imax)| {
+            (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, _nz_ty, _, imax)| {
                 if (imax - max).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
-            (Some(min), None) => formats.iter().rev().find_map(|(_, ty, imin, _)| {
-                if (imin - min).abs() <= f64::EPSILON {
+            (Some(min), None) => formats.iter().rev().find_map(|(_, ty, nz_ty, imin, _)| {
+                if min == 1. {
+                    Some(nz_ty.to_string())
+                } else if (imin - min).abs() <= f64::EPSILON {
                     Some(ty.to_string())
                 } else {
                     None
                 }
             }),
-            (Some(min), Some(max)) => formats.iter().rev().find_map(|(_, ty, imin, imax)| {
-                if (imax - max).abs() <= f64::EPSILON && (imin - min).abs() <= f64::EPSILON {
-                    Some(ty.to_string())
-                } else {
-                    None
-                }
-            }),
+            (Some(min), Some(max)) => {
+                formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
+                    if min == 1. {
+                        Some(nz_ty.to_string())
+                    } else if (imax - max).abs() <= f64::EPSILON
+                        && (imin - min).abs() <= f64::EPSILON
+                    {
+                        Some(ty.to_string())
+                    } else {
+                        None
+                    }
+                })
+            }
             (None, None) => None,
         };
 
