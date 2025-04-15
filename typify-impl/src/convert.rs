@@ -2066,7 +2066,6 @@ mod tests {
     };
     use serde_json::json;
 
-    use crate::type_entry::TypeEntryDetails;
     use crate::{
         test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceImpl,
         TypeSpaceSettings,
