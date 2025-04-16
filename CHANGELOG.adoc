@@ -15,6 +15,13 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.3.0\...HEAD[Full list of commits]
 
+* Doc fixes
+* Slightly more effort made to disambiguate enum variant identifiers (#762)
+* Fix for panic with non-zero integers, nullable types, and default values (#771)
+* Greater consistency wrt `additionalProperties` interpretation (#773)
+* Fix for string length validation for non ascii strings (#776)
+* Improved handling of integer format with min/max values (#733)
+
 == 0.3.0 (released 2024-12-27)
 
 https://github.com/oxidecomputer/typify/compare/v0.2.0\...v0.3.0[Full list of commits]
