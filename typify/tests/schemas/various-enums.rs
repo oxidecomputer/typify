@@ -1020,6 +1020,256 @@ impl ::std::convert::From<i64> for OneOfTypes {
         Self::Bar(value)
     }
 }
+#[doc = "`OptionAnyofConst`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": null"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofConst(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofConst {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofConst> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofConst) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofConst> for OptionAnyofConst {
+    fn from(value: &OptionAnyofConst) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofConst {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionAnyofEnum`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        null"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofEnum(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofEnum {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofEnum> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofEnum) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofEnum> for OptionAnyofEnum {
+    fn from(value: &OptionAnyofEnum) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofEnum {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionAnyofNull`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofNull(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofNull {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofNull> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofNull) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofNull> for OptionAnyofNull {
+    fn from(value: &OptionAnyofNull) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofNull {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofConst`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": null"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofConst(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofConst {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofConst> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofConst) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofConst> for OptionOneofConst {
+    fn from(value: &OptionOneofConst) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofConst {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofEnum`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        null"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofEnum(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofEnum {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofEnum> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofEnum) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofEnum> for OptionOneofEnum {
+    fn from(value: &OptionOneofEnum) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofEnum {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofNull`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofNull(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofNull {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofNull> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofNull) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofNull> for OptionOneofNull {
+    fn from(value: &OptionOneofNull) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofNull {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
 #[doc = "`ReferenceDef`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

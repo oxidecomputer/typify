@@ -34,15 +34,10 @@ impl TypeSpace {
             return None;
         }
         // Let's be as general as possible and consider the possibility that
-        // more than one subschema is the simple null.
+        // more than one subschema is a null.
         let non_nulls = subschemas
             .iter()
-            .filter(|schema| {
-                !matches!(schema, Schema::Object(SchemaObject {
-                instance_type: Some(SingleOrVec::Single(single)),
-                ..
-            }) if single.as_ref() == &InstanceType::Null)
-            })
+            .filter(|schema| !is_null_schema(schema))
             .collect::<Vec<_>>();
 
         if non_nulls.len() != 1 {
@@ -684,6 +679,44 @@ impl TypeSpace {
             deny_unknown_fields,
             original_schema.clone(),
         ))
+    }
+}
+
+/// Check if the schema can only be satisfied by a null. Since this is JSON
+/// schema, there are an infinity of schemas for which this might be true; in
+/// the spirit of pragmatism we check:
+/// - type: null (or [null] or [null, null, etc])
+/// - enum: [null] (or [null, null, etc])
+/// - const: null
+fn is_null_schema(schema: &Schema) -> bool {
+    match schema {
+        // Null instance type singleton
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Single(instance_type)),
+            ..
+        }) => **instance_type == InstanceType::Null,
+
+        // Null instance type array
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Vec(types)),
+            ..
+        }) => types
+            .iter()
+            .all(|instance_type| *instance_type == InstanceType::Null),
+
+        // Null constant value
+        Schema::Object(SchemaObject {
+            const_value: Some(value),
+            ..
+        }) => value.is_null(),
+
+        // Enumerated values where all are null
+        Schema::Object(SchemaObject {
+            enum_values: Some(values),
+            ..
+        }) => values.iter().all(serde_json::Value::is_null),
+
+        _ => false,
     }
 }
 
