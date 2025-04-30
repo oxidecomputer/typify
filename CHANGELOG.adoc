@@ -15,6 +15,9 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.4.0\...HEAD[Full list of commits]
 
+* improve `null` recognition (#817)
+* improve identification of mutually incompatible `anyOf` subschemas (#817)
+
 == 0.4.0 (released 2025-04-16)
 
 https://github.com/oxidecomputer/typify/compare/v0.3.0\...v0.4.0[Full list of commits]
