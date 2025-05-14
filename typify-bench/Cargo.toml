@@ -1,0 +1,24 @@
+[package]
+name = "typify-bench"
+version = "0.0.0"
+edition = "2021"
+
+[[bench]]
+name = "generated_bench"
+harness = false
+
+[dependencies]
+regress = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+
+[build-dependencies]
+glob = { workspace = true }
+rustfmt-wrapper = { workspace = true }
+schemars = { workspace = true }
+serde_json = { workspace = true }
+typify = { path = "../typify" }
+
+[dev-dependencies]
+criterion = { workspace = true, features = ["html_reports"] }
