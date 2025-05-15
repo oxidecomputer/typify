@@ -1176,7 +1176,7 @@ impl<'a> TypeStruct<'a> {
     }
 
     /// Get all information about each struct property.
-    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo> {
+    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo<'a>> {
         self.details
             .properties
             .iter()
