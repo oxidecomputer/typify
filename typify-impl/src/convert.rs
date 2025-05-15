@@ -2067,8 +2067,7 @@ mod tests {
     use serde_json::json;
 
     use crate::{
-        test_util::validate_output, validate_builtin, Error, Name, TypeSpace, TypeSpaceImpl,
-        TypeSpaceSettings,
+        test_util::validate_output, Error, Name, TypeSpace, TypeSpaceImpl, TypeSpaceSettings,
     };
 
     #[track_caller]
@@ -2175,13 +2174,6 @@ mod tests {
         }
 
         validate_output::<Bar>();
-    }
-
-    // TODO we can turn this on once we generate proper sets.
-    #[ignore]
-    #[test]
-    fn test_set() {
-        validate_builtin!(std::collections::BTreeSet<u32>);
     }
 
     #[test]

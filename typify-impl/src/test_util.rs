@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::{any::type_name, collections::HashSet};
 
@@ -12,7 +12,7 @@ use syn::{
     FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::{output::OutputSpace, Name, RefKey, TypeId, TypeSpace};
+use crate::{output::OutputSpace, RefKey, TypeId, TypeSpace};
 
 pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let schema = schema_for!(T);
@@ -139,40 +139,6 @@ fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
     let mut visitor = Visitor;
     syn::visit_mut::visit_derive_input_mut(&mut visitor, &mut input);
     input
-}
-
-#[macro_export]
-macro_rules! validate_builtin {
-    ($t:ty) => {
-        $crate::test_util::validate_builtin_impl::<$t>(stringify!($t))
-    };
-}
-
-#[track_caller]
-pub(crate) fn validate_builtin_impl<T: JsonSchema>(name: &str) {
-    let schema = schema_for!(T);
-    let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
-
-    let mut type_space = TypeSpace::default();
-    type_space
-        .add_ref_types(schema.definitions.clone())
-        .unwrap();
-    let (ty, _) = type_space
-        .convert_schema_object(Name::Unknown, &original_schema, &schema.schema)
-        .unwrap();
-
-    let output = ty.type_ident(&type_space, &None);
-
-    let actual = syn::parse2::<syn::Type>(output.clone()).unwrap();
-    let expected = syn::parse_str::<syn::Type>(name).unwrap();
-
-    // Make sure they match.
-    if let Err(err) = expected.syn_cmp(&actual, false) {
-        println!("{:#?}", schema);
-        println!("actual: {}", output);
-        println!("expected: {}", name);
-        panic!("{}", err);
-    }
 }
 
 pub(crate) trait SynCompare {
