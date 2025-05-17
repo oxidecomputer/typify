@@ -102,8 +102,8 @@ impl ::std::convert::From<&TestGrammarForPatternPropertiesRulesKey>
 impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        static PATTERN: std::sync::LazyLock<regress::Regex> =
-            std::sync::LazyLock::new(|| regress::Regex::new("^[a-zA-Z_]\\w*$").unwrap());
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^[a-zA-Z_]\\w*$").unwrap());
         if (&*PATTERN).find(value).is_none() {
             return Err("doesn't match pattern \"^[a-zA-Z_]\\w*$\"".into());
         }

@@ -58,8 +58,8 @@ impl ::std::convert::From<&PatternString> for PatternString {
 impl ::std::str::FromStr for PatternString {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        static PATTERN: std::sync::LazyLock<regress::Regex> =
-            std::sync::LazyLock::new(|| regress::Regex::new("xx").unwrap());
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new("xx").unwrap());
         if (&*PATTERN).find(value).is_none() {
             return Err("doesn't match pattern \"xx\"".into());
         }

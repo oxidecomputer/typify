@@ -1,7 +1,6 @@
 [workspace]
 members = [
 	"typify",
-	"typify-bench",
 	"typify-impl",
 	"typify-macro",
 	"typify-test",
