@@ -863,6 +863,111 @@ impl TrimFat {
         Default::default()
     }
 }
+#[doc = "`UnchangedByMerge`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"tag\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"tag\": {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"something\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct UnchangedByMerge {
+    pub tag: UnchangedByMergeTag,
+}
+impl ::std::convert::From<&UnchangedByMerge> for UnchangedByMerge {
+    fn from(value: &UnchangedByMerge) -> Self {
+        value.clone()
+    }
+}
+impl UnchangedByMerge {
+    pub fn builder() -> builder::UnchangedByMerge {
+        Default::default()
+    }
+}
+#[doc = "`UnchangedByMergeTag`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"something\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum UnchangedByMergeTag {
+    #[serde(rename = "something")]
+    Something,
+}
+impl ::std::convert::From<&Self> for UnchangedByMergeTag {
+    fn from(value: &UnchangedByMergeTag) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for UnchangedByMergeTag {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Something => write!(f, "something"),
+        }
+    }
+}
+impl ::std::str::FromStr for UnchangedByMergeTag {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "something" => Ok(Self::Something),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`Unresolvable`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1970,6 +2075,42 @@ pub mod builder {
     impl ::std::convert::From<super::TrimFat> for TrimFat {
         fn from(value: super::TrimFat) -> Self {
             Self { a: Ok(value.a) }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UnchangedByMerge {
+        tag: ::std::result::Result<super::UnchangedByMergeTag, ::std::string::String>,
+    }
+    impl ::std::default::Default for UnchangedByMerge {
+        fn default() -> Self {
+            Self {
+                tag: Err("no value supplied for tag".to_string()),
+            }
+        }
+    }
+    impl UnchangedByMerge {
+        pub fn tag<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::UnchangedByMergeTag>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.tag = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for tag: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UnchangedByMerge> for super::UnchangedByMerge {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UnchangedByMerge,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { tag: value.tag? })
+        }
+    }
+    impl ::std::convert::From<super::UnchangedByMerge> for UnchangedByMerge {
+        fn from(value: super::UnchangedByMerge) -> Self {
+            Self { tag: Ok(value.tag) }
         }
     }
     #[derive(Clone, Debug)]
