@@ -490,6 +490,38 @@
           "additionalProperties": false
         }
       ]
+    },
+    "unchanged-by-merge": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "enum": [
+                "something"
+              ]
+            }
+          },
+          "required": [
+            "tag"
+          ]
+        },
+        {
+          "not": {
+            "type": "object",
+            "properties": {
+              "tag": {
+                "enum": [
+                  "something_else"
+                ]
+              }
+            },
+            "required": [
+              "tag"
+            ]
+          }
+        }
+      ]
     }
   }
 }
