@@ -415,13 +415,35 @@ fn try_merge_with_each_subschema(
     joined_schemas
 }
 
+fn merge_schema_not(
+    schema: &Schema,
+    not_schema: &Schema,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Schema {
+    match (schema, not_schema) {
+        (_, Schema::Bool(true)) | (Schema::Bool(false), _) => Schema::Bool(false),
+
+        (any, Schema::Bool(false)) => any.clone(),
+
+        // TODO I don't know how to subtract something from nothing...
+        (Schema::Bool(true), Schema::Object(_)) => todo!(),
+
+        (Schema::Object(schema_object), any_not) => {
+            match try_merge_schema_not(schema_object.clone(), any_not, defs) {
+                Ok(schema_obj) => Schema::Object(schema_obj),
+                Err(_) => Schema::Bool(false),
+            }
+        }
+    }
+}
+
 /// "Subtract" the "not" schema from the schema object.
 ///
 /// TODO Exactly where and how we handle not constructions is... tricky! As we
 /// find and support more and more useful uses of not we will likely move some
 /// of this into the conversion methods.
 fn try_merge_schema_not(
-    mut schema_object: SchemaObject,
+    schema_object: SchemaObject,
     not_schema: &Schema,
     defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<SchemaObject, ()> {
@@ -435,77 +457,8 @@ fn try_merge_schema_not(
         Schema::Bool(true) => Err(()),
         // ... whereas subtracting nothing leaves everything.
         Schema::Bool(false) => Ok(schema_object),
-
-        Schema::Object(SchemaObject {
-            // I don't think there's any significance to the schema metadata
-            // with respect to the types we might generate.
-            metadata: _,
-            // TODO we should should check instance_type and then walk through
-            // validation of each type based on the specific validation.
-            instance_type: _,
-            format: _,
-            enum_values: _,
-            const_value: _,
-            subschemas,
-            number: _,
-            string: _,
-            array: _,
-            object,
-            // TODO we might want to chase these references but need to take
-            // care to handle circular references.
-            reference: _,
-            extensions: _,
-        }) => {
-            if let Some(not_object) = object {
-                // TODO this is incomplete, but seems sufficient for the
-                // schemas we've seen in the wild.
-                if let Some(ObjectValidation {
-                    required,
-                    properties,
-                    ..
-                }) = schema_object.object.as_deref_mut()
-                {
-                    // TODO This is completely wrong for arrays of len > 1.
-                    // We need to treat required: [x, y] like it's:
-                    //   not:
-                    //     allOf:
-                    //       required: [x]
-                    //       required: [y]
-                    // Then we can transform them into:
-                    //   anyOf:
-                    //     not:
-                    //       required: [x]
-                    //     not:
-                    //       required: [y]
-                    // Which in turn can become:
-                    //   oneOf:
-                    //     not:
-                    //       required: [x]
-                    //     not:
-                    //       required: [y]
-                    //     not:
-                    //       required: [x, y]
-                    for not_required in &not_object.required {
-                        // A property can't be both required and not required
-                        // therefore this schema is unsatisfiable.
-                        if required.contains(not_required) {
-                            return Err(());
-                        }
-                        // Set the property's schema to false i.e. that the
-                        // presence of any value would be invalid. We ignore
-                        // the return value as it doesn't matter if the
-                        // property was there previously or not.
-                        let _ = properties.insert(not_required.clone(), Schema::Bool(false));
-                    }
-                }
-            }
-
-            if let Some(not_subschemas) = subschemas {
-                schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
-            }
-
-            Ok(schema_object)
-        }
+        // Do the real work.
+        Schema::Object(not_object) => try_merge_schema_object_not(schema_object, not_object, defs),
     }
 }
 
@@ -602,6 +555,84 @@ fn try_merge_with_subschemas_not(
             serde_json::to_string_pretty(&not_subschemas).unwrap(),
         ),
     }
+}
+
+fn try_merge_schema_object_not(
+    mut schema_object: SchemaObject,
+    not_object: &SchemaObject,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Result<SchemaObject, ()> {
+    // Examine enum values
+    match (&mut schema_object.enum_values, &not_object.enum_values) {
+        // Nothing to do.
+        (_, None) => {}
+        // TODO not sure quite what to do, so we'll ignore for now.
+        (None, Some(_)) => {}
+        (Some(values), Some(not_values)) => {
+            values.retain(|value| !not_values.contains(value));
+            if values.is_empty() {
+                return Err(());
+            }
+        }
+    }
+
+    match (&mut schema_object.object, &not_object.object) {
+        // Nothing to do.
+        (_, None) => {}
+
+        // TODO Not sure how to enforce the inverse here...
+        (None, Some(_)) => {}
+
+        // In the interesting case, we need to "subtract" object attributes.
+        (Some(obj), Some(not_obj)) => {
+            for (prop_name, prop_schema) in &mut obj.properties {
+                if let Some(not_prop_schema) = not_obj.properties.get(prop_name) {
+                    // For properties in both, we merge those schemas. Note
+                    // that if such a merging is unsatisfiable *and* the
+                    // property is required, we'll take the appropriate action
+                    // later.
+                    *prop_schema = merge_schema_not(prop_schema, not_prop_schema, defs);
+                }
+            }
+
+            for prop_name in not_obj.properties.keys() {
+                if !obj.properties.contains_key(prop_name) {
+                    // There's a property in the "not" that isn't in the
+                    // object. Most precisely we would say "this property may
+                    // have any value as long as it doesn't match this schema".
+                    // That's a little tricky right now, so instead we'll say
+                    // "you may not have a property with this name".
+                    let _ = obj
+                        .properties
+                        .insert(prop_name.clone(), Schema::Bool(false));
+                }
+            }
+
+            for not_required in &not_obj.required {
+                if !not_obj.properties.contains_key(not_required) {
+                    // No value is permissible
+                    let _ = obj
+                        .properties
+                        .insert(not_required.clone(), Schema::Bool(false));
+                }
+            }
+
+            // If any of the previous steps resulted in a required property
+            // being invalid, we note that here and identify the full schema as
+            // invalid.
+            for required in &obj.required {
+                if let Some(Schema::Bool(false)) = obj.properties.get(required) {
+                    return Err(());
+                }
+            }
+        }
+    }
+
+    if let Some(not_subschemas) = &not_object.subschemas {
+        schema_object = try_merge_with_subschemas_not(schema_object, not_subschemas, defs)?;
+    }
+
+    Ok(schema_object)
 }
 
 /// Merge instance types which could be None (meaning type is valid), a
