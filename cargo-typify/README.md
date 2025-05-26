@@ -15,6 +15,9 @@ for use at the command-line.
 Install with `cargo install cargo-typify`. This command requires that `rustfmt`
 is installed. Install rustfmt with rustup component add rustfmt
 
+For ArchLinux users, there is also an
+[AUR package](https://aur.archlinux.org/packages/cargo-typify) available.
+
 ## Example
 
 **`$ cat id-or-name.json`**
