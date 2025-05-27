@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.4.1\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.4.2\...HEAD[Full list of commits]
+
+== 0.4.2 (released 2025-05-27)
+
+https://github.com/oxidecomputer/typify/compare/v0.4.1\...v0.4.2[Full list of commits]
 
 * improve merging logic for "not" schemas (#831)
 * improve regex validation performance. (#825)
