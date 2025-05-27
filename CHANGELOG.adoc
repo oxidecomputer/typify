@@ -15,6 +15,10 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.4.1\...HEAD[Full list of commits]
 
+* improve merging logic for "not" schemas (#831)
+* improve regex validation performance. (#825)
+* remove some dead code that displeases more recent rust versions (#826)
+
 == 0.4.1 (released 2025-04-30)
 
 https://github.com/oxidecomputer/typify/compare/v0.4.0\...v0.4.1[Full list of commits]
