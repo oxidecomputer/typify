@@ -1,3 +1,5 @@
+// Copyright 2025 Oxide Computer Company
+
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
 
@@ -153,7 +155,7 @@ fn main() {
 
     // Generate with a custom map type to validate requirements.
     let mut settings = TypeSpaceSettings::default();
-    settings.with_map_type("CustomMap".to_string());
+    settings.with_map_type("CustomMap");
     let mut type_space = TypeSpace::new(&settings);
 
     WithMap::add(&mut type_space);
