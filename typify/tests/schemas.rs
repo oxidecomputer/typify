@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::{error::Error, fs::File, io::BufReader};
 
@@ -30,7 +30,7 @@ fn test_custom_map() {
     validate_schema(
         "tests/schemas/maps.json".into(),
         "tests/schemas/maps_custom.rs".into(),
-        TypeSpaceSettings::default().with_map_type("std::collections::BTreeMap".to_string()),
+        TypeSpaceSettings::default().with_map_type("std::collections::BTreeMap"),
     )
     .unwrap();
 
