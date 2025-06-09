@@ -12,7 +12,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "convert": {
           "type": "object",
@@ -21,7 +23,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "fmt": {
           "type": "object",
@@ -30,7 +34,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "str": {
           "type": "object",
@@ -39,7 +45,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "string": {
           "type": "object",
@@ -48,7 +56,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "option": {
           "type": "object",
@@ -57,7 +67,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         },
         "boxed": {
           "type": "object",
@@ -66,7 +78,9 @@
               "type": "string"
             }
           },
-          "required": ["value"]
+          "required": [
+            "value"
+          ]
         }
       },
       "required": [
@@ -86,7 +100,9 @@
           "type": "string"
         }
       },
-      "required": ["data"]
+      "required": [
+        "data"
+      ]
     },
     "Option": {
       "type": "object",
@@ -95,7 +111,9 @@
           "type": "string"
         }
       },
-      "required": ["maybe"]
+      "required": [
+        "maybe"
+      ]
     },
     "Vec": {
       "type": "object",
@@ -107,7 +125,9 @@
           }
         }
       },
-      "required": ["items"]
+      "required": [
+        "items"
+      ]
     },
     "String": {
       "type": "object",
@@ -116,7 +136,9 @@
           "type": "string"
         }
       },
-      "required": ["text"]
+      "required": [
+        "text"
+      ]
     },
     "Copy": {
       "type": "object",
@@ -125,7 +147,9 @@
           "type": "integer"
         }
       },
-      "required": ["value"]
+      "required": [
+        "value"
+      ]
     },
     "Sync": {
       "type": "object",
@@ -134,7 +158,9 @@
           "type": "string"
         }
       },
-      "required": ["data"]
+      "required": [
+        "data"
+      ]
     },
     "Send": {
       "type": "object",
@@ -143,7 +169,9 @@
           "type": "string"
         }
       },
-      "required": ["message"]
+      "required": [
+        "message"
+      ]
     },
     "Pin": {
       "type": "object",
@@ -152,7 +180,9 @@
           "type": "string"
         }
       },
-      "required": ["pointer"]
+      "required": [
+        "pointer"
+      ]
     },
     "Drop": {
       "type": "object",
@@ -161,19 +191,26 @@
           "type": "boolean"
         }
       },
-      "required": ["cleanup"]
+      "required": [
+        "cleanup"
+      ]
     },
     "TypeWithOptionField": {
       "type": "object",
       "properties": {
         "optional_field": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "boxed_field": {
           "$ref": "#/definitions/Box"
         }
       },
-      "required": ["boxed_field"]
+      "required": [
+        "boxed_field"
+      ]
     },
     "StringNewtype": {
       "type": "string",
@@ -182,7 +219,11 @@
     },
     "StringEnum": {
       "type": "string",
-      "enum": ["one", "two", "three"]
+      "enum": [
+        "one",
+        "two",
+        "three"
+      ]
     },
     "RustKeywordMonster": {
       "type": "object",
@@ -417,7 +458,9 @@
           }
         }
       },
-      "required": ["keyword_map"]
+      "required": [
+        "keyword_map"
+      ]
     },
     "NestedTypeCollisions": {
       "type": "object",
@@ -432,60 +475,99 @@
           }
         },
         "option_type": {
-          "type": ["null", "object"],
+          "type": [
+            "null",
+            "object"
+          ],
           "properties": {
-            "type": { "type": "string" }
+            "type": {
+              "type": "string"
+            }
           }
         }
       },
-      "required": ["type", "types"]
+      "required": [
+        "type",
+        "types"
+      ]
     },
-
     "KeywordFieldsEnum": {
       "type": "object",
       "oneOf": [
         {
           "type": "object",
           "properties": {
-            "type": { "type": "string" },
-            "match": { "type": "integer" },
-            "ref": { "type": "boolean" },
-            "impl": { "type": "string" }
+            "type": {
+              "type": "string"
+            },
+            "match": {
+              "type": "integer"
+            },
+            "ref": {
+              "type": "boolean"
+            },
+            "impl": {
+              "type": "string"
+            }
           },
-          "required": ["type", "match", "ref", "impl"]
+          "required": [
+            "type",
+            "match",
+            "ref",
+            "impl"
+          ]
         },
         {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "minItems": 2,
           "maxItems": 2
         }
       ]
     },
-
     "FlattenedKeywords": {
       "type": "object",
       "properties": {
-        "normal": { "type": "string" }
+        "normal": {
+          "type": "string"
+        }
       },
-      "required": ["normal"],
+      "required": [
+        "normal"
+      ],
       "additionalProperties": {
         "type": "string"
       }
     },
-
     "DoubleOptionCollision": {
       "type": "object",
       "properties": {
         "option": {
-          "type": ["null", "object"],
+          "type": [
+            "null",
+            "object"
+          ],
           "properties": {
             "option": {
-              "type": ["null", "string"]
+              "type": [
+                "null",
+                "string"
+              ]
             }
           }
         }
       }
+    },
+    "format-collision": {
+      "enum": [
+        "{abc}def",
+        "{http://example.com/Foo}Thing",
+        "{self}",
+        "quote\"unquote",
+        "xyz"
+      ]
     }
   }
 }

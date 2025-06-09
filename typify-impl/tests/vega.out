@@ -901,30 +901,30 @@ impl ::std::convert::From<&Self> for AggregateTransformOpsVariant0ItemVariant0 {
 impl ::std::fmt::Display for AggregateTransformOpsVariant0ItemVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Values => write!(f, "values"),
-            Self::Count => write!(f, "count"),
-            Self::XXcountXx => write!(f, "__count__"),
-            Self::Missing => write!(f, "missing"),
-            Self::Valid => write!(f, "valid"),
-            Self::Sum => write!(f, "sum"),
-            Self::Product => write!(f, "product"),
-            Self::Mean => write!(f, "mean"),
-            Self::Average => write!(f, "average"),
-            Self::Variance => write!(f, "variance"),
-            Self::Variancep => write!(f, "variancep"),
-            Self::Stdev => write!(f, "stdev"),
-            Self::Stdevp => write!(f, "stdevp"),
-            Self::Stderr => write!(f, "stderr"),
-            Self::Distinct => write!(f, "distinct"),
-            Self::Ci0 => write!(f, "ci0"),
-            Self::Ci1 => write!(f, "ci1"),
-            Self::Median => write!(f, "median"),
-            Self::Q1 => write!(f, "q1"),
-            Self::Q3 => write!(f, "q3"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
-            Self::Argmin => write!(f, "argmin"),
-            Self::Argmax => write!(f, "argmax"),
+            Self::Values => f.write_str("values"),
+            Self::Count => f.write_str("count"),
+            Self::XXcountXx => f.write_str("__count__"),
+            Self::Missing => f.write_str("missing"),
+            Self::Valid => f.write_str("valid"),
+            Self::Sum => f.write_str("sum"),
+            Self::Product => f.write_str("product"),
+            Self::Mean => f.write_str("mean"),
+            Self::Average => f.write_str("average"),
+            Self::Variance => f.write_str("variance"),
+            Self::Variancep => f.write_str("variancep"),
+            Self::Stdev => f.write_str("stdev"),
+            Self::Stdevp => f.write_str("stdevp"),
+            Self::Stderr => f.write_str("stderr"),
+            Self::Distinct => f.write_str("distinct"),
+            Self::Ci0 => f.write_str("ci0"),
+            Self::Ci1 => f.write_str("ci1"),
+            Self::Median => f.write_str("median"),
+            Self::Q1 => f.write_str("q1"),
+            Self::Q3 => f.write_str("q3"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
+            Self::Argmin => f.write_str("argmin"),
+            Self::Argmax => f.write_str("argmax"),
         }
     }
 }
@@ -1018,7 +1018,7 @@ impl ::std::convert::From<&Self> for AggregateTransformType {
 impl ::std::fmt::Display for AggregateTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Aggregate => write!(f, "aggregate"),
+            Self::Aggregate => f.write_str("aggregate"),
         }
     }
 }
@@ -1565,9 +1565,9 @@ impl ::std::convert::From<&Self> for AlignValueVariant0ItemVariant0Variant1Value
 impl ::std::fmt::Display for AlignValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -2212,9 +2212,9 @@ impl ::std::convert::From<&Self> for AlignValueVariant1Variant0Variant1Value {
 impl ::std::fmt::Display for AlignValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -3073,9 +3073,9 @@ impl ::std::convert::From<&Self> for AnchorValueVariant0ItemVariant0Variant1Valu
 impl ::std::fmt::Display for AnchorValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -3720,9 +3720,9 @@ impl ::std::convert::From<&Self> for AnchorValueVariant1Variant0Variant1Value {
 impl ::std::fmt::Display for AnchorValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -6817,11 +6817,11 @@ impl ::std::convert::From<&Self> for AutosizeVariant0 {
 impl ::std::fmt::Display for AutosizeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pad => write!(f, "pad"),
-            Self::Fit => write!(f, "fit"),
-            Self::FitX => write!(f, "fit-x"),
-            Self::FitY => write!(f, "fit-y"),
-            Self::None => write!(f, "none"),
+            Self::Pad => f.write_str("pad"),
+            Self::Fit => f.write_str("fit"),
+            Self::FitX => f.write_str("fit-x"),
+            Self::FitY => f.write_str("fit-y"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -6899,8 +6899,8 @@ impl ::std::convert::From<&Self> for AutosizeVariant1Contains {
 impl ::std::fmt::Display for AutosizeVariant1Contains {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Content => write!(f, "content"),
-            Self::Padding => write!(f, "padding"),
+            Self::Content => f.write_str("content"),
+            Self::Padding => f.write_str("padding"),
         }
     }
 }
@@ -6985,11 +6985,11 @@ impl ::std::convert::From<&Self> for AutosizeVariant1Type {
 impl ::std::fmt::Display for AutosizeVariant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pad => write!(f, "pad"),
-            Self::Fit => write!(f, "fit"),
-            Self::FitX => write!(f, "fit-x"),
-            Self::FitY => write!(f, "fit-y"),
-            Self::None => write!(f, "none"),
+            Self::Pad => f.write_str("pad"),
+            Self::Fit => f.write_str("fit"),
+            Self::FitX => f.write_str("fit-x"),
+            Self::FitY => f.write_str("fit-y"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -8797,9 +8797,9 @@ impl ::std::convert::From<&Self> for AxisFormatTypeVariant0 {
 impl ::std::fmt::Display for AxisFormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -9145,9 +9145,9 @@ impl ::std::convert::From<&Self> for AxisLabelAlignVariant0 {
 impl ::std::fmt::Display for AxisLabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -9318,12 +9318,12 @@ impl ::std::convert::From<&Self> for AxisLabelBaselineVariant0 {
 impl ::std::fmt::Display for AxisLabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -10052,10 +10052,10 @@ impl ::std::convert::From<&Self> for AxisOrientVariant0 {
 impl ::std::fmt::Display for AxisOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
         }
     }
 }
@@ -10554,9 +10554,9 @@ impl ::std::convert::From<&Self> for AxisTitleAlignVariant0 {
 impl ::std::fmt::Display for AxisTitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -10679,9 +10679,9 @@ impl ::std::convert::From<&Self> for AxisTitleAnchorVariant0 {
 impl ::std::fmt::Display for AxisTitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -10852,12 +10852,12 @@ impl ::std::convert::From<&Self> for AxisTitleBaselineVariant0 {
 impl ::std::fmt::Display for AxisTitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -12752,10 +12752,10 @@ impl ::std::convert::From<&Self> for BaselineValueVariant0ItemVariant0Variant1Va
 impl ::std::fmt::Display for BaselineValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
         }
     }
 }
@@ -13408,10 +13408,10 @@ impl ::std::convert::From<&Self> for BaselineValueVariant1Variant0Variant1Value 
 impl ::std::fmt::Display for BaselineValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
         }
     }
 }
@@ -14840,7 +14840,7 @@ impl ::std::convert::From<&Self> for BinTransformType {
 impl ::std::fmt::Display for BinTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Bin => write!(f, "bin"),
+            Self::Bin => f.write_str("bin"),
         }
     }
 }
@@ -15118,7 +15118,7 @@ impl ::std::convert::From<&Self> for BindVariant0Input {
 impl ::std::fmt::Display for BindVariant0Input {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Checkbox => write!(f, "checkbox"),
+            Self::Checkbox => f.write_str("checkbox"),
         }
     }
 }
@@ -15192,8 +15192,8 @@ impl ::std::convert::From<&Self> for BindVariant1Input {
 impl ::std::fmt::Display for BindVariant1Input {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Radio => write!(f, "radio"),
-            Self::Select => write!(f, "select"),
+            Self::Radio => f.write_str("radio"),
+            Self::Select => f.write_str("select"),
         }
     }
 }
@@ -15265,7 +15265,7 @@ impl ::std::convert::From<&Self> for BindVariant2Input {
 impl ::std::fmt::Display for BindVariant2Input {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Range => write!(f, "range"),
+            Self::Range => f.write_str("range"),
         }
     }
 }
@@ -15965,21 +15965,21 @@ impl ::std::convert::From<&Self> for BlendValueVariant0ItemVariant0Variant1Value
 impl ::std::fmt::Display for BlendValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Multiply => write!(f, "multiply"),
-            Self::Screen => write!(f, "screen"),
-            Self::Overlay => write!(f, "overlay"),
-            Self::Darken => write!(f, "darken"),
-            Self::Lighten => write!(f, "lighten"),
-            Self::ColorDodge => write!(f, "color-dodge"),
-            Self::ColorBurn => write!(f, "color-burn"),
-            Self::HardLight => write!(f, "hard-light"),
-            Self::SoftLight => write!(f, "soft-light"),
-            Self::Difference => write!(f, "difference"),
-            Self::Exclusion => write!(f, "exclusion"),
-            Self::Hue => write!(f, "hue"),
-            Self::Saturation => write!(f, "saturation"),
-            Self::Color => write!(f, "color"),
-            Self::Luminosity => write!(f, "luminosity"),
+            Self::Multiply => f.write_str("multiply"),
+            Self::Screen => f.write_str("screen"),
+            Self::Overlay => f.write_str("overlay"),
+            Self::Darken => f.write_str("darken"),
+            Self::Lighten => f.write_str("lighten"),
+            Self::ColorDodge => f.write_str("color-dodge"),
+            Self::ColorBurn => f.write_str("color-burn"),
+            Self::HardLight => f.write_str("hard-light"),
+            Self::SoftLight => f.write_str("soft-light"),
+            Self::Difference => f.write_str("difference"),
+            Self::Exclusion => f.write_str("exclusion"),
+            Self::Hue => f.write_str("hue"),
+            Self::Saturation => f.write_str("saturation"),
+            Self::Color => f.write_str("color"),
+            Self::Luminosity => f.write_str("luminosity"),
         }
     }
 }
@@ -16725,21 +16725,21 @@ impl ::std::convert::From<&Self> for BlendValueVariant1Variant0Variant1Value {
 impl ::std::fmt::Display for BlendValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Multiply => write!(f, "multiply"),
-            Self::Screen => write!(f, "screen"),
-            Self::Overlay => write!(f, "overlay"),
-            Self::Darken => write!(f, "darken"),
-            Self::Lighten => write!(f, "lighten"),
-            Self::ColorDodge => write!(f, "color-dodge"),
-            Self::ColorBurn => write!(f, "color-burn"),
-            Self::HardLight => write!(f, "hard-light"),
-            Self::SoftLight => write!(f, "soft-light"),
-            Self::Difference => write!(f, "difference"),
-            Self::Exclusion => write!(f, "exclusion"),
-            Self::Hue => write!(f, "hue"),
-            Self::Saturation => write!(f, "saturation"),
-            Self::Color => write!(f, "color"),
-            Self::Luminosity => write!(f, "luminosity"),
+            Self::Multiply => f.write_str("multiply"),
+            Self::Screen => f.write_str("screen"),
+            Self::Overlay => f.write_str("overlay"),
+            Self::Darken => f.write_str("darken"),
+            Self::Lighten => f.write_str("lighten"),
+            Self::ColorDodge => f.write_str("color-dodge"),
+            Self::ColorBurn => f.write_str("color-burn"),
+            Self::HardLight => f.write_str("hard-light"),
+            Self::SoftLight => f.write_str("soft-light"),
+            Self::Difference => f.write_str("difference"),
+            Self::Exclusion => f.write_str("exclusion"),
+            Self::Hue => f.write_str("hue"),
+            Self::Saturation => f.write_str("saturation"),
+            Self::Color => f.write_str("color"),
+            Self::Luminosity => f.write_str("luminosity"),
         }
     }
 }
@@ -18542,7 +18542,7 @@ impl ::std::convert::From<&Self> for CollectTransformType {
 impl ::std::fmt::Display for CollectTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Collect => write!(f, "collect"),
+            Self::Collect => f.write_str("collect"),
         }
     }
 }
@@ -19500,7 +19500,7 @@ impl ::std::convert::From<&Self> for ContourTransformType {
 impl ::std::fmt::Display for ContourTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Contour => write!(f, "contour"),
+            Self::Contour => f.write_str("contour"),
         }
     }
 }
@@ -20073,9 +20073,9 @@ impl ::std::convert::From<&Self> for CountpatternTransformCaseVariant0 {
 impl ::std::fmt::Display for CountpatternTransformCaseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Upper => write!(f, "upper"),
-            Self::Lower => write!(f, "lower"),
-            Self::Mixed => write!(f, "mixed"),
+            Self::Upper => f.write_str("upper"),
+            Self::Lower => f.write_str("lower"),
+            Self::Mixed => f.write_str("mixed"),
         }
     }
 }
@@ -20267,7 +20267,7 @@ impl ::std::convert::From<&Self> for CountpatternTransformType {
 impl ::std::fmt::Display for CountpatternTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Countpattern => write!(f, "countpattern"),
+            Self::Countpattern => f.write_str("countpattern"),
         }
     }
 }
@@ -20503,7 +20503,7 @@ impl ::std::convert::From<&Self> for CrossTransformType {
 impl ::std::fmt::Display for CrossTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Cross => write!(f, "cross"),
+            Self::Cross => f.write_str("cross"),
         }
     }
 }
@@ -20788,7 +20788,7 @@ impl ::std::convert::From<&Self> for CrossfilterTransformType {
 impl ::std::fmt::Display for CrossfilterTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Crossfilter => write!(f, "crossfilter"),
+            Self::Crossfilter => f.write_str("crossfilter"),
         }
     }
 }
@@ -22065,7 +22065,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype0ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -22243,10 +22243,10 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype0ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -22585,7 +22585,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype1ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -22763,10 +22763,10 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype1ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -22933,7 +22933,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype1Type {
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Json => write!(f, "json"),
+            Self::Json => f.write_str("json"),
         }
     }
 }
@@ -23164,7 +23164,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype2ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -23342,10 +23342,10 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype2ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -23515,8 +23515,8 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype2Type {
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Csv => write!(f, "csv"),
-            Self::Tsv => write!(f, "tsv"),
+            Self::Csv => f.write_str("csv"),
+            Self::Tsv => f.write_str("tsv"),
         }
     }
 }
@@ -23752,7 +23752,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype3ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -23930,10 +23930,10 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype3ParseVari
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -24100,7 +24100,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype3Type {
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Dsv => write!(f, "dsv"),
+            Self::Dsv => f.write_str("dsv"),
         }
     }
 }
@@ -24256,7 +24256,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype4Variant0T
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Topojson => write!(f, "topojson"),
+            Self::Topojson => f.write_str("topojson"),
         }
     }
 }
@@ -24335,8 +24335,8 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype4Variant1F
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant1Filter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Interior => write!(f, "interior"),
-            Self::Exterior => write!(f, "exterior"),
+            Self::Interior => f.write_str("interior"),
+            Self::Exterior => f.write_str("exterior"),
         }
     }
 }
@@ -24412,7 +24412,7 @@ impl ::std::convert::From<&Self> for DataVariant2FormatVariant0Subtype4Variant1T
 impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Topojson => write!(f, "topojson"),
+            Self::Topojson => f.write_str("topojson"),
         }
     }
 }
@@ -24955,7 +24955,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype0ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -25133,10 +25133,10 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype0ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -25475,7 +25475,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype1ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -25653,10 +25653,10 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype1ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -25823,7 +25823,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype1Type {
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Json => write!(f, "json"),
+            Self::Json => f.write_str("json"),
         }
     }
 }
@@ -26054,7 +26054,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype2ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -26232,10 +26232,10 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype2ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -26405,8 +26405,8 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype2Type {
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Csv => write!(f, "csv"),
-            Self::Tsv => write!(f, "tsv"),
+            Self::Csv => f.write_str("csv"),
+            Self::Tsv => f.write_str("tsv"),
         }
     }
 }
@@ -26642,7 +26642,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype3ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Auto => write!(f, "auto"),
+            Self::Auto => f.write_str("auto"),
         }
     }
 }
@@ -26820,10 +26820,10 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype3ParseVari
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Boolean => write!(f, "boolean"),
-            Self::Number => write!(f, "number"),
-            Self::Date => write!(f, "date"),
-            Self::String => write!(f, "string"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Number => f.write_str("number"),
+            Self::Date => f.write_str("date"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -26990,7 +26990,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype3Type {
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Dsv => write!(f, "dsv"),
+            Self::Dsv => f.write_str("dsv"),
         }
     }
 }
@@ -27146,7 +27146,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype4Variant0T
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Topojson => write!(f, "topojson"),
+            Self::Topojson => f.write_str("topojson"),
         }
     }
 }
@@ -27225,8 +27225,8 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype4Variant1F
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant1Filter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Interior => write!(f, "interior"),
-            Self::Exterior => write!(f, "exterior"),
+            Self::Interior => f.write_str("interior"),
+            Self::Exterior => f.write_str("exterior"),
         }
     }
 }
@@ -27302,7 +27302,7 @@ impl ::std::convert::From<&Self> for DataVariant3FormatVariant0Subtype4Variant1T
 impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Topojson => write!(f, "topojson"),
+            Self::Topojson => f.write_str("topojson"),
         }
     }
 }
@@ -28719,7 +28719,7 @@ impl ::std::convert::From<&Self> for DensityTransformType {
 impl ::std::fmt::Display for DensityTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Density => write!(f, "density"),
+            Self::Density => f.write_str("density"),
         }
     }
 }
@@ -29259,8 +29259,8 @@ impl ::std::convert::From<&Self> for DirectionValueVariant0ItemVariant0Variant1V
 impl ::std::fmt::Display for DirectionValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Horizontal => write!(f, "horizontal"),
-            Self::Vertical => write!(f, "vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
+            Self::Vertical => f.write_str("vertical"),
         }
     }
 }
@@ -29897,8 +29897,8 @@ impl ::std::convert::From<&Self> for DirectionValueVariant1Variant0Variant1Value
 impl ::std::fmt::Display for DirectionValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Horizontal => write!(f, "horizontal"),
-            Self::Vertical => write!(f, "vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
+            Self::Vertical => f.write_str("vertical"),
         }
     }
 }
@@ -30662,7 +30662,7 @@ impl ::std::convert::From<&Self> for DotbinTransformType {
 impl ::std::fmt::Display for DotbinTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Dotbin => write!(f, "dotbin"),
+            Self::Dotbin => f.write_str("dotbin"),
         }
     }
 }
@@ -31814,7 +31814,7 @@ impl ::std::convert::From<&Self> for ExtentTransformType {
 impl ::std::fmt::Display for ExtentTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Extent => write!(f, "extent"),
+            Self::Extent => f.write_str("extent"),
         }
     }
 }
@@ -32337,7 +32337,7 @@ impl ::std::convert::From<&Self> for FilterTransformType {
 impl ::std::fmt::Display for FilterTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Filter => write!(f, "filter"),
+            Self::Filter => f.write_str("filter"),
         }
     }
 }
@@ -32722,7 +32722,7 @@ impl ::std::convert::From<&Self> for FlattenTransformType {
 impl ::std::fmt::Display for FlattenTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Flatten => write!(f, "flatten"),
+            Self::Flatten => f.write_str("flatten"),
         }
     }
 }
@@ -33078,7 +33078,7 @@ impl ::std::convert::From<&Self> for FoldTransformType {
 impl ::std::fmt::Display for FoldTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Fold => write!(f, "fold"),
+            Self::Fold => f.write_str("fold"),
         }
     }
 }
@@ -36333,7 +36333,7 @@ impl ::std::convert::From<&Self> for ForceTransformType {
 impl ::std::fmt::Display for ForceTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Force => write!(f, "force"),
+            Self::Force => f.write_str("force"),
         }
     }
 }
@@ -36586,7 +36586,7 @@ impl ::std::convert::From<&Self> for FormulaTransformType {
 impl ::std::fmt::Display for FormulaTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Formula => write!(f, "formula"),
+            Self::Formula => f.write_str("formula"),
         }
     }
 }
@@ -36917,7 +36917,7 @@ impl ::std::convert::From<&Self> for GeojsonTransformType {
 impl ::std::fmt::Display for GeojsonTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Geojson => write!(f, "geojson"),
+            Self::Geojson => f.write_str("geojson"),
         }
     }
 }
@@ -37222,7 +37222,7 @@ impl ::std::convert::From<&Self> for GeopathTransformType {
 impl ::std::fmt::Display for GeopathTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Geopath => write!(f, "geopath"),
+            Self::Geopath => f.write_str("geopath"),
         }
     }
 }
@@ -37587,7 +37587,7 @@ impl ::std::convert::From<&Self> for GeopointTransformType {
 impl ::std::fmt::Display for GeopointTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Geopoint => write!(f, "geopoint"),
+            Self::Geopoint => f.write_str("geopoint"),
         }
     }
 }
@@ -37901,7 +37901,7 @@ impl ::std::convert::From<&Self> for GeoshapeTransformType {
 impl ::std::fmt::Display for GeoshapeTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Geoshape => write!(f, "geoshape"),
+            Self::Geoshape => f.write_str("geoshape"),
         }
     }
 }
@@ -38704,7 +38704,7 @@ impl ::std::convert::From<&Self> for GraticuleTransformType {
 impl ::std::fmt::Display for GraticuleTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Graticule => write!(f, "graticule"),
+            Self::Graticule => f.write_str("graticule"),
         }
     }
 }
@@ -39187,8 +39187,8 @@ impl ::std::convert::From<&Self> for HeatmapTransformResolveVariant0 {
 impl ::std::fmt::Display for HeatmapTransformResolveVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Shared => write!(f, "shared"),
-            Self::Independent => write!(f, "independent"),
+            Self::Shared => f.write_str("shared"),
+            Self::Independent => f.write_str("independent"),
         }
     }
 }
@@ -39260,7 +39260,7 @@ impl ::std::convert::From<&Self> for HeatmapTransformType {
 impl ::std::fmt::Display for HeatmapTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -39414,7 +39414,7 @@ impl ::std::convert::From<&Self> for IdentifierTransformType {
 impl ::std::fmt::Display for IdentifierTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Identifier => write!(f, "identifier"),
+            Self::Identifier => f.write_str("identifier"),
         }
     }
 }
@@ -39907,11 +39907,11 @@ impl ::std::convert::From<&Self> for ImputeTransformMethodVariant0 {
 impl ::std::fmt::Display for ImputeTransformMethodVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Value => write!(f, "value"),
-            Self::Mean => write!(f, "mean"),
-            Self::Median => write!(f, "median"),
-            Self::Max => write!(f, "max"),
-            Self::Min => write!(f, "min"),
+            Self::Value => f.write_str("value"),
+            Self::Mean => f.write_str("mean"),
+            Self::Median => f.write_str("median"),
+            Self::Max => f.write_str("max"),
+            Self::Min => f.write_str("min"),
         }
     }
 }
@@ -39986,7 +39986,7 @@ impl ::std::convert::From<&Self> for ImputeTransformType {
 impl ::std::fmt::Display for ImputeTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Impute => write!(f, "impute"),
+            Self::Impute => f.write_str("impute"),
         }
     }
 }
@@ -40475,8 +40475,8 @@ impl ::std::convert::From<&Self> for IsocontourTransformResolveVariant0 {
 impl ::std::fmt::Display for IsocontourTransformResolveVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Shared => write!(f, "shared"),
-            Self::Independent => write!(f, "independent"),
+            Self::Shared => f.write_str("shared"),
+            Self::Independent => f.write_str("independent"),
         }
     }
 }
@@ -40848,7 +40848,7 @@ impl ::std::convert::From<&Self> for IsocontourTransformType {
 impl ::std::fmt::Display for IsocontourTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Isocontour => write!(f, "isocontour"),
+            Self::Isocontour => f.write_str("isocontour"),
         }
     }
 }
@@ -41697,30 +41697,30 @@ impl ::std::convert::From<&Self> for JoinaggregateTransformOpsVariant0ItemVarian
 impl ::std::fmt::Display for JoinaggregateTransformOpsVariant0ItemVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Values => write!(f, "values"),
-            Self::Count => write!(f, "count"),
-            Self::XXcountXx => write!(f, "__count__"),
-            Self::Missing => write!(f, "missing"),
-            Self::Valid => write!(f, "valid"),
-            Self::Sum => write!(f, "sum"),
-            Self::Product => write!(f, "product"),
-            Self::Mean => write!(f, "mean"),
-            Self::Average => write!(f, "average"),
-            Self::Variance => write!(f, "variance"),
-            Self::Variancep => write!(f, "variancep"),
-            Self::Stdev => write!(f, "stdev"),
-            Self::Stdevp => write!(f, "stdevp"),
-            Self::Stderr => write!(f, "stderr"),
-            Self::Distinct => write!(f, "distinct"),
-            Self::Ci0 => write!(f, "ci0"),
-            Self::Ci1 => write!(f, "ci1"),
-            Self::Median => write!(f, "median"),
-            Self::Q1 => write!(f, "q1"),
-            Self::Q3 => write!(f, "q3"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
-            Self::Argmin => write!(f, "argmin"),
-            Self::Argmax => write!(f, "argmax"),
+            Self::Values => f.write_str("values"),
+            Self::Count => f.write_str("count"),
+            Self::XXcountXx => f.write_str("__count__"),
+            Self::Missing => f.write_str("missing"),
+            Self::Valid => f.write_str("valid"),
+            Self::Sum => f.write_str("sum"),
+            Self::Product => f.write_str("product"),
+            Self::Mean => f.write_str("mean"),
+            Self::Average => f.write_str("average"),
+            Self::Variance => f.write_str("variance"),
+            Self::Variancep => f.write_str("variancep"),
+            Self::Stdev => f.write_str("stdev"),
+            Self::Stdevp => f.write_str("stdevp"),
+            Self::Stderr => f.write_str("stderr"),
+            Self::Distinct => f.write_str("distinct"),
+            Self::Ci0 => f.write_str("ci0"),
+            Self::Ci1 => f.write_str("ci1"),
+            Self::Median => f.write_str("median"),
+            Self::Q1 => f.write_str("q1"),
+            Self::Q3 => f.write_str("q3"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
+            Self::Argmin => f.write_str("argmin"),
+            Self::Argmax => f.write_str("argmax"),
         }
     }
 }
@@ -41818,7 +41818,7 @@ impl ::std::convert::From<&Self> for JoinaggregateTransformType {
 impl ::std::fmt::Display for JoinaggregateTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Joinaggregate => write!(f, "joinaggregate"),
+            Self::Joinaggregate => f.write_str("joinaggregate"),
         }
     }
 }
@@ -42478,7 +42478,7 @@ impl ::std::convert::From<&Self> for Kde2dTransformType {
 impl ::std::fmt::Display for Kde2dTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Kde2d => write!(f, "kde2d"),
+            Self::Kde2d => f.write_str("kde2d"),
         }
     }
 }
@@ -43487,8 +43487,8 @@ impl ::std::convert::From<&Self> for KdeTransformResolveVariant0 {
 impl ::std::fmt::Display for KdeTransformResolveVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Shared => write!(f, "shared"),
-            Self::Independent => write!(f, "independent"),
+            Self::Shared => f.write_str("shared"),
+            Self::Independent => f.write_str("independent"),
         }
     }
 }
@@ -43598,7 +43598,7 @@ impl ::std::convert::From<&Self> for KdeTransformType {
 impl ::std::fmt::Display for KdeTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Kde => write!(f, "kde"),
+            Self::Kde => f.write_str("kde"),
         }
     }
 }
@@ -43722,8 +43722,8 @@ impl ::std::convert::From<&Self> for LabelOverlapVariant1 {
 impl ::std::fmt::Display for LabelOverlapVariant1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Parity => write!(f, "parity"),
-            Self::Greedy => write!(f, "greedy"),
+            Self::Parity => f.write_str("parity"),
+            Self::Greedy => f.write_str("greedy"),
         }
     }
 }
@@ -44679,7 +44679,7 @@ impl ::std::convert::From<&Self> for LabelTransformType {
 impl ::std::fmt::Display for LabelTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Label => write!(f, "label"),
+            Self::Label => f.write_str("label"),
         }
     }
 }
@@ -45212,9 +45212,9 @@ impl ::std::convert::From<&Self> for LayoutVariant0AlignVariant0Variant0 {
 impl ::std::fmt::Display for LayoutVariant0AlignVariant0Variant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -45337,9 +45337,9 @@ impl ::std::convert::From<&Self> for LayoutVariant0AlignVariant1ColumnVariant0 {
 impl ::std::fmt::Display for LayoutVariant0AlignVariant1ColumnVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -45462,9 +45462,9 @@ impl ::std::convert::From<&Self> for LayoutVariant0AlignVariant1RowVariant0 {
 impl ::std::fmt::Display for LayoutVariant0AlignVariant1RowVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -45581,8 +45581,8 @@ impl ::std::convert::From<&Self> for LayoutVariant0BoundsVariant0 {
 impl ::std::fmt::Display for LayoutVariant0BoundsVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Full => write!(f, "full"),
-            Self::Flush => write!(f, "flush"),
+            Self::Full => f.write_str("full"),
+            Self::Flush => f.write_str("flush"),
         }
     }
 }
@@ -46091,8 +46091,8 @@ impl ::std::convert::From<&Self> for LayoutVariant0TitleAnchorVariant0Variant0 {
 impl ::std::fmt::Display for LayoutVariant0TitleAnchorVariant0Variant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -46210,8 +46210,8 @@ impl ::std::convert::From<&Self> for LayoutVariant0TitleAnchorVariant1ColumnVari
 impl ::std::fmt::Display for LayoutVariant0TitleAnchorVariant1ColumnVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -46333,8 +46333,8 @@ impl ::std::convert::From<&Self> for LayoutVariant0TitleAnchorVariant1RowVariant
 impl ::std::fmt::Display for LayoutVariant0TitleAnchorVariant1RowVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -49715,8 +49715,8 @@ impl ::std::convert::From<&Self> for LegendVariant0Direction {
 impl ::std::fmt::Display for LegendVariant0Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -50028,9 +50028,9 @@ impl ::std::convert::From<&Self> for LegendVariant0FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant0FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -50264,9 +50264,9 @@ impl ::std::convert::From<&Self> for LegendVariant0GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant0GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -50387,9 +50387,9 @@ impl ::std::convert::From<&Self> for LegendVariant0LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant0LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -50522,12 +50522,12 @@ impl ::std::convert::From<&Self> for LegendVariant0LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant0LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -51108,15 +51108,15 @@ impl ::std::convert::From<&Self> for LegendVariant0OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant0OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -51656,9 +51656,9 @@ impl ::std::convert::From<&Self> for LegendVariant0TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant0TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -51783,9 +51783,9 @@ impl ::std::convert::From<&Self> for LegendVariant0TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant0TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -51918,12 +51918,12 @@ impl ::std::convert::From<&Self> for LegendVariant0TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant0TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -52368,10 +52368,10 @@ impl ::std::convert::From<&Self> for LegendVariant0TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant0TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -52486,8 +52486,8 @@ impl ::std::convert::From<&Self> for LegendVariant0Type {
 impl ::std::fmt::Display for LegendVariant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -52600,8 +52600,8 @@ impl ::std::convert::From<&Self> for LegendVariant1Direction {
 impl ::std::fmt::Display for LegendVariant1Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -52913,9 +52913,9 @@ impl ::std::convert::From<&Self> for LegendVariant1FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant1FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -53149,9 +53149,9 @@ impl ::std::convert::From<&Self> for LegendVariant1GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant1GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -53272,9 +53272,9 @@ impl ::std::convert::From<&Self> for LegendVariant1LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant1LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -53407,12 +53407,12 @@ impl ::std::convert::From<&Self> for LegendVariant1LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant1LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -53993,15 +53993,15 @@ impl ::std::convert::From<&Self> for LegendVariant1OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant1OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -54541,9 +54541,9 @@ impl ::std::convert::From<&Self> for LegendVariant1TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant1TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -54668,9 +54668,9 @@ impl ::std::convert::From<&Self> for LegendVariant1TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant1TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -54803,12 +54803,12 @@ impl ::std::convert::From<&Self> for LegendVariant1TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant1TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -55253,10 +55253,10 @@ impl ::std::convert::From<&Self> for LegendVariant1TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant1TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -55371,8 +55371,8 @@ impl ::std::convert::From<&Self> for LegendVariant1Type {
 impl ::std::fmt::Display for LegendVariant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -55485,8 +55485,8 @@ impl ::std::convert::From<&Self> for LegendVariant2Direction {
 impl ::std::fmt::Display for LegendVariant2Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -55798,9 +55798,9 @@ impl ::std::convert::From<&Self> for LegendVariant2FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant2FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -56034,9 +56034,9 @@ impl ::std::convert::From<&Self> for LegendVariant2GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant2GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -56157,9 +56157,9 @@ impl ::std::convert::From<&Self> for LegendVariant2LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant2LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -56292,12 +56292,12 @@ impl ::std::convert::From<&Self> for LegendVariant2LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant2LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -56878,15 +56878,15 @@ impl ::std::convert::From<&Self> for LegendVariant2OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant2OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -57426,9 +57426,9 @@ impl ::std::convert::From<&Self> for LegendVariant2TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant2TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -57553,9 +57553,9 @@ impl ::std::convert::From<&Self> for LegendVariant2TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant2TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -57688,12 +57688,12 @@ impl ::std::convert::From<&Self> for LegendVariant2TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant2TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -58138,10 +58138,10 @@ impl ::std::convert::From<&Self> for LegendVariant2TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant2TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -58256,8 +58256,8 @@ impl ::std::convert::From<&Self> for LegendVariant2Type {
 impl ::std::fmt::Display for LegendVariant2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -58370,8 +58370,8 @@ impl ::std::convert::From<&Self> for LegendVariant3Direction {
 impl ::std::fmt::Display for LegendVariant3Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -58683,9 +58683,9 @@ impl ::std::convert::From<&Self> for LegendVariant3FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant3FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -58919,9 +58919,9 @@ impl ::std::convert::From<&Self> for LegendVariant3GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant3GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -59042,9 +59042,9 @@ impl ::std::convert::From<&Self> for LegendVariant3LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant3LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -59177,12 +59177,12 @@ impl ::std::convert::From<&Self> for LegendVariant3LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant3LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -59763,15 +59763,15 @@ impl ::std::convert::From<&Self> for LegendVariant3OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant3OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -60311,9 +60311,9 @@ impl ::std::convert::From<&Self> for LegendVariant3TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant3TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -60438,9 +60438,9 @@ impl ::std::convert::From<&Self> for LegendVariant3TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant3TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -60573,12 +60573,12 @@ impl ::std::convert::From<&Self> for LegendVariant3TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant3TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -61023,10 +61023,10 @@ impl ::std::convert::From<&Self> for LegendVariant3TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant3TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -61141,8 +61141,8 @@ impl ::std::convert::From<&Self> for LegendVariant3Type {
 impl ::std::fmt::Display for LegendVariant3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -61255,8 +61255,8 @@ impl ::std::convert::From<&Self> for LegendVariant4Direction {
 impl ::std::fmt::Display for LegendVariant4Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -61568,9 +61568,9 @@ impl ::std::convert::From<&Self> for LegendVariant4FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant4FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -61804,9 +61804,9 @@ impl ::std::convert::From<&Self> for LegendVariant4GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant4GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -61927,9 +61927,9 @@ impl ::std::convert::From<&Self> for LegendVariant4LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant4LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -62062,12 +62062,12 @@ impl ::std::convert::From<&Self> for LegendVariant4LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant4LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -62648,15 +62648,15 @@ impl ::std::convert::From<&Self> for LegendVariant4OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant4OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -63196,9 +63196,9 @@ impl ::std::convert::From<&Self> for LegendVariant4TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant4TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -63323,9 +63323,9 @@ impl ::std::convert::From<&Self> for LegendVariant4TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant4TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -63458,12 +63458,12 @@ impl ::std::convert::From<&Self> for LegendVariant4TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant4TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -63908,10 +63908,10 @@ impl ::std::convert::From<&Self> for LegendVariant4TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant4TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -64026,8 +64026,8 @@ impl ::std::convert::From<&Self> for LegendVariant4Type {
 impl ::std::fmt::Display for LegendVariant4Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -64140,8 +64140,8 @@ impl ::std::convert::From<&Self> for LegendVariant5Direction {
 impl ::std::fmt::Display for LegendVariant5Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -64453,9 +64453,9 @@ impl ::std::convert::From<&Self> for LegendVariant5FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant5FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -64689,9 +64689,9 @@ impl ::std::convert::From<&Self> for LegendVariant5GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant5GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -64812,9 +64812,9 @@ impl ::std::convert::From<&Self> for LegendVariant5LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant5LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -64947,12 +64947,12 @@ impl ::std::convert::From<&Self> for LegendVariant5LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant5LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -65533,15 +65533,15 @@ impl ::std::convert::From<&Self> for LegendVariant5OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant5OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -66081,9 +66081,9 @@ impl ::std::convert::From<&Self> for LegendVariant5TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant5TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -66208,9 +66208,9 @@ impl ::std::convert::From<&Self> for LegendVariant5TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant5TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -66343,12 +66343,12 @@ impl ::std::convert::From<&Self> for LegendVariant5TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant5TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -66793,10 +66793,10 @@ impl ::std::convert::From<&Self> for LegendVariant5TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant5TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -66911,8 +66911,8 @@ impl ::std::convert::From<&Self> for LegendVariant5Type {
 impl ::std::fmt::Display for LegendVariant5Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -67025,8 +67025,8 @@ impl ::std::convert::From<&Self> for LegendVariant6Direction {
 impl ::std::fmt::Display for LegendVariant6Direction {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Vertical => write!(f, "vertical"),
-            Self::Horizontal => write!(f, "horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Horizontal => f.write_str("horizontal"),
         }
     }
 }
@@ -67338,9 +67338,9 @@ impl ::std::convert::From<&Self> for LegendVariant6FormatTypeVariant0 {
 impl ::std::fmt::Display for LegendVariant6FormatTypeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Number => write!(f, "number"),
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Number => f.write_str("number"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -67574,9 +67574,9 @@ impl ::std::convert::From<&Self> for LegendVariant6GridAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant6GridAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::All => write!(f, "all"),
-            Self::Each => write!(f, "each"),
-            Self::None => write!(f, "none"),
+            Self::All => f.write_str("all"),
+            Self::Each => f.write_str("each"),
+            Self::None => f.write_str("none"),
         }
     }
 }
@@ -67697,9 +67697,9 @@ impl ::std::convert::From<&Self> for LegendVariant6LabelAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant6LabelAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -67832,12 +67832,12 @@ impl ::std::convert::From<&Self> for LegendVariant6LabelBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant6LabelBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -68418,15 +68418,15 @@ impl ::std::convert::From<&Self> for LegendVariant6OrientVariant0 {
 impl ::std::fmt::Display for LegendVariant6OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::TopLeft => write!(f, "top-left"),
-            Self::TopRight => write!(f, "top-right"),
-            Self::BottomLeft => write!(f, "bottom-left"),
-            Self::BottomRight => write!(f, "bottom-right"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::TopLeft => f.write_str("top-left"),
+            Self::TopRight => f.write_str("top-right"),
+            Self::BottomLeft => f.write_str("bottom-left"),
+            Self::BottomRight => f.write_str("bottom-right"),
         }
     }
 }
@@ -68966,9 +68966,9 @@ impl ::std::convert::From<&Self> for LegendVariant6TitleAlignVariant0 {
 impl ::std::fmt::Display for LegendVariant6TitleAlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -69093,9 +69093,9 @@ impl ::std::convert::From<&Self> for LegendVariant6TitleAnchorVariant0 {
 impl ::std::fmt::Display for LegendVariant6TitleAnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -69228,12 +69228,12 @@ impl ::std::convert::From<&Self> for LegendVariant6TitleBaselineVariant0 {
 impl ::std::fmt::Display for LegendVariant6TitleBaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -69678,10 +69678,10 @@ impl ::std::convert::From<&Self> for LegendVariant6TitleOrientVariant0 {
 impl ::std::fmt::Display for LegendVariant6TitleOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -69796,8 +69796,8 @@ impl ::std::convert::From<&Self> for LegendVariant6Type {
 impl ::std::fmt::Display for LegendVariant6Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gradient => write!(f, "gradient"),
-            Self::Symbol => write!(f, "symbol"),
+            Self::Gradient => f.write_str("gradient"),
+            Self::Symbol => f.write_str("symbol"),
         }
     }
 }
@@ -69930,7 +69930,7 @@ impl ::std::convert::From<&Self> for LinearGradientGradient {
 impl ::std::fmt::Display for LinearGradientGradient {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Linear => write!(f, "linear"),
+            Self::Linear => f.write_str("linear"),
         }
     }
 }
@@ -70249,9 +70249,9 @@ impl ::std::convert::From<&Self> for LinkpathTransformOrientVariant0 {
 impl ::std::fmt::Display for LinkpathTransformOrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Horizontal => write!(f, "horizontal"),
-            Self::Vertical => write!(f, "vertical"),
-            Self::Radial => write!(f, "radial"),
+            Self::Horizontal => f.write_str("horizontal"),
+            Self::Vertical => f.write_str("vertical"),
+            Self::Radial => f.write_str("radial"),
         }
     }
 }
@@ -70386,11 +70386,11 @@ impl ::std::convert::From<&Self> for LinkpathTransformShapeVariant0 {
 impl ::std::fmt::Display for LinkpathTransformShapeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Line => write!(f, "line"),
-            Self::Arc => write!(f, "arc"),
-            Self::Curve => write!(f, "curve"),
-            Self::Diagonal => write!(f, "diagonal"),
-            Self::Orthogonal => write!(f, "orthogonal"),
+            Self::Line => f.write_str("line"),
+            Self::Arc => f.write_str("arc"),
+            Self::Curve => f.write_str("curve"),
+            Self::Diagonal => f.write_str("diagonal"),
+            Self::Orthogonal => f.write_str("orthogonal"),
         }
     }
 }
@@ -70685,7 +70685,7 @@ impl ::std::convert::From<&Self> for LinkpathTransformType {
 impl ::std::fmt::Display for LinkpathTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Linkpath => write!(f, "linkpath"),
+            Self::Linkpath => f.write_str("linkpath"),
         }
     }
 }
@@ -71162,7 +71162,7 @@ impl ::std::convert::From<&Self> for LoessTransformType {
 impl ::std::fmt::Display for LoessTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Loess => write!(f, "loess"),
+            Self::Loess => f.write_str("loess"),
         }
     }
 }
@@ -71691,7 +71691,7 @@ impl ::std::convert::From<&Self> for LookupTransformType {
 impl ::std::fmt::Display for LookupTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Lookup => write!(f, "lookup"),
+            Self::Lookup => f.write_str("lookup"),
         }
     }
 }
@@ -72126,7 +72126,7 @@ impl ::std::convert::From<&Self> for MarkGroupType {
 impl ::std::fmt::Display for MarkGroupType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Group => write!(f, "group"),
+            Self::Group => f.write_str("group"),
         }
     }
 }
@@ -72582,7 +72582,7 @@ impl ::std::convert::From<&Self> for NestTransformType {
 impl ::std::fmt::Display for NestTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Nest => write!(f, "nest"),
+            Self::Nest => f.write_str("nest"),
         }
     }
 }
@@ -77658,10 +77658,10 @@ impl ::std::convert::From<&Self> for OrientValueVariant0ItemVariant0Variant1Valu
 impl ::std::fmt::Display for OrientValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -78314,10 +78314,10 @@ impl ::std::convert::From<&Self> for OrientValueVariant1Variant0Variant1Value {
 impl ::std::fmt::Display for OrientValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -79163,7 +79163,7 @@ impl ::std::convert::From<&Self> for PackTransformType {
 impl ::std::fmt::Display for PackTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pack => write!(f, "pack"),
+            Self::Pack => f.write_str("pack"),
         }
     }
 }
@@ -79789,7 +79789,7 @@ impl ::std::convert::From<&Self> for PartitionTransformType {
 impl ::std::fmt::Display for PartitionTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Partition => write!(f, "partition"),
+            Self::Partition => f.write_str("partition"),
         }
     }
 }
@@ -80243,7 +80243,7 @@ impl ::std::convert::From<&Self> for PieTransformType {
 impl ::std::fmt::Display for PieTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pie => write!(f, "pie"),
+            Self::Pie => f.write_str("pie"),
         }
     }
 }
@@ -80841,30 +80841,30 @@ impl ::std::convert::From<&Self> for PivotTransformOpVariant0 {
 impl ::std::fmt::Display for PivotTransformOpVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Values => write!(f, "values"),
-            Self::Count => write!(f, "count"),
-            Self::XXcountXx => write!(f, "__count__"),
-            Self::Missing => write!(f, "missing"),
-            Self::Valid => write!(f, "valid"),
-            Self::Sum => write!(f, "sum"),
-            Self::Product => write!(f, "product"),
-            Self::Mean => write!(f, "mean"),
-            Self::Average => write!(f, "average"),
-            Self::Variance => write!(f, "variance"),
-            Self::Variancep => write!(f, "variancep"),
-            Self::Stdev => write!(f, "stdev"),
-            Self::Stdevp => write!(f, "stdevp"),
-            Self::Stderr => write!(f, "stderr"),
-            Self::Distinct => write!(f, "distinct"),
-            Self::Ci0 => write!(f, "ci0"),
-            Self::Ci1 => write!(f, "ci1"),
-            Self::Median => write!(f, "median"),
-            Self::Q1 => write!(f, "q1"),
-            Self::Q3 => write!(f, "q3"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
-            Self::Argmin => write!(f, "argmin"),
-            Self::Argmax => write!(f, "argmax"),
+            Self::Values => f.write_str("values"),
+            Self::Count => f.write_str("count"),
+            Self::XXcountXx => f.write_str("__count__"),
+            Self::Missing => f.write_str("missing"),
+            Self::Valid => f.write_str("valid"),
+            Self::Sum => f.write_str("sum"),
+            Self::Product => f.write_str("product"),
+            Self::Mean => f.write_str("mean"),
+            Self::Average => f.write_str("average"),
+            Self::Variance => f.write_str("variance"),
+            Self::Variancep => f.write_str("variancep"),
+            Self::Stdev => f.write_str("stdev"),
+            Self::Stdevp => f.write_str("stdevp"),
+            Self::Stderr => f.write_str("stderr"),
+            Self::Distinct => f.write_str("distinct"),
+            Self::Ci0 => f.write_str("ci0"),
+            Self::Ci1 => f.write_str("ci1"),
+            Self::Median => f.write_str("median"),
+            Self::Q1 => f.write_str("q1"),
+            Self::Q3 => f.write_str("q3"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
+            Self::Argmin => f.write_str("argmin"),
+            Self::Argmax => f.write_str("argmax"),
         }
     }
 }
@@ -80958,7 +80958,7 @@ impl ::std::convert::From<&Self> for PivotTransformType {
 impl ::std::fmt::Display for PivotTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pivot => write!(f, "pivot"),
+            Self::Pivot => f.write_str("pivot"),
         }
     }
 }
@@ -81355,7 +81355,7 @@ impl ::std::convert::From<&Self> for ProjectTransformType {
 impl ::std::fmt::Display for ProjectTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Project => write!(f, "project"),
+            Self::Project => f.write_str("project"),
         }
     }
 }
@@ -82613,7 +82613,7 @@ impl ::std::convert::From<&Self> for QuantileTransformType {
 impl ::std::fmt::Display for QuantileTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Quantile => write!(f, "quantile"),
+            Self::Quantile => f.write_str("quantile"),
         }
     }
 }
@@ -82755,7 +82755,7 @@ impl ::std::convert::From<&Self> for RadialGradientGradient {
 impl ::std::fmt::Display for RadialGradientGradient {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Radial => write!(f, "radial"),
+            Self::Radial => f.write_str("radial"),
         }
     }
 }
@@ -83400,7 +83400,7 @@ impl ::std::convert::From<&Self> for RegressionTransformType {
 impl ::std::fmt::Display for RegressionTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Regression => write!(f, "regression"),
+            Self::Regression => f.write_str("regression"),
         }
     }
 }
@@ -83655,7 +83655,7 @@ impl ::std::convert::From<&Self> for ResolvefilterTransformType {
 impl ::std::fmt::Display for ResolvefilterTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Resolvefilter => write!(f, "resolvefilter"),
+            Self::Resolvefilter => f.write_str("resolvefilter"),
         }
     }
 }
@@ -83852,7 +83852,7 @@ impl ::std::convert::From<&Self> for SampleTransformType {
 impl ::std::fmt::Display for SampleTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Sample => write!(f, "sample"),
+            Self::Sample => f.write_str("sample"),
         }
     }
 }
@@ -87377,7 +87377,7 @@ impl ::std::convert::From<&Self> for ScaleDataVariant1SortVariant1Op {
 impl ::std::fmt::Display for ScaleDataVariant1SortVariant1Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
+            Self::Count => f.write_str("count"),
         }
     }
 }
@@ -87454,9 +87454,9 @@ impl ::std::convert::From<&Self> for ScaleDataVariant1SortVariant2Op {
 impl ::std::fmt::Display for ScaleDataVariant1SortVariant2Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
+            Self::Count => f.write_str("count"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
         }
     }
 }
@@ -87767,7 +87767,7 @@ impl ::std::convert::From<&Self> for ScaleDataVariant2SortVariant1Op {
 impl ::std::fmt::Display for ScaleDataVariant2SortVariant1Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
+            Self::Count => f.write_str("count"),
         }
     }
 }
@@ -87844,9 +87844,9 @@ impl ::std::convert::From<&Self> for ScaleDataVariant2SortVariant2Op {
 impl ::std::fmt::Display for ScaleDataVariant2SortVariant2Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
+            Self::Count => f.write_str("count"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
         }
     }
 }
@@ -88190,7 +88190,7 @@ impl ::std::convert::From<&Self> for ScaleVariant0Type {
 impl ::std::fmt::Display for ScaleVariant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Identity => write!(f, "identity"),
+            Self::Identity => f.write_str("identity"),
         }
     }
 }
@@ -88652,14 +88652,14 @@ impl ::std::convert::From<&Self> for ScaleVariant10RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant10RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -88934,7 +88934,7 @@ impl ::std::convert::From<&Self> for ScaleVariant10Type {
 impl ::std::fmt::Display for ScaleVariant10Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Pow => write!(f, "pow"),
+            Self::Pow => f.write_str("pow"),
         }
     }
 }
@@ -89396,14 +89396,14 @@ impl ::std::convert::From<&Self> for ScaleVariant11RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant11RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -89678,7 +89678,7 @@ impl ::std::convert::From<&Self> for ScaleVariant11Type {
 impl ::std::fmt::Display for ScaleVariant11Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Symlog => write!(f, "symlog"),
+            Self::Symlog => f.write_str("symlog"),
         }
     }
 }
@@ -90299,14 +90299,14 @@ impl ::std::convert::From<&Self> for ScaleVariant1RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant1RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -90946,7 +90946,7 @@ impl ::std::convert::From<&Self> for ScaleVariant1RangeVariant3Variant1SortVaria
 impl ::std::fmt::Display for ScaleVariant1RangeVariant3Variant1SortVariant1Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
+            Self::Count => f.write_str("count"),
         }
     }
 }
@@ -91027,9 +91027,9 @@ impl ::std::convert::From<&Self> for ScaleVariant1RangeVariant3Variant1SortVaria
 impl ::std::fmt::Display for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
+            Self::Count => f.write_str("count"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
         }
     }
 }
@@ -91350,7 +91350,7 @@ impl ::std::convert::From<&Self> for ScaleVariant1RangeVariant3Variant2SortVaria
 impl ::std::fmt::Display for ScaleVariant1RangeVariant3Variant2SortVariant1Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
+            Self::Count => f.write_str("count"),
         }
     }
 }
@@ -91431,9 +91431,9 @@ impl ::std::convert::From<&Self> for ScaleVariant1RangeVariant3Variant2SortVaria
 impl ::std::fmt::Display for ScaleVariant1RangeVariant3Variant2SortVariant2Op {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Count => write!(f, "count"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
+            Self::Count => f.write_str("count"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
         }
     }
 }
@@ -91510,7 +91510,7 @@ impl ::std::convert::From<&Self> for ScaleVariant1Type {
 impl ::std::fmt::Display for ScaleVariant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Ordinal => write!(f, "ordinal"),
+            Self::Ordinal => f.write_str("ordinal"),
         }
     }
 }
@@ -91879,14 +91879,14 @@ impl ::std::convert::From<&Self> for ScaleVariant2RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant2RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -92031,7 +92031,7 @@ impl ::std::convert::From<&Self> for ScaleVariant2Type {
 impl ::std::fmt::Display for ScaleVariant2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Band => write!(f, "band"),
+            Self::Band => f.write_str("band"),
         }
     }
 }
@@ -92400,14 +92400,14 @@ impl ::std::convert::From<&Self> for ScaleVariant3RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant3RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -92552,7 +92552,7 @@ impl ::std::convert::From<&Self> for ScaleVariant3Type {
 impl ::std::fmt::Display for ScaleVariant3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Point => write!(f, "point"),
+            Self::Point => f.write_str("point"),
         }
     }
 }
@@ -93012,14 +93012,14 @@ impl ::std::convert::From<&Self> for ScaleVariant4RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant4RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -93297,8 +93297,8 @@ impl ::std::convert::From<&Self> for ScaleVariant4Type {
 impl ::std::fmt::Display for ScaleVariant4Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Quantize => write!(f, "quantize"),
-            Self::Threshold => write!(f, "threshold"),
+            Self::Quantize => f.write_str("quantize"),
+            Self::Threshold => f.write_str("threshold"),
         }
     }
 }
@@ -93712,14 +93712,14 @@ impl ::std::convert::From<&Self> for ScaleVariant5RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant5RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -93994,7 +93994,7 @@ impl ::std::convert::From<&Self> for ScaleVariant5Type {
 impl ::std::fmt::Display for ScaleVariant5Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Quantile => write!(f, "quantile"),
+            Self::Quantile => f.write_str("quantile"),
         }
     }
 }
@@ -94407,14 +94407,14 @@ impl ::std::convert::From<&Self> for ScaleVariant6RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant6RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -94689,7 +94689,7 @@ impl ::std::convert::From<&Self> for ScaleVariant6Type {
 impl ::std::fmt::Display for ScaleVariant6Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::BinOrdinal => write!(f, "bin-ordinal"),
+            Self::BinOrdinal => f.write_str("bin-ordinal"),
         }
     }
 }
@@ -95047,14 +95047,14 @@ impl ::std::convert::From<&Self> for ScaleVariant7NiceVariant1 {
 impl ::std::fmt::Display for ScaleVariant7NiceVariant1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Millisecond => write!(f, "millisecond"),
-            Self::Second => write!(f, "second"),
-            Self::Minute => write!(f, "minute"),
-            Self::Hour => write!(f, "hour"),
-            Self::Day => write!(f, "day"),
-            Self::Week => write!(f, "week"),
-            Self::Month => write!(f, "month"),
-            Self::Year => write!(f, "year"),
+            Self::Millisecond => f.write_str("millisecond"),
+            Self::Second => f.write_str("second"),
+            Self::Minute => f.write_str("minute"),
+            Self::Hour => f.write_str("hour"),
+            Self::Day => f.write_str("day"),
+            Self::Week => f.write_str("week"),
+            Self::Month => f.write_str("month"),
+            Self::Year => f.write_str("year"),
         }
     }
 }
@@ -95202,14 +95202,14 @@ impl ::std::convert::From<&Self> for ScaleVariant7NiceVariant2IntervalVariant0 {
 impl ::std::fmt::Display for ScaleVariant7NiceVariant2IntervalVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Millisecond => write!(f, "millisecond"),
-            Self::Second => write!(f, "second"),
-            Self::Minute => write!(f, "minute"),
-            Self::Hour => write!(f, "hour"),
-            Self::Day => write!(f, "day"),
-            Self::Week => write!(f, "week"),
-            Self::Month => write!(f, "month"),
-            Self::Year => write!(f, "year"),
+            Self::Millisecond => f.write_str("millisecond"),
+            Self::Second => f.write_str("second"),
+            Self::Minute => f.write_str("minute"),
+            Self::Hour => f.write_str("hour"),
+            Self::Day => f.write_str("day"),
+            Self::Week => f.write_str("week"),
+            Self::Month => f.write_str("month"),
+            Self::Year => f.write_str("year"),
         }
     }
 }
@@ -95446,14 +95446,14 @@ impl ::std::convert::From<&Self> for ScaleVariant7RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant7RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -95731,8 +95731,8 @@ impl ::std::convert::From<&Self> for ScaleVariant7Type {
 impl ::std::fmt::Display for ScaleVariant7Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Time => write!(f, "time"),
-            Self::Utc => write!(f, "utc"),
+            Self::Time => f.write_str("time"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -96193,14 +96193,14 @@ impl ::std::convert::From<&Self> for ScaleVariant8RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant8RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -96481,9 +96481,9 @@ impl ::std::convert::From<&Self> for ScaleVariant8Type {
 impl ::std::fmt::Display for ScaleVariant8Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Linear => write!(f, "linear"),
-            Self::Sqrt => write!(f, "sqrt"),
-            Self::Sequential => write!(f, "sequential"),
+            Self::Linear => f.write_str("linear"),
+            Self::Sqrt => f.write_str("sqrt"),
+            Self::Sequential => f.write_str("sequential"),
         }
     }
 }
@@ -96945,14 +96945,14 @@ impl ::std::convert::From<&Self> for ScaleVariant9RangeVariant0 {
 impl ::std::fmt::Display for ScaleVariant9RangeVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Width => write!(f, "width"),
-            Self::Height => write!(f, "height"),
-            Self::Symbol => write!(f, "symbol"),
-            Self::Category => write!(f, "category"),
-            Self::Ordinal => write!(f, "ordinal"),
-            Self::Ramp => write!(f, "ramp"),
-            Self::Diverging => write!(f, "diverging"),
-            Self::Heatmap => write!(f, "heatmap"),
+            Self::Width => f.write_str("width"),
+            Self::Height => f.write_str("height"),
+            Self::Symbol => f.write_str("symbol"),
+            Self::Category => f.write_str("category"),
+            Self::Ordinal => f.write_str("ordinal"),
+            Self::Ramp => f.write_str("ramp"),
+            Self::Diverging => f.write_str("diverging"),
+            Self::Heatmap => f.write_str("heatmap"),
         }
     }
 }
@@ -97227,7 +97227,7 @@ impl ::std::convert::From<&Self> for ScaleVariant9Type {
 impl ::std::fmt::Display for ScaleVariant9Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Log => write!(f, "log"),
+            Self::Log => f.write_str("log"),
         }
     }
 }
@@ -97757,7 +97757,7 @@ impl ::std::convert::From<&Self> for SequenceTransformType {
 impl ::std::fmt::Display for SequenceTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Sequence => write!(f, "sequence"),
+            Self::Sequence => f.write_str("sequence"),
         }
     }
 }
@@ -98054,7 +98054,7 @@ impl ::std::convert::From<&Self> for SignalVariant0Push {
 impl ::std::fmt::Display for SignalVariant0Push {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Outer => write!(f, "outer"),
+            Self::Outer => f.write_str("outer"),
         }
     }
 }
@@ -98169,8 +98169,8 @@ impl ::std::convert::From<&Self> for SortOrderVariant0 {
 impl ::std::fmt::Display for SortOrderVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Ascending => write!(f, "ascending"),
-            Self::Descending => write!(f, "descending"),
+            Self::Ascending => f.write_str("ascending"),
+            Self::Descending => f.write_str("descending"),
         }
     }
 }
@@ -98665,9 +98665,9 @@ impl ::std::convert::From<&Self> for StackTransformOffsetVariant0 {
 impl ::std::fmt::Display for StackTransformOffsetVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Zero => write!(f, "zero"),
-            Self::Center => write!(f, "center"),
-            Self::Normalize => write!(f, "normalize"),
+            Self::Zero => f.write_str("zero"),
+            Self::Center => f.write_str("center"),
+            Self::Normalize => f.write_str("normalize"),
         }
     }
 }
@@ -98740,7 +98740,7 @@ impl ::std::convert::From<&Self> for StackTransformType {
 impl ::std::fmt::Display for StackTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Stack => write!(f, "stack"),
+            Self::Stack => f.write_str("stack"),
         }
     }
 }
@@ -98973,7 +98973,7 @@ impl ::std::convert::From<&Self> for StratifyTransformType {
 impl ::std::fmt::Display for StratifyTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Stratify => write!(f, "stratify"),
+            Self::Stratify => f.write_str("stratify"),
         }
     }
 }
@@ -101173,9 +101173,9 @@ impl ::std::convert::From<&Self> for StrokeCapValueVariant0ItemVariant0Variant1V
 impl ::std::fmt::Display for StrokeCapValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Butt => write!(f, "butt"),
-            Self::Round => write!(f, "round"),
-            Self::Square => write!(f, "square"),
+            Self::Butt => f.write_str("butt"),
+            Self::Round => f.write_str("round"),
+            Self::Square => f.write_str("square"),
         }
     }
 }
@@ -101820,9 +101820,9 @@ impl ::std::convert::From<&Self> for StrokeCapValueVariant1Variant0Variant1Value
 impl ::std::fmt::Display for StrokeCapValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Butt => write!(f, "butt"),
-            Self::Round => write!(f, "round"),
-            Self::Square => write!(f, "square"),
+            Self::Butt => f.write_str("butt"),
+            Self::Round => f.write_str("round"),
+            Self::Square => f.write_str("square"),
         }
     }
 }
@@ -102689,9 +102689,9 @@ impl ::std::convert::From<&Self> for StrokeJoinValueVariant0ItemVariant0Variant1
 impl ::std::fmt::Display for StrokeJoinValueVariant0ItemVariant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Miter => write!(f, "miter"),
-            Self::Round => write!(f, "round"),
-            Self::Bevel => write!(f, "bevel"),
+            Self::Miter => f.write_str("miter"),
+            Self::Round => f.write_str("round"),
+            Self::Bevel => f.write_str("bevel"),
         }
     }
 }
@@ -103336,9 +103336,9 @@ impl ::std::convert::From<&Self> for StrokeJoinValueVariant1Variant0Variant1Valu
 impl ::std::fmt::Display for StrokeJoinValueVariant1Variant0Variant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Miter => write!(f, "miter"),
-            Self::Round => write!(f, "round"),
-            Self::Bevel => write!(f, "bevel"),
+            Self::Miter => f.write_str("miter"),
+            Self::Round => f.write_str("round"),
+            Self::Bevel => f.write_str("bevel"),
         }
     }
 }
@@ -105369,8 +105369,8 @@ impl ::std::convert::From<&Self> for TickBandVariant0 {
 impl ::std::fmt::Display for TickBandVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Center => write!(f, "center"),
-            Self::Extent => write!(f, "extent"),
+            Self::Center => f.write_str("center"),
+            Self::Extent => f.write_str("extent"),
         }
     }
 }
@@ -105555,14 +105555,14 @@ impl ::std::convert::From<&Self> for TickCountVariant1 {
 impl ::std::fmt::Display for TickCountVariant1 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Millisecond => write!(f, "millisecond"),
-            Self::Second => write!(f, "second"),
-            Self::Minute => write!(f, "minute"),
-            Self::Hour => write!(f, "hour"),
-            Self::Day => write!(f, "day"),
-            Self::Week => write!(f, "week"),
-            Self::Month => write!(f, "month"),
-            Self::Year => write!(f, "year"),
+            Self::Millisecond => f.write_str("millisecond"),
+            Self::Second => f.write_str("second"),
+            Self::Minute => f.write_str("minute"),
+            Self::Hour => f.write_str("hour"),
+            Self::Day => f.write_str("day"),
+            Self::Week => f.write_str("week"),
+            Self::Month => f.write_str("month"),
+            Self::Year => f.write_str("year"),
         }
     }
 }
@@ -105708,14 +105708,14 @@ impl ::std::convert::From<&Self> for TickCountVariant2IntervalVariant0 {
 impl ::std::fmt::Display for TickCountVariant2IntervalVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Millisecond => write!(f, "millisecond"),
-            Self::Second => write!(f, "second"),
-            Self::Minute => write!(f, "minute"),
-            Self::Hour => write!(f, "hour"),
-            Self::Day => write!(f, "day"),
-            Self::Week => write!(f, "week"),
-            Self::Month => write!(f, "month"),
-            Self::Year => write!(f, "year"),
+            Self::Millisecond => f.write_str("millisecond"),
+            Self::Second => f.write_str("second"),
+            Self::Minute => f.write_str("minute"),
+            Self::Hour => f.write_str("hour"),
+            Self::Day => f.write_str("day"),
+            Self::Week => f.write_str("week"),
+            Self::Month => f.write_str("month"),
+            Self::Year => f.write_str("year"),
         }
     }
 }
@@ -106396,8 +106396,8 @@ impl ::std::convert::From<&Self> for TimeunitTransformTimezoneVariant0 {
 impl ::std::fmt::Display for TimeunitTransformTimezoneVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Local => write!(f, "local"),
-            Self::Utc => write!(f, "utc"),
+            Self::Local => f.write_str("local"),
+            Self::Utc => f.write_str("utc"),
         }
     }
 }
@@ -106469,7 +106469,7 @@ impl ::std::convert::From<&Self> for TimeunitTransformType {
 impl ::std::fmt::Display for TimeunitTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Timeunit => write!(f, "timeunit"),
+            Self::Timeunit => f.write_str("timeunit"),
         }
     }
 }
@@ -106684,17 +106684,17 @@ impl ::std::convert::From<&Self> for TimeunitTransformUnitsVariant0ItemVariant0 
 impl ::std::fmt::Display for TimeunitTransformUnitsVariant0ItemVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Year => write!(f, "year"),
-            Self::Quarter => write!(f, "quarter"),
-            Self::Month => write!(f, "month"),
-            Self::Week => write!(f, "week"),
-            Self::Date => write!(f, "date"),
-            Self::Day => write!(f, "day"),
-            Self::Dayofyear => write!(f, "dayofyear"),
-            Self::Hours => write!(f, "hours"),
-            Self::Minutes => write!(f, "minutes"),
-            Self::Seconds => write!(f, "seconds"),
-            Self::Milliseconds => write!(f, "milliseconds"),
+            Self::Year => f.write_str("year"),
+            Self::Quarter => f.write_str("quarter"),
+            Self::Month => f.write_str("month"),
+            Self::Week => f.write_str("week"),
+            Self::Date => f.write_str("date"),
+            Self::Day => f.write_str("day"),
+            Self::Dayofyear => f.write_str("dayofyear"),
+            Self::Hours => f.write_str("hours"),
+            Self::Minutes => f.write_str("minutes"),
+            Self::Seconds => f.write_str("seconds"),
+            Self::Milliseconds => f.write_str("milliseconds"),
         }
     }
 }
@@ -107315,9 +107315,9 @@ impl ::std::convert::From<&Self> for TitleVariant1AlignVariant0 {
 impl ::std::fmt::Display for TitleVariant1AlignVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Center => write!(f, "center"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Center => f.write_str("center"),
         }
     }
 }
@@ -107442,9 +107442,9 @@ impl ::std::convert::From<&Self> for TitleVariant1AnchorVariant0 {
 impl ::std::fmt::Display for TitleVariant1AnchorVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }
@@ -107615,12 +107615,12 @@ impl ::std::convert::From<&Self> for TitleVariant1BaselineVariant0 {
 impl ::std::fmt::Display for TitleVariant1BaselineVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Top => write!(f, "top"),
-            Self::Middle => write!(f, "middle"),
-            Self::Bottom => write!(f, "bottom"),
-            Self::Alphabetic => write!(f, "alphabetic"),
-            Self::LineTop => write!(f, "line-top"),
-            Self::LineBottom => write!(f, "line-bottom"),
+            Self::Top => f.write_str("top"),
+            Self::Middle => f.write_str("middle"),
+            Self::Bottom => f.write_str("bottom"),
+            Self::Alphabetic => f.write_str("alphabetic"),
+            Self::LineTop => f.write_str("line-top"),
+            Self::LineBottom => f.write_str("line-bottom"),
         }
     }
 }
@@ -108207,8 +108207,8 @@ impl ::std::convert::From<&Self> for TitleVariant1FrameVariant0 {
 impl ::std::fmt::Display for TitleVariant1FrameVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Group => write!(f, "group"),
-            Self::Bounds => write!(f, "bounds"),
+            Self::Group => f.write_str("group"),
+            Self::Bounds => f.write_str("bounds"),
         }
     }
 }
@@ -108452,11 +108452,11 @@ impl ::std::convert::From<&Self> for TitleVariant1OrientVariant0 {
 impl ::std::fmt::Display for TitleVariant1OrientVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::None => write!(f, "none"),
-            Self::Left => write!(f, "left"),
-            Self::Right => write!(f, "right"),
-            Self::Top => write!(f, "top"),
-            Self::Bottom => write!(f, "bottom"),
+            Self::None => f.write_str("none"),
+            Self::Left => f.write_str("left"),
+            Self::Right => f.write_str("right"),
+            Self::Top => f.write_str("top"),
+            Self::Bottom => f.write_str("bottom"),
         }
     }
 }
@@ -109905,8 +109905,8 @@ impl ::std::convert::From<&Self> for TreeTransformMethodVariant0 {
 impl ::std::fmt::Display for TreeTransformMethodVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Tidy => write!(f, "tidy"),
-            Self::Cluster => write!(f, "cluster"),
+            Self::Tidy => f.write_str("tidy"),
+            Self::Cluster => f.write_str("cluster"),
         }
     }
 }
@@ -110198,7 +110198,7 @@ impl ::std::convert::From<&Self> for TreeTransformType {
 impl ::std::fmt::Display for TreeTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Tree => write!(f, "tree"),
+            Self::Tree => f.write_str("tree"),
         }
     }
 }
@@ -110306,7 +110306,7 @@ impl ::std::convert::From<&Self> for TreelinksTransformType {
 impl ::std::fmt::Display for TreelinksTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Treelinks => write!(f, "treelinks"),
+            Self::Treelinks => f.write_str("treelinks"),
         }
     }
 }
@@ -110859,12 +110859,12 @@ impl ::std::convert::From<&Self> for TreemapTransformMethodVariant0 {
 impl ::std::fmt::Display for TreemapTransformMethodVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Squarify => write!(f, "squarify"),
-            Self::Resquarify => write!(f, "resquarify"),
-            Self::Binary => write!(f, "binary"),
-            Self::Dice => write!(f, "dice"),
-            Self::Slice => write!(f, "slice"),
-            Self::Slicedice => write!(f, "slicedice"),
+            Self::Squarify => f.write_str("squarify"),
+            Self::Resquarify => f.write_str("resquarify"),
+            Self::Binary => f.write_str("binary"),
+            Self::Dice => f.write_str("dice"),
+            Self::Slice => f.write_str("slice"),
+            Self::Slicedice => f.write_str("slicedice"),
         }
     }
 }
@@ -111376,7 +111376,7 @@ impl ::std::convert::From<&Self> for TreemapTransformType {
 impl ::std::fmt::Display for TreemapTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Treemap => write!(f, "treemap"),
+            Self::Treemap => f.write_str("treemap"),
         }
     }
 }
@@ -111762,7 +111762,7 @@ impl ::std::convert::From<&Self> for VoronoiTransformType {
 impl ::std::fmt::Display for VoronoiTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Voronoi => write!(f, "voronoi"),
+            Self::Voronoi => f.write_str("voronoi"),
         }
     }
 }
@@ -112895,43 +112895,43 @@ impl ::std::convert::From<&Self> for WindowTransformOpsVariant0ItemVariant0 {
 impl ::std::fmt::Display for WindowTransformOpsVariant0ItemVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::RowXnumber => write!(f, "row_number"),
-            Self::Rank => write!(f, "rank"),
-            Self::DenseXrank => write!(f, "dense_rank"),
-            Self::PercentXrank => write!(f, "percent_rank"),
-            Self::CumeXdist => write!(f, "cume_dist"),
-            Self::Ntile => write!(f, "ntile"),
-            Self::Lag => write!(f, "lag"),
-            Self::Lead => write!(f, "lead"),
-            Self::FirstXvalue => write!(f, "first_value"),
-            Self::LastXvalue => write!(f, "last_value"),
-            Self::NthXvalue => write!(f, "nth_value"),
-            Self::PrevXvalue => write!(f, "prev_value"),
-            Self::NextXvalue => write!(f, "next_value"),
-            Self::Values => write!(f, "values"),
-            Self::Count => write!(f, "count"),
-            Self::XXcountXx => write!(f, "__count__"),
-            Self::Missing => write!(f, "missing"),
-            Self::Valid => write!(f, "valid"),
-            Self::Sum => write!(f, "sum"),
-            Self::Product => write!(f, "product"),
-            Self::Mean => write!(f, "mean"),
-            Self::Average => write!(f, "average"),
-            Self::Variance => write!(f, "variance"),
-            Self::Variancep => write!(f, "variancep"),
-            Self::Stdev => write!(f, "stdev"),
-            Self::Stdevp => write!(f, "stdevp"),
-            Self::Stderr => write!(f, "stderr"),
-            Self::Distinct => write!(f, "distinct"),
-            Self::Ci0 => write!(f, "ci0"),
-            Self::Ci1 => write!(f, "ci1"),
-            Self::Median => write!(f, "median"),
-            Self::Q1 => write!(f, "q1"),
-            Self::Q3 => write!(f, "q3"),
-            Self::Min => write!(f, "min"),
-            Self::Max => write!(f, "max"),
-            Self::Argmin => write!(f, "argmin"),
-            Self::Argmax => write!(f, "argmax"),
+            Self::RowXnumber => f.write_str("row_number"),
+            Self::Rank => f.write_str("rank"),
+            Self::DenseXrank => f.write_str("dense_rank"),
+            Self::PercentXrank => f.write_str("percent_rank"),
+            Self::CumeXdist => f.write_str("cume_dist"),
+            Self::Ntile => f.write_str("ntile"),
+            Self::Lag => f.write_str("lag"),
+            Self::Lead => f.write_str("lead"),
+            Self::FirstXvalue => f.write_str("first_value"),
+            Self::LastXvalue => f.write_str("last_value"),
+            Self::NthXvalue => f.write_str("nth_value"),
+            Self::PrevXvalue => f.write_str("prev_value"),
+            Self::NextXvalue => f.write_str("next_value"),
+            Self::Values => f.write_str("values"),
+            Self::Count => f.write_str("count"),
+            Self::XXcountXx => f.write_str("__count__"),
+            Self::Missing => f.write_str("missing"),
+            Self::Valid => f.write_str("valid"),
+            Self::Sum => f.write_str("sum"),
+            Self::Product => f.write_str("product"),
+            Self::Mean => f.write_str("mean"),
+            Self::Average => f.write_str("average"),
+            Self::Variance => f.write_str("variance"),
+            Self::Variancep => f.write_str("variancep"),
+            Self::Stdev => f.write_str("stdev"),
+            Self::Stdevp => f.write_str("stdevp"),
+            Self::Stderr => f.write_str("stderr"),
+            Self::Distinct => f.write_str("distinct"),
+            Self::Ci0 => f.write_str("ci0"),
+            Self::Ci1 => f.write_str("ci1"),
+            Self::Median => f.write_str("median"),
+            Self::Q1 => f.write_str("q1"),
+            Self::Q3 => f.write_str("q3"),
+            Self::Min => f.write_str("min"),
+            Self::Max => f.write_str("max"),
+            Self::Argmin => f.write_str("argmin"),
+            Self::Argmax => f.write_str("argmax"),
         }
     }
 }
@@ -113133,7 +113133,7 @@ impl ::std::convert::From<&Self> for WindowTransformType {
 impl ::std::fmt::Display for WindowTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Window => write!(f, "window"),
+            Self::Window => f.write_str("window"),
         }
     }
 }
@@ -114200,7 +114200,7 @@ impl ::std::convert::From<&Self> for WordcloudTransformType {
 impl ::std::fmt::Display for WordcloudTransformType {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Wordcloud => write!(f, "wordcloud"),
+            Self::Wordcloud => f.write_str("wordcloud"),
         }
     }
 }

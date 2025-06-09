@@ -246,6 +246,97 @@ impl FlattenedKeywords {
         Default::default()
     }
 }
+#[doc = "`FormatCollision`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"{abc}def\","]
+#[doc = "    \"{http://example.com/Foo}Thing\","]
+#[doc = "    \"{self}\","]
+#[doc = "    \"quote\\\"unquote\","]
+#[doc = "    \"xyz\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum FormatCollision {
+    #[serde(rename = "{abc}def")]
+    AbcDef,
+    #[serde(rename = "{http://example.com/Foo}Thing")]
+    HttpExampleComFooThing,
+    #[serde(rename = "{self}")]
+    Self_,
+    #[serde(rename = "quote\"unquote")]
+    QuoteUnquote,
+    #[serde(rename = "xyz")]
+    Xyz,
+}
+impl ::std::convert::From<&Self> for FormatCollision {
+    fn from(value: &FormatCollision) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for FormatCollision {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::AbcDef => f.write_str("{abc}def"),
+            Self::HttpExampleComFooThing => f.write_str("{http://example.com/Foo}Thing"),
+            Self::Self_ => f.write_str("{self}"),
+            Self::QuoteUnquote => f.write_str("quote\"unquote"),
+            Self::Xyz => f.write_str("xyz"),
+        }
+    }
+}
+impl ::std::str::FromStr for FormatCollision {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "{abc}def" => Ok(Self::AbcDef),
+            "{http://example.com/Foo}Thing" => Ok(Self::HttpExampleComFooThing),
+            "{self}" => Ok(Self::Self_),
+            "quote\"unquote" => Ok(Self::QuoteUnquote),
+            "xyz" => Ok(Self::Xyz),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`KeywordFieldsEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -442,20 +533,20 @@ impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
 impl ::std::fmt::Display for MapOfKeywordsKeywordMapValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Type => write!(f, "type"),
-            Self::Impl => write!(f, "impl"),
-            Self::Fn => write!(f, "fn"),
-            Self::Let => write!(f, "let"),
-            Self::Match => write!(f, "match"),
-            Self::Mod => write!(f, "mod"),
-            Self::Move => write!(f, "move"),
-            Self::Pub => write!(f, "pub"),
-            Self::Ref => write!(f, "ref"),
-            Self::Self_ => write!(f, "self"),
-            Self::Super => write!(f, "super"),
-            Self::Trait => write!(f, "trait"),
-            Self::Use => write!(f, "use"),
-            Self::Where => write!(f, "where"),
+            Self::Type => f.write_str("type"),
+            Self::Impl => f.write_str("impl"),
+            Self::Fn => f.write_str("fn"),
+            Self::Let => f.write_str("let"),
+            Self::Match => f.write_str("match"),
+            Self::Mod => f.write_str("mod"),
+            Self::Move => f.write_str("move"),
+            Self::Pub => f.write_str("pub"),
+            Self::Ref => f.write_str("ref"),
+            Self::Self_ => f.write_str("self"),
+            Self::Super => f.write_str("super"),
+            Self::Trait => f.write_str("trait"),
+            Self::Use => f.write_str("use"),
+            Self::Where => f.write_str("where"),
         }
     }
 }
@@ -1438,9 +1529,9 @@ impl ::std::convert::From<&Self> for StringEnum {
 impl ::std::fmt::Display for StringEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::One => write!(f, "one"),
-            Self::Two => write!(f, "two"),
-            Self::Three => write!(f, "three"),
+            Self::One => f.write_str("one"),
+            Self::Two => f.write_str("two"),
+            Self::Three => f.write_str("three"),
         }
     }
 }

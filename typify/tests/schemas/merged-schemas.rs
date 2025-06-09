@@ -364,7 +364,7 @@ impl ::std::convert::From<&Self> for JsonSuccessBaseResult {
 impl ::std::fmt::Display for JsonSuccessBaseResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => write!(f, "success"),
+            Self::Success => f.write_str("success"),
         }
     }
 }
@@ -436,7 +436,7 @@ impl ::std::convert::From<&Self> for JsonSuccessResult {
 impl ::std::fmt::Display for JsonSuccessResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => write!(f, "success"),
+            Self::Success => f.write_str("success"),
         }
     }
 }
@@ -952,7 +952,7 @@ impl ::std::convert::From<&Self> for UnchangedByMergeTag {
 impl ::std::fmt::Display for UnchangedByMergeTag {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Something => write!(f, "something"),
+            Self::Something => f.write_str("something"),
         }
     }
 }
@@ -1278,7 +1278,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3B {
 impl ::std::fmt::Display for Unsatisfiable3B {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Bar => write!(f, "bar"),
+            Self::Bar => f.write_str("bar"),
         }
     }
 }
@@ -1350,7 +1350,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3C {
 impl ::std::fmt::Display for Unsatisfiable3C {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Foo => write!(f, "foo"),
+            Self::Foo => f.write_str("foo"),
         }
     }
 }
