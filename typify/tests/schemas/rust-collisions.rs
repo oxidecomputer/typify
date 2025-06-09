@@ -246,6 +246,97 @@ impl FlattenedKeywords {
         Default::default()
     }
 }
+#[doc = "`FormatCollision`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"{abc}def\","]
+#[doc = "    \"{http://example.com/Foo}Thing\","]
+#[doc = "    \"{self}\","]
+#[doc = "    \"quote\\\"unquote\","]
+#[doc = "    \"xyz\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum FormatCollision {
+    #[serde(rename = "{abc}def")]
+    AbcDef,
+    #[serde(rename = "{http://example.com/Foo}Thing")]
+    HttpExampleComFooThing,
+    #[serde(rename = "{self}")]
+    Self_,
+    #[serde(rename = "quote\"unquote")]
+    QuoteUnquote,
+    #[serde(rename = "xyz")]
+    Xyz,
+}
+impl ::std::convert::From<&Self> for FormatCollision {
+    fn from(value: &FormatCollision) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for FormatCollision {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::AbcDef => write!(f, "{abc}def"),
+            Self::HttpExampleComFooThing => write!(f, "{http://example.com/Foo}Thing"),
+            Self::Self_ => write!(f, "{self}"),
+            Self::QuoteUnquote => write!(f, "quote\"unquote"),
+            Self::Xyz => write!(f, "xyz"),
+        }
+    }
+}
+impl ::std::str::FromStr for FormatCollision {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "{abc}def" => Ok(Self::AbcDef),
+            "{http://example.com/Foo}Thing" => Ok(Self::HttpExampleComFooThing),
+            "{self}" => Ok(Self::Self_),
+            "quote\"unquote" => Ok(Self::QuoteUnquote),
+            "xyz" => Ok(Self::Xyz),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`KeywordFieldsEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
