@@ -294,11 +294,11 @@ impl ::std::convert::From<&Self> for FormatCollision {
 impl ::std::fmt::Display for FormatCollision {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::AbcDef => write!(f, "{abc}def"),
-            Self::HttpExampleComFooThing => write!(f, "{http://example.com/Foo}Thing"),
-            Self::Self_ => write!(f, "{self}"),
-            Self::QuoteUnquote => write!(f, "quote\"unquote"),
-            Self::Xyz => write!(f, "xyz"),
+            Self::AbcDef => f.write_str("{abc}def"),
+            Self::HttpExampleComFooThing => f.write_str("{http://example.com/Foo}Thing"),
+            Self::Self_ => f.write_str("{self}"),
+            Self::QuoteUnquote => f.write_str("quote\"unquote"),
+            Self::Xyz => f.write_str("xyz"),
         }
     }
 }
@@ -533,20 +533,20 @@ impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
 impl ::std::fmt::Display for MapOfKeywordsKeywordMapValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Type => write!(f, "type"),
-            Self::Impl => write!(f, "impl"),
-            Self::Fn => write!(f, "fn"),
-            Self::Let => write!(f, "let"),
-            Self::Match => write!(f, "match"),
-            Self::Mod => write!(f, "mod"),
-            Self::Move => write!(f, "move"),
-            Self::Pub => write!(f, "pub"),
-            Self::Ref => write!(f, "ref"),
-            Self::Self_ => write!(f, "self"),
-            Self::Super => write!(f, "super"),
-            Self::Trait => write!(f, "trait"),
-            Self::Use => write!(f, "use"),
-            Self::Where => write!(f, "where"),
+            Self::Type => f.write_str("type"),
+            Self::Impl => f.write_str("impl"),
+            Self::Fn => f.write_str("fn"),
+            Self::Let => f.write_str("let"),
+            Self::Match => f.write_str("match"),
+            Self::Mod => f.write_str("mod"),
+            Self::Move => f.write_str("move"),
+            Self::Pub => f.write_str("pub"),
+            Self::Ref => f.write_str("ref"),
+            Self::Self_ => f.write_str("self"),
+            Self::Super => f.write_str("super"),
+            Self::Trait => f.write_str("trait"),
+            Self::Use => f.write_str("use"),
+            Self::Where => f.write_str("where"),
         }
     }
 }
@@ -1529,9 +1529,9 @@ impl ::std::convert::From<&Self> for StringEnum {
 impl ::std::fmt::Display for StringEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::One => write!(f, "one"),
-            Self::Two => write!(f, "two"),
-            Self::Three => write!(f, "three"),
+            Self::One => f.write_str("one"),
+            Self::Two => f.write_str("two"),
+            Self::Three => f.write_str("three"),
         }
     }
 }

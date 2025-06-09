@@ -196,9 +196,9 @@ mod types {
     impl ::std::fmt::Display for StringEnum {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::One => write!(f, "One"),
-                Self::Two => write!(f, "Two"),
-                Self::BuckleMyShoe => write!(f, "BuckleMyShoe"),
+                Self::One => f.write_str("One"),
+                Self::Two => f.write_str("Two"),
+                Self::BuckleMyShoe => f.write_str("BuckleMyShoe"),
             }
         }
     }

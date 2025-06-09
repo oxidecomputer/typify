@@ -69,9 +69,9 @@ impl ::std::convert::From<&Self> for TestEnum {
 impl ::std::fmt::Display for TestEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Failure => write!(f, "failure"),
-            Self::Skipped => write!(f, "skipped"),
-            Self::Success => write!(f, "success"),
+            Self::Failure => f.write_str("failure"),
+            Self::Skipped => f.write_str("skipped"),
+            Self::Success => f.write_str("success"),
         }
     }
 }

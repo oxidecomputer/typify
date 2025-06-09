@@ -816,14 +816,16 @@ impl TypeEntry {
                     impl ::std::fmt::Display for #type_name {
                         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                             match *self {
-                                #(Self::#match_variants => write!(f, #match_strs),)*
+                                #(Self::#match_variants => f.write_str(#match_strs),)*
                             }
                         }
                     }
                     impl ::std::str::FromStr for #type_name {
                         type Err = self::error::ConversionError;
 
-                        fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+                        fn from_str(value: &str) ->
+                            ::std::result::Result<Self, self::error::ConversionError>
+                        {
                             match value {
                                 #(#match_strs => Ok(Self::#match_variants),)*
                                 _ => Err("invalid value".into()),

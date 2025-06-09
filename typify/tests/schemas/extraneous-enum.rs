@@ -111,8 +111,8 @@ impl ::std::convert::From<&Self> for LetterBoxLetter {
 impl ::std::fmt::Display for LetterBoxLetter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "a"),
-            Self::B => write!(f, "b"),
+            Self::A => f.write_str("a"),
+            Self::B => f.write_str("b"),
         }
     }
 }

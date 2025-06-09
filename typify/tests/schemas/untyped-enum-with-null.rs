@@ -107,9 +107,9 @@ impl ::std::convert::From<&Self> for TestTypeValue {
 impl ::std::fmt::Display for TestTypeValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }

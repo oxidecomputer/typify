@@ -66,9 +66,9 @@ impl ::std::convert::From<&Self> for AlternativeEnum {
 impl ::std::fmt::Display for AlternativeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Choice1 => write!(f, "Choice1"),
-            Self::Choice2 => write!(f, "Choice2"),
-            Self::Choice3 => write!(f, "Choice3"),
+            Self::Choice1 => f.write_str("Choice1"),
+            Self::Choice2 => f.write_str("Choice2"),
+            Self::Choice3 => f.write_str("Choice3"),
         }
     }
 }
@@ -165,9 +165,9 @@ impl ::std::convert::From<&Self> for CommentedVariants {
 impl ::std::fmt::Display for CommentedVariants {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "A"),
-            Self::B => write!(f, "B"),
-            Self::C => write!(f, "C"),
+            Self::A => f.write_str("A"),
+            Self::B => f.write_str("B"),
+            Self::C => f.write_str("C"),
         }
     }
 }
@@ -288,9 +288,9 @@ impl ::std::convert::From<&Self> for DiskAttachmentState {
 impl ::std::fmt::Display for DiskAttachmentState {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Detached => write!(f, "Detached"),
-            Self::Destroyed => write!(f, "Destroyed"),
-            Self::Faulted => write!(f, "Faulted"),
+            Self::Detached => f.write_str("Detached"),
+            Self::Destroyed => f.write_str("Destroyed"),
+            Self::Faulted => f.write_str("Faulted"),
         }
     }
 }
@@ -932,9 +932,9 @@ impl ::std::convert::From<&Self> for NullStringEnumWithUnknownFormatInner {
 impl ::std::fmt::Display for NullStringEnumWithUnknownFormatInner {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "a"),
-            Self::B => write!(f, "b"),
-            Self::C => write!(f, "c"),
+            Self::A => f.write_str("a"),
+            Self::B => f.write_str("b"),
+            Self::C => f.write_str("c"),
         }
     }
 }
@@ -1602,9 +1602,9 @@ impl ::std::convert::From<&Self> for VariantsDifferByPunct {
 impl ::std::fmt::Display for VariantsDifferByPunct {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::X2x5gbasext => write!(f, "2.5GBASE-T"),
-            Self::X25gbasext => write!(f, "25GBASE-T"),
-            Self::X2x5xgbasext => write!(f, "2,5,GBASE,T"),
+            Self::X2x5gbasext => f.write_str("2.5GBASE-T"),
+            Self::X25gbasext => f.write_str("25GBASE-T"),
+            Self::X2x5xgbasext => f.write_str("2,5,GBASE,T"),
         }
     }
 }
