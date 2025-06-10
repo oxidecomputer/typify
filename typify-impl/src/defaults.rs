@@ -151,24 +151,24 @@ impl TypeEntry {
             }) => match tag_type {
                 EnumTagType::External => {
                     validate_default_for_external_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Internal { tag } => {
                     validate_default_for_internal_enum(type_space, variants, default, tag)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Adjacent { tag, content } => {
                     validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Untagged => {
                     validate_default_for_untagged_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
             },
             TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
                 validate_default_struct_props(properties, type_space, default)
-                    .ok_or_else(|| Error::invalid_value())
+                    .ok_or_else(Error::invalid_value)
             }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
@@ -242,8 +242,9 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
-                .ok_or_else(|| Error::invalid_value()),
+            TypeEntryDetails::Tuple(ids) => {
+                validate_default_tuple(ids, type_space, default).ok_or_else(Error::invalid_value)
+            }
 
             TypeEntryDetails::Array(type_id, length) => {
                 let Some(arr) = default.as_array() else {
@@ -648,10 +649,9 @@ mod tests {
         let (type_space, type_id) = get_type::<Option<u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("forty-two")),
-            Err(_)
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!("forty-two"))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
             Ok(DefaultKind::Intrinsic)
@@ -671,10 +671,9 @@ mod tests {
             extra_derives: Default::default(),
         };
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("forty-two")),
-            Err(_)
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!("forty-two"))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
             Ok(DefaultKind::Intrinsic)
@@ -690,10 +689,9 @@ mod tests {
         let (type_space, type_id) = get_type::<Vec<u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([null])),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!([null]))
+            .is_err(),);
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([])),
             Ok(DefaultKind::Intrinsic),
@@ -709,10 +707,7 @@ mod tests {
         let (type_space, type_id) = get_type::<HashMap<String, u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([])),
-            Err(_),
-        ));
+        assert!(type_entry.validate_value(&type_space, &json!([])).is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!({})),
             Ok(DefaultKind::Intrinsic),
@@ -728,10 +723,9 @@ mod tests {
         let (type_space, type_id) = get_type::<(u32, u32, String)>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([1, 2, "three", 4])),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!([1, 2, "three", 4]))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([1, 2, "three"])),
             Ok(DefaultKind::Specific),
@@ -769,10 +763,9 @@ mod tests {
         let (type_space, type_id) = get_type::<u32>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!(true)),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!(true))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(0)),
             Ok(DefaultKind::Intrinsic),
@@ -822,8 +815,8 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!(
                     {
@@ -832,11 +825,10 @@ mod tests {
                         "d": 7
                     }
                 )
-            ),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+            )
+            .is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!(
                     {
@@ -845,9 +837,8 @@ mod tests {
                         "d": {}
                     }
                 )
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
 
     #[test]
@@ -885,14 +876,10 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!({ "A": null })),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("B")),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!({ "A": null }))
+            .is_err());
+        assert!(type_entry.validate_value(&type_space, &json!("B")).is_err());
     }
 
     #[test]
@@ -928,25 +915,23 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "not-tag": "A"
                 })
-            ),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+            )
+            .is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "tag": "B",
                     "cc": "where's D?"
                 })
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
 
     #[test]
@@ -992,20 +977,16 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("A")),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry.validate_value(&type_space, &json!("A")).is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "tag": "A",
                     "content": null,
                 })
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
     #[test]
     fn test_enum_untagged() {
@@ -1033,9 +1014,6 @@ mod tests {
             type_entry.validate_value(&type_space, &json!( { "cc": "xx", "dd": "yy" })),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!({})),
-            Err(_),
-        ));
+        assert!(type_entry.validate_value(&type_space, &json!({})).is_err());
     }
 }

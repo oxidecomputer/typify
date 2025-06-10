@@ -22329,7 +22329,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -22849,7 +22849,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -23428,7 +23428,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -24016,7 +24016,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -25219,7 +25219,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -25739,7 +25739,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -26318,7 +26318,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -26906,7 +26906,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -31384,7 +31384,7 @@ impl ::std::str::FromStr for EncodeKey {
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^.+$").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^.+$\"".into());
         }
         Ok(Self(value.to_string()))
@@ -107875,7 +107875,7 @@ impl ::std::str::FromStr for TitleVariant1EncodeSubtype0Key {
             ::std::sync::LazyLock::new(|| {
                 ::regress::Regex::new("^(?!interactive|name|style).+$").unwrap()
             });
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(?!interactive|name|style).+$\"".into());
         }
         Ok(Self(value.to_string()))

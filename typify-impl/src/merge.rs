@@ -67,9 +67,7 @@ fn merge_additional_properties(
 ) -> Option<Schema> {
     match (a, b) {
         (None, other) | (other, None) => other.cloned(),
-        (Some(aa), Some(bb)) => {
-            Some(try_merge_schema(aa, bb, defs).unwrap_or_else(|_| Schema::Bool(false)))
-        }
+        (Some(aa), Some(bb)) => Some(try_merge_schema(aa, bb, defs).unwrap_or(Schema::Bool(false))),
     }
 }
 
@@ -893,12 +891,12 @@ fn merge_so_array(
                     let aa_items_iter = aa_items.iter().chain(repeat(
                         aa_additional_items
                             .as_deref()
-                            .unwrap_or_else(|| &Schema::Bool(true)),
+                            .unwrap_or(&Schema::Bool(true)),
                     ));
                     let bb_items_iter = bb_items.iter().chain(repeat(
                         bb_additional_items
                             .as_deref()
-                            .unwrap_or_else(|| &Schema::Bool(true)),
+                            .unwrap_or(&Schema::Bool(true)),
                     ));
                     let items_iter = aa_items_iter.zip(bb_items_iter).take(items_len);
                     let (items, allow_additional_items) =

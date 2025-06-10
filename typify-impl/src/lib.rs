@@ -63,11 +63,7 @@ impl Error {
 pub type Result<T> = std::result::Result<T, Error>;
 
 fn show_type_name(type_name: Option<&str>) -> &str {
-    if let Some(type_name) = type_name {
-        type_name
-    } else {
-        "<unknown type>"
-    }
+    type_name.unwrap_or("<unknown type>")
 }
 
 /// Representation of a type which may have a definition or may be built-in.
@@ -987,7 +983,7 @@ impl ToTokens for TypeSpace {
     }
 }
 
-impl<'a> Type<'a> {
+impl Type<'_> {
     /// The name of the type as a String.
     pub fn name(&self) -> String {
         let Type {
@@ -1167,7 +1163,7 @@ impl<'a> TypeStruct<'a> {
     }
 }
 
-impl<'a> TypeNewtype<'a> {
+impl TypeNewtype<'_> {
     /// Get the inner type of the newtype struct.
     pub fn inner(&self) -> TypeId {
         self.details.type_id.clone()

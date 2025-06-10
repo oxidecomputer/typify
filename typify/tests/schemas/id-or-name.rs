@@ -326,7 +326,7 @@ impl ::std::str::FromStr for IdOrYoloYolo {
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new(".*").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \".*\"".into());
         }
         Ok(Self(value.to_string()))
@@ -410,7 +410,7 @@ impl ::std::str::FromStr for Name {
                 :: regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . unwrap ()
             },
         );
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err ("doesn't match pattern \"^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))

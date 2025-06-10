@@ -1536,7 +1536,7 @@ impl TypeEntry {
                         static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
                             ::regress::Regex::new(#p).unwrap()
                         });
-                        if (&*PATTERN).find(value).is_none() {
+                        if PATTERN.find(value).is_none() {
                             return Err(#err.into());
                         }
                     }
