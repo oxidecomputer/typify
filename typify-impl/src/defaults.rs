@@ -691,7 +691,7 @@ mod tests {
 
         assert!(type_entry
             .validate_value(&type_space, &json!([null]))
-            .is_err(),);
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([])),
             Ok(DefaultKind::Intrinsic),
