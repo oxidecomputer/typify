@@ -942,10 +942,7 @@ impl TypeSpace {
             if has_null {
                 self.convert_null(metadata)
             } else {
-                Err(Error::InvalidSchema {
-                    type_name: type_name.into_option(),
-                    reason: "empty enum array".to_string(),
-                })
+                self.convert_never(type_name, original_schema)
             }
         } else {
             let mut ty = TypeEntryEnum::from_metadata(
@@ -1948,9 +1945,12 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         enum_values: &[serde_json::Value],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        if enum_values.is_empty() {
+            return self.convert_never(type_name, original_schema);
+        }
+
         // We're here because the schema didn't have a type; that's a bummer,
         // but we'll do our best to roll with the punches.
-        assert!(!enum_values.is_empty());
 
         // Let's hope all these values are the same type.
         let mut instance_types = enum_values
@@ -1976,10 +1976,14 @@ impl TypeSpace {
                 .cloned()
                 .collect::<Vec<_>>();
 
-            let (type_entry, metadata) =
-                self.convert_unknown_enum(type_name, original_schema, metadata, &enum_values)?;
-            let type_entry = self.type_to_option(type_entry);
-            Ok((type_entry, metadata))
+            if enum_values.is_empty() {
+                self.convert_null(metadata)
+            } else {
+                let (type_entry, metadata) =
+                    self.convert_unknown_enum(type_name, original_schema, metadata, &enum_values)?;
+                let type_entry = self.type_to_option(type_entry);
+                Ok((type_entry, metadata))
+            }
         } else {
             match (instance_types.len(), instance_types.iter().next()) {
                 (1, Some(InstanceType::String)) => self.convert_enum_string(

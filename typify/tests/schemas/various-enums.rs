@@ -110,6 +110,65 @@ impl ::std::default::Default for AlternativeEnum {
         AlternativeEnum::Choice2
     }
 }
+#[doc = "`AnyOfNoStrings`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": []"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum AnyOfNoStrings {}
+impl ::std::convert::From<&Self> for AnyOfNoStrings {
+    fn from(value: &AnyOfNoStrings) -> Self {
+        value.clone()
+    }
+}
+#[doc = "`AnyOfNothing`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": []"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum AnyOfNothing {}
+impl ::std::convert::From<&Self> for AnyOfNothing {
+    fn from(value: &AnyOfNothing) -> Self {
+        value.clone()
+    }
+}
 #[doc = "`CommentedVariants`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
