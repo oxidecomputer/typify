@@ -60,7 +60,7 @@ impl ::std::str::FromStr for PatternString {
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("xx").unwrap());
-        if (&*PATTERN).find(value).is_none() {
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"xx\"".into());
         }
         Ok(Self(value.to_string()))

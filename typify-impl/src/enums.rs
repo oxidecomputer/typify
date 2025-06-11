@@ -1050,7 +1050,7 @@ mod tests {
                 assert_eq!(variants.len(), 5);
 
                 assert!(matches!(
-                    variants.get(0).unwrap(),
+                    variants.first().unwrap(),
                     Variant {
                         details: VariantDetails::Simple,
                         ..
