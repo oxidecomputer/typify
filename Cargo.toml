@@ -2,6 +2,7 @@
 members = [
 	"typify",
 	"typify-impl",
+	"typify-impl-mk2",
 	"typify-macro",
 	"typify-test",
 	"cargo-typify",
@@ -12,9 +13,10 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-typify = { version = "0.4.2", path = "typify" }
-typify-impl = { version = "0.4.2", path = "typify-impl" }
-typify-macro = { version = "0.4.2", path = "typify-macro" }
+typify = { version = "0.10.0", path = "typify" }
+typify-impl = { version = "0.10.0", path = "typify-impl" }
+typify-impl-mk2 = { version = "0.10.0", path = "typify-impl-mk2" }
+typify-macro = { version = "0.10.0", path = "typify-macro" }
 
 assert_cmd = "2.0.17"
 chrono = { version = "0.4.41", features = ["serde"] }
@@ -43,4 +45,5 @@ tempdir = "0.3.7"
 thiserror = "2.0.12"
 trybuild = "1.0.106"
 unicode-ident = "1.0.18"
+url = "2.5.4"
 uuid = "1.16.0"
