@@ -1,6 +1,6 @@
 use crate::{
     convert::{Converter, GottenStuff},
-    schemalet::{SchemaRef, SchemaletValueArray},
+    schemalet::SchemaletValueArray,
     typespace::{NameBuilder, Type},
 };
 

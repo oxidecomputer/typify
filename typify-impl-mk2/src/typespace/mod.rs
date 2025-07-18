@@ -2,7 +2,7 @@ mod type_common;
 mod type_enum;
 mod type_struct;
 
-use syn::parse_quote;
+use serde::Deserialize;
 pub use type_common::*;
 pub use type_enum::*;
 pub use type_struct::*;
@@ -57,7 +57,57 @@ pub enum NameBuilderHint {
 //   situations where we need to know a little about types before finalization.
 //   Something else to consider.
 
+// TODO 7/18/2025
+// I wanted to get this started to think through various settings that we might
+// eventually want...
+/// Modify how types are processed and generated.
+///
+/// Futures:
+///
+/// There are traits that may require special handling during type generation:
+///
+/// - `serde::Serialize` and `serde::Deserialize` -- These traits depend on the
+/// shape of the data and while--as much as possible--generated code makes use
+/// of the derived implementations, the serialized form of some generated types
+/// may be a little different.
+///
+/// - `schemars::JsonSchema` -- As with serde traits, JsonSchema depends on the
+/// shape of data and may be customized in some circumstances. In addition,
+/// typify supports multiple version of `schemars` so additional configuration
+/// may be required to specify the version or to customize the crate name e.g.
+/// if one were to support multiple versions simultaneously.
+///
+/// - `std::fmt::Display` -- XXX
+/// - `std::default::Default` -- XXX
+/// XXX
+///
+/// Null vs Optional
+///
+/// Most of the time we want to do what serde does and not distinguish between
+/// these, but some users may want to be able to adjust this both globally and
+/// on a per-type basis...
+#[derive(Default, Deserialize)]
+#[allow(dead_code)]
+pub struct TypespaceSettings {
+    /// When true, (the default), types in the `std` crate are fully qualified.
+    /// For example, the `Option` type is rendered as `::std::option::Option`.
+    /// When false, these types appear in their more typical, auto-imported
+    /// form. The latter is useful if one intends to use type generation as a
+    /// starting point for manually-edited code.
+    #[serde(default)]
+    std: TypespaceSettingsStd,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum TypespaceSettingsStd {
+    #[default]
+    FullyQualified,
+    Unqualified,
+}
+
 pub struct Typespace {
+    settings: TypespaceSettings,
     types: BTreeMap<SchemaRef, Type>,
 }
 
@@ -170,15 +220,23 @@ impl Typespace {
             // Type::Native(_) => todo!(),
             // Type::Option(_) => todo!(),
             Type::Box(boxed_id) => {
+                let box_type = match &self.settings.std {
+                    TypespaceSettingsStd::FullyQualified => quote! { ::std::boxed::Box },
+                    TypespaceSettingsStd::Unqualified => quote! { Box },
+                };
                 let boxed_ident = self.render_ident(boxed_id);
                 quote! {
-                    ::std::boxed::Box<#boxed_ident>
+                    #box_type<#boxed_ident>
                 }
             }
             Type::Vec(inner_id) => {
+                let vec_type = match &self.settings.std {
+                    TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
+                    TypespaceSettingsStd::Unqualified => quote! { Vec },
+                };
                 let inner_ident = self.render_ident(inner_id);
                 quote! {
-                    ::std::vec::Vec<#inner_ident>
+                    #vec_type<#inner_ident>
                 }
             }
             Type::Map(key_id, value_id) => {
@@ -196,7 +254,10 @@ impl Typespace {
             Type::Integer(name) | Type::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
                 .to_token_stream(),
-            Type::String => quote! { String },
+            Type::String => match &self.settings.std {
+                TypespaceSettingsStd::FullyQualified => quote! { ::std::string::String },
+                TypespaceSettingsStd::Unqualified => quote! { String },
+            },
             Type::JsonValue => quote! { ::serde_json::Value },
             _ => quote! { () },
         }
@@ -239,17 +300,22 @@ impl Typespace {
         let ty_ident = match state {
             StructPropertyState::Required => ty_ident,
             StructPropertyState::Optional => {
-                serde_options.push(quote! {
-                    skip_serializing_if = "::std::option::Option::is_none"
-                });
+                let opt_type = match &self.settings.std {
+                    TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
+                    TypespaceSettingsStd::Unqualified => quote! { Option },
+                };
+                let opt_is_none = format!("{opt_type}::is_none");
+                serde_options.push(quote! { skip_serializing_if = #opt_is_none });
+
                 // TODO 7/10/2025
                 // This is interesting and may present an opportunity for
                 // customization. Say the type itself is an Option (e.g.
                 // because there's a oneOf[null, object]). In this case we've
                 // traditionally compressed this down to a single Option, but
                 // we could potentially model this as some other type.
+
                 quote! {
-                    ::std::option::Option<#ty_ident>
+                    #opt_type<#ty_ident>
                 }
             }
             StructPropertyState::Default(json_value) => todo!(),
@@ -283,167 +349,6 @@ impl Default for TypespaceBuilder {
     }
 }
 
-// TODO this impl is intended just for goofing around. I'm sort of wondering if
-// these types aren't just "builders"
-impl TypespaceBuilder {
-    pub fn render(&self) -> String {
-        let types = self.types.iter().map(|(id, typ)| {
-            match typ {
-                Type::Enum(type_enum) => {
-                    let TypeEnum {
-                        name,
-                        description,
-                        default,
-                        tag_type,
-                        variants,
-                        deny_unknown_fields,
-                        ..
-                    } = type_enum;
-                    // let name = format_ident!("{}", name);
-                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-                    let serde = match tag_type {
-                        EnumTagType::External => TokenStream::new(),
-                        EnumTagType::Internal { tag } => quote! {
-                            #[serde(tag = #tag)]
-                        },
-                        EnumTagType::Adjacent { tag, content } => quote! {
-                            #[serde(tag = #tag, content = #content)]
-                        },
-                        EnumTagType::Untagged => quote! {
-                            #[serde(untagged)]
-                        },
-                    };
-
-                    let variants = variants.iter().map(|variant| {
-                        let EnumVariant {
-                            rust_name,
-                            rename,
-                            description,
-                            details,
-                        } = variant;
-                        let name = format_ident!("{}", rust_name);
-                        let description =
-                            description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-
-                        let data = match details {
-                            VariantDetails::Simple => TokenStream::new(),
-                            VariantDetails::Item(item) => {
-                                let item_ident = self.render_ident(item);
-                                quote! {
-                                    (#item_ident)
-                                }
-                            }
-                            VariantDetails::Tuple(items) => todo!(),
-                            VariantDetails::Struct(properties) => {
-                                let properties = properties.iter().map(
-                                    |StructProperty {
-                                         rust_name,
-                                         json_name,
-                                         state,
-                                         description,
-                                         type_id,
-                                     }| {
-                                        let description = description
-                                            .as_ref()
-                                            .map(|desc| quote! { #[doc = #desc ]});
-
-                                        let serde = match json_name {
-                                            StructPropertySerde::None => TokenStream::new(),
-                                            StructPropertySerde::Rename(s) => quote! {
-                                                #[serde(rename = #s)]
-                                            },
-                                            StructPropertySerde::Flatten => quote! {
-                                                #[serde(flatten)]
-                                            },
-                                        };
-
-                                        let xxx_ident = self.render_ident(type_id);
-
-                                        quote! {
-                                            #description
-                                            #serde
-                                            #rust_name: #xxx_ident
-                                        }
-                                    },
-                                );
-                                quote! {
-                                    {
-                                        #( #properties, )*
-                                    }
-                                }
-                            }
-                        };
-
-                        quote! {
-                            #description
-                            #name #data
-                        }
-                    });
-
-                    // let xxx_doc_str = id.to_string();
-                    // let xxx_doc = quote! { #[doc = #xxx_doc_str] };
-
-                    quote! {
-                        // #xxx_doc
-                        #description
-                        #serde
-                        pub enum Unknown {
-                            #( #variants, )*
-                        }
-                    }
-                }
-                Type::Struct(type_struct) => {
-                    println!("{:#?}", type_struct);
-                    todo!()
-                }
-                _ => quote! {},
-            }
-        });
-        let file = parse_quote! {
-            #( #types )*
-        };
-        prettyplease::unparse(&file)
-    }
-
-    fn render_ident(&self, id: &SchemaRef) -> TokenStream {
-        let ty = self.types.get(id).unwrap();
-        match ty {
-            Type::Enum(_) | Type::Struct(_) => {
-                // let ref_str = id.to_string();
-                let ref_str = "???";
-                quote! { Ref<#ref_str> }
-            }
-            // Type::Native(_) => todo!(),
-            // Type::Option(_) => todo!(),
-            // Type::Box(_) => todo!(),
-            Type::Vec(inner_id) => {
-                let inner_ident = self.render_ident(inner_id);
-                quote! {
-                    ::std::vec::Vec<#inner_ident>
-                }
-            }
-            Type::Map(key_id, value_id) => {
-                let key_ident = self.render_ident(key_id);
-                let value_ident = self.render_ident(value_id);
-                quote! {
-                    ::std::btreemap::BTreeMap<#key_ident, #value_ident>
-                }
-            }
-            // Type::Set(_) => todo!(),
-            // Type::Array(_, _) => todo!(),
-            // Type::Tuple(items) => todo!(),
-            // Type::Unit => todo!(),
-            Type::Boolean => quote! { boolean },
-            Type::Integer(name) | Type::Float(name) => syn::parse_str::<syn::TypePath>(name)
-                .unwrap()
-                .to_token_stream(),
-            Type::String => quote! { String },
-            Type::JsonValue => quote! { ::serde_json::Value },
-            _ => quote! { () },
-        }
-    }
-}
-
 impl TypespaceBuilder {
     pub fn insert(&mut self, id: SchemaRef, typ: Type) {
         match self.types.entry(id.into()) {
@@ -461,7 +366,7 @@ impl TypespaceBuilder {
         self.types.contains_key(id)
     }
 
-    pub fn finalize(self) -> Result<Typespace, ()> {
+    pub fn finalize(self, settings: TypespaceSettings) -> Result<Typespace, ()> {
         // Basic steps:
         // 1. Construct the parent and child adjacency lists
         // 2. Figure out names for all types that need them
@@ -487,10 +392,7 @@ impl TypespaceBuilder {
                 // Ensure that all referenced types exist
                 assert!(types.contains_key(child_id));
 
-                id_to_parents
-                    .entry(child_id.clone())
-                    .or_default()
-                    .push(id.clone());
+                id_to_parents.entry(child_id.clone()).or_default().push(id);
             }
         }
 
@@ -585,7 +487,7 @@ impl TypespaceBuilder {
         // Break cycles
         break_cycles(&mut types);
 
-        Ok(Typespace { types })
+        Ok(Typespace { settings, types })
     }
 }
 

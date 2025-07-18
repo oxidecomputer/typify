@@ -1,0 +1,1588 @@
+[
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#",
+    {
+      "title": "Applicator vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/applicator# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray/items",
+            "min_items": 1
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray/items",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/allOf",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/anyOf",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/contains",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/else",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/if",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/items",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/not",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/oneOf",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/prefixItems",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/applicator#/$defs/schemaArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/propertyNames",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/then",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content#",
+    {
+      "title": "Content vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/content# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/content# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content#/properties/contentEncoding",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content#/properties/contentMediaType",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content#/properties/contentSchema",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#",
+    {
+      "title": "Core vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/core# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/core# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/$defs/anchorString",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": "^[A-Za-z_][-A-Za-z0-9._]*$"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "format": "uri-reference"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriString",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "format": "uri"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$anchor",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/anchorString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$comment",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicAnchor",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/anchorString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicRef",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$ref",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$schema",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/additionalProperties",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/format-annotation#",
+    {
+      "title": "Format vocabulary meta-schema for annotation results",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/format-annotation#/properties/format",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#",
+    {
+      "title": "Meta-data vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/default",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/deprecated",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/description",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples/items"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples/items",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/readOnly",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/title",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/writeOnly",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/unevaluated#",
+    {
+      "title": "Unevaluated applicator vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedItems",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#",
+    {
+      "title": "Validation vocabulary meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/validation# @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/validation# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger",
+    {
+      "details": {
+        "Value": {
+          "Integer": {
+            "minimum": 0
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeIntegerDefault0",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/0",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/1",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/2",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/3",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/4",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/5",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/6"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/0",
+    {
+      "details": {
+        "Constant": "array"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/1",
+    {
+      "details": {
+        "Constant": "boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/2",
+    {
+      "details": {
+        "Constant": "integer"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/3",
+    {
+      "details": {
+        "Constant": "null"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/4",
+    {
+      "details": {
+        "Constant": "number"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/5",
+    {
+      "details": {
+        "Constant": "object"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/6",
+    {
+      "details": {
+        "Constant": "string"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray/items",
+            "unique_items": true
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray/items",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/const",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum/items"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum/items",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMaximum",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMinimum",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxContains",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxItems",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxLength",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/maximum",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/minContains",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeInteger"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/minItems",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeIntegerDefault0"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/minLength",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeIntegerDefault0"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/minProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/nonNegativeIntegerDefault0"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/minimum",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/multipleOf",
+    {
+      "details": {
+        "Value": {
+          "Number": {
+            "exclusive_minimum": 0
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/pattern",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "format": "regex"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/required",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/type",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes",
+            "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/0",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1/items",
+            "min_items": 1,
+            "unique_items": true
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1/items",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation#/properties/uniqueItems",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#",
+    {
+      "title": "Core and Validation specifications meta-schema",
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/schema# @@ boolean\n]",
+            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]\n  https://json-schema.org/draft/2020-12/schema# @@ object\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/0",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/1",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/applicator#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/2",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/unevaluated#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/3",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/4",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/meta-data#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/5",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/format-annotation#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/allOf/6",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/content#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveAnchor",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/anchorString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveRef",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/definitions",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/schema#/properties/definitions/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/definitions/additionalProperties",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/dependencies",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "additional_properties": "https://json-schema.org/draft/2020-12/schema#/properties/dependencies/additionalProperties"
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/dependencies/additionalProperties",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/schema#",
+            "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/dependencies/additionalProperties/anyOf/0",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema#/properties/dependencies/additionalProperties/anyOf/1",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "additionalProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/additionalProperties",
+              "allOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/allOf",
+              "anyOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/anyOf",
+              "contains": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/contains",
+              "dependentSchemas": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas",
+              "else": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/else",
+              "if": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/if",
+              "items": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/items",
+              "not": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/not",
+              "oneOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/oneOf",
+              "patternProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties",
+              "prefixItems": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/prefixItems",
+              "properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties",
+              "propertyNames": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/propertyNames",
+              "then": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/then"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/content# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "contentEncoding": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentEncoding",
+              "contentMediaType": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentMediaType",
+              "contentSchema": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentSchema"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "$anchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$anchor",
+              "$comment": "https://json-schema.org/draft/2020-12/meta/core#/properties/$comment",
+              "$defs": "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs",
+              "$dynamicAnchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicAnchor",
+              "$dynamicRef": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicRef",
+              "$id": "https://json-schema.org/draft/2020-12/meta/core#/properties/$id",
+              "$ref": "https://json-schema.org/draft/2020-12/meta/core#/properties/$ref",
+              "$schema": "https://json-schema.org/draft/2020-12/meta/core#/properties/$schema",
+              "$vocabulary": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "format": "https://json-schema.org/draft/2020-12/meta/format-annotation#/properties/format"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/meta-data# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "default": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/default",
+              "deprecated": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/deprecated",
+              "description": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/description",
+              "examples": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples",
+              "readOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/readOnly",
+              "title": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/title",
+              "writeOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/writeOnly"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "unevaluatedItems": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedItems",
+              "unevaluatedProperties": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedProperties"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/validation# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "const": "https://json-schema.org/draft/2020-12/meta/validation#/properties/const",
+              "dependentRequired": "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired",
+              "enum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum",
+              "exclusiveMaximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMaximum",
+              "exclusiveMinimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMinimum",
+              "maxContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxContains",
+              "maxItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxItems",
+              "maxLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxLength",
+              "maxProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxProperties",
+              "maximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maximum",
+              "minContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minContains",
+              "minItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minItems",
+              "minLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minLength",
+              "minProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minProperties",
+              "minimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minimum",
+              "multipleOf": "https://json-schema.org/draft/2020-12/meta/validation#/properties/multipleOf",
+              "pattern": "https://json-schema.org/draft/2020-12/meta/validation#/properties/pattern",
+              "required": "https://json-schema.org/draft/2020-12/meta/validation#/properties/required",
+              "type": "https://json-schema.org/draft/2020-12/meta/validation#/properties/type",
+              "uniqueItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/uniqueItems"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema# @@ allOf",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]",
+            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema# @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema# @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "$recursiveAnchor": "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveAnchor",
+              "$recursiveRef": "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveRef",
+              "definitions": "https://json-schema.org/draft/2020-12/schema#/properties/definitions",
+              "dependencies": "https://json-schema.org/draft/2020-12/schema#/properties/dependencies"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/schema# @@ value",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/schema# @@ boolean",
+            "https://json-schema.org/draft/2020-12/schema# @@ object"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/0\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/1\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/2\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/3\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/4\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/5\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes/enum/6\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/schema#\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "$anchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$anchor",
+              "$comment": "https://json-schema.org/draft/2020-12/meta/core#/properties/$comment",
+              "$defs": "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs",
+              "$dynamicAnchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicAnchor",
+              "$dynamicRef": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicRef",
+              "$id": "https://json-schema.org/draft/2020-12/meta/core#/properties/$id",
+              "$ref": "https://json-schema.org/draft/2020-12/meta/core#/properties/$ref",
+              "$schema": "https://json-schema.org/draft/2020-12/meta/core#/properties/$schema",
+              "$vocabulary": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary",
+              "additionalProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/additionalProperties",
+              "allOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/allOf",
+              "anyOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/anyOf",
+              "const": "https://json-schema.org/draft/2020-12/meta/validation#/properties/const",
+              "contains": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/contains",
+              "contentEncoding": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentEncoding",
+              "contentMediaType": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentMediaType",
+              "contentSchema": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentSchema",
+              "default": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/default",
+              "dependentRequired": "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired",
+              "dependentSchemas": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas",
+              "deprecated": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/deprecated",
+              "description": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/description",
+              "else": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/else",
+              "enum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum",
+              "examples": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples",
+              "exclusiveMaximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMaximum",
+              "exclusiveMinimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMinimum",
+              "format": "https://json-schema.org/draft/2020-12/meta/format-annotation#/properties/format",
+              "if": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/if",
+              "items": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/items",
+              "maxContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxContains",
+              "maxItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxItems",
+              "maxLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxLength",
+              "maxProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxProperties",
+              "maximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maximum",
+              "minContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minContains",
+              "minItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minItems",
+              "minLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minLength",
+              "minProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minProperties",
+              "minimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minimum",
+              "multipleOf": "https://json-schema.org/draft/2020-12/meta/validation#/properties/multipleOf",
+              "not": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/not",
+              "oneOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/oneOf",
+              "pattern": "https://json-schema.org/draft/2020-12/meta/validation#/properties/pattern",
+              "patternProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties",
+              "prefixItems": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/prefixItems",
+              "properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties",
+              "propertyNames": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/propertyNames",
+              "readOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/readOnly",
+              "required": "https://json-schema.org/draft/2020-12/meta/validation#/properties/required",
+              "then": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/then",
+              "title": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/title",
+              "type": "https://json-schema.org/draft/2020-12/meta/validation#/properties/type",
+              "unevaluatedItems": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedItems",
+              "unevaluatedProperties": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedProperties",
+              "uniqueItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/uniqueItems",
+              "writeOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/writeOnly"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/schema# @@ boolean\n]",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]\n  https://json-schema.org/draft/2020-12/schema# @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "$anchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$anchor",
+              "$comment": "https://json-schema.org/draft/2020-12/meta/core#/properties/$comment",
+              "$defs": "https://json-schema.org/draft/2020-12/meta/core#/properties/$defs",
+              "$dynamicAnchor": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicAnchor",
+              "$dynamicRef": "https://json-schema.org/draft/2020-12/meta/core#/properties/$dynamicRef",
+              "$id": "https://json-schema.org/draft/2020-12/meta/core#/properties/$id",
+              "$recursiveAnchor": "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveAnchor",
+              "$recursiveRef": "https://json-schema.org/draft/2020-12/schema#/properties/$recursiveRef",
+              "$ref": "https://json-schema.org/draft/2020-12/meta/core#/properties/$ref",
+              "$schema": "https://json-schema.org/draft/2020-12/meta/core#/properties/$schema",
+              "$vocabulary": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary",
+              "additionalProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/additionalProperties",
+              "allOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/allOf",
+              "anyOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/anyOf",
+              "const": "https://json-schema.org/draft/2020-12/meta/validation#/properties/const",
+              "contains": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/contains",
+              "contentEncoding": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentEncoding",
+              "contentMediaType": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentMediaType",
+              "contentSchema": "https://json-schema.org/draft/2020-12/meta/content#/properties/contentSchema",
+              "default": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/default",
+              "definitions": "https://json-schema.org/draft/2020-12/schema#/properties/definitions",
+              "dependencies": "https://json-schema.org/draft/2020-12/schema#/properties/dependencies",
+              "dependentRequired": "https://json-schema.org/draft/2020-12/meta/validation#/properties/dependentRequired",
+              "dependentSchemas": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/dependentSchemas",
+              "deprecated": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/deprecated",
+              "description": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/description",
+              "else": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/else",
+              "enum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/enum",
+              "examples": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/examples",
+              "exclusiveMaximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMaximum",
+              "exclusiveMinimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/exclusiveMinimum",
+              "format": "https://json-schema.org/draft/2020-12/meta/format-annotation#/properties/format",
+              "if": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/if",
+              "items": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/items",
+              "maxContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxContains",
+              "maxItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxItems",
+              "maxLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxLength",
+              "maxProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maxProperties",
+              "maximum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/maximum",
+              "minContains": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minContains",
+              "minItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minItems",
+              "minLength": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minLength",
+              "minProperties": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minProperties",
+              "minimum": "https://json-schema.org/draft/2020-12/meta/validation#/properties/minimum",
+              "multipleOf": "https://json-schema.org/draft/2020-12/meta/validation#/properties/multipleOf",
+              "not": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/not",
+              "oneOf": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/oneOf",
+              "pattern": "https://json-schema.org/draft/2020-12/meta/validation#/properties/pattern",
+              "patternProperties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties",
+              "prefixItems": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/prefixItems",
+              "properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/properties",
+              "propertyNames": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/propertyNames",
+              "readOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/readOnly",
+              "required": "https://json-schema.org/draft/2020-12/meta/validation#/properties/required",
+              "then": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/then",
+              "title": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/title",
+              "type": "https://json-schema.org/draft/2020-12/meta/validation#/properties/type",
+              "unevaluatedItems": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedItems",
+              "unevaluatedProperties": "https://json-schema.org/draft/2020-12/meta/unevaluated#/properties/unevaluatedProperties",
+              "uniqueItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/uniqueItems",
+              "writeOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/writeOnly"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/schema# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]\n  https://json-schema.org/draft/2020-12/schema# @@ object\n]\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n  https://json-schema.org/draft/2020-12/schema#\n]",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes\n]",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  https://json-schema.org/draft/2020-12/schema#\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/schema#"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]\n]",
+    {
+      "details": {
+        "Reference": "<merge> [\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/simpleTypes\n  https://json-schema.org/draft/2020-12/meta/validation#/properties/type/anyOf/1\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/schema#\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]\n]",
+    {
+      "details": {
+        "Reference": "<merge> [\n  https://json-schema.org/draft/2020-12/schema#\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]"
+      }
+    }
+  ],
+  [
+    "internal@string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ]
+]

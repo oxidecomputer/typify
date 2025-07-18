@@ -16,6 +16,9 @@ use crate::{
 type SchemaOrBool = ObjectOrBool<Schema>;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+// We're going to deny unknown fields to avoid being surprised by schemas that
+// don't adhere to this subset. For "real" schemas we'll permit unknown fields,
+// per the spec.
 #[serde(deny_unknown_fields)]
 pub struct Schema {
     #[serde(rename = "$schema", skip_serializing_if = "Option::is_none")]
@@ -97,15 +100,6 @@ enum Type {
     Array(NonEmpty<BTreeSet<SimpleType>>),
 }
 
-// impl Type {
-//     fn convert(self) -> ir::Type {
-//         match self {
-//             Type::Single(t) => ir::Type::Single(t.convert()),
-//             Type::Array(tt) => ir::Type::Array(tt.0.into_iter().map(SimpleType::convert).collect()),
-//         }
-//     }
-// }
-
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "lowercase")]
 enum SimpleType {
@@ -116,46 +110,6 @@ enum SimpleType {
     Number,
     Object,
     String,
-}
-
-impl SimpleType {
-    //     fn convert(self) -> ir::SimpleType {
-    //         match self {
-    //             SimpleType::Array => ir::SimpleType::Array,
-    //             SimpleType::Boolean => ir::SimpleType::Boolean,
-    //             SimpleType::Integer => ir::SimpleType::Integer,
-    //             SimpleType::Null => ir::SimpleType::Null,
-    //             SimpleType::Number => ir::SimpleType::Number,
-    //             SimpleType::Object => ir::SimpleType::Object,
-    //             SimpleType::String => ir::SimpleType::String,
-    //         }
-    //     }
-
-    fn all() -> impl Iterator<Item = SimpleType> {
-        SimpleTypeIter(SimpleType::Array)
-    }
-}
-
-struct SimpleTypeIter(SimpleType);
-
-impl Iterator for SimpleTypeIter {
-    type Item = SimpleType;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let next = match self.0 {
-            SimpleType::Array => SimpleType::Boolean,
-            SimpleType::Boolean => SimpleType::Integer,
-            SimpleType::Integer => SimpleType::Null,
-            SimpleType::Null => SimpleType::Number,
-            SimpleType::Number => SimpleType::Object,
-            SimpleType::Object => SimpleType::String,
-            SimpleType::String => return None,
-        };
-
-        let out = self.0.clone();
-        self.0 = next;
-        Some(out)
-    }
 }
 
 #[derive(Clone, Debug)]

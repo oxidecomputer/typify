@@ -4,7 +4,7 @@ mod convert;
 mod namespace;
 mod schema;
 mod schemalet;
-mod typespace;
+pub mod typespace;
 mod typify;
 
 pub use typify::TypeId;

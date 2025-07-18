@@ -1,47 +1,65 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, path::PathBuf};
 
+use anyhow::bail;
 use serde::Deserialize;
 use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
+    typespace::TypespaceSettings,
     Typify,
 };
 use url::Url;
 
 #[test]
 fn test_schemas() -> anyhow::Result<()> {
+    let mut errors = false;
     for entry in std::fs::read_dir("tests/schemas/input")? {
         let entry = entry?; // Handle potential I/O errors per entry
         let path = entry.path();
-
-        println!("{} ... ", path.file_name().unwrap().to_string_lossy());
+        let file_name = path.file_name().unwrap().to_string_lossy();
 
         let file_type = entry.file_type()?;
-        if file_type.is_file() {
+        let result = if file_type.is_file() {
             // Right now we expect only JSON; that might change in the future
             // to permit YML.
             assert!(path.ends_with(".json"));
-            test_schemas_json(path);
+            test_schemas_json(&path)
         } else if file_type.is_dir() {
-            test_schemas_directory(path).unwrap();
+            test_schemas_directory(&path)
         } else {
             panic!(
                 "unexpected directory entry {}",
                 path.canonicalize()?.display(),
             );
+        };
+
+        if let Err(e) = result {
+            errors = true;
+            println!("{file_name} .. ❌ {e}");
+        } else {
+            println!("{file_name} .. ✅");
         }
     }
 
-    todo!()
+    if errors {
+        panic!("encountered errors");
+    }
+
+    let xxx = trybuild::TestCases::new();
+    xxx.pass("tests/schemas/rust/*.rs");
+
+    Ok(())
 }
 
-fn test_schemas_json(path: std::path::PathBuf) -> anyhow::Result<()> {
+fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     todo!();
     Ok(())
 }
 
 #[derive(Deserialize)]
 struct TestJson {
+    #[serde(default)]
+    settings: TypespaceSettings,
     #[serde(rename = "root-schema")]
     root_schema: TestJsonEntry,
     files: Vec<TestJsonEntry>,
@@ -60,7 +78,7 @@ struct JsonId {
     id: Url,
 }
 
-fn test_schemas_directory(path: std::path::PathBuf) -> anyhow::Result<()> {
+fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
     let test_json_path = path.join("test.json");
 
     let test_json_content = std::fs::read_to_string(test_json_path)?;
@@ -98,14 +116,43 @@ fn test_schemas_directory(path: std::path::PathBuf) -> anyhow::Result<()> {
     let root_content = std::fs::read_to_string(path.join(&test_json.root_schema.path))?;
 
     let context = bundle.add_content(root_content).expect("invalid content");
-    // TODO check that the $id is right?
+
+    // Validate that the $id matches; this is more for sanity and consistency
+    // than for anything critical.
+    let Some(actual_id) = bundle
+        .resolve_root(&context.location)
+        .unwrap()
+        .value
+        .get("$id")
+    else {
+        bail!(
+            "{} didn't contain an '$id' field",
+            test_json.root_schema.path,
+        );
+    };
+    let Some(actual_id) = actual_id.as_str() else {
+        bail!(
+            "value of $id in {} is not a string",
+            test_json.root_schema.path,
+        );
+    };
+    if actual_id != test_json.root_schema.id.as_str() {
+        bail!(
+            "value of $id in {} was not correct (was {}; expected {})",
+            test_json.root_schema.path,
+            &test_json.root_schema.id,
+            actual_id
+        )
+    }
 
     let mut typify = Typify::new_with_bundle(bundle);
     let _type_id = typify
         .add_type_by_id(&context.location.to_string())
         .unwrap();
 
-    let typespace = typify.into_typespace();
+    let canonical_out = typify.canonical_output();
+
+    let typespace = typify.into_typespace(test_json.settings);
 
     let tokens = typespace.render();
 
@@ -115,13 +162,15 @@ fn test_schemas_directory(path: std::path::PathBuf) -> anyhow::Result<()> {
         #![doc = #doc_str]
 
         #tokens
+
+        fn main() {}
     };
     let out = prettyplease::unparse(&file);
 
     let output_root = path.file_name().unwrap();
     let base = path.parent().unwrap().parent().unwrap();
 
-    let canonical_output = base
+    let canonical_path = base
         .to_path_buf()
         .join("canonical")
         .join(output_root)
@@ -136,16 +185,17 @@ fn test_schemas_directory(path: std::path::PathBuf) -> anyhow::Result<()> {
     println!(
         "path = {} {} {}",
         path.display(),
-        canonical_output.display(),
+        canonical_path.display(),
         rust_path.display(),
     );
 
+    expectorate::assert_contents(canonical_path, &canonical_out);
     expectorate::assert_contents(rust_path, &out);
 
     Ok(())
 }
 
-fn confirm_id(path: std::path::PathBuf, id: &Url) -> anyhow::Result<()> {
+fn confirm_id(path: PathBuf, id: &Url) -> anyhow::Result<()> {
     let content = std::fs::read_to_string(&path)?;
     let json_id = serde_json::from_str::<JsonId>(&content)?;
     assert_eq!(&json_id.id, id, "id mismatch for {}", path.display());

@@ -1521,6 +1521,7 @@ dependencies = [
  "serde_json",
  "syn",
  "thiserror 2.0.12",
+ "trybuild",
  "unicode-ident",
  "url",
 ]

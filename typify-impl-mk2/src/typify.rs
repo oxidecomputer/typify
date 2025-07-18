@@ -9,7 +9,7 @@ use crate::{
         to_schemalets, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, Schemalet,
         SchemaletDetails, SchemaletValue, State,
     },
-    typespace::{Typespace, TypespaceBuilder},
+    typespace::{Typespace, TypespaceBuilder, TypespaceSettings},
 };
 
 pub struct Typify {
@@ -104,8 +104,13 @@ impl Typify {
         self.typespace
     }
 
-    pub fn into_typespace(self) -> Typespace {
-        self.typespace.finalize().unwrap()
+    pub fn into_typespace(self, settings: TypespaceSettings) -> Typespace {
+        self.typespace.finalize(settings).unwrap()
+    }
+
+    #[doc(hidden)]
+    pub fn canonical_output(&self) -> String {
+        self.normalizer.canonical_output()
     }
 }
 
@@ -266,5 +271,9 @@ impl Normalizer {
         }
 
         Ok(())
+    }
+
+    fn canonical_output(&self) -> String {
+        serde_json::to_string_pretty(&self.canonical.iter().collect::<Vec<_>>()).unwrap()
     }
 }
