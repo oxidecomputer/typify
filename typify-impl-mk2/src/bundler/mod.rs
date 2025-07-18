@@ -17,10 +17,11 @@ use std::collections::BTreeMap;
 
 use crate::append_map::AppendMap;
 use crate::schema::bootstrap;
-use crate::*;
 use url::Url;
 
 mod loader;
+
+pub use loader::*;
 
 /// TODO writing the description of this in the hope that it will help me find
 /// the edges of what it is.

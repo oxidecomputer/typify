@@ -60,10 +60,9 @@ pub enum NameBuilderHint {
 pub struct Typespace {
     types: BTreeMap<SchemaRef, Type>,
 }
-// TODO this impl is intended just for goofing around. I'm sort of wondering if
-// these types aren't just "builders"
+
 impl Typespace {
-    pub fn render(&self) -> String {
+    pub fn render(&self) -> TokenStream {
         let types = self.types.iter().map(|(id, typ)| match typ {
             Type::Enum(type_enum) => {
                 let TypeEnum {
@@ -151,10 +150,10 @@ impl Typespace {
             }
             _ => quote! {},
         });
-        let file = parse_quote! {
+
+        quote! {
             #( #types )*
-        };
-        prettyplease::unparse(&file)
+        }
     }
 
     fn render_ident(&self, id: &SchemaRef) -> TokenStream {

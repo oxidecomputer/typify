@@ -1,0 +1,36 @@
+{
+  "root-schema": {
+    "$id": "https://json-schema.org/draft/2020-12/schema",
+    "path": "schema"
+  },
+  "files": [
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/core",
+      "path": "core"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/applicator",
+      "path": "applicator"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/unevaluated",
+      "path": "unevaluated"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/validation",
+      "path": "validation"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/meta-data",
+      "path": "meta-data"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/format-annotation",
+      "path": "format-annotation"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2020-12/meta/content",
+      "path": "content"
+    }
+  ]
+}

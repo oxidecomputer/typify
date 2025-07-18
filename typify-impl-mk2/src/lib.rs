@@ -1,5 +1,5 @@
 mod append_map;
-mod bundler;
+pub mod bundler;
 mod convert;
 mod namespace;
 mod schema;
