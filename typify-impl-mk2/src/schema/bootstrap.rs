@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     bundler::{Bundle, Context, Document, DocumentId, Error, Resolved},
-    schema::bool_or::ObjectOrBool,
+    schema::util::ObjectOrBool,
     schemalet,
 };
 

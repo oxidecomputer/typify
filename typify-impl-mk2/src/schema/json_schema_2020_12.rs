@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-use crate::schema::bool_or::ObjectOrBool;
+use crate::schema::util::ObjectOrBool;
 
 type SchemaOrBool = ObjectOrBool<Schema>;
 
