@@ -1,4 +1,5 @@
 pub mod bootstrap;
+pub mod generic;
 pub mod json_schema_2020_12;
 pub mod util;
 // pub mod json_schema_2019_09;

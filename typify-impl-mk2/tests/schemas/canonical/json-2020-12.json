@@ -815,7 +815,7 @@
       "details": {
         "Value": {
           "Number": {
-            "exclusive_minimum": 0
+            "exclusive_minimum": 0.0
           }
         }
       }

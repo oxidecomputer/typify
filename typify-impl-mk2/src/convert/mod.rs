@@ -113,10 +113,18 @@ impl Converter {
             CanonicalSchemaletDetails::Value(SchemaletValue::Number {
                 minimum,
                 exclusive_minimum,
+                maximum,
+                exclusive_maximum,
+                multiple_of,
             }) => {
                 // TODO not handling this well ...
+
+                // TODO 7/21/2025
+                // The plan here needs to be to generate a wrapper type that
+                // applies any numerical constraints.
                 Type::Float("f64".to_string())
             }
+
             CanonicalSchemaletDetails::Value(SchemaletValue::Null) => todo!(),
         };
 

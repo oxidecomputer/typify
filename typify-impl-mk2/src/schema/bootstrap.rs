@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     bundler::{Bundle, Context, Document, DocumentId, Error, Resolved},
-    schema::util::ObjectOrBool,
+    schema::util::{ObjectOrBool, WorkQueue},
     schemalet,
 };
 
@@ -634,6 +634,7 @@ impl Schema {
     //                     })
     //                     .collect();
     //                 let additional_properties =
+
     //                     schema.additional_properties.as_ref().map(|ap_schema| {
     //                         let key = ir::SchemaRef::Where(format!(
     //                             "{}#/additionalProperties",
@@ -1038,32 +1039,6 @@ impl Schema {
 //     }
 // }
 
-struct WorkQueue<'a, Ref, Out> {
-    input: Vec<(String, &'a ObjectOrBool<Schema>)>,
-    output: Vec<(Ref, Out)>,
-}
-
-impl<'a, Ref, Out> WorkQueue<'a, Ref, Out> {
-    fn new(id: String, initial_schema: &'a ObjectOrBool<Schema>) -> Self {
-        Self {
-            input: vec![(id, initial_schema)],
-            output: Vec::new(),
-        }
-    }
-
-    fn pop(&mut self) -> Option<(String, &'a ObjectOrBool<Schema>)> {
-        self.input.pop()
-    }
-
-    fn push(&mut self, id: String, schema: &'a ObjectOrBool<Schema>) {
-        self.input.push((id, schema));
-    }
-
-    fn done(&mut self, sref: Ref, sout: Out) {
-        self.output.push((sref, sout));
-    }
-}
-
 pub(crate) fn to_schemalets(
     resolved: &Resolved<'_>,
 ) -> anyhow::Result<Vec<(schemalet::SchemaRef, schemalet::Schemalet)>> {
@@ -1075,13 +1050,13 @@ pub(crate) fn to_schemalets(
         bootstrap_subschema.to_schemalets(&mut work, id)?;
     }
 
-    Ok(work.output)
+    Ok(work.into_output())
 }
 
 impl SchemaOrBool {
     fn to_schemalets<'a>(
         &'a self,
-        work: &mut WorkQueue<'a, schemalet::SchemaRef, schemalet::Schemalet>,
+        work: &mut WorkQueue<'a, schemalet::SchemaRef, SchemaOrBool, schemalet::Schemalet>,
         id: String,
     ) -> anyhow::Result<()> {
         let id = schemalet::SchemaRef::Id(id);
@@ -1103,7 +1078,7 @@ impl SchemaOrBool {
 impl Schema {
     fn to_schemalets<'a>(
         &'a self,
-        work: &mut WorkQueue<'a, schemalet::SchemaRef, schemalet::Schemalet>,
+        work: &mut WorkQueue<'a, schemalet::SchemaRef, SchemaOrBool, schemalet::Schemalet>,
         id: schemalet::SchemaRef,
     ) -> anyhow::Result<()> {
         let Self {
@@ -1236,7 +1211,7 @@ impl Schema {
 
     fn to_schemalet_for_type<'a>(
         &'a self,
-        work: &mut WorkQueue<'a, schemalet::SchemaRef, schemalet::Schemalet>,
+        work: &mut WorkQueue<'a, schemalet::SchemaRef, SchemaOrBool, schemalet::Schemalet>,
         id: &schemalet::SchemaRef,
         ty: &SimpleType,
     ) -> anyhow::Result<(schemalet::SchemaRef, schemalet::SchemaletDetails)> {
@@ -1279,8 +1254,11 @@ impl Schema {
             SimpleType::Number => {
                 let schema_ref = id.partial("number");
                 let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Number {
-                    minimum: self.minimum,
-                    exclusive_minimum: self.exclusive_minimum,
+                    minimum: self.minimum.map(|n| n as f64),
+                    exclusive_minimum: self.exclusive_minimum.map(|n| n as f64),
+                    maximum: None,
+                    exclusive_maximum: None,
+                    multiple_of: None,
                 });
                 Ok((schema_ref, ir))
             }
@@ -1324,7 +1302,7 @@ impl Schema {
     }
 
     fn to_schemalet_subschemas<'a, Variant>(
-        work: &mut WorkQueue<'a, schemalet::SchemaRef, schemalet::Schemalet>,
+        work: &mut WorkQueue<'a, schemalet::SchemaRef, SchemaOrBool, schemalet::Schemalet>,
         id: &schemalet::SchemaRef,
         label: &str,
         variant: Variant,

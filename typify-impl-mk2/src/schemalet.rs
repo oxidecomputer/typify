@@ -154,9 +154,15 @@ pub enum SchemaletValue {
     },
     Number {
         #[serde(skip_serializing_if = "Option::is_none")]
-        minimum: Option<i64>,
+        minimum: Option<f64>,
         #[serde(skip_serializing_if = "Option::is_none")]
-        exclusive_minimum: Option<i64>,
+        exclusive_minimum: Option<f64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        maximum: Option<f64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        exclusive_maximum: Option<f64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        multiple_of: Option<f64>,
     },
     Null,
 }
@@ -974,6 +980,9 @@ fn schemalet_to_type_value(
         SchemaletValue::Number {
             minimum,
             exclusive_minimum,
+            maximum,
+            exclusive_maximum,
+            multiple_of,
         } => todo!(),
         SchemaletValue::Null => todo!(),
     }
@@ -1345,14 +1354,17 @@ impl Serialize for ThingPrinter<'_> {
                     }
                 }
                 SchemaletValue::Integer {
-                    minimum,
-                    exclusive_minimum,
+                    minimum: _,
+                    exclusive_minimum: _,
                 } => {
                     map.serialize_entry("type", "integer")?;
                 }
                 SchemaletValue::Number {
-                    minimum,
-                    exclusive_minimum,
+                    minimum: _,
+                    exclusive_minimum: _,
+                    maximum: _,
+                    exclusive_maximum: _,
+                    multiple_of,
                 } => {
                     map.serialize_entry("type", "number")?;
                 }

@@ -1,6 +1,7 @@
 mod append_map;
 pub mod bundler;
 mod convert;
+mod error;
 mod namespace;
 mod schema;
 mod schemalet;
@@ -9,3 +10,6 @@ mod typify;
 
 pub use typify::TypeId;
 pub use typify::Typify;
+
+pub use error::Error;
+pub use error::ErrorKind;

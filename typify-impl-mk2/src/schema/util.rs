@@ -99,3 +99,33 @@ where
         visitor.visit_map(self.0)
     }
 }
+
+pub struct WorkQueue<'a, Ref, In, Out> {
+    input: Vec<(String, &'a In)>,
+    output: Vec<(Ref, Out)>,
+}
+
+impl<'a, Ref, In, Out> WorkQueue<'a, Ref, In, Out> {
+    pub fn new(id: String, initial: &'a In) -> Self {
+        Self {
+            input: vec![(id, initial)],
+            output: Vec::new(),
+        }
+    }
+
+    pub fn pop(&mut self) -> Option<(String, &'a In)> {
+        self.input.pop()
+    }
+
+    pub fn push(&mut self, id: String, schema: &'a In) {
+        self.input.push((id, schema));
+    }
+
+    pub fn done(&mut self, sref: Ref, sout: Out) {
+        self.output.push((sref, sout));
+    }
+
+    pub fn into_output(self) -> Vec<(Ref, Out)> {
+        self.output
+    }
+}
