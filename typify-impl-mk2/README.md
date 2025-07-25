@@ -331,10 +331,12 @@ There are 3 cases we need to break out:
 
 ```rust
 struct Foo {
-    #[serde(default,
+    #[serde(
+        default,
         deserialize_with = "deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
+    #[schemars(with = "String")]
     foo: Option<String>,
 }
 
@@ -356,8 +358,9 @@ Note that for types such as `Vec` and `BTreeMap` we don't need the `Option` wrap
 
 ```rust
 struct Foo {
-  #[serde(deserialize_with = "Option::deserialize")]
-  foo: Option<String>,
+    #[serde(deserialize_with = "Option::deserialize")]
+    #[schemars(schema_with = "Option::<String>::json_schema")]
+    foo: Option<String>,
 }
 ```
 
@@ -372,7 +375,8 @@ Two options here:
 
 ```rust
 struct Foo {
-    #[serde(default,
+    #[serde(
+        default,
         deserialize_with = "deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
@@ -380,12 +384,14 @@ struct Foo {
 }
 ```
 
-Absent: `None`; `null`: `Some(None)`; value: `Some(Some(..))`.
+Absent: `None`; `null`: `Some(None)`; value: `Some(Some(..))`. No augmentation
+of `schemars` is required.
 
 Alternatively:
 
 ```rust
-#[derive(Default)]
+#[derive(Default, JsonSchema)]
+#[schemars(with = "Option<T>")]
 pub enum OptionField<T> {
     #[default]
     Absent,
@@ -416,6 +422,7 @@ struct Foo {
 
 The `Deserialize` is basically the same as `deserialize_some`, and it's only
 invoked if the field is present (because of the `#[serde(default)]` attribute).
+We use the schema of `Option<T>` verbatim.
 
 #### Summary
 
