@@ -25,7 +25,6 @@ pub enum SchemaRootObjectType {
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]
 pub enum SchemaRoot {
-    Boolean(bool),
     Object {
         #[serde(rename = "$anchor", skip_serializing_if = "Option::is_none")]
         anchor: Option<String>,
@@ -158,6 +157,7 @@ pub enum SchemaRoot {
         #[serde(rename = "writeOnly", skip_serializing_if = "Option::is_none")]
         write_only: Option<bool>,
     },
+    Boolean(bool),
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]

@@ -7,8 +7,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/applicator# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/applicator# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean"
           ]
         }
       }
@@ -135,7 +135,8 @@
         "Value": {
           "Object": {
             "properties": {},
-            "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/additionalProperties"
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/additionalProperties",
+            "property_names": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames"
           }
         }
       }
@@ -147,6 +148,12 @@
       "details": {
         "Reference": "https://json-schema.org/draft/2020-12/schema#"
       }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames",
+    {
+      "details": "Anything"
     }
   ],
   [
@@ -202,8 +209,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/content# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/content# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/content# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/content# @@ boolean"
           ]
         }
       }
@@ -245,8 +252,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/core# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/core# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/core# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/core# @@ boolean"
           ]
         }
       }
@@ -374,7 +381,8 @@
         "Value": {
           "Object": {
             "properties": {},
-            "additional_properties": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/additionalProperties"
+            "additional_properties": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/additionalProperties",
+            "property_names": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames"
           }
         }
       }
@@ -389,6 +397,14 @@
     }
   ],
   [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriString"
+      }
+    }
+  ],
+  [
     "https://json-schema.org/draft/2020-12/meta/format-annotation#",
     {
       "title": "Format vocabulary meta-schema for annotation results",
@@ -396,8 +412,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean"
           ]
         }
       }
@@ -421,8 +437,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean"
           ]
         }
       }
@@ -504,8 +520,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean"
           ]
         }
       }
@@ -535,8 +551,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/meta/validation# @@ boolean",
-            "https://json-schema.org/draft/2020-12/meta/validation# @@ object"
+            "https://json-schema.org/draft/2020-12/meta/validation# @@ object",
+            "https://json-schema.org/draft/2020-12/meta/validation# @@ boolean"
           ]
         }
       }
@@ -901,8 +917,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/schema# @@ boolean\n]",
-            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]\n  https://json-schema.org/draft/2020-12/schema# @@ object\n]"
+            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]\n  https://json-schema.org/draft/2020-12/schema# @@ object\n]",
+            "<merge> [\n  <merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]\n  https://json-schema.org/draft/2020-12/schema# @@ boolean\n]"
           ]
         }
       }
@@ -1255,8 +1271,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]",
-            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]"
+            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ object\n  https://json-schema.org/draft/2020-12/meta/core# @@ object\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ object\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ object\n  https://json-schema.org/draft/2020-12/meta/validation# @@ object\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ object\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ object\n]",
+            "<merge> [\n  https://json-schema.org/draft/2020-12/meta/content# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/applicator# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/unevaluated# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/validation# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/meta-data# @@ boolean\n  https://json-schema.org/draft/2020-12/meta/format-annotation# @@ boolean\n]"
           ]
         }
       }
@@ -1294,8 +1310,8 @@
         "ExclusiveOneOf": {
           "typ": null,
           "subschemas": [
-            "https://json-schema.org/draft/2020-12/schema# @@ boolean",
-            "https://json-schema.org/draft/2020-12/schema# @@ object"
+            "https://json-schema.org/draft/2020-12/schema# @@ object",
+            "https://json-schema.org/draft/2020-12/schema# @@ boolean"
           ]
         }
       }
