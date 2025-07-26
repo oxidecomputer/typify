@@ -4,8 +4,8 @@ use std::collections::BTreeMap;
 use crate::{
     schema::util::{self, ObjectOrBool},
     schemalet::{
-        SchemaRef, Schemalet, SchemaletDetails, SchemaletValue, SchemaletValueArray,
-        SchemaletValueObject,
+        SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata, SchemaletValue,
+        SchemaletValueArray, SchemaletValueObject,
     },
     Error, ErrorKind,
 };
@@ -266,8 +266,29 @@ where
 
 type WorkQueue<'a> = util::WorkQueue<'a, SchemaRef, GenericSchemaOrBool, Schemalet>;
 
+impl GenericSchemaOrBool {
+    pub fn to_schemalets<'a>(
+        &'a self,
+        work: &mut WorkQueue<'a>,
+        id: SchemaRef,
+    ) -> Result<(), Error> {
+        match self {
+            ObjectOrBool::Bool(value) => {
+                let schemalet = if *value {
+                    Schemalet::from_details(SchemaletDetails::Anything)
+                } else {
+                    Schemalet::from_details(SchemaletDetails::Nothing)
+                };
+                work.done(id, schemalet);
+                Ok(())
+            }
+            ObjectOrBool::Object(schema) => schema.to_schemalets(work, id),
+        }
+    }
+}
+
 impl GenericSchema {
-    pub(crate) fn to_schemalets<'a>(
+    pub fn to_schemalets<'a>(
         &'a self,
         work: &mut WorkQueue<'a>,
         id: SchemaRef,
@@ -328,11 +349,102 @@ impl GenericSchema {
             Some(GenericType::Single(single_type)) => {
                 Some(self.to_schemalet_for_type(work, &id, single_type)?)
             }
-            Some(GenericType::Array(types)) => todo!(),
+            Some(GenericType::Array(types)) => {
+                let subtypes = types
+                    .iter()
+                    .map(|ty| {
+                        let (sref, sout) = self.to_schemalet_for_type(work, &id, ty)?;
+                        work.done(sref.clone(), Schemalet::from_details(sout));
+                        Ok(sref)
+                    })
+                    .collect::<Result<_, _>>()?;
+                let value_id = id.partial("value");
+                let value = SchemaletDetails::ExclusiveOneOf(subtypes);
+                Some((value_id, value))
+            }
             None => None,
         };
 
-        todo!()
+        let all_of = Self::to_schemalet_subschemas(
+            work,
+            &id,
+            "allOf",
+            SchemaletDetails::AllOf,
+            all_of.as_ref(),
+        );
+        let any_of = Self::to_schemalet_subschemas(
+            work,
+            &id,
+            "anyOf",
+            SchemaletDetails::AnyOf,
+            any_of.as_ref(),
+        );
+
+        let subref = ref_.as_ref().map(|raw_ref| {
+            let value_id = id.partial("$ref");
+            let value = SchemaletDetails::RawRef(raw_ref.clone());
+            (value_id, value)
+        });
+        let dynref = dynamic_ref.as_ref().map(|raw_dyn_ref| {
+            assert!(raw_dyn_ref.starts_with("#"));
+            let raw_dyn_fragment = &raw_dyn_ref[1..];
+            let value_id = id.partial("$dynamicRef");
+            let value = SchemaletDetails::RawDynamicRef(raw_dyn_fragment.to_string());
+            (value_id, value)
+        });
+
+        let enum_values = enum_.as_ref().map(|values| {
+            let enum_id = id.append("enum");
+            let xxx = values
+                .iter()
+                .enumerate()
+                .map(|(ii, value)| {
+                    let value_id = enum_id.append(&ii.to_string());
+                    let value = Schemalet::from_details(SchemaletDetails::Constant(value.clone()));
+                    work.done(value_id.clone(), value);
+                    value_id
+                })
+                .collect();
+            let value = SchemaletDetails::ExclusiveOneOf(xxx);
+            (enum_id, value)
+        });
+
+        let everything = [concrete_value, all_of, any_of, subref, dynref, enum_values]
+            .into_iter()
+            .flatten()
+            .collect::<Vec<_>>();
+
+        let metadata = SchemaletMetadata {
+            title: title.clone(),
+            description: description.clone(),
+            examples: examples.clone().unwrap_or_default(),
+        };
+
+        let details = match everything.len() {
+            0 => SchemaletDetails::Anything,
+
+            1 => everything.into_iter().next().unwrap().1,
+
+            _ => {
+                let subs = everything
+                    .iter()
+                    .map(|(schema_ref, _)| schema_ref)
+                    .cloned()
+                    .collect();
+                for (sref, details) in everything {
+                    work.done(sref, Schemalet::from_details(details));
+                }
+                // TODO 7/25/2025
+                // This isn't quite right. We need to treat this kind of merge
+                // differently than a general allOf merge because here we need
+                // to consider unevaluatedItems and unevaluatedProperties.
+                SchemaletDetails::AllOf(subs)
+            }
+        };
+        let value = Schemalet::new(details, metadata);
+
+        work.done(id, value);
+        Ok(())
     }
 
     fn to_schemalet_for_type<'a>(
@@ -467,7 +579,14 @@ impl GenericSchema {
                 Ok((schema_ref, details))
             }
 
-            GenericSimpleTypes::Integer => todo!(),
+            GenericSimpleTypes::Integer => {
+                let schema_ref = id.partial("integer");
+                let ir = SchemaletDetails::Value(SchemaletValue::Integer {
+                    minimum: minimum.clone(),
+                    exclusive_minimum: exclusive_minimum.clone(),
+                });
+                Ok((schema_ref, ir))
+            }
             //     let schema_ref = id.partial("integer");
             //     let ir = SchemaletDetails::Value(SchemaletValue::Integer {
             //         minimum: minimum,
@@ -506,17 +625,77 @@ impl GenericSchema {
 
                 let required = required.clone().unwrap_or_default();
 
+                let additional_properties = additional_properties.as_ref().map(|ap_schema| {
+                    let ap_id = id.append("additionalProperties");
+                    work.push(ap_id.id(), ap_schema);
+                    ap_id
+                });
+
+                let property_names = property_names.as_ref().map(|pn_schema| {
+                    let pn_id = id.append("propertyNames");
+                    work.push(pn_id.id(), pn_schema);
+                    pn_id
+                });
+
+                let pattern_properties = pattern_properties.as_ref().map(|pattern_properties| {
+                    let props_id = id.append("patternProperties");
+
+                    pattern_properties
+                        .iter()
+                        .map(|(pattern, schema)| {
+                            let pattern_id = props_id.append(pattern);
+                            work.push(pattern_id.id(), schema);
+                            (pattern.clone(), pattern_id)
+                        })
+                        .collect::<BTreeMap<_, _>>()
+                });
+
                 let details =
                     SchemaletDetails::Value(SchemaletValue::Object(SchemaletValueObject {
                         properties,
                         required,
-                        additional_properties: todo!(),
-                        property_names: todo!(),
-                        pattern_properties: todo!(),
+                        additional_properties,
+                        property_names,
+                        pattern_properties,
                     }));
+                let sref = id.partial("object");
+                Ok((sref, details))
             }
-            GenericSimpleTypes::String => todo!(),
+            GenericSimpleTypes::String => {
+                let schema_ref = id.partial("string");
+                let ir = SchemaletDetails::Value(SchemaletValue::String {
+                    pattern: self.pattern.clone(),
+                    format: self.format.clone(),
+                });
+                Ok((schema_ref, ir))
+            }
         }
+    }
+
+    fn to_schemalet_subschemas<'a, Variant>(
+        work: &mut util::WorkQueue<'a, SchemaRef, GenericSchemaOrBool, Schemalet>,
+        id: &SchemaRef,
+        label: &str,
+        variant: Variant,
+        maybe_subschemas: Option<&'a Vec<GenericSchemaOrBool>>,
+    ) -> Option<(SchemaRef, SchemaletDetails)>
+    where
+        Variant: Fn(Vec<SchemaRef>) -> SchemaletDetails,
+    {
+        maybe_subschemas.map(|subschemas| {
+            let label_id = id.append(label);
+            let subschemas = subschemas
+                .iter()
+                .enumerate()
+                .map(|(ii, subschema)| {
+                    let sref = label_id.append(&ii.to_string());
+                    work.push(sref.id(), subschema);
+                    sref
+                })
+                .collect();
+            let sref = id.partial(label);
+            (sref, variant(subschemas))
+        })
     }
 }
 
@@ -551,4 +730,18 @@ fn xxx_get_ref<'a>(
     let sub_id = id.append(label);
     work.push(sub_id.id(), schema);
     sub_id
+}
+
+pub(crate) fn to_schemalets(
+    resolved: &crate::bundler::Resolved<'_>,
+    generic_schema: ObjectOrBool<GenericSchema>,
+) -> Result<Vec<(SchemaRef, Schemalet)>, anyhow::Error> {
+    let mut work = WorkQueue::new(resolved.context.location.to_string(), &generic_schema);
+
+    while let Some((id, generic_schema)) = work.pop() {
+        let id = SchemaRef::Id(id);
+        generic_schema.to_schemalets(&mut work, id)?;
+    }
+
+    Ok(work.into_output())
 }

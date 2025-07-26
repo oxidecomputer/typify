@@ -1,9 +1,13 @@
+use std::fmt::Display;
+
 // TODO 7/19/2025
 // Move to its own file?
+#[derive(Debug, Clone)]
 pub struct Error {
     errors: Vec<ErrorKind>,
 }
 
+#[derive(Debug, Clone)]
 pub enum ErrorKind {
     /// The schema includes a (currently) unsupported schema construction. This
     /// is (likely) a current limitation rather than a fundamental one. If you
@@ -34,3 +38,18 @@ impl Error {
         }
     }
 }
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for error in &self.errors {
+            match error {
+                ErrorKind::UnsupportedSchemaConstruction { id, message } => {
+                    writeln!(f, "Unsupported schema construction: {}: {}", id, message)?;
+                }
+            }
+        }
+        Ok(())
+    }
+}
+
+impl std::error::Error for Error {}

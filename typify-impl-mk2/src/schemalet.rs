@@ -6,7 +6,10 @@ use std::{
 
 use serde::{ser::SerializeMap, Serialize};
 
-use crate::{bundler::Resolved, schema::bootstrap};
+use crate::{
+    bundler::Resolved,
+    schema::{bootstrap, generic, json_schema_2020_12},
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum SchemaRef {
@@ -148,9 +151,9 @@ pub enum SchemaletValue {
     },
     Integer {
         #[serde(skip_serializing_if = "Option::is_none")]
-        minimum: Option<i64>,
+        minimum: Option<serde_json::Number>,
         #[serde(skip_serializing_if = "Option::is_none")]
-        exclusive_minimum: Option<i64>,
+        exclusive_minimum: Option<serde_json::Number>,
     },
     Number {
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -882,7 +885,10 @@ fn trivially_incompatible(
 
 pub fn to_schemalets(resolved: &Resolved<'_>) -> anyhow::Result<Vec<(SchemaRef, Schemalet)>> {
     match resolved.schema {
-        "https://json-schema.org/draft/2020-12/schema" => bootstrap::to_schemalets(resolved),
+        "bootstrap" => bootstrap::to_schemalets(resolved),
+        "https://json-schema.org/draft/2020-12/schema" => {
+            json_schema_2020_12::to_schemalets(resolved)
+        }
         _ => todo!(),
     }
 }

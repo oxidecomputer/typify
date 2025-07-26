@@ -80,13 +80,35 @@ impl Converter {
                 // TODO not sure what to do here...
                 let key_id = SchemaRef::Internal("string".to_string());
                 let GottenStuff {
-                    id,
+                    id: value_id,
                     schemalet: _,
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(additional_properties);
 
-                Type::Map(key_id.clone(), id.clone())
+                Type::Map(key_id.clone(), value_id.clone())
+            }
+
+            SchemaletValueObject {
+                properties,
+                required,
+                additional_properties: Some(additional_properties),
+                property_names: Some(pattern_properties),
+                pattern_properties: None,
+            } if properties.is_empty() && required.is_empty() => {
+                let GottenStuff {
+                    id: key_id,
+                    schemalet: _,
+                    description: _,
+                    title: _,
+                } = self.resolve_and_get_stuff(pattern_properties);
+                let GottenStuff {
+                    id: value_id,
+                    schemalet: _,
+                    description: _,
+                    title: _,
+                } = self.resolve_and_get_stuff(additional_properties);
+                Type::Map(key_id.clone(), value_id.clone())
             }
 
             _ => todo!(

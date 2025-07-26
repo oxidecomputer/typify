@@ -1054,7 +1054,7 @@ pub(crate) fn to_schemalets(
 }
 
 impl SchemaOrBool {
-    fn to_schemalets<'a>(
+    pub fn to_schemalets<'a>(
         &'a self,
         work: &mut WorkQueue<'a, schemalet::SchemaRef, SchemaOrBool, schemalet::Schemalet>,
         id: String,
@@ -1245,8 +1245,8 @@ impl Schema {
             SimpleType::Integer => {
                 let schema_ref = id.partial("integer");
                 let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Integer {
-                    minimum: self.minimum,
-                    exclusive_minimum: self.exclusive_minimum,
+                    minimum: self.minimum.map(serde_json::Number::from),
+                    exclusive_minimum: self.exclusive_minimum.map(serde_json::Number::from),
                 });
                 Ok((schema_ref, ir))
             }
@@ -1306,7 +1306,7 @@ impl Schema {
         id: &schemalet::SchemaRef,
         label: &str,
         variant: Variant,
-        maybe_subschemas: Option<&'a NonEmpty<Vec<ObjectOrBool<Schema>>>>,
+        maybe_subschemas: Option<&'a NonEmpty<Vec<SchemaOrBool>>>,
     ) -> Option<(schemalet::SchemaRef, schemalet::SchemaletDetails)>
     where
         Variant: Fn(Vec<schemalet::SchemaRef>) -> schemalet::SchemaletDetails,

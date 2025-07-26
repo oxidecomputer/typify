@@ -2,7 +2,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 use crate::schema::{
-    generic::{GenericItems, GenericSchema, GenericSchemaDependencies, GenericType, ToGeneric},
+    generic::{
+        self, GenericItems, GenericSchema, GenericSchemaDependencies, GenericType, ToGeneric,
+    },
     util::ObjectOrBool,
 };
 
@@ -310,4 +312,14 @@ impl ToGeneric<Option<GenericItems>> for (Option<SchemaOrBool>, Option<Vec<Schem
             }),
         }
     }
+}
+
+pub(crate) fn to_schemalets(
+    resolved: &crate::bundler::Resolved<'_>,
+) -> Result<Vec<(crate::schemalet::SchemaRef, crate::schemalet::Schemalet)>, anyhow::Error> {
+    let schema = SchemaOrBool::deserialize(resolved.value)?;
+
+    let generic_schema = schema.to_generic();
+
+    generic::to_schemalets(resolved, generic_schema)
 }
