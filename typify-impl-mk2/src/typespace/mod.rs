@@ -217,7 +217,9 @@ impl Typespace {
             Type::Struct(_) => {
                 quote! { Ref<"???"> }
             }
-            // Type::Native(_) => todo!(),
+            Type::Native(native_type) => syn::parse_str::<syn::Type>(native_type)
+                .unwrap()
+                .into_token_stream(),
             // Type::Option(_) => todo!(),
             Type::Box(boxed_id) => {
                 let box_type = match &self.settings.std {
@@ -700,7 +702,7 @@ impl Type {
         match self {
             Type::Enum(type_enum) => type_enum.children_with_context(),
             Type::Struct(type_struct) => type_struct.children_with_context(),
-            Type::Native(_) => todo!(),
+            Type::Native(_) => Vec::new(),
             Type::Option(_) => todo!(),
             Type::Box(_) => todo!(),
             Type::Vec(id) => vec![(id.clone(), "item".to_string())],
@@ -744,11 +746,13 @@ impl Type {
                 out
             }
             Type::Struct(TypeStruct { properties, .. }) => todo!(),
-            Type::Native(_) => todo!(),
             Type::Option(_) => todo!(),
             Type::Array(_, _) => todo!(),
             Type::Tuple(items) => todo!(),
 
+            // TODO maybe native types could have children? Right now these are
+            // just for self-contained types...
+            Type::Native(_) => Default::default(),
             Type::Box(_)
             | Type::Vec(_)
             | Type::Map(_, _)

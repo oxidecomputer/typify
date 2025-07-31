@@ -8,7 +8,7 @@ use serde::{ser::SerializeMap, Serialize};
 
 use crate::{
     bundler::Resolved,
-    schema::{bootstrap, generic, json_schema_2020_12},
+    schema::{bootstrap, json_schema_2020_12},
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -136,6 +136,19 @@ pub enum SchemaletDetails {
     ResolvedRef(SchemaRef),
     ResolvedDynamicRef(SchemaRef),
     YesNo { yes: SchemaRef, no: Vec<SchemaRef> },
+    StringOf(SchemaRef),
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct SchemaletValueString {
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub pattern: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub format: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min_length: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_length: Option<u64>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -143,12 +156,7 @@ pub enum SchemaletValue {
     Boolean,
     Array(SchemaletValueArray),
     Object(SchemaletValueObject),
-    String {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        pattern: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        format: Option<String>,
-    },
+    String(SchemaletValueString), // <-- changed from struct variant to tuple variant
     Integer {
         #[serde(skip_serializing_if = "Option::is_none")]
         minimum: Option<serde_json::Number>,
@@ -433,6 +441,11 @@ impl Schemalet {
                             details: CanonicalSchemaletDetails::Nothing,
                         },
 
+                        // TODO 7/28/2025
+                        // I can't really recall the thinking here. I think the
+                        // idea was that I don't want to throw away information
+                        // in case there are useful descriptions or titles,
+                        // but... this doesn't seem like a fully formed plan.
                         1 => {
                             let xxx = subschemas.into_iter().next().unwrap().0;
                             CanonicalSchemalet {
@@ -496,6 +509,89 @@ impl Schemalet {
                     })
                 }
             }
+            SchemaletDetails::StringOf(schema_ref) => {
+                simplify_string_of(metadata, done, schema_ref)
+            }
+        }
+    }
+}
+
+fn simplify_string_of(
+    metadata: SchemaletMetadata,
+    done: &BTreeMap<SchemaRef, CanonicalSchemalet>,
+    schema_ref: SchemaRef,
+) -> State {
+    println!("string of {schema_ref}");
+
+    let Some((sr, ss)) = resolve(done, &schema_ref) else {
+        return State::Stuck(Schemalet {
+            metadata,
+            details: SchemaletDetails::StringOf(schema_ref),
+        });
+    };
+
+    if let Some(ty) = ss.get_type() {
+        match ty {
+            SchemaletType::String => {
+                return State::Canonical(CanonicalSchemalet {
+                    metadata,
+                    details: CanonicalSchemaletDetails::Note(schema_ref),
+                });
+            }
+
+            _ => {
+                return State::Canonical(CanonicalSchemalet {
+                    metadata,
+                    details: CanonicalSchemaletDetails::Nothing,
+                });
+            }
+        }
+    }
+
+    println!("{}", serde_json::to_string_pretty(ss).unwrap());
+
+    match &ss.details {
+        CanonicalSchemaletDetails::Anything => todo!(),
+        CanonicalSchemaletDetails::Nothing => todo!(),
+        CanonicalSchemaletDetails::Constant(value) => todo!(),
+        CanonicalSchemaletDetails::Reference(schema_ref) => todo!(),
+        CanonicalSchemaletDetails::Note(schema_ref) => todo!(),
+
+        CanonicalSchemaletDetails::ExclusiveOneOf { typ, subschemas } => {
+            let mut new_work = Vec::new();
+            let mut new_subschemas = Vec::new();
+
+            println!("subschemas {:#?}", subschemas);
+
+            for subschema in subschemas {
+                // TODO 7/31/2025
+                // I need to give some more thought to how we handle this
+                let subschema_string_of =
+                    SchemaRef::Partial(subschema.to_string(), "stringOf".to_string());
+
+                let new_subschema = Schemalet {
+                    metadata: Default::default(),
+                    details: SchemaletDetails::StringOf(subschema.clone()),
+                };
+
+                new_work.push((subschema_string_of.clone(), new_subschema));
+                new_subschemas.push(subschema_string_of);
+            }
+
+            let new_schemalet = Schemalet {
+                metadata,
+                details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+            };
+
+            State::Simplified(new_schemalet, new_work)
+        }
+
+        CanonicalSchemaletDetails::Value(schemalet_value) => {
+            println!(
+                "value {}",
+                serde_json::to_string_pretty(schemalet_value).unwrap()
+            );
+            panic!()
         }
     }
 }
@@ -828,11 +924,57 @@ fn merge_two(
             CanonicalSchemaletDetails::Value(SchemaletValue::Object(bb)),
         ) => merge_two_objects(aa, bb),
 
+        (
+            CanonicalSchemaletDetails::Value(SchemaletValue::String(aa)),
+            CanonicalSchemaletDetails::Value(SchemaletValue::String(bb)),
+        ) => merge_two_strings(aa, bb),
+
+        (
+            CanonicalSchemaletDetails::Value(SchemaletValue::Array(aa)),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Array(bb)),
+        ) => merge_two_arrays(aa, bb),
+
         _ => todo!(
             "merge_two {}",
             serde_json::to_string_pretty(&[a, b]).unwrap()
         ),
     }
+}
+
+fn merge_two_arrays(
+    aa: &SchemaletValueArray,
+    bb: &SchemaletValueArray,
+) -> CanonicalSchemaletDetails {
+    todo!()
+}
+
+fn merge_two_strings(
+    aa: &SchemaletValueString,
+    bb: &SchemaletValueString,
+) -> CanonicalSchemaletDetails {
+    let pattern = aa
+        .pattern
+        .iter()
+        .chain(bb.pattern.iter())
+        .cloned()
+        .collect();
+    let format = aa.format.iter().chain(bb.format.iter()).cloned().collect();
+    let min_length = match (aa.min_length, bb.min_length) {
+        (Some(a), Some(b)) => Some(a.max(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let max_length = match (aa.max_length, bb.max_length) {
+        (Some(a), Some(b)) => Some(a.min(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    CanonicalSchemaletDetails::Value(SchemaletValue::String(SchemaletValueString {
+        pattern,
+        format,
+        min_length,
+        max_length,
+    }))
 }
 
 fn merge_two_objects(
@@ -978,7 +1120,7 @@ fn schemalet_to_type_value(
         SchemaletValue::Array(array) => todo!(),
 
         SchemaletValue::Object(object) => schemalet_to_type_value_object(metadata, object, graph),
-        SchemaletValue::String { pattern, format } => todo!(),
+        SchemaletValue::String { .. } => todo!(),
         SchemaletValue::Integer {
             minimum,
             exclusive_minimum,
@@ -1350,13 +1492,19 @@ impl Serialize for ThingPrinter<'_> {
                         map.serialize_entry("additionalProperties", &additional_properties)?;
                     }
                 }
-                SchemaletValue::String { pattern, format } => {
+                SchemaletValue::String(s) => {
                     map.serialize_entry("type", "string")?;
-                    if let Some(pattern) = pattern {
-                        map.serialize_entry("pattern", pattern)?;
+                    if !s.pattern.is_empty() {
+                        map.serialize_entry("pattern", &s.pattern)?;
                     }
-                    if let Some(format) = format {
-                        map.serialize_entry("format", format)?;
+                    if !s.format.is_empty() {
+                        map.serialize_entry("format", &s.format)?;
+                    }
+                    if let Some(min_length) = s.min_length {
+                        map.serialize_entry("minLength", &min_length)?;
+                    }
+                    if let Some(max_length) = s.max_length {
+                        map.serialize_entry("maxLength", &max_length)?;
                     }
                 }
                 SchemaletValue::Integer {

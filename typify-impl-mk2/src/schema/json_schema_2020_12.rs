@@ -104,14 +104,12 @@ pub struct Schema {
     max_items: Option<u64>,
     #[serde(rename = "minItems", skip_serializing_if = "Option::is_none")]
     min_items: Option<u64>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     contains: Option<SchemaOrBool>,
     #[serde(rename = "maxContains", skip_serializing_if = "Option::is_none")]
     max_contains: Option<u64>,
     #[serde(rename = "minContains", skip_serializing_if = "Option::is_none")]
     min_contains: Option<u64>,
-
     #[serde(rename = "uniqueItems", skip_serializing_if = "Option::is_none")]
     unique_items: Option<bool>,
     #[serde(rename = "unevaluatedItems", skip_serializing_if = "Option::is_none")]
@@ -133,9 +131,9 @@ pub struct Schema {
     #[serde(skip_serializing_if = "Option::is_none")]
     pattern: Option<String>,
     #[serde(rename = "maxLength", skip_serializing_if = "Option::is_none")]
-    max_length: Option<i64>,
+    max_length: Option<u64>,
     #[serde(rename = "minLength", skip_serializing_if = "Option::is_none")]
-    min_length: Option<i64>,
+    min_length: Option<u64>,
 
     // Subschemas
     #[serde(rename = "allOf", skip_serializing_if = "Option::is_none")]

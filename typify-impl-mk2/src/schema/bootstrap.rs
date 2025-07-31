@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     bundler::{Bundle, Context, Document, DocumentId, Error, Resolved},
     schema::util::{ObjectOrBool, WorkQueue},
-    schemalet,
+    schemalet::{self, SchemaletValueString},
 };
 
 type SchemaOrBool = ObjectOrBool<Schema>;
@@ -1292,10 +1292,14 @@ impl Schema {
             }
             SimpleType::String => {
                 let schema_ref = id.partial("string");
-                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::String {
-                    pattern: self.pattern.clone(),
-                    format: self.format.clone(),
-                });
+                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::String(
+                    SchemaletValueString {
+                        pattern: self.pattern.clone().into_iter().collect(),
+                        format: self.format.clone().into_iter().collect(),
+                        min_length: None,
+                        max_length: None,
+                    },
+                ));
                 Ok((schema_ref, ir))
             }
         }

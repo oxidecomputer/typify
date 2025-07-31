@@ -102,13 +102,13 @@ impl Converter {
                 // here, or we could do that in the
                 // normalization/canonicalization step.
 
-                // let GottenStuff {
-                //     id: key_id,
-                //     schemalet: _,
-                //     description: _,
-                //     title: _,
-                // } = self.resolve_and_get_stuff(pattern_properties);
-                let key_id = SchemaRef::Internal("string".to_string());
+                let GottenStuff {
+                    id: key_id,
+                    schemalet: _,
+                    description: _,
+                    title: _,
+                } = self.resolve_and_get_stuff(pattern_properties);
+                // let key_id = SchemaRef::Internal("string".to_string());
                 let GottenStuff {
                     id: value_id,
                     schemalet: _,

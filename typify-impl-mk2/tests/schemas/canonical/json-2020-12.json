@@ -136,7 +136,7 @@
           "Object": {
             "properties": {},
             "additional_properties": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/additionalProperties",
-            "property_names": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames"
+            "property_names": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ stringOf"
           }
         }
       }
@@ -153,7 +153,20 @@
   [
     "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames",
     {
-      "details": "Anything"
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ array",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ integer",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ null",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ number",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ object",
+            "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string"
+          ]
+        }
+      }
     }
   ],
   [
@@ -265,7 +278,9 @@
       "details": {
         "Value": {
           "String": {
-            "pattern": "^[A-Za-z_][-A-Za-z0-9._]*$"
+            "pattern": [
+              "^[A-Za-z_][-A-Za-z0-9._]*$"
+            ]
           }
         }
       }
@@ -277,7 +292,9 @@
       "details": {
         "Value": {
           "String": {
-            "format": "uri-reference"
+            "format": [
+              "uri-reference"
+            ]
           }
         }
       }
@@ -289,7 +306,9 @@
       "details": {
         "Value": {
           "String": {
-            "format": "uri"
+            "format": [
+              "uri"
+            ]
           }
         }
       }
@@ -354,7 +373,7 @@
     "https://json-schema.org/draft/2020-12/meta/core#/properties/$id",
     {
       "details": {
-        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+        "Note": "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ string\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]"
       }
     }
   ],
@@ -382,7 +401,7 @@
           "Object": {
             "properties": {},
             "additional_properties": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/additionalProperties",
-            "property_names": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames"
+            "property_names": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames @@ stringOf"
           }
         }
       }
@@ -843,7 +862,9 @@
       "details": {
         "Value": {
           "String": {
-            "format": "regex"
+            "format": [
+              "regex"
+            ]
           }
         }
       }
@@ -1097,6 +1118,130 @@
     }
   ],
   [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "format": [
+              "regex"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ stringOf",
+    {
+      "details": {
+        "Note": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string @@ stringOf"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ array @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ boolean @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ integer @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ null @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ number @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ object @@ stringOf",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string @@ stringOf",
+    {
+      "details": {
+        "Note": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string"
+      }
+    }
+  ],
+  [
     "https://json-schema.org/draft/2020-12/meta/content# @@ boolean",
     {
       "details": {
@@ -1147,6 +1292,113 @@
             }
           }
         }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ $ref",
+    {
+      "details": {
+        "Reference": "https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "^[^#]*#?$"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ value",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ array",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ boolean",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ integer",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ null",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ number",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ object",
+            "https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames @@ stringOf",
+    {
+      "details": {
+        "Note": "https://json-schema.org/draft/2020-12/meta/core#/properties/$vocabulary/propertyNames"
       }
     }
   ],
@@ -1444,6 +1696,59 @@
               "uniqueItems": "https://json-schema.org/draft/2020-12/meta/validation#/properties/uniqueItems",
               "writeOnly": "https://json-schema.org/draft/2020-12/meta/meta-data#/properties/writeOnly"
             }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ array\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ boolean\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ integer\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ null\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ number\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ object\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  https://json-schema.org/draft/2020-12/meta/core#/properties/$id @@ string\n  https://json-schema.org/draft/2020-12/meta/core#/$defs/uriReferenceString\n]",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "^[^#]*#?$"
+            ],
+            "format": [
+              "uri-reference"
+            ]
           }
         }
       }

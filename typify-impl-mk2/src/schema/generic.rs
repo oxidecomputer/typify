@@ -5,7 +5,7 @@ use crate::{
     schema::util::{self, ObjectOrBool},
     schemalet::{
         SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata, SchemaletValue,
-        SchemaletValueArray, SchemaletValueObject,
+        SchemaletValueArray, SchemaletValueObject, SchemaletValueString,
     },
     Error, ErrorKind,
 };
@@ -22,6 +22,21 @@ pub enum GenericSimpleTypes {
     Number,
     Object,
     String,
+}
+
+impl GenericSimpleTypes {
+    pub fn iter_all() -> impl Iterator<Item = Self> {
+        [
+            Self::Array,
+            Self::Boolean,
+            Self::Integer,
+            Self::Null,
+            Self::Number,
+            Self::Object,
+            Self::String,
+        ]
+        .into_iter()
+    }
 }
 
 #[derive(Deserialize, Serialize)]
@@ -152,9 +167,9 @@ pub struct GenericSchema {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
     #[serde(rename = "maxLength", skip_serializing_if = "Option::is_none")]
-    pub max_length: Option<i64>,
+    pub max_length: Option<u64>,
     #[serde(rename = "minLength", skip_serializing_if = "Option::is_none")]
-    pub min_length: Option<i64>,
+    pub min_length: Option<u64>,
 
     // Subschemas
     #[serde(rename = "allOf", skip_serializing_if = "Option::is_none")]
@@ -362,7 +377,10 @@ impl GenericSchema {
                 let value = SchemaletDetails::ExclusiveOneOf(subtypes);
                 Some((value_id, value))
             }
-            None => None,
+
+            // For a schema with no type, we check to see if there are any
+            // potential constraints.
+            None => self.to_schemalets_untyped(work, &id)?,
         };
 
         let all_of = Self::to_schemalet_subschemas(
@@ -421,7 +439,10 @@ impl GenericSchema {
         };
 
         let details = match everything.len() {
-            0 => SchemaletDetails::Anything,
+            0 => {
+                todo!("no schema details found for {id}");
+                SchemaletDetails::Anything
+            }
 
             1 => everything.into_iter().next().unwrap().1,
 
@@ -462,7 +483,10 @@ impl GenericSchema {
             enum_: _,
             deprecated: _,
             type_: _,
+
+            // Numbers and strings
             format,
+
             anchor: _,
             dynamic_anchor: _,
             dynamic_ref: _,
@@ -554,12 +578,21 @@ impl GenericSchema {
                         let items = xxx_get_ref(work, id, "items", items);
                         (Some(items), None)
                     }
-                    // Some(GenericItems::Additional {
-                    //     items,
-                    //     additional_items,
-                    // }) => (additional_items.as_ref(), Some(items)),
-                    // None => (None, None),
-                    _ => todo!(),
+                    Some(GenericItems::Additional {
+                        items,
+                        additional_items,
+                    }) => {
+                        let additional_items = xxx_get_ref_for_opt(
+                            work,
+                            id,
+                            "additionalItems",
+                            additional_items.as_ref(),
+                        );
+                        let items = xxx_get_ref_for_vec(work, id, "items", items);
+                        (additional_items, Some(items))
+                    }
+
+                    None => (None, None),
                 };
 
                 let schema_ref = id.partial("array");
@@ -594,7 +627,11 @@ impl GenericSchema {
             //     });
             //     Ok((schema_ref, ir))
             // }
-            GenericSimpleTypes::Null => todo!(),
+            GenericSimpleTypes::Null => {
+                let schema_ref = id.partial("null");
+                let details = SchemaletDetails::Value(SchemaletValue::Null);
+                Ok((schema_ref, details))
+            }
             GenericSimpleTypes::Number => {
                 let schema_ref = id.partial("number");
 
@@ -633,8 +670,16 @@ impl GenericSchema {
 
                 let property_names = property_names.as_ref().map(|pn_schema| {
                     let pn_id = id.append("propertyNames");
+
+                    let xxx = pn_id.partial("stringOf");
+
+                    work.done(
+                        xxx.clone(),
+                        Schemalet::from_details(SchemaletDetails::StringOf(pn_id.clone())),
+                    );
+
                     work.push(pn_id.id(), pn_schema);
-                    pn_id
+                    xxx
                 });
 
                 let pattern_properties = pattern_properties.as_ref().map(|pattern_properties| {
@@ -663,10 +708,12 @@ impl GenericSchema {
             }
             GenericSimpleTypes::String => {
                 let schema_ref = id.partial("string");
-                let ir = SchemaletDetails::Value(SchemaletValue::String {
-                    pattern: self.pattern.clone(),
-                    format: self.format.clone(),
-                });
+                let ir = SchemaletDetails::Value(SchemaletValue::String(SchemaletValueString {
+                    pattern: self.pattern.clone().into_iter().collect(),
+                    format: self.format.clone().into_iter().collect(),
+                    min_length: min_length.clone(),
+                    max_length: max_length.clone(),
+                }));
                 Ok((schema_ref, ir))
             }
         }
@@ -696,6 +743,58 @@ impl GenericSchema {
             let sref = id.partial(label);
             (sref, variant(subschemas))
         })
+    }
+
+    fn to_schemalets_untyped<'a>(
+        &'a self,
+        work: &mut util::WorkQueue<'a, SchemaRef, ObjectOrBool<GenericSchema>, Schemalet>,
+        id: &SchemaRef,
+    ) -> Result<Option<(SchemaRef, SchemaletDetails)>, Error> {
+        if let Self {
+            format: None,
+            additional_properties: None,
+            max_properties: None,
+            min_properties: None,
+            pattern_properties: None,
+            properties: None,
+            property_names: None,
+            unevaluated_properties: None,
+            dependent_required: None,
+            dependent_schemas: None,
+            required: None,
+            dependencies: None,
+            items: None,
+            max_items: None,
+            min_items: None,
+            contains: None,
+            max_contains: None,
+            min_contains: None,
+            unique_items: None,
+            unevaluated_items: None,
+            minimum: None,
+            maximum: None,
+            multiple_of: None,
+            exclusive_maximum: None,
+            exclusive_minimum: None,
+            pattern: None,
+            max_length: None,
+            min_length: None,
+            ..
+        } = self
+        {
+            return Ok(None);
+        }
+        let subtypes = GenericSimpleTypes::iter_all()
+            .map(|schema_type| {
+                let (sref, sout) = self.to_schemalet_for_type(work, &id, &schema_type)?;
+                work.done(sref.clone(), Schemalet::from_details(sout));
+                Ok(sref)
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+
+        let value_id = id.partial("value");
+        let value = SchemaletDetails::ExclusiveOneOf(subtypes);
+        Ok(Some((value_id, value)))
     }
 }
 

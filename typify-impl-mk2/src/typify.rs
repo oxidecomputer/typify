@@ -7,7 +7,7 @@ use crate::{
     convert::Converter,
     schemalet::{
         to_schemalets, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, Schemalet,
-        SchemaletDetails, SchemaletValue, State,
+        SchemaletDetails, SchemaletValue, SchemaletValueString, State,
     },
     typespace::{Typespace, TypespaceBuilder, TypespaceSettings},
 };
@@ -87,8 +87,13 @@ impl Typify {
             }
 
             let typ = converter.convert(&work_id);
+            let children = typ.children();
 
-            work.extend(typ.children());
+            if !children.is_empty() {
+                println!("work_id {work_id} children {children:?}");
+            }
+
+            work.extend(children);
 
             self.typespace.insert(work_id.clone(), typ);
         }
@@ -120,10 +125,14 @@ impl Default for Normalizer {
             SchemaRef::Internal("string".to_string()),
             CanonicalSchemalet {
                 metadata: Default::default(),
-                details: CanonicalSchemaletDetails::Value(SchemaletValue::String {
-                    pattern: None,
-                    format: None,
-                }),
+                details: CanonicalSchemaletDetails::Value(SchemaletValue::String(
+                    SchemaletValueString {
+                        pattern: Vec::new(),
+                        format: Vec::new(),
+                        min_length: None,
+                        max_length: None,
+                    },
+                )),
             },
         )]
         .into();
@@ -212,8 +221,8 @@ impl Normalizer {
                     schemalet => schemalet,
                 };
 
-                let old = self.raw.insert(schema_ref, schemalet);
-                assert!(old.is_none());
+                let old = self.raw.insert(schema_ref.clone(), schemalet);
+                assert!(old.is_none(), "already present: {}", schema_ref);
             }
         }
         Ok(())
