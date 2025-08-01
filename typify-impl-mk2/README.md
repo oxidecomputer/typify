@@ -352,7 +352,9 @@ where
 If the field is absent we'll get `None` and if the field is present, we'll get
 `Some(..)`, but `null` produces an error.
 
-Note that for types such as `Vec` and `BTreeMap` we don't need the `Option` wrapper. (Though for those types I'm not sure about the situations in which we skip serializing.)
+Note that for types such as `Vec` and `BTreeMap` we don't need the `Option`
+wrapper. (Though for those types I'm not sure about the situations in which we
+skip serializing.)
 
 #### Required / `null` permitted
 
@@ -443,3 +445,80 @@ type they want to use (though I guess we'd have to special-case
 These concepts feel independent and complementary. This `null_or_absent` feels
 right (though not urgent); I'm not sure how (or if) we configure other
 concepts.
+
+### 7/31/2025
+
+One more thought about the optional / required / null stuff above. What about
+arrays and maps, and what significance do we derive from the presence of
+`default`?
+
+#### Arrays and maps
+
+In v1 we would render an optional array like this:
+
+```rust
+struct Foo {
+    #[serde(default, skip_serialization_if = "Vec::is_empty")]
+    bar: Vec<String>
+}
+```
+
+And that's totally fine, but what if someone wanted to distinguish between the
+presence or absence of `bar`? This would be wrong:
+
+
+```rust
+struct Foo {
+    #[serde(default, skip_serialization_if = "Option::is_none")]
+    bar: Option<Vec<String>>
+}
+```
+
+In particular, it would be wrong because it permits a `null` value. To correct,
+that, we can do this instead:
+
+```rust
+struct Foo {
+    #[serde(
+        default,
+        deserialize_with = "deserialize_some",
+        skip_serializing_if = "Option::is_none"
+    )]
+    bar: Option<Vec<String>>
+}
+```
+
+This is the same as we propose above for optional, non-`null` values. But how
+to infer that the presence or absence of the field is significant?
+
+#### Handling of `default`
+
+This brings us to the handling of `default`.
+
+One interpretation of the presence of `default` is that it might indicate that
+an absent field is equivalent to a particular value and, therefore, the
+presence or absence isn't that important.
+
+This seems to bear out in the 2020-12 meta schema: `properties` has a default
+(`{}`) and the absence of that field is not important. Conversely the schemas
+for `type` and `prefixItems` do not have a default and its absence clearly is
+important.
+
+Unsurprisingly `schemars` doesn't seem to have a particularly consistent
+position here.
+
+Perhaps this is just going to be something we can't accurately infer.
+
+### 7/31/2025
+
+#### Current state and what's next
+
+If feels like there's good progress, and also that I'm not sure if what we have
+is heading in the right direction. Clearly the normalizer stuff is a bit of a
+mess and will need a rewrite, but getting it right was probably not possible
+without first getting it wrong. I think the converter and type representations
+are probably pretty decent. And the schema ingestion--while incomplete and
+verbose--is probably pretty decent.
+
+So what now? I think we can start adding some more schema test cases and unit
+tests. Then see where we are.
