@@ -682,23 +682,14 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"string\""]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \".*\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct Ipv4Net(pub ::std::string::String);
+pub struct Ipv4Net(::std::string::String);
 impl ::std::ops::Deref for Ipv4Net {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
@@ -715,20 +706,49 @@ impl ::std::convert::From<&Ipv4Net> for Ipv4Net {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::string::String> for Ipv4Net {
-    fn from(value: ::std::string::String) -> Self {
-        Self(value)
-    }
-}
 impl ::std::str::FromStr for Ipv4Net {
-    type Err = ::std::convert::Infallible;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new(".*").unwrap());
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \".*\"".into());
+        }
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::fmt::Display for Ipv4Net {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
+impl ::std::convert::TryFrom<&str> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for Ipv4Net {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "`Ipv6Net`"]
@@ -737,23 +757,14 @@ impl ::std::fmt::Display for Ipv4Net {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"string\""]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \".*\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct Ipv6Net(pub ::std::string::String);
+pub struct Ipv6Net(::std::string::String);
 impl ::std::ops::Deref for Ipv6Net {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
@@ -770,20 +781,49 @@ impl ::std::convert::From<&Ipv6Net> for Ipv6Net {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::string::String> for Ipv6Net {
-    fn from(value: ::std::string::String) -> Self {
-        Self(value)
-    }
-}
 impl ::std::str::FromStr for Ipv6Net {
-    type Err = ::std::convert::Infallible;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new(".*").unwrap());
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \".*\"".into());
+        }
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::fmt::Display for Ipv6Net {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
+impl ::std::convert::TryFrom<&str> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for Ipv6Net {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "`JankNames`"]
@@ -1469,40 +1509,6 @@ pub enum ReferencesVariant1Value {
 impl ::std::convert::From<&Self> for ReferencesVariant1Value {
     fn from(value: &ReferencesVariant1Value) -> Self {
         value.clone()
-    }
-}
-impl ::std::str::FromStr for ReferencesVariant1Value {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if let Ok(v) = value.parse() {
-            Ok(Self::StringVersion(v))
-        } else if let Ok(v) = value.parse() {
-            Ok(Self::ReferenceDef(v))
-        } else {
-            Err("string conversion failed for all variants".into())
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
     }
 }
 impl ::std::fmt::Display for ReferencesVariant1Value {

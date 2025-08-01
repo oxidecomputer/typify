@@ -861,15 +861,15 @@ impl StringValidator {
     pub fn is_valid<S: AsRef<str>>(&self, s: S) -> bool {
         self.max_length
             .as_ref()
-            .map_or(true, |max| s.as_ref().len() as u32 <= *max)
+            .is_none_or(|max| s.as_ref().len() as u32 <= *max)
             && self
                 .min_length
                 .as_ref()
-                .map_or(true, |min| s.as_ref().len() as u32 >= *min)
+                .is_none_or(|min| s.as_ref().len() as u32 >= *min)
             && self
                 .pattern
                 .as_ref()
-                .map_or(true, |pattern| pattern.find(s.as_ref()).is_some())
+                .is_none_or(|pattern| pattern.find(s.as_ref()).is_some())
     }
 }
 

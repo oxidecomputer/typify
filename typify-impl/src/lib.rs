@@ -367,6 +367,7 @@ struct TypeSpaceConversion {
 #[non_exhaustive]
 pub enum TypeSpaceImpl {
     FromStr,
+    FromStringIrrefutable,
     Display,
     Default,
 }
