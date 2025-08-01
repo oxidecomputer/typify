@@ -48,10 +48,12 @@
       ]
     },
     "Ipv4Net": {
-      "type": "string"
+      "type": "string",
+      "pattern": ".*"
     },
     "Ipv6Net": {
-      "type": "string"
+      "type": "string",
+      "pattern": ".*"
     },
     "NullStringEnumWithUnknownFormat": {
       "type": [

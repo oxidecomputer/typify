@@ -46,11 +46,16 @@ pub(crate) struct TypeEntryEnum {
     pub schema: SchemaWrapper,
 }
 
+/// Cached attributes that (mostly) result in customized impl generation.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum TypeEntryEnumImpl {
     AllSimpleVariants,
     UntaggedFromStr,
     UntaggedDisplay,
+    /// This is a cached marker to let us know that at least one of the
+    /// variants is irrefutably a string. There is currently no associated
+    /// implementation that we generate.
+    UntaggedFromStringIrrefutable,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -315,12 +320,14 @@ impl TypeEntryEnum {
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
             .then_some(TypeEntryEnumImpl::AllSimpleVariants),
-            // Untagged and all variants impl FromStr.
+            // Untagged and all variants impl FromStr, but none **is** a
+            // String (i.e. irrefutably).
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::FromStr,
+                Some(TypeSpaceImpl::FromStringIrrefutable),
             )
             .then_some(TypeEntryEnumImpl::UntaggedFromStr),
             // Untagged and all variants impl Display.
@@ -329,8 +336,11 @@ impl TypeEntryEnum {
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::Display,
+                None,
             )
             .then_some(TypeEntryEnumImpl::UntaggedDisplay),
+            untagged_newtype_string(type_space, &self.tag_type, &self.variants)
+                .then_some(TypeEntryEnumImpl::UntaggedFromStringIrrefutable),
         ]
         .into_iter()
         .flatten()
@@ -597,7 +607,6 @@ impl TypeEntry {
         match &self.details {
             TypeEntryDetails::Enum(details) => match impl_name {
                 TypeSpaceImpl::Default => details.default.is_some(),
-
                 TypeSpaceImpl::FromStr => {
                     details
                         .bespoke_impls
@@ -614,6 +623,9 @@ impl TypeEntry {
                             .bespoke_impls
                             .contains(&TypeEntryEnumImpl::UntaggedDisplay)
                 }
+                TypeSpaceImpl::FromStringIrrefutable => details
+                    .bespoke_impls
+                    .contains(&TypeEntryEnumImpl::UntaggedFromStringIrrefutable),
             },
 
             TypeEntryDetails::Struct(details) => match impl_name {
@@ -627,7 +639,7 @@ impl TypeEntry {
                 (TypeEntryNewtypeConstraints::None, _) => {
                     // TODO this is a lucky kludge that will need to be removed
                     // once we have proper handling of reference cycles (i.e.
-                    // as opposed to containment cycles... which we also do not
+                    // as opposed to containment cycles... which we **do**
                     // handle correctly). In particular output_newtype calls
                     // this to determine if it should produce a FromStr impl.
                     // This implementation could be infinitely recursive for a
@@ -685,10 +697,25 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntryDetails::Boolean => true,
-            TypeEntryDetails::Integer(_) => true,
-            TypeEntryDetails::Float(_) => true,
-            TypeEntryDetails::String => true,
+            TypeEntryDetails::Boolean => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+            TypeEntryDetails::Integer(_) => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+
+            TypeEntryDetails::Float(_) => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+            TypeEntryDetails::String => match impl_name {
+                TypeSpaceImpl::Default
+                | TypeSpaceImpl::FromStr
+                | TypeSpaceImpl::Display
+                | TypeSpaceImpl::FromStringIrrefutable => true,
+            },
 
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
@@ -1994,17 +2021,18 @@ fn strings_to_derives<'a>(
 
 /// Returns true iff...
 /// - the enum is untagged
-/// - all variants are 1-item tuple-types (aka newtype variants)
+/// - all variants are single items (aka newtype variants)
 /// - the type of the newtype variant implements the required trait
 fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
     variants: &[Variant],
     req_impl: TypeSpaceImpl,
+    neg_impl: Option<TypeSpaceImpl>,
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
-            // If the variant is a one-element tuple...
+            // If the variant is a single item...
             match &variant.details {
                 VariantDetails::Item(type_id) => Some(type_id),
                 _ => None,
@@ -2015,6 +2043,34 @@ fn untagged_newtype_variants(
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                     // ... and its type has the required impl
                     type_entry.has_impl(type_space, req_impl)
+                        && neg_impl
+                            .is_none_or(|neg_impl| !type_entry.has_impl(type_space, neg_impl))
+                },
+            )
+        })
+}
+
+/// Returns true iff...
+/// - the enum is untagged
+/// - **any** variant is a single items **and** it is irrefutably a string
+fn untagged_newtype_string(
+    type_space: &TypeSpace,
+    tag_type: &EnumTagType,
+    variants: &[Variant],
+) -> bool {
+    tag_type == &EnumTagType::Untagged
+        && variants.iter().any(|variant| {
+            // If the variant is a single item...
+            match &variant.details {
+                VariantDetails::Item(type_id) => Some(type_id),
+                _ => None,
+            }
+            .map_or_else(
+                || false,
+                |type_id| {
+                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    // ... and it is irrefutably a string
+                    type_entry.has_impl(type_space, TypeSpaceImpl::FromStringIrrefutable)
                 },
             )
         })
