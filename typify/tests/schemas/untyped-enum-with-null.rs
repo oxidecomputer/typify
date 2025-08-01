@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "TestType"]
+#[doc = "`TestType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -64,7 +64,7 @@ impl TestType {
         Default::default()
     }
 }
-#[doc = "TestTypeValue"]
+#[doc = "`TestTypeValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -107,9 +107,9 @@ impl ::std::convert::From<&Self> for TestTypeValue {
 impl ::std::fmt::Display for TestTypeValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Start => write!(f, "start"),
-            Self::Middle => write!(f, "middle"),
-            Self::End => write!(f, "end"),
+            Self::Start => f.write_str("start"),
+            Self::Middle => f.write_str("middle"),
+            Self::End => f.write_str("end"),
         }
     }
 }

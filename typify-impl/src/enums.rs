@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
@@ -18,7 +18,7 @@ use crate::{
     },
     util::{
         constant_string_value, get_object, get_type_name, metadata_description,
-        metadata_title_and_description, recase, schema_is_named, Case,
+        metadata_title_and_description, schema_is_named,
     },
     Name, Result, TypeSpace,
 };
@@ -34,15 +34,10 @@ impl TypeSpace {
             return None;
         }
         // Let's be as general as possible and consider the possibility that
-        // more than one subschema is the simple null.
+        // more than one subschema is a null.
         let non_nulls = subschemas
             .iter()
-            .filter(|schema| {
-                !matches!(schema, Schema::Object(SchemaObject {
-                instance_type: Some(SingleOrVec::Single(single)),
-                ..
-            }) if single.as_ref() == &InstanceType::Null)
-            })
+            .filter(|schema| !is_null_schema(schema))
             .collect::<Vec<_>>();
 
         if non_nulls.len() != 1 {
@@ -211,15 +206,11 @@ impl TypeSpace {
                 ProtoVariant::Simple {
                     name: variant_name,
                     description,
-                } => {
-                    let (name, rename) = recase(variant_name, Case::Pascal);
-                    Some(Variant {
-                        name,
-                        rename,
-                        description,
-                        details: VariantDetails::Simple,
-                    })
-                }
+                } => Some(Variant::new(
+                    variant_name.to_string(),
+                    description,
+                    VariantDetails::Simple,
+                )),
 
                 ProtoVariant::Typed {
                     name: variant_name,
@@ -233,13 +224,7 @@ impl TypeSpace {
                         .ok()?;
                     deny_unknown_fields |= deny;
 
-                    let (name, rename) = recase(variant_name, Case::Pascal);
-                    Some(Variant {
-                        name,
-                        rename,
-                        description,
-                        details,
-                    })
+                    Some(Variant::new(variant_name.to_string(), description, details))
                 }
             })
             .collect::<Option<Vec<_>>>()?;
@@ -409,23 +394,19 @@ impl TypeSpace {
         if validation.properties.len() == 1 {
             let (tag_name, schema) = validation.properties.iter().next().unwrap();
             let variant_name = constant_string_value(schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
 
             // The lone property must be our tag.
             assert_eq!(tag_name, tag);
             assert_eq!(validation.required.len(), 1);
 
-            let variant = Variant {
-                name,
-                rename,
-                description: None,
-                details: VariantDetails::Simple,
-            };
-            Ok(variant)
+            Ok(Variant::new(
+                variant_name.to_string(),
+                None,
+                VariantDetails::Simple,
+            ))
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
             let variant_name = constant_string_value(tag_schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
 
             // Make a new object validation that omits the tag.
             let mut new_validation = validation.clone();
@@ -434,13 +415,11 @@ impl TypeSpace {
 
             let (properties, _) =
                 self.struct_members(enum_type_name.into_option(), &new_validation)?;
-            let variant = Variant {
-                name,
-                rename,
-                description: metadata_title_and_description(metadata),
-                details: VariantDetails::Struct(properties),
-            };
-            Ok(variant)
+            Ok(Variant::new(
+                variant_name.to_string(),
+                metadata_title_and_description(metadata),
+                VariantDetails::Struct(properties),
+            ))
         }
     }
 
@@ -543,23 +522,16 @@ impl TypeSpace {
         if validation.properties.len() == 1 {
             let (tag_name, schema) = validation.properties.iter().next().unwrap();
             let variant_name = constant_string_value(schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
 
             // The lone property must be our tag.
             assert_eq!(tag_name, tag);
             assert_eq!(validation.required.len(), 1);
 
-            let variant = Variant {
-                name,
-                rename,
-                description: None,
-                details: VariantDetails::Simple,
-            };
+            let variant = Variant::new(variant_name.to_string(), None, VariantDetails::Simple);
             Ok((variant, false))
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
             let variant_name = constant_string_value(tag_schema).unwrap();
-            let (name, rename) = recase(variant_name, Case::Pascal);
 
             let sub_type_name = match enum_type_name {
                 // If the type name is known (required) we append the name of
@@ -582,12 +554,11 @@ impl TypeSpace {
             let content_schema = validation.properties.get(content).unwrap();
             let (details, deny) = self.external_variant(sub_type_name, content_schema)?;
 
-            let variant = Variant {
-                name,
-                rename,
-                description: metadata_title_and_description(metadata),
+            let variant = Variant::new(
+                variant_name.to_string(),
+                metadata_title_and_description(metadata),
                 details,
-            };
+            );
             Ok((variant, deny))
         }
     }
@@ -692,14 +663,9 @@ impl TypeSpace {
 
         let variants = variant_details
             .into_iter()
-            .map(|(details, name)| {
-                assert!(!name.is_empty());
-                Variant {
-                    name,
-                    rename: None,
-                    description: None,
-                    details,
-                }
+            .map(|(details, variant_name)| {
+                assert!(!variant_name.is_empty());
+                Variant::new(variant_name, None, details)
             })
             .collect();
 
@@ -713,6 +679,44 @@ impl TypeSpace {
             deny_unknown_fields,
             original_schema.clone(),
         ))
+    }
+}
+
+/// Check if the schema can only be satisfied by a null. Since this is JSON
+/// schema, there are an infinity of schemas for which this might be true; in
+/// the spirit of pragmatism we check:
+/// - type: null (or [null] or [null, null, etc])
+/// - enum: [null] (or [null, null, etc])
+/// - const: null
+fn is_null_schema(schema: &Schema) -> bool {
+    match schema {
+        // Null instance type singleton
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Single(instance_type)),
+            ..
+        }) => **instance_type == InstanceType::Null,
+
+        // Null instance type array
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Vec(types)),
+            ..
+        }) => types
+            .iter()
+            .all(|instance_type| *instance_type == InstanceType::Null),
+
+        // Null constant value
+        Schema::Object(SchemaObject {
+            const_value: Some(value),
+            ..
+        }) => value.is_null(),
+
+        // Enumerated values where all are null
+        Schema::Object(SchemaObject {
+            enum_values: Some(values),
+            ..
+        }) => values.iter().all(serde_json::Value::is_null),
+
+        _ => false,
     }
 }
 
@@ -738,18 +742,20 @@ pub(crate) fn output_variant(
     output: &mut OutputSpace,
     type_name: &str,
 ) -> TokenStream {
-    let name = format_ident!("{}", variant.name);
+    let ident_name = variant.ident_name.as_ref().unwrap();
+    let variant_name = format_ident!("{}", ident_name);
     let doc = variant.description.as_ref().map(|s| {
         quote! { #[doc = #s] }
     });
-    let serde = variant.rename.as_ref().map(|s| {
+    let serde = (&variant.raw_name != ident_name).then(|| {
+        let s = &variant.raw_name;
         quote! { #[serde(rename = #s)] }
     });
     match &variant.details {
         VariantDetails::Simple => quote! {
             #doc
             #serde
-            #name,
+            #variant_name,
         },
         VariantDetails::Item(type_id) => {
             let item_type_ident = type_space
@@ -761,7 +767,7 @@ pub(crate) fn output_variant(
             quote! {
                 #doc
                 #serde
-                #name(#item_type_ident),
+                #variant_name(#item_type_ident),
             }
         }
 
@@ -778,7 +784,7 @@ pub(crate) fn output_variant(
                 quote! {
                     #doc
                     #serde
-                    #name(#(#types),*),
+                    #variant_name(#(#types),*),
                 }
             } else {
                 // A tuple variant with a single element requires special
@@ -788,7 +794,7 @@ pub(crate) fn output_variant(
                 quote! {
                     #doc
                     #serde
-                    #name((#(#types,)*)),
+                    #variant_name((#(#types,)*)),
                 }
             }
         }
@@ -799,7 +805,7 @@ pub(crate) fn output_variant(
 
                 let prop_type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
                 let (prop_serde, _) = generate_serde_attr(
-                    &format!("{}{}", type_name, &variant.name),
+                    &format!("{}{}", type_name, variant.ident_name.as_ref().unwrap()),
                     &prop.name,
                     &prop.rename,
                     &prop.state,
@@ -820,7 +826,7 @@ pub(crate) fn output_variant(
             quote! {
                 #doc
                 #serde
-                #name {
+                #variant_name {
                     #(#prop_streams)*
                 },
             }
@@ -1044,7 +1050,7 @@ mod tests {
                 assert_eq!(variants.len(), 5);
 
                 assert!(matches!(
-                    variants.get(0).unwrap(),
+                    variants.first().unwrap(),
                     Variant {
                         details: VariantDetails::Simple,
                         ..
@@ -1210,7 +1216,7 @@ mod tests {
         {
             let variant_names = variants
                 .iter()
-                .map(|variant| variant.name.clone())
+                .map(|variant| variant.ident_name.as_ref().unwrap().clone())
                 .collect::<HashSet<_>>();
             assert_eq!(variant_names.len(), variants.len());
             assert_eq!(tag_type, &EnumTagType::Untagged);
@@ -1328,7 +1334,10 @@ mod tests {
                     match &variant.details {
                         VariantDetails::Item(item) => {
                             let variant_type = type_space.id_to_entry.get(item).unwrap();
-                            assert!(variant_type.name().unwrap().ends_with(&variant.name));
+                            assert!(variant_type
+                                .name()
+                                .unwrap()
+                                .ends_with(variant.ident_name.as_ref().unwrap()));
                         }
                         _ => panic!("{:#?}", type_entry),
                     }
@@ -1457,7 +1466,7 @@ mod tests {
         let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
         let schema_lines = schema_json.lines();
         let expected = quote! {
-            #[doc = "ResultX"]
+            #[doc = "`ResultX`"]
             ///
             /// <details><summary>JSON schema</summary>
             ///
@@ -1511,7 +1520,7 @@ mod tests {
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
         let expected = quote! {
-            #[doc = "ResultX"]
+            #[doc = "`ResultX`"]
             ///
             /// <details><summary>JSON schema</summary>
             ///

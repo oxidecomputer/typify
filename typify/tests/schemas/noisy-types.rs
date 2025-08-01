@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "ArrayBs"]
+#[doc = "`ArrayBs`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -70,7 +70,7 @@ impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
         Self(value)
     }
 }
-#[doc = "IntegerBs"]
+#[doc = "`IntegerBs`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -141,7 +141,7 @@ impl ::std::fmt::Display for IntegerBs {
         self.0.fmt(f)
     }
 }
-#[doc = "ObjectBs"]
+#[doc = "`ObjectBs`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

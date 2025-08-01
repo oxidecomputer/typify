@@ -1,6 +1,6 @@
 [package]
 name = "typify"
-version = "0.2.0"
+version = "0.4.2"
 edition = "2021"
 license = "Apache-2.0"
 description = "JSON schema to rust type code generator"
@@ -14,19 +14,19 @@ default = ["macro"]
 macro = ["typify-macro"]
 
 [dependencies]
-typify-macro = { version = "0.2.0", path = "../typify-macro", optional = true }
-typify-impl = { version = "0.2.0", path = "../typify-impl" }
+typify-macro = { workspace = true, optional = true }
+typify-impl = { workspace = true }
 
 [dev-dependencies]
-chrono = { version = "0.4.39", features = ["serde"] }
-env_logger = "0.11.6"
-expectorate = "1.1.0"
-glob = "0.3.1"
-quote = "1.0.37"
-regress = "0.10.1"
-rustfmt-wrapper = "0.2.1"
-schemars = "0.8.21"
-serde = "1.0.216"
-serde_json = "1.0.134"
-trybuild = "1.0.101"
-uuid = { version = "1.11.0", features = ["serde"] }
+chrono = { workspace = true }
+env_logger = { workspace = true }
+expectorate = { workspace = true }
+glob = { workspace = true }
+quote = { workspace = true }
+regress = { workspace = true }
+rustfmt-wrapper = { workspace = true }
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+trybuild = { workspace = true }
+uuid = { workspace = true, features = ["serde"] }

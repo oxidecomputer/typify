@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 //! typify backend implementation.
 
@@ -63,11 +63,7 @@ impl Error {
 pub type Result<T> = std::result::Result<T, Error>;
 
 fn show_type_name(type_name: Option<&str>) -> &str {
-    if let Some(type_name) = type_name {
-        type_name
-    } else {
-        "<unknown type>"
-    }
+    type_name.unwrap_or("<unknown type>")
 }
 
 /// Representation of a type which may have a definition or may be built-in.
@@ -267,31 +263,9 @@ impl std::fmt::Display for MapType {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for MapType {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = <&str>::deserialize(deserializer)?;
-        Ok(Self::new(s))
-    }
-}
-
-impl From<String> for MapType {
-    fn from(s: String) -> Self {
-        Self::new(&s)
-    }
-}
-
 impl From<&str> for MapType {
     fn from(s: &str) -> Self {
         Self::new(s)
-    }
-}
-
-impl From<syn::Type> for MapType {
-    fn from(t: syn::Type) -> Self {
-        Self(t)
     }
 }
 
@@ -393,6 +367,7 @@ struct TypeSpaceConversion {
 #[non_exhaustive]
 pub enum TypeSpaceImpl {
     FromStr,
+    FromStringIrrefutable,
     Display,
     Default,
 }
@@ -468,6 +443,26 @@ impl TypeSpaceSettings {
     /// Typical usage is to map a schema definition to a builtin type or type
     /// provided by a crate, such as `'rust_decimal::Decimal'`. If the same schema
     /// is specified multiple times, the first one is honored.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// // Setup 'number' json type to be translated into 'rust_decimal::Decimal'
+    /// use schemars::schema::{InstanceType, SchemaObject};
+    /// use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
+    /// let mut type_space = TypeSpace::new(
+    ///        TypeSpaceSettings::default()
+    ///            .with_struct_builder(true)
+    ///            .with_conversion(
+    ///                SchemaObject {
+    ///                    instance_type: Some(InstanceType::Number.into()),
+    ///                    ..Default::default()
+    ///                },
+    ///                "::rust_decimal::Decimal",
+    ///                [TypeSpaceImpl::Display].into_iter(),
+    ///            ),
+    ///    );
+    /// ```
     pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
@@ -846,7 +841,7 @@ impl TypeSpace {
             output::OutputSpaceMod::Error,
             "",
             quote! {
-                /// Error from a TryFrom or FromStr implementation.
+                /// Error from a `TryFrom` or `FromStr` implementation.
                 pub struct ConversionError(::std::borrow::Cow<'static, str>);
 
                 impl ::std::error::Error for ConversionError {}
@@ -989,7 +984,7 @@ impl ToTokens for TypeSpace {
     }
 }
 
-impl<'a> Type<'a> {
+impl Type<'_> {
     /// The name of the type as a String.
     pub fn name(&self) -> String {
         let Type {
@@ -1138,7 +1133,7 @@ impl<'a> TypeEnum<'a> {
                 ),
             };
             TypeEnumVariantInfo {
-                name: variant.name.as_str(),
+                name: variant.ident_name.as_ref().unwrap(),
                 description: variant.description.as_deref(),
                 details,
             }
@@ -1156,7 +1151,7 @@ impl<'a> TypeStruct<'a> {
     }
 
     /// Get all information about each struct property.
-    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo> {
+    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo<'a>> {
         self.details
             .properties
             .iter()
@@ -1169,7 +1164,7 @@ impl<'a> TypeStruct<'a> {
     }
 }
 
-impl<'a> TypeNewtype<'a> {
+impl TypeNewtype<'_> {
     /// Get the inner type of the newtype struct.
     pub fn inner(&self) -> TypeId {
         self.details.type_id.clone()
@@ -1325,7 +1320,7 @@ mod tests {
                 }
                 let var_names = variants
                     .iter()
-                    .map(|variant| variant.name.clone())
+                    .map(|variant| variant.ident_name.as_ref().unwrap().clone())
                     .collect::<HashSet<_>>();
                 assert_eq!(
                     var_names,
@@ -1371,7 +1366,7 @@ mod tests {
                 let variants = variants
                     .iter()
                     .map(|v| match v.details {
-                        VariantDetails::Simple => v.name.clone(),
+                        VariantDetails::Simple => v.ident_name.as_ref().unwrap().clone(),
                         _ => panic!("unexpected variant type"),
                     })
                     .collect::<HashSet<_>>();

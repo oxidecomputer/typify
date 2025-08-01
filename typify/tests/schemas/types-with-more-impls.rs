@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "PatternString"]
+#[doc = "`PatternString`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -58,7 +58,9 @@ impl ::std::convert::From<&PatternString> for PatternString {
 impl ::std::str::FromStr for PatternString {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("xx").unwrap().find(value).is_none() {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new("xx").unwrap());
+        if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"xx\"".into());
         }
         Ok(Self(value.to_string()))
@@ -98,7 +100,7 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
             })
     }
 }
-#[doc = "Sub10Primes"]
+#[doc = "`Sub10Primes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 //! cargo command to generate Rust code from a JSON Schema.
 
@@ -156,7 +156,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     }
 
     if let Some(map_type) = &args.map_type {
-        settings.with_map_type(map_type.clone());
+        settings.with_map_type(map_type.as_str());
     }
 
     if let Some(unknown_crates) = &args.unknown_crates {

@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "Doodad"]
+#[doc = "`Doodad`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -45,7 +45,7 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Doodad {
     #[serde(default = "defaults::doodad_when")]
-    pub when: chrono::DateTime<chrono::offset::Utc>,
+    pub when: ::chrono::DateTime<::chrono::offset::Utc>,
 }
 impl ::std::convert::From<&Doodad> for Doodad {
     fn from(value: &Doodad) -> Self {
@@ -64,7 +64,7 @@ impl Doodad {
         Default::default()
     }
 }
-#[doc = "MrDefaultNumbers"]
+#[doc = "`MrDefaultNumbers`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -72,6 +72,15 @@ impl Doodad {
 #[doc = "{"]
 #[doc = "  \"type\": \"object\","]
 #[doc = "  \"properties\": {"]
+#[doc = "    \"big_nullable\": {"]
+#[doc = "      \"default\": 1,"]
+#[doc = "      \"type\": ["]
+#[doc = "        \"integer\","]
+#[doc = "        \"null\""]
+#[doc = "      ],"]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
 #[doc = "    \"little_u16\": {"]
 #[doc = "      \"default\": 3,"]
 #[doc = "      \"type\": \"integer\","]
@@ -90,10 +99,12 @@ impl Doodad {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MrDefaultNumbers {
-    #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU16, 3>")]
-    pub little_u16: std::num::NonZeroU16,
-    #[serde(default = "defaults::default_nzu64::<std::num::NonZeroU8, 2>")]
-    pub little_u8: std::num::NonZeroU8,
+    #[serde(default = "defaults::mr_default_numbers_big_nullable")]
+    pub big_nullable: ::std::option::Option<::std::num::NonZeroU64>,
+    #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU16, 3>")]
+    pub little_u16: ::std::num::NonZeroU16,
+    #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU8, 2>")]
+    pub little_u8: ::std::num::NonZeroU8,
 }
 impl ::std::convert::From<&MrDefaultNumbers> for MrDefaultNumbers {
     fn from(value: &MrDefaultNumbers) -> Self {
@@ -103,8 +114,9 @@ impl ::std::convert::From<&MrDefaultNumbers> for MrDefaultNumbers {
 impl ::std::default::Default for MrDefaultNumbers {
     fn default() -> Self {
         Self {
-            little_u16: defaults::default_nzu64::<std::num::NonZeroU16, 3>(),
-            little_u8: defaults::default_nzu64::<std::num::NonZeroU8, 2>(),
+            big_nullable: defaults::mr_default_numbers_big_nullable(),
+            little_u16: defaults::default_nzu64::<::std::num::NonZeroU16, 3>(),
+            little_u8: defaults::default_nzu64::<::std::num::NonZeroU8, 2>(),
         }
     }
 }
@@ -113,7 +125,7 @@ impl MrDefaultNumbers {
         Default::default()
     }
 }
-#[doc = "OuterThing"]
+#[doc = "`OuterThing`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -163,7 +175,7 @@ impl OuterThing {
         Default::default()
     }
 }
-#[doc = "TestBed"]
+#[doc = "`TestBed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -202,7 +214,7 @@ pub struct TestBed {
     #[serde(default = "defaults::test_bed_any")]
     pub any: ::std::vec::Vec<::serde_json::Value>,
     #[serde(default = "defaults::test_bed_id")]
-    pub id: uuid::Uuid,
+    pub id: ::uuid::Uuid,
 }
 impl ::std::convert::From<&TestBed> for TestBed {
     fn from(value: &TestBed) -> Self {
@@ -222,7 +234,7 @@ impl TestBed {
         Default::default()
     }
 }
-#[doc = "ThingWithDefaults"]
+#[doc = "`ThingWithDefaults`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -279,7 +291,8 @@ impl ThingWithDefaults {
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Doodad {
-        when: ::std::result::Result<chrono::DateTime<chrono::offset::Utc>, ::std::string::String>,
+        when:
+            ::std::result::Result<::chrono::DateTime<::chrono::offset::Utc>, ::std::string::String>,
     }
     impl ::std::default::Default for Doodad {
         fn default() -> Self {
@@ -291,7 +304,7 @@ pub mod builder {
     impl Doodad {
         pub fn when<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<chrono::DateTime<chrono::offset::Utc>>,
+            T: ::std::convert::TryInto<::chrono::DateTime<::chrono::offset::Utc>>,
             T::Error: ::std::fmt::Display,
         {
             self.when = value
@@ -315,21 +328,36 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct MrDefaultNumbers {
-        little_u16: ::std::result::Result<std::num::NonZeroU16, ::std::string::String>,
-        little_u8: ::std::result::Result<std::num::NonZeroU8, ::std::string::String>,
+        big_nullable: ::std::result::Result<
+            ::std::option::Option<::std::num::NonZeroU64>,
+            ::std::string::String,
+        >,
+        little_u16: ::std::result::Result<::std::num::NonZeroU16, ::std::string::String>,
+        little_u8: ::std::result::Result<::std::num::NonZeroU8, ::std::string::String>,
     }
     impl ::std::default::Default for MrDefaultNumbers {
         fn default() -> Self {
             Self {
-                little_u16: Ok(super::defaults::default_nzu64::<std::num::NonZeroU16, 3>()),
-                little_u8: Ok(super::defaults::default_nzu64::<std::num::NonZeroU8, 2>()),
+                big_nullable: Ok(super::defaults::mr_default_numbers_big_nullable()),
+                little_u16: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU16, 3>()),
+                little_u8: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU8, 2>()),
             }
         }
     }
     impl MrDefaultNumbers {
+        pub fn big_nullable<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::num::NonZeroU64>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.big_nullable = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for big_nullable: {}", e));
+            self
+        }
         pub fn little_u16<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<std::num::NonZeroU16>,
+            T: ::std::convert::TryInto<::std::num::NonZeroU16>,
             T::Error: ::std::fmt::Display,
         {
             self.little_u16 = value
@@ -339,7 +367,7 @@ pub mod builder {
         }
         pub fn little_u8<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<std::num::NonZeroU8>,
+            T: ::std::convert::TryInto<::std::num::NonZeroU8>,
             T::Error: ::std::fmt::Display,
         {
             self.little_u8 = value
@@ -354,6 +382,7 @@ pub mod builder {
             value: MrDefaultNumbers,
         ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
+                big_nullable: value.big_nullable?,
                 little_u16: value.little_u16?,
                 little_u8: value.little_u8?,
             })
@@ -362,6 +391,7 @@ pub mod builder {
     impl ::std::convert::From<super::MrDefaultNumbers> for MrDefaultNumbers {
         fn from(value: super::MrDefaultNumbers) -> Self {
             Self {
+                big_nullable: Ok(value.big_nullable),
                 little_u16: Ok(value.little_u16),
                 little_u8: Ok(value.little_u8),
             }
@@ -413,7 +443,7 @@ pub mod builder {
     #[derive(Clone, Debug)]
     pub struct TestBed {
         any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
-        id: ::std::result::Result<uuid::Uuid, ::std::string::String>,
+        id: ::std::result::Result<::uuid::Uuid, ::std::string::String>,
     }
     impl ::std::default::Default for TestBed {
         fn default() -> Self {
@@ -436,7 +466,7 @@ pub mod builder {
         }
         pub fn id<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<uuid::Uuid>,
+            T: ::std::convert::TryInto<::uuid::Uuid>,
             T::Error: ::std::fmt::Display,
         {
             self.id = value
@@ -527,23 +557,29 @@ pub mod builder {
 pub mod defaults {
     pub(super) fn default_nzu64<T, const V: u64>() -> T
     where
-        T: std::convert::TryFrom<std::num::NonZeroU64>,
-        <T as std::convert::TryFrom<std::num::NonZeroU64>>::Error: std::fmt::Debug,
+        T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
+        <T as ::std::convert::TryFrom<::std::num::NonZeroU64>>::Error: ::std::fmt::Debug,
     {
-        T::try_from(std::num::NonZeroU64::try_from(V).unwrap()).unwrap()
+        T::try_from(::std::num::NonZeroU64::try_from(V).unwrap()).unwrap()
     }
-    pub(super) fn doodad_when() -> chrono::DateTime<chrono::offset::Utc> {
-        serde_json::from_str::<chrono::DateTime<chrono::offset::Utc>>("\"1970-01-01T00:00:00Z\"")
-            .unwrap()
+    pub(super) fn doodad_when() -> ::chrono::DateTime<::chrono::offset::Utc> {
+        ::serde_json::from_str::<::chrono::DateTime<::chrono::offset::Utc>>(
+            "\"1970-01-01T00:00:00Z\"",
+        )
+        .unwrap()
+    }
+    pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
+    {
+        ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
-            serde_json::from_str::<serde_json::Value>("[8,6,7]").unwrap(),
-            serde_json::from_str::<serde_json::Value>("[5,3,0,9]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[8,6,7]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[5,3,0,9]").unwrap(),
         ]
     }
-    pub(super) fn test_bed_id() -> uuid::Uuid {
-        serde_json::from_str::<uuid::Uuid>("\"abc123-is-this-a-uuid\"").unwrap()
+    pub(super) fn test_bed_id() -> ::uuid::Uuid {
+        ::serde_json::from_str::<::uuid::Uuid>("\"abc123-is-this-a-uuid\"").unwrap()
     }
 }
 fn main() {}

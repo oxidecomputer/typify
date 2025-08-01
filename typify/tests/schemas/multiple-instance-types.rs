@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "IntOrStr"]
+#[doc = "`IntOrStr`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -49,40 +49,6 @@ impl ::std::convert::From<&Self> for IntOrStr {
         value.clone()
     }
 }
-impl ::std::str::FromStr for IntOrStr {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if let Ok(v) = value.parse() {
-            Ok(Self::String(v))
-        } else if let Ok(v) = value.parse() {
-            Ok(Self::Integer(v))
-        } else {
-            Err("string conversion failed for all variants".into())
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for IntOrStr {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IntOrStr {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for IntOrStr {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::fmt::Display for IntOrStr {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
@@ -96,7 +62,7 @@ impl ::std::convert::From<i64> for IntOrStr {
         Self::Integer(value)
     }
 }
-#[doc = "OneOfSeveral"]
+#[doc = "`OneOfSeveral`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -150,7 +116,7 @@ impl ::std::convert::From<i64> for OneOfSeveral {
         Self::Integer(value)
     }
 }
-#[doc = "ReallyJustNull"]
+#[doc = "`ReallyJustNull`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -190,7 +156,7 @@ impl ::std::convert::From<()> for ReallyJustNull {
         Self(value)
     }
 }
-#[doc = "SeriouslyAnything"]
+#[doc = "`SeriouslyAnything`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -232,7 +198,7 @@ impl ::std::convert::From<::serde_json::Value> for SeriouslyAnything {
         Self(value)
     }
 }
-#[doc = "YesNoMaybe"]
+#[doc = "`YesNoMaybe`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

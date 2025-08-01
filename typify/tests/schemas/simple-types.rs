@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "AnythingWorks"]
+#[doc = "`AnythingWorks`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -52,7 +52,7 @@ impl AnythingWorks {
         Default::default()
     }
 }
-#[doc = "FloatsArentTerribleImTold"]
+#[doc = "`FloatsArentTerribleImTold`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -90,7 +90,7 @@ impl FloatsArentTerribleImTold {
         Default::default()
     }
 }
-#[doc = "JustOne"]
+#[doc = "`JustOne`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -145,6 +145,74 @@ impl ::std::str::FromStr for JustOne {
 impl ::std::fmt::Display for JustOne {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         self.0.fmt(f)
+    }
+}
+#[doc = "`UintMinimumAndMaximum`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"max\","]
+#[doc = "    \"min\","]
+#[doc = "    \"min_and_max\","]
+#[doc = "    \"min_non_zero\","]
+#[doc = "    \"min_uint_non_zero\","]
+#[doc = "    \"no_bounds\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"max\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"maximum\": 256.0"]
+#[doc = "    },"]
+#[doc = "    \"min\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"minimum\": 0.0"]
+#[doc = "    },"]
+#[doc = "    \"min_and_max\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"maximum\": 256.0,"]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
+#[doc = "    \"min_non_zero\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
+#[doc = "    \"min_uint_non_zero\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint64\","]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
+#[doc = "    \"no_bounds\": {"]
+#[doc = "      \"type\": \"integer\","]
+#[doc = "      \"format\": \"uint64\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct UintMinimumAndMaximum {
+    pub max: u64,
+    pub min: u64,
+    pub min_and_max: ::std::num::NonZeroU64,
+    pub min_non_zero: ::std::num::NonZeroU64,
+    pub min_uint_non_zero: ::std::num::NonZeroU64,
+    pub no_bounds: u64,
+}
+impl ::std::convert::From<&UintMinimumAndMaximum> for UintMinimumAndMaximum {
+    fn from(value: &UintMinimumAndMaximum) -> Self {
+        value.clone()
+    }
+}
+impl UintMinimumAndMaximum {
+    pub fn builder() -> builder::UintMinimumAndMaximum {
+        Default::default()
     }
 }
 #[doc = r" Types for composing complex structures."]
@@ -226,6 +294,119 @@ pub mod builder {
         fn from(value: super::FloatsArentTerribleImTold) -> Self {
             Self {
                 flush_timeout: Ok(value.flush_timeout),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UintMinimumAndMaximum {
+        max: ::std::result::Result<u64, ::std::string::String>,
+        min: ::std::result::Result<u64, ::std::string::String>,
+        min_and_max: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        min_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        min_uint_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        no_bounds: ::std::result::Result<u64, ::std::string::String>,
+    }
+    impl ::std::default::Default for UintMinimumAndMaximum {
+        fn default() -> Self {
+            Self {
+                max: Err("no value supplied for max".to_string()),
+                min: Err("no value supplied for min".to_string()),
+                min_and_max: Err("no value supplied for min_and_max".to_string()),
+                min_non_zero: Err("no value supplied for min_non_zero".to_string()),
+                min_uint_non_zero: Err("no value supplied for min_uint_non_zero".to_string()),
+                no_bounds: Err("no value supplied for no_bounds".to_string()),
+            }
+        }
+    }
+    impl UintMinimumAndMaximum {
+        pub fn max<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<u64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.max = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for max: {}", e));
+            self
+        }
+        pub fn min<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<u64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.min = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for min: {}", e));
+            self
+        }
+        pub fn min_and_max<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.min_and_max = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for min_and_max: {}", e));
+            self
+        }
+        pub fn min_non_zero<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.min_non_zero = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for min_non_zero: {}", e));
+            self
+        }
+        pub fn min_uint_non_zero<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.min_uint_non_zero = value.try_into().map_err(|e| {
+                format!(
+                    "error converting supplied value for min_uint_non_zero: {}",
+                    e
+                )
+            });
+            self
+        }
+        pub fn no_bounds<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<u64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.no_bounds = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for no_bounds: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UintMinimumAndMaximum> for super::UintMinimumAndMaximum {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UintMinimumAndMaximum,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                max: value.max?,
+                min: value.min?,
+                min_and_max: value.min_and_max?,
+                min_non_zero: value.min_non_zero?,
+                min_uint_non_zero: value.min_uint_non_zero?,
+                no_bounds: value.no_bounds?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::UintMinimumAndMaximum> for UintMinimumAndMaximum {
+        fn from(value: super::UintMinimumAndMaximum) -> Self {
+            Self {
+                max: Ok(value.max),
+                min: Ok(value.min),
+                min_and_max: Ok(value.min_and_max),
+                min_non_zero: Ok(value.min_non_zero),
+                min_uint_non_zero: Ok(value.min_uint_non_zero),
+                no_bounds: Ok(value.no_bounds),
             }
         }
     }

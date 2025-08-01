@@ -1,3 +1,5 @@
+// Copyright 2025 Oxide Computer Company
+
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
 
@@ -78,6 +80,25 @@ impl JsonSchema for LoginName {
     }
 }
 
+struct NonAsciiChars;
+impl JsonSchema for NonAsciiChars {
+    fn schema_name() -> String {
+        "NonAsciiChars".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            string: Some(Box::new(schemars::schema::StringValidation {
+                max_length: Some(8),
+                min_length: Some(2),
+                pattern: None,
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
 struct Pancakes;
 impl JsonSchema for Pancakes {
     fn schema_name() -> String {
@@ -109,6 +130,7 @@ fn main() {
 
     WithSet::add(&mut type_space);
     LoginName::add(&mut type_space);
+    NonAsciiChars::add(&mut type_space);
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
 
@@ -133,7 +155,7 @@ fn main() {
 
     // Generate with a custom map type to validate requirements.
     let mut settings = TypeSpaceSettings::default();
-    settings.with_map_type("CustomMap".to_string());
+    settings.with_map_type("CustomMap");
     let mut type_space = TypeSpace::new(&settings);
 
     WithMap::add(&mut type_space);

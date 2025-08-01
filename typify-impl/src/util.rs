@@ -1,6 +1,6 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
-use std::collections::{BTreeSet, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use log::debug;
 use schemars::schema::{
@@ -9,7 +9,7 @@ use schemars::schema::{
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{Error, Name, RefKey, Result, TypeSpace};
+use crate::{validate::schema_value_validate, Error, Name, RefKey, Result, TypeSpace};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -44,7 +44,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
 /// **could** be merged (i.e. if they're compatible).
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
-    definitions: &std::collections::BTreeMap<RefKey, Schema>,
+    definitions: &BTreeMap<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
     // Consider all pairs
@@ -53,13 +53,17 @@ pub(crate) fn all_mutually_exclusive(
         .all(|(ii, jj)| {
             let a = resolve(&subschemas[ii], definitions);
             let b = resolve(&subschemas[jj], definitions);
-            schemas_mutually_exclusive(a, b)
+            schemas_mutually_exclusive(a, b, definitions)
         })
 }
 
 /// This function needs to necessarily be conservative. We'd much prefer a
 /// false negative than a false positive.
-fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
+fn schemas_mutually_exclusive(
+    a: &Schema,
+    b: &Schema,
+    definitions: &BTreeMap<RefKey, Schema>,
+) -> bool {
     match (a, b) {
         // If either matches nothing then they are exclusive.
         (Schema::Bool(false), _) => true,
@@ -114,7 +118,9 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 if_schema: None,
                 then_schema: None,
                 else_schema: None,
-            } => s.iter().any(|sub| schemas_mutually_exclusive(sub, other)),
+            } => s
+                .iter()
+                .any(|sub| schemas_mutually_exclusive(sub, other, definitions)),
 
             // For a oneOf or anyOf, *all* subschemas need to be incompatible.
             SubschemaValidation {
@@ -134,7 +140,9 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 if_schema: None,
                 then_schema: None,
                 else_schema: None,
-            } => s.iter().all(|sub| schemas_mutually_exclusive(sub, other)),
+            } => s
+                .iter()
+                .all(|sub| schemas_mutually_exclusive(sub, other, definitions)),
 
             // For a not, they're mutually exclusive if they *do* match.
             SubschemaValidation {
@@ -145,21 +153,20 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 if_schema: None,
                 then_schema: None,
                 else_schema: None,
-            } => !schemas_mutually_exclusive(sub, other),
+            } => !schemas_mutually_exclusive(sub, other, definitions),
 
             // Assume other subschemas are complex to understand and may
             // therefore be compatible.
             _ => false,
         },
 
-        // If one type has an explicit type and has enumerated value (but no
-        // type), we can check to see if every enumerated value is incompatible
-        // with the given type.
+        // If one schema has enumerated values, it's incompatible if all values
+        // fail to validate against the other schema. (Conversely, if all
+        // values *do* validate against the other schema, it simply seems
+        // redundant--the most interesting case is if *some* values validate
+        // and others do not.)
         (
-            Schema::Object(SchemaObject {
-                instance_type: Some(SingleOrVec::Single(marked_type)),
-                ..
-            }),
+            schema,
             Schema::Object(SchemaObject {
                 instance_type: None,
                 enum_values: Some(enum_values),
@@ -172,21 +179,27 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                 enum_values: Some(enum_values),
                 ..
             }),
-            Schema::Object(SchemaObject {
-                instance_type: Some(SingleOrVec::Single(marked_type)),
-                ..
-            }),
+            schema,
         ) => enum_values
             .iter()
-            .map(|v| match v {
-                serde_json::Value::Null => InstanceType::Null,
-                serde_json::Value::Bool(_) => InstanceType::Boolean,
-                serde_json::Value::Number(_) => InstanceType::Number,
-                serde_json::Value::String(_) => InstanceType::String,
-                serde_json::Value::Array(_) => InstanceType::Array,
-                serde_json::Value::Object(_) => InstanceType::Object,
-            })
-            .all(|value_type| value_type != **marked_type),
+            .all(|value| schema_value_validate(schema, value, definitions).is_err()),
+
+        // If one schema has a constant value, it's incompatible if that value
+        // fails to validate against the other schema.
+        (
+            schema,
+            Schema::Object(SchemaObject {
+                const_value: Some(value),
+                ..
+            }),
+        )
+        | (
+            Schema::Object(SchemaObject {
+                const_value: Some(value),
+                ..
+            }),
+            schema,
+        ) => schema_value_validate(schema, value, definitions).is_err(),
 
         // Neither is a Schema::Bool; we need to look at the instance types.
         (Schema::Object(a), Schema::Object(b)) => {
@@ -285,7 +298,7 @@ fn schemas_mutually_exclusive(a: &Schema, b: &Schema) -> bool {
                         },
                     ) = (a, b)
                     {
-                        array_schemas_mutually_exclusive(a_validation, b_validation)
+                        array_schemas_mutually_exclusive(a_validation, b_validation, definitions)
                     } else {
                         // Could check further, but we'll be conservative.
                         false
@@ -383,6 +396,7 @@ fn object_schemas_mutually_exclusive(
 fn array_schemas_mutually_exclusive(
     a_validation: &ArrayValidation,
     b_validation: &ArrayValidation,
+    definitions: &BTreeMap<RefKey, Schema>,
 ) -> bool {
     match (a_validation, b_validation) {
         // If one is an array with a single item type and the other is a tuple
@@ -421,7 +435,7 @@ fn array_schemas_mutually_exclusive(
             },
         ) if max_items == min_items && *max_items as usize == vec.len() => vec
             .iter()
-            .any(|schema| schemas_mutually_exclusive(schema, single)),
+            .any(|schema| schemas_mutually_exclusive(schema, single, definitions)),
 
         (aa, bb) => {
             // If min > max then these schemas are incompatible.
@@ -438,7 +452,7 @@ fn array_schemas_mutually_exclusive(
                 // If thee's a single item schema and it's mutually exclusive
                 // then we're done.
                 (Some(SingleOrVec::Single(a_items)), _, Some(SingleOrVec::Single(b_items)), _)
-                    if schemas_mutually_exclusive(a_items, b_items) =>
+                    if schemas_mutually_exclusive(a_items, b_items, definitions) =>
                 {
                     return true;
                 }
@@ -752,10 +766,12 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
         _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
     };
 
+    let prefix = to_case("x");
+
     let out = match out.chars().next() {
-        None => to_case("x"),
+        None => prefix,
         Some(c) if is_xid_start(c) => out,
-        Some(_) => format!("_{}", out),
+        Some(_) => format!("{}{}", prefix, out),
     };
 
     // Make sure the string is a valid Rust identifier.
@@ -774,6 +790,15 @@ pub(crate) fn recase(input: &str, case: Case) -> (String, Option<String>) {
         Some(input.to_string())
     };
     (new, rename)
+}
+
+pub(crate) fn unique<I, T>(items: I) -> bool
+where
+    I: IntoIterator<Item = T>,
+    T: Eq + std::hash::Hash,
+{
+    let mut unique = HashSet::new();
+    items.into_iter().all(|item| unique.insert(item))
 }
 
 pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) -> Option<String> {
@@ -836,20 +861,22 @@ impl StringValidator {
     pub fn is_valid<S: AsRef<str>>(&self, s: S) -> bool {
         self.max_length
             .as_ref()
-            .map_or(true, |max| s.as_ref().len() as u32 <= *max)
+            .is_none_or(|max| s.as_ref().len() as u32 <= *max)
             && self
                 .min_length
                 .as_ref()
-                .map_or(true, |min| s.as_ref().len() as u32 >= *min)
+                .is_none_or(|min| s.as_ref().len() as u32 >= *min)
             && self
                 .pattern
                 .as_ref()
-                .map_or(true, |pattern| pattern.find(s.as_ref()).is_some())
+                .is_none_or(|pattern| pattern.find(s.as_ref()).is_some())
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
     use schemars::{
         gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
@@ -882,8 +909,8 @@ mod tests {
         let a = schema_for!(A).schema.into();
         let b = schema_for!(B).schema.into();
 
-        assert!(!schemas_mutually_exclusive(&a, &b));
-        assert!(!schemas_mutually_exclusive(&b, &a));
+        assert!(!schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
+        assert!(!schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
     }
 
     #[test]
@@ -902,7 +929,7 @@ mod tests {
 
         let a = gen.into_root_schema_for::<Vec<A>>().schema.into();
 
-        assert!(!schemas_mutually_exclusive(&a, &a));
+        assert!(!schemas_mutually_exclusive(&a, &a, &BTreeMap::new()));
     }
 
     #[test]
@@ -925,8 +952,8 @@ mod tests {
         let a = schema_for!(A).schema.into();
         let b = schema_for!(B).schema.into();
 
-        assert!(schemas_mutually_exclusive(&a, &b));
-        assert!(schemas_mutually_exclusive(&b, &a));
+        assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
+        assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
     }
 
     #[test]
@@ -950,8 +977,8 @@ mod tests {
         let a = schema_for!(A).schema.into();
         let b = schema_for!(B).schema.into();
 
-        assert!(schemas_mutually_exclusive(&a, &b));
-        assert!(schemas_mutually_exclusive(&b, &a));
+        assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
+        assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
     }
 
     #[test]
@@ -959,8 +986,8 @@ mod tests {
         let a = schema_for!(Vec<u32>).schema.into();
         let b = schema_for!(Vec<f32>).schema.into();
 
-        assert!(schemas_mutually_exclusive(&a, &b));
-        assert!(schemas_mutually_exclusive(&b, &a));
+        assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
+        assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
     }
 
     #[test]

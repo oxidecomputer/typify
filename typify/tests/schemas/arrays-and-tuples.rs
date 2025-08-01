@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "ArraySansItems"]
+#[doc = "`ArraySansItems`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -61,7 +61,7 @@ impl ::std::convert::From<Vec<::serde_json::Value>> for ArraySansItems {
         Self(value)
     }
 }
-#[doc = "LessSimpleTwoTuple"]
+#[doc = "`LessSimpleTwoTuple`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -108,7 +108,7 @@ impl ::std::convert::From<(::std::string::String, ::std::string::String)> for Le
         Self(value)
     }
 }
-#[doc = "SimpleTwoArray"]
+#[doc = "`SimpleTwoArray`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -147,7 +147,7 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for SimpleTwoArray {
         Self(value)
     }
 }
-#[doc = "SimpleTwoTuple"]
+#[doc = "`SimpleTwoTuple`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -191,7 +191,7 @@ impl ::std::convert::From<(::std::string::String, ::std::string::String)> for Si
         Self(value)
     }
 }
-#[doc = "UnsimpleTwoTuple"]
+#[doc = "`UnsimpleTwoTuple`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -235,7 +235,7 @@ impl ::std::convert::From<(::std::string::String, ::std::string::String)> for Un
         Self(value)
     }
 }
-#[doc = "YoloTwoArray"]
+#[doc = "`YoloTwoArray`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

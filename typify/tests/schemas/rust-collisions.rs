@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "Box"]
+#[doc = "`Box`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -57,7 +57,7 @@ impl Box {
         Default::default()
     }
 }
-#[doc = "Copy"]
+#[doc = "`Copy`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -89,7 +89,7 @@ impl Copy {
         Default::default()
     }
 }
-#[doc = "DoubleOptionCollision"]
+#[doc = "`DoubleOptionCollision`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -137,7 +137,7 @@ impl DoubleOptionCollision {
         Default::default()
     }
 }
-#[doc = "DoubleOptionCollisionOption"]
+#[doc = "`DoubleOptionCollisionOption`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -177,7 +177,7 @@ impl DoubleOptionCollisionOption {
         Default::default()
     }
 }
-#[doc = "Drop"]
+#[doc = "`Drop`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -209,7 +209,7 @@ impl Drop {
         Default::default()
     }
 }
-#[doc = "FlattenedKeywords"]
+#[doc = "`FlattenedKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -246,7 +246,98 @@ impl FlattenedKeywords {
         Default::default()
     }
 }
-#[doc = "KeywordFieldsEnum"]
+#[doc = "`FormatCollision`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"{abc}def\","]
+#[doc = "    \"{http://example.com/Foo}Thing\","]
+#[doc = "    \"{self}\","]
+#[doc = "    \"quote\\\"unquote\","]
+#[doc = "    \"xyz\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum FormatCollision {
+    #[serde(rename = "{abc}def")]
+    AbcDef,
+    #[serde(rename = "{http://example.com/Foo}Thing")]
+    HttpExampleComFooThing,
+    #[serde(rename = "{self}")]
+    Self_,
+    #[serde(rename = "quote\"unquote")]
+    QuoteUnquote,
+    #[serde(rename = "xyz")]
+    Xyz,
+}
+impl ::std::convert::From<&Self> for FormatCollision {
+    fn from(value: &FormatCollision) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for FormatCollision {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::AbcDef => f.write_str("{abc}def"),
+            Self::HttpExampleComFooThing => f.write_str("{http://example.com/Foo}Thing"),
+            Self::Self_ => f.write_str("{self}"),
+            Self::QuoteUnquote => f.write_str("quote\"unquote"),
+            Self::Xyz => f.write_str("xyz"),
+        }
+    }
+}
+impl ::std::str::FromStr for FormatCollision {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "{abc}def" => Ok(Self::AbcDef),
+            "{http://example.com/Foo}Thing" => Ok(Self::HttpExampleComFooThing),
+            "{self}" => Ok(Self::Self_),
+            "quote\"unquote" => Ok(Self::QuoteUnquote),
+            "xyz" => Ok(Self::Xyz),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`KeywordFieldsEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -314,7 +405,7 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum
         Self::Variant1(value)
     }
 }
-#[doc = "MapOfKeywords"]
+#[doc = "`MapOfKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -366,7 +457,7 @@ impl MapOfKeywords {
         Default::default()
     }
 }
-#[doc = "MapOfKeywordsKeywordMapValue"]
+#[doc = "`MapOfKeywordsKeywordMapValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -442,20 +533,20 @@ impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
 impl ::std::fmt::Display for MapOfKeywordsKeywordMapValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Type => write!(f, "type"),
-            Self::Impl => write!(f, "impl"),
-            Self::Fn => write!(f, "fn"),
-            Self::Let => write!(f, "let"),
-            Self::Match => write!(f, "match"),
-            Self::Mod => write!(f, "mod"),
-            Self::Move => write!(f, "move"),
-            Self::Pub => write!(f, "pub"),
-            Self::Ref => write!(f, "ref"),
-            Self::Self_ => write!(f, "self"),
-            Self::Super => write!(f, "super"),
-            Self::Trait => write!(f, "trait"),
-            Self::Use => write!(f, "use"),
-            Self::Where => write!(f, "where"),
+            Self::Type => f.write_str("type"),
+            Self::Impl => f.write_str("impl"),
+            Self::Fn => f.write_str("fn"),
+            Self::Let => f.write_str("let"),
+            Self::Match => f.write_str("match"),
+            Self::Mod => f.write_str("mod"),
+            Self::Move => f.write_str("move"),
+            Self::Pub => f.write_str("pub"),
+            Self::Ref => f.write_str("ref"),
+            Self::Self_ => f.write_str("self"),
+            Self::Super => f.write_str("super"),
+            Self::Trait => f.write_str("trait"),
+            Self::Use => f.write_str("use"),
+            Self::Where => f.write_str("where"),
         }
     }
 }
@@ -503,7 +594,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapV
         value.parse()
     }
 }
-#[doc = "NestedTypeCollisions"]
+#[doc = "`NestedTypeCollisions`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -557,7 +648,7 @@ impl NestedTypeCollisions {
         Default::default()
     }
 }
-#[doc = "NestedTypeCollisionsOptionType"]
+#[doc = "`NestedTypeCollisionsOptionType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -598,7 +689,7 @@ impl NestedTypeCollisionsOptionType {
         Default::default()
     }
 }
-#[doc = "Option"]
+#[doc = "`Option`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -630,7 +721,7 @@ impl Option {
         Default::default()
     }
 }
-#[doc = "Pin"]
+#[doc = "`Pin`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -662,7 +753,7 @@ impl Pin {
         Default::default()
     }
 }
-#[doc = "RustKeywordMonster"]
+#[doc = "`RustKeywordMonster`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -989,7 +1080,7 @@ impl RustKeywordMonster {
         Default::default()
     }
 }
-#[doc = "Send"]
+#[doc = "`Send`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1021,7 +1112,7 @@ impl Send {
         Default::default()
     }
 }
-#[doc = "Std"]
+#[doc = "`Std`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1139,7 +1230,7 @@ impl Std {
         Default::default()
     }
 }
-#[doc = "StdBoxed"]
+#[doc = "`StdBoxed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1171,7 +1262,7 @@ impl StdBoxed {
         Default::default()
     }
 }
-#[doc = "StdConvert"]
+#[doc = "`StdConvert`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1203,7 +1294,7 @@ impl StdConvert {
         Default::default()
     }
 }
-#[doc = "StdFmt"]
+#[doc = "`StdFmt`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1235,7 +1326,7 @@ impl StdFmt {
         Default::default()
     }
 }
-#[doc = "StdOption"]
+#[doc = "`StdOption`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1267,7 +1358,7 @@ impl StdOption {
         Default::default()
     }
 }
-#[doc = "StdResult"]
+#[doc = "`StdResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1299,7 +1390,7 @@ impl StdResult {
         Default::default()
     }
 }
-#[doc = "StdStr"]
+#[doc = "`StdStr`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1331,7 +1422,7 @@ impl StdStr {
         Default::default()
     }
 }
-#[doc = "StdString"]
+#[doc = "`StdString`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1363,7 +1454,7 @@ impl StdString {
         Default::default()
     }
 }
-#[doc = "String"]
+#[doc = "`String`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1395,7 +1486,7 @@ impl String {
         Default::default()
     }
 }
-#[doc = "StringEnum"]
+#[doc = "`StringEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1438,9 +1529,9 @@ impl ::std::convert::From<&Self> for StringEnum {
 impl ::std::fmt::Display for StringEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::One => write!(f, "one"),
-            Self::Two => write!(f, "two"),
-            Self::Three => write!(f, "three"),
+            Self::One => f.write_str("one"),
+            Self::Two => f.write_str("two"),
+            Self::Three => f.write_str("three"),
         }
     }
 }
@@ -1477,7 +1568,7 @@ impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
         value.parse()
     }
 }
-#[doc = "StringNewtype"]
+#[doc = "`StringNewtype`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1511,10 +1602,10 @@ impl ::std::convert::From<&StringNewtype> for StringNewtype {
 impl ::std::str::FromStr for StringNewtype {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if value.len() > 100usize {
+        if value.chars().count() > 100usize {
             return Err("longer than 100 characters".into());
         }
-        if value.len() < 1usize {
+        if value.chars().count() < 1usize {
             return Err("shorter than 1 characters".into());
         }
         Ok(Self(value.to_string()))
@@ -1554,7 +1645,7 @@ impl<'de> ::serde::Deserialize<'de> for StringNewtype {
             })
     }
 }
-#[doc = "Sync"]
+#[doc = "`Sync`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1586,7 +1677,7 @@ impl Sync {
         Default::default()
     }
 }
-#[doc = "TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords"]
+#[doc = "`TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1605,7 +1696,7 @@ impl :: std :: ops :: Deref for TestSchemaWithVariousDefinitionsTypeNamesAndProp
 impl :: std :: convert :: From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
 impl :: std :: convert :: From < & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . clone () } }
 impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
-#[doc = "TypeWithOptionField"]
+#[doc = "`TypeWithOptionField`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1645,7 +1736,7 @@ impl TypeWithOptionField {
         Default::default()
     }
 }
-#[doc = "Vec"]
+#[doc = "`Vec`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

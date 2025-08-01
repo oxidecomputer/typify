@@ -20,6 +20,13 @@ if you can articulate the output you'd ideally like to see.
 
 ## JSON Schema → Rust types
 
+JSON Schema is a constraint language designed for validation. As a result, it
+is not well-suited--and is often seemingly hostile--to translation into
+constructive type systems. It allows for expressions of arbitrary complexity
+with an infinity of ways to articulate a given set of constraints. As such,
+typify does its best to discern an appropriate interpretation, but it is far
+from perfect!
+
 Typify translates JSON Schema types in a few different ways depending on some
 basic properties of the schema:
 
@@ -93,6 +100,29 @@ flattened members, this is one of the weaker areas of code generation.
 
 Issues describing example schemas and desired output are welcome and helpful.
 
+### AdditionalProperties
+
+The `additionalProperties` constraint lets a schema define what *non-specified*
+properties are permitted. A value of `false` means that no other properties are
+permitted (this is expressed in Rust with the `#[serde(deny_unknown_fields)]`
+annotation). The absence of `additionalProperties` or a value of `true` are
+equivalent constructions that mean that any other property is permitted.
+
+Without other properties, an object that permits additional properties will be
+represented as a map type. In conjunction with other properties, typify employs
+a heuristic interpretation. Absent or with a value of `true`, additional
+properties are ignored. If, however, `additionalProperties` has another value
+(i.e. a schema), the generated type will have a map field annotated with
+`#[serde(flatten)]`.
+
+Note that this is true of **any** schema value for `additionalProperties` that
+is not a boolean. This includes values that would be equivalent with regard to
+validation such as the schema `{}` or `{ "not": false }` or any of the other
+infinity of equivalent schemas. One can therefore construct a `struct` with
+named properties **and** a flattened map of additional properties by using a
+value for `additionalProperties` that is equivalent to `true` or absent with
+regard to validation, by using some e.g. `{}`.
+
 ## Rust -> Schema -> Rust
 
 Schemas derived from Rust types may include an extension that provides
@@ -144,8 +174,8 @@ For the macro:
 ```rust
 typify::import_types!(
   schema = "schema.json",
-  unknown_types = Allow,
-  crates {
+  unknown_crates = Allow,
+  crates = {
     "oxnet" = "1.0.0"
   }
 )

@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "DeadSimple"]
+#[doc = "`DeadSimple`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -65,7 +65,7 @@ impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json:
         Self(value)
     }
 }
-#[doc = "Eh"]
+#[doc = "`Eh`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -121,7 +121,7 @@ impl ::std::fmt::Display for Eh {
         self.0.fmt(f)
     }
 }
-#[doc = "MapWithDateKeys"]
+#[doc = "`MapWithDateKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -140,15 +140,15 @@ impl ::std::fmt::Display for Eh {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct MapWithDateKeys(pub ::std::collections::HashMap<chrono::naive::NaiveDate, Value>);
+pub struct MapWithDateKeys(pub ::std::collections::HashMap<::chrono::naive::NaiveDate, Value>);
 impl ::std::ops::Deref for MapWithDateKeys {
-    type Target = ::std::collections::HashMap<chrono::naive::NaiveDate, Value>;
-    fn deref(&self) -> &::std::collections::HashMap<chrono::naive::NaiveDate, Value> {
+    type Target = ::std::collections::HashMap<::chrono::naive::NaiveDate, Value>;
+    fn deref(&self) -> &::std::collections::HashMap<::chrono::naive::NaiveDate, Value> {
         &self.0
     }
 }
 impl ::std::convert::From<MapWithDateKeys>
-    for ::std::collections::HashMap<chrono::naive::NaiveDate, Value>
+    for ::std::collections::HashMap<::chrono::naive::NaiveDate, Value>
 {
     fn from(value: MapWithDateKeys) -> Self {
         value.0
@@ -159,14 +159,14 @@ impl ::std::convert::From<&MapWithDateKeys> for MapWithDateKeys {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::collections::HashMap<chrono::naive::NaiveDate, Value>>
+impl ::std::convert::From<::std::collections::HashMap<::chrono::naive::NaiveDate, Value>>
     for MapWithDateKeys
 {
-    fn from(value: ::std::collections::HashMap<chrono::naive::NaiveDate, Value>) -> Self {
+    fn from(value: ::std::collections::HashMap<::chrono::naive::NaiveDate, Value>) -> Self {
         Self(value)
     }
 }
-#[doc = "MapWithDateTimeKeys"]
+#[doc = "`MapWithDateTimeKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -186,16 +186,18 @@ impl ::std::convert::From<::std::collections::HashMap<chrono::naive::NaiveDate, 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MapWithDateTimeKeys(
-    pub ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+    pub ::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value>,
 );
 impl ::std::ops::Deref for MapWithDateTimeKeys {
-    type Target = ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>;
-    fn deref(&self) -> &::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value> {
+    type Target = ::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value>;
+    fn deref(
+        &self,
+    ) -> &::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value> {
         &self.0
     }
 }
 impl ::std::convert::From<MapWithDateTimeKeys>
-    for ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>
+    for ::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value>
 {
     fn from(value: MapWithDateTimeKeys) -> Self {
         value.0
@@ -206,16 +208,18 @@ impl ::std::convert::From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>>
-    for MapWithDateTimeKeys
+impl
+    ::std::convert::From<
+        ::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value>,
+    > for MapWithDateTimeKeys
 {
     fn from(
-        value: ::std::collections::HashMap<chrono::DateTime<chrono::offset::Utc>, Value>,
+        value: ::std::collections::HashMap<::chrono::DateTime<::chrono::offset::Utc>, Value>,
     ) -> Self {
         Self(value)
     }
 }
-#[doc = "MapWithKeys"]
+#[doc = "`MapWithKeys`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -255,7 +259,7 @@ impl ::std::convert::From<::std::collections::HashMap<Eh, Value>> for MapWithKey
         Self(value)
     }
 }
-#[doc = "Value"]
+#[doc = "`Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "CoreSchemaMetaSchema"]
+#[doc = "`CoreSchemaMetaSchema`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -464,7 +464,7 @@ impl ::std::convert::From<bool> for CoreSchemaMetaSchema {
         Self::Boolean(value)
     }
 }
-#[doc = "CoreSchemaMetaSchemaObjectDependenciesValue"]
+#[doc = "`CoreSchemaMetaSchemaObjectDependenciesValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -502,7 +502,7 @@ impl ::std::convert::From<StringArray> for CoreSchemaMetaSchemaObjectDependencie
         Self::Variant1(value)
     }
 }
-#[doc = "CoreSchemaMetaSchemaObjectItems"]
+#[doc = "`CoreSchemaMetaSchemaObjectItems`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -550,7 +550,7 @@ impl ::std::convert::From<SchemaArray> for CoreSchemaMetaSchemaObjectItems {
         Self::Variant1(value)
     }
 }
-#[doc = "CoreSchemaMetaSchemaObjectType"]
+#[doc = "`CoreSchemaMetaSchemaObjectType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -593,7 +593,7 @@ impl ::std::convert::From<Vec<SimpleTypes>> for CoreSchemaMetaSchemaObjectType {
         Self::Variant1(value)
     }
 }
-#[doc = "NonNegativeInteger"]
+#[doc = "`NonNegativeInteger`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -657,7 +657,7 @@ impl ::std::fmt::Display for NonNegativeInteger {
         self.0.fmt(f)
     }
 }
-#[doc = "NonNegativeIntegerDefault0"]
+#[doc = "`NonNegativeIntegerDefault0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -727,7 +727,7 @@ impl ::std::fmt::Display for NonNegativeIntegerDefault0 {
         self.0.fmt(f)
     }
 }
-#[doc = "SchemaArray"]
+#[doc = "`SchemaArray`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -765,7 +765,7 @@ impl ::std::convert::From<::std::vec::Vec<CoreSchemaMetaSchema>> for SchemaArray
         Self(value)
     }
 }
-#[doc = "SimpleTypes"]
+#[doc = "`SimpleTypes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -819,13 +819,13 @@ impl ::std::convert::From<&Self> for SimpleTypes {
 impl ::std::fmt::Display for SimpleTypes {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Array => write!(f, "array"),
-            Self::Boolean => write!(f, "boolean"),
-            Self::Integer => write!(f, "integer"),
-            Self::Null => write!(f, "null"),
-            Self::Number => write!(f, "number"),
-            Self::Object => write!(f, "object"),
-            Self::String => write!(f, "string"),
+            Self::Array => f.write_str("array"),
+            Self::Boolean => f.write_str("boolean"),
+            Self::Integer => f.write_str("integer"),
+            Self::Null => f.write_str("null"),
+            Self::Number => f.write_str("number"),
+            Self::Object => f.write_str("object"),
+            Self::String => f.write_str("string"),
         }
     }
 }
@@ -866,7 +866,7 @@ impl ::std::convert::TryFrom<::std::string::String> for SimpleTypes {
         value.parse()
     }
 }
-#[doc = "StringArray"]
+#[doc = "`StringArray`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]

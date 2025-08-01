@@ -48,10 +48,12 @@
       ]
     },
     "Ipv4Net": {
-      "type": "string"
+      "type": "string",
+      "pattern": ".*"
     },
     "Ipv6Net": {
-      "type": "string"
+      "type": "string",
+      "pattern": ".*"
     },
     "NullStringEnumWithUnknownFormat": {
       "type": [
@@ -166,6 +168,13 @@
     "NeverEver": {
       "not": true
     },
+    "AnyOfNothing": {
+      "enum": []
+    },
+    "AnyOfNoStrings": {
+      "type": "string",
+      "enum": []
+    },
     "ShouldBeExclusive": {
       "type": "object",
       "properties": {
@@ -276,6 +285,77 @@
         {
           "const": "C",
           "description": "a pirate's favorite letter"
+        }
+      ]
+    },
+    "variants-differ-by-punct": {
+      "enum": [
+        "2.5GBASE-T",
+        "25GBASE-T",
+        "2,5,GBASE,T"
+      ]
+    },
+    "option-oneof-enum": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": [
+            null
+          ]
+        }
+      ]
+    },
+    "option-oneof-const": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": null
+        }
+      ]
+    },
+    "option-oneof-null": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "option-anyof-enum": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": [
+            null
+          ]
+        }
+      ]
+    },
+    "option-anyof-const": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": null
+        }
+      ]
+    },
+    "option-anyof-null": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
         }
       ]
     }

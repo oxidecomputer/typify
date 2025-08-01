@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::collections::BTreeMap;
 
@@ -6,6 +6,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::{
+    convert::STD_NUM_NONZERO_PREFIX,
     type_entry::{
         DefaultKind, EnumTagType, StructProperty, StructPropertyRename, StructPropertyState,
         TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant,
@@ -28,8 +29,8 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::I64 => quote! {
                 pub(super) fn default_i64<T, const V: i64>() -> T
                 where
-                    T: std::convert::TryFrom<i64>,
-                    <T as std::convert::TryFrom<i64>>::Error: std::fmt::Debug,
+                    T: ::std::convert::TryFrom<i64>,
+                    <T as ::std::convert::TryFrom<i64>>::Error: ::std::fmt::Debug,
                 {
                     T::try_from(V).unwrap()
                 }
@@ -37,8 +38,8 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::U64 => quote! {
                 pub(super) fn default_u64<T, const V: u64>() -> T
                 where
-                    T: std::convert::TryFrom<u64>,
-                    <T as std::convert::TryFrom<u64>>::Error: std::fmt::Debug,
+                    T: ::std::convert::TryFrom<u64>,
+                    <T as ::std::convert::TryFrom<u64>>::Error: ::std::fmt::Debug,
                 {
                     T::try_from(V).unwrap()
                 }
@@ -46,11 +47,11 @@ impl From<&DefaultImpl> for TokenStream {
             DefaultImpl::NZU64 => quote! {
                 pub(super) fn default_nzu64<T, const V: u64>() -> T
                 where
-                    T: std::convert::TryFrom<std::num::NonZeroU64>,
-                    <T as std::convert::TryFrom<std::num::NonZeroU64>>::Error:
-                        std::fmt::Debug,
+                    T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
+                    <T as ::std::convert::TryFrom<::std::num::NonZeroU64>>::Error:
+                        ::std::fmt::Debug,
                 {
-                    T::try_from(std::num::NonZeroU64::try_from(V).unwrap())
+                    T::try_from(::std::num::NonZeroU64::try_from(V).unwrap())
                         .unwrap()
                 }
             },
@@ -150,24 +151,24 @@ impl TypeEntry {
             }) => match tag_type {
                 EnumTagType::External => {
                     validate_default_for_external_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Internal { tag } => {
                     validate_default_for_internal_enum(type_space, variants, default, tag)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Adjacent { tag, content } => {
                     validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
                 EnumTagType::Untagged => {
                     validate_default_for_untagged_enum(type_space, variants, default)
-                        .ok_or_else(|| Error::invalid_value())
+                        .ok_or_else(Error::invalid_value)
                 }
             },
             TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
                 validate_default_struct_props(properties, type_space, default)
-                    .ok_or_else(|| Error::invalid_value())
+                    .ok_or_else(Error::invalid_value)
             }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
@@ -241,8 +242,9 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Tuple(ids) => validate_default_tuple(ids, type_space, default)
-                .ok_or_else(|| Error::invalid_value()),
+            TypeEntryDetails::Tuple(ids) => {
+                validate_default_tuple(ids, type_space, default).ok_or_else(Error::invalid_value)
+            }
 
             TypeEntryDetails::Array(type_id, length) => {
                 let Some(arr) = default.as_array() else {
@@ -288,7 +290,7 @@ impl TypeEntry {
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
                 (_, Some(0)) => unreachable!(),
                 (Some(_), _) => {
-                    if itype.starts_with("std::num::NonZero") {
+                    if itype.starts_with(STD_NUM_NONZERO_PREFIX) {
                         Ok(DefaultKind::Generic(DefaultImpl::NZU64))
                     } else {
                         Ok(DefaultKind::Generic(DefaultImpl::U64))
@@ -336,7 +338,7 @@ impl TypeEntry {
             TypeEntryDetails::Boolean => Some("defaults::default_bool::<true>".to_string()),
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
-                    if name.starts_with("std::num::NonZero") {
+                    if name.starts_with(STD_NUM_NONZERO_PREFIX) {
                         Some(format!("defaults::default_nzu64::<{}, {}>", name, value))
                     } else {
                         Some(format!("defaults::default_u64::<{}, {}>", name, value))
@@ -384,7 +386,7 @@ pub(crate) fn validate_default_for_external_enum(
     if let Some(simple_name) = default.as_str() {
         let variant = variants
             .iter()
-            .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+            .find(|variant| simple_name == variant.raw_name)?;
         matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
 
         Some(DefaultKind::Specific)
@@ -396,9 +398,7 @@ pub(crate) fn validate_default_for_external_enum(
 
         let (name, value) = map.iter().next()?;
 
-        let variant = variants
-            .iter()
-            .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        let variant = variants.iter().find(|variant| name == &variant.raw_name)?;
 
         match &variant.details {
             VariantDetails::Simple => None,
@@ -419,9 +419,7 @@ pub(crate) fn validate_default_for_internal_enum(
 ) -> Option<DefaultKind> {
     let map = default.as_object()?;
     let name = map.get(tag).and_then(serde_json::Value::as_str)?;
-    let variant = variants
-        .iter()
-        .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+    let variant = variants.iter().find(|variant| name == variant.raw_name)?;
 
     match &variant.details {
         VariantDetails::Simple => Some(DefaultKind::Specific),
@@ -462,7 +460,7 @@ pub(crate) fn validate_default_for_adjacent_enum(
 
     let variant = variants
         .iter()
-        .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        .find(|variant| tag_value == variant.raw_name)?;
 
     match (&variant.details, content_value) {
         (VariantDetails::Simple, None) => Some(DefaultKind::Specific),
@@ -651,10 +649,9 @@ mod tests {
         let (type_space, type_id) = get_type::<Option<u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("forty-two")),
-            Err(_)
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!("forty-two"))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
             Ok(DefaultKind::Intrinsic)
@@ -674,10 +671,9 @@ mod tests {
             extra_derives: Default::default(),
         };
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("forty-two")),
-            Err(_)
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!("forty-two"))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
             Ok(DefaultKind::Intrinsic)
@@ -693,10 +689,9 @@ mod tests {
         let (type_space, type_id) = get_type::<Vec<u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([null])),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!([null]))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([])),
             Ok(DefaultKind::Intrinsic),
@@ -712,10 +707,7 @@ mod tests {
         let (type_space, type_id) = get_type::<HashMap<String, u32>>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([])),
-            Err(_),
-        ));
+        assert!(type_entry.validate_value(&type_space, &json!([])).is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!({})),
             Ok(DefaultKind::Intrinsic),
@@ -731,10 +723,9 @@ mod tests {
         let (type_space, type_id) = get_type::<(u32, u32, String)>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!([1, 2, "three", 4])),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!([1, 2, "three", 4]))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([1, 2, "three"])),
             Ok(DefaultKind::Specific),
@@ -772,10 +763,9 @@ mod tests {
         let (type_space, type_id) = get_type::<u32>();
         let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!(true)),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!(true))
+            .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(0)),
             Ok(DefaultKind::Intrinsic),
@@ -825,8 +815,8 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!(
                     {
@@ -835,11 +825,10 @@ mod tests {
                         "d": 7
                     }
                 )
-            ),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+            )
+            .is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!(
                     {
@@ -848,9 +837,8 @@ mod tests {
                         "d": {}
                     }
                 )
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
 
     #[test]
@@ -888,14 +876,10 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!({ "A": null })),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("B")),
-            Err(_),
-        ));
+        assert!(type_entry
+            .validate_value(&type_space, &json!({ "A": null }))
+            .is_err());
+        assert!(type_entry.validate_value(&type_space, &json!("B")).is_err());
     }
 
     #[test]
@@ -931,25 +915,23 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "not-tag": "A"
                 })
-            ),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+            )
+            .is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "tag": "B",
                     "cc": "where's D?"
                 })
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
 
     #[test]
@@ -995,20 +977,16 @@ mod tests {
             ),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!("A")),
-            Err(_),
-        ));
-        assert!(matches!(
-            type_entry.validate_value(
+        assert!(type_entry.validate_value(&type_space, &json!("A")).is_err());
+        assert!(type_entry
+            .validate_value(
                 &type_space,
                 &json!({
                     "tag": "A",
                     "content": null,
                 })
-            ),
-            Err(_),
-        ));
+            )
+            .is_err());
     }
     #[test]
     fn test_enum_untagged() {
@@ -1036,9 +1014,6 @@ mod tests {
             type_entry.validate_value(&type_space, &json!( { "cc": "xx", "dd": "yy" })),
             Ok(DefaultKind::Specific),
         ));
-        assert!(matches!(
-            type_entry.validate_value(&type_space, &json!({})),
-            Err(_),
-        ));
+        assert!(type_entry.validate_value(&type_space, &json!({})).is_err());
     }
 }

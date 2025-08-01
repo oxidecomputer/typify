@@ -13,7 +13,46 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.2.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.4.2\...HEAD[Full list of commits]
+
+== 0.4.2 (released 2025-05-27)
+
+https://github.com/oxidecomputer/typify/compare/v0.4.1\...v0.4.2[Full list of commits]
+
+* improve merging logic for "not" schemas (#831)
+* improve regex validation performance. (#825)
+* remove some dead code that displeases more recent rust versions (#826)
+
+== 0.4.1 (released 2025-04-30)
+
+https://github.com/oxidecomputer/typify/compare/v0.4.0\...v0.4.1[Full list of commits]
+
+* improve `null` recognition (#817)
+* improve identification of mutually incompatible `anyOf` subschemas (#817)
+
+== 0.4.0 (released 2025-04-16)
+
+https://github.com/oxidecomputer/typify/compare/v0.3.0\...v0.4.0[Full list of commits]
+
+* Doc fixes
+* Slightly more effort made to disambiguate enum variant identifiers (#762)
+* Fix for panic with non-zero integers, nullable types, and default values (#771)
+* Greater consistency wrt `additionalProperties` interpretation (#773)
+* Fix for string length validation for non ascii strings (#776)
+* Improved handling of integer format with min/max values (#733)
+
+== 0.3.0 (released 2024-12-27)
+
+https://github.com/oxidecomputer/typify/compare/v0.2.0\...v0.3.0[Full list of commits]
+
+* Mark newtype wrappers as `#[serde(transparent)]` (#724)
+* impl `Default` for structs where all properties have a default (#725)
+* Add support specifying the map type to use (#708)
+* Fully qualify more type names e.g. from `std` (#705)
+
+These changes may break users of previous versions in particular if you were to
+implement `Default` by hand for types for which the implementation is now
+generated.
 
 == 0.2.0 (released 2024-09-26)
 

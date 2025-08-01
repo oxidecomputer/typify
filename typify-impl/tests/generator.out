@@ -1,7 +1,7 @@
 mod types {
     #[doc = r" Error types."]
     pub mod error {
-        #[doc = r" Error from a TryFrom or FromStr implementation."]
+        #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
         pub struct ConversionError(::std::borrow::Cow<'static, str>);
         impl ::std::error::Error for ConversionError {}
         impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ mod types {
             }
         }
     }
-    #[doc = "AllTheTraits"]
+    #[doc = "`AllTheTraits`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -69,7 +69,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "CompoundType"]
+    #[doc = "`CompoundType`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -109,7 +109,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "Pair"]
+    #[doc = "`Pair`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -155,7 +155,7 @@ mod types {
             Default::default()
         }
     }
-    #[doc = "StringEnum"]
+    #[doc = "`StringEnum`"]
     #[doc = r""]
     #[doc = r" <details><summary>JSON schema</summary>"]
     #[doc = r""]
@@ -196,9 +196,9 @@ mod types {
     impl ::std::fmt::Display for StringEnum {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::One => write!(f, "One"),
-                Self::Two => write!(f, "Two"),
-                Self::BuckleMyShoe => write!(f, "BuckleMyShoe"),
+                Self::One => f.write_str("One"),
+                Self::Two => f.write_str("Two"),
+                Self::BuckleMyShoe => f.write_str("BuckleMyShoe"),
             }
         }
     }

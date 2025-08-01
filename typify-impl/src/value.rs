@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 use std::{collections::BTreeMap, str::FromStr};
 
@@ -6,6 +6,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
 use crate::{
+    convert::STD_NUM_NONZERO_PREFIX,
     type_entry::{
         EnumTagType, StructProperty, StructPropertyRename, TypeEntry, TypeEntryDetails,
         TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
@@ -145,13 +146,13 @@ impl TypeEntry {
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    serde_json::from_str::< #type_path >(#text).unwrap()
+                    ::serde_json::from_str::< #type_path >(#text).unwrap()
                 }
             }
             TypeEntryDetails::JsonValue => {
                 let text = value.to_string();
                 quote! {
-                    serde_json::from_str::<serde_json::Value>(#text).unwrap()
+                    ::serde_json::from_str::<::serde_json::Value>(#text).unwrap()
                 }
             }
             TypeEntryDetails::Boolean => {
@@ -162,12 +163,21 @@ impl TypeEntry {
                 if !value.is_number() {
                     return None;
                 }
-                let val = match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name))
-                {
-                    Ok(v) => v,
-                    Err(_) => unreachable!(),
-                };
-                TokenStream::from(proc_macro2::TokenTree::from(val))
+                if type_name.starts_with(STD_NUM_NONZERO_PREFIX) {
+                    let type_path = syn::parse_str::<syn::TypePath>(type_name).unwrap();
+                    let num = proc_macro2::Literal::from_str(value.to_string().as_str()).unwrap();
+
+                    quote! {
+                        #type_path::new(#num).unwrap()
+                    }
+                } else {
+                    let val =
+                        match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name)) {
+                            Ok(v) => v,
+                            Err(_) => unreachable!(),
+                        };
+                    TokenStream::from(proc_macro2::TokenTree::from(val))
+                }
             }
             TypeEntryDetails::String => {
                 let s = value.as_str()?;
@@ -189,10 +199,10 @@ fn value_for_external_enum(
     if let Some(simple_name) = value.as_str() {
         let variant = variants
             .iter()
-            .find(|variant| simple_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+            .find(|variant| simple_name == variant.raw_name)?;
         matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
 
-        let var_ident = format_ident!("{}", &variant.name);
+        let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
         let type_ident = format_ident!("{}", type_name);
         Some(quote! { #scope #type_ident::#var_ident })
     } else {
@@ -203,11 +213,9 @@ fn value_for_external_enum(
 
         let (name, var_value) = map.iter().next()?;
 
-        let variant = variants
-            .iter()
-            .find(|variant| name == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        let variant = variants.iter().find(|variant| name == &variant.raw_name)?;
 
-        let var_ident = format_ident!("{}", &variant.name);
+        let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
         let type_ident = format_ident!("{}", type_name);
         match &variant.details {
             VariantDetails::Simple => None,
@@ -239,8 +247,8 @@ fn value_for_internal_enum(
     let ser_name = map.get(tag).and_then(serde_json::Value::as_str)?;
     let variant = variants
         .iter()
-        .find(|variant| ser_name == variant.rename.as_ref().unwrap_or(&variant.name))?;
-    let var_ident = format_ident!("{}", &variant.name);
+        .find(|variant| ser_name == variant.raw_name)?;
+    let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
     let type_ident = format_ident!("{}", type_name);
 
     match &variant.details {
@@ -285,9 +293,9 @@ fn value_for_adjacent_enum(
 
     let variant = variants
         .iter()
-        .find(|variant| tag_value == variant.rename.as_ref().unwrap_or(&variant.name))?;
+        .find(|variant| tag_value == variant.raw_name)?;
     let type_ident = format_ident!("{}", type_name);
-    let var_ident = format_ident!("{}", &variant.name);
+    let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
     match (&variant.details, content_value) {
         (VariantDetails::Simple, None) => Some(quote! { #scope #type_ident::#var_ident}),
         (VariantDetails::Tuple(types), Some(content_value)) => {
@@ -311,7 +319,7 @@ fn value_for_untagged_enum(
 ) -> Option<TokenStream> {
     let type_ident = format_ident!("{}", type_name);
     variants.iter().find_map(|variant| {
-        let var_ident = format_ident!("{}", &variant.name);
+        let var_ident = format_ident!("{}", &variant.ident_name.as_ref().unwrap());
         match &variant.details {
             VariantDetails::Simple => {
                 value.as_null()?;
@@ -555,7 +563,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    serde_json::from_str::<uuid::Uuid>("\"not-a-uuid\"").unwrap()
+                    ::serde_json::from_str::<::uuid::Uuid>("\"not-a-uuid\"").unwrap()
                 }
                 .to_string()
             ),

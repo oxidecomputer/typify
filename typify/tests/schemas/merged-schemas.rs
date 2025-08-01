@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "BarProp"]
+#[doc = "`BarProp`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -61,7 +61,7 @@ impl BarProp {
         Default::default()
     }
 }
-#[doc = "ButNotThat"]
+#[doc = "`ButNotThat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -149,7 +149,7 @@ impl CommentedTypeMerged {
         Default::default()
     }
 }
-#[doc = "HereAndThere"]
+#[doc = "`HereAndThere`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -207,7 +207,7 @@ impl ::std::convert::From<&Self> for HereAndThere {
         value.clone()
     }
 }
-#[doc = "JsonResponseBase"]
+#[doc = "`JsonResponseBase`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -244,7 +244,7 @@ impl JsonResponseBase {
         Default::default()
     }
 }
-#[doc = "JsonSuccess"]
+#[doc = "`JsonSuccess`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -327,7 +327,7 @@ impl JsonSuccessBase {
         Default::default()
     }
 }
-#[doc = "JsonSuccessBaseResult"]
+#[doc = "`JsonSuccessBaseResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -364,7 +364,7 @@ impl ::std::convert::From<&Self> for JsonSuccessBaseResult {
 impl ::std::fmt::Display for JsonSuccessBaseResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => write!(f, "success"),
+            Self::Success => f.write_str("success"),
         }
     }
 }
@@ -399,7 +399,7 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
         value.parse()
     }
 }
-#[doc = "JsonSuccessResult"]
+#[doc = "`JsonSuccessResult`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -436,7 +436,7 @@ impl ::std::convert::From<&Self> for JsonSuccessResult {
 impl ::std::fmt::Display for JsonSuccessResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Success => write!(f, "success"),
+            Self::Success => f.write_str("success"),
         }
     }
 }
@@ -471,7 +471,7 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
         value.parse()
     }
 }
-#[doc = "MergeEmpty"]
+#[doc = "`MergeEmpty`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -531,7 +531,7 @@ impl MergeEmpty {
         Default::default()
     }
 }
-#[doc = "NarrowNumber"]
+#[doc = "`NarrowNumber`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -550,14 +550,14 @@ impl MergeEmpty {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct NarrowNumber(pub std::num::NonZeroU64);
+pub struct NarrowNumber(pub ::std::num::NonZeroU64);
 impl ::std::ops::Deref for NarrowNumber {
-    type Target = std::num::NonZeroU64;
-    fn deref(&self) -> &std::num::NonZeroU64 {
+    type Target = ::std::num::NonZeroU64;
+    fn deref(&self) -> &::std::num::NonZeroU64 {
         &self.0
     }
 }
-impl ::std::convert::From<NarrowNumber> for std::num::NonZeroU64 {
+impl ::std::convert::From<NarrowNumber> for ::std::num::NonZeroU64 {
     fn from(value: NarrowNumber) -> Self {
         value.0
     }
@@ -567,31 +567,31 @@ impl ::std::convert::From<&NarrowNumber> for NarrowNumber {
         value.clone()
     }
 }
-impl ::std::convert::From<std::num::NonZeroU64> for NarrowNumber {
-    fn from(value: std::num::NonZeroU64) -> Self {
+impl ::std::convert::From<::std::num::NonZeroU64> for NarrowNumber {
+    fn from(value: ::std::num::NonZeroU64) -> Self {
         Self(value)
     }
 }
 impl ::std::str::FromStr for NarrowNumber {
-    type Err = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Err = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
     }
 }
 impl ::std::convert::TryFrom<&str> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<String> for NarrowNumber {
-    type Error = <std::num::NonZeroU64 as ::std::str::FromStr>::Err;
+    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
@@ -601,7 +601,7 @@ impl ::std::fmt::Display for NarrowNumber {
         self.0.fmt(f)
     }
 }
-#[doc = "OrderDependentMerge"]
+#[doc = "`OrderDependentMerge`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -641,7 +641,7 @@ impl OrderDependentMerge {
         Default::default()
     }
 }
-#[doc = "Pickingone"]
+#[doc = "`Pickingone`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -681,7 +681,7 @@ impl Pickingone {
         Default::default()
     }
 }
-#[doc = "PickingoneInstallation"]
+#[doc = "`PickingoneInstallation`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -725,7 +725,7 @@ impl PickingoneInstallation {
         Default::default()
     }
 }
-#[doc = "PickingoneSuspendedBy"]
+#[doc = "`PickingoneSuspendedBy`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -777,7 +777,7 @@ impl PickingoneSuspendedBy {
         Default::default()
     }
 }
-#[doc = "PickingoneUser"]
+#[doc = "`PickingoneUser`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -817,7 +817,7 @@ impl PickingoneUser {
         Default::default()
     }
 }
-#[doc = "TrimFat"]
+#[doc = "`TrimFat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -863,7 +863,131 @@ impl TrimFat {
         Default::default()
     }
 }
-#[doc = "Unresolvable"]
+#[doc = "`UnchangedByMerge`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"required\": ["]
+#[doc = "        \"tag\""]
+#[doc = "      ],"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"tag\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"something\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"not\": {"]
+#[doc = "        \"type\": \"object\","]
+#[doc = "        \"required\": ["]
+#[doc = "          \"tag\""]
+#[doc = "        ],"]
+#[doc = "        \"properties\": {"]
+#[doc = "          \"tag\": {"]
+#[doc = "            \"enum\": ["]
+#[doc = "              \"something_else\""]
+#[doc = "            ]"]
+#[doc = "          }"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct UnchangedByMerge {
+    pub tag: UnchangedByMergeTag,
+}
+impl ::std::convert::From<&UnchangedByMerge> for UnchangedByMerge {
+    fn from(value: &UnchangedByMerge) -> Self {
+        value.clone()
+    }
+}
+impl UnchangedByMerge {
+    pub fn builder() -> builder::UnchangedByMerge {
+        Default::default()
+    }
+}
+#[doc = "`UnchangedByMergeTag`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"something\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum UnchangedByMergeTag {
+    #[serde(rename = "something")]
+    Something,
+}
+impl ::std::convert::From<&Self> for UnchangedByMergeTag {
+    fn from(value: &UnchangedByMergeTag) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for UnchangedByMergeTag {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Something => f.write_str("something"),
+        }
+    }
+}
+impl ::std::str::FromStr for UnchangedByMergeTag {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "something" => Ok(Self::Something),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for UnchangedByMergeTag {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`Unresolvable`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -931,7 +1055,7 @@ impl ::std::convert::From<&Self> for Unresolvable {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable1"]
+#[doc = "`Unsatisfiable1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -973,7 +1097,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable1 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable2"]
+#[doc = "`Unsatisfiable2`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1031,7 +1155,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable2 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable3"]
+#[doc = "`Unsatisfiable3`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1076,7 +1200,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3 {
         value.clone()
     }
 }
-#[doc = "Unsatisfiable3A"]
+#[doc = "`Unsatisfiable3A`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1117,7 +1241,7 @@ impl Unsatisfiable3A {
         Default::default()
     }
 }
-#[doc = "Unsatisfiable3B"]
+#[doc = "`Unsatisfiable3B`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1154,7 +1278,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3B {
 impl ::std::fmt::Display for Unsatisfiable3B {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Bar => write!(f, "bar"),
+            Self::Bar => f.write_str("bar"),
         }
     }
 }
@@ -1189,7 +1313,7 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
         value.parse()
     }
 }
-#[doc = "Unsatisfiable3C"]
+#[doc = "`Unsatisfiable3C`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1226,7 +1350,7 @@ impl ::std::convert::From<&Self> for Unsatisfiable3C {
 impl ::std::fmt::Display for Unsatisfiable3C {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Foo => write!(f, "foo"),
+            Self::Foo => f.write_str("foo"),
         }
     }
 }
@@ -1261,7 +1385,7 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
         value.parse()
     }
 }
-#[doc = "WeirdEnum"]
+#[doc = "`WeirdEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1970,6 +2094,42 @@ pub mod builder {
     impl ::std::convert::From<super::TrimFat> for TrimFat {
         fn from(value: super::TrimFat) -> Self {
             Self { a: Ok(value.a) }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UnchangedByMerge {
+        tag: ::std::result::Result<super::UnchangedByMergeTag, ::std::string::String>,
+    }
+    impl ::std::default::Default for UnchangedByMerge {
+        fn default() -> Self {
+            Self {
+                tag: Err("no value supplied for tag".to_string()),
+            }
+        }
+    }
+    impl UnchangedByMerge {
+        pub fn tag<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::UnchangedByMergeTag>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.tag = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for tag: {}", e));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UnchangedByMerge> for super::UnchangedByMerge {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UnchangedByMerge,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { tag: value.tag? })
+        }
+    }
+    impl ::std::convert::From<super::UnchangedByMerge> for UnchangedByMerge {
+        fn from(value: super::UnchangedByMerge) -> Self {
+            Self { tag: Ok(value.tag) }
         }
     }
     #[derive(Clone, Debug)]

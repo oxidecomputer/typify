@@ -27,7 +27,7 @@ impl OutputSpace {
     ) {
         self.items
             .entry((location, order_hint.to_string()))
-            .or_insert_with(TokenStream::new)
+            .or_default()
             .extend(stream);
     }
 
@@ -36,12 +36,13 @@ impl OutputSpace {
             .items
             .into_iter()
             .map(|((location, _), item)| (location, item))
-            .fold(BTreeMap::new(), |mut map, (location, item)| {
-                map.entry(location)
-                    .or_insert_with(TokenStream::new)
-                    .extend(item);
-                map
-            });
+            .fold(
+                BTreeMap::<_, TokenStream>::new(),
+                |mut map, (location, item)| {
+                    map.entry(location).or_default().extend(item);
+                    map
+                },
+            );
 
         let mod_streams = mods.into_iter().map(|(location, items)| match location {
             OutputSpaceMod::Crate => quote! {

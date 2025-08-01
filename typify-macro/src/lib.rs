@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 //! typify macro implementation.
 
@@ -40,10 +40,10 @@ mod token_utils;
 ///
 /// - `unknown_crates`: optional policy regarding the handling of schemas that
 ///   contain the `x-rust-type` extension whose crates are not explicitly named
-///   in the `crates` section. The options are `generate` to ignore the
-///   extension and generate a *de novo* type, `allow` to use the named type
+///   in the `crates` section. The options are `Generate` to ignore the
+///   extension and generate a *de novo* type, `Allow` to use the named type
 ///   (which may require the addition of a new dependency to compile, and which
-///   ignores version compatibility checks), or `deny` to produce a
+///   ignores version compatibility checks), or `Deny` to produce a
 ///   compile-time error (requiring the user to specify the crate's disposition
 ///   in the `crates` section).
 ///
@@ -84,7 +84,7 @@ struct MacroSettings {
     #[serde(default)]
     crates: HashMap<CrateName, MacroCrateSpec>,
     #[serde(default)]
-    map_type: MapType,
+    map_type: Option<ParseWrapper<syn::Type>>,
 
     #[serde(default)]
     patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
@@ -223,7 +223,9 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         );
         settings.with_unknown_crates(unknown_crates);
 
-        settings.with_map_type(map_type);
+        if let Some(map_type) = map_type {
+            settings.with_map_type(MapType(map_type.into_inner()));
+        }
 
         (schema.into_inner(), settings)
     };
@@ -262,4 +264,26 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
 fn into_syn_err(e: typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
     syn::Error::new(span, e.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use quote::quote;
+
+    use crate::MacroSettings;
+
+    #[test]
+    fn test_settings() {
+        let item = quote! {
+            schema = "foo.json",
+            derives = [::foo::Foo, ::bar::Bar],
+            replace = {
+                Baz = ::baz::Baz,
+            },
+            struct_builder = true,
+            map_type = ::my::map::Type,
+        };
+
+        let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item.into()).unwrap();
+    }
 }

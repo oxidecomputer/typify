@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "AlternativeEnum"]
+#[doc = "`AlternativeEnum`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -66,9 +66,9 @@ impl ::std::convert::From<&Self> for AlternativeEnum {
 impl ::std::fmt::Display for AlternativeEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Choice1 => write!(f, "Choice1"),
-            Self::Choice2 => write!(f, "Choice2"),
-            Self::Choice3 => write!(f, "Choice3"),
+            Self::Choice1 => f.write_str("Choice1"),
+            Self::Choice2 => f.write_str("Choice2"),
+            Self::Choice3 => f.write_str("Choice3"),
         }
     }
 }
@@ -110,7 +110,66 @@ impl ::std::default::Default for AlternativeEnum {
         AlternativeEnum::Choice2
     }
 }
-#[doc = "CommentedVariants"]
+#[doc = "`AnyOfNoStrings`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": []"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum AnyOfNoStrings {}
+impl ::std::convert::From<&Self> for AnyOfNoStrings {
+    fn from(value: &AnyOfNoStrings) -> Self {
+        value.clone()
+    }
+}
+#[doc = "`AnyOfNothing`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": []"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum AnyOfNothing {}
+impl ::std::convert::From<&Self> for AnyOfNothing {
+    fn from(value: &AnyOfNothing) -> Self {
+        value.clone()
+    }
+}
+#[doc = "`CommentedVariants`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -165,9 +224,9 @@ impl ::std::convert::From<&Self> for CommentedVariants {
 impl ::std::fmt::Display for CommentedVariants {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "A"),
-            Self::B => write!(f, "B"),
-            Self::C => write!(f, "C"),
+            Self::A => f.write_str("A"),
+            Self::B => f.write_str("B"),
+            Self::C => f.write_str("C"),
         }
     }
 }
@@ -204,7 +263,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
         value.parse()
     }
 }
-#[doc = "DiskAttachment"]
+#[doc = "`DiskAttachment`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -247,7 +306,7 @@ impl DiskAttachment {
         Default::default()
     }
 }
-#[doc = "DiskAttachmentState"]
+#[doc = "`DiskAttachmentState`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -288,9 +347,9 @@ impl ::std::convert::From<&Self> for DiskAttachmentState {
 impl ::std::fmt::Display for DiskAttachmentState {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Detached => write!(f, "Detached"),
-            Self::Destroyed => write!(f, "Destroyed"),
-            Self::Faulted => write!(f, "Faulted"),
+            Self::Detached => f.write_str("Detached"),
+            Self::Destroyed => f.write_str("Destroyed"),
+            Self::Faulted => f.write_str("Faulted"),
         }
     }
 }
@@ -332,7 +391,7 @@ impl ::std::default::Default for DiskAttachmentState {
         DiskAttachmentState::Detached
     }
 }
-#[doc = "EmptyObject"]
+#[doc = "`EmptyObject`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -372,7 +431,7 @@ impl EmptyObject {
         Default::default()
     }
 }
-#[doc = "EmptyObjectProp"]
+#[doc = "`EmptyObjectProp`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -432,7 +491,7 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
         .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
-#[doc = "EnumAndConstant"]
+#[doc = "`EnumAndConstant`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -526,7 +585,7 @@ impl ::std::convert::From<&Self> for EnumAndConstant {
         value.clone()
     }
 }
-#[doc = "IpNet"]
+#[doc = "`IpNet`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -617,29 +676,20 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
         Self::V6(value)
     }
 }
-#[doc = "Ipv4Net"]
+#[doc = "`Ipv4Net`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"string\""]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \".*\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct Ipv4Net(pub ::std::string::String);
+pub struct Ipv4Net(::std::string::String);
 impl ::std::ops::Deref for Ipv4Net {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
@@ -656,45 +706,65 @@ impl ::std::convert::From<&Ipv4Net> for Ipv4Net {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::string::String> for Ipv4Net {
-    fn from(value: ::std::string::String) -> Self {
-        Self(value)
-    }
-}
 impl ::std::str::FromStr for Ipv4Net {
-    type Err = ::std::convert::Infallible;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new(".*").unwrap());
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \".*\"".into());
+        }
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::fmt::Display for Ipv4Net {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
+impl ::std::convert::TryFrom<&str> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
     }
 }
-#[doc = "Ipv6Net"]
+impl ::std::convert::TryFrom<&::std::string::String> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for Ipv4Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for Ipv4Net {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
+    }
+}
+#[doc = "`Ipv6Net`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"string\""]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \".*\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct Ipv6Net(pub ::std::string::String);
+pub struct Ipv6Net(::std::string::String);
 impl ::std::ops::Deref for Ipv6Net {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
@@ -711,23 +781,52 @@ impl ::std::convert::From<&Ipv6Net> for Ipv6Net {
         value.clone()
     }
 }
-impl ::std::convert::From<::std::string::String> for Ipv6Net {
-    fn from(value: ::std::string::String) -> Self {
-        Self(value)
-    }
-}
 impl ::std::str::FromStr for Ipv6Net {
-    type Err = ::std::convert::Infallible;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| ::regress::Regex::new(".*").unwrap());
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \".*\"".into());
+        }
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::fmt::Display for Ipv6Net {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
+impl ::std::convert::TryFrom<&str> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
     }
 }
-#[doc = "JankNames"]
+impl ::std::convert::TryFrom<&::std::string::String> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for Ipv6Net {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for Ipv6Net {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
+    }
+}
+#[doc = "`JankNames`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -785,7 +884,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64
         Self::Variant2(value)
     }
 }
-#[doc = "Never"]
+#[doc = "`Never`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -812,7 +911,7 @@ impl ::std::convert::From<&Self> for Never {
         value.clone()
     }
 }
-#[doc = "NeverEver"]
+#[doc = "`NeverEver`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -839,7 +938,7 @@ impl ::std::convert::From<&Self> for NeverEver {
         value.clone()
     }
 }
-#[doc = "NullStringEnumWithUnknownFormat"]
+#[doc = "`NullStringEnumWithUnknownFormat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -888,7 +987,7 @@ impl ::std::convert::From<::std::option::Option<NullStringEnumWithUnknownFormatI
         Self(value)
     }
 }
-#[doc = "NullStringEnumWithUnknownFormatInner"]
+#[doc = "`NullStringEnumWithUnknownFormatInner`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -932,9 +1031,9 @@ impl ::std::convert::From<&Self> for NullStringEnumWithUnknownFormatInner {
 impl ::std::fmt::Display for NullStringEnumWithUnknownFormatInner {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "a"),
-            Self::B => write!(f, "b"),
-            Self::C => write!(f, "c"),
+            Self::A => f.write_str("a"),
+            Self::B => f.write_str("b"),
+            Self::C => f.write_str("c"),
         }
     }
 }
@@ -971,7 +1070,7 @@ impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknow
         value.parse()
     }
 }
-#[doc = "OneOfTypes"]
+#[doc = "`OneOfTypes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1020,7 +1119,257 @@ impl ::std::convert::From<i64> for OneOfTypes {
         Self::Bar(value)
     }
 }
-#[doc = "ReferenceDef"]
+#[doc = "`OptionAnyofConst`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": null"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofConst(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofConst {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofConst> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofConst) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofConst> for OptionAnyofConst {
+    fn from(value: &OptionAnyofConst) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofConst {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionAnyofEnum`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        null"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofEnum(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofEnum {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofEnum> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofEnum) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofEnum> for OptionAnyofEnum {
+    fn from(value: &OptionAnyofEnum) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofEnum {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionAnyofNull`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionAnyofNull(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionAnyofNull {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionAnyofNull> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionAnyofNull) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionAnyofNull> for OptionAnyofNull {
+    fn from(value: &OptionAnyofNull) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionAnyofNull {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofConst`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": null"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofConst(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofConst {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofConst> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofConst) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofConst> for OptionOneofConst {
+    fn from(value: &OptionOneofConst) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofConst {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofEnum`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"enum\": ["]
+#[doc = "        null"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofEnum(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofEnum {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofEnum> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofEnum) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofEnum> for OptionOneofEnum {
+    fn from(value: &OptionOneofEnum) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofEnum {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`OptionOneofNull`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct OptionOneofNull(pub ::std::option::Option<::std::string::String>);
+impl ::std::ops::Deref for OptionOneofNull {
+    type Target = ::std::option::Option<::std::string::String>;
+    fn deref(&self) -> &::std::option::Option<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<OptionOneofNull> for ::std::option::Option<::std::string::String> {
+    fn from(value: OptionOneofNull) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<&OptionOneofNull> for OptionOneofNull {
+    fn from(value: &OptionOneofNull) -> Self {
+        value.clone()
+    }
+}
+impl ::std::convert::From<::std::option::Option<::std::string::String>> for OptionOneofNull {
+    fn from(value: ::std::option::Option<::std::string::String>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`ReferenceDef`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1134,7 +1483,7 @@ impl
         Self::Variant1(value)
     }
 }
-#[doc = "ReferencesVariant1Value"]
+#[doc = "`ReferencesVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1162,40 +1511,6 @@ impl ::std::convert::From<&Self> for ReferencesVariant1Value {
         value.clone()
     }
 }
-impl ::std::str::FromStr for ReferencesVariant1Value {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if let Ok(v) = value.parse() {
-            Ok(Self::StringVersion(v))
-        } else if let Ok(v) = value.parse() {
-            Ok(Self::ReferenceDef(v))
-        } else {
-            Err("string conversion failed for all variants".into())
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for ReferencesVariant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::fmt::Display for ReferencesVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
@@ -1214,7 +1529,7 @@ impl ::std::convert::From<ReferenceDef> for ReferencesVariant1Value {
         Self::ReferenceDef(value)
     }
 }
-#[doc = "ShouldBeExclusive"]
+#[doc = "`ShouldBeExclusive`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1255,7 +1570,7 @@ impl ::std::convert::From<&Self> for ShouldBeExclusive {
         value.clone()
     }
 }
-#[doc = "StringVersion"]
+#[doc = "`StringVersion`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1308,6 +1623,87 @@ impl ::std::str::FromStr for StringVersion {
 impl ::std::fmt::Display for StringVersion {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         self.0.fmt(f)
+    }
+}
+#[doc = "`VariantsDifferByPunct`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"2.5GBASE-T\","]
+#[doc = "    \"25GBASE-T\","]
+#[doc = "    \"2,5,GBASE,T\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum VariantsDifferByPunct {
+    #[serde(rename = "2.5GBASE-T")]
+    X2x5gbasext,
+    #[serde(rename = "25GBASE-T")]
+    X25gbasext,
+    #[serde(rename = "2,5,GBASE,T")]
+    X2x5xgbasext,
+}
+impl ::std::convert::From<&Self> for VariantsDifferByPunct {
+    fn from(value: &VariantsDifferByPunct) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for VariantsDifferByPunct {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::X2x5gbasext => f.write_str("2.5GBASE-T"),
+            Self::X25gbasext => f.write_str("25GBASE-T"),
+            Self::X2x5xgbasext => f.write_str("2,5,GBASE,T"),
+        }
+    }
+}
+impl ::std::str::FromStr for VariantsDifferByPunct {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "2.5GBASE-T" => Ok(Self::X2x5gbasext),
+            "25GBASE-T" => Ok(Self::X25gbasext),
+            "2,5,GBASE,T" => Ok(Self::X2x5xgbasext),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for VariantsDifferByPunct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
     }
 }
 #[doc = r" Types for composing complex structures."]

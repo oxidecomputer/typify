@@ -1,7 +1,7 @@
 #![deny(warnings)]
 #[doc = r" Error types."]
 pub mod error {
-    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
     pub struct ConversionError(::std::borrow::Cow<'static, str>);
     impl ::std::error::Error for ConversionError {}
     impl ::std::fmt::Display for ConversionError {
@@ -25,7 +25,7 @@ pub mod error {
         }
     }
 }
-#[doc = "LetterBox"]
+#[doc = "`LetterBox`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -69,7 +69,7 @@ impl LetterBox {
         Default::default()
     }
 }
-#[doc = "LetterBoxLetter"]
+#[doc = "`LetterBoxLetter`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -111,8 +111,8 @@ impl ::std::convert::From<&Self> for LetterBoxLetter {
 impl ::std::fmt::Display for LetterBoxLetter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::A => write!(f, "a"),
-            Self::B => write!(f, "b"),
+            Self::A => f.write_str("a"),
+            Self::B => f.write_str("b"),
         }
     }
 }
