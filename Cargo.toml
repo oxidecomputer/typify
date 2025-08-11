@@ -22,7 +22,7 @@ clap = { version = "4.5.41", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11"
 expectorate = "1.2.0"
-glob = "0.3.2"
+glob = "0.3.3"
 heck = "0.5.0"
 ipnetwork = { version = "0.21.1", features = ["schemars"] }
 log = "0.4.27"
