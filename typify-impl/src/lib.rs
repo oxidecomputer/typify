@@ -794,7 +794,7 @@ impl TypeSpace {
     }
 
     /// Get a type given its ID.
-    pub fn get_type(&self, type_id: &TypeId) -> Result<Type> {
+    pub fn get_type(&self, type_id: &TypeId) -> Result<Type<'_>> {
         let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
         Ok(Type {
             type_space: self,
@@ -824,7 +824,7 @@ impl TypeSpace {
 
     /// Iterate over all types including those defined in this [TypeSpace] and
     /// those referred to by those types.
-    pub fn iter_types(&self) -> impl Iterator<Item = Type> {
+    pub fn iter_types(&self) -> impl Iterator<Item = Type<'_>> {
         self.id_to_entry.values().map(move |type_entry| Type {
             type_space: self,
             type_entry,
@@ -1033,7 +1033,7 @@ impl Type<'_> {
     }
 
     /// Get details about the type.
-    pub fn details(&self) -> TypeDetails {
+    pub fn details(&self) -> TypeDetails<'_> {
         match &self.type_entry.details {
             // Named user-defined types
             TypeEntryDetails::Enum(details) => TypeDetails::Enum(TypeEnum { details }),
