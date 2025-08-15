@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.4.2\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.4.3\...HEAD[Full list of commits]
+
+== 0.4.3 (released 2025-08-15)
+
+https://github.com/oxidecomputer/typify/compare/v0.4.2\...v0.4.3[Full list of commits]
 
 * allow the map type to be specified by macro users (#835)
 * handle more flavors of the unsatisfiable schema (#842 and #869)
