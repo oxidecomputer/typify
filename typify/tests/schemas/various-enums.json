@@ -168,6 +168,9 @@
     "NeverEver": {
       "not": true
     },
+    "NeverEverForever": {
+      "not": {}
+    },
     "AnyOfNothing": {
       "enum": []
     },

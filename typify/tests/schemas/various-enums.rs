@@ -938,6 +938,33 @@ impl ::std::convert::From<&Self> for NeverEver {
         value.clone()
     }
 }
+#[doc = "`NeverEverForever`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "false"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(deny_unknown_fields)]
+pub enum NeverEverForever {}
+impl ::std::convert::From<&Self> for NeverEverForever {
+    fn from(value: &NeverEverForever) -> Self {
+        value.clone()
+    }
+}
 #[doc = "`NullStringEnumWithUnknownFormat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
