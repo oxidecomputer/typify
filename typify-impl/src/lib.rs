@@ -263,9 +263,31 @@ impl std::fmt::Display for MapType {
     }
 }
 
+impl<'de> serde::Deserialize<'de> for MapType {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Ok(Self::new(s))
+    }
+}
+
+impl From<String> for MapType {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
+
 impl From<&str> for MapType {
     fn from(s: &str) -> Self {
         Self::new(s)
+    }
+}
+
+impl From<syn::Type> for MapType {
+    fn from(t: syn::Type) -> Self {
+        Self(t)
     }
 }
 
