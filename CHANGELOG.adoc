@@ -15,6 +15,10 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.4.2\...HEAD[Full list of commits]
 
+* allow the map type to be specified by macro users (#835)
+* handle more flavors of the unsatisfiable schema (#842 and #869)
+* avoid warnings with Rust 1.89 lifetime checks (#827)
+
 == 0.4.2 (released 2025-05-27)
 
 https://github.com/oxidecomputer/typify/compare/v0.4.1\...v0.4.2[Full list of commits]
