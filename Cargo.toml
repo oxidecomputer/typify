@@ -28,7 +28,7 @@ ipnetwork = { version = "0.21.1", features = ["schemars"] }
 log = "0.4.27"
 newline-converter = "0.3.0"
 paste = "1.0.15"
-prettyplease = "0.2.36"
+prettyplease = "0.2.37"
 proc-macro2 = "1.0.101"
 quote = "1.0.40"
 regress = "0.10.4"
