@@ -8,7 +8,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    bundler::{Bundle, Context, Document, DocumentId, Error, Resolved},
+    bundler::{Bundle, Context, Document, DocumentId, Error, Resolved, SchemaKind},
     schema::util::{ObjectOrBool, WorkQueue},
     schemalet::{self, SchemaletValueString},
 };
@@ -326,14 +326,19 @@ impl Schema {
             }
         }
     }
-
-    pub(crate) fn make_document(value: serde_json::Value) -> Result<Document, Error> {
-        let doc = Schema::deserialize(&value).map_err(|_| Error)?;
+}
+impl SchemaKind for Schema {
+    fn make_document(value: serde_json::Value) -> Result<Document, Error> {
+        let doc = Schema::deserialize(&value)
+            .map_err(|e| Error::deserialization_error("unknown", &e.to_string()))?;
 
         // TODO what to do if there's no $id?
-        let id = doc.id.clone().unwrap();
+        let id = doc
+            .id
+            .clone()
+            .unwrap_or_else(|| "http://localhost/".to_string());
         // TODO ditto the schema value
-        let schema = doc.schema.clone().unwrap();
+        let schema = doc.schema.clone().unwrap_or_default();
 
         let dyn_anchors = doc
             .iter_schema()
@@ -357,389 +362,21 @@ impl Schema {
 
     // TODO keeping this around; I'm killing the idea of a generic schema
     // 12/15/2024, but we'll probably bring it back.
-    pub(crate) fn to_generic(bundler: &Bundle, context: Context, value: &serde_json::Value) {
-        let schema = Schema::deserialize(value).unwrap();
-
-        // TODO
-        // I think the goal here was to convert relative references into
-        // absolute references. Presumably the idea is to deal with dynamic
-        // references as well.
-        for (path, schema) in schema.iter_schema() {
-            if let Some(reference) = &schema.r#ref {
-                let Resolved {
-                    context,
-                    value,
-                    schema,
-                } = bundler.resolve(&context, reference).unwrap();
-            }
-        }
-    }
-
-    //     pub(crate) fn xxx_to_ir(
-    //         resolved: &Resolved<'_>,
-    //     ) -> anyhow::Result<Vec<(ir::SchemaRef, ir::Schema)>> {
-    //         let bootstrap_schema = SchemaOrBool::deserialize(resolved.value)?;
-
-    //         let mut work = vec![(
-    //             ir::SchemaRef::Where(resolved.context.location.to_string()),
-    //             &bootstrap_schema,
-    //         )];
-    //         let mut out = Vec::new();
-
-    //         while let Some((schema_ref, bootstrap_schema)) = work.pop() {
-    //             println!("got inner work");
-    //             println!(
-    //                 "{:#?} {}",
-    //                 schema_ref,
-    //                 serde_json::to_string_pretty(bootstrap_schema).unwrap()
-    //             );
-    //             match bootstrap_schema {
-    //                 ObjectOrBool::Bool(value) => {
-    //                     let ir = ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: if *value {
-    //                             ir::SchemaDetails::Anything
-    //                         } else {
-    //                             ir::SchemaDetails::Nothing
-    //                         },
-    //                     };
-
-    //                     out.push((schema_ref, ir));
-    //                 }
-
-    //                 ObjectOrBool::Object(schema) => {
-    //                     Self::xxx_to_ir_schema(resolved, schema.as_ref(), &mut work, &mut out)?;
-    //                 }
-    //             }
-    //         }
-
-    //         Ok(out)
-    //     }
-
-    //     fn xxx_to_ir_schema<'a>(
-    //         resolved: &Resolved<'_>,
-    //         schema: &'a Schema,
-    //         work: &mut Vec<(ir::SchemaRef, &'a SchemaOrBool)>,
-    //         out: &mut Vec<(ir::SchemaRef, ir::Schema)>,
-    //     ) -> anyhow::Result<()> {
-    //         let mut parts = Vec::new();
-    //         match &schema.r#type {
-    //             Some(Type::Single(t)) => {
-    //                 let subparts = Self::xxx_to_ir_schema_for_type(resolved, schema, t, work, out)?;
-    //                 parts.push(subparts);
-    //             }
-    //             Some(Type::Array(ts)) => {
-    //                 // TODO this isn't right; I need to create an "exclusive one
-    //                 // of" in here somehow...
-    //                 let xxx = ts
-    //                     .iter()
-    //                     .map(|t| {
-    //                         let xxx = Self::xxx_to_ir_schema_for_type(resolved, schema, t, work, out)?;
-    //                         let key = xxx.0.clone();
-    //                         out.push(xxx);
-    //                         anyhow::Result::Ok(key)
-    //                     })
-    //                     .collect::<anyhow::Result<Vec<_>>>()?;
-    //                 let key =
-    //                     ir::SchemaRef::Partial(resolved.context.location.to_string(), "type array");
-    //                 parts.push((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::ExclusiveOneOf(xxx),
-    //                     },
-    //                 ))
-    //             }
-    //             None => {
-    //                 // todo!()
-    //                 // TODO Any type is fine. if *some* type-specific values are
-    //                 // set... we'll need to figure something out...
-    //             }
-    //         }
-
-    //         if let Some(ref_target) = &schema.r#ref {
-    //             let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "$ref");
-    //             parts.push((
-    //                 key,
-    //                 ir::Schema {
-    //                     metadata: Default::default(),
-    //                     details: ir::SchemaDetails::DollarRef(ref_target.clone()),
-    //                 },
-    //             ));
-    //         }
-
-    //         if let Some(dyn_tag) = &schema.dynamic_ref {
-    //             let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "$dynamicRef");
-    //             parts.push((
-    //                 key,
-    //                 ir::Schema {
-    //                     metadata: Default::default(),
-    //                     details: ir::SchemaDetails::DynamicRef(dyn_tag.clone()),
-    //                 },
-    //             ));
-    //         }
-
-    //         if let Some(all_of) = &schema.all_of {
-    //             let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "allOf");
-    //             let list = subschema_list("allOf", all_of, work, resolved);
-    //             parts.push((
-    //                 key,
-    //                 ir::Schema {
-    //                     metadata: Default::default(),
-    //                     details: ir::SchemaDetails::AllOf(list),
-    //                 },
-    //             ));
-    //         }
-
-    //         if let Some(any_of) = &schema.any_of {
-    //             let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "allOf");
-    //             let list = subschema_list("anyOf", any_of, work, resolved);
-    //             parts.push((
-    //                 key,
-    //                 ir::Schema {
-    //                     metadata: Default::default(),
-    //                     details: ir::SchemaDetails::AnyOf(list),
-    //                 },
-    //             ));
-    //         }
-
-    //         if let Some(enum_values) = &schema.r#enum {
-    //             let xxx = enum_values
-    //                 .iter()
-    //                 .enumerate()
-    //                 .map(|(index, value)| {
-    //                     let key = ir::SchemaRef::Where(format!(
-    //                         "{}/enum/{}",
-    //                         resolved.context.location, index
-    //                     ));
-    //                     out.push((
-    //                         key.clone(),
-    //                         ir::Schema {
-    //                             metadata: Default::default(),
-    //                             details: ir::SchemaDetails::Constant(value.clone()),
-    //                         },
-    //                     ));
-
-    //                     key
-    //                 })
-    //                 .collect();
-    //             let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "enum");
-    //             parts.push((
-    //                 key,
-    //                 ir::Schema {
-    //                     metadata: Default::default(),
-    //                     details: ir::SchemaDetails::ExclusiveOneOf(xxx),
-    //                 },
-    //             ))
-    //         }
-
-    //         println!("{:#?}", parts);
-
-    //         let key = ir::SchemaRef::Where(resolved.context.location.to_string());
-
-    //         assert_ne!(parts.len(), 0);
-    //         let ir = if parts.len() == 1 {
-    //             parts.into_iter().next().unwrap().1
-    //         } else {
-    //             let ir = ir::Schema {
-    //                 metadata: Default::default(),
-    //                 details: ir::SchemaDetails::AllOf(
-    //                     parts
-    //                         .iter()
-    //                         .map(|(schema_ref, _)| schema_ref.clone())
-    //                         .collect(),
-    //                 ),
-    //             };
-    //             out.extend(parts);
-    //             ir
-    //         };
-
-    //         out.push((key, ir));
-
-    //         Ok(())
-    //     }
-
-    //     fn xxx_to_ir_schema_for_type<'a>(
-    //         resolved: &Resolved<'_>,
-    //         schema: &'a Schema,
-    //         t: &SimpleType,
-    //         work: &mut Vec<(ir::SchemaRef, &'a SchemaOrBool)>,
-    //         out: &mut Vec<(ir::SchemaRef, ir::Schema)>,
-    //     ) -> anyhow::Result<(ir::SchemaRef, ir::Schema)> {
-    //         println!("t = {:#?}", t);
-    //         match t {
-    //             SimpleType::Array => {
-    //                 let items = schema.items.as_ref().map(|it_schema| {
-    //                     let key = ir::SchemaRef::Where(format!("{}#/items", resolved.context.location));
-    //                     work.push((key.clone(), it_schema));
-    //                     key
-    //                 });
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "array");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::Array(
-    //                             ir::SchemaDetailsArray {
-    //                                 items,
-    //                                 min_items: schema.min_items,
-    //                                 unique_items: schema.unique_items.unwrap_or(false),
-    //                             },
-    //                         )),
-    //                     },
-    //                 ))
-    //             }
-    //             SimpleType::Boolean => {
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "boolean");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::Boolean),
-    //                     },
-    //                 ))
-    //             }
-    //             SimpleType::Integer => {
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "integer");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::Integer),
-    //                     },
-    //                 ))
-    //             }
-    //             SimpleType::Null => todo!(),
-    //             SimpleType::Number => {
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "number");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::Number),
-    //                     },
-    //                 ))
-    //             }
-    //             SimpleType::Object => {
-    //                 let properties = schema
-    //                     .properties
-    //                     .iter()
-    //                     .map(|(prop_name, prop_schema)| {
-    //                         let key = ir::SchemaRef::Where(format!(
-    //                             "{}#/properties/{}",
-    //                             resolved.context.location, prop_name
-    //                         ));
-    //                         work.push((key.clone(), prop_schema));
-    //                         (prop_name.clone(), key)
-    //                     })
-    //                     .collect();
-    //                 let additional_properties =
-
-    //                     schema.additional_properties.as_ref().map(|ap_schema| {
-    //                         let key = ir::SchemaRef::Where(format!(
-    //                             "{}#/additionalProperties",
-    //                             resolved.context.location
-    //                         ));
-    //                         work.push((key.clone(), ap_schema));
-    //                         key
-    //                     });
-    //                 // Required not required for bootstrapping.
-    //                 let required = Default::default();
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "object");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::Object(
-    //                             ir::SchemaDetailsObject {
-    //                                 properties,
-    //                                 additional_properties,
-    //                                 required,
-    //                             },
-    //                         )),
-    //                     },
-    //                 ))
-    //             }
-    //             SimpleType::String => {
-    //                 let key = ir::SchemaRef::Partial(resolved.context.location.to_string(), "string");
-    //                 Ok((
-    //                     key,
-    //                     ir::Schema {
-    //                         metadata: Default::default(),
-    //                         details: ir::SchemaDetails::Value(ir::SchemaDetailsValue::String),
-    //                     },
-    //                 ))
-    //             }
-    //         }
-    //     }
-
-    // pub(crate) fn xxx_to_ir_schema(resolved: &Resolve<'_>, schema: &Schema, work: &mut Vec<&Resolved<'_>>, out: &mut
-
-    // pub(crate) fn to_ir(value: &serde_json::Value) -> ir::Schema {
+    // pub(crate) fn to_generic(bundler: &Bundle, context: Context, value: &serde_json::Value) {
     //     let schema = Schema::deserialize(value).unwrap();
-    //     schema.convert()
-    // }
 
-    // fn convert(self) -> ir::Schema {
-    //     let Schema {
-    //         schema: _,
-    //         id,
-    //         dynamic_anchor,
-    //         dynamic_ref,
-    //         r#ref,
-    //         vocabulary: _,
-    //         comment,
-    //         defs: _,
-    //         title,
-    //         r#type,
-    //         properties,
-    //         all_of,
-    //         any_of,
-    //         items,
-    //         min_items,
-    //         pattern,
-    //         format,
-    //         additional_properties,
-    //         deprecated,
-    //         default,
-    //         property_names,
-    //         minimum,
-    //         exclusive_minimum,
-    //         r#enum,
-    //         unique_items,
-    //     } = self;
-
-    //     ir::Schema {
-    //         metadata: ir::SchemaMetadata {
-    //             id,
-    //             title,
-    //             comment,
-    //             default,
-    //         },
-    //         details: ir::SchemaDetails::Any {
-    //             dynamic_anchor,
-    //             dynamic_ref,
-    //             r#ref,
-    //             r#type: r#type.map(Type::convert),
-    //             properties: properties
-    //                 .into_iter()
-    //                 .map(|(key, schema)| (key, schema.convert()))
-    //                 .collect(),
-    //             all_of: all_of.map(|v| v.0.into_iter().map(SchemaOrBool::convert).collect()),
-    //             any_of: any_of.map(|v| v.0.into_iter().map(SchemaOrBool::convert).collect()),
-    //             one_of: None,
-    //             items: items.map(SchemaOrBool::convert),
-    //             min_items,
-    //             pattern,
-    //             format,
-    //             additional_properties: additional_properties.map(SchemaOrBool::convert),
-    //             deprecated,
-    //             property_names: property_names.map(SchemaOrBool::convert),
-    //             minimum,
-    //             exclusive_minimum,
-    //             r#enum,
-    //             unique_items,
-    //         },
+    //     // TODO
+    //     // I think the goal here was to convert relative references into
+    //     // absolute references. Presumably the idea is to deal with dynamic
+    //     // references as well.
+    //     for (path, schema) in schema.iter_schema() {
+    //         if let Some(reference) = &schema.r#ref {
+    //             let Resolved {
+    //                 context,
+    //                 value,
+    //                 schema,
+    //             } = bundler.resolve(&context, reference).unwrap();
+    //         }
     //     }
     // }
 }

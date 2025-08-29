@@ -35,19 +35,19 @@ pub enum SchemaRoot {
         #[serde(rename = "$dynamicAnchor", skip_serializing_if = "Option::is_none")]
         dynamic_anchor: Option<String>,
         #[serde(rename = "$dynamicRef", skip_serializing_if = "Option::is_none")]
-        dynamic_ref: Option<String>,
+        dynamic_ref: Option<::url::Url>,
         #[serde(rename = "$id", skip_serializing_if = "Option::is_none")]
-        id: Option<String>,
+        id: Option<::url::Url>,
         #[serde(rename = "$recursiveAnchor", skip_serializing_if = "Option::is_none")]
         recursive_anchor: Option<String>,
         #[serde(rename = "$recursiveRef", skip_serializing_if = "Option::is_none")]
-        recursive_ref: Option<String>,
+        recursive_ref: Option<::url::Url>,
         #[serde(rename = "$ref", skip_serializing_if = "Option::is_none")]
-        ref_: Option<String>,
+        ref_: Option<::url::Url>,
         #[serde(rename = "$schema", skip_serializing_if = "Option::is_none")]
-        schema: Option<String>,
+        schema: Option<::url::Url>,
         #[serde(rename = "$vocabulary", skip_serializing_if = "Option::is_none")]
-        vocabulary: Option<::std::collections::BTreeMap<String, bool>>,
+        vocabulary: Option<::std::collections::BTreeMap<::url::Url, bool>>,
         #[serde(
             rename = "additionalProperties",
             skip_serializing_if = "Option::is_none"

@@ -17,12 +17,13 @@ fn test_schemas() -> anyhow::Result<()> {
         let entry = entry?; // Handle potential I/O errors per entry
         let path = entry.path();
         let file_name = path.file_name().unwrap().to_string_lossy();
+        println!("{file_name}");
 
         let file_type = entry.file_type()?;
         let result = if file_type.is_file() {
             // Right now we expect only JSON; that might change in the future
             // to permit YML.
-            assert!(path.ends_with(".json"));
+            assert!(file_name.ends_with(".json"), "{}", path.display());
             test_schemas_json(&path)
         } else if file_type.is_dir() {
             test_schemas_directory(&path)
@@ -52,7 +53,16 @@ fn test_schemas() -> anyhow::Result<()> {
 }
 
 fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
-    todo!();
+    let mut bundle = Bundle::default();
+    let root_content = std::fs::read_to_string(path)?;
+    let context = bundle.add_content(root_content).expect("invalid content");
+    let mut typify = Typify::new_with_bundle(bundle);
+    let _type_id = typify
+        .add_type_by_id(&context.location.to_string())
+        .unwrap();
+
+    validate_output(path, TypespaceSettings::default(), typify);
+
     Ok(())
 }
 
@@ -150,9 +160,15 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         .add_type_by_id(&context.location.to_string())
         .unwrap();
 
+    validate_output(path, test_json.settings, typify);
+
+    Ok(())
+}
+
+fn validate_output(path: &PathBuf, settings: TypespaceSettings, typify: Typify) {
     let canonical_out = typify.canonical_output();
 
-    let typespace = typify.into_typespace(test_json.settings);
+    let typespace = typify.into_typespace(settings);
 
     let tokens = typespace.render();
 
@@ -191,8 +207,6 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
 
     expectorate::assert_contents(canonical_path, &canonical_out);
     expectorate::assert_contents(rust_path, &out);
-
-    Ok(())
 }
 
 fn confirm_id(path: PathBuf, id: &Url) -> anyhow::Result<()> {

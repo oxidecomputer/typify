@@ -20,6 +20,7 @@ use crate::schema::bootstrap;
 use url::Url;
 
 mod loader;
+mod schemas;
 
 pub use loader::*;
 
@@ -147,13 +148,31 @@ pub struct Document {
 }
 
 #[derive(Debug, Clone)]
-pub struct Error;
+pub struct Error(pub String);
+
+impl Error {
+    fn missing_schema(id: &str) -> Self {
+        Self(format!("Document {id} is missing a schema."))
+    }
+
+    fn unknown_schema(id: &str, schema: &str) -> Self {
+        Self(format!("Document {id} has an unknown schema: {schema}."))
+    }
+
+    pub fn deserialization_error(id: &str, message: &str) -> Self {
+        Self(format!("Document {id} failed to deserialize: {message}"))
+    }
+}
 
 #[derive(Debug)]
 pub struct Resolved<'a> {
     pub context: Context,
     pub value: &'a serde_json::Value,
     pub schema: &'a str,
+}
+
+pub trait SchemaKind {
+    fn make_document(value: serde_json::Value) -> Result<Document, Error>;
 }
 
 impl Bundle {
@@ -169,7 +188,8 @@ impl Bundle {
     /// Add explicit content (i.e. with no file lookup or web download).
     pub fn add_content(&mut self, content: impl AsRef<str>) -> Result<Context, Error> {
         // Turn the text into a JSON blob
-        let value: serde_json::Value = serde_json::from_str(content.as_ref()).map_err(|_| Error)?;
+        let value: serde_json::Value = serde_json::from_str(content.as_ref())
+            .map_err(|e| Error::deserialization_error("unknown", &e.to_string()))?;
 
         // Figure out the schema
         let schema = value.get("$schema");
@@ -179,12 +199,12 @@ impl Bundle {
             // sort of fallback position. We'll want some settings that let us
             // say things like "ignore $schema and use this" or "if there's no
             // schema, try whatever" or "if there's no schema only use this"
-            None => todo!(),
+            None => Err(Error::missing_schema("unknown"))?,
 
             Some("https://json-schema.org/draft/2020-12/schema") => {
                 bootstrap::Schema::make_document(value)
             }
-            _ => todo!(),
+            other => Err(Error::unknown_schema("unknown", other.unwrap_or("unknown")))?,
         }?;
 
         let context = Context {
@@ -356,14 +376,14 @@ impl Context {
     }
 }
 
-pub fn to_generic(bundle: &Bundle, context: Context, value: &serde_json::Value, schema: &str) {
-    match schema {
-        "https://json-schema.org/draft/2020-12/schema" => {
-            bootstrap::Schema::to_generic(bundle, context, value);
-        }
-        _ => todo!(),
-    }
-}
+// pub fn to_generic(bundle: &Bundle, context: Context, value: &serde_json::Value, schema: &str) {
+//     match schema {
+//         "https://json-schema.org/draft/2020-12/schema" => {
+//             bootstrap::Schema::to_generic(bundle, context, value);
+//         }
+//         _ => todo!(),
+//     }
+// }
 
 // TODO should this be fallible? Probably! What if it's a $schema I don't know?
 // What if the serde fails?
