@@ -81,13 +81,14 @@ pub enum NameBuilderHint {
 /// - `std::default::Default` -- XXX
 /// XXX
 ///
+/// - Eq, Cmp and anything else that's not implemented by floating-point types.
+///
 /// Null vs Optional
 ///
 /// Most of the time we want to do what serde does and not distinguish between
 /// these, but some users may want to be able to adjust this both globally and
-/// on a per-type basis...
+/// on a per-type basis... [8/29/2025: done]
 #[derive(Default, Deserialize)]
-#[allow(dead_code)]
 pub struct TypespaceSettings {
     /// When true, (the default), types in the `std` crate are fully qualified.
     /// For example, the `Option` type is rendered as `::std::option::Option`.
@@ -96,6 +97,9 @@ pub struct TypespaceSettings {
     /// starting point for manually-edited code.
     #[serde(default)]
     std: TypespaceSettingsStd,
+
+    #[serde(default)]
+    optional_nullable: TypespaceSettingsOptionalNullable,
 }
 
 #[derive(Default, Deserialize)]
@@ -104,6 +108,38 @@ pub enum TypespaceSettingsStd {
     #[default]
     FullyQualified,
     Unqualified,
+}
+
+/// Specify the modeling of values that may be either 'null' or 'optional'
+/// (i.e. absent).
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum TypespaceSettingsOptionalNullable {
+    /// Model `null` and `optional` as equivalent using the
+    /// `std::option::Option<T>` type. Skip serialization of `None` values.
+    /// This is the default.
+    #[default]
+    ConflateAsAbsent,
+
+    /// Model `null` and `optional` as equivalent using the
+    /// `std::option::Option<T>` type. `None` values are serialized as `null`.
+    ConflateAsNull,
+
+    /// Use a "double `Option`" of the form
+    /// `std::option::Option<std::option::Option<T>>`. A `None` indicates that
+    /// the value is absent; `Some(None)` indicates that the value is present
+    /// and null; and `Some(Some(_))` indicates that the value is present
+    /// and non-null.
+    DoubleOption,
+
+    /// Use a custom type `Opt` where `Opt: std::default::Default +
+    /// serde::Deserialize + serde::Serialize`. The `Default` implementation
+    /// specifies the value of a field when absent; the `Deserialize`
+    /// implementation produces a value otherwise (null or a non-null value of
+    /// T). In addition, `Opt` must implement `is_absent(&self) -> bool` which
+    /// is used with the serde `skip_serializing_if` attribute to omit the
+    /// field.
+    CustomType(String),
 }
 
 pub struct Typespace {
@@ -165,7 +201,7 @@ impl Typespace {
                         VariantDetails::Struct(properties) => {
                             let properties = properties
                                 .iter()
-                                .map(|struct_prop| self.render_struct_property(struct_prop));
+                                .map(|struct_prop| self.render_struct_property(struct_prop, false));
                             quote! {
                                 {
                                     #( #properties, )*
@@ -195,8 +231,29 @@ impl Typespace {
                 }
             }
             Type::Struct(type_struct) => {
-                println!("{:#?}", type_struct);
-                todo!()
+                let TypeStruct {
+                    name: _,
+                    description,
+                    default,
+                    properties,
+                    deny_unknown_fields,
+                    built,
+                } = type_struct;
+                let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+                let properties = properties
+                    .iter()
+                    .map(|prop| self.render_struct_property(prop, true));
+
+                let name = built.as_ref().unwrap().name.to_string();
+                let name_ident = format_ident!("{name}");
+
+                quote! {
+                    #description
+                    #[derive(::serde::Deserialize, ::serde::Serialize)]
+                    pub struct #name_ident {
+                        #( #properties, )*
+                    }
+                }
             }
             _ => quote! {},
         });
@@ -220,7 +277,16 @@ impl Typespace {
             Type::Native(native_type) => syn::parse_str::<syn::Type>(native_type)
                 .unwrap()
                 .into_token_stream(),
-            // Type::Option(_) => todo!(),
+            Type::Option(option_id) => {
+                let option_type = match &self.settings.std {
+                    TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
+                    TypespaceSettingsStd::Unqualified => quote! { Option },
+                };
+                let option_ident = self.render_ident(option_id);
+                quote! {
+                    #option_type<#option_ident>
+                }
+            }
             Type::Box(boxed_id) => {
                 let box_type = match &self.settings.std {
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::boxed::Box },
@@ -274,6 +340,7 @@ impl Typespace {
             description,
             type_id,
         }: &StructProperty,
+        vis_pub: bool,
     ) -> TokenStream {
         let description = description.as_ref().map(|text| {
             quote! {
@@ -297,30 +364,115 @@ impl Typespace {
             }
         };
 
+        let ty = self.types.get(type_id).unwrap();
+        let maybe_option_type = if let Type::Option(id) = ty {
+            Some(id)
+        } else {
+            None
+        };
+
         let ty_ident = self.render_ident(type_id);
 
-        let ty_ident = match state {
-            StructPropertyState::Required => ty_ident,
-            StructPropertyState::Optional => {
-                let opt_type = match &self.settings.std {
-                    TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
-                    TypespaceSettingsStd::Unqualified => quote! { Option },
-                };
-                let opt_is_none = format!("{opt_type}::is_none");
-                serde_options.push(quote! { skip_serializing_if = #opt_is_none });
+        let std_opt_type = match &self.settings.std {
+            TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
+            TypespaceSettingsStd::Unqualified => quote! { Option },
+        };
+        let std_opt_is_none = format!("{std_opt_type}::is_none");
 
-                // TODO 7/10/2025
-                // This is interesting and may present an opportunity for
-                // customization. Say the type itself is an Option (e.g.
-                // because there's a oneOf[null, object]). In this case we've
-                // traditionally compressed this down to a single Option, but
-                // we could potentially model this as some other type.
+        let ty_ident = match (state, maybe_option_type) {
+            (StructPropertyState::Required, None) => ty_ident,
+            (StructPropertyState::Required, Some(_)) => {
+                let opt_deserialize = format!("{std_opt_type}::deserialize");
+                // TODO schemars schema_with?
+                serde_options.push(quote! { deserialize_with = #opt_deserialize });
+                ty_ident
+            }
+            (StructPropertyState::Optional, None) => {
+                serde_options.push(quote! { default });
+                // TODO 8/29/2025
+                // We need this custom deserializer somewhere...
+                serde_options.push(quote! { deserialize_with = "::tbd_crate::deserialize_some"});
+                serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+                // TODO schemars schema_with
 
                 quote! {
-                    #opt_type<#ty_ident>
+                    #std_opt_type<#ty_ident>
                 }
             }
-            StructPropertyState::Default(json_value) => todo!(),
+            (StructPropertyState::Optional, Some(inner_id)) => {
+                match &self.settings.optional_nullable {
+                    TypespaceSettingsOptionalNullable::ConflateAsAbsent => {
+                        serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+                        ty_ident
+                    }
+                    TypespaceSettingsOptionalNullable::ConflateAsNull => {
+                        // We always serialize--including `None` as `null`--so no
+                        // serde options are necessary.
+                        ty_ident
+                    }
+                    TypespaceSettingsOptionalNullable::DoubleOption => {
+                        serde_options.push(quote! { default });
+                        serde_options
+                            .push(quote! { deserialize_with = "::tbd_crate::deserialize_some" });
+                        serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+
+                        quote! {
+                            #std_opt_type<#ty_ident>
+                        }
+                    }
+                    TypespaceSettingsOptionalNullable::CustomType(custom_type_name) => {
+                        let custom_type_path =
+                            syn::parse_str::<syn::TypePath>(custom_type_name).unwrap();
+                        serde_options.push(quote! { default });
+                        let custom_is_absent = format!("{}::is_absent", custom_type_name);
+                        serde_options.push(quote! { skip_serializing_if = #custom_is_absent });
+
+                        let inner_ident = self.render_ident(inner_id);
+
+                        quote! {
+                            #custom_type_path<#inner_ident>
+                        }
+                    }
+                }
+            }
+            (StructPropertyState::Default, _) => {
+                serde_options.push(quote! { default });
+                match ty {
+                    Type::Enum(type_enum) => todo!(),
+                    Type::Struct(type_struct) => todo!(),
+                    Type::Native(_) => todo!(),
+                    Type::Option(schema_ref) => {
+                        // This case is basically meaningless, but it's also
+                        // fine. Note that #[serde(default)] is a no-op for
+                        // Option<T>.
+                        serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+                    }
+                    Type::Box(schema_ref) => todo!(),
+
+                    Type::Vec(_) | Type::Map(_, _) | Type::Set(_) | Type::String => {
+                        let is_empty = format!("{ty_ident}::is_empty");
+                        serde_options.push(quote! { skip_serializing_if = #is_empty });
+                    }
+
+                    Type::Array(schema_ref, _) => todo!(),
+                    Type::Tuple(schema_refs) => todo!(),
+                    Type::Unit => {
+                        // This is a weird one
+                        todo!()
+                    }
+                    Type::Boolean => todo!(),
+                    Type::Integer(_) => todo!(),
+                    Type::Float(_) => todo!(),
+                    Type::JsonValue => todo!(),
+                }
+                ty_ident
+            }
+            (StructPropertyState::DefaultValue(json_value), _) => {
+                // XXX
+                // - make a function that produces the value
+                serde_options.push(quote! { default = "xxx" });
+                ty_ident
+            }
         };
 
         let serde = (!serde_options.is_empty()).then(|| {
@@ -330,11 +482,12 @@ impl Typespace {
                 )]
             }
         });
+        let vis_pub = vis_pub.then(|| quote! { pub });
 
         quote! {
             #description
             #serde
-            #rust_name: #ty_ident
+            #vis_pub #rust_name: #ty_ident
         }
     }
 }
@@ -469,7 +622,30 @@ impl TypespaceBuilder {
                     };
                     type_enum.built = Some(TypeEnumBuilt { name });
                 }
-                Type::Struct(type_struct) => todo!(),
+                Type::Struct(type_struct) => {
+                    let name = match &type_struct.name {
+                        NameBuilder::Unset => unreachable!(),
+                        NameBuilder::Fixed(s) => {
+                            let nn = namespace.make_name(id.clone());
+                            nn.set_name(s);
+                            nn
+                        }
+                        NameBuilder::Hints(hints) => {
+                            let nn = namespace.make_name(id.clone());
+
+                            for hint in hints {
+                                match hint {
+                                    NameBuilderHint::Title(_) => todo!(),
+                                    NameBuilderHint::Parent(id, s) => {
+                                        nn.derive_name(id, s);
+                                    }
+                                }
+                            }
+                            nn
+                        }
+                    };
+                    type_struct.built = Some(TypeStructBuilt { name });
+                }
                 _ => {}
             }
 
@@ -703,7 +879,7 @@ impl Type {
             Type::Enum(type_enum) => type_enum.children_with_context(),
             Type::Struct(type_struct) => type_struct.children_with_context(),
             Type::Native(_) => Vec::new(),
-            Type::Option(_) => todo!(),
+            Type::Option(id) => vec![(id.clone(), "".to_string())],
             Type::Box(_) => todo!(),
             Type::Vec(id) => vec![(id.clone(), "item".to_string())],
             Type::Map(key_id, value_id) => vec![
@@ -745,8 +921,11 @@ impl Type {
                 }
                 out
             }
-            Type::Struct(TypeStruct { properties, .. }) => todo!(),
-            Type::Option(_) => todo!(),
+            Type::Struct(TypeStruct { properties, .. }) => properties
+                .iter_mut()
+                .map(|prop| &mut prop.type_id)
+                .collect(),
+            Type::Option(id) => vec![id],
             Type::Array(_, _) => todo!(),
             Type::Tuple(items) => todo!(),
 
@@ -764,5 +943,163 @@ impl Type {
             | Type::String
             | Type::JsonValue => Default::default(),
         }
+    }
+}
+
+// TODO 8/29/2025
+// These are integration tests; maybe they need to live elsewhere. Better
+// written than not.
+#[cfg(test)]
+mod tests {
+    use quote::format_ident;
+    use syn::parse_quote;
+
+    use crate::{
+        schemalet::SchemaRef,
+        typespace::{
+            JsonValue, NameBuilder, StructProperty, StructPropertySerde, StructPropertyState, Type,
+            TypeStruct, TypespaceBuilder, TypespaceSettings, TypespaceSettingsStd,
+        },
+    };
+
+    #[test]
+    fn test_struct_field_serde() {
+        let tests = [
+            (
+                "Conflated",
+                TypespaceSettings {
+                    std: TypespaceSettingsStd::Unqualified,
+                    optional_nullable:
+                        crate::typespace::TypespaceSettingsOptionalNullable::ConflateAsAbsent,
+                    ..Default::default()
+                },
+            ),
+            (
+                "ConflatedAsNull",
+                TypespaceSettings {
+                    std: TypespaceSettingsStd::Unqualified,
+                    optional_nullable:
+                        crate::typespace::TypespaceSettingsOptionalNullable::ConflateAsNull,
+                    ..Default::default()
+                },
+            ),
+            (
+                "DoubleOption",
+                TypespaceSettings {
+                    std: TypespaceSettingsStd::Unqualified,
+                    optional_nullable:
+                        crate::typespace::TypespaceSettingsOptionalNullable::DoubleOption,
+                    ..Default::default()
+                },
+            ),
+            (
+                "CustomType",
+                TypespaceSettings {
+                    std: TypespaceSettingsStd::Unqualified,
+                    optional_nullable:
+                        crate::typespace::TypespaceSettingsOptionalNullable::CustomType(
+                            "OptionField".to_string(),
+                        ),
+                    ..Default::default()
+                },
+            ),
+        ];
+
+        // For each configuration we create a type with the following fields:
+        // - optional_string: A string that may be absent
+        // - required_option: Either a string or null, but must be present
+        // - optional_option: A string or null, or absent
+        // - default_string: A string with the intrinsic default (i.e. "")
+        // - default_option: A string or null with the intrinsic default (i.e. null)
+        // - peanut_string: A string with a custom default of "peanuts"
+        // - peanut_option: A string or null with a custom default of "peanuts"
+        let test_output = tests.into_iter().map(|(name, settings)| {
+            let mut ts = TypespaceBuilder::default();
+
+            let string_id = SchemaRef::Id("string type".to_string());
+            let ty = Type::String;
+            ts.insert(string_id.clone(), ty);
+
+            let option_id = SchemaRef::Id("option type".to_string());
+            let ty = Type::Option(string_id.clone());
+            ts.insert(option_id.clone(), ty);
+
+            let properties = vec![
+                StructProperty {
+                    rust_name: format_ident!("optional_string"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Optional,
+                    description: None,
+                    type_id: string_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("required_option"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Required,
+                    description: None,
+                    type_id: option_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("optional_option"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Optional,
+                    description: None,
+                    type_id: option_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("default_string"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Default,
+                    description: None,
+                    type_id: string_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("default_option"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Default,
+                    description: None,
+                    type_id: option_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("peanut_string"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::DefaultValue(JsonValue(serde_json::json!(
+                        "peanuts"
+                    ))),
+                    description: None,
+                    type_id: string_id.clone(),
+                },
+                StructProperty {
+                    rust_name: format_ident!("peanut_option"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::DefaultValue(JsonValue(serde_json::json!(
+                        "peanuts"
+                    ))),
+                    description: None,
+                    type_id: option_id.clone(),
+                },
+            ];
+
+            let ty = Type::Struct(TypeStruct::new(
+                NameBuilder::Fixed(name.to_string()),
+                None,
+                None,
+                properties,
+                false,
+            ));
+
+            ts.insert(SchemaRef::Id("X".to_string()), ty);
+
+            let ts = ts.finalize(settings).unwrap();
+
+            ts.render()
+        });
+
+        let file = parse_quote! {
+            #( #test_output )*
+        };
+        let out = prettyplease::unparse(&file);
+
+        expectorate::assert_contents("tests/output/test_struct_field_serde.rs", &out);
     }
 }

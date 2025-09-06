@@ -14,12 +14,12 @@ pub struct TypeStruct {
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
 
-    pub built: Option<TypeStructBuilt>,
+    pub(crate) built: Option<TypeStructBuilt>,
 }
 
 #[derive(Debug, Clone)]
-struct TypeStructBuilt {
-    name: Name<SchemaRef>,
+pub(crate) struct TypeStructBuilt {
+    pub name: Name<SchemaRef>,
 }
 
 impl TypeStruct {
@@ -92,9 +92,19 @@ pub enum StructPropertySerde {
     Flatten,
 }
 
+/// The volitionality of a struct property.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum StructPropertyState {
+    /// The field must be present.
     Required,
+    /// The field may be omitted.
     Optional,
-    Default(JsonValue),
+    /// The field may be omitted; if it is, its value comes from the type's
+    /// intrinsic default. For built-in types, serialization of the default
+    /// will be omitted.
+    Default,
+    /// The field may be omitted; if it is, its value comes from the provided
+    /// JSON value. Note that this applies only to deserialization;
+    /// serialization will always emit the field.
+    DefaultValue(JsonValue),
 }
