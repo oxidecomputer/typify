@@ -1761,17 +1761,11 @@ impl TypeEntry {
                     .get(value_id)
                     .expect("unresolved type id for map value");
 
-                if key_ty.details == TypeEntryDetails::String
-                    && value_ty.details == TypeEntryDetails::JsonValue
-                {
-                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
-                } else {
-                    let key_ident = key_ty.type_ident(type_space, type_mod);
-                    let value_ident = value_ty.type_ident(type_space, type_mod);
-                    let map_to_use = &map_to_use.0;
+                let key_ident = key_ty.type_ident(type_space, type_mod);
+                let value_ident = value_ty.type_ident(type_space, type_mod);
+                let map_to_use = &map_to_use.0;
 
-                    quote! { #map_to_use<#key_ident, #value_ident> }
-                }
+                quote! { #map_to_use<#key_ident, #value_ident> }
             }
 
             TypeEntryDetails::Set(id) => {
