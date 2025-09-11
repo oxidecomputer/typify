@@ -446,15 +446,15 @@ impl EmptyObject {
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct EmptyObjectProp(::serde_json::Map<::std::string::String, ::serde_json::Value>);
+pub struct EmptyObjectProp(::std::collections::HashMap<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for EmptyObjectProp {
-    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
+    type Target = ::std::collections::HashMap<::std::string::String, ::serde_json::Value>;
+    fn deref(&self) -> &::std::collections::HashMap<::std::string::String, ::serde_json::Value> {
         &self.0
     }
 }
 impl ::std::convert::From<EmptyObjectProp>
-    for ::serde_json::Map<::std::string::String, ::serde_json::Value>
+    for ::std::collections::HashMap<::std::string::String, ::serde_json::Value>
 {
     fn from(value: EmptyObjectProp) -> Self {
         value.0
@@ -465,12 +465,13 @@ impl ::std::convert::From<&EmptyObjectProp> for EmptyObjectProp {
         value.clone()
     }
 }
-impl ::std::convert::TryFrom<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+impl
+    ::std::convert::TryFrom<::std::collections::HashMap<::std::string::String, ::serde_json::Value>>
     for EmptyObjectProp
 {
     type Error = self::error::ConversionError;
     fn try_from(
-        value: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+        value: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
         if ![[].into_iter().collect()].contains(&value) {
             Err("invalid value".into())
@@ -484,7 +485,7 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
     where
         D: ::serde::Deserializer<'de>,
     {
-        Self::try_from(<::serde_json::Map<
+        Self::try_from(<::std::collections::HashMap<
             ::std::string::String,
             ::serde_json::Value,
         >>::deserialize(deserializer)?)

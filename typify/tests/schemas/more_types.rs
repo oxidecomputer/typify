@@ -147,7 +147,7 @@ impl ObjectWithStringExtra {
 pub struct ObjectWithWhichExtra {
     pub foo: ::std::string::String,
     #[serde(flatten)]
-    pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    pub extra: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
 }
 impl ::std::convert::From<&ObjectWithWhichExtra> for ObjectWithWhichExtra {
     fn from(value: &ObjectWithWhichExtra) -> Self {
@@ -328,7 +328,7 @@ pub mod builder {
     pub struct ObjectWithWhichExtra {
         foo: ::std::result::Result<::std::string::String, ::std::string::String>,
         extra: ::std::result::Result<
-            ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+            ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
             ::std::string::String,
         >,
     }
@@ -354,7 +354,7 @@ pub mod builder {
         pub fn extra<T>(mut self, value: T) -> Self
         where
             T: ::std::convert::TryInto<
-                ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+                ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
             >,
             T::Error: ::std::fmt::Display,
         {
