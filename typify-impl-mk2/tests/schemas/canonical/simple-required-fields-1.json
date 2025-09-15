@@ -1,0 +1,36 @@
+[
+  [
+    "http://localhost/#",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "foo": "http://localhost/#/properties/foo"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/properties/foo",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "internal@string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ]
+]

@@ -1,5 +1,6 @@
 [workspace]
 members = [
+	"json-serde",
 	"typify",
 	"typify-impl",
 	"typify-impl-mk2",
@@ -13,6 +14,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
+json-serde = { version = "0.1.0", path = "json-serde" }
 typify = { version = "0.10.0", path = "typify" }
 typify-impl = { version = "0.10.0", path = "typify-impl" }
 typify-impl-mk2 = { version = "0.10.0", path = "typify-impl-mk2" }

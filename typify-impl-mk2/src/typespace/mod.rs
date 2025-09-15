@@ -365,6 +365,12 @@ impl Typespace {
         };
 
         let ty = self.types.get(type_id).unwrap();
+
+        // If the type is itself an Option (i.e. may be null), let's save the
+        // alternative (i.e. non-null) type, which we may use i.e. if the field
+        // may be absent and the consumer has specified a custom type for that
+        // situation. In other cases, we need to know if the type is an Option--
+        // even if we don't need to know the identity of the inner type.
         let maybe_option_type = if let Type::Option(id) = ty {
             Some(id)
         } else {
@@ -389,9 +395,9 @@ impl Typespace {
             }
             (StructPropertyState::Optional, None) => {
                 serde_options.push(quote! { default });
-                // TODO 8/29/2025
-                // We need this custom deserializer somewhere...
-                serde_options.push(quote! { deserialize_with = "::tbd_crate::deserialize_some"});
+                serde_options.push(quote! {
+                    deserialize_with = "::json_serde::deserialize_some"
+                });
                 serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
                 // TODO schemars schema_with
 
@@ -406,15 +412,18 @@ impl Typespace {
                         ty_ident
                     }
                     TypespaceSettingsOptionalNullable::ConflateAsNull => {
-                        // We always serialize--including `None` as `null`--so no
-                        // serde options are necessary.
+                        // We always serialize--including `None` as `null`--so
+                        // no serde options are necessary.
                         ty_ident
                     }
                     TypespaceSettingsOptionalNullable::DoubleOption => {
                         serde_options.push(quote! { default });
-                        serde_options
-                            .push(quote! { deserialize_with = "::tbd_crate::deserialize_some" });
-                        serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+                        serde_options.push(quote! {
+                            deserialize_with = "::json_serde::deserialize_some"
+                        });
+                        serde_options.push(quote! {
+                            skip_serializing_if = #std_opt_is_none
+                        });
 
                         quote! {
                             #std_opt_type<#ty_ident>
@@ -966,7 +975,7 @@ mod tests {
     fn test_struct_field_serde() {
         let tests = [
             (
-                "Conflated",
+                "ConflatedAsAbsent",
                 TypespaceSettings {
                     std: TypespaceSettingsStd::Unqualified,
                     optional_nullable:

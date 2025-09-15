@@ -21,6 +21,7 @@ url = { workspace = true }
 
 [dev-dependencies]
 expectorate = { workspace = true }
+json-serde = { workspace = true }
 prettyplease = { workspace = true }
 schemars = { workspace = true, features = ["uuid1", "impl_json_schema"] }
 trybuild = { workspace = true }

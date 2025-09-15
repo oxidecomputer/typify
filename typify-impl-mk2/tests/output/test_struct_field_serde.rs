@@ -1,8 +1,8 @@
 #[derive(::serde::Deserialize, ::serde::Serialize)]
-pub struct Conflated {
+pub struct ConflatedAsAbsent {
     #[serde(
         default,
-        deserialize_with = "::tbd_crate::deserialize_some",
+        deserialize_with = "::json_serde::deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
     pub optional_string: Option<String>,
@@ -23,7 +23,7 @@ pub struct Conflated {
 pub struct ConflatedAsNull {
     #[serde(
         default,
-        deserialize_with = "::tbd_crate::deserialize_some",
+        deserialize_with = "::json_serde::deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
     pub optional_string: Option<String>,
@@ -43,7 +43,7 @@ pub struct ConflatedAsNull {
 pub struct DoubleOption {
     #[serde(
         default,
-        deserialize_with = "::tbd_crate::deserialize_some",
+        deserialize_with = "::json_serde::deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
     pub optional_string: Option<String>,
@@ -51,7 +51,7 @@ pub struct DoubleOption {
     pub required_option: Option<String>,
     #[serde(
         default,
-        deserialize_with = "::tbd_crate::deserialize_some",
+        deserialize_with = "::json_serde::deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
     pub optional_option: Option<Option<String>>,
@@ -68,7 +68,7 @@ pub struct DoubleOption {
 pub struct CustomType {
     #[serde(
         default,
-        deserialize_with = "::tbd_crate::deserialize_some",
+        deserialize_with = "::json_serde::deserialize_some",
         skip_serializing_if = "Option::is_none"
     )]
     pub optional_string: Option<String>,
