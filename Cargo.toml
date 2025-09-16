@@ -29,6 +29,7 @@ expectorate = "1.2.0"
 glob = "0.3.2"
 heck = "0.5.0"
 ipnetwork = { version = "0.21.1", features = ["schemars"] }
+jsonschema = "0.33.0"
 log = "0.4.27"
 newline-converter = "0.3.0"
 paste = "1.0.15"

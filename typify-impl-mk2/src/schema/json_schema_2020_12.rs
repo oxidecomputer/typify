@@ -321,3 +321,9 @@ pub(crate) fn to_schemalets(
 
     generic::to_schemalets(resolved, generic_schema)
 }
+
+mod generated {
+    include!("../../tests/schemas/rust/json-2020-12.rs");
+}
+
+pub use generated::SchemaRoot as GeneratedSchemaOrBool;

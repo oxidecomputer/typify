@@ -1,4 +1,3 @@
-//! Code generated from tests/schemas/input/json-2020-12
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub enum SimpleTypes {
     #[serde(rename = "array")]
@@ -230,14 +229,14 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        exclusive_maximum: Option<f64>,
+        exclusive_maximum: Option<serde_json::Number>,
         #[serde(
             rename = "exclusiveMinimum",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        exclusive_minimum: Option<f64>,
+        exclusive_minimum: Option<serde_json::Number>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -290,7 +289,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        maximum: Option<f64>,
+        maximum: Option<serde_json::Number>,
         #[serde(
             rename = "minContains",
             default,
@@ -324,14 +323,14 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        minimum: Option<f64>,
+        minimum: Option<serde_json::Number>,
         #[serde(
             rename = "multipleOf",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        multiple_of: Option<f64>,
+        multiple_of: Option<serde_json::Number>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",

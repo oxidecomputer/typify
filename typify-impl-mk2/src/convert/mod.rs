@@ -73,16 +73,18 @@ impl Converter {
         }
     }
 
-    pub fn convert(&self, id: &SchemaRef) -> Type {
+    pub fn convert(&self, id: &SchemaRef, original_json: Option<&serde_json::Value>) -> Type {
         let name = match self.known_names.get(id) {
             Some(s) => NameBuilder::Fixed(s.clone()),
             None => NameBuilder::Unset,
         };
 
         let schemalet = self.get(id);
+
         println!(
-            "converting {id} {}",
+            "converting {id} {} {}",
             serde_json::to_string_pretty(schemalet).unwrap(),
+            serde_json::to_string_pretty(&original_json).unwrap(),
         );
         let CanonicalSchemalet { metadata, details } = schemalet;
 
@@ -90,12 +92,14 @@ impl Converter {
             CanonicalSchemaletDetails::Anything => Type::JsonValue,
             CanonicalSchemaletDetails::Nothing => todo!(),
             CanonicalSchemaletDetails::Constant(_) => todo!(),
-            CanonicalSchemaletDetails::Reference(schema_ref) => self.convert(schema_ref),
+            CanonicalSchemaletDetails::Reference(schema_ref) => {
+                self.convert(schema_ref, original_json)
+            }
 
             // TODO 7/28/2025
             // This is probably wrong, but I'm not sure exactly how we're going
             // to use this Note thing.
-            CanonicalSchemaletDetails::Note(schema_ref) => self.convert(schema_ref),
+            CanonicalSchemaletDetails::Note(schema_ref) => self.convert(schema_ref, original_json),
 
             CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
                 self.convert_one_of(name, metadata, subschemas)

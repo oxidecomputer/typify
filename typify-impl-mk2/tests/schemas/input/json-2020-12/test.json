@@ -1,6 +1,33 @@
 {
   "settings": {
-    "std": "unqualified"
+    "typespace": {
+      "std": "unqualified"
+    },
+    "typify": {
+      "$comment": "override the default, ergonomic use of `f64` to represent numbers and instead use serde_json::Number which provides a mechanism for arbitrary precision",
+      "convert": [
+        {
+          "pattern": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "number"
+              },
+              "exclusiveMinimum": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "native": {
+            "name": "serde_json::Number"
+          }
+        }
+      ]
+    }
   },
   "root-schema": {
     "$id": "https://json-schema.org/draft/2020-12/schema",

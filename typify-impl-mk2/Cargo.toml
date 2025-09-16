@@ -9,6 +9,8 @@ anyhow = "1.0.98"
 prettyplease = { workspace = true }
 
 heck = { workspace = true }
+json-serde = { workspace = true }
+jsonschema = { workspace = true }
 log = { workspace = true }
 proc-macro2 = { workspace = true }
 quote = { workspace = true }
@@ -21,7 +23,6 @@ url = { workspace = true }
 
 [dev-dependencies]
 expectorate = { workspace = true }
-json-serde = { workspace = true }
 prettyplease = { workspace = true }
 schemars = { workspace = true, features = ["uuid1", "impl_json_schema"] }
 trybuild = { workspace = true }

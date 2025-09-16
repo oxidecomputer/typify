@@ -6,7 +6,7 @@ use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
     typespace::TypespaceSettings,
-    Typify,
+    Typify, TypifySettings,
 };
 use url::Url;
 
@@ -56,7 +56,7 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     let mut bundle = Bundle::default();
     let root_content = std::fs::read_to_string(path)?;
     let context = bundle.add_content(root_content).expect("invalid content");
-    let mut typify = Typify::new_with_bundle(bundle);
+    let mut typify = Typify::new_with_bundle(bundle, Default::default());
     let _type_id = typify
         .add_type_by_id(&context.location.to_string())
         .unwrap();
@@ -67,12 +67,22 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct TestJson {
     #[serde(default)]
-    settings: TypespaceSettings,
+    settings: TestJsonSettings,
     #[serde(rename = "root-schema")]
     root_schema: TestJsonEntry,
     files: Vec<TestJsonEntry>,
+}
+
+#[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields)]
+struct TestJsonSettings {
+    #[serde(default)]
+    typify: TypifySettings,
+    #[serde(default)]
+    typespace: TypespaceSettings,
 }
 
 #[derive(Deserialize)]
@@ -155,12 +165,12 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         )
     }
 
-    let mut typify = Typify::new_with_bundle(bundle);
+    let mut typify = Typify::new_with_bundle(bundle, test_json.settings.typify);
     let _type_id = typify
         .add_type_by_id(&context.location.to_string())
         .unwrap();
 
-    validate_output(path, test_json.settings, typify);
+    validate_output(path, test_json.settings.typespace, typify);
 
     Ok(())
 }
@@ -175,7 +185,7 @@ fn validate_output(path: &PathBuf, settings: TypespaceSettings, typify: Typify) 
     let doc_str = format!(" Code generated from {}", path.display());
 
     let file = parse_quote! {
-        #![doc = #doc_str]
+        // #![doc = #doc_str]
 
         #tokens
 

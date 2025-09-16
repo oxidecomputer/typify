@@ -27,6 +27,16 @@ pub enum NameBuilderHint {
     Parent(SchemaRef, String),
 }
 
+// TODO 9/15/2025
+// Placeholder type for non-generated types. We're going to want some mechanism
+// to specify the traits we care about so that users have to specify which ones
+// are implemented. I'm considering a struct of booleans so that things fail to
+// compile if we start to care about some new trait.
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct TypespaceNativeType {
+    pub name: String,
+}
+
 // 6/25/2025
 // I think I need a builder form e.g. of an enum or struct and then the
 // finalized form which probably is basically what typify shows today in its
@@ -828,6 +838,17 @@ pub enum Type {
     /// serde_json::Value which we also handle specially.
     JsonValue,
 }
+
+// 9.15.2025
+// Little bit of a random thought: "Native" is actually kind of a catch-all for
+// which things like boolean, integer, unit, etc. could apply. I think we'll
+// eventually want more of a builder interface to construct types and and then
+// a finished interface to inspect them. I could imagine--for example--
+// "native" being used for any non-constructed type (so anything except for
+// generated structs, generated enums, and compound types such as tuples and
+// arrays). Could these also have type parameters and therefore be inclusive of
+// maps and vecs? Maybe? Something to noodle on as we think about Typespace as
+// an interface.
 
 impl Type {
     fn add_name_hints(&mut self, hints: Vec<NameBuilderHint>) {

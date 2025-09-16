@@ -9,13 +9,39 @@ use crate::{
         to_schemalets, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, Schemalet,
         SchemaletDetails, SchemaletValue, SchemaletValueString, State,
     },
-    typespace::{Typespace, TypespaceBuilder, TypespaceSettings},
+    typespace::{Type, Typespace, TypespaceBuilder, TypespaceNativeType, TypespaceSettings},
 };
 
 pub struct Typify {
     bundle: Bundle,
     normalizer: Normalizer,
     typespace: TypespaceBuilder,
+    settings: TypifySettings,
+}
+
+#[derive(serde::Deserialize, Default)]
+pub struct TypifySettings {
+    convert: Vec<TypifyConvert>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct TypifyConvert {
+    /// JSON Schema that is evaluated for each schema being converted. If it
+    /// validates successfully, then the schema is converted into the given
+    /// type.
+    pattern: serde_json::Value,
+
+    native: TypespaceNativeType,
+}
+
+impl TypifySettings {
+    pub fn with_convert(
+        &mut self,
+        pattern: serde_json::Value,
+        type_name: impl ToString,
+    ) -> Result<Self> {
+        todo!()
+    }
 }
 
 struct Normalizer {
@@ -32,11 +58,12 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub struct TypeId(SchemaRef);
 
 impl Typify {
-    pub fn new_with_bundle(bundle: Bundle) -> Self {
+    pub fn new_with_bundle(bundle: Bundle, settings: TypifySettings) -> Self {
         Self {
             bundle,
             normalizer: Default::default(),
             typespace: Default::default(),
+            settings,
         }
     }
 
@@ -57,11 +84,13 @@ impl Typify {
         // structure to the conversion methods.
         let mut converter = Converter::new(self.normalizer.canonical.clone());
 
+        // TODO 9.15.2025
+        // This root schema name should be configurable.
         converter.set_name(typ_id.clone(), "SchemaRoot".to_string());
 
         let mut work = VecDeque::from([typ_id.clone()]);
 
-        while let Some(work_id) = work.pop_front() {
+        'outer: while let Some(work_id) = work.pop_front() {
             if self.typespace.contains_type(&work_id) {
                 continue;
             }
@@ -86,7 +115,38 @@ impl Typify {
                 }
             }
 
-            let typ = converter.convert(&work_id);
+            // Get the original JSON that defined this type.
+            // TODO 9.15.2025
+            // In the future we can add this as content that the Typespace
+            // may add to the doc comment for the type.
+            let maybe_original_json = match &work_id {
+                SchemaRef::Id(xxx) => Some(self.bundle.get_fully_qualified(xxx).unwrap()),
+                _ => None,
+            };
+
+            // TODO 9.15.2025
+            // This is approximately where I want to do JSON Schema validation
+            // of the original JSON against any items in the
+            // self.settings.convert array. If there's a match, we can skip the
+            // part where we do any converting and just slap in the type
+            // defined by the conversion setting.
+
+            println!(
+                "convert: {}",
+                serde_json::to_string_pretty(&self.settings.convert).unwrap(),
+            );
+
+            if let Some(original_json) = maybe_original_json {
+                let conv = for conv in &self.settings.convert {
+                    if jsonschema::is_valid(&conv.pattern, original_json) {
+                        let typ = Type::Native(conv.native.name.clone());
+                        self.typespace.insert(work_id.clone(), typ);
+                        continue 'outer;
+                    }
+                };
+            }
+
+            let typ = converter.convert(&work_id, maybe_original_json);
             let children = typ.children();
 
             if !children.is_empty() {

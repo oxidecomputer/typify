@@ -245,6 +245,22 @@ impl Bundle {
         DocumentId::from_url(ref_url)
     }
 
+    pub fn get_fully_qualified(&self, id: impl AsRef<str>) -> Result<&serde_json::Value, Error> {
+        let location = Url::parse(id.as_ref()).map_err(|e| Error(e.to_string()))?;
+
+        let (doc_id, fragment) = DocumentId::from_url(location);
+
+        assert!(fragment.starts_with('/') || fragment.is_empty());
+
+        let Some(doc) = self.documents.get(&doc_id) else {
+            return Err(Error(format!("document {doc_id} not found")));
+        };
+
+        doc.content
+            .pointer(&fragment)
+            .ok_or_else(|| Error(format!("{fragment} could not be resolved within {doc_id}")))
+    }
+
     /// Resolve a reference within the scope of the given context.
     pub fn resolve(
         &self,
