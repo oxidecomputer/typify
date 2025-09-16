@@ -84,7 +84,7 @@ impl ::std::convert::From<i64> for IntOrStr {
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(::serde_json::Map<::std::string::String, ::serde_json::Value>),
+    Object(::std::collections::HashMap<::std::string::String, ::serde_json::Value>),
     Array(::std::vec::Vec<::serde_json::Value>),
     String(::std::string::String),
     Integer(i64),
@@ -99,10 +99,12 @@ impl ::std::convert::From<bool> for OneOfSeveral {
         Self::Boolean(value)
     }
 }
-impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::serde_json::Value>>
     for OneOfSeveral
 {
-    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
+    fn from(
+        value: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
+    ) -> Self {
         Self::Object(value)
     }
 }

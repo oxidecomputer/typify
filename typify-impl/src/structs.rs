@@ -360,31 +360,14 @@ pub(crate) fn generate_serde_attr(
             serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
             DefaultFunction::Default
         }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
+        (StructPropertyState::Optional, TypeEntryDetails::Map(..)) => {
             serde_options.push(quote! { default });
 
             let map_to_use = &type_space.settings.map_type;
-            let key_ty = type_space
-                .id_to_entry
-                .get(key_id)
-                .expect("unresolved key type id for map");
-            let value_ty = type_space
-                .id_to_entry
-                .get(value_id)
-                .expect("unresolved value type id for map");
-
-            if key_ty.details == TypeEntryDetails::String
-                && value_ty.details == TypeEntryDetails::JsonValue
-            {
-                serde_options.push(quote! {
-                    skip_serializing_if = "::serde_json::Map::is_empty"
-                });
-            } else {
-                let is_empty = format!("{}::is_empty", map_to_use);
-                serde_options.push(quote! {
-                    skip_serializing_if = #is_empty
-                });
-            }
+            let is_empty = format!("{}::is_empty", map_to_use);
+            serde_options.push(quote! {
+                skip_serializing_if = #is_empty
+            });
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, _) => {
@@ -524,7 +507,7 @@ mod tests {
     #[derive(Serialize, JsonSchema, Schema)]
     struct SomeMaps {
         strings: ::std::collections::HashMap<String, String>,
-        things: ::serde_json::Map<String, ::serde_json::Value>,
+        things: ::std::collections::HashMap<String, ::serde_json::Value>,
     }
 
     #[test]
@@ -571,7 +554,7 @@ mod tests {
         let output = ty.type_name(&type_space).replace(" ", "");
         assert_eq!(
             output,
-            "::serde_json::Map<::std::string::String,::serde_json::Value>"
+            "::std::collections::HashMap<::std::string::String,::serde_json::Value>"
         );
     }
 }

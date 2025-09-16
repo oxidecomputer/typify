@@ -39,15 +39,15 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct DeadSimple(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
+pub struct DeadSimple(pub ::std::collections::HashMap<::std::string::String, ::serde_json::Value>);
 impl ::std::ops::Deref for DeadSimple {
-    type Target = ::serde_json::Map<::std::string::String, ::serde_json::Value>;
-    fn deref(&self) -> &::serde_json::Map<::std::string::String, ::serde_json::Value> {
+    type Target = ::std::collections::HashMap<::std::string::String, ::serde_json::Value>;
+    fn deref(&self) -> &::std::collections::HashMap<::std::string::String, ::serde_json::Value> {
         &self.0
     }
 }
 impl ::std::convert::From<DeadSimple>
-    for ::serde_json::Map<::std::string::String, ::serde_json::Value>
+    for ::std::collections::HashMap<::std::string::String, ::serde_json::Value>
 {
     fn from(value: DeadSimple) -> Self {
         value.0
@@ -58,10 +58,12 @@ impl ::std::convert::From<&DeadSimple> for DeadSimple {
         value.clone()
     }
 }
-impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::serde_json::Value>>
     for DeadSimple
 {
-    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
+    fn from(
+        value: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
+    ) -> Self {
         Self(value)
     }
 }

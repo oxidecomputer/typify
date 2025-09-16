@@ -74,7 +74,7 @@ use. E.g. `::std::collections::BTreeMap` or `::indexmap::IndexMap`.
 
 Note that for a custom map type to work you must have `T` defined to generate
 a struct as described in [Objects](#objects). If `T` is not defined, typify
-will generate code using a `serde_json::Map<String, serde_json::Value>` instead.
+will generate a map of `String` to `serde_json::Value` type instead.
 
 See the documentation for `TypeSpaceSettings::with_map_type` for the
 requirements for a map type.

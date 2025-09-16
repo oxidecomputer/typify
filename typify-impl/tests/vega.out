@@ -31480,8 +31480,11 @@ pub struct Everything {
     pub axes: ::std::vec::Vec<Axis>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub background: ::std::option::Option<Background>,
-    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
-    pub config: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
+    pub config: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub data: ::std::vec::Vec<Data>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -31514,8 +31517,11 @@ pub struct Everything {
     pub style: ::std::option::Option<Style>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<Title>,
-    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
-    pub usermeta: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
+    pub usermeta: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub width: ::std::option::Option<NumberOrSignal>,
 }
@@ -72005,8 +72011,11 @@ pub struct MarkGroup {
     pub transform: ::std::vec::Vec<TransformMark>,
     #[serde(rename = "type")]
     pub type_: MarkGroupType,
-    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
-    pub usermeta: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
+    pub usermeta: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
 }
 impl ::std::convert::From<&MarkGroup> for MarkGroup {
     fn from(value: &MarkGroup) -> Self {
@@ -81839,7 +81848,7 @@ impl ::std::convert::From<SignalRef> for ProjectionExtentVariant0Item {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum ProjectionFit {
-    Variant0(::serde_json::Map<::std::string::String, ::serde_json::Value>),
+    Variant0(::std::collections::HashMap<::std::string::String, ::serde_json::Value>),
     Variant1(::std::vec::Vec<::serde_json::Value>),
 }
 impl ::std::convert::From<&Self> for ProjectionFit {
@@ -81847,10 +81856,12 @@ impl ::std::convert::From<&Self> for ProjectionFit {
         value.clone()
     }
 }
-impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::serde_json::Value>>
     for ProjectionFit
 {
-    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
+    fn from(
+        value: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
+    ) -> Self {
         Self::Variant0(value)
     }
 }
@@ -97247,8 +97258,11 @@ pub struct Scope {
     pub signals: ::std::vec::Vec<Signal>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<Title>,
-    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
-    pub usermeta: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
+    pub usermeta: ::std::collections::HashMap<::std::string::String, ::serde_json::Value>,
 }
 impl ::std::convert::From<&Scope> for Scope {
     fn from(value: &Scope) -> Self {
