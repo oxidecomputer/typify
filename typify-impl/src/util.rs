@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
+use heck::ToPascalCase;
 use log::debug;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -621,6 +622,22 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             reference: None,
             extensions: _,
         }) => singleton_subschema(subschemas).and_then(schema_is_named),
+
+        // Best-effort fallback for things with raw types that can be easily inferred
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Single(single)),
+            format,
+            ..
+        }) => match (**single, format.as_deref()) {
+            (_, Some(format)) => Some(format.to_pascal_case()),
+            (InstanceType::Boolean, _) => Some("Boolean".to_string()),
+            (InstanceType::Integer, _) => Some("Integer".to_string()),
+            (InstanceType::Number, _) => Some("Number".to_string()),
+            (InstanceType::String, _) => Some("String".to_string()),
+            (InstanceType::Array, _) => Some("Array".to_string()),
+            (InstanceType::Object, _) => Some("Object".to_string()),
+            (InstanceType::Null, _) => Some("Null".to_string()),
+        },
 
         _ => None,
     }?;

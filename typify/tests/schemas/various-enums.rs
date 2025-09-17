@@ -1097,6 +1097,108 @@ impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknow
         value.parse()
     }
 }
+#[doc = "`OneOfMissingTitle`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"title\": \"A\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"foo\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"title\": \"B\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"bar\": {"]
+#[doc = "          \"type\": \"integer\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"bar\": {"]
+#[doc = "          \"type\": \"integer\""]
+#[doc = "        },"]
+#[doc = "        \"baz\": {"]
+#[doc = "          \"type\": \"integer\""]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum OneOfMissingTitle {
+    Variant0 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        foo: ::std::option::Option<::std::string::String>,
+    },
+    Variant1 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        bar: ::std::option::Option<i64>,
+    },
+    Variant2 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        bar: ::std::option::Option<i64>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        baz: ::std::option::Option<i64>,
+    },
+}
+impl ::std::convert::From<&Self> for OneOfMissingTitle {
+    fn from(value: &OneOfMissingTitle) -> Self {
+        value.clone()
+    }
+}
+#[doc = "`OneOfRawType`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"oneOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"integer\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum OneOfRawType {
+    String(::std::string::String),
+    Integer(i64),
+}
+impl ::std::convert::From<&Self> for OneOfRawType {
+    fn from(value: &OneOfRawType) -> Self {
+        value.clone()
+    }
+}
+impl ::std::fmt::Display for OneOfRawType {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::String(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+        }
+    }
+}
+impl ::std::convert::From<i64> for OneOfRawType {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
 #[doc = "`OneOfTypes`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1486,8 +1588,8 @@ impl ::std::fmt::Display for ReferenceDef {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum References {
-    Variant0(::std::vec::Vec<::std::string::String>),
-    Variant1(::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>),
+    Array(::std::vec::Vec<::std::string::String>),
+    Object(::std::collections::HashMap<::std::string::String, ReferencesObjectValue>),
 }
 impl ::std::convert::From<&Self> for References {
     fn from(value: &References) -> Self {
@@ -1496,21 +1598,19 @@ impl ::std::convert::From<&Self> for References {
 }
 impl ::std::convert::From<::std::vec::Vec<::std::string::String>> for References {
     fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
-        Self::Variant0(value)
+        Self::Array(value)
     }
 }
-impl
-    ::std::convert::From<
-        ::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>,
-    > for References
+impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ReferencesObjectValue>>
+    for References
 {
     fn from(
-        value: ::std::collections::HashMap<::std::string::String, ReferencesVariant1Value>,
+        value: ::std::collections::HashMap<::std::string::String, ReferencesObjectValue>,
     ) -> Self {
-        Self::Variant1(value)
+        Self::Object(value)
     }
 }
-#[doc = "`ReferencesVariant1Value`"]
+#[doc = "`ReferencesObjectValue`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -1529,16 +1629,16 @@ impl
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum ReferencesVariant1Value {
+pub enum ReferencesObjectValue {
     StringVersion(StringVersion),
     ReferenceDef(ReferenceDef),
 }
-impl ::std::convert::From<&Self> for ReferencesVariant1Value {
-    fn from(value: &ReferencesVariant1Value) -> Self {
+impl ::std::convert::From<&Self> for ReferencesObjectValue {
+    fn from(value: &ReferencesObjectValue) -> Self {
         value.clone()
     }
 }
-impl ::std::fmt::Display for ReferencesVariant1Value {
+impl ::std::fmt::Display for ReferencesObjectValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::StringVersion(x) => x.fmt(f),
@@ -1546,12 +1646,12 @@ impl ::std::fmt::Display for ReferencesVariant1Value {
         }
     }
 }
-impl ::std::convert::From<StringVersion> for ReferencesVariant1Value {
+impl ::std::convert::From<StringVersion> for ReferencesObjectValue {
     fn from(value: StringVersion) -> Self {
         Self::StringVersion(value)
     }
 }
-impl ::std::convert::From<ReferenceDef> for ReferencesVariant1Value {
+impl ::std::convert::From<ReferenceDef> for ReferencesObjectValue {
     fn from(value: ReferenceDef) -> Self {
         Self::ReferenceDef(value)
     }

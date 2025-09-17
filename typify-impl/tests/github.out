@@ -27793,8 +27793,8 @@ impl ::std::convert::From<&ForkEventForkee> for ForkEventForkee {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum ForkEventForkeeCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for ForkEventForkeeCreatedAt {
     fn from(value: &ForkEventForkeeCreatedAt) -> Self {
@@ -27805,9 +27805,9 @@ impl ::std::str::FromStr for ForkEventForkeeCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -27838,19 +27838,19 @@ impl ::std::convert::TryFrom<::std::string::String> for ForkEventForkeeCreatedAt
 impl ::std::fmt::Display for ForkEventForkeeCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for ForkEventForkeeCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for ForkEventForkeeCreatedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`ForkEventForkeePermissions`"]
@@ -27926,9 +27926,9 @@ impl ::std::convert::From<&ForkEventForkeePermissions> for ForkEventForkeePermis
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum ForkEventForkeePushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for ForkEventForkeePushedAt {
     fn from(value: &ForkEventForkeePushedAt) -> Self {
@@ -27937,12 +27937,12 @@ impl ::std::convert::From<&Self> for ForkEventForkeePushedAt {
 }
 impl ::std::convert::From<i64> for ForkEventForkeePushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for ForkEventForkeePushedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`GithubAppAuthorizationEvent`"]
@@ -29145,8 +29145,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationCreatedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationCreatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationCreatedAt {
     fn from(value: &InstallationCreatedAt) -> Self {
@@ -29157,9 +29157,9 @@ impl ::std::str::FromStr for InstallationCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -29190,19 +29190,19 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationCreatedAt {
 impl ::std::fmt::Display for InstallationCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for InstallationCreatedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "`InstallationCreatedRepositoriesItem`"]
@@ -34410,8 +34410,8 @@ impl ::std::convert::From<&InstallationSuspendInstallation> for InstallationSusp
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationSuspendInstallationCreatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationCreatedAt {
     fn from(value: &InstallationSuspendInstallationCreatedAt) -> Self {
@@ -34422,9 +34422,9 @@ impl ::std::str::FromStr for InstallationSuspendInstallationCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -34455,8 +34455,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationSuspendInsta
 impl ::std::fmt::Display for InstallationSuspendInstallationCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
@@ -34464,12 +34464,12 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationSuspendInstallationCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationSuspendInstallationCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "`InstallationSuspendInstallationEventsItem`"]
@@ -38461,8 +38461,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationSuspendInsta
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationSuspendInstallationUpdatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationUpdatedAt {
     fn from(value: &InstallationSuspendInstallationUpdatedAt) -> Self {
@@ -38473,9 +38473,9 @@ impl ::std::str::FromStr for InstallationSuspendInstallationUpdatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -38506,8 +38506,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationSuspendInsta
 impl ::std::fmt::Display for InstallationSuspendInstallationUpdatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
@@ -38515,12 +38515,12 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationSuspendInstallationUpdatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationSuspendInstallationUpdatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "`InstallationSuspendRepositoriesItem`"]
@@ -38921,8 +38921,8 @@ impl ::std::convert::From<&InstallationUnsuspendInstallation>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUnsuspendInstallationCreatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationCreatedAt {
     fn from(value: &InstallationUnsuspendInstallationCreatedAt) -> Self {
@@ -38933,9 +38933,9 @@ impl ::std::str::FromStr for InstallationUnsuspendInstallationCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -38968,8 +38968,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationUnsuspendIns
 impl ::std::fmt::Display for InstallationUnsuspendInstallationCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
@@ -38977,12 +38977,12 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationUnsuspendInstallationCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationUnsuspendInstallationCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "`InstallationUnsuspendInstallationEventsItem`"]
@@ -42762,8 +42762,8 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUnsuspendInstallationUpdatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationUpdatedAt {
     fn from(value: &InstallationUnsuspendInstallationUpdatedAt) -> Self {
@@ -42774,9 +42774,9 @@ impl ::std::str::FromStr for InstallationUnsuspendInstallationUpdatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -42809,8 +42809,8 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationUnsuspendIns
 impl ::std::fmt::Display for InstallationUnsuspendInstallationUpdatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
@@ -42818,12 +42818,12 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for InstallationUnsuspendInstallationUpdatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationUnsuspendInstallationUpdatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "`InstallationUnsuspendRepositoriesItem`"]
@@ -42904,8 +42904,8 @@ impl ::std::convert::From<&InstallationUnsuspendRepositoriesItem>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum InstallationUpdatedAt {
-    Variant0(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant1(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUpdatedAt {
     fn from(value: &InstallationUpdatedAt) -> Self {
@@ -42916,9 +42916,9 @@ impl ::std::str::FromStr for InstallationUpdatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::DateTime(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::Integer(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -42949,19 +42949,19 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationUpdatedAt {
 impl ::std::fmt::Display for InstallationUpdatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for InstallationUpdatedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant0(value)
+        Self::DateTime(value)
     }
 }
 impl ::std::convert::From<i64> for InstallationUpdatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant1(value)
+        Self::Integer(value)
     }
 }
 #[doc = "The [issue](https://docs.github.com/en/rest/reference/issues) itself."]
@@ -55826,8 +55826,8 @@ impl ::std::convert::TryFrom<::std::string::String> for MembershipRemovedScope {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged, deny_unknown_fields)]
 pub enum MembershipRemovedTeam {
-    Variant0(Team),
-    Variant1 {
+    Team(Team),
+    Object {
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         deleted: ::std::option::Option<bool>,
         id: i64,
@@ -55841,7 +55841,7 @@ impl ::std::convert::From<&Self> for MembershipRemovedTeam {
 }
 impl ::std::convert::From<Team> for MembershipRemovedTeam {
     fn from(value: Team) -> Self {
-        Self::Variant0(value)
+        Self::Team(value)
     }
 }
 #[doc = "`MetaDeleted`"]
@@ -65493,8 +65493,8 @@ impl ::std::convert::From<&PublicEventRepository> for PublicEventRepository {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum PublicEventRepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryCreatedAt {
     fn from(value: &PublicEventRepositoryCreatedAt) -> Self {
@@ -65505,9 +65505,9 @@ impl ::std::str::FromStr for PublicEventRepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -65538,21 +65538,21 @@ impl ::std::convert::TryFrom<::std::string::String> for PublicEventRepositoryCre
 impl ::std::fmt::Display for PublicEventRepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for PublicEventRepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for PublicEventRepositoryCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`PublicEventRepositoryPermissions`"]
@@ -65628,9 +65628,9 @@ impl ::std::convert::From<&PublicEventRepositoryPermissions> for PublicEventRepo
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum PublicEventRepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryPushedAt {
     fn from(value: &PublicEventRepositoryPushedAt) -> Self {
@@ -65639,14 +65639,14 @@ impl ::std::convert::From<&Self> for PublicEventRepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for PublicEventRepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for PublicEventRepositoryPushedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`PullRequest`"]
@@ -80228,8 +80228,8 @@ impl ::std::convert::From<&RepositoryArchivedRepository> for RepositoryArchivedR
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryArchivedRepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryCreatedAt {
     fn from(value: &RepositoryArchivedRepositoryCreatedAt) -> Self {
@@ -80240,9 +80240,9 @@ impl ::std::str::FromStr for RepositoryArchivedRepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -80273,21 +80273,21 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryArchivedReposi
 impl ::std::fmt::Display for RepositoryArchivedRepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for RepositoryArchivedRepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryArchivedRepositoryCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryArchivedRepositoryPermissions`"]
@@ -80365,9 +80365,9 @@ impl ::std::convert::From<&RepositoryArchivedRepositoryPermissions>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryArchivedRepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryPushedAt {
     fn from(value: &RepositoryArchivedRepositoryPushedAt) -> Self {
@@ -80376,14 +80376,14 @@ impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for RepositoryArchivedRepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryArchivedRepositoryPushedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryCreated`"]
@@ -80533,8 +80533,8 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryCreatedAction 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryCreatedAt {
     fn from(value: &RepositoryCreatedAt) -> Self {
@@ -80545,9 +80545,9 @@ impl ::std::str::FromStr for RepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -80578,19 +80578,19 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryCreatedAt {
 impl ::std::fmt::Display for RepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for RepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for RepositoryCreatedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryDeleted`"]
@@ -82154,8 +82154,8 @@ impl ::std::convert::From<&RepositoryPrivatizedRepository> for RepositoryPrivati
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryPrivatizedRepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryCreatedAt {
     fn from(value: &RepositoryPrivatizedRepositoryCreatedAt) -> Self {
@@ -82166,9 +82166,9 @@ impl ::std::str::FromStr for RepositoryPrivatizedRepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -82199,21 +82199,21 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryPrivatizedRepo
 impl ::std::fmt::Display for RepositoryPrivatizedRepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for RepositoryPrivatizedRepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPrivatizedRepositoryCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryPrivatizedRepositoryPermissions`"]
@@ -82291,9 +82291,9 @@ impl ::std::convert::From<&RepositoryPrivatizedRepositoryPermissions>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryPrivatizedRepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryPushedAt {
     fn from(value: &RepositoryPrivatizedRepositoryPushedAt) -> Self {
@@ -82302,14 +82302,14 @@ impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for RepositoryPrivatizedRepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPrivatizedRepositoryPushedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryPublicized`"]
@@ -82629,8 +82629,8 @@ impl ::std::convert::From<&RepositoryPublicizedRepository> for RepositoryPublici
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryPublicizedRepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryCreatedAt {
     fn from(value: &RepositoryPublicizedRepositoryCreatedAt) -> Self {
@@ -82641,9 +82641,9 @@ impl ::std::str::FromStr for RepositoryPublicizedRepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -82674,21 +82674,21 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryPublicizedRepo
 impl ::std::fmt::Display for RepositoryPublicizedRepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for RepositoryPublicizedRepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPublicizedRepositoryCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryPublicizedRepositoryPermissions`"]
@@ -82766,9 +82766,9 @@ impl ::std::convert::From<&RepositoryPublicizedRepositoryPermissions>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryPublicizedRepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryPushedAt {
     fn from(value: &RepositoryPublicizedRepositoryPushedAt) -> Self {
@@ -82777,14 +82777,14 @@ impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for RepositoryPublicizedRepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryPublicizedRepositoryPushedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryPushedAt`"]
@@ -82811,9 +82811,9 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPushedAt {
     fn from(value: &RepositoryPushedAt) -> Self {
@@ -82822,12 +82822,12 @@ impl ::std::convert::From<&Self> for RepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for RepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>> for RepositoryPushedAt {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryRenamed`"]
@@ -83697,8 +83697,8 @@ impl ::std::convert::From<&RepositoryUnarchivedRepository> for RepositoryUnarchi
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryUnarchivedRepositoryCreatedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryCreatedAt {
     fn from(value: &RepositoryUnarchivedRepositoryCreatedAt) -> Self {
@@ -83709,9 +83709,9 @@ impl ::std::str::FromStr for RepositoryUnarchivedRepositoryCreatedAt {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Integer(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::DateTime(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -83742,21 +83742,21 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryUnarchivedRepo
 impl ::std::fmt::Display for RepositoryUnarchivedRepositoryCreatedAt {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Integer(x) => x.fmt(f),
+            Self::DateTime(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<i64> for RepositoryUnarchivedRepositoryCreatedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryUnarchivedRepositoryCreatedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryUnarchivedRepositoryPermissions`"]
@@ -83834,9 +83834,9 @@ impl ::std::convert::From<&RepositoryUnarchivedRepositoryPermissions>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum RepositoryUnarchivedRepositoryPushedAt {
-    Variant0(i64),
-    Variant1(::chrono::DateTime<::chrono::offset::Utc>),
-    Variant2,
+    Integer(i64),
+    DateTime(::chrono::DateTime<::chrono::offset::Utc>),
+    Null,
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryPushedAt {
     fn from(value: &RepositoryUnarchivedRepositoryPushedAt) -> Self {
@@ -83845,14 +83845,14 @@ impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryPushedAt {
 }
 impl ::std::convert::From<i64> for RepositoryUnarchivedRepositoryPushedAt {
     fn from(value: i64) -> Self {
-        Self::Variant0(value)
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
     for RepositoryUnarchivedRepositoryPushedAt
 {
     fn from(value: ::chrono::DateTime<::chrono::offset::Utc>) -> Self {
-        Self::Variant1(value)
+        Self::DateTime(value)
     }
 }
 #[doc = "`RepositoryVulnerabilityAlertCreate`"]
