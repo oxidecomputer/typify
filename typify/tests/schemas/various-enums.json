@@ -26,6 +26,47 @@
         }
       ]
     },
+    "one-of-raw-type": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "one-of-missing-title": {
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "A",
+          "properties": {
+            "foo": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "title": "B",
+          "properties": {
+            "bar": {
+              "type": "integer"
+            }
+          }
+        },
+        {
+          "properties": {
+            "bar": {
+              "type": "integer"
+            },
+            "baz": {
+              "type": "integer"
+            }
+          }
+        }        
+      ]
+    },
     "IpNet": {
       "$comment": "we want to see *nice* variant names in the output",
       "oneOf": [

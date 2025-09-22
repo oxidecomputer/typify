@@ -1089,7 +1089,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant0
+                    super::Test::Null
                 }
                 .to_string()
             )
@@ -1100,7 +1100,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant1("xx".to_string(), "yy".to_string())
+                    super::Test::Array("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -1117,7 +1117,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    super::Test::Variant2 {
+                    super::Test::Object {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }
@@ -1147,7 +1147,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant0
+                    Test::Null
                 }
                 .to_string()
             )
@@ -1158,7 +1158,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant1("xx".to_string(), "yy".to_string())
+                    Test::Array("xx".to_string(), "yy".to_string())
                 }
                 .to_string()
             )
@@ -1175,7 +1175,7 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    Test::Variant2 {
+                    Test::Object {
                         cc: "xx".to_string(),
                         dd: "yy".to_string()
                     }

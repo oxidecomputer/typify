@@ -139,8 +139,8 @@ impl ::std::convert::From<Name> for IdOrName {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
-    Variant0(::uuid::Uuid),
-    Variant1(Name),
+    Uuid(::uuid::Uuid),
+    String(Name),
 }
 impl ::std::convert::From<&Self> for IdOrNameRedundant {
     fn from(value: &IdOrNameRedundant) -> Self {
@@ -151,9 +151,9 @@ impl ::std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
-            Ok(Self::Variant0(v))
+            Ok(Self::Uuid(v))
         } else if let Ok(v) = value.parse() {
-            Ok(Self::Variant1(v))
+            Ok(Self::String(v))
         } else {
             Err("string conversion failed for all variants".into())
         }
@@ -184,19 +184,19 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
 impl ::std::fmt::Display for IdOrNameRedundant {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::Variant0(x) => x.fmt(f),
-            Self::Variant1(x) => x.fmt(f),
+            Self::Uuid(x) => x.fmt(f),
+            Self::String(x) => x.fmt(f),
         }
     }
 }
 impl ::std::convert::From<::uuid::Uuid> for IdOrNameRedundant {
     fn from(value: ::uuid::Uuid) -> Self {
-        Self::Variant0(value)
+        Self::Uuid(value)
     }
 }
 impl ::std::convert::From<Name> for IdOrNameRedundant {
     fn from(value: Name) -> Self {
-        Self::Variant1(value)
+        Self::String(value)
     }
 }
 #[doc = "`IdOrYolo`"]

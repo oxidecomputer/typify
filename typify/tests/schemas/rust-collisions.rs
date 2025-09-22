@@ -383,7 +383,7 @@ impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum KeywordFieldsEnum {
-    Variant0 {
+    Object {
         #[serde(rename = "impl")]
         impl_: ::std::string::String,
         #[serde(rename = "match")]
@@ -393,7 +393,7 @@ pub enum KeywordFieldsEnum {
         #[serde(rename = "type")]
         type_: ::std::string::String,
     },
-    Variant1([::std::string::String; 2usize]),
+    Array([::std::string::String; 2usize]),
 }
 impl ::std::convert::From<&Self> for KeywordFieldsEnum {
     fn from(value: &KeywordFieldsEnum) -> Self {
@@ -402,7 +402,7 @@ impl ::std::convert::From<&Self> for KeywordFieldsEnum {
 }
 impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum {
     fn from(value: [::std::string::String; 2usize]) -> Self {
-        Self::Variant1(value)
+        Self::Array(value)
     }
 }
 #[doc = "`MapOfKeywords`"]
