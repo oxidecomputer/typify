@@ -13,7 +13,13 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.4.3\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.5.0\...HEAD[Full list of commits]
+
+== 0.5.0 (released 2025-10-06)
+
+https://github.com/oxidecomputer/typify/compare/v0.4.3\...v0.5.0[Full list of commits]
+
+* use inferred union variant names in more cases (#894)
 
 == 0.4.3 (released 2025-08-15)
 
