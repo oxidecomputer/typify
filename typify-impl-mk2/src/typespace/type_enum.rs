@@ -76,6 +76,11 @@ pub enum EnumTagType {
 // 6/28/2025
 // Answer: No. Recall that the untagged variant markers need to be at the end
 // of the type which makes it kind of a pain in the neck.
+// TODO 10/7/2025
+// How would we deal with an enum value that isn't a string--a number of
+// boolean value for example? { "enum": [true, 1, "on"] } First we need to be
+// able to represent this and then we need to be able to generate custom
+// serialize/deserialize impls.
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EnumVariant {
