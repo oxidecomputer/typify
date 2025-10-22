@@ -733,8 +733,30 @@ fn merge_so_string(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
-        (Some(_), Some(_)) => {
-            unimplemented!("this is fairly fussy and I don't want to do it")
+        (Some(a), Some(b)) => {
+            let max_length = match (a.max_length, b.max_length) {
+                (None, None) => None,
+                (Some(a), Some(b)) => Some(std::cmp::min(a, b)),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+            };
+            let min_length = match (a.min_length, b.min_length) {
+                (None, None) => None,
+                (Some(a), Some(b)) => Some(std::cmp::max(a, b)),
+                (Some(a), None) => Some(a),
+                (None, Some(b)) => Some(b),
+            };
+            let pattern = match (&a.pattern, &b.pattern) {
+                (None, None) => None,
+                (Some(a), Some(b)) => Some(format!("{}|{}", a, b)),
+                (Some(a), None) => Some(a.clone()),
+                (None, Some(b)) => Some(b.clone()),
+            };
+            Ok(Some(Box::new(StringValidation {
+                max_length,
+                min_length,
+                pattern,
+            })))
         }
     }
 }
