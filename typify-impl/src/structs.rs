@@ -288,8 +288,20 @@ impl TypeSpace {
                 }
 
                 // TODO we need a reasonable name that could be derived
-                // from the name of the type
-                let name = format!("subtype_{}", idx);
+                // from the name of the type.  Use of SchemaObject here
+                // accommodates "anyOf" and "allOf" but others, TBD. e.g.,
+                // "foo":{"items":{"anyOf":[{"$ref": "#/$defs/bar-baz"}, ...]}}
+                // provides "bar_baz".
+                let name = match schema {
+                    Schema::Object(SchemaObject {
+                        reference: Some(s), ..
+                    }) => match s.rsplit_once('/') {
+                        Some((_, name)) => name,
+                        None => s,
+                    }
+                    .replace('-', "_"),
+                    _ => format!("subtype_{}", idx),
+                };
 
                 Ok(StructProperty {
                     name,
