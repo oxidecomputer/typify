@@ -11,7 +11,7 @@ readme = "../README.md"
 proc-macro = true
 
 [dependencies]
-proc-macro2 = "1.0.101"
+proc-macro2 = "1.0.103"
 quote = "1.0.41"
 schemars = "0.8.22"
 semver = { version = "1.0.27", features = ["serde"] }
