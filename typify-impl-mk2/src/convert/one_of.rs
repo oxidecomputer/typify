@@ -162,8 +162,9 @@ impl Converter {
 
         // Variants names should all be "of a kind" meaning that we shouldn't
         // mix and match. We'll first try to apply names from the schemas (i.e.
-        // the tiles and paths); then we'll use type classification (integer,
-        // boolean, object), and finally we'll fall back on Variant{n}.
+        // the tiles and JSON paths); then we'll use type classification
+        // (integer, boolean, object), and finally we'll fall back on
+        // Variant{n}.
 
         let variant_names = if let Some(title_names) = proto_variants
             .iter()
@@ -236,15 +237,16 @@ impl Converter {
 }
 
 fn maybe_kind_names(proto_variants: &[ProtoVariant]) -> Option<Vec<String>> {
-    let xxx = proto_variants
+    let type_list = proto_variants
         .iter()
         .map(|proto| proto.schemalet.get_type())
         .collect::<Option<Vec<_>>>()?;
 
-    let yyy = xxx.iter().collect::<BTreeSet<_>>();
+    let type_set = type_list.iter().collect::<BTreeSet<_>>();
 
-    (xxx.len() == yyy.len()).then(|| {
-        xxx.into_iter()
+    (type_list.len() == type_set.len()).then(|| {
+        type_list
+            .into_iter()
             .map(|t| t.variant_name().to_string())
             .collect()
     })
