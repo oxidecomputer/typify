@@ -137,13 +137,13 @@ impl Typify {
             );
 
             if let Some(original_json) = maybe_original_json {
-                let conv = for conv in &self.settings.convert {
+                for conv in &self.settings.convert {
                     if jsonschema::is_valid(&conv.pattern, original_json) {
                         let typ = Type::Native(conv.native.name.clone());
                         self.typespace.insert(work_id.clone(), typ);
                         continue 'outer;
                     }
-                };
+                }
             }
 
             let typ = converter.convert(&work_id, maybe_original_json);

@@ -523,7 +523,7 @@ fn simplify_string_of(
 ) -> State {
     println!("string of {schema_ref}");
 
-    let Some((sr, ss)) = resolve(done, &schema_ref) else {
+    let Some((_sr, ss)) = resolve(done, &schema_ref) else {
         return State::Stuck(Schemalet {
             metadata,
             details: SchemaletDetails::StringOf(schema_ref),

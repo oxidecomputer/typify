@@ -77,15 +77,15 @@ pub struct TypespaceNativeType {
 /// There are traits that may require special handling during type generation:
 ///
 /// - `serde::Serialize` and `serde::Deserialize` -- These traits depend on the
-/// shape of the data and while--as much as possible--generated code makes use
-/// of the derived implementations, the serialized form of some generated types
-/// may be a little different.
+///   shape of the data and while--as much as possible--generated code makes
+///   use of the derived implementations, the serialized form of some generated
+///   types may be a little different.
 ///
 /// - `schemars::JsonSchema` -- As with serde traits, JsonSchema depends on the
-/// shape of data and may be customized in some circumstances. In addition,
-/// typify supports multiple version of `schemars` so additional configuration
-/// may be required to specify the version or to customize the crate name e.g.
-/// if one were to support multiple versions simultaneously.
+///   shape of data and may be customized in some circumstances. In addition,
+///   typify supports multiple version of `schemars` so additional
+///   configuration may be required to specify the version or to customize the
+///   crate name e.g. if one were to support multiple versions simultaneously.
 ///
 /// - `std::fmt::Display` -- XXX
 /// - `std::default::Default` -- XXX
@@ -525,9 +525,9 @@ impl Default for TypespaceBuilder {
 
 impl TypespaceBuilder {
     pub fn insert(&mut self, id: SchemaRef, typ: Type) {
-        match self.types.entry(id.into()) {
+        match self.types.entry(id) {
             Entry::Vacant(vacant_entry) => {
-                vacant_entry.insert(typ.into());
+                vacant_entry.insert(typ);
             }
             Entry::Occupied(occupied_entry) => {
                 let key = occupied_entry.key();
@@ -671,8 +671,6 @@ impl TypespaceBuilder {
             println!("{:#?}", typ);
         }
 
-        let n2 = namespace.finalize().unwrap();
-
         // TODO 7/1/2025
         // Let's do names first.
 
@@ -681,7 +679,11 @@ impl TypespaceBuilder {
         // TODO resolve names
         // TODO propagate trait impls
 
-        // Break cycles
+        // TODO 11/13/2025
+        // Update: we've done names, checked references, and broken cycles.
+        // Still need to propagate traits.
+
+        let _n2 = namespace.finalize().unwrap();
         break_cycles(&mut types);
 
         Ok(Typespace { settings, types })

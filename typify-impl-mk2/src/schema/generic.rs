@@ -309,6 +309,7 @@ impl GenericSchema {
         id: SchemaRef,
     ) -> Result<(), Error> {
         let Self {
+            // Metadata
             title,
             description,
             examples,
@@ -316,41 +317,50 @@ impl GenericSchema {
             const_,
             enum_,
             deprecated,
+
             type_,
+
+            // Applicable to strings, integers, and numbers
             format,
-            anchor,
-            dynamic_anchor,
+
+            // Anchor and reference properties
+            anchor: _,
+            dynamic_anchor: _,
             dynamic_ref,
-            recursive_anchor,
+            recursive_anchor: _,
             recursive_ref,
             ref_,
-            additional_properties,
-            max_properties,
-            min_properties,
-            pattern_properties,
-            properties,
-            property_names,
-            unevaluated_properties,
-            dependent_required,
-            dependent_schemas,
-            required,
-            dependencies,
-            items,
-            max_items,
-            min_items,
-            contains,
-            max_contains,
-            min_contains,
-            unique_items,
-            unevaluated_items,
-            minimum,
-            maximum,
-            multiple_of,
-            exclusive_maximum,
-            exclusive_minimum,
-            pattern,
-            max_length,
-            min_length,
+
+            // Applicable to various concrete types
+            additional_properties: _,
+            max_properties: _,
+            min_properties: _,
+            pattern_properties: _,
+            properties: _,
+            property_names: _,
+            unevaluated_properties: _,
+            dependent_required: _,
+            dependent_schemas: _,
+            required: _,
+            dependencies: _,
+            items: _,
+            max_items: _,
+            min_items: _,
+            contains: _,
+            max_contains: _,
+            min_contains: _,
+            unique_items: _,
+            unevaluated_items: _,
+            minimum: _,
+            maximum: _,
+            multiple_of: _,
+            exclusive_maximum: _,
+            exclusive_minimum: _,
+            pattern: _,
+            max_length: _,
+            min_length: _,
+
+            // Subschemas
             all_of,
             any_of,
             not,
@@ -440,8 +450,8 @@ impl GenericSchema {
 
         let details = match everything.len() {
             0 => {
-                todo!("no schema details found for {id}");
-                SchemaletDetails::Anything
+                todo!("no schema details found for {id}")
+                // SchemaletDetails::Anything
             }
 
             1 => everything.into_iter().next().unwrap().1,
@@ -475,6 +485,7 @@ impl GenericSchema {
         schema_type: &GenericSimpleTypes,
     ) -> Result<(SchemaRef, SchemaletDetails), Error> {
         let Self {
+            // Metadata
             title: _,
             description: _,
             examples: _,
@@ -484,7 +495,7 @@ impl GenericSchema {
             deprecated: _,
             type_: _,
 
-            // Numbers and strings
+            // Strings, integers, and numbers
             format,
 
             anchor: _,
@@ -523,9 +534,13 @@ impl GenericSchema {
             multiple_of,
             exclusive_maximum,
             exclusive_minimum,
+
+            // Strings
             pattern,
             max_length,
             min_length,
+
+            // Subschemas
             all_of: _,
             any_of: _,
             not: _,
