@@ -124,8 +124,11 @@ where
 
                 let parent_name = names.get(parent).unwrap().borrow().as_resolved();
 
-                let new_name = format!("{}{}", parent_name, addition);
-                let new_name = new_name.to_pascal_case();
+                let new_name = format!(
+                    "{}{}",
+                    parent_name.to_pascal_case(),
+                    addition.to_pascal_case()
+                );
 
                 if !resolved_names.contains(&new_name) {
                     resolved_names.insert(new_name.clone());
@@ -267,12 +270,15 @@ mod tests {
 
         grandkid.derive_name(kid2.id(), "child");
 
-        let namespace = namespace.finalize();
+        let _namespace = namespace.finalize().unwrap();
 
-        for name in name_holder {
+        for name in &name_holder {
             println!("{}", name.to_string())
         }
 
-        panic!()
+        assert_eq!(root.to_string(), "RootName");
+        assert_eq!(kid1.to_string(), "RootNameKid1");
+        assert_eq!(kid2.to_string(), "RootNameKid2");
+        assert_eq!(grandkid.to_string(), "RootNameKid2Child");
     }
 }

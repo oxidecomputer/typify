@@ -19,7 +19,16 @@ impl Converter {
         // TODO 6/30/2025
         // Increasingly I'm of the opinion I need to do the conversion from the
         // JSON Schema style object into my new, "structural" encoding.
+        // 11/12/2025
+        // I'm pretty sure what this means is to have each property include
+        // information about whether or not its required rather than having to
+        // match them up.
         match object {
+            // Typical case of a struct with properties.
+            // TODO 11/12/2025
+            // We should probably look at `additionalProperties` and
+            // potentially flatten those.
+            // TBD what we do for patternProperties.
             SchemaletValueObject {
                 properties,
                 required,
@@ -49,11 +58,18 @@ impl Converter {
                         } else {
                             StructPropertySerde::Rename(prop_name.clone())
                         };
+
+                        let prop_state = if required.contains(prop_name) {
+                            StructPropertyState::Required
+                        } else {
+                            StructPropertyState::Optional
+                        };
+
                         StructProperty::new(
                             rust_name,
                             json_name,
                             // TODO need to figure this out
-                            StructPropertyState::Optional,
+                            prop_state,
                             // TODO maybe a helper to pull out descriptions for property meta?
                             description,
                             id.clone(),
@@ -70,6 +86,10 @@ impl Converter {
                 ))
             }
 
+            // Simple case of a map with string keys:
+            // - just additionalProperties
+            // - no properties (and nothing required)
+            // - no weirdo propertyNames or patternProperties
             SchemaletValueObject {
                 properties,
                 required,
@@ -89,6 +109,8 @@ impl Converter {
                 Type::Map(key_id.clone(), value_id.clone())
             }
 
+            // Slightly more complex of a map. As above, but with a schema for
+            // propertyNames. This translates to a map with a custom key type.
             SchemaletValueObject {
                 properties,
                 required,

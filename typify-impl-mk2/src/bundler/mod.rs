@@ -16,7 +16,7 @@
 use std::collections::BTreeMap;
 
 use crate::append_map::AppendMap;
-use crate::schema::bootstrap;
+use crate::schema::{bootstrap, json_schema_2020_12};
 use url::Url;
 
 mod loader;
@@ -202,7 +202,8 @@ impl Bundle {
             None => Err(Error::missing_schema("unknown"))?,
 
             Some("https://json-schema.org/draft/2020-12/schema") => {
-                bootstrap::Schema::make_document(value)
+                // bootstrap::Schema::make_document(value)
+                json_schema_2020_12::Schema::make_document(value)
             }
             other => Err(Error::unknown_schema("unknown", other.unwrap_or("unknown")))?,
         }?;
@@ -448,13 +449,14 @@ mod tests {
     ///    conversion into GENERIC
     #[test]
     fn xxx() {
+        // TODO 11/12/2025
+        // We can probably clean this up, but for now it's just a dead simple
+        // test to validate that we can make a bundle from the 2020-12 schema.
         let id = "https://json-schema.org/draft/2020-12/schema";
         let contents = include_str!("../../tests/schemas/input/json-2020-12/schema");
 
         let bundle = Bundle::default();
 
         let _doc = bundle.load_document(id, contents);
-
-        panic!();
     }
 }

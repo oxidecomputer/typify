@@ -92,7 +92,10 @@ pub enum StructPropertySerde {
     Flatten,
 }
 
-/// The volitionality of a struct property.
+/// The volitionality of a struct property. Only `Optional` will translate into
+/// an `Option<T>` type; the others will be required in Rust. Conversely, only
+/// `Required` must be present during deserialization; the others may be
+/// omitted.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum StructPropertyState {
     /// The field must be present.

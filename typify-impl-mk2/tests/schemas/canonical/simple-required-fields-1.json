@@ -6,9 +6,24 @@
         "Value": {
           "Object": {
             "properties": {
+              "bar": "http://localhost/#/properties/bar",
               "foo": "http://localhost/#/properties/foo"
-            }
+            },
+            "required": [
+              "foo",
+              "bar"
+            ]
           }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/properties/bar",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
         }
       }
     }

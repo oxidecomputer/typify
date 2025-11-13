@@ -156,7 +156,7 @@ pub enum SchemaletValue {
     Boolean,
     Array(SchemaletValueArray),
     Object(SchemaletValueObject),
-    String(SchemaletValueString), // <-- changed from struct variant to tuple variant
+    String(SchemaletValueString),
     Integer {
         #[serde(skip_serializing_if = "Option::is_none")]
         minimum: Option<serde_json::Number>,

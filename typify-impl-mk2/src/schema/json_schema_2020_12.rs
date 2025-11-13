@@ -1,11 +1,14 @@
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::{any::Any, collections::BTreeMap, process::Child};
 
-use crate::schema::{
-    generic::{
-        self, GenericItems, GenericSchema, GenericSchemaDependencies, GenericType, ToGeneric,
+use crate::{
+    bundler::{Document, DocumentId, Error, SchemaKind},
+    schema::{
+        generic::{
+            self, GenericItems, GenericSchema, GenericSchemaDependencies, GenericType, ToGeneric,
+        },
+        util::ObjectOrBool,
     },
-    util::ObjectOrBool,
 };
 
 type SchemaOrBool = ObjectOrBool<Schema>;
@@ -322,8 +325,163 @@ pub(crate) fn to_schemalets(
     generic::to_schemalets(resolved, generic_schema)
 }
 
-mod generated {
-    include!("../../tests/schemas/rust/json-2020-12.rs");
+// mod generated {
+//     include!("../../tests/schemas/rust/json-2020-12.rs");
+// }
+
+// pub use generated::SchemaRoot as GeneratedSchemaOrBool;
+
+impl SchemaKind for Schema {
+    fn make_document(
+        value: serde_json::Value,
+    ) -> Result<crate::bundler::Document, crate::bundler::Error> {
+        let doc = Schema::deserialize(&value)
+            .map_err(|e| Error::deserialization_error("unknown", &e.to_string()))?;
+
+        // TODO what to do if there's no $id?
+        let id = doc
+            .id
+            .clone()
+            .unwrap_or_else(|| "http://localhost/".to_string());
+        // TODO ditto the schema value
+        let schema = doc.schema.clone().unwrap_or_default();
+
+        let dyn_anchors = doc
+            .iter_schema()
+            .filter_map(|(path, subschema)| {
+                subschema
+                    .dynamic_anchor
+                    .as_ref()
+                    .map(|dd| (dd.clone(), path.clone()))
+            })
+            .collect();
+
+        let document = Document {
+            id: DocumentId::from_str(&id),
+            content: value,
+            schema,
+            anchors: Default::default(),
+            dyn_anchors,
+        };
+        Ok(document)
+    }
 }
 
-pub use generated::SchemaRoot as GeneratedSchemaOrBool;
+impl Schema {
+    fn iter_schema(&self) -> impl Iterator<Item = (String, &Schema)> {
+        let mut result = Vec::new();
+        self.collect_children(&mut result, "");
+        result.into_iter()
+    }
+}
+
+trait Childish {
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str);
+}
+
+impl Childish for Schema {
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        result.push((path.to_string(), self));
+
+        // We only need the subset of properties that can contain subschemas.
+        let Self {
+            defs,
+            definitions,
+            additional_properties,
+            pattern_properties,
+            properties,
+            property_names,
+            unevaluated_properties,
+            dependent_schemas,
+            dependencies,
+            items,
+            prefix_items,
+            contains,
+            unevaluated_items,
+            all_of,
+            any_of,
+            not,
+            one_of,
+            if_,
+            then,
+            else_,
+            content_schema,
+            ..
+        } = self;
+        let properties = [
+            ("$defs", defs as &dyn Childish),
+            ("definitions", definitions),
+            ("additionalProperties", additional_properties),
+            ("patternProperties", pattern_properties),
+            ("properties", properties),
+            ("propertyNames", property_names),
+            ("unevaluatedProperties", unevaluated_properties),
+            ("dependentSchemas", dependent_schemas),
+            ("dependencies", dependencies),
+            ("items", items),
+            ("prefixItems", prefix_items),
+            ("contains", contains),
+            ("unevaluatedItems", unevaluated_items),
+            ("allOf", all_of),
+            ("anyOf", any_of),
+            ("not", not),
+            ("oneOf", one_of),
+            ("if", if_),
+            ("then", then),
+            ("else", else_),
+            ("contentSchema", content_schema),
+        ];
+
+        for (prefix, property) in properties.iter() {
+            property.collect_children(result, &format!("{}/{}", path, prefix));
+        }
+    }
+}
+
+impl<T> Childish for Option<T>
+where
+    T: Childish,
+{
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        if let Some(inner) = self {
+            inner.collect_children(result, path);
+        }
+    }
+}
+
+impl<T> Childish for BTreeMap<String, T>
+where
+    T: Childish,
+{
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        for (key, value) in self {
+            value.collect_children(result, &format!("{}/{}", path, key));
+        }
+    }
+}
+
+impl Childish for ObjectOrBool<Schema> {
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        if let ObjectOrBool::Object(schema) = self {
+            schema.collect_children(result, path);
+        }
+    }
+}
+
+impl<T> Childish for Vec<T>
+where
+    T: Childish,
+{
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        for (index, value) in self.iter().enumerate() {
+            value.collect_children(result, &format!("{}/{}", path, index));
+        }
+    }
+}
+impl Childish for SchemaDependencies {
+    fn collect_children<'a>(&'a self, result: &mut Vec<(String, &'a Schema)>, path: &str) {
+        if let SchemaDependencies::Schema(schema) = self {
+            schema.collect_children(result, path)
+        }
+    }
+}
