@@ -17,7 +17,7 @@ pub struct TypeEnum {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct TypeEnumBuilt {
+pub struct TypeEnumBuilt {
     pub name: Name<SchemaRef>,
 }
 

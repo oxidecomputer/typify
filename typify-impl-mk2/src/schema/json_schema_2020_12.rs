@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{any::Any, collections::BTreeMap, process::Child};
+use std::collections::BTreeMap;
 
 use crate::{
     bundler::{Document, DocumentId, Error, SchemaKind},

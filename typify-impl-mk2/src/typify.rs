@@ -96,12 +96,13 @@ impl Typify {
             }
 
             // TODO 7/2/2025
-            // Not sure if this is the right place to look for a name, but maybe
-            // it's okay. At this point we know that the path really is about to
-            // have a type at this location, and we don't know that any sooner.
+            // Not sure if this is the right place to look for a name, but
+            // maybe it's okay. At this point we know that the path really is
+            // about to have a type at this location, and we don't know that
+            // any sooner.
             //
-            // Note that we need to have something more generic than $defs and I'm
-            // not sure we're always going to apply this heuristic.
+            // Note that we need to have something more generic than $defs and
+            // I'm not sure we're always going to apply this heuristic.
             //
             // TODO 7/10/2025
             // In sum: there's more thinking to do here.
