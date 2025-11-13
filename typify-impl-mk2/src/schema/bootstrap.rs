@@ -25,10 +25,19 @@ pub struct Schema {
     schema: Option<String>,
     #[serde(rename = "$id", skip_serializing_if = "Option::is_none")]
     id: Option<String>,
+
+    // 2020-12 and later
     #[serde(rename = "$dynamicAnchor", skip_serializing_if = "Option::is_none")]
     dynamic_anchor: Option<String>,
     #[serde(rename = "$dynamicRef", skip_serializing_if = "Option::is_none")]
     dynamic_ref: Option<String>,
+
+    // 2019-09 only
+    #[serde(rename = "$recursiveAnchor", skip_serializing_if = "Option::is_none")]
+    recursive_anchor: Option<bool>,
+    #[serde(rename = "$recursiveRef", skip_serializing_if = "Option::is_none")]
+    recursive_ref: Option<String>,
+
     #[serde(rename = "$ref", skip_serializing_if = "Option::is_none")]
     r#ref: Option<String>,
     #[serde(rename = "$vocabulary", skip_serializing_if = "Option::is_none")]
@@ -340,7 +349,7 @@ impl SchemaKind for Schema {
         // TODO ditto the schema value
         let schema = doc.schema.clone().unwrap_or_default();
 
-        let dyn_anchors = doc
+        let mut dyn_anchors = doc
             .iter_schema()
             .filter_map(|(path, subschema)| {
                 subschema
@@ -348,7 +357,13 @@ impl SchemaKind for Schema {
                     .as_ref()
                     .map(|dd| (dd.clone(), path.clone()))
             })
-            .collect();
+            .collect::<BTreeMap<String, String>>();
+
+        if let Some(true) = doc.recursive_anchor {
+            // We use the string "#recursive" because that is not a valid value
+            // for $dynamicAnchor.
+            dyn_anchors.insert("#recursive".to_string(), "".to_string());
+        }
 
         let document = Document {
             id: DocumentId::from_str(&id),
@@ -723,6 +738,8 @@ impl Schema {
             id: _,
             dynamic_anchor: _,
             dynamic_ref,
+            recursive_anchor: _,
+            recursive_ref,
             r#ref,
             vocabulary: _,
             comment: _,
@@ -787,13 +804,24 @@ impl Schema {
             let value = schemalet::SchemaletDetails::RawRef(raw_ref.clone());
             (value_id, value)
         });
-        let dynref = dynamic_ref.as_ref().map(|raw_dyn_ref| {
-            assert!(raw_dyn_ref.starts_with("#"));
-            let raw_dyn_fragment = &raw_dyn_ref[1..];
-            let value_id = id.partial("$dynamicRef");
-            let value = schemalet::SchemaletDetails::RawDynamicRef(raw_dyn_fragment.to_string());
-            (value_id, value)
-        });
+        let dynref = match (dynamic_ref, recursive_ref) {
+            (None, None) => None,
+            (None, Some(raw_rec_ref)) => {
+                assert_eq!(raw_rec_ref, "#");
+                let value_id = id.partial("$recursiveRef");
+                let value = schemalet::SchemaletDetails::RawDynamicRef("#recursive".to_string());
+                Some((value_id, value))
+            }
+            (Some(raw_dyn_ref), None) => {
+                assert!(raw_dyn_ref.starts_with("#"));
+                let raw_dyn_fragment = &raw_dyn_ref[1..];
+                let value_id = id.partial("$dynamicRef");
+                let value =
+                    schemalet::SchemaletDetails::RawDynamicRef(raw_dyn_fragment.to_string());
+                Some((value_id, value))
+            }
+            (Some(_), Some(_)) => unreachable!(),
+        };
 
         let enum_values = r#enum.as_ref().map(|values| {
             let enum_id = id.append("enum");

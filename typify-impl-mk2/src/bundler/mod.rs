@@ -187,10 +187,15 @@ impl Bundle {
 
     /// Add explicit content (i.e. with no file lookup or web download).
     pub fn add_content(&mut self, content: impl AsRef<str>) -> Result<Context, Error> {
+        println!("{}", content.as_ref());
         // Turn the text into a JSON blob
         let value: serde_json::Value = serde_json::from_str(content.as_ref())
             .map_err(|e| Error::deserialization_error("unknown", &e.to_string()))?;
 
+        let id = value
+            .get("$id")
+            .and_then(serde_json::Value::as_str)
+            .unwrap_or("unknown");
         // Figure out the schema
         let schema = value.get("$schema");
 
@@ -199,13 +204,18 @@ impl Bundle {
             // sort of fallback position. We'll want some settings that let us
             // say things like "ignore $schema and use this" or "if there's no
             // schema, try whatever" or "if there's no schema only use this"
-            None => Err(Error::missing_schema("unknown"))?,
+            None => Err(Error::missing_schema(id))?,
 
             Some("https://json-schema.org/draft/2020-12/schema") => {
                 // bootstrap::Schema::make_document(value)
                 json_schema_2020_12::Schema::make_document(value)
             }
-            other => Err(Error::unknown_schema("unknown", other.unwrap_or("unknown")))?,
+
+            Some("https://json-schema.org/draft/2019-09/schema") => {
+                bootstrap::Schema::make_document(value)
+            }
+
+            other => Err(Error::unknown_schema(id, other.unwrap_or("unknown")))?,
         }?;
 
         let context = Context {
@@ -370,6 +380,9 @@ impl Bundle {
 
         match schema.as_ref() {
             "https://json-schema.org/draft/2020-12/schema" => {
+                bootstrap::Schema::populate_document(&mut document);
+            }
+            "https://json-schema.org/draft/2019-09/schema" => {
                 bootstrap::Schema::populate_document(&mut document);
             }
             _ => todo!(),

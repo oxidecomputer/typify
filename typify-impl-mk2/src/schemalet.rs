@@ -1031,6 +1031,7 @@ pub fn to_schemalets(resolved: &Resolved<'_>) -> anyhow::Result<Vec<(SchemaRef, 
         "https://json-schema.org/draft/2020-12/schema" => {
             json_schema_2020_12::to_schemalets(resolved)
         }
+        "https://json-schema.org/draft/2019-09/schema" => bootstrap::to_schemalets(resolved),
         _ => todo!(),
     }
 }

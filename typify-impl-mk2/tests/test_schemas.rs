@@ -66,7 +66,7 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     Ok(())
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TestJson {
     #[serde(default)]
@@ -76,7 +76,7 @@ struct TestJson {
     files: Vec<TestJsonEntry>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Debug, Deserialize, Default)]
 #[serde(deny_unknown_fields)]
 struct TestJsonSettings {
     #[serde(default)]
@@ -85,7 +85,7 @@ struct TestJsonSettings {
     typespace: TypespaceSettings,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct TestJsonEntry {
     #[serde(rename = "$id")]
     id: Url,
@@ -118,7 +118,7 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         let name = entry.file_name().unwrap().to_string_lossy();
         let file_name = name.as_ref();
         if !known_files.contains(file_name) {
-            println!("{file_name}");
+            println!("found unexpected file '{file_name}'");
             panic!()
         }
     }

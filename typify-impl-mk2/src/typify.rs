@@ -19,12 +19,12 @@ pub struct Typify {
     settings: TypifySettings,
 }
 
-#[derive(serde::Deserialize, Default)]
+#[derive(Debug, serde::Deserialize, Default)]
 pub struct TypifySettings {
     convert: Vec<TypifyConvert>,
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 struct TypifyConvert {
     /// JSON Schema that is evaluated for each schema being converted. If it
     /// validates successfully, then the schema is converted into the given

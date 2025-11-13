@@ -32,7 +32,7 @@ pub enum NameBuilderHint {
 // to specify the traits we care about so that users have to specify which ones
 // are implemented. I'm considering a struct of booleans so that things fail to
 // compile if we start to care about some new trait.
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct TypespaceNativeType {
     pub name: String,
 }
@@ -98,7 +98,7 @@ pub struct TypespaceNativeType {
 /// Most of the time we want to do what serde does and not distinguish between
 /// these, but some users may want to be able to adjust this both globally and
 /// on a per-type basis... [8/29/2025: done]
-#[derive(Default, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 pub struct TypespaceSettings {
     /// When true, (the default), types in the `std` crate are fully qualified.
     /// For example, the `Option` type is rendered as `::std::option::Option`.
@@ -112,7 +112,7 @@ pub struct TypespaceSettings {
     optional_nullable: TypespaceSettingsOptionalNullable,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsStd {
     #[default]
@@ -122,7 +122,7 @@ pub enum TypespaceSettingsStd {
 
 /// Specify the modeling of values that may be either 'null' or 'optional'
 /// (i.e. absent).
-#[derive(Default, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsOptionalNullable {
     /// Model `null` and `optional` as equivalent using the

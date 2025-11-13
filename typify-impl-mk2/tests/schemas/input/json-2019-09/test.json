@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "typespace": {
+      "std": "unqualified"
+    },
+    "typify": {
+      "$comment": "override the default, ergonomic use of `f64` to represent numbers and instead use serde_json::Number which provides a mechanism for arbitrary precision",
+      "convert": [
+        {
+          "pattern": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "number"
+              },
+              "exclusiveMinimum": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "native": {
+            "name": "serde_json::Number"
+          }
+        }
+      ]
+    }
+  },
+  "root-schema": {
+    "$id": "https://json-schema.org/draft/2019-09/schema",
+    "path": "schema"
+  },
+  "files": [
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/core",
+      "path": "core"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/applicator",
+      "path": "applicator"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/validation",
+      "path": "validation"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/meta-data",
+      "path": "meta-data"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/format",
+      "path": "format"
+    },
+    {
+      "$id": "https://json-schema.org/draft/2019-09/meta/content",
+      "path": "content"
+    }
+  ]
+}
