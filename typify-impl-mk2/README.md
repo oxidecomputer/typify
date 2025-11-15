@@ -522,3 +522,67 @@ verbose--is probably pretty decent.
 
 So what now? I think we can start adding some more schema test cases and unit
 tests. Then see where we are.
+
+### 11/14/2025
+
+Trying to get back into it and assess where we are. A lot of this seems pretty
+decent. I've been able to add some more test cases and migrate to a
+non-bootstrap schema, and things have worked surprisingly well. I've bumped
+into some areas that definitely require additional consideration:
+
+#### Naming
+
+Naming continues to be not particularly well thought out. For example, how to
+properties within `$defs` get their name? How would we make this configurable?
+There are many sources of a name: from the path (i.e. name under `$defs`), from
+the `title` field, externally, from an extension field, or relatively e.g. from
+a parent type. How do each of these sort? Is--for example--the `$defs` name
+mandatory, or can it be overruled by either `title` or some extension? We need
+to think this through...
+
+#### Newtypes and tuple structs
+
+Currently `Typespace` doesn't have a `Type` to represent either a newtype
+(which we had in typify 1) or a named tuple / tuple-like struct. The former is
+particularly useful for applying additional constraints, but has also been used
+to give names to types that need them e.g. if an array type is under `$defs`. Would we continue to do something like:
+
+```rust
+pub struct Foo(Vec<Bar>):
+```
+
+Or would we rather have something like:
+
+```rust
+pub type Foo = Vec<Bar>;
+```
+
+Named tuples / tuple-like structs give us an opportunity to have custom
+serialization / deserialization (e.g. to support "flattened" arrays at the end
+of tuples).
+
+In the past we've turned top-level tuple types into types like this:
+
+
+```rust
+pub struct Foo(pub (String, String)):
+```
+
+That seems strictly worse than:
+
+
+```rust
+pub struct Foo(pub String, pub String);
+```
+
+Yeah: `foo.0.0` is much dumber than `foo.0`.
+
+I'm not clear if we want to represent a tuple and tuple-like struct as two
+distinct internal types or as one with, say, the presence of a name to
+distinguish. Certainly, the need for custom serialization would also require
+the struct-tuple.
+
+
+#### Normalizer v2
+
+It's a bit hacky; I think I can do better.
