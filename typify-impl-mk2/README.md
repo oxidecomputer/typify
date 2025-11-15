@@ -5,11 +5,157 @@
 There are several ways we might get a name for a type.
 
 - User provided / indicated
+- Inference from the path (e.g. `#/$defs/FooType`)
 - `title` field
-- context from parent
+- Context from a referring type (e.g. struct `Foo` has a property `bar` whose
+  type we call `FooBar`)
+
+## Schema Conversion
+
+TODO 11/15/2025
+Talk about schema conversion
 
 
-## trait impls
+## Customizing Schema Conversion
+
+Consumers may want to customize the way schemas are transformed into Rust
+types. There are several reasons why one might want to do this. For example,
+the default conversions might produce types that are insufficiently expressive,
+or there may be a specific Rust type you'd prefer to use over a generated type.
+There are several ways to customize schema conversion to allow for flexibility
+in a variety of situations.
+
+Note that all mechanisms for replacing types provide a way to specify both the
+desired type **and** various traits that the type implements. Knowing the
+traits allows `typify` to properly propagate traits.
+
+### Replace: XXX
+
+XXX we had been using the type name; I'd rather use the more stable SchemaRef, but I need to figure out 1. if that's a good idea, and 2. how to explain it.
+
+### Convert: Schema Pattern Matching
+
+In situations where the consumer wants a particular schema, or schemas of a
+specific shape to become a specific type, the "convert" setting provides a
+mechanism to do schema pattern matching based conversion to a specific Rust
+type. Pattern matching is done (with some irony) using JSON Schema (draft
+2020-12 by default, but that can be overridden with the `$schema` property),
+and the replacement type and traits are specified as strings.
+
+For example, let's say your document contains a simple schema like this:
+
+```json
+{
+    "type": "number"
+}
+```
+
+By default, `typify` converts this into a `f64`--which is fine for most use
+cases, but can be problematic when dealing with numbers beyond ±2<sup>53</sup>.
+For example, `f64` cannot accurately represent `i64::MAX`, so the default type
+generation isn't a good fit for data that contains that value! A better fit
+would be a type such as `serde_json::Number`. We can match the schema above
+like this:
+
+```json
+{
+    "const": { "type": "number" }
+}
+```
+
+Note that this matches *exactly* the constant value specified; but let's say we want to use `serde_json::Number` for this schema as well:
+
+```json
+{
+    "type": "number",
+    "exclusiveMinimum": 1
+}
+```
+
+To match against either, we can use a schema like this:
+
+```json
+{
+    "type": "object",
+    "properties": {
+        "type": { "const": "number" },
+        "exclusiveMinimum": { "type": "number" }
+    },
+    "required": [ "type" ],
+    "additionalProperties": false
+}
+```
+
+This schema matches an object with a required property `"type"` whose value
+must be `"number"` with a single, additional, optional property,
+`"exclusiveMinimum"` whose value must be a number.
+
+#### Future Work
+
+In the future we might consider two additional types of matching:
+
+Parameterized matching, for example, to enable one to specify a parameterized
+type. We could use the `title` field in the schema validation to name replacement parameterized types e.g.
+
+```json
+{
+    "type": "object",
+    "properties": {
+        "type": { "const": "object" },
+        "additionalProperties": { "title": "value" }
+    },
+    "required": ["type", "additionalProperties"],
+    "additionalProperties": false
+}
+```
+
+And specify a replacement type with something like this:
+`::indexmap::IndexMap<String, value>` where `value` would be a type that would be converted according to the normal mechanisms.
+
+I'm not sure this is a great idea... but it's **an** idea.
+
+The other consideration is replacements against the internal representation
+rather than the input schema. This assumes a stable and documented canonical
+representation, but might be useful when considering generic structures rather
+than specific subsets of a known schema.
+
+### Crate Assisted
+
+External crates may generate JSON Schemas for their types that indicate an
+appropriate replacement type. Consider a schema like this
+
+```json
+{
+    "type": "string",
+    "format": "email"
+}
+```
+
+`typify` simply represents this with the type `String`, but let's say we had a
+crate called `fancy-email-addresses` with a type called `EmailAddress`. The
+JSON Schema for that type could look like this:
+
+```json
+{
+    "type": "string",
+    "format": "email",
+    "x-rust-type": {
+        "crate": "fancy-email-address",
+        "path": "fancy_email_address::EmailAddress",
+        "version": ">1.0"
+    }
+}
+```
+
+This indicates to `typify` an appropriate conversion. To make use of this type,
+consumers need to indicate 1. that they're using the crate
+`fancy-email-address` and 2. the version that they're using, say 1.2. The
+version specified to `typify` is validated against the version spec embedded in
+the schema. Since in this case the version in use (1.2) is compatible with the
+spec (>1.0), typify would make use of this embedded type conversion.
+
+
+## Trait impls
 
 What traits should a type implement? We should have a structured list that are
 under consideration. For example `::serde::Serialize`, `::std::marker::Copy`,
@@ -317,6 +463,11 @@ in the abstract so let me make it concrete: it would be cool for numbers
 than, say, `f64` or `i64`. In particular I think I want this for type
 generation from spec schemas.
 
+#### Update: 11/15/2025
+
+We did something neat here: allowed pattern matching using JSON Schema to then
+replace types. I think we could imagine an even more complex scheme in the future which I'll document [above](#customizing-schema-conversion).
+
 ### 7/25/2025
 
 Interesting realization: `serdes`'s conflation of absent and `null`-values
@@ -586,3 +737,19 @@ the struct-tuple.
 #### Normalizer v2
 
 It's a bit hacky; I think I can do better.
+
+- Clean up some of the cloning going on in there.
+- More significantly, I think we want to think of this as graph transformation
+  rather than just accumulating "canonical" outcomes. In some cases, we don't
+  need a fully canonical child to proceed; it's sufficient to have identified
+  the *type* of a child.
+
+
+#### Typify interface
+
+Clearly we need to be able to convert a schema (by ref) with a particular name
+(e.g. from progenitor "this operation has this body param with a name we've
+chosen from that context"). Also we need to have some way to (optionally?)
+generate types for definitions (in the particular location given the schema
+type) and potentially customize this in some way e.g. for that weird nested
+defs schema that has come up in the issues a few times.
