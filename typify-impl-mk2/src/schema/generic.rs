@@ -450,8 +450,8 @@ impl GenericSchema {
 
         let details = match everything.len() {
             0 => {
-                todo!("no schema details found for {id}")
-                // SchemaletDetails::Anything
+                // todo!("no schema details found for {id}")
+                SchemaletDetails::Anything
             }
 
             1 => everything.into_iter().next().unwrap().1,

@@ -243,12 +243,21 @@ impl Bundle {
     }
 
     pub fn resolve_root(&self, id: impl AsRef<str>) -> Result<Resolved, Error> {
+        let id_str = id.as_ref();
+        let (location, fragment) = if let Some(ii) = id_str.find('#') {
+            (&id_str[..ii], &id_str[ii..])
+        } else {
+            (id_str, "")
+        };
+
+        println!("resolve root {} {} {}", id.as_ref(), location, fragment);
+
         let context = Context {
-            location: url::Url::parse(id.as_ref()).unwrap(),
+            location: url::Url::parse(location).unwrap(),
             dyn_anchors: Default::default(),
         };
 
-        self.resolve(&context, "")
+        self.resolve(&context, fragment)
     }
 
     fn xxx_url(base: &Url, reference: &str) -> (DocumentId, String) {
@@ -320,14 +329,14 @@ impl Bundle {
         .unwrap();
         // .ok_or(Error)?;
 
-        // The dynamic anchors of the incoming context *intentionally*
-        // overwrite those of the document.
         let mut dyn_anchors = doc
             .dyn_anchors
             .iter()
             .map(|(anchor, path)| (anchor.clone(), doc.id.with_fragment(path)))
             .collect::<BTreeMap<_, _>>();
 
+        // The dynamic anchors of the incoming context *intentionally*
+        // overwrite those of the document.
         for (k, v) in &context.dyn_anchors {
             dyn_anchors.insert(k.clone(), v.clone());
         }
@@ -462,7 +471,7 @@ mod tests {
     ///    conversion into GENERIC
     #[test]
     fn xxx() {
-        // TODO 11/12/2025
+        // TODO 11.12.2025
         // We can probably clean this up, but for now it's just a dead simple
         // test to validate that we can make a bundle from the 2020-12 schema.
         let id = "https://json-schema.org/draft/2020-12/schema";

@@ -56,7 +56,31 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     let mut bundle = Bundle::default();
     let root_content = std::fs::read_to_string(path)?;
     let context = bundle.add_content(root_content).expect("invalid content");
+
+    // TODO 11/14/2025
+    // Pretty kludgy, but I just want to get something going. Not sure what a
+    // better version of this is going to look like.
+    let file_content = bundle.resolve(&context, "#").unwrap();
+
+    let defs = file_content
+        .value
+        .get("$defs")
+        .and_then(|v| v.as_object())
+        .map(|m| m.keys().cloned().collect::<Vec<_>>())
+        .unwrap_or_default();
+
     let mut typify = Typify::new_with_bundle(bundle, Default::default());
+
+    assert_eq!(context.location.to_string(), "http://localhost/");
+
+    println!("{:?}", defs);
+
+    for def in defs {
+        let xxx = format!("{}#/$defs/{}", context.location, def);
+        println!("adding type for {def} {xxx}");
+        let _type_id = typify.add_type_by_id(&xxx).unwrap();
+    }
+
     let _type_id = typify
         .add_type_by_id(&context.location.to_string())
         .unwrap();

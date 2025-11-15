@@ -1,0 +1,185 @@
+[
+  [
+    "http://localhost/#",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/array-sans-items",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "min_items": 1,
+            "unique_items": true
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/less-simple-two-tuple",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "prefix_items": [
+              "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/0",
+              "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/1",
+              "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/2"
+            ],
+            "max_items": 2,
+            "min_items": 2
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/1",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/less-simple-two-tuple/prefixItems/2",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/simple-two-array",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "http://localhost/#/$defs/simple-two-array/items",
+            "max_items": 2,
+            "min_items": 2
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/simple-two-array/items",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/simple-two-tuple",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "prefix_items": [
+              "http://localhost/#/$defs/simple-two-tuple/prefixItems/0",
+              "http://localhost/#/$defs/simple-two-tuple/prefixItems/1"
+            ],
+            "max_items": 2,
+            "min_items": 2
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/simple-two-tuple/prefixItems/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/simple-two-tuple/prefixItems/1",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/unsimple-two-tuple",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "prefix_items": [
+              "http://localhost/#/$defs/unsimple-two-tuple/prefixItems/0"
+            ],
+            "max_items": 2,
+            "min_items": 2
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/unsimple-two-tuple/prefixItems/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/yolo-two-array",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "max_items": 2,
+            "min_items": 2
+          }
+        }
+      }
+    }
+  ],
+  [
+    "internal@any",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "internal@string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ]
+]

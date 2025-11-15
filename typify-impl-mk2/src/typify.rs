@@ -72,7 +72,13 @@ impl Typify {
     /// specification is determined by the value in the document named by the
     /// provided id; to override that value, use facilities of the `Bundle`.
     pub fn add_type_by_id(&mut self, id: impl AsRef<str>) -> Result<TypeId> {
-        let typ_id = SchemaRef::Id(format!("{}#", id.as_ref()));
+        let id_str = id.as_ref();
+        let id_str = if id_str.contains('#') {
+            id_str.to_string()
+        } else {
+            format!("{}#", id_str)
+        };
+        let typ_id = SchemaRef::Id(id_str);
 
         // Add the schemalets reachable from `id` to the graph, and then
         // normalize those additions.
@@ -91,6 +97,9 @@ impl Typify {
         let mut work = VecDeque::from([typ_id.clone()]);
 
         'outer: while let Some(work_id) = work.pop_front() {
+            // If we've already converted this type, we can skip it. Note that
+            // this may mean we saw it in a previous iteration of this loop or
+            // in a previous invocation of this method.
             if self.typespace.contains_type(&work_id) {
                 continue;
             }
@@ -125,18 +134,9 @@ impl Typify {
                 _ => None,
             };
 
-            // TODO 9.15.2025
-            // This is approximately where I want to do JSON Schema validation
-            // of the original JSON against any items in the
-            // self.settings.convert array. If there's a match, we can skip the
-            // part where we do any converting and just slap in the type
-            // defined by the conversion setting.
-
-            println!(
-                "convert: {}",
-                serde_json::to_string_pretty(&self.settings.convert).unwrap(),
-            );
-
+            // Compare the original JSON schema against each of the specified
+            // conversions in the settings. If there's a match, we use the
+            // provided type.
             if let Some(original_json) = maybe_original_json {
                 for conv in &self.settings.convert {
                     if jsonschema::is_valid(&conv.pattern, original_json) {
@@ -182,20 +182,29 @@ impl Typify {
 
 impl Default for Normalizer {
     fn default() -> Self {
-        let canonical = [(
-            SchemaRef::Internal("string".to_string()),
-            CanonicalSchemalet {
-                metadata: Default::default(),
-                details: CanonicalSchemaletDetails::Value(SchemaletValue::String(
-                    SchemaletValueString {
-                        pattern: Vec::new(),
-                        format: Vec::new(),
-                        min_length: None,
-                        max_length: None,
-                    },
-                )),
-            },
-        )]
+        let canonical = [
+            (
+                SchemaRef::Internal("string".to_string()),
+                CanonicalSchemalet {
+                    metadata: Default::default(),
+                    details: CanonicalSchemaletDetails::Value(SchemaletValue::String(
+                        SchemaletValueString {
+                            pattern: Vec::new(),
+                            format: Vec::new(),
+                            min_length: None,
+                            max_length: None,
+                        },
+                    )),
+                },
+            ),
+            (
+                SchemaRef::Internal("any".to_string()),
+                CanonicalSchemalet {
+                    metadata: Default::default(),
+                    details: CanonicalSchemaletDetails::Anything,
+                },
+            ),
+        ]
         .into();
 
         Self {
@@ -207,22 +216,34 @@ impl Default for Normalizer {
 
 impl Normalizer {
     pub(crate) fn add(&mut self, bundle: &Bundle, id: impl AsRef<str>) -> Result<()> {
+        // We add the raw schemalets from the bundle...
         self.add_raw(bundle, id.as_ref())?;
 
         // TODO 7.15.2025
         // This is an extremely awful hack as I figure out this interface.
         let wip = self.raw.clone();
 
+        // ... and then normalize everything.
         self.normalize(id, wip)?;
 
         Ok(())
     }
 
     fn add_raw(&mut self, bundle: &Bundle, id: impl AsRef<str>) -> Result<()> {
+        let fragment = if let Some(ii) = id.as_ref().find('#') {
+            &id.as_ref()[ii..]
+        } else {
+            "#"
+        }
+        .to_string();
+
         // TODO 7.15.2025
         // This use of "#" doesn't feel quite right
         // Test the situation where the id is not the root of the document.
-        let mut references = vec![(bundle.resolve_root(id).unwrap().context, "#".to_string())];
+        // TODO 11/14/2025
+        // We're no longer just using "#" and instead we're grabbing the
+        // fragment. But this still feels pretty jank.
+        let mut references = vec![(bundle.resolve_root(id).unwrap().context, fragment)];
 
         while let Some((context, path)) = references.pop() {
             let resolved = bundle

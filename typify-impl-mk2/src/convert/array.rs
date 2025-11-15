@@ -1,6 +1,6 @@
 use crate::{
     convert::{Converter, GottenStuff},
-    schemalet::SchemaletValueArray,
+    schemalet::{SchemaRef, SchemaletValueArray},
     typespace::{NameBuilder, Type},
 };
 
@@ -12,6 +12,12 @@ impl Converter {
         array: &SchemaletValueArray,
     ) -> Type {
         match array {
+            // A vanilla, no-nonsense tuple has a fixed number of items (min
+            // and max are equal). We take the first N items from `prefixItems`
+            // (or `items` prior to JSON Schema 2020-12) and any additional
+            // items from `items` (or `additionalItems` prior to JSON Schema
+            // 2020-12). Note that our canonical form mimics the simpler,
+            // modern, backward-incompatible 2020-12+ format.
             SchemaletValueArray {
                 items,
                 prefix_items,
@@ -19,20 +25,39 @@ impl Converter {
                 min_items: Some(min_items),
                 unique_items: None,
             } if max_items == min_items && *max_items > 0 => {
-                // TODO
-                // This is a tuple type
-                todo!()
+                // TODO 11/14/2025
+                // One thing I'm not sure about is tuple-like structs i.e.
+                // named tuple types.
+                let types = prefix_items
+                    .iter()
+                    .flatten()
+                    .map(|item_id| self.resolve_and_get_stuff(item_id).id.clone())
+                    .chain(std::iter::repeat_with(|| {
+                        if let Some(items) = items {
+                            self.resolve_and_get_stuff(items).id.clone()
+                        } else {
+                            SchemaRef::Internal("any".to_string())
+                        }
+                    }))
+                    .take(*max_items as usize)
+                    .collect::<Vec<_>>();
+
+                Type::Tuple(types)
             }
 
             SchemaletValueArray {
-                items: Some(items),
+                items,
                 prefix_items: None,
                 max_items,
                 min_items,
                 unique_items,
             } => {
-                let GottenStuff { id, .. } = self.resolve_and_get_stuff(items);
-                Type::Vec(id.clone())
+                let id = if let Some(items) = items {
+                    self.resolve_and_get_stuff(items).id.clone()
+                } else {
+                    SchemaRef::Internal("any".to_string())
+                };
+                Type::Vec(id)
             }
 
             _ => {

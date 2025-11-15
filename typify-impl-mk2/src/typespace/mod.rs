@@ -159,113 +159,117 @@ pub struct Typespace {
 
 impl Typespace {
     pub fn render(&self) -> TokenStream {
-        let types = self.types.iter().map(|(id, typ)| match typ {
-            Type::Enum(type_enum) => {
-                let TypeEnum {
-                    name,
-                    description,
-                    default,
-                    tag_type,
-                    variants,
-                    deny_unknown_fields,
-                    built,
-                } = type_enum;
-                let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-                let serde = match tag_type {
-                    EnumTagType::External => TokenStream::new(),
-                    EnumTagType::Internal { tag } => quote! {
-                        #[serde(tag = #tag)]
-                    },
-                    EnumTagType::Adjacent { tag, content } => quote! {
-                        #[serde(tag = #tag, content = #content)]
-                    },
-                    EnumTagType::Untagged => quote! {
-                        #[serde(untagged)]
-                    },
-                };
-
-                let variants = variants.iter().map(|variant| {
-                    let EnumVariant {
-                        rust_name,
-                        rename,
+        let types = self.types.iter().map(|(id, typ)| {
+            println!("rendering {id}");
+            match typ {
+                Type::Enum(type_enum) => {
+                    let TypeEnum {
+                        name,
                         description,
-                        details,
-                    } = variant;
-                    let name = format_ident!("{}", rust_name);
-                    let variant_serde = rename.as_ref().map(|n| {
-                        quote! {
-                            #[serde(rename = #n)]
-                        }
-                    });
+                        default,
+                        tag_type,
+                        variants,
+                        deny_unknown_fields,
+                        built,
+                    } = type_enum;
                     let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+                    let serde = match tag_type {
+                        EnumTagType::External => TokenStream::new(),
+                        EnumTagType::Internal { tag } => quote! {
+                            #[serde(tag = #tag)]
+                        },
+                        EnumTagType::Adjacent { tag, content } => quote! {
+                            #[serde(tag = #tag, content = #content)]
+                        },
+                        EnumTagType::Untagged => quote! {
+                            #[serde(untagged)]
+                        },
+                    };
 
-                    let data = match details {
-                        VariantDetails::Simple => TokenStream::new(),
-                        VariantDetails::Item(item) => {
-                            let item_ident = self.render_ident(item);
+                    let variants = variants.iter().map(|variant| {
+                        let EnumVariant {
+                            rust_name,
+                            rename,
+                            description,
+                            details,
+                        } = variant;
+                        let name = format_ident!("{}", rust_name);
+                        let variant_serde = rename.as_ref().map(|n| {
                             quote! {
-                                (#item_ident)
+                                #[serde(rename = #n)]
                             }
-                        }
-                        VariantDetails::Tuple(items) => todo!(),
-                        VariantDetails::Struct(properties) => {
-                            let properties = properties
-                                .iter()
-                                .map(|struct_prop| self.render_struct_property(struct_prop, false));
-                            quote! {
-                                {
-                                    #( #properties, )*
+                        });
+                        let description =
+                            description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+
+                        let data = match details {
+                            VariantDetails::Simple => TokenStream::new(),
+                            VariantDetails::Item(item) => {
+                                let item_ident = self.render_ident(item);
+                                quote! {
+                                    (#item_ident)
                                 }
                             }
+                            VariantDetails::Tuple(items) => todo!(),
+                            VariantDetails::Struct(properties) => {
+                                let properties = properties.iter().map(|struct_prop| {
+                                    self.render_struct_property(struct_prop, false)
+                                });
+                                quote! {
+                                    {
+                                        #( #properties, )*
+                                    }
+                                }
+                            }
+                        };
+
+                        quote! {
+                            #description
+                            #variant_serde
+                            #name #data
                         }
-                    };
+                    });
+
+                    let name = built.as_ref().unwrap().name.to_string();
+                    let name_ident = format_ident!("{name}");
+
+                    quote! {
+                        // TODO I want to have the original unique id available
+                        #description
+                        #[derive(::serde::Deserialize, ::serde::Serialize)]
+                        #serde
+                        pub enum #name_ident {
+                            #( #variants, )*
+                        }
+                    }
+                }
+                Type::Struct(type_struct) => {
+                    let TypeStruct {
+                        name: _,
+                        description,
+                        default,
+                        properties,
+                        deny_unknown_fields,
+                        built,
+                    } = type_struct;
+                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+                    let properties = properties
+                        .iter()
+                        .map(|prop| self.render_struct_property(prop, true));
+
+                    let name = built.as_ref().unwrap().name.to_string();
+                    let name_ident = format_ident!("{name}");
 
                     quote! {
                         #description
-                        #variant_serde
-                        #name #data
-                    }
-                });
-
-                let name = built.as_ref().unwrap().name.to_string();
-                let name_ident = format_ident!("{name}");
-
-                quote! {
-                    // TODO I want to have the original unique id available
-                    #description
-                    #[derive(::serde::Deserialize, ::serde::Serialize)]
-                    #serde
-                    pub enum #name_ident {
-                        #( #variants, )*
+                        #[derive(::serde::Deserialize, ::serde::Serialize)]
+                        pub struct #name_ident {
+                            #( #properties, )*
+                        }
                     }
                 }
+                _ => quote! {},
             }
-            Type::Struct(type_struct) => {
-                let TypeStruct {
-                    name: _,
-                    description,
-                    default,
-                    properties,
-                    deny_unknown_fields,
-                    built,
-                } = type_struct;
-                let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-                let properties = properties
-                    .iter()
-                    .map(|prop| self.render_struct_property(prop, true));
-
-                let name = built.as_ref().unwrap().name.to_string();
-                let name_ident = format_ident!("{name}");
-
-                quote! {
-                    #description
-                    #[derive(::serde::Deserialize, ::serde::Serialize)]
-                    pub struct #name_ident {
-                        #( #properties, )*
-                    }
-                }
-            }
-            _ => quote! {},
         });
 
         quote! {
@@ -931,6 +935,8 @@ impl Type {
         }
     }
 
+    /// Return the list of child types that are contained (i.e. contributed to
+    /// the size of this type). This is used to consider containment cycles.
     pub fn contained_children_mut(&mut self) -> Vec<&mut SchemaRef> {
         match self {
             Type::Enum(TypeEnum { variants, .. }) => {
@@ -958,8 +964,8 @@ impl Type {
                 .map(|prop| &mut prop.type_id)
                 .collect(),
             Type::Option(id) => vec![id],
-            Type::Array(_, _) => todo!(),
-            Type::Tuple(items) => todo!(),
+            Type::Array(id, _) => vec![id],
+            Type::Tuple(items) => items.iter_mut().collect(),
 
             // TODO maybe native types could have children? Right now these are
             // just for self-contained types...
