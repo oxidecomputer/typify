@@ -671,8 +671,8 @@ fn merge_so_instance_type(
                 .iter()
                 .collect::<BTreeSet<_>>()
                 .intersection(&bb.iter().collect::<BTreeSet<_>>())
-                .cloned()
-                .cloned()
+                .copied()
+                .copied()
                 .collect::<Vec<_>>();
 
             match types.len() {
@@ -701,10 +701,8 @@ fn merge_so_format(a: Option<&String>, b: Option<&String>) -> Result<Option<Stri
     match (a.map(String::as_str), b.map(String::as_str)) {
         (None, other) | (other, None) => Ok(other.map(String::from)),
 
-        (Some("ip"), result @ Some("ipv4"))
-        | (Some("ip"), result @ Some("ipv6"))
-        | (result @ Some("ipv4"), Some("ip"))
-        | (result @ Some("ipv6"), Some("ip")) => Ok(result.map(String::from)),
+        (Some("ip"), result @ Some("ipv4" | "ipv6"))
+        | (result @ Some("ipv4" | "ipv6"), Some("ip")) => Ok(result.map(String::from)),
 
         // Fine if they're both the same
         (Some(aa), Some(bb)) if aa == bb => Ok(Some(aa.into())),
@@ -939,22 +937,19 @@ fn merge_items_array<'a>(
 ) -> Result<(Vec<Schema>, bool), ()> {
     let mut items = Vec::new();
     for (a, b) in items_iter {
-        match try_merge_schema(a, b, defs) {
-            Ok(schema) => {
-                items.push(schema);
-                if let Some(max) = max_items {
-                    if items.len() == max as usize {
-                        return Ok((items, false));
-                    }
+        if let Ok(schema) = try_merge_schema(a, b, defs) {
+            items.push(schema);
+            if let Some(max) = max_items {
+                if items.len() == max as usize {
+                    return Ok((items, false));
                 }
             }
-            Err(_) => {
-                let len = items.len() as u32;
-                if len < min_items.unwrap_or(1) {
-                    return Err(());
-                }
-                return Ok((items, false));
+        } else {
+            let len = items.len() as u32;
+            if len < min_items.unwrap_or(1) {
+                return Err(());
             }
+            return Ok((items, false));
         }
     }
 
@@ -1640,7 +1635,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1683,7 +1678,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1725,7 +1720,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1766,7 +1761,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1822,6 +1817,6 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 }

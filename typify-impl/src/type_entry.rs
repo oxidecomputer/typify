@@ -733,13 +733,13 @@ impl TypeEntry {
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
-                self.output_enum(type_space, output, enum_details, derive_set)
+                self.output_enum(type_space, output, enum_details, derive_set);
             }
             TypeEntryDetails::Struct(struct_details) => {
-                self.output_struct(type_space, output, struct_details, derive_set)
+                self.output_struct(type_space, output, struct_details, derive_set);
             }
             TypeEntryDetails::Newtype(newtype_details) => {
-                self.output_newtype(type_space, output, newtype_details, derive_set)
+                self.output_newtype(type_space, output, newtype_details, derive_set);
             }
 
             // We should never get here as reference types should only be used
@@ -822,7 +822,7 @@ impl TypeEntry {
                     .filter(|variant| matches!(variant.details, VariantDetails::Simple))
                     .count()
                     <= 1
-            )
+            );
         }
 
         // Display and FromStr impls for enums that are made exclusively of
@@ -1252,7 +1252,7 @@ impl TypeEntry {
                         }
                     }
                 },
-            )
+            );
         }
 
         if type_space.settings.struct_builder {

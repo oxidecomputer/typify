@@ -7,7 +7,7 @@ include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 #[test]
 fn test_main() {
-    main()
+    main();
 }
 
 fn main() {

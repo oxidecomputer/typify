@@ -52,14 +52,14 @@ pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
 /// Ingest a type, spit it back out, and make sure it matches where we started.
 #[track_caller]
 pub(crate) fn validate_output<T: JsonSchema + Schema>() {
-    validate_output_impl::<T>(false)
+    validate_output_impl::<T>(false);
 }
 
 /// Same as `validate_output` but ignores differences of the top-level enum's
 /// variant names which are lost in the case of `#[serde(untagged)]`
 #[track_caller]
 pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
-    validate_output_impl::<T>(true)
+    validate_output_impl::<T>(true);
 }
 
 #[track_caller]

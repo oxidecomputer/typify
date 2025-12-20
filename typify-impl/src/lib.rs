@@ -657,7 +657,7 @@ impl TypeSpace {
                     } else {
                         Name::Unknown
                     };
-                    self.convert_ref_type(type_name, schema, type_id)?
+                    self.convert_ref_type(type_name, schema, type_id)?;
                 }
 
                 Some(replace_type) => {
@@ -1002,7 +1002,7 @@ impl TypeSpace {
 
 impl ToTokens for TypeSpace {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        tokens.extend(self.to_stream())
+        tokens.extend(self.to_stream());
     }
 }
 
@@ -1308,7 +1308,7 @@ mod tests {
         let tokens = type_space.to_stream().to_string();
         println!("{}", tokens);
         assert!(tokens
-            .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"))
+            .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"));
     }
 
     #[test]

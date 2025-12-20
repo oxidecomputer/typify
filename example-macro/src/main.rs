@@ -23,7 +23,7 @@ import_types!(
 
 #[test]
 fn test_main() {
-    main()
+    main();
 }
 
 fn main() {

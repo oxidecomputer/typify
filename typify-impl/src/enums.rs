@@ -1253,7 +1253,7 @@ mod tests {
             .maybe_option(Name::Unknown, &None, &subschemas)
             .unwrap();
 
-        assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)))
+        assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)));
     }
 
     #[test]

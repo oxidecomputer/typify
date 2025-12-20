@@ -1088,9 +1088,8 @@ impl TypeSpace {
                     // Use NonZero types for minimum 1
                     if min == Some(1.) {
                         return Ok((TypeEntry::new_integer(nz_ty), metadata));
-                    } else {
-                        return Ok((TypeEntry::new_integer(ty), metadata));
                     }
+                    return Ok((TypeEntry::new_integer(ty), metadata));
                 }
 
                 if min.is_none() {
