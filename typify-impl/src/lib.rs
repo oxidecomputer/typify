@@ -152,6 +152,13 @@ pub(crate) enum Name {
 }
 
 impl Name {
+    pub fn as_option(&self) -> Option<&String> {
+        match self {
+            Name::Required(s) | Name::Suggested(s) => Some(s),
+            Name::Unknown => None,
+        }
+    }
+
     pub fn into_option(self) -> Option<String> {
         match self {
             Name::Required(s) | Name::Suggested(s) => Some(s),
@@ -431,16 +438,20 @@ impl TypeSpaceSettings {
     /// Replace a referenced type with a named type. This causes the referenced
     /// type *not* to be generated. If the same `type_name` is specified multiple times,
     /// the last one is honored.
-    pub fn with_replacement<TS: ToString, RS: ToString, I: Iterator<Item = TypeSpaceImpl>>(
+    pub fn with_replacement<
+        TS: Into<String>,
+        RS: Into<String>,
+        I: Iterator<Item = TypeSpaceImpl>,
+    >(
         &mut self,
         type_name: TS,
         replace_type: RS,
         impls: I,
     ) -> &mut Self {
         self.replace.insert(
-            type_name.to_string(),
+            type_name.into(),
             TypeSpaceReplace {
-                replace_type: replace_type.to_string(),
+                replace_type: replace_type.into(),
                 impls: impls.collect(),
             },
         );
@@ -451,12 +462,12 @@ impl TypeSpaceSettings {
     /// created by the input JSON schema does **not** result in an error and is
     /// silently ignored. If the same `type_name` is specified multiple times,
     /// the last one is honored.
-    pub fn with_patch<S: ToString>(
+    pub fn with_patch<S: Into<String>>(
         &mut self,
         type_name: S,
-        type_patch: &TypeSpacePatch,
+        type_patch: TypeSpacePatch,
     ) -> &mut Self {
-        self.patch.insert(type_name.to_string(), type_patch.clone());
+        self.patch.insert(type_name.into(), type_patch);
         self
     }
 
@@ -485,7 +496,7 @@ impl TypeSpaceSettings {
     ///            ),
     ///    );
     /// ```
-    pub fn with_conversion<S: ToString, I: Iterator<Item = TypeSpaceImpl>>(
+    pub fn with_conversion<S: Into<String>, I: Iterator<Item = TypeSpaceImpl>>(
         &mut self,
         schema: schemars::schema::SchemaObject,
         type_name: S,
@@ -493,7 +504,7 @@ impl TypeSpaceSettings {
     ) -> &mut Self {
         self.convert.push(TypeSpaceConversion {
             schema,
-            type_name: type_name.to_string(),
+            type_name: type_name.into(),
             impls: impls.collect(),
         });
         self
@@ -515,19 +526,14 @@ impl TypeSpaceSettings {
     /// generate) types from the given crate and version. The version should
     /// precisely match the version of the crate that you expect as a
     /// dependency.
-    pub fn with_crate<S1: ToString>(
+    pub fn with_crate<S1: Into<String>>(
         &mut self,
         crate_name: S1,
         version: CrateVers,
-        rename: Option<&String>,
+        rename: Option<String>,
     ) -> &mut Self {
-        self.crates.insert(
-            crate_name.to_string(),
-            CrateSpec {
-                version,
-                rename: rename.cloned(),
-            },
-        );
+        self.crates
+            .insert(crate_name.into(), CrateSpec { version, rename });
         self
     }
 
@@ -553,14 +559,14 @@ impl TypeSpaceSettings {
 
 impl TypeSpacePatch {
     /// Specify the new name for patched type.
-    pub fn with_rename<S: ToString>(&mut self, rename: S) -> &mut Self {
-        self.rename = Some(rename.to_string());
+    pub fn with_rename<S: Into<String>>(mut self, rename: S) -> Self {
+        self.rename = Some(rename.into());
         self
     }
 
     /// Specify an additional derive to apply to the patched type.
-    pub fn with_derive<S: ToString>(&mut self, derive: S) -> &mut Self {
-        self.derives.push(derive.to_string());
+    pub fn with_derive<S: Into<String>>(mut self, derive: S) -> Self {
+        self.derives.push(derive.into());
         self
     }
 }
@@ -657,7 +663,7 @@ impl TypeSpace {
                     } else {
                         Name::Unknown
                     };
-                    self.convert_ref_type(type_name, schema, type_id)?
+                    self.convert_ref_type(&type_name, &schema, type_id)?
                 }
 
                 Some(replace_type) => {
@@ -685,8 +691,13 @@ impl TypeSpace {
         Ok(())
     }
 
-    fn convert_ref_type(&mut self, type_name: Name, schema: Schema, type_id: TypeId) -> Result<()> {
-        let (mut type_entry, metadata) = self.convert_schema(type_name.clone(), &schema)?;
+    fn convert_ref_type(
+        &mut self,
+        type_name: &Name,
+        schema: &Schema,
+        type_id: TypeId,
+    ) -> Result<()> {
+        let (mut type_entry, metadata) = self.convert_schema(type_name, schema)?;
         let default = metadata
             .as_ref()
             .and_then(|m| m.default.as_ref())
@@ -719,7 +730,7 @@ impl TypeSpace {
                 schema.clone(),
             ),
 
-            TypeEntryDetails::Native(native) if native.name_match(&type_name) => type_entry,
+            TypeEntryDetails::Native(native) if native.name_match(type_name) => type_entry,
 
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
@@ -767,7 +778,7 @@ impl TypeSpace {
             Some(s) => Name::Suggested(s),
             None => Name::Unknown,
         };
-        let (type_id, _) = self.id_for_schema(name, schema)?;
+        let (type_id, _) = self.id_for_schema(&name, schema)?;
 
         // Finalize all created types.
         for index in base_id..self.next_id {
@@ -961,7 +972,7 @@ impl TypeSpace {
     /// properties of a struct.
     fn id_for_schema<'a>(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         schema: &'a Schema,
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
         let (mut type_entry, metadata) = self.convert_schema(type_name, schema)?;
@@ -1261,7 +1272,7 @@ mod tests {
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
             .convert_schema_object(
-                Name::Unknown,
+                &Name::Unknown,
                 &schemars::schema::Schema::Object(schema.schema.clone()),
                 &schema.schema,
             )
@@ -1329,7 +1340,7 @@ mod tests {
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
             .convert_schema_object(
-                Name::Unknown,
+                &Name::Unknown,
                 &schemars::schema::Schema::Object(schema.schema.clone()),
                 &schema.schema,
             )
@@ -1374,7 +1385,7 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let (te, _) = type_space
             .convert_enum_string(
-                Name::Required("OnTheGo".to_string()),
+                &Name::Required("OnTheGo".to_string()),
                 &serde_json::from_value(original_schema).unwrap(),
                 &None,
                 &enum_values,

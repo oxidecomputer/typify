@@ -18,7 +18,7 @@ use crate::{
 impl TypeSpace {
     pub(crate) fn struct_members(
         &mut self,
-        type_name: Option<String>,
+        type_name: Option<&String>,
         validation: &ObjectValidation,
     ) -> Result<(Vec<StructProperty>, bool)> {
         // These are the fields we don't currently handle
@@ -98,7 +98,7 @@ impl TypeSpace {
             additional_properties @ Some(_) => {
                 let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
                 let map_type = self.make_map(
-                    sub_type_name,
+                    sub_type_name.as_ref(),
                     &validation.property_names,
                     additional_properties,
                 )?;
@@ -130,7 +130,7 @@ impl TypeSpace {
             Some(name) => Name::Suggested(name),
             None => Name::Unknown,
         };
-        let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
+        let (mut type_id, metadata) = self.id_for_schema(&sub_type_name, schema)?;
 
         let state = if required.contains(prop_name) {
             StructPropertyState::Required
@@ -184,7 +184,7 @@ impl TypeSpace {
 
     pub(crate) fn make_map(
         &mut self,
-        type_name: Option<String>,
+        type_name: Option<&String>,
         property_names: &Option<Box<Schema>>,
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<TypeEntry> {
@@ -200,7 +200,7 @@ impl TypeSpace {
                     Some(name) => Name::Suggested(format!("{}Key", name)),
                     None => Name::Unknown,
                 };
-                self.id_for_schema_string(key_type_name, obj)?
+                self.id_for_schema_string(&key_type_name, obj)?
             }
         };
 
@@ -210,10 +210,10 @@ impl TypeSpace {
                     Some(name) => Name::Suggested(format!("{}Value", name)),
                     None => Name::Unknown,
                 };
-                self.id_for_schema(value_type_name, value_schema)?
+                self.id_for_schema(&value_type_name, value_schema)?
             }
 
-            None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
+            None => self.id_for_schema(&Name::Unknown, &Schema::Bool(true))?,
         };
 
         Ok(TypeEntryDetails::Map(key_id, value_id).into())
@@ -222,7 +222,7 @@ impl TypeSpace {
     /// Perform a schema conversion for a type that must be string-like.
     pub(crate) fn id_for_schema_string(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         schema_obj: &SchemaObject,
     ) -> Result<TypeId> {
         match schema_obj {
@@ -267,7 +267,7 @@ impl TypeSpace {
     /// has type T_N for each member of the struct, the former has Option<T_N>.
     pub(crate) fn flattened_union_struct<'a>(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &[Schema],
@@ -277,12 +277,12 @@ impl TypeSpace {
             .iter()
             .enumerate()
             .map(|(idx, schema)| {
-                let type_name = match get_type_name(&type_name, metadata) {
+                let type_name = match get_type_name(type_name, metadata) {
                     Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
                     None => Name::Unknown,
                 };
 
-                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
+                let (mut type_id, _) = self.id_for_schema(&type_name, schema)?;
                 if optional {
                     type_id = self.id_to_option(&type_id);
                 }
@@ -567,7 +567,7 @@ mod tests {
         });
 
         let mut type_space = TypeSpace::default();
-        let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
+        let (ty, _) = type_space.convert_schema(&Name::Unknown, &schema).unwrap();
         let output = ty.type_name(&type_space).replace(" ", "");
         assert_eq!(
             output,

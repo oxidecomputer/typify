@@ -22,11 +22,11 @@ impl OutputSpace {
     pub fn add_item(
         &mut self,
         location: OutputSpaceMod,
-        order_hint: impl ToString,
+        order_hint: impl Into<String>,
         stream: TokenStream,
     ) {
         self.items
-            .entry((location, order_hint.to_string()))
+            .entry((location, order_hint.into()))
             .or_default()
             .extend(stream);
     }

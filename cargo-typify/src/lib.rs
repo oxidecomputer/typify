@@ -152,7 +152,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         rename,
     } in &args.crates
     {
-        settings.with_crate(name, version.clone(), rename.as_ref());
+        settings.with_crate(name, version.clone(), rename.clone());
     }
 
     if let Some(map_type) = &args.map_type {

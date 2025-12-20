@@ -90,7 +90,7 @@ impl TypeSpace {
             .iter()
             .map(|p_schema| {
                 // TODO could we have some reasonable type name? Do we need to?
-                let (param_id, _) = self.id_for_schema(Name::Unknown, p_schema)?;
+                let (param_id, _) = self.id_for_schema(&Name::Unknown, p_schema)?;
                 Ok(param_id)
             })
             .collect::<Result<Vec<_>>>()

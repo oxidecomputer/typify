@@ -763,6 +763,7 @@ pub(crate) fn singleton_subschema(subschemas: &SubschemaValidation) -> Option<&S
     }
 }
 
+#[derive(Clone, Copy)]
 pub(crate) enum Case {
     Pascal,
     Snake,

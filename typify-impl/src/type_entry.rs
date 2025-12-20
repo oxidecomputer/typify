@@ -239,7 +239,7 @@ fn variants_unique(variants: &[Variant]) -> bool {
 impl TypeEntryEnum {
     pub(crate) fn from_metadata(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         tag_type: EnumTagType,
         mut variants: Vec<Variant>,
@@ -286,7 +286,7 @@ impl TypeEntryEnum {
             panic!("Failed to make unique variant names for [{}]", dups);
         }
 
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -366,13 +366,13 @@ impl Variant {
 impl TypeEntryStruct {
     pub(crate) fn from_metadata(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         properties: Vec<StructProperty>,
         deny_unknown_fields: bool,
         schema: Schema,
     ) -> TypeEntry {
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
         let default = metadata
@@ -403,12 +403,12 @@ impl TypeEntryStruct {
 impl TypeEntryNewtype {
     pub(crate) fn from_metadata(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         schema: Schema,
     ) -> TypeEntry {
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -432,13 +432,13 @@ impl TypeEntryNewtype {
 
     pub(crate) fn from_metadata_with_enum_values(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
     ) -> TypeEntry {
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -464,13 +464,13 @@ impl TypeEntryNewtype {
 
     pub(crate) fn from_metadata_with_deny_values(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
     ) -> TypeEntry {
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -496,13 +496,13 @@ impl TypeEntryNewtype {
 
     pub(crate) fn from_metadata_with_string_validation(
         type_space: &TypeSpace,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
         schema: Schema,
     ) -> TypeEntry {
-        let name = get_type_name(&type_name, metadata).unwrap();
+        let name = get_type_name(type_name, metadata).unwrap();
         let rename = None;
         let description = metadata_description(metadata);
 
@@ -545,20 +545,20 @@ impl From<TypeEntryDetails> for TypeEntry {
 }
 
 impl TypeEntry {
-    pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
+    pub(crate) fn new_native<S: Into<String>>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
-                type_name: type_name.to_string(),
+                type_name: type_name.into(),
                 impls: impls.to_vec(),
                 parameters: Default::default(),
             }),
             extra_derives: Default::default(),
         }
     }
-    pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
+    pub(crate) fn new_native_params<S: Into<String>>(type_name: S, params: &[TypeId]) -> Self {
         TypeEntry {
             details: TypeEntryDetails::Native(TypeEntryNative {
-                type_name: type_name.to_string(),
+                type_name: type_name.into(),
                 impls: Default::default(),
                 parameters: params.to_vec(),
             }),
@@ -571,12 +571,12 @@ impl TypeEntry {
             extra_derives: Default::default(),
         }
     }
-    pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
-        TypeEntryDetails::Integer(type_name.to_string()).into()
+    pub(crate) fn new_integer<S: Into<String>>(type_name: S) -> Self {
+        TypeEntryDetails::Integer(type_name.into()).into()
     }
-    pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
+    pub(crate) fn new_float<S: Into<String>>(type_name: S) -> Self {
         TypeEntry {
-            details: TypeEntryDetails::Float(type_name.to_string()),
+            details: TypeEntryDetails::Float(type_name.into()),
             extra_derives: Default::default(),
         }
     }
@@ -736,7 +736,7 @@ impl TypeEntry {
                 self.output_enum(type_space, output, enum_details, derive_set)
             }
             TypeEntryDetails::Struct(struct_details) => {
-                self.output_struct(type_space, output, struct_details, derive_set)
+                self.output_struct(type_space, output, struct_details, &derive_set)
             }
             TypeEntryDetails::Newtype(newtype_details) => {
                 self.output_newtype(type_space, output, newtype_details, derive_set)
@@ -1069,7 +1069,7 @@ impl TypeEntry {
         };
 
         let derives = strings_to_derives(
-            derive_set,
+            &derive_set,
             &self.extra_derives,
             &type_space.settings.extra_derives,
         );
@@ -1102,7 +1102,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
-        derive_set: BTreeSet<&str>,
+        derive_set: &BTreeSet<&str>,
     ) {
         enum PropDefault {
             None(String),
@@ -1653,7 +1653,7 @@ impl TypeEntry {
         });
 
         let derives = strings_to_derives(
-            derive_set,
+            &derive_set,
             &self.extra_derives,
             &type_space.settings.extra_derives,
         );
@@ -2005,7 +2005,7 @@ fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenS
 }
 
 fn strings_to_derives<'a>(
-    derive_set: BTreeSet<&'a str>,
+    derive_set: &'a BTreeSet<&'a str>,
     type_derives: &'a BTreeSet<String>,
     extra_derives: &'a [String],
 ) -> impl Iterator<Item = TokenStream> + 'a {

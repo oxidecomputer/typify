@@ -26,7 +26,7 @@ use crate::{
 impl TypeSpace {
     pub(crate) fn maybe_option(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Option<TypeEntry> {
@@ -53,7 +53,7 @@ impl TypeSpace {
 
     pub(crate) fn maybe_externally_tagged_enum(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         original_schema: &Schema,
         enum_metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
@@ -220,7 +220,7 @@ impl TypeSpace {
                     // Append the variant name to the type_name for our new
                     // type name hint.
                     let (details, deny) = self
-                        .external_variant(type_name.append(variant_name), schema)
+                        .external_variant(&type_name.append(variant_name), schema)
                         .ok()?;
                     deny_unknown_fields |= deny;
 
@@ -244,7 +244,7 @@ impl TypeSpace {
     /// unknown fields.
     fn external_variant(
         &mut self,
-        prop_type_name: Name,
+        prop_type_name: &Name,
         variant_schema: &Schema,
     ) -> Result<(VariantDetails, bool)> {
         let (ty, _) = self.convert_schema(prop_type_name, variant_schema)?;
@@ -292,7 +292,7 @@ impl TypeSpace {
 
     pub(crate) fn maybe_internally_tagged_enum(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         original_schema: &Schema,
         metadata: &Option<Box<Metadata>>,
         subschemas: &[Schema],
@@ -368,7 +368,7 @@ impl TypeSpace {
                     _ => unreachable!(),
                 }
 
-                self.internal_variant(type_name.clone(), metadata, validation, tag)
+                self.internal_variant(type_name, metadata, validation, tag)
             })
             .collect::<Result<Vec<_>>>()
             .ok()?;
@@ -386,7 +386,7 @@ impl TypeSpace {
 
     fn internal_variant(
         &mut self,
-        enum_type_name: Name,
+        enum_type_name: &Name,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         validation: &ObjectValidation,
         tag: &str,
@@ -414,7 +414,7 @@ impl TypeSpace {
             new_validation.required.remove(tag);
 
             let (properties, _) =
-                self.struct_members(enum_type_name.into_option(), &new_validation)?;
+                self.struct_members(enum_type_name.as_option(), &new_validation)?;
             Ok(Variant::new(
                 variant_name.to_string(),
                 metadata_title_and_description(metadata),
@@ -425,7 +425,7 @@ impl TypeSpace {
 
     pub(crate) fn maybe_adjacently_tagged_enum(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         original_schema: &Schema,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
@@ -552,7 +552,7 @@ impl TypeSpace {
             };
 
             let content_schema = validation.properties.get(content).unwrap();
-            let (details, deny) = self.external_variant(sub_type_name, content_schema)?;
+            let (details, deny) = self.external_variant(&sub_type_name, content_schema)?;
 
             let variant = Variant::new(
                 variant_name.to_string(),
@@ -594,12 +594,12 @@ impl TypeSpace {
     /// ```
     pub(crate) fn untagged_enum(
         &mut self,
-        type_name: Name,
+        type_name: &Name,
         original_schema: &Schema,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         subschemas: &[Schema],
     ) -> Result<TypeEntry> {
-        let tmp_type_name = get_type_name(&type_name, metadata);
+        let tmp_type_name = get_type_name(type_name, metadata);
 
         let mut deny_unknown_fields = false;
 
@@ -658,7 +658,7 @@ impl TypeSpace {
                 }
                 .append(&variant_name);
 
-                let (details, deny) = self.external_variant(prop_type_name, schema)?;
+                let (details, deny) = self.external_variant(&prop_type_name, schema)?;
                 // Note that this is really only relevant for in-line schemas;
                 // referenced schemas will enforce their own policy on their
                 // generated types.
@@ -884,7 +884,7 @@ mod tests {
 
         assert!(type_space
             .maybe_externally_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
+                &Name::Required("ExternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -892,7 +892,7 @@ mod tests {
             .is_some());
         assert!(type_space
             .maybe_adjacently_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
+                &Name::Required("ExternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -900,7 +900,7 @@ mod tests {
             .is_none());
         assert!(type_space
             .maybe_internally_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
+                &Name::Required("ExternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -937,7 +937,7 @@ mod tests {
 
         assert!(type_space
             .maybe_adjacently_tagged_enum(
-                Name::Required("AdjacentlyTaggedEnum".to_string()),
+                &Name::Required("AdjacentlyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -945,7 +945,7 @@ mod tests {
             .is_some());
         assert!(type_space
             .maybe_externally_tagged_enum(
-                Name::Required("AdjacentlyTaggedEnum".to_string()),
+                &Name::Required("AdjacentlyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -982,7 +982,7 @@ mod tests {
 
         assert!(type_space
             .maybe_internally_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
+                &Name::Required("InternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -990,7 +990,7 @@ mod tests {
             .is_some());
         assert!(type_space
             .maybe_adjacently_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
+                &Name::Required("InternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -998,7 +998,7 @@ mod tests {
             .is_none());
         assert!(type_space
             .maybe_externally_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
+                &Name::Required("InternallyTaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -1034,7 +1034,7 @@ mod tests {
         let subschemas = schema.schema.subschemas.unwrap().any_of.unwrap();
         let ty = type_space
             .untagged_enum(
-                Name::Required("UntaggedEnum".to_string()),
+                &Name::Required("UntaggedEnum".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -1110,7 +1110,7 @@ mod tests {
 
         let (ty, _) = type_space
             .convert_one_of(
-                Name::Required("Xyz".to_string()),
+                &Name::Required("Xyz".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -1208,7 +1208,7 @@ mod tests {
 
         let (type_entry, _) = type_space
             .convert_schema_object(
-                Name::Unknown,
+                &Name::Unknown,
                 &schemars::schema::Schema::Object(schema.schema.clone()),
                 &schema.schema,
             )
@@ -1250,7 +1250,7 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let type_entry = type_space
-            .maybe_option(Name::Unknown, &None, &subschemas)
+            .maybe_option(&Name::Unknown, &None, &subschemas)
             .unwrap();
 
         assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)))
@@ -1461,7 +1461,7 @@ mod tests {
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
             .maybe_externally_tagged_enum(
-                Name::Required("ResultX".to_string()),
+                &Name::Required("ResultX".to_string()),
                 &original_schema,
                 &None,
                 &subschemas,
@@ -1517,7 +1517,7 @@ mod tests {
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
             .maybe_externally_tagged_enum(
-                Name::Required("ResultX".to_string()),
+                &Name::Required("ResultX".to_string()),
                 &schemars::schema::Schema::Bool(true),
                 &None,
                 &subschemas,

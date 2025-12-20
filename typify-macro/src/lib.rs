@@ -168,12 +168,12 @@ struct MacroPatch {
 impl From<MacroPatch> for TypeSpacePatch {
     fn from(a: MacroPatch) -> Self {
         let mut s = Self::default();
-        a.rename.iter().for_each(|rename| {
-            s.with_rename(rename);
-        });
-        a.derives.iter().for_each(|derive| {
-            s.with_derive(derive.to_token_stream());
-        });
+        if let Some(rename) = &a.rename {
+            s = s.with_rename(rename.to_string());
+        }
+        for derive in &a.derives {
+            s = s.with_derive(derive.to_token_stream().to_string());
+        }
         s
     }
 }
@@ -201,11 +201,15 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         settings.with_struct_builder(struct_builder);
 
         patch.into_iter().for_each(|(type_name, patch)| {
-            settings.with_patch(type_name.to_token_stream(), &patch.into());
+            settings.with_patch(type_name.to_token_stream().to_string(), patch.into());
         });
         replace.into_iter().for_each(|(type_name, type_and_impls)| {
             let (replace_type, impls) = type_and_impls.into_inner().into_name_and_impls();
-            settings.with_replacement(type_name.to_token_stream(), replace_type, impls.into_iter());
+            settings.with_replacement(
+                type_name.to_token_stream().to_string(),
+                replace_type,
+                impls.into_iter(),
+            );
         });
         convert.into_iter().for_each(|(schema, type_and_impls)| {
             let (type_name, impls) = type_and_impls.into_inner().into_name_and_impls();
@@ -215,7 +219,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         crates.into_iter().for_each(
             |(CrateName(crate_name), MacroCrateSpec { original, version })| {
                 if let Some(original_crate) = original {
-                    settings.with_crate(original_crate, version, Some(&crate_name));
+                    settings.with_crate(original_crate, version, Some(crate_name));
                 } else {
                     settings.with_crate(crate_name, version, None);
                 }
@@ -249,7 +253,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     let mut type_space = TypeSpace::new(&settings);
     type_space
         .add_root_schema(root_schema)
-        .map_err(|e| into_syn_err(e, schema.span()))?;
+        .map_err(|e| into_syn_err(&e, schema.span()))?;
 
     let path_str = path.to_string_lossy();
     let output = quote! {
@@ -262,7 +266,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     Ok(output.into())
 }
 
-fn into_syn_err(e: typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
+fn into_syn_err(e: &typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
     syn::Error::new(span, e.to_string())
 }
 
@@ -284,6 +288,6 @@ mod tests {
             map_type = ::my::map::Type,
         };
 
-        let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item.into()).unwrap();
+        let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item).unwrap();
     }
 }
