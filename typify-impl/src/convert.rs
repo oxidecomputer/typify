@@ -96,7 +96,7 @@ impl TypeSpace {
                     // new name for the inner type; otherwise, the inner type
                     // can just have this name.
                     let inner_type_name = match &type_name {
-                        Name::Required(name) => Name::Suggested(format!("{}Inner", name)),
+                        Name::Required(name) => Name::Suggested(format!("{name}Inner")),
                         _ => type_name,
                     };
                     self.convert_option(inner_type_name, metadata, &ss)
@@ -807,7 +807,7 @@ impl TypeSpace {
                     if let Some(pattern) = &validation.pattern {
                         let _ = regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
                             type_name: type_name.clone().into_option(),
-                            reason: format!("invalid pattern '{}' {}", pattern, e),
+                            reason: format!("invalid pattern '{pattern}' {e}"),
                         })?;
                         self.uses_regress = true;
                     }
@@ -883,7 +883,7 @@ impl TypeSpace {
             )),
 
             Some(unhandled) => {
-                info!("treating a string format '{}' as a String", unhandled);
+                info!("treating a string format '{unhandled}' as a String");
                 Ok((TypeEntryDetails::String.into(), metadata))
             }
         }
@@ -1341,13 +1341,13 @@ impl TypeSpace {
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         if !ref_name.starts_with('#') {
-            panic!("external references are not supported: {}", ref_name);
+            panic!("external references are not supported: {ref_name}");
         }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
             .get(&key)
-            .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
+            .unwrap_or_else(|| panic!("$ref {ref_name} is missing"));
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,
@@ -1700,7 +1700,7 @@ impl TypeSpace {
                         serde_json::Value::Null
                         | serde_json::Value::Array(_)
                         | serde_json::Value::Object(_) => {
-                            panic!("unhandled type for `not` construction: {}", v)
+                            panic!("unhandled type for `not` construction: {v}")
                         }
                     })
                     .collect::<BTreeSet<_>>();
@@ -1741,8 +1741,7 @@ impl TypeSpace {
                     }
 
                     _ => panic!(
-                        "multiple implied types for an un-typed enum {:?} {:?}",
-                        instance_types, enum_values,
+                        "multiple implied types for an un-typed enum {instance_types:?} {enum_values:?}",
                     ),
                 }
             }
@@ -1779,7 +1778,7 @@ impl TypeSpace {
                         self.id_for_schema(rest_name, &Schema::Bool(true))?.0
                     };
                     let start = items.iter().enumerate().map(|(ii, item_schema)| {
-                        let item_name = type_name.append(&format!("item{}", ii));
+                        let item_name = type_name.append(&format!("item{ii}"));
                         Ok(self.id_for_schema(item_name, item_schema)?.0)
                     });
                     let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
@@ -1793,7 +1792,7 @@ impl TypeSpace {
                         .take(*max_items as usize)
                         .enumerate()
                         .map(|(ii, item_schema)| {
-                            let item_name = type_name.append(&format!("item{}", ii));
+                            let item_name = type_name.append(&format!("item{ii}"));
                             Ok(self.id_for_schema(item_name, item_schema)?.0)
                         })
                         .collect::<Result<_>>()?;
@@ -1830,7 +1829,7 @@ impl TypeSpace {
                 contains: None,
             } => {
                 let item_type_name = match get_type_name(&type_name, metadata) {
-                    Some(s) => Name::Suggested(format!("{}Item", s)),
+                    Some(s) => Name::Suggested(format!("{s}Item")),
                     None => Name::Unknown,
                 };
                 let (type_id, _) = self.id_for_schema(item_type_name, item.as_ref())?;
@@ -1863,7 +1862,7 @@ impl TypeSpace {
 
             _ => Err(Error::InvalidSchema {
                 type_name: type_name.into_option(),
-                reason: format!("unhandled array validation {:#?}", validation),
+                reason: format!("unhandled array validation {validation:#?}"),
             }),
         }
     }
@@ -1923,7 +1922,7 @@ impl TypeSpace {
         };
 
         let inner_type_name = match get_type_name(&type_name, &schema.metadata) {
-            Some(s) => Name::Suggested(format!("{}Inner", s)),
+            Some(s) => Name::Suggested(format!("{s}Inner")),
             None => Name::Unknown,
         };
 
@@ -2041,8 +2040,7 @@ impl TypeSpace {
                 }
                 (1, None) => unreachable!(),
                 _ => panic!(
-                    "multiple implied types for an un-typed enum {:?} {:?}",
-                    instance_types, enum_values,
+                    "multiple implied types for an un-typed enum {instance_types:?} {enum_values:?}",
                 ),
             }
         }

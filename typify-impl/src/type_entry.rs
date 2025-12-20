@@ -248,15 +248,15 @@ impl TypeEntryEnum {
     ) -> TypeEntry {
         // Let's find some decent names for variants. We first try the simple
         // sanitization.
-        variants.iter_mut().for_each(|variant| {
+        for variant in &mut variants {
             let ident_name = sanitize(&variant.raw_name, Case::Pascal);
             variant.ident_name = Some(ident_name);
-        });
+        }
 
         // If variants aren't unique, we're turn the elided characters into
         // 'x's.
         if !variants_unique(&variants) {
-            variants.iter_mut().for_each(|variant| {
+            for variant in &mut variants {
                 let ident_name = sanitize(
                     &variant
                         .raw_name
@@ -264,26 +264,26 @@ impl TypeEntryEnum {
                     Case::Pascal,
                 );
                 variant.ident_name = Some(ident_name);
-            });
+            }
         }
 
         // If variants still aren't unique, we fail: we'd rather not emit code
         // that can't compile
         if !variants_unique(&variants) {
             let mut counts = HashMap::new();
-            variants.iter().for_each(|variant| {
+            for variant in &variants {
                 counts
                     .entry(variant.ident_name.as_ref().unwrap())
                     .and_modify(|xxx| *xxx += 1)
                     .or_insert(0);
-            });
+            }
             let dups = variants
                 .iter()
                 .filter(|variant| *counts.get(variant.ident_name.as_ref().unwrap()).unwrap() > 0)
                 .map(|variant| variant.raw_name.as_str())
                 .collect::<Vec<_>>()
                 .join(",");
-            panic!("Failed to make unique variant names for [{}]", dups);
+            panic!("Failed to make unique variant names for [{dups}]");
         }
 
         let name = get_type_name(&type_name, metadata).unwrap();
@@ -1039,12 +1039,12 @@ impl TypeEntry {
                                 .unwrap()
                                 .type_ident(type_space, &None)
                         });
-                        let variant_type_ident = if type_ids.len() != 1 {
-                            quote! { ( #(#variant_type_idents),* ) }
-                        } else {
+                        let variant_type_ident = if type_ids.len() == 1 {
                             // A single-item tuple requires a trailing
                             // comma.
                             quote! { ( #(#variant_type_idents,)* ) }
+                        } else {
+                            quote! { ( #(#variant_type_idents),* ) }
                         };
                         let variant_name =
                             format_ident!("{}", variant.ident_name.as_ref().unwrap());
@@ -1540,7 +1540,7 @@ impl TypeEntry {
             } => {
                 let max = max_length.map(|v| {
                     let v = v as usize;
-                    let err = format!("longer than {} characters", v);
+                    let err = format!("longer than {v} characters");
                     quote! {
                         if value.chars().count() > #v {
                             return Err(#err.into());
@@ -1549,7 +1549,7 @@ impl TypeEntry {
                 });
                 let min = min_length.map(|v| {
                     let v = v as usize;
-                    let err = format!("shorter than {} characters", v);
+                    let err = format!("shorter than {v} characters");
                     quote! {
                         if value.chars().count() < #v {
                             return Err(#err.into());
@@ -1558,7 +1558,7 @@ impl TypeEntry {
                 });
 
                 let pat = pattern.as_ref().map(|p| {
-                    let err = format!("doesn't match pattern \"{}\"", p);
+                    let err = format!("doesn't match pattern \"{p}\"");
                     quote! {
                         static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
                             ::regress::Regex::new(#p).unwrap()
@@ -1941,8 +1941,8 @@ impl TypeEntry {
 
     pub(crate) fn describe(&self) -> String {
         match &self.details {
-            TypeEntryDetails::Enum(TypeEntryEnum { name, .. }) => format!("enum {}", name),
-            TypeEntryDetails::Struct(TypeEntryStruct { name, .. }) => format!("struct {}", name),
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. }) => format!("enum {name}"),
+            TypeEntryDetails::Struct(TypeEntryStruct { name, .. }) => format!("struct {name}"),
             TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
                 format!("newtype {} {}", name, type_id.0)
             }
@@ -1986,7 +1986,7 @@ impl TypeEntry {
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
     let desc = match description {
         Some(desc) => desc,
-        None => &format!("`{}`", name),
+        None => &format!("`{name}`"),
     };
     let schema_json = serde_json::to_string_pretty(schema).unwrap();
     let schema_lines = schema_json.lines();

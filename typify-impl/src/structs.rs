@@ -96,7 +96,7 @@ impl TypeSpace {
             // #[serde(flatten)] so we allow them even though that doesn't seem
             // quite right.
             additional_properties @ Some(_) => {
-                let sub_type_name = type_name.as_ref().map(|base| format!("{}_extra", base));
+                let sub_type_name = type_name.as_ref().map(|base| format!("{base}_extra"));
                 let map_type = self.make_map(
                     sub_type_name,
                     &validation.property_names,
@@ -197,7 +197,7 @@ impl TypeSpace {
 
             Some(Schema::Object(obj)) => {
                 let key_type_name = match &type_name {
-                    Some(name) => Name::Suggested(format!("{}Key", name)),
+                    Some(name) => Name::Suggested(format!("{name}Key")),
                     None => Name::Unknown,
                 };
                 self.id_for_schema_string(key_type_name, obj)?
@@ -207,7 +207,7 @@ impl TypeSpace {
         let (value_id, _) = match additional_properties {
             Some(value_schema) => {
                 let value_type_name = match &type_name {
-                    Some(name) => Name::Suggested(format!("{}Value", name)),
+                    Some(name) => Name::Suggested(format!("{name}Value")),
                     None => Name::Unknown,
                 };
                 self.id_for_schema(value_type_name, value_schema)?
@@ -225,28 +225,25 @@ impl TypeSpace {
         type_name: Name,
         schema_obj: &SchemaObject,
     ) -> Result<TypeId> {
-        match schema_obj {
+        if let SchemaObject {
+            instance_type: None,
+            subschemas: None,
+            reference: None,
+            ..
+        } = schema_obj
+        {
             // If the schema has no subschemas or references, fill in the
             // string instance_type if none is present.
-            SchemaObject {
-                instance_type: None,
-                subschemas: None,
-                reference: None,
-                ..
-            } => {
-                let schema = Schema::Object(SchemaObject {
-                    instance_type: Some(InstanceType::String.into()),
-                    ..schema_obj.clone()
-                });
-                Ok(self.id_for_schema(type_name, &schema)?.0)
-            }
-
+            let schema = Schema::Object(SchemaObject {
+                instance_type: Some(InstanceType::String.into()),
+                ..schema_obj.clone()
+            });
+            Ok(self.id_for_schema(type_name, &schema)?.0)
+        } else {
             // TODO if and when we perform merging of schemas we could wrap the
             // schema in an { allOf: [{ type: string }, <schema> ] }
-            _ => {
-                let schema = Schema::Object(schema_obj.clone());
-                Ok(self.id_for_schema(type_name, &schema)?.0)
-            }
+            let schema = Schema::Object(schema_obj.clone());
+            Ok(self.id_for_schema(type_name, &schema)?.0)
         }
     }
 
@@ -278,7 +275,7 @@ impl TypeSpace {
             .enumerate()
             .map(|(idx, schema)| {
                 let type_name = match get_type_name(&type_name, metadata) {
-                    Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
+                    Some(name) => Name::Suggested(format!("{name}Subtype{idx}")),
                     None => Name::Unknown,
                 };
 
@@ -289,7 +286,7 @@ impl TypeSpace {
 
                 // TODO we need a reasonable name that could be derived
                 // from the name of the type
-                let name = format!("subtype_{}", idx);
+                let name = format!("subtype_{idx}");
 
                 Ok(StructProperty {
                     name,
@@ -380,7 +377,7 @@ pub(crate) fn generate_serde_attr(
                     skip_serializing_if = "::serde_json::Map::is_empty"
                 });
             } else {
-                let is_empty = format!("{}::is_empty", map_to_use);
+                let is_empty = format!("{map_to_use}::is_empty");
                 serde_options.push(quote! {
                     skip_serializing_if = #is_empty
                 });
@@ -437,10 +434,15 @@ fn has_default(
         default,
     ) {
         // No default specified.
-        (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
+        (
+            Some(
+                TypeEntryDetails::Option(_)
+                | TypeEntryDetails::Vec(_)
+                | TypeEntryDetails::Map(..)
+                | TypeEntryDetails::Unit,
+            ),
+            None,
+        ) => StructPropertyState::Optional,
         (_, None) => StructPropertyState::Required,
 
         // Default specified is the same as the implicit default: null

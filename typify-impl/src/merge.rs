@@ -122,7 +122,7 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
             let key = ref_key(ref_name);
             let resolved = defs
                 .get(&key)
-                .unwrap_or_else(|| panic!("unresolved reference: {}", ref_name));
+                .unwrap_or_else(|| panic!("unresolved reference: {ref_name}"));
             let merged_schema = try_merge_schema(resolved, other, defs)?;
 
             // If we merge a referenced schema with another schema **and**
@@ -429,7 +429,7 @@ fn merge_schema_not(
         (Schema::Object(schema_object), any_not) => {
             match try_merge_schema_not(schema_object.clone(), any_not, defs) {
                 Ok(schema_obj) => Schema::Object(schema_obj),
-                Err(_) => Schema::Bool(false),
+                Err(()) => Schema::Bool(false),
             }
         }
     }
@@ -544,7 +544,7 @@ fn try_merge_with_subschemas_not(
             else_schema: None,
         } => match try_merge_all(all_of, defs) {
             Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
-            Err(_) => Ok(schema_object),
+            Err(()) => Ok(schema_object),
         },
 
         _ => todo!(
@@ -1225,8 +1225,7 @@ fn roughly_array(a: Option<&ArrayValidation>, b: Option<&ArrayValidation>) -> bo
 fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) -> bool {
     match (a, b) {
         (None, None) => true,
-        (None, Some(_)) => false,
-        (Some(_), None) => false,
+        (None, Some(_)) | (Some(_), None) => false,
         (Some(aa), Some(bb)) => {
             aa.max_properties == bb.max_properties
                 && aa.min_properties == bb.min_properties

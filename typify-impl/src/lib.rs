@@ -162,7 +162,7 @@ impl Name {
     pub fn append(&self, s: &str) -> Self {
         match self {
             Name::Required(prefix) | Name::Suggested(prefix) => {
-                Self::Suggested(format!("{}_{}", prefix, s))
+                Self::Suggested(format!("{prefix}_{s}"))
             }
             Name::Unknown => Name::Unknown,
         }
@@ -402,7 +402,7 @@ impl std::str::FromStr for TypeSpaceImpl {
             "FromStr" => Ok(Self::FromStr),
             "Display" => Ok(Self::Display),
             "Default" => Ok(Self::Default),
-            _ => Err(format!("{} is not a valid trait specifier", s)),
+            _ => Err(format!("{s} is not a valid trait specifier")),
         }
     }
 }
@@ -1256,7 +1256,7 @@ mod tests {
     #[test]
     fn test_simple() {
         let schema = schema_for!(Foo);
-        println!("{:#?}", schema);
+        println!("{schema:#?}");
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
         let (ty, _) = type_space
@@ -1267,14 +1267,14 @@ mod tests {
             )
             .unwrap();
 
-        println!("{:#?}", ty);
+        println!("{ty:#?}");
 
         let mut output = OutputSpace::default();
         ty.output(&type_space, &mut output);
         println!("{}", output.into_stream());
 
         for ty in type_space.id_to_entry.values() {
-            println!("{:#?}", ty);
+            println!("{ty:#?}");
             let mut output = OutputSpace::default();
             ty.output(&type_space, &mut output);
             println!("{}", output.into_stream());
@@ -1301,12 +1301,12 @@ mod tests {
             }
         });
         let schema = serde_json::from_value(schema).unwrap();
-        println!("{:#?}", schema);
+        println!("{schema:#?}");
         let settings = TypeSpaceSettings::default();
         let mut type_space = TypeSpace::new(&settings);
         type_space.add_root_schema(schema).unwrap();
         let tokens = type_space.to_stream().to_string();
-        println!("{}", tokens);
+        println!("{tokens}");
         assert!(tokens
             .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"));
     }
@@ -1323,7 +1323,7 @@ mod tests {
         }
 
         let schema = schema_for!(SimpleEnum);
-        println!("{:#?}", schema);
+        println!("{schema:#?}");
 
         let mut type_space = TypeSpace::default();
         type_space.add_ref_types(schema.definitions).unwrap();
@@ -1401,10 +1401,10 @@ mod tests {
                         .collect::<HashSet<_>>()
                 );
             } else {
-                panic!("not the sub-type we expected {:#?}", te)
+                panic!("not the sub-type we expected {te:#?}")
             }
         } else {
-            panic!("not the type we expected {:#?}", te)
+            panic!("not the type we expected {te:#?}")
         }
     }
 

@@ -28,7 +28,7 @@ fn main() -> Result<()> {
             format!("Failed to write output to file: {}", output_path.display())
         })?;
     } else {
-        print!("{}", contents);
+        print!("{contents}");
     }
 
     Ok(())

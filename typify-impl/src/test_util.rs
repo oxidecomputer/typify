@@ -171,8 +171,7 @@ fn compare_attributes(attrs_a: &[Attribute], attrs_b: &[Attribute]) -> Result<()
         Ok(())
     } else {
         Err(format!(
-            "different serde options: {:?} {:?}",
-            serde_options_a, serde_options_b
+            "different serde options: {serde_options_a:?} {serde_options_b:?}"
         ))
     }
 }
@@ -221,7 +220,7 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
 impl SynCompare for syn::Ident {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         if self != other {
-            Err(format!("idents differ: {} {}", self, other))
+            Err(format!("idents differ: {self} {other}"))
         } else {
             Ok(())
         }
@@ -317,8 +316,7 @@ impl SynCompare for Type {
             (Type::Tuple(a), Type::Tuple(b)) => a.syn_cmp(b, false),
             (Type::Path(a), Type::Path(b)) => a.syn_cmp(b, false),
             _ => Err(format!(
-                "unexpected or mismatched type pair: {:?} {:?}",
-                self, other
+                "unexpected or mismatched type pair: {self:?} {other:?}"
             )),
         }
     }

@@ -640,7 +640,7 @@ impl TypeSpace {
             // Fall back to `VariantN` naming.
             .unwrap_or_else(|| {
                 (0..subschemas.len())
-                    .map(|idx| format!("Variant{}", idx))
+                    .map(|idx| format!("Variant{idx}"))
                     .collect()
             });
 
@@ -1346,11 +1346,11 @@ mod tests {
                                 .unwrap()
                                 .ends_with(variant.ident_name.as_ref().unwrap()));
                         }
-                        _ => panic!("{:#?}", type_entry),
+                        _ => panic!("{type_entry:#?}"),
                     }
                 }
             }
-            _ => panic!("{:#?}", type_entry),
+            _ => panic!("{type_entry:#?}"),
         }
     }
 
@@ -1435,7 +1435,7 @@ mod tests {
                 tag_type: EnumTagType::Untagged,
                 ..
             }) => {}
-            _ => panic!("{:#?}", type_entry),
+            _ => panic!("{type_entry:#?}"),
         }
     }
 

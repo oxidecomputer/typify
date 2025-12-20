@@ -35,7 +35,7 @@ fn main() {
         fruits: vec![String::from("apple"), String::from("mango")],
         vegetables: vec![veg],
     };
-    println!("{:?}", veggies);
+    println!("{veggies:?}");
     let fov = FruitOrVeg::Fruit(MyFruit { seeds: () });
-    println!("{:?}", fov);
+    println!("{fov:?}");
 }
