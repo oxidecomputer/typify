@@ -7,3 +7,6 @@ edition = "2021"
 typify = { path = "../typify" }
 serde = "1.0"
 serde_json = "1.0"
+
+[lints]
+workspace = true

@@ -30,3 +30,6 @@ schema = { workspace = true }
 schemars = { workspace = true, features = ["uuid1", "impl_json_schema"] }
 syn = { workspace = true, features = ["full", "extra-traits", "visit-mut"] }
 uuid = { workspace = true }
+
+[lints]
+workspace = true

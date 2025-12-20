@@ -30,3 +30,6 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 trybuild = { workspace = true }
 uuid = { workspace = true, features = ["serde"] }
+
+[lints]
+workspace = true
