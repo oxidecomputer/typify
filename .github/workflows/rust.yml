@@ -21,14 +21,25 @@ jobs:
     - name: Check style
       run: cargo fmt -- --check
 
-  build-and-test:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        rust: [stable]
+        include:
+          - os: ubuntu-latest
+            rust: nightly
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --locked --tests --verbose
-    - name: Run tests
-      run: cargo test --locked --verbose
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - run: cargo test --all-features --locked --verbose
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: taiki-e/install-action@cargo-hack
+      - run: cargo hack --no-dev-deps --rust-version check --package typify
