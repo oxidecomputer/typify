@@ -1126,29 +1126,30 @@ trait Roughly {
 impl Roughly for schemars::schema::Schema {
     fn roughly(&self, other: &Self) -> bool {
         match (self, other) {
-            (Schema::Bool(a), Schema::Bool(b)) => a == b,
-            (Schema::Bool(false), _) | (_, Schema::Bool(false)) => false,
+            (Self::Bool(a), Self::Bool(b)) => a == b,
+            (Self::Bool(false), _) | (_, Self::Bool(false)) => false,
 
-            (Schema::Bool(true), Schema::Object(other))
-            | (Schema::Object(other), Schema::Bool(true)) => matches!(
-                other,
-                SchemaObject {
-                    metadata: _,
-                    instance_type: None,
-                    format: None,
-                    enum_values: None,
-                    const_value: None,
-                    subschemas: None,
-                    number: None,
-                    string: None,
-                    array: None,
-                    object: None,
-                    reference: None,
-                    extensions: _,
-                }
-            ),
+            (Self::Bool(true), Self::Object(other)) | (Self::Object(other), Self::Bool(true)) => {
+                matches!(
+                    other,
+                    SchemaObject {
+                        metadata: _,
+                        instance_type: None,
+                        format: None,
+                        enum_values: None,
+                        const_value: None,
+                        subschemas: None,
+                        number: None,
+                        string: None,
+                        array: None,
+                        object: None,
+                        reference: None,
+                        extensions: _,
+                    }
+                )
+            }
 
-            (Schema::Object(a), Schema::Object(b)) => {
+            (Self::Object(a), Self::Object(b)) => {
                 a.instance_type == b.instance_type
                     && a.format == b.format
                     && a.enum_values == b.enum_values
