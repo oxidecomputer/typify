@@ -6,6 +6,7 @@ license = "Apache-2.0"
 description = "typify macro implementation"
 repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
+rust-version.workspace = true
 
 [lib]
 proc-macro = true

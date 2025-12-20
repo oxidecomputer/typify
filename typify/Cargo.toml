@@ -8,6 +8,7 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 keywords = ["json", "schema", "proc_macro"]
 categories = ["api-bindings", "compilers"]
+rust-version.workspace = true
 
 [features]
 default = ["macro"]
