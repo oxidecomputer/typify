@@ -309,7 +309,7 @@ pub mod builder {
         {
             self.when = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for when: {}", e));
+                .map_err(|e| format!("error converting supplied value for when: {e}"));
             self
         }
     }
@@ -352,7 +352,7 @@ pub mod builder {
         {
             self.big_nullable = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for big_nullable: {}", e));
+                .map_err(|e| format!("error converting supplied value for big_nullable: {e}"));
             self
         }
         pub fn little_u16<T>(mut self, value: T) -> Self
@@ -362,7 +362,7 @@ pub mod builder {
         {
             self.little_u16 = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for little_u16: {}", e));
+                .map_err(|e| format!("error converting supplied value for little_u16: {e}"));
             self
         }
         pub fn little_u8<T>(mut self, value: T) -> Self
@@ -372,7 +372,7 @@ pub mod builder {
         {
             self.little_u8 = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for little_u8: {}", e));
+                .map_err(|e| format!("error converting supplied value for little_u8: {e}"));
             self
         }
     }
@@ -419,7 +419,7 @@ pub mod builder {
         {
             self.thing = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for thing: {}", e));
+                .map_err(|e| format!("error converting supplied value for thing: {e}"));
             self
         }
     }
@@ -461,7 +461,7 @@ pub mod builder {
         {
             self.any = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for any: {}", e));
+                .map_err(|e| format!("error converting supplied value for any: {e}"));
             self
         }
         pub fn id<T>(mut self, value: T) -> Self
@@ -471,7 +471,7 @@ pub mod builder {
         {
             self.id = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for id: {}", e));
+                .map_err(|e| format!("error converting supplied value for id: {e}"));
             self
         }
     }
@@ -519,7 +519,7 @@ pub mod builder {
         {
             self.a = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for a: {}", e));
+                .map_err(|e| format!("error converting supplied value for a: {e}"));
             self
         }
         pub fn type_<T>(mut self, value: T) -> Self
@@ -529,7 +529,7 @@ pub mod builder {
         {
             self.type_ = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for type_: {}", e));
+                .map_err(|e| format!("error converting supplied value for type_: {e}"));
             self
         }
     }

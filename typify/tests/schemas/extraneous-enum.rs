@@ -172,7 +172,7 @@ pub mod builder {
         {
             self.letter = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for letter: {}", e));
+                .map_err(|e| format!("error converting supplied value for letter: {e}"));
             self
         }
     }
