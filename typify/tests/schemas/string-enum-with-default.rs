@@ -62,7 +62,7 @@ pub enum TestEnum {
     Success,
 }
 impl ::std::convert::From<&Self> for TestEnum {
-    fn from(value: &TestEnum) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

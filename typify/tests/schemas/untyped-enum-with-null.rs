@@ -100,7 +100,7 @@ pub enum TestTypeValue {
     End,
 }
 impl ::std::convert::From<&Self> for TestTypeValue {
-    fn from(value: &TestTypeValue) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

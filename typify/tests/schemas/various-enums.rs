@@ -59,7 +59,7 @@ pub enum AlternativeEnum {
     Choice3,
 }
 impl ::std::convert::From<&Self> for AlternativeEnum {
-    fn from(value: &AlternativeEnum) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -136,7 +136,7 @@ impl ::std::default::Default for AlternativeEnum {
 #[serde(deny_unknown_fields)]
 pub enum AnyOfNoStrings {}
 impl ::std::convert::From<&Self> for AnyOfNoStrings {
-    fn from(value: &AnyOfNoStrings) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -165,7 +165,7 @@ impl ::std::convert::From<&Self> for AnyOfNoStrings {
 #[serde(deny_unknown_fields)]
 pub enum AnyOfNothing {}
 impl ::std::convert::From<&Self> for AnyOfNothing {
-    fn from(value: &AnyOfNothing) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -217,7 +217,7 @@ pub enum CommentedVariants {
     C,
 }
 impl ::std::convert::From<&Self> for CommentedVariants {
-    fn from(value: &CommentedVariants) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -340,7 +340,7 @@ pub enum DiskAttachmentState {
     Faulted,
 }
 impl ::std::convert::From<&Self> for DiskAttachmentState {
-    fn from(value: &DiskAttachmentState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -581,7 +581,7 @@ pub enum EnumAndConstant {
     Fish { float: ::std::string::String },
 }
 impl ::std::convert::From<&Self> for EnumAndConstant {
-    fn from(value: &EnumAndConstant) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -620,7 +620,7 @@ pub enum IpNet {
     V6(Ipv6Net),
 }
 impl ::std::convert::From<&Self> for IpNet {
-    fn from(value: &IpNet) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -866,7 +866,7 @@ pub enum JankNames {
     Variant2(::std::collections::HashMap<::std::string::String, i64>),
 }
 impl ::std::convert::From<&Self> for JankNames {
-    fn from(value: &JankNames) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -907,7 +907,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64
 #[serde(deny_unknown_fields)]
 pub enum Never {}
 impl ::std::convert::From<&Self> for Never {
-    fn from(value: &Never) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -934,7 +934,7 @@ impl ::std::convert::From<&Self> for Never {
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
 impl ::std::convert::From<&Self> for NeverEver {
-    fn from(value: &NeverEver) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -961,7 +961,7 @@ impl ::std::convert::From<&Self> for NeverEver {
 #[serde(deny_unknown_fields)]
 pub enum NeverEverForever {}
 impl ::std::convert::From<&Self> for NeverEverForever {
-    fn from(value: &NeverEverForever) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1051,7 +1051,7 @@ pub enum NullStringEnumWithUnknownFormatInner {
     C,
 }
 impl ::std::convert::From<&Self> for NullStringEnumWithUnknownFormatInner {
-    fn from(value: &NullStringEnumWithUnknownFormatInner) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1154,7 +1154,7 @@ pub enum OneOfMissingTitle {
     },
 }
 impl ::std::convert::From<&Self> for OneOfMissingTitle {
-    fn from(value: &OneOfMissingTitle) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1182,7 +1182,7 @@ pub enum OneOfRawType {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for OneOfRawType {
-    fn from(value: &OneOfRawType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1239,7 +1239,7 @@ pub enum OneOfTypes {
     Foo(::std::string::String),
 }
 impl ::std::convert::From<&Self> for OneOfTypes {
-    fn from(value: &OneOfTypes) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1592,7 +1592,7 @@ pub enum References {
     Object(::std::collections::HashMap<::std::string::String, ReferencesObjectValue>),
 }
 impl ::std::convert::From<&Self> for References {
-    fn from(value: &References) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1634,7 +1634,7 @@ pub enum ReferencesObjectValue {
     ReferenceDef(ReferenceDef),
 }
 impl ::std::convert::From<&Self> for ReferencesObjectValue {
-    fn from(value: &ReferencesObjectValue) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1693,7 +1693,7 @@ pub enum ShouldBeExclusive {
     Variant1 { reference: ::std::string::String },
 }
 impl ::std::convert::From<&Self> for ShouldBeExclusive {
-    fn from(value: &ShouldBeExclusive) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1787,7 +1787,7 @@ pub enum VariantsDifferByPunct {
     X2x5xgbasext,
 }
 impl ::std::convert::From<&Self> for VariantsDifferByPunct {
-    fn from(value: &VariantsDifferByPunct) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

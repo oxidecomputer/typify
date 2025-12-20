@@ -189,7 +189,7 @@ mod types {
         BuckleMyShoe,
     }
     impl ::std::convert::From<&Self> for StringEnum {
-        fn from(value: &StringEnum) -> Self {
+        fn from(value: &Self) -> Self {
             value.clone()
         }
     }
