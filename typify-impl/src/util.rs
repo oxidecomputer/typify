@@ -544,14 +544,15 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
+fn decode_segment(segment: &str) -> String {
+    segment.replace("~1", "/").replace("~0", "~")
+}
+
 pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     if ref_name == "#" {
         RefKey::Root
     } else if let Some(idx) = ref_name.rfind('/') {
-        let decoded_segment = ref_name[idx + 1..]
-            .replace("~1", "/")
-            .replace("~0", "~")
-            .to_string();
+        let decoded_segment = decode_segment(&ref_name[idx + 1..]);
 
         RefKey::Def(decoded_segment)
     } else {
@@ -906,7 +907,7 @@ mod tests {
     };
 
     use crate::{
-        util::{sanitize, schemas_mutually_exclusive, Case},
+        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case},
         Name,
     };
 
@@ -1010,6 +1011,12 @@ mod tests {
 
         assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
         assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
+    }
+
+    #[test]
+    fn test_decode_segment() {
+        assert_eq!(decode_segment("foo~1bar"), "foo/bar");
+        assert_eq!(decode_segment("foo~0bar"), "foo~bar");
     }
 
     #[test]
