@@ -1554,7 +1554,7 @@ pub mod builder {
         {
             self.bar = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for bar: {}", e));
+                .map_err(|e| format!("error converting supplied value for bar: {e}"));
             self
         }
     }
@@ -1591,7 +1591,7 @@ pub mod builder {
         {
             self.this = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for this: {}", e));
+                .map_err(|e| format!("error converting supplied value for this: {e}"));
             self
         }
     }
@@ -1631,7 +1631,7 @@ pub mod builder {
         {
             self.x = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for x: {}", e));
+                .map_err(|e| format!("error converting supplied value for x: {e}"));
             self
         }
         pub fn y<T>(mut self, value: T) -> Self
@@ -1641,7 +1641,7 @@ pub mod builder {
         {
             self.y = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for y: {}", e));
+                .map_err(|e| format!("error converting supplied value for y: {e}"));
             self
         }
     }
@@ -1686,7 +1686,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1728,7 +1728,7 @@ pub mod builder {
         {
             self.msg = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for msg: {}", e));
+                .map_err(|e| format!("error converting supplied value for msg: {e}"));
             self
         }
         pub fn result<T>(mut self, value: T) -> Self
@@ -1738,7 +1738,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1782,7 +1782,7 @@ pub mod builder {
         {
             self.msg = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for msg: {}", e));
+                .map_err(|e| format!("error converting supplied value for msg: {e}"));
             self
         }
         pub fn result<T>(mut self, value: T) -> Self
@@ -1792,7 +1792,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1860,7 +1860,7 @@ pub mod builder {
         {
             self.bar = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for bar: {}", e));
+                .map_err(|e| format!("error converting supplied value for bar: {e}"));
             self
         }
         pub fn baz<T>(mut self, value: T) -> Self
@@ -1870,7 +1870,7 @@ pub mod builder {
         {
             self.baz = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for baz: {}", e));
+                .map_err(|e| format!("error converting supplied value for baz: {e}"));
             self
         }
     }
@@ -1912,7 +1912,7 @@ pub mod builder {
         {
             self.suspended_by = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for suspended_by: {}", e));
+                .map_err(|e| format!("error converting supplied value for suspended_by: {e}"));
             self
         }
     }
@@ -1955,7 +1955,7 @@ pub mod builder {
         {
             self.suspended_by = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for suspended_by: {}", e));
+                .map_err(|e| format!("error converting supplied value for suspended_by: {e}"));
             self
         }
     }
@@ -1998,7 +1998,7 @@ pub mod builder {
         {
             self.email = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for email: {}", e));
+                .map_err(|e| format!("error converting supplied value for email: {e}"));
             self
         }
     }
@@ -2041,7 +2041,7 @@ pub mod builder {
         {
             self.email = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for email: {}", e));
+                .map_err(|e| format!("error converting supplied value for email: {e}"));
             self
         }
     }
@@ -2081,7 +2081,7 @@ pub mod builder {
         {
             self.a = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for a: {}", e));
+                .map_err(|e| format!("error converting supplied value for a: {e}"));
             self
         }
     }
@@ -2115,7 +2115,7 @@ pub mod builder {
         {
             self.tag = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for tag: {}", e));
+                .map_err(|e| format!("error converting supplied value for tag: {e}"));
             self
         }
     }
@@ -2154,7 +2154,7 @@ pub mod builder {
         {
             self.action = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for action: {}", e));
+                .map_err(|e| format!("error converting supplied value for action: {e}"));
             self
         }
     }

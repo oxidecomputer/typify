@@ -142,7 +142,7 @@ pub mod builder {
         {
             self.converted_type = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for converted_type: {}", e));
+                .map_err(|e| format!("error converting supplied value for converted_type: {e}"));
             self
         }
         pub fn patched_type<T>(mut self, value: T) -> Self
@@ -152,7 +152,7 @@ pub mod builder {
         {
             self.patched_type = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for patched_type: {}", e));
+                .map_err(|e| format!("error converting supplied value for patched_type: {e}"));
             self
         }
         pub fn replaced_type<T>(mut self, value: T) -> Self
@@ -162,7 +162,7 @@ pub mod builder {
         {
             self.replaced_type = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for replaced_type: {}", e));
+                .map_err(|e| format!("error converting supplied value for replaced_type: {e}"));
             self
         }
     }

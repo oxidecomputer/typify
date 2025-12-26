@@ -1147,7 +1147,7 @@ impl TypeEntry {
             prop_doc.push(prop.description.as_ref().map(|d| quote! { #[doc = #d] }));
             prop_name.push(format_ident!("{}", prop.name));
             prop_error.push(format!(
-                "error converting supplied value for {}: {{}}",
+                "error converting supplied value for {}: {{e}}",
                 prop.name,
             ));
 
@@ -1311,7 +1311,7 @@ impl TypeEntry {
                                     T::Error: ::std::fmt::Display,
                             {
                                 self.#prop_name = value.try_into()
-                                    .map_err(|e| format!(#prop_error, e));
+                                    .map_err(|e| format!(#prop_error));
                                 self
                             }
                         )*

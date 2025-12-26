@@ -176,7 +176,7 @@ pub mod builder {
         {
             self.rules = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for rules: {}", e));
+                .map_err(|e| format!("error converting supplied value for rules: {e}"));
             self
         }
     }

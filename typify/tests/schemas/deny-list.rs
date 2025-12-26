@@ -209,7 +209,7 @@ pub mod builder {
         {
             self.where_not = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for where_not: {}", e));
+                .map_err(|e| format!("error converting supplied value for where_not: {e}"));
             self
         }
         pub fn why_not<T>(mut self, value: T) -> Self
@@ -219,7 +219,7 @@ pub mod builder {
         {
             self.why_not = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for why_not: {}", e));
+                .map_err(|e| format!("error converting supplied value for why_not: {e}"));
             self
         }
     }
