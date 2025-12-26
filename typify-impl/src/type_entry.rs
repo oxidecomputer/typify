@@ -248,15 +248,15 @@ impl TypeEntryEnum {
     ) -> TypeEntry {
         // Let's find some decent names for variants. We first try the simple
         // sanitization.
-        variants.iter_mut().for_each(|variant| {
+        for variant in &mut variants {
             let ident_name = sanitize(&variant.raw_name, Case::Pascal);
             variant.ident_name = Some(ident_name);
-        });
+        }
 
         // If variants aren't unique, we're turn the elided characters into
         // 'x's.
         if !variants_unique(&variants) {
-            variants.iter_mut().for_each(|variant| {
+            for variant in &mut variants {
                 let ident_name = sanitize(
                     &variant
                         .raw_name
@@ -264,26 +264,26 @@ impl TypeEntryEnum {
                     Case::Pascal,
                 );
                 variant.ident_name = Some(ident_name);
-            });
+            }
         }
 
         // If variants still aren't unique, we fail: we'd rather not emit code
         // that can't compile
         if !variants_unique(&variants) {
             let mut counts = HashMap::new();
-            variants.iter().for_each(|variant| {
+            for variant in &variants {
                 counts
                     .entry(variant.ident_name.as_ref().unwrap())
                     .and_modify(|xxx| *xxx += 1)
                     .or_insert(0);
-            });
+            }
             let dups = variants
                 .iter()
                 .filter(|variant| *counts.get(variant.ident_name.as_ref().unwrap()).unwrap() > 0)
                 .map(|variant| variant.raw_name.as_str())
                 .collect::<Vec<_>>()
                 .join(",");
-            panic!("Failed to make unique variant names for [{}]", dups);
+            panic!("Failed to make unique variant names for [{dups}]");
         }
 
         let name = get_type_name(&type_name, metadata).unwrap();
@@ -546,7 +546,7 @@ impl From<TypeEntryDetails> for TypeEntry {
 
 impl TypeEntry {
     pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: impls.to_vec(),
@@ -556,7 +556,7 @@ impl TypeEntry {
         }
     }
     pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: Default::default(),
@@ -566,7 +566,7 @@ impl TypeEntry {
         }
     }
     pub(crate) fn new_boolean() -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Boolean,
             extra_derives: Default::default(),
         }
@@ -575,7 +575,7 @@ impl TypeEntry {
         TypeEntryDetails::Integer(type_name.to_string()).into()
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Float(type_name.to_string()),
             extra_derives: Default::default(),
         }
@@ -733,13 +733,13 @@ impl TypeEntry {
 
         match &self.details {
             TypeEntryDetails::Enum(enum_details) => {
-                self.output_enum(type_space, output, enum_details, derive_set)
+                self.output_enum(type_space, output, enum_details, derive_set);
             }
             TypeEntryDetails::Struct(struct_details) => {
-                self.output_struct(type_space, output, struct_details, derive_set)
+                self.output_struct(type_space, output, struct_details, derive_set);
             }
             TypeEntryDetails::Newtype(newtype_details) => {
-                self.output_newtype(type_space, output, newtype_details, derive_set)
+                self.output_newtype(type_space, output, newtype_details, derive_set);
             }
 
             // We should never get here as reference types should only be used
@@ -822,7 +822,7 @@ impl TypeEntry {
                     .filter(|variant| matches!(variant.details, VariantDetails::Simple))
                     .count()
                     <= 1
-            )
+            );
         }
 
         // Display and FromStr impls for enums that are made exclusively of
@@ -1039,12 +1039,12 @@ impl TypeEntry {
                                 .unwrap()
                                 .type_ident(type_space, &None)
                         });
-                        let variant_type_ident = if type_ids.len() != 1 {
-                            quote! { ( #(#variant_type_idents),* ) }
-                        } else {
+                        let variant_type_ident = if type_ids.len() == 1 {
                             // A single-item tuple requires a trailing
                             // comma.
                             quote! { ( #(#variant_type_idents,)* ) }
+                        } else {
+                            quote! { ( #(#variant_type_idents),* ) }
                         };
                         let variant_name =
                             format_ident!("{}", variant.ident_name.as_ref().unwrap());
@@ -1252,7 +1252,7 @@ impl TypeEntry {
                         }
                     }
                 },
-            )
+            );
         }
 
         if type_space.settings.struct_builder {
@@ -1540,7 +1540,7 @@ impl TypeEntry {
             } => {
                 let max = max_length.map(|v| {
                     let v = v as usize;
-                    let err = format!("longer than {} characters", v);
+                    let err = format!("longer than {v} characters");
                     quote! {
                         if value.chars().count() > #v {
                             return Err(#err.into());
@@ -1549,7 +1549,7 @@ impl TypeEntry {
                 });
                 let min = min_length.map(|v| {
                     let v = v as usize;
-                    let err = format!("shorter than {} characters", v);
+                    let err = format!("shorter than {v} characters");
                     quote! {
                         if value.chars().count() < #v {
                             return Err(#err.into());
@@ -1558,7 +1558,7 @@ impl TypeEntry {
                 });
 
                 let pat = pattern.as_ref().map(|p| {
-                    let err = format!("doesn't match pattern \"{}\"", p);
+                    let err = format!("doesn't match pattern \"{p}\"");
                     quote! {
                         static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
                             ::regress::Regex::new(#p).unwrap()
@@ -1941,8 +1941,8 @@ impl TypeEntry {
 
     pub(crate) fn describe(&self) -> String {
         match &self.details {
-            TypeEntryDetails::Enum(TypeEntryEnum { name, .. }) => format!("enum {}", name),
-            TypeEntryDetails::Struct(TypeEntryStruct { name, .. }) => format!("struct {}", name),
+            TypeEntryDetails::Enum(TypeEntryEnum { name, .. }) => format!("enum {name}"),
+            TypeEntryDetails::Struct(TypeEntryStruct { name, .. }) => format!("struct {name}"),
             TypeEntryDetails::Newtype(TypeEntryNewtype { name, type_id, .. }) => {
                 format!("newtype {} {}", name, type_id.0)
             }
@@ -1986,7 +1986,7 @@ impl TypeEntry {
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
     let desc = match description {
         Some(desc) => desc,
-        None => &format!("`{}`", name),
+        None => &format!("`{name}`"),
     };
     let schema_json = serde_json::to_string_pretty(schema).unwrap();
     let schema_lines = schema_json.lines();

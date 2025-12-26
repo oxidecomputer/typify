@@ -171,11 +171,11 @@ impl TypeEntry {
                         #type_path::new(#num).unwrap()
                     }
                 } else {
-                    let val =
-                        match proc_macro2::Literal::from_str(&format!("{}_{}", value, type_name)) {
-                            Ok(v) => v,
-                            Err(_) => unreachable!(),
-                        };
+                    let val = match proc_macro2::Literal::from_str(&format!("{value}_{type_name}"))
+                    {
+                        Ok(v) => v,
+                        Err(_) => unreachable!(),
+                    };
                     TokenStream::from(proc_macro2::TokenTree::from(val))
                 }
             }

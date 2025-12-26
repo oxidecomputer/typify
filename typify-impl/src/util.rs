@@ -28,7 +28,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
     metadata
         .as_ref()
         .and_then(|metadata| match (&metadata.title, &metadata.description) {
-            (Some(t), Some(d)) => Some(format!("{}\n\n{}", t, d)),
+            (Some(t), Some(d)) => Some(format!("{t}\n\n{d}")),
             (Some(t), None) => Some(t.clone()),
             (None, Some(d)) => Some(d.clone()),
             (None, None) => None,
@@ -556,7 +556,7 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
 
         RefKey::Def(decoded_segment)
     } else {
-        panic!("expected a '/' in $ref: {}", ref_name)
+        panic!("expected a '/' in $ref: {ref_name}")
     }
 }
 
@@ -794,14 +794,14 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
     let out = match out.chars().next() {
         None => prefix,
         Some(c) if is_xid_start(c) => out,
-        Some(_) => format!("{}{}", prefix, out),
+        Some(_) => format!("{prefix}{out}"),
     };
 
     // Make sure the string is a valid Rust identifier.
     if syn::parse_str::<syn::Ident>(&out).is_ok() {
         out
     } else {
-        format!("{}_", out)
+        format!("{out}_")
     }
 }
 
@@ -868,7 +868,7 @@ impl StringValidator {
                     .map(|pattern| {
                         regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
                             type_name: type_name.clone().into_option(),
-                            reason: format!("invalid pattern '{}' {}", pattern, e),
+                            reason: format!("invalid pattern '{pattern}' {e}"),
                         })
                     })
                     .transpose()?;

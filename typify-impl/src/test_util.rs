@@ -52,14 +52,14 @@ pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
 /// Ingest a type, spit it back out, and make sure it matches where we started.
 #[track_caller]
 pub(crate) fn validate_output<T: JsonSchema + Schema>() {
-    validate_output_impl::<T>(false)
+    validate_output_impl::<T>(false);
 }
 
 /// Same as `validate_output` but ignores differences of the top-level enum's
 /// variant names which are lost in the case of `#[serde(untagged)]`
 #[track_caller]
 pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
-    validate_output_impl::<T>(true)
+    validate_output_impl::<T>(true);
 }
 
 #[track_caller]
@@ -171,8 +171,7 @@ fn compare_attributes(attrs_a: &[Attribute], attrs_b: &[Attribute]) -> Result<()
         Ok(())
     } else {
         Err(format!(
-            "different serde options: {:?} {:?}",
-            serde_options_a, serde_options_b
+            "different serde options: {serde_options_a:?} {serde_options_b:?}"
         ))
     }
 }
@@ -221,7 +220,7 @@ fn get_serde(attrs: &[Attribute]) -> HashSet<String> {
 impl SynCompare for syn::Ident {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         if self != other {
-            Err(format!("idents differ: {} {}", self, other))
+            Err(format!("idents differ: {self} {other}"))
         } else {
             Ok(())
         }
@@ -283,9 +282,9 @@ impl SynCompare for Variant {
 impl SynCompare for Fields {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         match (self, other) {
-            (Fields::Named(a), Fields::Named(b)) => a.syn_cmp(b, false),
-            (Fields::Unnamed(a), Fields::Unnamed(b)) => a.syn_cmp(b, false),
-            (Fields::Unit, Fields::Unit) => Ok(()),
+            (Self::Named(a), Self::Named(b)) => a.syn_cmp(b, false),
+            (Self::Unnamed(a), Self::Unnamed(b)) => a.syn_cmp(b, false),
+            (Self::Unit, Self::Unit) => Ok(()),
             _ => Err("mismatched field types".to_string()),
         }
     }
@@ -314,11 +313,10 @@ impl SynCompare for Field {
 impl SynCompare for Type {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         match (self, other) {
-            (Type::Tuple(a), Type::Tuple(b)) => a.syn_cmp(b, false),
-            (Type::Path(a), Type::Path(b)) => a.syn_cmp(b, false),
+            (Self::Tuple(a), Self::Tuple(b)) => a.syn_cmp(b, false),
+            (Self::Path(a), Self::Path(b)) => a.syn_cmp(b, false),
             _ => Err(format!(
-                "unexpected or mismatched type pair: {:?} {:?}",
-                self, other
+                "unexpected or mismatched type pair: {self:?} {other:?}"
             )),
         }
     }

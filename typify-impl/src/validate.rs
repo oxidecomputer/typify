@@ -27,8 +27,7 @@ fn schema_object_value_validate(
     if let Some(const_value) = &object.const_value {
         if value != const_value {
             return Err(format!(
-                "{} does not match the const value {}",
-                value, const_value,
+                "{value} does not match the const value {const_value}",
             ));
         }
     }

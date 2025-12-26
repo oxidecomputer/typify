@@ -122,7 +122,7 @@ fn try_merge_schema(a: &Schema, b: &Schema, defs: &BTreeMap<RefKey, Schema>) -> 
             let key = ref_key(ref_name);
             let resolved = defs
                 .get(&key)
-                .unwrap_or_else(|| panic!("unresolved reference: {}", ref_name));
+                .unwrap_or_else(|| panic!("unresolved reference: {ref_name}"));
             let merged_schema = try_merge_schema(resolved, other, defs)?;
 
             // If we merge a referenced schema with another schema **and**
@@ -429,7 +429,7 @@ fn merge_schema_not(
         (Schema::Object(schema_object), any_not) => {
             match try_merge_schema_not(schema_object.clone(), any_not, defs) {
                 Ok(schema_obj) => Schema::Object(schema_obj),
-                Err(_) => Schema::Bool(false),
+                Err(()) => Schema::Bool(false),
             }
         }
     }
@@ -544,7 +544,7 @@ fn try_merge_with_subschemas_not(
             else_schema: None,
         } => match try_merge_all(all_of, defs) {
             Ok(merged_not_schema) => try_merge_schema_not(schema_object, &merged_not_schema, defs),
-            Err(_) => Ok(schema_object),
+            Err(()) => Ok(schema_object),
         },
 
         _ => todo!(
@@ -671,8 +671,8 @@ fn merge_so_instance_type(
                 .iter()
                 .collect::<BTreeSet<_>>()
                 .intersection(&bb.iter().collect::<BTreeSet<_>>())
-                .cloned()
-                .cloned()
+                .copied()
+                .copied()
                 .collect::<Vec<_>>();
 
             match types.len() {
@@ -701,10 +701,8 @@ fn merge_so_format(a: Option<&String>, b: Option<&String>) -> Result<Option<Stri
     match (a.map(String::as_str), b.map(String::as_str)) {
         (None, other) | (other, None) => Ok(other.map(String::from)),
 
-        (Some("ip"), result @ Some("ipv4"))
-        | (Some("ip"), result @ Some("ipv6"))
-        | (result @ Some("ipv4"), Some("ip"))
-        | (result @ Some("ipv6"), Some("ip")) => Ok(result.map(String::from)),
+        (Some("ip"), result @ Some("ipv4" | "ipv6"))
+        | (result @ Some("ipv4" | "ipv6"), Some("ip")) => Ok(result.map(String::from)),
 
         // Fine if they're both the same
         (Some(aa), Some(bb)) if aa == bb => Ok(Some(aa.into())),
@@ -939,22 +937,19 @@ fn merge_items_array<'a>(
 ) -> Result<(Vec<Schema>, bool), ()> {
     let mut items = Vec::new();
     for (a, b) in items_iter {
-        match try_merge_schema(a, b, defs) {
-            Ok(schema) => {
-                items.push(schema);
-                if let Some(max) = max_items {
-                    if items.len() == max as usize {
-                        return Ok((items, false));
-                    }
+        if let Ok(schema) = try_merge_schema(a, b, defs) {
+            items.push(schema);
+            if let Some(max) = max_items {
+                if items.len() == max as usize {
+                    return Ok((items, false));
                 }
             }
-            Err(_) => {
-                let len = items.len() as u32;
-                if len < min_items.unwrap_or(1) {
-                    return Err(());
-                }
-                return Ok((items, false));
+        } else {
+            let len = items.len() as u32;
+            if len < min_items.unwrap_or(1) {
+                return Err(());
             }
+            return Ok((items, false));
         }
     }
 
@@ -1131,29 +1126,30 @@ trait Roughly {
 impl Roughly for schemars::schema::Schema {
     fn roughly(&self, other: &Self) -> bool {
         match (self, other) {
-            (Schema::Bool(a), Schema::Bool(b)) => a == b,
-            (Schema::Bool(false), _) | (_, Schema::Bool(false)) => false,
+            (Self::Bool(a), Self::Bool(b)) => a == b,
+            (Self::Bool(false), _) | (_, Self::Bool(false)) => false,
 
-            (Schema::Bool(true), Schema::Object(other))
-            | (Schema::Object(other), Schema::Bool(true)) => matches!(
-                other,
-                SchemaObject {
-                    metadata: _,
-                    instance_type: None,
-                    format: None,
-                    enum_values: None,
-                    const_value: None,
-                    subschemas: None,
-                    number: None,
-                    string: None,
-                    array: None,
-                    object: None,
-                    reference: None,
-                    extensions: _,
-                }
-            ),
+            (Self::Bool(true), Self::Object(other)) | (Self::Object(other), Self::Bool(true)) => {
+                matches!(
+                    other,
+                    SchemaObject {
+                        metadata: _,
+                        instance_type: None,
+                        format: None,
+                        enum_values: None,
+                        const_value: None,
+                        subschemas: None,
+                        number: None,
+                        string: None,
+                        array: None,
+                        object: None,
+                        reference: None,
+                        extensions: _,
+                    }
+                )
+            }
 
-            (Schema::Object(a), Schema::Object(b)) => {
+            (Self::Object(a), Self::Object(b)) => {
                 a.instance_type == b.instance_type
                     && a.format == b.format
                     && a.enum_values == b.enum_values
@@ -1230,8 +1226,7 @@ fn roughly_array(a: Option<&ArrayValidation>, b: Option<&ArrayValidation>) -> bo
 fn roughly_object(a: Option<&ObjectValidation>, b: Option<&ObjectValidation>) -> bool {
     match (a, b) {
         (None, None) => true,
-        (None, Some(_)) => false,
-        (Some(_), None) => false,
+        (None, Some(_)) | (Some(_), None) => false,
         (Some(aa), Some(bb)) => {
             aa.max_properties == bb.max_properties
                 && aa.min_properties == bb.min_properties
@@ -1640,7 +1635,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1683,7 +1678,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1725,7 +1720,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1766,7 +1761,7 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 
     #[test]
@@ -1822,6 +1817,6 @@ mod tests {
             ab,
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
-        )
+        );
     }
 }

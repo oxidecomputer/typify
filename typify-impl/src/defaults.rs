@@ -339,12 +339,12 @@ impl TypeEntry {
             TypeEntryDetails::Integer(name) => {
                 if let Some(value) = default.as_u64() {
                     if name.starts_with(STD_NUM_NONZERO_PREFIX) {
-                        Some(format!("defaults::default_nzu64::<{}, {}>", name, value))
+                        Some(format!("defaults::default_nzu64::<{name}, {value}>"))
                     } else {
-                        Some(format!("defaults::default_u64::<{}, {}>", name, value))
+                        Some(format!("defaults::default_u64::<{name}, {value}>"))
                     }
                 } else if let Some(value) = default.as_i64() {
-                    Some(format!("defaults::default_i64::<{}, {}>", name, value))
+                    Some(format!("defaults::default_i64::<{name}, {value}>"))
                 } else {
                     panic!()
                 }
@@ -366,14 +366,14 @@ impl TypeEntry {
                         self,
                     )
                 });
-            let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
+            let fn_name = sanitize(&format!("{type_name}_{prop_name}"), Case::Snake);
             let fn_ident = format_ident!("{}", fn_name);
             let def = quote! {
                 pub(super) fn #fn_ident() -> #n {
                     #value
                 }
             };
-            (format!("defaults::{}", fn_name), Some(def))
+            (format!("defaults::{fn_name}"), Some(def))
         }
     }
 }

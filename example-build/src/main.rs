@@ -7,7 +7,7 @@ include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 #[test]
 fn test_main() {
-    main()
+    main();
 }
 
 fn main() {
@@ -21,5 +21,5 @@ fn main() {
         fruits: vec![String::from("apple"), String::from("mango")],
         vegetables: vec![veg],
     };
-    println!("{:?}", veggies);
+    println!("{veggies:?}");
 }
