@@ -11,6 +11,9 @@ members = [
 
 resolver = "2"
 
+[workspace.package]
+rust-version = "1.88.0"
+
 [workspace.dependencies]
 typify = { version = "0.5.0", path = "typify" }
 typify-impl = { version = "0.5.0", path = "typify-impl" }
