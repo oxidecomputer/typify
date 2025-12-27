@@ -110,7 +110,7 @@ pub enum FruitOrVeg {
     Fruit(Fruit),
 }
 impl ::std::convert::From<&Self> for FruitOrVeg {
-    fn from(value: &FruitOrVeg) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

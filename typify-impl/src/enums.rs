@@ -1490,7 +1490,7 @@ mod tests {
             }
 
             impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }
@@ -1542,7 +1542,7 @@ mod tests {
             }
 
             impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
+                fn from(value: &Self) -> Self {
                     value.clone()
                 }
             }

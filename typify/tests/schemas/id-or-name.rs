@@ -60,7 +60,7 @@ pub enum IdOrName {
     Name(Name),
 }
 impl ::std::convert::From<&Self> for IdOrName {
-    fn from(value: &IdOrName) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -143,7 +143,7 @@ pub enum IdOrNameRedundant {
     String(Name),
 }
 impl ::std::convert::From<&Self> for IdOrNameRedundant {
-    fn from(value: &IdOrNameRedundant) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -235,7 +235,7 @@ pub enum IdOrYolo {
     Yolo(IdOrYoloYolo),
 }
 impl ::std::convert::From<&Self> for IdOrYolo {
-    fn from(value: &IdOrYolo) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

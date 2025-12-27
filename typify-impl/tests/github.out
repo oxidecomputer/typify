@@ -260,7 +260,7 @@ pub enum AlertInstanceState {
     Fixed,
 }
 impl ::std::convert::From<&Self> for AlertInstanceState {
-    fn from(value: &AlertInstanceState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -858,7 +858,7 @@ pub enum AppEventsItem {
     WorkflowRun,
 }
 impl ::std::convert::From<&Self> for AppEventsItem {
-    fn from(value: &AppEventsItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1390,7 +1390,7 @@ pub enum AppPermissionsActions {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsActions {
-    fn from(value: &AppPermissionsActions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1467,7 +1467,7 @@ pub enum AppPermissionsAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsAdministration {
-    fn from(value: &AppPermissionsAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1544,7 +1544,7 @@ pub enum AppPermissionsChecks {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsChecks {
-    fn from(value: &AppPermissionsChecks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1621,7 +1621,7 @@ pub enum AppPermissionsContentReferences {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsContentReferences {
-    fn from(value: &AppPermissionsContentReferences) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1698,7 +1698,7 @@ pub enum AppPermissionsContents {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsContents {
-    fn from(value: &AppPermissionsContents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1775,7 +1775,7 @@ pub enum AppPermissionsDeployments {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsDeployments {
-    fn from(value: &AppPermissionsDeployments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1852,7 +1852,7 @@ pub enum AppPermissionsDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsDiscussions {
-    fn from(value: &AppPermissionsDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1929,7 +1929,7 @@ pub enum AppPermissionsEmails {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsEmails {
-    fn from(value: &AppPermissionsEmails) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2006,7 +2006,7 @@ pub enum AppPermissionsEnvironments {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsEnvironments {
-    fn from(value: &AppPermissionsEnvironments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2083,7 +2083,7 @@ pub enum AppPermissionsIssues {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsIssues {
-    fn from(value: &AppPermissionsIssues) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2160,7 +2160,7 @@ pub enum AppPermissionsMembers {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsMembers {
-    fn from(value: &AppPermissionsMembers) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2237,7 +2237,7 @@ pub enum AppPermissionsMetadata {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsMetadata {
-    fn from(value: &AppPermissionsMetadata) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2314,7 +2314,7 @@ pub enum AppPermissionsOrganizationAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationAdministration {
-    fn from(value: &AppPermissionsOrganizationAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2391,7 +2391,7 @@ pub enum AppPermissionsOrganizationHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationHooks {
-    fn from(value: &AppPermissionsOrganizationHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2468,7 +2468,7 @@ pub enum AppPermissionsOrganizationPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationPackages {
-    fn from(value: &AppPermissionsOrganizationPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2545,7 +2545,7 @@ pub enum AppPermissionsOrganizationPlan {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationPlan {
-    fn from(value: &AppPermissionsOrganizationPlan) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2622,7 +2622,7 @@ pub enum AppPermissionsOrganizationProjects {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationProjects {
-    fn from(value: &AppPermissionsOrganizationProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2699,7 +2699,7 @@ pub enum AppPermissionsOrganizationSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationSecrets {
-    fn from(value: &AppPermissionsOrganizationSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2776,7 +2776,7 @@ pub enum AppPermissionsOrganizationSelfHostedRunners {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationSelfHostedRunners {
-    fn from(value: &AppPermissionsOrganizationSelfHostedRunners) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2857,7 +2857,7 @@ pub enum AppPermissionsOrganizationUserBlocking {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsOrganizationUserBlocking {
-    fn from(value: &AppPermissionsOrganizationUserBlocking) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -2934,7 +2934,7 @@ pub enum AppPermissionsPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsPackages {
-    fn from(value: &AppPermissionsPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3011,7 +3011,7 @@ pub enum AppPermissionsPages {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsPages {
-    fn from(value: &AppPermissionsPages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3088,7 +3088,7 @@ pub enum AppPermissionsPullRequests {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsPullRequests {
-    fn from(value: &AppPermissionsPullRequests) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3165,7 +3165,7 @@ pub enum AppPermissionsRepositoryHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsRepositoryHooks {
-    fn from(value: &AppPermissionsRepositoryHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3242,7 +3242,7 @@ pub enum AppPermissionsRepositoryProjects {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsRepositoryProjects {
-    fn from(value: &AppPermissionsRepositoryProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3319,7 +3319,7 @@ pub enum AppPermissionsSecretScanningAlerts {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsSecretScanningAlerts {
-    fn from(value: &AppPermissionsSecretScanningAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3396,7 +3396,7 @@ pub enum AppPermissionsSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsSecrets {
-    fn from(value: &AppPermissionsSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3473,7 +3473,7 @@ pub enum AppPermissionsSecurityEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsSecurityEvents {
-    fn from(value: &AppPermissionsSecurityEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3550,7 +3550,7 @@ pub enum AppPermissionsSecurityScanningAlert {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsSecurityScanningAlert {
-    fn from(value: &AppPermissionsSecurityScanningAlert) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3627,7 +3627,7 @@ pub enum AppPermissionsSingleFile {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsSingleFile {
-    fn from(value: &AppPermissionsSingleFile) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3704,7 +3704,7 @@ pub enum AppPermissionsStatuses {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsStatuses {
-    fn from(value: &AppPermissionsStatuses) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3781,7 +3781,7 @@ pub enum AppPermissionsTeamDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsTeamDiscussions {
-    fn from(value: &AppPermissionsTeamDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3858,7 +3858,7 @@ pub enum AppPermissionsVulnerabilityAlerts {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsVulnerabilityAlerts {
-    fn from(value: &AppPermissionsVulnerabilityAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -3935,7 +3935,7 @@ pub enum AppPermissionsWorkflows {
     Write,
 }
 impl ::std::convert::From<&Self> for AppPermissionsWorkflows {
-    fn from(value: &AppPermissionsWorkflows) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4033,7 +4033,7 @@ pub enum AuthorAssociation {
     Owner,
 }
 impl ::std::convert::From<&Self> for AuthorAssociation {
-    fn from(value: &AuthorAssociation) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4331,7 +4331,7 @@ pub enum BranchProtectionRuleAllowDeletionsEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleAllowDeletionsEnforcementLevel {
-    fn from(value: &BranchProtectionRuleAllowDeletionsEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4417,7 +4417,7 @@ pub enum BranchProtectionRuleAllowForcePushesEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleAllowForcePushesEnforcementLevel {
-    fn from(value: &BranchProtectionRuleAllowForcePushesEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4557,7 +4557,7 @@ pub enum BranchProtectionRuleCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleCreatedAction {
-    fn from(value: &BranchProtectionRuleCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4689,7 +4689,7 @@ pub enum BranchProtectionRuleDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleDeletedAction {
-    fn from(value: &BranchProtectionRuleDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -4857,7 +4857,7 @@ pub enum BranchProtectionRuleEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleEditedAction {
-    fn from(value: &BranchProtectionRuleEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5058,7 +5058,7 @@ pub enum BranchProtectionRuleEvent {
     Edited(BranchProtectionRuleEdited),
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleEvent {
-    fn from(value: &BranchProtectionRuleEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5113,7 +5113,7 @@ pub enum BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleLinearHistoryRequirementEnforcementLevel {
-    fn from(value: &BranchProtectionRuleLinearHistoryRequirementEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5201,7 +5201,7 @@ pub enum BranchProtectionRuleMergeQueueEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleMergeQueueEnforcementLevel {
-    fn from(value: &BranchProtectionRuleMergeQueueEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5287,7 +5287,7 @@ pub enum BranchProtectionRulePullRequestReviewsEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRulePullRequestReviewsEnforcementLevel {
-    fn from(value: &BranchProtectionRulePullRequestReviewsEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5373,7 +5373,7 @@ pub enum BranchProtectionRuleRequiredConversationResolutionLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleRequiredConversationResolutionLevel {
-    fn from(value: &BranchProtectionRuleRequiredConversationResolutionLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5459,7 +5459,7 @@ pub enum BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleRequiredDeploymentsEnforcementLevel {
-    fn from(value: &BranchProtectionRuleRequiredDeploymentsEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5545,7 +5545,7 @@ pub enum BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleRequiredStatusChecksEnforcementLevel {
-    fn from(value: &BranchProtectionRuleRequiredStatusChecksEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -5631,7 +5631,7 @@ pub enum BranchProtectionRuleSignatureRequirementEnforcementLevel {
     Everyone,
 }
 impl ::std::convert::From<&Self> for BranchProtectionRuleSignatureRequirementEnforcementLevel {
-    fn from(value: &BranchProtectionRuleSignatureRequirementEnforcementLevel) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -6014,7 +6014,7 @@ pub enum CheckRunCompletedAction {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunCompletedAction {
-    fn from(value: &CheckRunCompletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -6510,7 +6510,7 @@ pub enum CheckRunCompletedCheckRunCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckRunCompletedCheckRunCheckSuiteConclusion {
-    fn from(value: &CheckRunCompletedCheckRunCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -6604,7 +6604,7 @@ pub enum CheckRunCompletedCheckRunCheckSuiteStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for CheckRunCompletedCheckRunCheckSuiteStatus {
-    fn from(value: &CheckRunCompletedCheckRunCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -6702,7 +6702,7 @@ pub enum CheckRunCompletedCheckRunConclusion {
     Skipped,
 }
 impl ::std::convert::From<&Self> for CheckRunCompletedCheckRunConclusion {
-    fn from(value: &CheckRunCompletedCheckRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -6848,7 +6848,7 @@ pub enum CheckRunCompletedCheckRunStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunCompletedCheckRunStatus {
-    fn from(value: &CheckRunCompletedCheckRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -7265,7 +7265,7 @@ pub enum CheckRunCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for CheckRunCreatedAction {
-    fn from(value: &CheckRunCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -7766,7 +7766,7 @@ pub enum CheckRunCreatedCheckRunCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckRunCreatedCheckRunCheckSuiteConclusion {
-    fn from(value: &CheckRunCreatedCheckRunCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -7860,7 +7860,7 @@ pub enum CheckRunCreatedCheckRunCheckSuiteStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunCreatedCheckRunCheckSuiteStatus {
-    fn from(value: &CheckRunCreatedCheckRunCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -7958,7 +7958,7 @@ pub enum CheckRunCreatedCheckRunConclusion {
     Skipped,
 }
 impl ::std::convert::From<&Self> for CheckRunCreatedCheckRunConclusion {
-    fn from(value: &CheckRunCreatedCheckRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -8110,7 +8110,7 @@ pub enum CheckRunCreatedCheckRunStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunCreatedCheckRunStatus {
-    fn from(value: &CheckRunCreatedCheckRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -8315,7 +8315,7 @@ pub enum CheckRunEvent {
     Rerequested(CheckRunRerequested),
 }
 impl ::std::convert::From<&Self> for CheckRunEvent {
-    fn from(value: &CheckRunEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -8839,7 +8839,7 @@ pub enum CheckRunRequestedActionAction {
     RequestedAction,
 }
 impl ::std::convert::From<&Self> for CheckRunRequestedActionAction {
-    fn from(value: &CheckRunRequestedActionAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -9340,7 +9340,7 @@ pub enum CheckRunRequestedActionCheckRunCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckRunRequestedActionCheckRunCheckSuiteConclusion {
-    fn from(value: &CheckRunRequestedActionCheckRunCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -9434,7 +9434,7 @@ pub enum CheckRunRequestedActionCheckRunCheckSuiteStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunRequestedActionCheckRunCheckSuiteStatus {
-    fn from(value: &CheckRunRequestedActionCheckRunCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -9536,7 +9536,7 @@ pub enum CheckRunRequestedActionCheckRunConclusion {
     Skipped,
 }
 impl ::std::convert::From<&Self> for CheckRunRequestedActionCheckRunConclusion {
-    fn from(value: &CheckRunRequestedActionCheckRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -9690,7 +9690,7 @@ pub enum CheckRunRequestedActionCheckRunStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunRequestedActionCheckRunStatus {
-    fn from(value: &CheckRunRequestedActionCheckRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -10102,7 +10102,7 @@ pub enum CheckRunRerequestedAction {
     Rerequested,
 }
 impl ::std::convert::From<&Self> for CheckRunRerequestedAction {
-    fn from(value: &CheckRunRerequestedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -10586,7 +10586,7 @@ pub enum CheckRunRerequestedCheckRunCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckRunRerequestedCheckRunCheckSuiteConclusion {
-    fn from(value: &CheckRunRerequestedCheckRunCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -10674,7 +10674,7 @@ pub enum CheckRunRerequestedCheckRunCheckSuiteStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunRerequestedCheckRunCheckSuiteStatus {
-    fn from(value: &CheckRunRerequestedCheckRunCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -10772,7 +10772,7 @@ pub enum CheckRunRerequestedCheckRunConclusion {
     Skipped,
 }
 impl ::std::convert::From<&Self> for CheckRunRerequestedCheckRunConclusion {
-    fn from(value: &CheckRunRerequestedCheckRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -10920,7 +10920,7 @@ pub enum CheckRunRerequestedCheckRunStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckRunRerequestedCheckRunStatus {
-    fn from(value: &CheckRunRerequestedCheckRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -11202,7 +11202,7 @@ pub enum CheckSuiteCompletedAction {
     Completed,
 }
 impl ::std::convert::From<&Self> for CheckSuiteCompletedAction {
-    fn from(value: &CheckSuiteCompletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -11446,7 +11446,7 @@ pub enum CheckSuiteCompletedCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckSuiteCompletedCheckSuiteConclusion {
-    fn from(value: &CheckSuiteCompletedCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -11540,7 +11540,7 @@ pub enum CheckSuiteCompletedCheckSuiteStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for CheckSuiteCompletedCheckSuiteStatus {
-    fn from(value: &CheckSuiteCompletedCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -11616,7 +11616,7 @@ pub enum CheckSuiteEvent {
     Rerequested(CheckSuiteRerequested),
 }
 impl ::std::convert::From<&Self> for CheckSuiteEvent {
-    fn from(value: &CheckSuiteEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -11836,7 +11836,7 @@ pub enum CheckSuiteRequestedAction {
     Requested,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRequestedAction {
-    fn from(value: &CheckSuiteRequestedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -12080,7 +12080,7 @@ pub enum CheckSuiteRequestedCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRequestedCheckSuiteConclusion {
-    fn from(value: &CheckSuiteRequestedCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -12174,7 +12174,7 @@ pub enum CheckSuiteRequestedCheckSuiteStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRequestedCheckSuiteStatus {
-    fn from(value: &CheckSuiteRequestedCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -12423,7 +12423,7 @@ pub enum CheckSuiteRerequestedAction {
     Rerequested,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRerequestedAction {
-    fn from(value: &CheckSuiteRerequestedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -12667,7 +12667,7 @@ pub enum CheckSuiteRerequestedCheckSuiteConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRerequestedCheckSuiteConclusion {
-    fn from(value: &CheckSuiteRerequestedCheckSuiteConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -12761,7 +12761,7 @@ pub enum CheckSuiteRerequestedCheckSuiteStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for CheckSuiteRerequestedCheckSuiteStatus {
-    fn from(value: &CheckSuiteRerequestedCheckSuiteStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -13053,7 +13053,7 @@ pub enum CodeScanningAlertAppearedInBranchAction {
     AppearedInBranch,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertAppearedInBranchAction {
-    fn from(value: &CodeScanningAlertAppearedInBranchAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -13311,7 +13311,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertDismissedReason {
     UsedInTests,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertAppearedInBranchAlertDismissedReason {
-    fn from(value: &CodeScanningAlertAppearedInBranchAlertDismissedReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -13458,7 +13458,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertAppearedInBranchAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertAppearedInBranchAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -13547,7 +13547,7 @@ pub enum CodeScanningAlertAppearedInBranchAlertState {
     Fixed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertAppearedInBranchAlertState {
-    fn from(value: &CodeScanningAlertAppearedInBranchAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -13904,7 +13904,7 @@ pub enum CodeScanningAlertClosedByUserAction {
     ClosedByUser,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertClosedByUserAction {
-    fn from(value: &CodeScanningAlertClosedByUserAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -14184,7 +14184,7 @@ pub enum CodeScanningAlertClosedByUserAlertDismissedReason {
     UsedInTests,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertClosedByUserAlertDismissedReason {
-    fn from(value: &CodeScanningAlertClosedByUserAlertDismissedReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -14416,7 +14416,7 @@ pub enum CodeScanningAlertClosedByUserAlertInstancesItemState {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertClosedByUserAlertInstancesItemState {
-    fn from(value: &CodeScanningAlertClosedByUserAlertInstancesItemState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -14579,7 +14579,7 @@ pub enum CodeScanningAlertClosedByUserAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertClosedByUserAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertClosedByUserAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -14662,7 +14662,7 @@ pub enum CodeScanningAlertClosedByUserAlertState {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertClosedByUserAlertState {
-    fn from(value: &CodeScanningAlertClosedByUserAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -15014,7 +15014,7 @@ pub enum CodeScanningAlertCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertCreatedAction {
-    fn from(value: &CodeScanningAlertCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -15435,7 +15435,7 @@ pub enum CodeScanningAlertCreatedAlertInstancesItemState {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertCreatedAlertInstancesItemState {
-    fn from(value: &CodeScanningAlertCreatedAlertInstancesItemState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -15600,7 +15600,7 @@ pub enum CodeScanningAlertCreatedAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertCreatedAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertCreatedAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -15682,7 +15682,7 @@ pub enum CodeScanningAlertCreatedAlertState {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertCreatedAlertState {
-    fn from(value: &CodeScanningAlertCreatedAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -15817,7 +15817,7 @@ pub enum CodeScanningAlertEvent {
     ReopenedByUser(CodeScanningAlertReopenedByUser),
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertEvent {
-    fn from(value: &CodeScanningAlertEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -16132,7 +16132,7 @@ pub enum CodeScanningAlertFixedAction {
     Fixed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertFixedAction {
-    fn from(value: &CodeScanningAlertFixedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -16428,7 +16428,7 @@ pub enum CodeScanningAlertFixedAlertDismissedReason {
     UsedInTests,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertFixedAlertDismissedReason {
-    fn from(value: &CodeScanningAlertFixedAlertDismissedReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -16658,7 +16658,7 @@ pub enum CodeScanningAlertFixedAlertInstancesItemState {
     Fixed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertFixedAlertInstancesItemState {
-    fn from(value: &CodeScanningAlertFixedAlertInstancesItemState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -16819,7 +16819,7 @@ pub enum CodeScanningAlertFixedAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertFixedAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertFixedAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -16898,7 +16898,7 @@ pub enum CodeScanningAlertFixedAlertState {
     Fixed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertFixedAlertState {
-    fn from(value: &CodeScanningAlertFixedAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -17248,7 +17248,7 @@ pub enum CodeScanningAlertReopenedAction {
     Reopened,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedAction {
-    fn from(value: &CodeScanningAlertReopenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -17665,7 +17665,7 @@ pub enum CodeScanningAlertReopenedAlertInstancesItemState {
     Open,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedAlertInstancesItemState {
-    fn from(value: &CodeScanningAlertReopenedAlertInstancesItemState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -17828,7 +17828,7 @@ pub enum CodeScanningAlertReopenedAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertReopenedAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -17915,7 +17915,7 @@ pub enum CodeScanningAlertReopenedAlertState {
     Fixed,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedAlertState {
-    fn from(value: &CodeScanningAlertReopenedAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -18251,7 +18251,7 @@ pub enum CodeScanningAlertReopenedByUserAction {
     ReopenedByUser,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedByUserAction {
-    fn from(value: &CodeScanningAlertReopenedByUserAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -18650,7 +18650,7 @@ pub enum CodeScanningAlertReopenedByUserAlertInstancesItemState {
     Open,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedByUserAlertInstancesItemState {
-    fn from(value: &CodeScanningAlertReopenedByUserAlertInstancesItemState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -18793,7 +18793,7 @@ pub enum CodeScanningAlertReopenedByUserAlertRuleSeverity {
     Error,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedByUserAlertRuleSeverity {
-    fn from(value: &CodeScanningAlertReopenedByUserAlertRuleSeverity) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -18876,7 +18876,7 @@ pub enum CodeScanningAlertReopenedByUserAlertState {
     Open,
 }
 impl ::std::convert::From<&Self> for CodeScanningAlertReopenedByUserAlertState {
-    fn from(value: &CodeScanningAlertReopenedByUserAlertState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -19235,7 +19235,7 @@ pub enum CommitCommentCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for CommitCommentCreatedAction {
-    fn from(value: &CommitCommentCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -19653,7 +19653,7 @@ pub enum ContentReferenceCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for ContentReferenceCreatedAction {
-    fn from(value: &ContentReferenceCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -19899,7 +19899,7 @@ pub enum CreateEventRefType {
     Branch,
 }
 impl ::std::convert::From<&Self> for CreateEventRefType {
-    fn from(value: &CreateEventRefType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -20050,7 +20050,7 @@ pub enum DeleteEventRefType {
     Branch,
 }
 impl ::std::convert::From<&Self> for DeleteEventRefType {
-    fn from(value: &DeleteEventRefType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -20218,7 +20218,7 @@ pub enum DeployKeyCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for DeployKeyCreatedAction {
-    fn from(value: &DeployKeyCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -20445,7 +20445,7 @@ pub enum DeployKeyDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for DeployKeyDeletedAction {
-    fn from(value: &DeployKeyDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -20572,7 +20572,7 @@ pub enum DeployKeyEvent {
     Deleted(DeployKeyDeleted),
 }
 impl ::std::convert::From<&Self> for DeployKeyEvent {
-    fn from(value: &DeployKeyEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -20765,7 +20765,7 @@ pub enum DeploymentCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for DeploymentCreatedAction {
-    fn from(value: &DeploymentCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -21233,7 +21233,7 @@ pub enum DeploymentStatusCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for DeploymentStatusCreatedAction {
-    fn from(value: &DeploymentStatusCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -21943,7 +21943,7 @@ pub enum DiscussionAnsweredAction {
     Answered,
 }
 impl ::std::convert::From<&Self> for DiscussionAnsweredAction {
-    fn from(value: &DiscussionAnsweredAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -22343,7 +22343,7 @@ pub enum DiscussionAnsweredDiscussionAnswerChosenByType {
     Organization,
 }
 impl ::std::convert::From<&Self> for DiscussionAnsweredDiscussionAnswerChosenByType {
-    fn from(value: &DiscussionAnsweredDiscussionAnswerChosenByType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -22504,7 +22504,7 @@ pub enum DiscussionAnsweredDiscussionState {
     Converting,
 }
 impl ::std::convert::From<&Self> for DiscussionAnsweredDiscussionState {
-    fn from(value: &DiscussionAnsweredDiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -22774,7 +22774,7 @@ pub enum DiscussionCategoryChangedAction {
     CategoryChanged,
 }
 impl ::std::convert::From<&Self> for DiscussionCategoryChangedAction {
-    fn from(value: &DiscussionCategoryChangedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -23191,7 +23191,7 @@ pub enum DiscussionCommentCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for DiscussionCommentCreatedAction {
-    fn from(value: &DiscussionCommentCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -23470,7 +23470,7 @@ pub enum DiscussionCommentDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for DiscussionCommentDeletedAction {
-    fn from(value: &DiscussionCommentDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -23772,7 +23772,7 @@ pub enum DiscussionCommentEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for DiscussionCommentEditedAction {
-    fn from(value: &DiscussionCommentEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -23998,7 +23998,7 @@ pub enum DiscussionCommentEvent {
     Edited(DiscussionCommentEdited),
 }
 impl ::std::convert::From<&Self> for DiscussionCommentEvent {
-    fn from(value: &DiscussionCommentEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -24145,7 +24145,7 @@ pub enum DiscussionCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for DiscussionCreatedAction {
-    fn from(value: &DiscussionCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -24369,7 +24369,7 @@ pub enum DiscussionCreatedDiscussionState {
     Converting,
 }
 impl ::std::convert::From<&Self> for DiscussionCreatedDiscussionState {
-    fn from(value: &DiscussionCreatedDiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -24502,7 +24502,7 @@ pub enum DiscussionDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for DiscussionDeletedAction {
-    fn from(value: &DiscussionDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -24665,7 +24665,7 @@ pub enum DiscussionEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for DiscussionEditedAction {
-    fn from(value: &DiscussionEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -24891,7 +24891,7 @@ pub enum DiscussionEvent {
     Unpinned(DiscussionUnpinned),
 }
 impl ::std::convert::From<&Self> for DiscussionEvent {
-    fn from(value: &DiscussionEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25054,7 +25054,7 @@ pub enum DiscussionLabeledAction {
     Labeled,
 }
 impl ::std::convert::From<&Self> for DiscussionLabeledAction {
-    fn from(value: &DiscussionLabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25211,7 +25211,7 @@ pub enum DiscussionLockedAction {
     Locked,
 }
 impl ::std::convert::From<&Self> for DiscussionLockedAction {
-    fn from(value: &DiscussionLockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25419,7 +25419,7 @@ pub enum DiscussionLockedDiscussionState {
     Locked,
 }
 impl ::std::convert::From<&Self> for DiscussionLockedDiscussionState {
-    fn from(value: &DiscussionLockedDiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25550,7 +25550,7 @@ pub enum DiscussionPinnedAction {
     Pinned,
 }
 impl ::std::convert::From<&Self> for DiscussionPinnedAction {
-    fn from(value: &DiscussionPinnedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25628,7 +25628,7 @@ pub enum DiscussionState {
     Converting,
 }
 impl ::std::convert::From<&Self> for DiscussionState {
-    fn from(value: &DiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -25781,7 +25781,7 @@ pub enum DiscussionTransferredAction {
     Transferred,
 }
 impl ::std::convert::From<&Self> for DiscussionTransferredAction {
-    fn from(value: &DiscussionTransferredAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26046,7 +26046,7 @@ pub enum DiscussionUnansweredAction {
     Unanswered,
 }
 impl ::std::convert::From<&Self> for DiscussionUnansweredAction {
-    fn from(value: &DiscussionUnansweredAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26277,7 +26277,7 @@ pub enum DiscussionUnansweredDiscussionState {
     Converting,
 }
 impl ::std::convert::From<&Self> for DiscussionUnansweredDiscussionState {
-    fn from(value: &DiscussionUnansweredDiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26503,7 +26503,7 @@ pub enum DiscussionUnlabeledAction {
     Unlabeled,
 }
 impl ::std::convert::From<&Self> for DiscussionUnlabeledAction {
-    fn from(value: &DiscussionUnlabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26660,7 +26660,7 @@ pub enum DiscussionUnlockedAction {
     Unlocked,
 }
 impl ::std::convert::From<&Self> for DiscussionUnlockedAction {
-    fn from(value: &DiscussionUnlockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26868,7 +26868,7 @@ pub enum DiscussionUnlockedDiscussionState {
     Open,
 }
 impl ::std::convert::From<&Self> for DiscussionUnlockedDiscussionState {
-    fn from(value: &DiscussionUnlockedDiscussionState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -26999,7 +26999,7 @@ pub enum DiscussionUnpinnedAction {
     Unpinned,
 }
 impl ::std::convert::From<&Self> for DiscussionUnpinnedAction {
-    fn from(value: &DiscussionUnpinnedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -27278,7 +27278,7 @@ pub enum Everything {
     WorkflowRunEvent(WorkflowRunEvent),
 }
 impl ::std::convert::From<&Self> for Everything {
-    fn from(value: &Everything) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -27797,7 +27797,7 @@ pub enum ForkEventForkeeCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for ForkEventForkeeCreatedAt {
-    fn from(value: &ForkEventForkeeCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -27931,7 +27931,7 @@ pub enum ForkEventForkeePushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for ForkEventForkeePushedAt {
-    fn from(value: &ForkEventForkeePushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -28052,7 +28052,7 @@ pub enum GithubAppAuthorizationRevokedAction {
     Revoked,
 }
 impl ::std::convert::From<&Self> for GithubAppAuthorizationRevokedAction {
-    fn from(value: &GithubAppAuthorizationRevokedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -28451,7 +28451,7 @@ pub enum GollumEventPagesItemAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for GollumEventPagesItemAction {
-    fn from(value: &GollumEventPagesItemAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29082,7 +29082,7 @@ pub enum InstallationCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for InstallationCreatedAction {
-    fn from(value: &InstallationCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29149,7 +29149,7 @@ pub enum InstallationCreatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationCreatedAt {
-    fn from(value: &InstallationCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29379,7 +29379,7 @@ pub enum InstallationDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for InstallationDeletedAction {
-    fn from(value: &InstallationDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29514,7 +29514,7 @@ pub enum InstallationEvent {
     Unsuspend(InstallationUnsuspend),
 }
 impl ::std::convert::From<&Self> for InstallationEvent {
-    fn from(value: &InstallationEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29705,7 +29705,7 @@ pub enum InstallationEventsItem {
     WorkflowRun,
 }
 impl ::std::convert::From<&Self> for InstallationEventsItem {
-    fn from(value: &InstallationEventsItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -29993,7 +29993,7 @@ pub enum InstallationNewPermissionsAcceptedAction {
     NewPermissionsAccepted,
 }
 impl ::std::convert::From<&Self> for InstallationNewPermissionsAcceptedAction {
-    fn from(value: &InstallationNewPermissionsAcceptedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30507,7 +30507,7 @@ pub enum InstallationPermissionsActions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsActions {
-    fn from(value: &InstallationPermissionsActions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30584,7 +30584,7 @@ pub enum InstallationPermissionsAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsAdministration {
-    fn from(value: &InstallationPermissionsAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30661,7 +30661,7 @@ pub enum InstallationPermissionsChecks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsChecks {
-    fn from(value: &InstallationPermissionsChecks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30738,7 +30738,7 @@ pub enum InstallationPermissionsContentReferences {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsContentReferences {
-    fn from(value: &InstallationPermissionsContentReferences) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30815,7 +30815,7 @@ pub enum InstallationPermissionsContents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsContents {
-    fn from(value: &InstallationPermissionsContents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30892,7 +30892,7 @@ pub enum InstallationPermissionsDeployments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsDeployments {
-    fn from(value: &InstallationPermissionsDeployments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -30969,7 +30969,7 @@ pub enum InstallationPermissionsDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsDiscussions {
-    fn from(value: &InstallationPermissionsDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31046,7 +31046,7 @@ pub enum InstallationPermissionsEmails {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsEmails {
-    fn from(value: &InstallationPermissionsEmails) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31123,7 +31123,7 @@ pub enum InstallationPermissionsEnvironments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsEnvironments {
-    fn from(value: &InstallationPermissionsEnvironments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31200,7 +31200,7 @@ pub enum InstallationPermissionsIssues {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsIssues {
-    fn from(value: &InstallationPermissionsIssues) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31277,7 +31277,7 @@ pub enum InstallationPermissionsMembers {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsMembers {
-    fn from(value: &InstallationPermissionsMembers) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31354,7 +31354,7 @@ pub enum InstallationPermissionsMetadata {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsMetadata {
-    fn from(value: &InstallationPermissionsMetadata) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31431,7 +31431,7 @@ pub enum InstallationPermissionsOrganizationAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationAdministration {
-    fn from(value: &InstallationPermissionsOrganizationAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31512,7 +31512,7 @@ pub enum InstallationPermissionsOrganizationEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationEvents {
-    fn from(value: &InstallationPermissionsOrganizationEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31589,7 +31589,7 @@ pub enum InstallationPermissionsOrganizationHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationHooks {
-    fn from(value: &InstallationPermissionsOrganizationHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31666,7 +31666,7 @@ pub enum InstallationPermissionsOrganizationPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationPackages {
-    fn from(value: &InstallationPermissionsOrganizationPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31747,7 +31747,7 @@ pub enum InstallationPermissionsOrganizationPlan {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationPlan {
-    fn from(value: &InstallationPermissionsOrganizationPlan) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31824,7 +31824,7 @@ pub enum InstallationPermissionsOrganizationProjects {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationProjects {
-    fn from(value: &InstallationPermissionsOrganizationProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31905,7 +31905,7 @@ pub enum InstallationPermissionsOrganizationSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationSecrets {
-    fn from(value: &InstallationPermissionsOrganizationSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -31984,7 +31984,7 @@ pub enum InstallationPermissionsOrganizationSelfHostedRunners {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationSelfHostedRunners {
-    fn from(value: &InstallationPermissionsOrganizationSelfHostedRunners) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32065,7 +32065,7 @@ pub enum InstallationPermissionsOrganizationUserBlocking {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsOrganizationUserBlocking {
-    fn from(value: &InstallationPermissionsOrganizationUserBlocking) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32146,7 +32146,7 @@ pub enum InstallationPermissionsPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsPackages {
-    fn from(value: &InstallationPermissionsPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32223,7 +32223,7 @@ pub enum InstallationPermissionsPages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsPages {
-    fn from(value: &InstallationPermissionsPages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32300,7 +32300,7 @@ pub enum InstallationPermissionsPullRequests {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsPullRequests {
-    fn from(value: &InstallationPermissionsPullRequests) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32377,7 +32377,7 @@ pub enum InstallationPermissionsRepositoryHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsRepositoryHooks {
-    fn from(value: &InstallationPermissionsRepositoryHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32454,7 +32454,7 @@ pub enum InstallationPermissionsRepositoryProjects {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsRepositoryProjects {
-    fn from(value: &InstallationPermissionsRepositoryProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32531,7 +32531,7 @@ pub enum InstallationPermissionsSecretScanningAlerts {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsSecretScanningAlerts {
-    fn from(value: &InstallationPermissionsSecretScanningAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32612,7 +32612,7 @@ pub enum InstallationPermissionsSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsSecrets {
-    fn from(value: &InstallationPermissionsSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32689,7 +32689,7 @@ pub enum InstallationPermissionsSecurityEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsSecurityEvents {
-    fn from(value: &InstallationPermissionsSecurityEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32766,7 +32766,7 @@ pub enum InstallationPermissionsSecurityScanningAlert {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsSecurityScanningAlert {
-    fn from(value: &InstallationPermissionsSecurityScanningAlert) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32847,7 +32847,7 @@ pub enum InstallationPermissionsSingleFile {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsSingleFile {
-    fn from(value: &InstallationPermissionsSingleFile) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -32924,7 +32924,7 @@ pub enum InstallationPermissionsStatuses {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsStatuses {
-    fn from(value: &InstallationPermissionsStatuses) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33001,7 +33001,7 @@ pub enum InstallationPermissionsTeamDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsTeamDiscussions {
-    fn from(value: &InstallationPermissionsTeamDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33078,7 +33078,7 @@ pub enum InstallationPermissionsVulnerabilityAlerts {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsVulnerabilityAlerts {
-    fn from(value: &InstallationPermissionsVulnerabilityAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33157,7 +33157,7 @@ pub enum InstallationPermissionsWorkflows {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationPermissionsWorkflows {
-    fn from(value: &InstallationPermissionsWorkflows) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33368,7 +33368,7 @@ pub enum InstallationRepositoriesAddedAction {
     Added,
 }
 impl ::std::convert::From<&Self> for InstallationRepositoriesAddedAction {
-    fn from(value: &InstallationRepositoriesAddedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33567,7 +33567,7 @@ pub enum InstallationRepositoriesAddedRepositorySelection {
     Selected,
 }
 impl ::std::convert::From<&Self> for InstallationRepositoriesAddedRepositorySelection {
-    fn from(value: &InstallationRepositoriesAddedRepositorySelection) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33639,7 +33639,7 @@ pub enum InstallationRepositoriesEvent {
     Removed(InstallationRepositoriesRemoved),
 }
 impl ::std::convert::From<&Self> for InstallationRepositoriesEvent {
-    fn from(value: &InstallationRepositoriesEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -33828,7 +33828,7 @@ pub enum InstallationRepositoriesRemovedAction {
     Removed,
 }
 impl ::std::convert::From<&Self> for InstallationRepositoriesRemovedAction {
-    fn from(value: &InstallationRepositoriesRemovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -34018,7 +34018,7 @@ pub enum InstallationRepositoriesRemovedRepositorySelection {
     Selected,
 }
 impl ::std::convert::From<&Self> for InstallationRepositoriesRemovedRepositorySelection {
-    fn from(value: &InstallationRepositoriesRemovedRepositorySelection) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -34100,7 +34100,7 @@ pub enum InstallationRepositorySelection {
     Selected,
 }
 impl ::std::convert::From<&Self> for InstallationRepositorySelection {
-    fn from(value: &InstallationRepositorySelection) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -34282,7 +34282,7 @@ pub enum InstallationSuspendAction {
     Suspend,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendAction {
-    fn from(value: &InstallationSuspendAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -34414,7 +34414,7 @@ pub enum InstallationSuspendInstallationCreatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationCreatedAt {
-    fn from(value: &InstallationSuspendInstallationCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -34634,7 +34634,7 @@ pub enum InstallationSuspendInstallationEventsItem {
     WorkflowRun,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationEventsItem {
-    fn from(value: &InstallationSuspendInstallationEventsItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35197,7 +35197,7 @@ pub enum InstallationSuspendInstallationPermissionsActions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsActions {
-    fn from(value: &InstallationSuspendInstallationPermissionsActions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35278,7 +35278,7 @@ pub enum InstallationSuspendInstallationPermissionsAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsAdministration {
-    fn from(value: &InstallationSuspendInstallationPermissionsAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35359,7 +35359,7 @@ pub enum InstallationSuspendInstallationPermissionsChecks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsChecks {
-    fn from(value: &InstallationSuspendInstallationPermissionsChecks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35440,7 +35440,7 @@ pub enum InstallationSuspendInstallationPermissionsContentReferences {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsContentReferences {
-    fn from(value: &InstallationSuspendInstallationPermissionsContentReferences) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35521,7 +35521,7 @@ pub enum InstallationSuspendInstallationPermissionsContents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsContents {
-    fn from(value: &InstallationSuspendInstallationPermissionsContents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35602,7 +35602,7 @@ pub enum InstallationSuspendInstallationPermissionsDeployments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsDeployments {
-    fn from(value: &InstallationSuspendInstallationPermissionsDeployments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35683,7 +35683,7 @@ pub enum InstallationSuspendInstallationPermissionsDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsDiscussions {
-    fn from(value: &InstallationSuspendInstallationPermissionsDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35764,7 +35764,7 @@ pub enum InstallationSuspendInstallationPermissionsEmails {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsEmails {
-    fn from(value: &InstallationSuspendInstallationPermissionsEmails) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35845,7 +35845,7 @@ pub enum InstallationSuspendInstallationPermissionsEnvironments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsEnvironments {
-    fn from(value: &InstallationSuspendInstallationPermissionsEnvironments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -35926,7 +35926,7 @@ pub enum InstallationSuspendInstallationPermissionsIssues {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsIssues {
-    fn from(value: &InstallationSuspendInstallationPermissionsIssues) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36007,7 +36007,7 @@ pub enum InstallationSuspendInstallationPermissionsMembers {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsMembers {
-    fn from(value: &InstallationSuspendInstallationPermissionsMembers) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36088,7 +36088,7 @@ pub enum InstallationSuspendInstallationPermissionsMetadata {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsMetadata {
-    fn from(value: &InstallationSuspendInstallationPermissionsMetadata) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36171,7 +36171,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationAdministration {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsOrganizationAdministration
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36254,7 +36254,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsOrganizationEvents {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36337,7 +36337,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsOrganizationHooks {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36420,7 +36420,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationPackages {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsOrganizationPackages
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36503,7 +36503,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationPlan {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsOrganizationPlan {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationPlan) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36586,7 +36586,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationProjects {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsOrganizationProjects
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36669,7 +36669,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsOrganizationSecrets {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36754,9 +36754,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunners
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunners
 {
-    fn from(
-        value: &InstallationSuspendInstallationPermissionsOrganizationSelfHostedRunners,
-    ) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36845,7 +36843,7 @@ pub enum InstallationSuspendInstallationPermissionsOrganizationUserBlocking {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsOrganizationUserBlocking
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsOrganizationUserBlocking) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -36928,7 +36926,7 @@ pub enum InstallationSuspendInstallationPermissionsPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsPackages {
-    fn from(value: &InstallationSuspendInstallationPermissionsPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37009,7 +37007,7 @@ pub enum InstallationSuspendInstallationPermissionsPages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsPages {
-    fn from(value: &InstallationSuspendInstallationPermissionsPages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37090,7 +37088,7 @@ pub enum InstallationSuspendInstallationPermissionsPullRequests {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsPullRequests {
-    fn from(value: &InstallationSuspendInstallationPermissionsPullRequests) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37171,7 +37169,7 @@ pub enum InstallationSuspendInstallationPermissionsRepositoryHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsRepositoryHooks {
-    fn from(value: &InstallationSuspendInstallationPermissionsRepositoryHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37252,7 +37250,7 @@ pub enum InstallationSuspendInstallationPermissionsRepositoryProjects {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsRepositoryProjects {
-    fn from(value: &InstallationSuspendInstallationPermissionsRepositoryProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37337,7 +37335,7 @@ pub enum InstallationSuspendInstallationPermissionsSecretScanningAlerts {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsSecretScanningAlerts
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsSecretScanningAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37420,7 +37418,7 @@ pub enum InstallationSuspendInstallationPermissionsSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsSecrets {
-    fn from(value: &InstallationSuspendInstallationPermissionsSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37501,7 +37499,7 @@ pub enum InstallationSuspendInstallationPermissionsSecurityEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsSecurityEvents {
-    fn from(value: &InstallationSuspendInstallationPermissionsSecurityEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37584,7 +37582,7 @@ pub enum InstallationSuspendInstallationPermissionsSecurityScanningAlert {
 impl ::std::convert::From<&Self>
     for InstallationSuspendInstallationPermissionsSecurityScanningAlert
 {
-    fn from(value: &InstallationSuspendInstallationPermissionsSecurityScanningAlert) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37667,7 +37665,7 @@ pub enum InstallationSuspendInstallationPermissionsSingleFile {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsSingleFile {
-    fn from(value: &InstallationSuspendInstallationPermissionsSingleFile) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37748,7 +37746,7 @@ pub enum InstallationSuspendInstallationPermissionsStatuses {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsStatuses {
-    fn from(value: &InstallationSuspendInstallationPermissionsStatuses) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37829,7 +37827,7 @@ pub enum InstallationSuspendInstallationPermissionsTeamDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsTeamDiscussions {
-    fn from(value: &InstallationSuspendInstallationPermissionsTeamDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37910,7 +37908,7 @@ pub enum InstallationSuspendInstallationPermissionsVulnerabilityAlerts {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsVulnerabilityAlerts {
-    fn from(value: &InstallationSuspendInstallationPermissionsVulnerabilityAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -37993,7 +37991,7 @@ pub enum InstallationSuspendInstallationPermissionsWorkflows {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationPermissionsWorkflows {
-    fn from(value: &InstallationSuspendInstallationPermissionsWorkflows) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38075,7 +38073,7 @@ pub enum InstallationSuspendInstallationRepositorySelection {
     Selected,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationRepositorySelection {
-    fn from(value: &InstallationSuspendInstallationRepositorySelection) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38315,7 +38313,7 @@ pub enum InstallationSuspendInstallationSuspendedByType {
     Organization,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationSuspendedByType {
-    fn from(value: &InstallationSuspendInstallationSuspendedByType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38396,7 +38394,7 @@ pub enum InstallationSuspendInstallationTargetType {
     Organization,
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationTargetType {
-    fn from(value: &InstallationSuspendInstallationTargetType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38465,7 +38463,7 @@ pub enum InstallationSuspendInstallationUpdatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationSuspendInstallationUpdatedAt {
-    fn from(value: &InstallationSuspendInstallationUpdatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38611,7 +38609,7 @@ pub enum InstallationTargetType {
     Organization,
 }
 impl ::std::convert::From<&Self> for InstallationTargetType {
-    fn from(value: &InstallationTargetType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38792,7 +38790,7 @@ pub enum InstallationUnsuspendAction {
     Unsuspend,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendAction {
-    fn from(value: &InstallationUnsuspendAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -38925,7 +38923,7 @@ pub enum InstallationUnsuspendInstallationCreatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationCreatedAt {
-    fn from(value: &InstallationUnsuspendInstallationCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -39147,7 +39145,7 @@ pub enum InstallationUnsuspendInstallationEventsItem {
     WorkflowRun,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationEventsItem {
-    fn from(value: &InstallationUnsuspendInstallationEventsItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -39716,7 +39714,7 @@ pub enum InstallationUnsuspendInstallationPermissionsActions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsActions {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsActions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -39797,7 +39795,7 @@ pub enum InstallationUnsuspendInstallationPermissionsAdministration {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsAdministration {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsAdministration) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -39878,7 +39876,7 @@ pub enum InstallationUnsuspendInstallationPermissionsChecks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsChecks {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsChecks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -39959,7 +39957,7 @@ pub enum InstallationUnsuspendInstallationPermissionsContentReferences {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsContentReferences {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsContentReferences) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40042,7 +40040,7 @@ pub enum InstallationUnsuspendInstallationPermissionsContents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsContents {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsContents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40123,7 +40121,7 @@ pub enum InstallationUnsuspendInstallationPermissionsDeployments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsDeployments {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsDeployments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40204,7 +40202,7 @@ pub enum InstallationUnsuspendInstallationPermissionsDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsDiscussions {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40285,7 +40283,7 @@ pub enum InstallationUnsuspendInstallationPermissionsEmails {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsEmails {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsEmails) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40366,7 +40364,7 @@ pub enum InstallationUnsuspendInstallationPermissionsEnvironments {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsEnvironments {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsEnvironments) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40447,7 +40445,7 @@ pub enum InstallationUnsuspendInstallationPermissionsIssues {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsIssues {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsIssues) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40528,7 +40526,7 @@ pub enum InstallationUnsuspendInstallationPermissionsMembers {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsMembers {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsMembers) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40609,7 +40607,7 @@ pub enum InstallationUnsuspendInstallationPermissionsMetadata {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsMetadata {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsMetadata) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40692,9 +40690,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationAdministration 
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationAdministration
 {
-    fn from(
-        value: &InstallationUnsuspendInstallationPermissionsOrganizationAdministration,
-    ) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40783,7 +40779,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationEvents {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationEvents
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40866,7 +40862,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsOrganizationHooks {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -40951,7 +40947,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationPackages {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationPackages
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41034,7 +41030,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationPlan {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsOrganizationPlan {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationPlan) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41119,7 +41115,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationProjects {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationProjects
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41204,7 +41200,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationSecrets {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationSecrets
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41289,9 +41285,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRunne
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRunners
 {
-    fn from(
-        value: &InstallationUnsuspendInstallationPermissionsOrganizationSelfHostedRunners,
-    ) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41380,7 +41374,7 @@ pub enum InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsOrganizationUserBlocking) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41463,7 +41457,7 @@ pub enum InstallationUnsuspendInstallationPermissionsPackages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsPackages {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsPackages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41544,7 +41538,7 @@ pub enum InstallationUnsuspendInstallationPermissionsPages {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsPages {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsPages) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41625,7 +41619,7 @@ pub enum InstallationUnsuspendInstallationPermissionsPullRequests {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsPullRequests {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsPullRequests) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41706,7 +41700,7 @@ pub enum InstallationUnsuspendInstallationPermissionsRepositoryHooks {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsRepositoryHooks {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsRepositoryHooks) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41789,7 +41783,7 @@ pub enum InstallationUnsuspendInstallationPermissionsRepositoryProjects {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsRepositoryProjects
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsRepositoryProjects) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41874,7 +41868,7 @@ pub enum InstallationUnsuspendInstallationPermissionsSecretScanningAlerts {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsSecretScanningAlerts
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsSecretScanningAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -41957,7 +41951,7 @@ pub enum InstallationUnsuspendInstallationPermissionsSecrets {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsSecrets {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsSecrets) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42038,7 +42032,7 @@ pub enum InstallationUnsuspendInstallationPermissionsSecurityEvents {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsSecurityEvents {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsSecurityEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42121,7 +42115,7 @@ pub enum InstallationUnsuspendInstallationPermissionsSecurityScanningAlert {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsSecurityScanningAlert
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsSecurityScanningAlert) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42204,7 +42198,7 @@ pub enum InstallationUnsuspendInstallationPermissionsSingleFile {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsSingleFile {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsSingleFile) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42285,7 +42279,7 @@ pub enum InstallationUnsuspendInstallationPermissionsStatuses {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsStatuses {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsStatuses) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42366,7 +42360,7 @@ pub enum InstallationUnsuspendInstallationPermissionsTeamDiscussions {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsTeamDiscussions {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsTeamDiscussions) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42449,7 +42443,7 @@ pub enum InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts {
 impl ::std::convert::From<&Self>
     for InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts
 {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42532,7 +42526,7 @@ pub enum InstallationUnsuspendInstallationPermissionsWorkflows {
     Write,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationPermissionsWorkflows {
-    fn from(value: &InstallationUnsuspendInstallationPermissionsWorkflows) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42614,7 +42608,7 @@ pub enum InstallationUnsuspendInstallationRepositorySelection {
     Selected,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationRepositorySelection {
-    fn from(value: &InstallationUnsuspendInstallationRepositorySelection) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42693,7 +42687,7 @@ pub enum InstallationUnsuspendInstallationTargetType {
     Organization,
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationTargetType {
-    fn from(value: &InstallationUnsuspendInstallationTargetType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42766,7 +42760,7 @@ pub enum InstallationUnsuspendInstallationUpdatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUnsuspendInstallationUpdatedAt {
-    fn from(value: &InstallationUnsuspendInstallationUpdatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -42908,7 +42902,7 @@ pub enum InstallationUpdatedAt {
     Integer(i64),
 }
 impl ::std::convert::From<&Self> for InstallationUpdatedAt {
-    fn from(value: &InstallationUpdatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -43243,7 +43237,7 @@ pub enum IssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssueActiveLockReason {
-    fn from(value: &IssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -43557,7 +43551,7 @@ pub enum IssueCommentCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for IssueCommentCreatedAction {
-    fn from(value: &IssueCommentCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -43760,7 +43754,7 @@ pub enum IssueCommentCreatedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssueCommentCreatedIssueActiveLockReason {
-    fn from(value: &IssueCommentCreatedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -43902,7 +43896,7 @@ pub enum IssueCommentCreatedIssueAssigneeType {
     Organization,
 }
 impl ::std::convert::From<&Self> for IssueCommentCreatedIssueAssigneeType {
-    fn from(value: &IssueCommentCreatedIssueAssigneeType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44031,7 +44025,7 @@ pub enum IssueCommentCreatedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssueCommentCreatedIssueState {
-    fn from(value: &IssueCommentCreatedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44241,7 +44235,7 @@ pub enum IssueCommentDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for IssueCommentDeletedAction {
-    fn from(value: &IssueCommentDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44444,7 +44438,7 @@ pub enum IssueCommentDeletedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssueCommentDeletedIssueActiveLockReason {
-    fn from(value: &IssueCommentDeletedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44586,7 +44580,7 @@ pub enum IssueCommentDeletedIssueAssigneeType {
     Organization,
 }
 impl ::std::convert::From<&Self> for IssueCommentDeletedIssueAssigneeType {
-    fn from(value: &IssueCommentDeletedIssueAssigneeType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44715,7 +44709,7 @@ pub enum IssueCommentDeletedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssueCommentDeletedIssueState {
-    fn from(value: &IssueCommentDeletedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -44947,7 +44941,7 @@ pub enum IssueCommentEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for IssueCommentEditedAction {
-    fn from(value: &IssueCommentEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45226,7 +45220,7 @@ pub enum IssueCommentEditedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssueCommentEditedIssueActiveLockReason {
-    fn from(value: &IssueCommentEditedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45368,7 +45362,7 @@ pub enum IssueCommentEditedIssueAssigneeType {
     Organization,
 }
 impl ::std::convert::From<&Self> for IssueCommentEditedIssueAssigneeType {
-    fn from(value: &IssueCommentEditedIssueAssigneeType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45497,7 +45491,7 @@ pub enum IssueCommentEditedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssueCommentEditedIssueState {
-    fn from(value: &IssueCommentEditedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45569,7 +45563,7 @@ pub enum IssueCommentEvent {
     Edited(IssueCommentEdited),
 }
 impl ::std::convert::From<&Self> for IssueCommentEvent {
-    fn from(value: &IssueCommentEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45678,7 +45672,7 @@ pub enum IssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssueState {
-    fn from(value: &IssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45829,7 +45823,7 @@ pub enum IssuesAssignedAction {
     Assigned,
 }
 impl ::std::convert::From<&Self> for IssuesAssignedAction {
-    fn from(value: &IssuesAssignedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -45987,7 +45981,7 @@ pub enum IssuesClosedAction {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesClosedAction {
-    fn from(value: &IssuesClosedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46145,7 +46139,7 @@ pub enum IssuesClosedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesClosedIssueActiveLockReason {
-    fn from(value: &IssuesClosedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46279,7 +46273,7 @@ pub enum IssuesClosedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesClosedIssueState {
-    fn from(value: &IssuesClosedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46410,7 +46404,7 @@ pub enum IssuesDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for IssuesDeletedAction {
-    fn from(value: &IssuesDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46562,7 +46556,7 @@ pub enum IssuesDemilestonedAction {
     Demilestoned,
 }
 impl ::std::convert::From<&Self> for IssuesDemilestonedAction {
-    fn from(value: &IssuesDemilestonedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46714,7 +46708,7 @@ pub enum IssuesDemilestonedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesDemilestonedIssueActiveLockReason {
-    fn from(value: &IssuesDemilestonedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -46854,7 +46848,7 @@ pub enum IssuesDemilestonedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesDemilestonedIssueState {
-    fn from(value: &IssuesDemilestonedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47027,7 +47021,7 @@ pub enum IssuesEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for IssuesEditedAction {
-    fn from(value: &IssuesEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47272,7 +47266,7 @@ pub enum IssuesEvent {
     Unpinned(IssuesUnpinned),
 }
 impl ::std::convert::From<&Self> for IssuesEvent {
-    fn from(value: &IssuesEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47452,7 +47446,7 @@ pub enum IssuesLabeledAction {
     Labeled,
 }
 impl ::std::convert::From<&Self> for IssuesLabeledAction {
-    fn from(value: &IssuesLabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47616,7 +47610,7 @@ pub enum IssuesLockedAction {
     Locked,
 }
 impl ::std::convert::From<&Self> for IssuesLockedAction {
-    fn from(value: &IssuesLockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47784,7 +47778,7 @@ pub enum IssuesLockedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesLockedIssueActiveLockReason {
-    fn from(value: &IssuesLockedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -47922,7 +47916,7 @@ pub enum IssuesLockedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesLockedIssueState {
-    fn from(value: &IssuesLockedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48076,7 +48070,7 @@ pub enum IssuesMilestonedAction {
     Milestoned,
 }
 impl ::std::convert::From<&Self> for IssuesMilestonedAction {
-    fn from(value: &IssuesMilestonedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48228,7 +48222,7 @@ pub enum IssuesMilestonedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesMilestonedIssueActiveLockReason {
-    fn from(value: &IssuesMilestonedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48448,7 +48442,7 @@ pub enum IssuesMilestonedIssueMilestoneState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesMilestonedIssueMilestoneState {
-    fn from(value: &IssuesMilestonedIssueMilestoneState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48582,7 +48576,7 @@ pub enum IssuesMilestonedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesMilestonedIssueState {
-    fn from(value: &IssuesMilestonedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48756,7 +48750,7 @@ pub enum IssuesOpenedAction {
     Opened,
 }
 impl ::std::convert::From<&Self> for IssuesOpenedAction {
-    fn from(value: &IssuesOpenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -48947,7 +48941,7 @@ pub enum IssuesOpenedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesOpenedIssueActiveLockReason {
-    fn from(value: &IssuesOpenedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49081,7 +49075,7 @@ pub enum IssuesOpenedIssueState {
     Open,
 }
 impl ::std::convert::From<&Self> for IssuesOpenedIssueState {
-    fn from(value: &IssuesOpenedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49212,7 +49206,7 @@ pub enum IssuesPinnedAction {
     Pinned,
 }
 impl ::std::convert::From<&Self> for IssuesPinnedAction {
-    fn from(value: &IssuesPinnedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49362,7 +49356,7 @@ pub enum IssuesReopenedAction {
     Reopened,
 }
 impl ::std::convert::From<&Self> for IssuesReopenedAction {
-    fn from(value: &IssuesReopenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49515,7 +49509,7 @@ pub enum IssuesReopenedIssueActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for IssuesReopenedIssueActiveLockReason {
-    fn from(value: &IssuesReopenedIssueActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49649,7 +49643,7 @@ pub enum IssuesReopenedIssueState {
     Open,
 }
 impl ::std::convert::From<&Self> for IssuesReopenedIssueState {
-    fn from(value: &IssuesReopenedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49798,7 +49792,7 @@ pub enum IssuesTransferredAction {
     Transferred,
 }
 impl ::std::convert::From<&Self> for IssuesTransferredAction {
-    fn from(value: &IssuesTransferredAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -49980,7 +49974,7 @@ pub enum IssuesUnassignedAction {
     Unassigned,
 }
 impl ::std::convert::From<&Self> for IssuesUnassignedAction {
-    fn from(value: &IssuesUnassignedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -50118,7 +50112,7 @@ pub enum IssuesUnlabeledAction {
     Unlabeled,
 }
 impl ::std::convert::From<&Self> for IssuesUnlabeledAction {
-    fn from(value: &IssuesUnlabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -50272,7 +50266,7 @@ pub enum IssuesUnlockedAction {
     Unlocked,
 }
 impl ::std::convert::From<&Self> for IssuesUnlockedAction {
-    fn from(value: &IssuesUnlockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -50534,7 +50528,7 @@ pub enum IssuesUnlockedIssueState {
     Closed,
 }
 impl ::std::convert::From<&Self> for IssuesUnlockedIssueState {
-    fn from(value: &IssuesUnlockedIssueState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -50667,7 +50661,7 @@ pub enum IssuesUnpinnedAction {
     Unpinned,
 }
 impl ::std::convert::From<&Self> for IssuesUnpinnedAction {
-    fn from(value: &IssuesUnpinnedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -50871,7 +50865,7 @@ pub enum LabelCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for LabelCreatedAction {
-    fn from(value: &LabelCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -51004,7 +50998,7 @@ pub enum LabelDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for LabelDeletedAction {
-    fn from(value: &LabelDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -51185,7 +51179,7 @@ pub enum LabelEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for LabelEditedAction {
-    fn from(value: &LabelEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -51425,7 +51419,7 @@ pub enum LabelEvent {
     Edited(LabelEdited),
 }
 impl ::std::convert::From<&Self> for LabelEvent {
-    fn from(value: &LabelEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -51903,7 +51897,7 @@ pub enum MarketplacePurchaseCancelledAction {
     Cancelled,
 }
 impl ::std::convert::From<&Self> for MarketplacePurchaseCancelledAction {
-    fn from(value: &MarketplacePurchaseCancelledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -52436,7 +52430,7 @@ pub enum MarketplacePurchaseChangedAction {
     Changed,
 }
 impl ::std::convert::From<&Self> for MarketplacePurchaseChangedAction {
-    fn from(value: &MarketplacePurchaseChangedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -52814,7 +52808,7 @@ pub enum MarketplacePurchaseEvent {
     Purchased(MarketplacePurchasePurchased),
 }
 impl ::std::convert::From<&Self> for MarketplacePurchaseEvent {
-    fn from(value: &MarketplacePurchaseEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -53032,7 +53026,7 @@ pub enum MarketplacePurchasePendingChangeAction {
     PendingChange,
 }
 impl ::std::convert::From<&Self> for MarketplacePurchasePendingChangeAction {
-    fn from(value: &MarketplacePurchasePendingChangeAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -53265,7 +53259,7 @@ pub enum MarketplacePurchasePendingChangeCancelledAction {
     PendingChangeCancelled,
 }
 impl ::std::convert::From<&Self> for MarketplacePurchasePendingChangeCancelledAction {
-    fn from(value: &MarketplacePurchasePendingChangeCancelledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -54179,7 +54173,7 @@ pub enum MarketplacePurchasePurchasedAction {
     Purchased,
 }
 impl ::std::convert::From<&Self> for MarketplacePurchasePurchasedAction {
-    fn from(value: &MarketplacePurchasePurchasedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -54634,7 +54628,7 @@ pub enum MemberAddedAction {
     Added,
 }
 impl ::std::convert::From<&Self> for MemberAddedAction {
-    fn from(value: &MemberAddedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -54789,7 +54783,7 @@ pub enum MemberAddedChangesPermissionTo {
     Admin,
 }
 impl ::std::convert::From<&Self> for MemberAddedChangesPermissionTo {
-    fn from(value: &MemberAddedChangesPermissionTo) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -54944,7 +54938,7 @@ pub enum MemberEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for MemberEditedAction {
-    fn from(value: &MemberEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55085,7 +55079,7 @@ pub enum MemberEvent {
     Removed(MemberRemoved),
 }
 impl ::std::convert::From<&Self> for MemberEvent {
-    fn from(value: &MemberEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55190,7 +55184,7 @@ pub enum MemberRemovedAction {
     Removed,
 }
 impl ::std::convert::From<&Self> for MemberRemovedAction {
-    fn from(value: &MemberRemovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55389,7 +55383,7 @@ pub enum MembershipAddedAction {
     Added,
 }
 impl ::std::convert::From<&Self> for MembershipAddedAction {
-    fn from(value: &MembershipAddedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55462,7 +55456,7 @@ pub enum MembershipAddedScope {
     Team,
 }
 impl ::std::convert::From<&Self> for MembershipAddedScope {
-    fn from(value: &MembershipAddedScope) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55528,7 +55522,7 @@ pub enum MembershipEvent {
     Removed(MembershipRemoved),
 }
 impl ::std::convert::From<&Self> for MembershipEvent {
-    fn from(value: &MembershipEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55669,7 +55663,7 @@ pub enum MembershipRemovedAction {
     Removed,
 }
 impl ::std::convert::From<&Self> for MembershipRemovedAction {
-    fn from(value: &MembershipRemovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55745,7 +55739,7 @@ pub enum MembershipRemovedScope {
     Organization,
 }
 impl ::std::convert::From<&Self> for MembershipRemovedScope {
-    fn from(value: &MembershipRemovedScope) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55835,7 +55829,7 @@ pub enum MembershipRemovedTeam {
     },
 }
 impl ::std::convert::From<&Self> for MembershipRemovedTeam {
-    fn from(value: &MembershipRemovedTeam) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -55990,7 +55984,7 @@ pub enum MetaDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for MetaDeletedAction {
-    fn from(value: &MetaDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -56197,7 +56191,7 @@ pub enum MetaDeletedHookConfigContentType {
     Form,
 }
 impl ::std::convert::From<&Self> for MetaDeletedHookConfigContentType {
-    fn from(value: &MetaDeletedHookConfigContentType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -56524,7 +56518,7 @@ pub enum MilestoneClosedAction {
     Closed,
 }
 impl ::std::convert::From<&Self> for MilestoneClosedAction {
-    fn from(value: &MilestoneClosedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -56656,7 +56650,7 @@ pub enum MilestoneClosedMilestoneState {
     Closed,
 }
 impl ::std::convert::From<&Self> for MilestoneClosedMilestoneState {
-    fn from(value: &MilestoneClosedMilestoneState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -56810,7 +56804,7 @@ pub enum MilestoneCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for MilestoneCreatedAction {
-    fn from(value: &MilestoneCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -56942,7 +56936,7 @@ pub enum MilestoneCreatedMilestoneState {
     Open,
 }
 impl ::std::convert::From<&Self> for MilestoneCreatedMilestoneState {
-    fn from(value: &MilestoneCreatedMilestoneState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57073,7 +57067,7 @@ pub enum MilestoneDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for MilestoneDeletedAction {
-    fn from(value: &MilestoneDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57252,7 +57246,7 @@ pub enum MilestoneEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for MilestoneEditedAction {
-    fn from(value: &MilestoneEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57502,7 +57496,7 @@ pub enum MilestoneEvent {
     Opened(MilestoneOpened),
 }
 impl ::std::convert::From<&Self> for MilestoneEvent {
-    fn from(value: &MilestoneEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57643,7 +57637,7 @@ pub enum MilestoneOpenedAction {
     Opened,
 }
 impl ::std::convert::From<&Self> for MilestoneOpenedAction {
-    fn from(value: &MilestoneOpenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57775,7 +57769,7 @@ pub enum MilestoneOpenedMilestoneState {
     Open,
 }
 impl ::std::convert::From<&Self> for MilestoneOpenedMilestoneState {
-    fn from(value: &MilestoneOpenedMilestoneState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57851,7 +57845,7 @@ pub enum MilestoneState {
     Closed,
 }
 impl ::std::convert::From<&Self> for MilestoneState {
-    fn from(value: &MilestoneState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -57981,7 +57975,7 @@ pub enum OrgBlockBlockedAction {
     Blocked,
 }
 impl ::std::convert::From<&Self> for OrgBlockBlockedAction {
-    fn from(value: &OrgBlockBlockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58047,7 +58041,7 @@ pub enum OrgBlockEvent {
     Unblocked(OrgBlockUnblocked),
 }
 impl ::std::convert::From<&Self> for OrgBlockEvent {
-    fn from(value: &OrgBlockEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58147,7 +58141,7 @@ pub enum OrgBlockUnblockedAction {
     Unblocked,
 }
 impl ::std::convert::From<&Self> for OrgBlockUnblockedAction {
-    fn from(value: &OrgBlockUnblockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58376,7 +58370,7 @@ pub enum OrganizationDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for OrganizationDeletedAction {
-    fn from(value: &OrganizationDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58454,7 +58448,7 @@ pub enum OrganizationEvent {
     Renamed(OrganizationRenamed),
 }
 impl ::std::convert::From<&Self> for OrganizationEvent {
-    fn from(value: &OrganizationEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58567,7 +58561,7 @@ pub enum OrganizationMemberAddedAction {
     MemberAdded,
 }
 impl ::std::convert::From<&Self> for OrganizationMemberAddedAction {
-    fn from(value: &OrganizationMemberAddedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58764,7 +58758,7 @@ pub enum OrganizationMemberInvitedAction {
     MemberInvited,
 }
 impl ::std::convert::From<&Self> for OrganizationMemberInvitedAction {
-    fn from(value: &OrganizationMemberInvitedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -58988,7 +58982,7 @@ pub enum OrganizationMemberRemovedAction {
     MemberRemoved,
 }
 impl ::std::convert::From<&Self> for OrganizationMemberRemovedAction {
-    fn from(value: &OrganizationMemberRemovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -59114,7 +59108,7 @@ pub enum OrganizationRenamedAction {
     Renamed,
 }
 impl ::std::convert::From<&Self> for OrganizationRenamedAction {
-    fn from(value: &OrganizationRenamedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -59180,7 +59174,7 @@ pub enum PackageEvent {
     Updated(PackageUpdated),
 }
 impl ::std::convert::From<&Self> for PackageEvent {
-    fn from(value: &PackageEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -59567,7 +59561,7 @@ pub enum PackagePublishedAction {
     Published,
 }
 impl ::std::convert::From<&Self> for PackagePublishedAction {
-    fn from(value: &PackagePublishedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -60768,7 +60762,7 @@ pub enum PackageUpdatedAction {
     Updated,
 }
 impl ::std::convert::From<&Self> for PackageUpdatedAction {
-    fn from(value: &PackageUpdatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -62194,7 +62188,7 @@ pub enum PingEventHookConfigContentType {
     Form,
 }
 impl ::std::convert::From<&Self> for PingEventHookConfigContentType {
-    fn from(value: &PingEventHookConfigContentType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -62603,7 +62597,7 @@ pub enum ProjectCardConvertedAction {
     Converted,
 }
 impl ::std::convert::From<&Self> for ProjectCardConvertedAction {
-    fn from(value: &ProjectCardConvertedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -62801,7 +62795,7 @@ pub enum ProjectCardCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for ProjectCardCreatedAction {
-    fn from(value: &ProjectCardCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -62932,7 +62926,7 @@ pub enum ProjectCardDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for ProjectCardDeletedAction {
-    fn from(value: &ProjectCardDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63086,7 +63080,7 @@ pub enum ProjectCardEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for ProjectCardEditedAction {
-    fn from(value: &ProjectCardEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63231,7 +63225,7 @@ pub enum ProjectCardEvent {
     Moved(ProjectCardMoved),
 }
 impl ::std::convert::From<&Self> for ProjectCardEvent {
-    fn from(value: &ProjectCardEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63391,7 +63385,7 @@ pub enum ProjectCardMovedAction {
     Moved,
 }
 impl ::std::convert::From<&Self> for ProjectCardMovedAction {
-    fn from(value: &ProjectCardMovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63643,7 +63637,7 @@ pub enum ProjectClosedAction {
     Closed,
 }
 impl ::std::convert::From<&Self> for ProjectClosedAction {
-    fn from(value: &ProjectClosedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63849,7 +63843,7 @@ pub enum ProjectColumnCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for ProjectColumnCreatedAction {
-    fn from(value: &ProjectColumnCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -63980,7 +63974,7 @@ pub enum ProjectColumnDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for ProjectColumnDeletedAction {
-    fn from(value: &ProjectColumnDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64131,7 +64125,7 @@ pub enum ProjectColumnEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for ProjectColumnEditedAction {
-    fn from(value: &ProjectColumnEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64277,7 +64271,7 @@ pub enum ProjectColumnEvent {
     Moved(ProjectColumnMoved),
 }
 impl ::std::convert::From<&Self> for ProjectColumnEvent {
-    fn from(value: &ProjectColumnEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64390,7 +64384,7 @@ pub enum ProjectColumnMovedAction {
     Moved,
 }
 impl ::std::convert::From<&Self> for ProjectColumnMovedAction {
-    fn from(value: &ProjectColumnMovedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64521,7 +64515,7 @@ pub enum ProjectCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for ProjectCreatedAction {
-    fn from(value: &ProjectCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64652,7 +64646,7 @@ pub enum ProjectDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for ProjectDeletedAction {
-    fn from(value: &ProjectDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -64818,7 +64812,7 @@ pub enum ProjectEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for ProjectEditedAction {
-    fn from(value: &ProjectEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -65019,7 +65013,7 @@ pub enum ProjectEvent {
     Reopened(ProjectReopened),
 }
 impl ::std::convert::From<&Self> for ProjectEvent {
-    fn from(value: &ProjectEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -65137,7 +65131,7 @@ pub enum ProjectReopenedAction {
     Reopened,
 }
 impl ::std::convert::From<&Self> for ProjectReopenedAction {
-    fn from(value: &ProjectReopenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -65213,7 +65207,7 @@ pub enum ProjectState {
     Closed,
 }
 impl ::std::convert::From<&Self> for ProjectState {
-    fn from(value: &ProjectState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -65497,7 +65491,7 @@ pub enum PublicEventRepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryCreatedAt {
-    fn from(value: &PublicEventRepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -65633,7 +65627,7 @@ pub enum PublicEventRepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for PublicEventRepositoryPushedAt {
-    fn from(value: &PublicEventRepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66141,7 +66135,7 @@ pub enum PullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestActiveLockReason {
-    fn from(value: &PullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66290,7 +66284,7 @@ pub enum PullRequestAssignedAction {
     Assigned,
 }
 impl ::std::convert::From<&Self> for PullRequestAssignedAction {
-    fn from(value: &PullRequestAssignedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66426,7 +66420,7 @@ pub enum PullRequestAutoMergeDisabledAction {
     AutoMergeDisabled,
 }
 impl ::std::convert::From<&Self> for PullRequestAutoMergeDisabledAction {
-    fn from(value: &PullRequestAutoMergeDisabledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66562,7 +66556,7 @@ pub enum PullRequestAutoMergeEnabledAction {
     AutoMergeEnabled,
 }
 impl ::std::convert::From<&Self> for PullRequestAutoMergeEnabledAction {
-    fn from(value: &PullRequestAutoMergeEnabledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66779,7 +66773,7 @@ pub enum PullRequestClosedAction {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestClosedAction {
-    fn from(value: &PullRequestClosedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -66961,7 +66955,7 @@ pub enum PullRequestClosedPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestClosedPullRequestActiveLockReason {
-    fn from(value: &PullRequestClosedPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67204,7 +67198,7 @@ pub enum PullRequestClosedPullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestClosedPullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestClosedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67248,7 +67242,7 @@ pub enum PullRequestClosedPullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestClosedPullRequestState {
-    fn from(value: &PullRequestClosedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67425,7 +67419,7 @@ pub enum PullRequestConvertedToDraftAction {
     ConvertedToDraft,
 }
 impl ::std::convert::From<&Self> for PullRequestConvertedToDraftAction {
-    fn from(value: &PullRequestConvertedToDraftAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67621,7 +67615,7 @@ pub enum PullRequestConvertedToDraftPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestConvertedToDraftPullRequestActiveLockReason {
-    fn from(value: &PullRequestConvertedToDraftPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67868,7 +67862,7 @@ pub enum PullRequestConvertedToDraftPullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestConvertedToDraftPullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestConvertedToDraftPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -67916,7 +67910,7 @@ pub enum PullRequestConvertedToDraftPullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestConvertedToDraftPullRequestState {
-    fn from(value: &PullRequestConvertedToDraftPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -68095,7 +68089,7 @@ pub enum PullRequestEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for PullRequestEditedAction {
-    fn from(value: &PullRequestEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -68344,7 +68338,7 @@ pub enum PullRequestEvent {
     Unlocked(PullRequestUnlocked),
 }
 impl ::std::convert::From<&Self> for PullRequestEvent {
-    fn from(value: &PullRequestEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -68584,7 +68578,7 @@ pub enum PullRequestLabeledAction {
     Labeled,
 }
 impl ::std::convert::From<&Self> for PullRequestLabeledAction {
-    fn from(value: &PullRequestLabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -68787,7 +68781,7 @@ pub enum PullRequestLockedAction {
     Locked,
 }
 impl ::std::convert::From<&Self> for PullRequestLockedAction {
-    fn from(value: &PullRequestLockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -68964,7 +68958,7 @@ pub enum PullRequestOpenedAction {
     Opened,
 }
 impl ::std::convert::From<&Self> for PullRequestOpenedAction {
-    fn from(value: &PullRequestOpenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -69361,7 +69355,7 @@ pub enum PullRequestOpenedPullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestOpenedPullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestOpenedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -69405,7 +69399,7 @@ pub enum PullRequestOpenedPullRequestState {
     Open,
 }
 impl ::std::convert::From<&Self> for PullRequestOpenedPullRequestState {
-    fn from(value: &PullRequestOpenedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -69586,7 +69580,7 @@ pub enum PullRequestReadyForReviewAction {
     ReadyForReview,
 }
 impl ::std::convert::From<&Self> for PullRequestReadyForReviewAction {
-    fn from(value: &PullRequestReadyForReviewAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -69785,7 +69779,7 @@ pub enum PullRequestReadyForReviewPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestReadyForReviewPullRequestActiveLockReason {
-    fn from(value: &PullRequestReadyForReviewPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70032,7 +70026,7 @@ pub enum PullRequestReadyForReviewPullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestReadyForReviewPullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestReadyForReviewPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70076,7 +70070,7 @@ pub enum PullRequestReadyForReviewPullRequestState {
     Open,
 }
 impl ::std::convert::From<&Self> for PullRequestReadyForReviewPullRequestState {
-    fn from(value: &PullRequestReadyForReviewPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70253,7 +70247,7 @@ pub enum PullRequestReopenedAction {
     Reopened,
 }
 impl ::std::convert::From<&Self> for PullRequestReopenedAction {
-    fn from(value: &PullRequestReopenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70445,7 +70439,7 @@ pub enum PullRequestReopenedPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestReopenedPullRequestActiveLockReason {
-    fn from(value: &PullRequestReopenedPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70692,7 +70686,7 @@ pub enum PullRequestReopenedPullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestReopenedPullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestReopenedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70736,7 +70730,7 @@ pub enum PullRequestReopenedPullRequestState {
     Open,
 }
 impl ::std::convert::From<&Self> for PullRequestReopenedPullRequestState {
-    fn from(value: &PullRequestReopenedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -70802,7 +70796,7 @@ pub enum PullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for PullRequestRequestedReviewersItem {
-    fn from(value: &PullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -71450,7 +71444,7 @@ pub enum PullRequestReviewCommentCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentCreatedAction {
-    fn from(value: &PullRequestReviewCommentCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -71893,7 +71887,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentCreatedPullRequestActiveLockReason {
-    fn from(value: &PullRequestReviewCommentCreatedPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -72142,7 +72136,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem {
 impl ::std::convert::From<&Self>
     for PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem
 {
-    fn from(value: &PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -72193,7 +72187,7 @@ pub enum PullRequestReviewCommentCreatedPullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentCreatedPullRequestState {
-    fn from(value: &PullRequestReviewCommentCreatedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -72635,7 +72629,7 @@ pub enum PullRequestReviewCommentDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentDeletedAction {
-    fn from(value: &PullRequestReviewCommentDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -73078,7 +73072,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentDeletedPullRequestActiveLockReason {
-    fn from(value: &PullRequestReviewCommentDeletedPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -73327,7 +73321,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem {
 impl ::std::convert::From<&Self>
     for PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem
 {
-    fn from(value: &PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -73378,7 +73372,7 @@ pub enum PullRequestReviewCommentDeletedPullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentDeletedPullRequestState {
-    fn from(value: &PullRequestReviewCommentDeletedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -73842,7 +73836,7 @@ pub enum PullRequestReviewCommentEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentEditedAction {
-    fn from(value: &PullRequestReviewCommentEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74365,7 +74359,7 @@ pub enum PullRequestReviewCommentEditedPullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentEditedPullRequestActiveLockReason {
-    fn from(value: &PullRequestReviewCommentEditedPullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74614,7 +74608,7 @@ pub enum PullRequestReviewCommentEditedPullRequestRequestedReviewersItem {
 impl ::std::convert::From<&Self>
     for PullRequestReviewCommentEditedPullRequestRequestedReviewersItem
 {
-    fn from(value: &PullRequestReviewCommentEditedPullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74665,7 +74659,7 @@ pub enum PullRequestReviewCommentEditedPullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentEditedPullRequestState {
-    fn from(value: &PullRequestReviewCommentEditedPullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74741,7 +74735,7 @@ pub enum PullRequestReviewCommentEvent {
     Edited(PullRequestReviewCommentEdited),
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentEvent {
-    fn from(value: &PullRequestReviewCommentEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74834,7 +74828,7 @@ pub enum PullRequestReviewCommentSide {
     Right,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentSide {
-    fn from(value: &PullRequestReviewCommentSide) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -74913,7 +74907,7 @@ pub enum PullRequestReviewCommentStartSide {
     Right,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewCommentStartSide {
-    fn from(value: &PullRequestReviewCommentStartSide) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -75126,7 +75120,7 @@ pub enum PullRequestReviewDismissedAction {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewDismissedAction {
-    fn from(value: &PullRequestReviewDismissedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -75343,7 +75337,7 @@ pub enum PullRequestReviewDismissedReviewState {
     Dismissed,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewDismissedReviewState {
-    fn from(value: &PullRequestReviewDismissedReviewState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -75572,7 +75566,7 @@ pub enum PullRequestReviewEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewEditedAction {
-    fn from(value: &PullRequestReviewEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -75861,7 +75855,7 @@ pub enum PullRequestReviewEvent {
     Submitted(PullRequestReviewSubmitted),
 }
 impl ::std::convert::From<&Self> for PullRequestReviewEvent {
-    fn from(value: &PullRequestReviewEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76008,7 +76002,7 @@ pub enum PullRequestReviewRequestRemoved {
     },
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequestRemoved {
-    fn from(value: &PullRequestReviewRequestRemoved) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76042,7 +76036,7 @@ pub enum PullRequestReviewRequestRemovedVariant0Action {
     ReviewRequestRemoved,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequestRemovedVariant0Action {
-    fn from(value: &PullRequestReviewRequestRemovedVariant0Action) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76118,7 +76112,7 @@ pub enum PullRequestReviewRequestRemovedVariant1Action {
     ReviewRequestRemoved,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequestRemovedVariant1Action {
-    fn from(value: &PullRequestReviewRequestRemovedVariant1Action) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76292,7 +76286,7 @@ pub enum PullRequestReviewRequested {
     },
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequested {
-    fn from(value: &PullRequestReviewRequested) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76326,7 +76320,7 @@ pub enum PullRequestReviewRequestedVariant0Action {
     ReviewRequested,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequestedVariant0Action {
-    fn from(value: &PullRequestReviewRequestedVariant0Action) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76398,7 +76392,7 @@ pub enum PullRequestReviewRequestedVariant1Action {
     ReviewRequested,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewRequestedVariant1Action {
-    fn from(value: &PullRequestReviewRequestedVariant1Action) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76606,7 +76600,7 @@ pub enum PullRequestReviewSubmittedAction {
     Submitted,
 }
 impl ::std::convert::From<&Self> for PullRequestReviewSubmittedAction {
-    fn from(value: &PullRequestReviewSubmittedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76824,7 +76818,7 @@ pub enum PullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for PullRequestState {
-    fn from(value: &PullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -76974,7 +76968,7 @@ pub enum PullRequestSynchronizeAction {
     Synchronize,
 }
 impl ::std::convert::From<&Self> for PullRequestSynchronizeAction {
-    fn from(value: &PullRequestSynchronizeAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77117,7 +77111,7 @@ pub enum PullRequestUnassignedAction {
     Unassigned,
 }
 impl ::std::convert::From<&Self> for PullRequestUnassignedAction {
-    fn from(value: &PullRequestUnassignedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77260,7 +77254,7 @@ pub enum PullRequestUnlabeledAction {
     Unlabeled,
 }
 impl ::std::convert::From<&Self> for PullRequestUnlabeledAction {
-    fn from(value: &PullRequestUnlabeledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77398,7 +77392,7 @@ pub enum PullRequestUnlockedAction {
     Unlocked,
 }
 impl ::std::convert::From<&Self> for PullRequestUnlockedAction {
-    fn from(value: &PullRequestUnlockedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77848,7 +77842,7 @@ pub enum ReleaseAssetState {
     Uploaded,
 }
 impl ::std::convert::From<&Self> for ReleaseAssetState {
-    fn from(value: &ReleaseAssetState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -77979,7 +77973,7 @@ pub enum ReleaseCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for ReleaseCreatedAction {
-    fn from(value: &ReleaseCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -78110,7 +78104,7 @@ pub enum ReleaseDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for ReleaseDeletedAction {
-    fn from(value: &ReleaseDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -78275,7 +78269,7 @@ pub enum ReleaseEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for ReleaseEditedAction {
-    fn from(value: &ReleaseEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -78483,7 +78477,7 @@ pub enum ReleaseEvent {
     Unpublished(ReleaseUnpublished),
 }
 impl ::std::convert::From<&Self> for ReleaseEvent {
-    fn from(value: &ReleaseEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -78631,7 +78625,7 @@ pub enum ReleasePrereleasedAction {
     Prereleased,
 }
 impl ::std::convert::From<&Self> for ReleasePrereleasedAction {
-    fn from(value: &ReleasePrereleasedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -78839,7 +78833,7 @@ pub enum ReleasePublishedAction {
     Published,
 }
 impl ::std::convert::From<&Self> for ReleasePublishedAction {
-    fn from(value: &ReleasePublishedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -79028,7 +79022,7 @@ pub enum ReleaseReleasedAction {
     Released,
 }
 impl ::std::convert::From<&Self> for ReleaseReleasedAction {
-    fn from(value: &ReleaseReleasedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -79175,7 +79169,7 @@ pub enum ReleaseUnpublishedAction {
     Unpublished,
 }
 impl ::std::convert::From<&Self> for ReleaseUnpublishedAction {
-    fn from(value: &ReleaseUnpublishedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80014,7 +80008,7 @@ pub enum RepositoryArchivedAction {
     Archived,
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedAction {
-    fn from(value: &RepositoryArchivedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80232,7 +80226,7 @@ pub enum RepositoryArchivedRepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryCreatedAt {
-    fn from(value: &RepositoryArchivedRepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80370,7 +80364,7 @@ pub enum RepositoryArchivedRepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for RepositoryArchivedRepositoryPushedAt {
-    fn from(value: &RepositoryArchivedRepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80470,7 +80464,7 @@ pub enum RepositoryCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for RepositoryCreatedAction {
-    fn from(value: &RepositoryCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80537,7 +80531,7 @@ pub enum RepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryCreatedAt {
-    fn from(value: &RepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80677,7 +80671,7 @@ pub enum RepositoryDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for RepositoryDeletedAction {
-    fn from(value: &RepositoryDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -80852,7 +80846,7 @@ pub enum RepositoryDispatchOnDemandTestAction {
     OnDemandTest,
 }
 impl ::std::convert::From<&Self> for RepositoryDispatchOnDemandTestAction {
-    fn from(value: &RepositoryDispatchOnDemandTestAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -81028,7 +81022,7 @@ pub enum RepositoryEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for RepositoryEditedAction {
-    fn from(value: &RepositoryEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -81298,7 +81292,7 @@ pub enum RepositoryEvent {
     Unarchived(RepositoryUnarchived),
 }
 impl ::std::convert::From<&Self> for RepositoryEvent {
-    fn from(value: &RepositoryEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -81439,7 +81433,7 @@ pub enum RepositoryImportEventStatus {
     Failure,
 }
 impl ::std::convert::From<&Self> for RepositoryImportEventStatus {
-    fn from(value: &RepositoryImportEventStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -81941,7 +81935,7 @@ pub enum RepositoryPrivatizedAction {
     Privatized,
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedAction {
-    fn from(value: &RepositoryPrivatizedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82158,7 +82152,7 @@ pub enum RepositoryPrivatizedRepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryCreatedAt {
-    fn from(value: &RepositoryPrivatizedRepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82296,7 +82290,7 @@ pub enum RepositoryPrivatizedRepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPrivatizedRepositoryPushedAt {
-    fn from(value: &RepositoryPrivatizedRepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82416,7 +82410,7 @@ pub enum RepositoryPublicizedAction {
     Publicized,
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedAction {
-    fn from(value: &RepositoryPublicizedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82633,7 +82627,7 @@ pub enum RepositoryPublicizedRepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryCreatedAt {
-    fn from(value: &RepositoryPublicizedRepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82771,7 +82765,7 @@ pub enum RepositoryPublicizedRepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPublicizedRepositoryPushedAt {
-    fn from(value: &RepositoryPublicizedRepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82816,7 +82810,7 @@ pub enum RepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for RepositoryPushedAt {
-    fn from(value: &RepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -82946,7 +82940,7 @@ pub enum RepositoryRenamedAction {
     Renamed,
 }
 impl ::std::convert::From<&Self> for RepositoryRenamedAction {
-    fn from(value: &RepositoryRenamedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -83219,7 +83213,7 @@ pub enum RepositoryTransferredAction {
     Transferred,
 }
 impl ::std::convert::From<&Self> for RepositoryTransferredAction {
-    fn from(value: &RepositoryTransferredAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -83483,7 +83477,7 @@ pub enum RepositoryUnarchivedAction {
     Unarchived,
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedAction {
-    fn from(value: &RepositoryUnarchivedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -83701,7 +83695,7 @@ pub enum RepositoryUnarchivedRepositoryCreatedAt {
     DateTime(::chrono::DateTime<::chrono::offset::Utc>),
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryCreatedAt {
-    fn from(value: &RepositoryUnarchivedRepositoryCreatedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -83839,7 +83833,7 @@ pub enum RepositoryUnarchivedRepositoryPushedAt {
     Null,
 }
 impl ::std::convert::From<&Self> for RepositoryUnarchivedRepositoryPushedAt {
-    fn from(value: &RepositoryUnarchivedRepositoryPushedAt) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -83990,7 +83984,7 @@ pub enum RepositoryVulnerabilityAlertCreateAction {
     Create,
 }
 impl ::std::convert::From<&Self> for RepositoryVulnerabilityAlertCreateAction {
-    fn from(value: &RepositoryVulnerabilityAlertCreateAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84258,7 +84252,7 @@ pub enum RepositoryVulnerabilityAlertDismissAction {
     Dismiss,
 }
 impl ::std::convert::From<&Self> for RepositoryVulnerabilityAlertDismissAction {
-    fn from(value: &RepositoryVulnerabilityAlertDismissAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84416,7 +84410,7 @@ pub enum RepositoryVulnerabilityAlertEvent {
     Resolve(RepositoryVulnerabilityAlertResolve),
 }
 impl ::std::convert::From<&Self> for RepositoryVulnerabilityAlertEvent {
-    fn from(value: &RepositoryVulnerabilityAlertEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84576,7 +84570,7 @@ pub enum RepositoryVulnerabilityAlertResolveAction {
     Resolve,
 }
 impl ::std::convert::From<&Self> for RepositoryVulnerabilityAlertResolveAction {
-    fn from(value: &RepositoryVulnerabilityAlertResolveAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84816,7 +84810,7 @@ pub enum SecretScanningAlertCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for SecretScanningAlertCreatedAction {
-    fn from(value: &SecretScanningAlertCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -84936,7 +84930,7 @@ pub enum SecretScanningAlertEvent {
     Resolved(SecretScanningAlertResolved),
 }
 impl ::std::convert::From<&Self> for SecretScanningAlertEvent {
-    fn from(value: &SecretScanningAlertEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85070,7 +85064,7 @@ pub enum SecretScanningAlertReopenedAction {
     Reopened,
 }
 impl ::std::convert::From<&Self> for SecretScanningAlertReopenedAction {
-    fn from(value: &SecretScanningAlertReopenedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85283,7 +85277,7 @@ pub enum SecretScanningAlertResolvedAction {
     Resolved,
 }
 impl ::std::convert::From<&Self> for SecretScanningAlertResolvedAction {
-    fn from(value: &SecretScanningAlertResolvedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85420,7 +85414,7 @@ pub enum SecretScanningAlertResolvedAlertResolution {
     UsedInTests,
 }
 impl ::std::convert::From<&Self> for SecretScanningAlertResolvedAlertResolution {
-    fn from(value: &SecretScanningAlertResolvedAlertResolution) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85502,7 +85496,7 @@ pub enum SecurityAdvisoryEvent {
     Withdrawn(SecurityAdvisoryWithdrawn),
 }
 impl ::std::convert::From<&Self> for SecurityAdvisoryEvent {
-    fn from(value: &SecurityAdvisoryEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -85762,7 +85756,7 @@ pub enum SecurityAdvisoryPerformedAction {
     Performed,
 }
 impl ::std::convert::From<&Self> for SecurityAdvisoryPerformedAction {
-    fn from(value: &SecurityAdvisoryPerformedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -86529,7 +86523,7 @@ pub enum SecurityAdvisoryPublishedAction {
     Published,
 }
 impl ::std::convert::From<&Self> for SecurityAdvisoryPublishedAction {
-    fn from(value: &SecurityAdvisoryPublishedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -87296,7 +87290,7 @@ pub enum SecurityAdvisoryUpdatedAction {
     Updated,
 }
 impl ::std::convert::From<&Self> for SecurityAdvisoryUpdatedAction {
-    fn from(value: &SecurityAdvisoryUpdatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -88060,7 +88054,7 @@ pub enum SecurityAdvisoryWithdrawnAction {
     Withdrawn,
 }
 impl ::std::convert::From<&Self> for SecurityAdvisoryWithdrawnAction {
-    fn from(value: &SecurityAdvisoryWithdrawnAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -88987,7 +88981,7 @@ pub enum SimplePullRequestActiveLockReason {
     Spam,
 }
 impl ::std::convert::From<&Self> for SimplePullRequestActiveLockReason {
-    fn from(value: &SimplePullRequestActiveLockReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -89224,7 +89218,7 @@ pub enum SimplePullRequestRequestedReviewersItem {
     Team(Team),
 }
 impl ::std::convert::From<&Self> for SimplePullRequestRequestedReviewersItem {
-    fn from(value: &SimplePullRequestRequestedReviewersItem) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -89271,7 +89265,7 @@ pub enum SimplePullRequestState {
     Closed,
 }
 impl ::std::convert::From<&Self> for SimplePullRequestState {
-    fn from(value: &SimplePullRequestState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -89418,7 +89412,7 @@ pub enum SponsorshipCancelledAction {
     Cancelled,
 }
 impl ::std::convert::From<&Self> for SponsorshipCancelledAction {
-    fn from(value: &SponsorshipCancelledAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -89617,7 +89611,7 @@ pub enum SponsorshipCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for SponsorshipCreatedAction {
-    fn from(value: &SponsorshipCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -89837,7 +89831,7 @@ pub enum SponsorshipEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for SponsorshipEditedAction {
-    fn from(value: &SponsorshipEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -90050,7 +90044,7 @@ pub enum SponsorshipEvent {
     TierChanged(SponsorshipTierChanged),
 }
 impl ::std::convert::From<&Self> for SponsorshipEvent {
-    fn from(value: &SponsorshipEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -90194,7 +90188,7 @@ pub enum SponsorshipPendingCancellationAction {
     PendingCancellation,
 }
 impl ::std::convert::From<&Self> for SponsorshipPendingCancellationAction {
-    fn from(value: &SponsorshipPendingCancellationAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -90425,7 +90419,7 @@ pub enum SponsorshipPendingTierChangeAction {
     PendingTierChange,
 }
 impl ::std::convert::From<&Self> for SponsorshipPendingTierChangeAction {
-    fn from(value: &SponsorshipPendingTierChangeAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -90787,7 +90781,7 @@ pub enum SponsorshipTierChangedAction {
     TierChanged,
 }
 impl ::std::convert::From<&Self> for SponsorshipTierChangedAction {
-    fn from(value: &SponsorshipTierChangedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -91045,7 +91039,7 @@ pub enum StarCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for StarCreatedAction {
-    fn from(value: &StarCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -91178,7 +91172,7 @@ pub enum StarDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for StarDeletedAction {
-    fn from(value: &StarDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -91244,7 +91238,7 @@ pub enum StarEvent {
     Deleted(StarDeleted),
 }
 impl ::std::convert::From<&Self> for StarEvent {
-    fn from(value: &StarEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -92346,7 +92340,7 @@ pub enum StatusEventCommitCommitVerificationReason {
     Valid,
 }
 impl ::std::convert::From<&Self> for StatusEventCommitCommitVerificationReason {
-    fn from(value: &StatusEventCommitCommitVerificationReason) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -92493,7 +92487,7 @@ pub enum StatusEventState {
     Error,
 }
 impl ::std::convert::From<&Self> for StatusEventState {
-    fn from(value: &StatusEventState) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -92859,7 +92853,7 @@ pub enum TeamAddedToRepositoryAction {
     AddedToRepository,
 }
 impl ::std::convert::From<&Self> for TeamAddedToRepositoryAction {
-    fn from(value: &TeamAddedToRepositoryAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -92990,7 +92984,7 @@ pub enum TeamCreatedAction {
     Created,
 }
 impl ::std::convert::From<&Self> for TeamCreatedAction {
-    fn from(value: &TeamCreatedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -93121,7 +93115,7 @@ pub enum TeamDeletedAction {
     Deleted,
 }
 impl ::std::convert::From<&Self> for TeamDeletedAction {
-    fn from(value: &TeamDeletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -93336,7 +93330,7 @@ pub enum TeamEditedAction {
     Edited,
 }
 impl ::std::convert::From<&Self> for TeamEditedAction {
-    fn from(value: &TeamEditedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -93776,7 +93770,7 @@ pub enum TeamEvent {
     RemovedFromRepository(TeamRemovedFromRepository),
 }
 impl ::std::convert::From<&Self> for TeamEvent {
-    fn from(value: &TeamEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -93942,7 +93936,7 @@ pub enum TeamParentPrivacy {
     Secret,
 }
 impl ::std::convert::From<&Self> for TeamParentPrivacy {
-    fn from(value: &TeamParentPrivacy) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94024,7 +94018,7 @@ pub enum TeamPrivacy {
     Secret,
 }
 impl ::std::convert::From<&Self> for TeamPrivacy {
-    fn from(value: &TeamPrivacy) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94159,7 +94153,7 @@ pub enum TeamRemovedFromRepositoryAction {
     RemovedFromRepository,
 }
 impl ::std::convert::From<&Self> for TeamRemovedFromRepositoryAction {
-    fn from(value: &TeamRemovedFromRepositoryAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94381,7 +94375,7 @@ pub enum UserType {
     Organization,
 }
 impl ::std::convert::From<&Self> for UserType {
-    fn from(value: &UserType) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94549,7 +94543,7 @@ pub enum WatchStartedAction {
     Started,
 }
 impl ::std::convert::From<&Self> for WatchStartedAction {
-    fn from(value: &WatchStartedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94675,7 +94669,7 @@ pub enum WebhookEvents {
     Variant1([::std::string::String; 1usize]),
 }
 impl ::std::convert::From<&Self> for WebhookEvents {
-    fn from(value: &WebhookEvents) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -94857,7 +94851,7 @@ pub enum WebhookEventsVariant0Item {
     WorkflowRun,
 }
 impl ::std::convert::From<&Self> for WebhookEventsVariant0Item {
-    fn from(value: &WebhookEventsVariant0Item) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95378,7 +95372,7 @@ pub enum WorkflowJobCompletedAction {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowJobCompletedAction {
-    fn from(value: &WorkflowJobCompletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95507,7 +95501,7 @@ pub enum WorkflowJobCompletedWorkflowJobConclusion {
     Failure,
 }
 impl ::std::convert::From<&Self> for WorkflowJobCompletedWorkflowJobConclusion {
-    fn from(value: &WorkflowJobCompletedWorkflowJobConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95587,7 +95581,7 @@ pub enum WorkflowJobCompletedWorkflowJobStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowJobCompletedWorkflowJobStatus {
-    fn from(value: &WorkflowJobCompletedWorkflowJobStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95666,7 +95660,7 @@ pub enum WorkflowJobConclusion {
     Failure,
 }
 impl ::std::convert::From<&Self> for WorkflowJobConclusion {
-    fn from(value: &WorkflowJobConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95738,7 +95732,7 @@ pub enum WorkflowJobEvent {
     Started(WorkflowJobStarted),
 }
 impl ::std::convert::From<&Self> for WorkflowJobEvent {
-    fn from(value: &WorkflowJobEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -95925,7 +95919,7 @@ pub enum WorkflowJobQueuedAction {
     Queued,
 }
 impl ::std::convert::From<&Self> for WorkflowJobQueuedAction {
-    fn from(value: &WorkflowJobQueuedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96110,7 +96104,7 @@ pub enum WorkflowJobQueuedWorkflowJobStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for WorkflowJobQueuedWorkflowJobStatus {
-    fn from(value: &WorkflowJobQueuedWorkflowJobStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96270,7 +96264,7 @@ pub enum WorkflowJobStartedAction {
     Started,
 }
 impl ::std::convert::From<&Self> for WorkflowJobStartedAction {
-    fn from(value: &WorkflowJobStartedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96464,7 +96458,7 @@ pub enum WorkflowJobStartedWorkflowJobStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowJobStartedWorkflowJobStatus {
-    fn from(value: &WorkflowJobStartedWorkflowJobStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96546,7 +96540,7 @@ pub enum WorkflowJobStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowJobStatus {
-    fn from(value: &WorkflowJobStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -96965,7 +96959,7 @@ pub enum WorkflowRunCompletedAction {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowRunCompletedAction {
-    fn from(value: &WorkflowRunCompletedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97126,7 +97120,7 @@ pub enum WorkflowRunCompletedWorkflowRunConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for WorkflowRunCompletedWorkflowRunConclusion {
-    fn from(value: &WorkflowRunCompletedWorkflowRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97389,7 +97383,7 @@ pub enum WorkflowRunCompletedWorkflowRunStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for WorkflowRunCompletedWorkflowRunStatus {
-    fn from(value: &WorkflowRunCompletedWorkflowRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97485,7 +97479,7 @@ pub enum WorkflowRunConclusion {
     Stale,
 }
 impl ::std::convert::From<&Self> for WorkflowRunConclusion {
-    fn from(value: &WorkflowRunConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97563,7 +97557,7 @@ pub enum WorkflowRunEvent {
     Requested(WorkflowRunRequested),
 }
 impl ::std::convert::From<&Self> for WorkflowRunEvent {
-    fn from(value: &WorkflowRunEvent) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97835,7 +97829,7 @@ pub enum WorkflowRunRequestedAction {
     Requested,
 }
 impl ::std::convert::From<&Self> for WorkflowRunRequestedAction {
-    fn from(value: &WorkflowRunRequestedAction) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97916,7 +97910,7 @@ pub enum WorkflowRunStatus {
     Queued,
 }
 impl ::std::convert::From<&Self> for WorkflowRunStatus {
-    fn from(value: &WorkflowRunStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -97991,7 +97985,7 @@ pub enum WorkflowStep {
     Completed(WorkflowStepCompleted),
 }
 impl ::std::convert::From<&Self> for WorkflowStep {
-    fn from(value: &WorkflowStep) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -98105,7 +98099,7 @@ pub enum WorkflowStepCompletedConclusion {
     Success,
 }
 impl ::std::convert::From<&Self> for WorkflowStepCompletedConclusion {
-    fn from(value: &WorkflowStepCompletedConclusion) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -98181,7 +98175,7 @@ pub enum WorkflowStepCompletedStatus {
     Completed,
 }
 impl ::std::convert::From<&Self> for WorkflowStepCompletedStatus {
-    fn from(value: &WorkflowStepCompletedStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -98312,7 +98306,7 @@ pub enum WorkflowStepInProgressStatus {
     InProgress,
 }
 impl ::std::convert::From<&Self> for WorkflowStepInProgressStatus {
-    fn from(value: &WorkflowStepInProgressStatus) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

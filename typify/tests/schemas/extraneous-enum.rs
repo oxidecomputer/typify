@@ -104,7 +104,7 @@ pub enum LetterBoxLetter {
     B,
 }
 impl ::std::convert::From<&Self> for LetterBoxLetter {
-    fn from(value: &LetterBoxLetter) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }

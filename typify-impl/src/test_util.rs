@@ -283,9 +283,9 @@ impl SynCompare for Variant {
 impl SynCompare for Fields {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         match (self, other) {
-            (Fields::Named(a), Fields::Named(b)) => a.syn_cmp(b, false),
-            (Fields::Unnamed(a), Fields::Unnamed(b)) => a.syn_cmp(b, false),
-            (Fields::Unit, Fields::Unit) => Ok(()),
+            (Self::Named(a), Self::Named(b)) => a.syn_cmp(b, false),
+            (Self::Unnamed(a), Self::Unnamed(b)) => a.syn_cmp(b, false),
+            (Self::Unit, Self::Unit) => Ok(()),
             _ => Err("mismatched field types".to_string()),
         }
     }
@@ -314,8 +314,8 @@ impl SynCompare for Field {
 impl SynCompare for Type {
     fn syn_cmp(&self, other: &Self, _: bool) -> Result<(), String> {
         match (self, other) {
-            (Type::Tuple(a), Type::Tuple(b)) => a.syn_cmp(b, false),
-            (Type::Path(a), Type::Path(b)) => a.syn_cmp(b, false),
+            (Self::Tuple(a), Self::Tuple(b)) => a.syn_cmp(b, false),
+            (Self::Path(a), Self::Path(b)) => a.syn_cmp(b, false),
             _ => Err(format!(
                 "unexpected or mismatched type pair: {:?} {:?}",
                 self, other

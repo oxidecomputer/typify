@@ -287,7 +287,7 @@ pub enum FormatCollision {
     Xyz,
 }
 impl ::std::convert::From<&Self> for FormatCollision {
-    fn from(value: &FormatCollision) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -396,7 +396,7 @@ pub enum KeywordFieldsEnum {
     Array([::std::string::String; 2usize]),
 }
 impl ::std::convert::From<&Self> for KeywordFieldsEnum {
-    fn from(value: &KeywordFieldsEnum) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -526,7 +526,7 @@ pub enum MapOfKeywordsKeywordMapValue {
     Where,
 }
 impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
-    fn from(value: &MapOfKeywordsKeywordMapValue) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
@@ -1522,7 +1522,7 @@ pub enum StringEnum {
     Three,
 }
 impl ::std::convert::From<&Self> for StringEnum {
-    fn from(value: &StringEnum) -> Self {
+    fn from(value: &Self) -> Self {
         value.clone()
     }
 }
