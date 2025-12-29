@@ -12,8 +12,8 @@ fn test_simple() {
 
     let output_file = temp.path().join("simple.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args(["typify", input_file.to_str().unwrap()])
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args(["typify", input_file.to_str().unwrap()])
         .assert()
         .success();
 
@@ -29,8 +29,8 @@ fn test_default_output() {
     let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args(["typify", input, "--output", output_file.to_str().unwrap()])
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args(["typify", input, "--output", output_file.to_str().unwrap()])
         .assert()
         .success();
 
@@ -43,9 +43,7 @@ fn test_default_output() {
 fn test_no_builder_stdout() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-
-    let output = cmd
+    let output = assert_cmd::cargo::cargo_bin_cmd!()
         .args(["typify", input, "--no-builder", "--output", "-"])
         .output()
         .unwrap();
@@ -64,16 +62,16 @@ fn test_builder() {
     let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args([
-        "typify",
-        input,
-        "--builder",
-        "--output",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--builder",
+            "--output",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
 
     let actual = std::fs::read_to_string(output_file).unwrap();
 
@@ -87,18 +85,18 @@ fn test_derive() {
     let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args([
-        "typify",
-        input,
-        "--no-builder",
-        "--additional-derive",
-        "ExtraDerive",
-        "--output",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--no-builder",
+            "--additional-derive",
+            "ExtraDerive",
+            "--output",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
 
     let actual = std::fs::read_to_string(output_file).unwrap();
 
@@ -112,20 +110,20 @@ fn test_multi_derive() {
     let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args([
-        "typify",
-        input,
-        "--no-builder",
-        "--additional-derive",
-        "ExtraDerive",
-        "--additional-derive",
-        "AnotherDerive",
-        "--output",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--no-builder",
+            "--additional-derive",
+            "ExtraDerive",
+            "--additional-derive",
+            "AnotherDerive",
+            "--output",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
 
     let actual = std::fs::read_to_string(output_file).unwrap();
 
@@ -134,9 +132,10 @@ fn test_multi_derive() {
 
 #[test]
 fn test_help() {
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-
-    let output = cmd.args(["typify", "--help"]).output().unwrap();
+    let output = assert_cmd::cargo::cargo_bin_cmd!()
+        .args(["typify", "--help"])
+        .output()
+        .unwrap();
 
     let output_stdout = String::from_utf8(output.stdout).unwrap();
     let actual = dos2unix(&output_stdout);
@@ -152,17 +151,17 @@ fn test_btree_map() {
     let temp = TempDir::new("cargo-typify").unwrap();
     let output_file = temp.path().join("output.rs");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("cargo-typify");
-    cmd.args([
-        "typify",
-        input,
-        "--map-type",
-        "::std::collections::BTreeMap",
-        "--output",
-        output_file.to_str().unwrap(),
-    ])
-    .assert()
-    .success();
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--map-type",
+            "::std::collections::BTreeMap",
+            "--output",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
 
     let actual = std::fs::read_to_string(output_file).unwrap();
 
