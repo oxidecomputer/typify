@@ -55,11 +55,6 @@ pub struct Node {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub value: ::std::option::Option<i64>,
 }
-impl ::std::convert::From<&Node> for Node {
-    fn from(value: &Node) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for Node {
     fn default() -> Self {
         Self {

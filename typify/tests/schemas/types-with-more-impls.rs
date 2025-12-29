@@ -50,11 +50,6 @@ impl ::std::convert::From<PatternString> for ::std::string::String {
         value.0
     }
 }
-impl ::std::convert::From<&PatternString> for PatternString {
-    fn from(value: &PatternString) -> Self {
-        value.clone()
-    }
-}
 impl ::std::str::FromStr for PatternString {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -129,11 +124,6 @@ impl ::std::ops::Deref for Sub10Primes {
 impl ::std::convert::From<Sub10Primes> for u32 {
     fn from(value: Sub10Primes) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&Sub10Primes> for Sub10Primes {
-    fn from(value: &Sub10Primes) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::TryFrom<u32> for Sub10Primes {
