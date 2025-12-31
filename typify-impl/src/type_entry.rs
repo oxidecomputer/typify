@@ -138,6 +138,7 @@ impl PartialOrd for WrappedValue {
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
     pub extra_derives: BTreeSet<String>,
+    pub extra_attrs: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -290,7 +291,7 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
             name,
@@ -307,6 +308,7 @@ impl TypeEntryEnum {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 
@@ -381,7 +383,7 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
             name,
@@ -396,6 +398,7 @@ impl TypeEntryStruct {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 }
@@ -412,7 +415,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -427,6 +430,7 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 
@@ -442,7 +446,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -459,6 +463,7 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 
@@ -474,7 +479,7 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -491,6 +496,7 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 
@@ -512,7 +518,7 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
             name,
@@ -531,6 +537,7 @@ impl TypeEntryNewtype {
         TypeEntry {
             details,
             extra_derives,
+            extra_attrs,
         }
     }
 }
@@ -540,6 +547,7 @@ impl From<TypeEntryDetails> for TypeEntry {
         Self {
             details,
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
 }
@@ -553,6 +561,7 @@ impl TypeEntry {
                 parameters: Default::default(),
             }),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
@@ -563,12 +572,14 @@ impl TypeEntry {
                 parameters: params.to_vec(),
             }),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
@@ -578,6 +589,7 @@ impl TypeEntry {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
 
@@ -1074,8 +1086,11 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         let item = quote! {
             #doc
+            #(#attrs)*
             #[derive(#(#derives),*)]
             #serde
             pub enum #type_name {
@@ -1190,11 +1205,14 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         output.add_item(
             OutputSpaceMod::Crate,
             name,
             quote! {
                 #doc
+                #(#attrs)*
                 #[derive(#(#derives),*)]
                 #serde
                 pub struct #type_name {
@@ -1658,8 +1676,11 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         let item = quote! {
             #doc
+            #(#attrs)*
             #[derive(#(#derives),*)]
             #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
@@ -2014,6 +2035,20 @@ fn strings_to_derives<'a>(
     combined_derives.extend(type_derives.iter().map(String::as_str));
     combined_derives.into_iter().map(|derive| {
         syn::parse_str::<syn::Path>(derive)
+            .unwrap()
+            .into_token_stream()
+    })
+}
+
+fn strings_to_attrs<'a>(
+    type_attrs: &'a BTreeSet<String>,
+    extra_attrs: &'a [String],
+) -> impl Iterator<Item = TokenStream> + 'a {
+    let mut combined_attrs = BTreeSet::new();
+    combined_attrs.extend(extra_attrs.iter().map(String::as_str));
+    combined_attrs.extend(type_attrs.iter().map(String::as_str));
+    combined_attrs.into_iter().map(|attr| {
+        syn::parse_str::<TokenStream>(attr)
             .unwrap()
             .into_token_stream()
     })

@@ -837,15 +837,19 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
 
 /// Check for patches which include potential type renames and additional
 /// derive macros.
-pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
+pub(crate) fn type_patch(
+    type_space: &TypeSpace,
+    type_name: String,
+) -> (String, BTreeSet<String>, BTreeSet<String>) {
     match type_space.settings.patch.get(&type_name) {
-        None => (type_name, Default::default()),
+        None => (type_name, Default::default(), Default::default()),
 
         Some(patch) => {
             let name = patch.rename.clone().unwrap_or(type_name);
             let derives = patch.derives.iter().cloned().collect();
+            let attrs = patch.attrs.iter().cloned().collect();
 
-            (name, derives)
+            (name, derives, attrs)
         }
     }
 }
