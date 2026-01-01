@@ -71,6 +71,27 @@ pub fn import_types(item: TokenStream) -> TokenStream {
     }
 }
 
+#[derive(Hash, Eq, PartialEq)]
+enum PatchType {
+    Ident(syn::Ident),
+    Or(syn::PatOr),
+}
+
+impl syn::parse::Parse for PatchType {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        let pat = syn::Pat::parse_multi(input)?;
+
+        match pat {
+            syn::Pat::Ident(pat_ident) => Ok(PatchType::Ident(pat_ident.ident)),
+            syn::Pat::Or(pat_or) => Ok(PatchType::Or(pat_or)),
+            _ => Err(syn::Error::new_spanned(
+                pat,
+                "expected identifier or or-pattern",
+            )),
+        }
+    }
+}
+
 #[derive(Deserialize)]
 struct MacroSettings {
     schema: ParseWrapper<LitStr>,
@@ -87,7 +108,7 @@ struct MacroSettings {
     map_type: Option<ParseWrapper<syn::Type>>,
 
     #[serde(default)]
-    patch: HashMap<ParseWrapper<syn::Ident>, MacroPatch>,
+    patch: HashMap<ParseWrapper<PatchType>, MacroPatch>,
     #[serde(default)]
     replace: HashMap<ParseWrapper<syn::Ident>, ParseWrapper<TypeAndImpls>>,
     #[serde(default)]
@@ -200,9 +221,22 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         });
         settings.with_struct_builder(struct_builder);
 
-        patch.into_iter().for_each(|(type_name, patch)| {
-            settings.with_patch(type_name.to_token_stream(), &patch.into());
+        patch.into_iter().for_each(|(patch_type, patch)| {
+            let type_patch = patch.into();
+            match patch_type.into_inner() {
+                PatchType::Ident(ident) => {
+                    settings.with_patch(ident.to_token_stream(), &type_patch);
+                }
+                PatchType::Or(pat_or) => {
+                    for case in pat_or.cases {
+                        if let syn::Pat::Ident(pat_ident) = case {
+                            settings.with_patch(pat_ident.ident.to_token_stream(), &type_patch);
+                        }
+                    }
+                }
+            }
         });
+
         replace.into_iter().for_each(|(type_name, type_and_impls)| {
             let (replace_type, impls) = type_and_impls.into_inner().into_name_and_impls();
             settings.with_replacement(type_name.to_token_stream(), replace_type, impls.into_iter());
