@@ -90,12 +90,6 @@ impl std::convert::TryFrom<&str> for IdOrName {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for IdOrName {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
 impl std::convert::TryFrom<String> for IdOrName {
     type Error = &'static str;
     fn try_from(value: String) -> Result<Self, &'static str> {
@@ -153,12 +147,6 @@ impl std::str::FromStr for Name {
 impl std::convert::TryFrom<&str> for Name {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for Name {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
