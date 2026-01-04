@@ -13,7 +13,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     sanitize,
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description, type_patch, unique},
+    util::{get_type_name, metadata_description, unique, TypePatch},
     Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
@@ -291,10 +291,10 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -307,8 +307,8 @@ impl TypeEntryEnum {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -383,10 +383,10 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default,
@@ -397,8 +397,8 @@ impl TypeEntryStruct {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 }
@@ -415,10 +415,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -429,8 +429,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -446,10 +446,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -462,8 +462,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -479,10 +479,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -495,8 +495,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -518,10 +518,10 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, extra_derives, extra_attrs) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -536,8 +536,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
-            extra_attrs,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 }

@@ -582,7 +582,7 @@ impl TypeSpacePatch {
 }
 
 impl TypeSpace {
-    /// Create a new TypeSpace with custom settings
+    /// Create a new TypeSpace with custom settings.
     pub fn new(settings: &TypeSpaceSettings) -> Self {
         let mut cache = SchemaCache::default();
 
