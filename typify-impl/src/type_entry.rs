@@ -2047,11 +2047,9 @@ fn strings_to_attrs<'a>(
     let mut combined_attrs = BTreeSet::new();
     combined_attrs.extend(extra_attrs.iter().map(String::as_str));
     combined_attrs.extend(type_attrs.iter().map(String::as_str));
-    combined_attrs.into_iter().map(|attr| {
-        syn::parse_str::<TokenStream>(attr)
-            .unwrap()
-            .into_token_stream()
-    })
+    combined_attrs
+        .into_iter()
+        .map(|attr| attr.parse::<TokenStream>().unwrap())
 }
 
 /// Returns true iff...

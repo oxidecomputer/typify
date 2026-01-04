@@ -429,7 +429,6 @@ impl TypeSpaceSettings {
         if !self.extra_attrs.contains(&attr) {
             self.extra_attrs.push(attr);
         }
-
         self
     }
 
