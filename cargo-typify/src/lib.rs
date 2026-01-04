@@ -31,8 +31,12 @@ pub struct CliArgs {
     pub no_builder: bool,
 
     /// Add an additional derive macro to apply to all defined types.
-    #[arg(short, long = "additional-derive", value_name = "derive")]
+    #[arg(short = 'd', long = "additional-derive", value_name = "derive")]
     pub additional_derives: Vec<String>,
+
+    /// Add an additional attribute to apply to all defined types.
+    #[arg(short = 'a', long = "additional-attr", value_name = "attr")]
+    pub additional_attrs: Vec<String>,
 
     /// The output file to write to. If not specified, the input file name will
     /// be used with a `.rs` extension.
@@ -146,6 +150,10 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         settings.with_derive(derive.clone());
     }
 
+    for attr in &args.additional_attrs {
+        settings.with_attr(attr.clone());
+    }
+
     for CrateSpec {
         name,
         version,
@@ -197,6 +205,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: Some(PathBuf::from("-")),
             no_builder: false,
             crates: vec![],
@@ -213,6 +222,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: Some(PathBuf::from("some_file.rs")),
             no_builder: false,
             crates: vec![],
@@ -229,6 +239,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: None,
             no_builder: false,
             crates: vec![],
@@ -245,6 +256,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: None,
             no_builder: false,
             crates: vec![],
@@ -264,6 +276,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: None,
             no_builder: false,
             crates: vec![],
@@ -280,6 +293,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: false,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: None,
             no_builder: true,
             crates: vec![],
@@ -296,6 +310,7 @@ mod tests {
             input: PathBuf::from("input.json"),
             builder: true,
             additional_derives: vec![],
+            additional_attrs: vec![],
             output: None,
             no_builder: false,
             crates: vec![],
