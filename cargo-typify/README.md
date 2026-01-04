@@ -204,5 +204,8 @@ default). Builder output lets you write code like this:
 let xy: MyStruct = MyStruct::builder().x_coord(x).y_coord(y).try_into();
 ```
 
-The `--additional-derive` adds the specified derive macro to all generated
+The `--additional-derive` option adds the specified derive macro to all generated
+types. This may be specified more than once.
+
+The `--additional-attr` option adds the specified attribute to all generated
 types. This may be specified more than once.
