@@ -13,8 +13,11 @@ Options:
   -B, --no-builder
           Inverse of `--builder`. When set the builder-style interface will not be included
 
-  -a, --additional-derive <derive>
+  -d, --additional-derive <derive>
           Add an additional derive macro to apply to all defined types
+
+  -a, --additional-attr <attr>
+          Add an additional attribute to apply to all defined types
 
   -o, --output <OUTPUT>
           The output file to write to. If not specified, the input file name will be used with a `.rs` extension.
