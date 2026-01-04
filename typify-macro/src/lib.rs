@@ -34,6 +34,9 @@ mod token_utils;
 /// - `derives`: optional array of derive macro paths; the derive macros to be
 ///   applied to all generated types
 ///
+/// - `attrs`: optional array of attribute paths; the attributes to be applied
+///   to all generated types
+///
 /// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
 ///   method for each generated struct that can be used to specify each
 ///   property and construct the struct
