@@ -42,11 +42,6 @@ pub mod error {
 pub struct AnythingWorks {
     pub value: ::serde_json::Value,
 }
-impl ::std::convert::From<&AnythingWorks> for AnythingWorks {
-    fn from(value: &AnythingWorks) -> Self {
-        value.clone()
-    }
-}
 impl AnythingWorks {
     pub fn builder() -> builder::AnythingWorks {
         Default::default()
@@ -72,11 +67,6 @@ impl AnythingWorks {
 pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub flush_timeout: ::std::option::Option<f32>,
-}
-impl ::std::convert::From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
-    fn from(value: &FloatsArentTerribleImTold) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for FloatsArentTerribleImTold {
     fn default() -> Self {
@@ -124,11 +114,6 @@ impl ::std::ops::Deref for JustOne {
 impl ::std::convert::From<JustOne> for ::std::string::String {
     fn from(value: JustOne) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&JustOne> for JustOne {
-    fn from(value: &JustOne) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::string::String> for JustOne {
@@ -204,11 +189,6 @@ pub struct UintMinimumAndMaximum {
     pub min_non_zero: ::std::num::NonZeroU64,
     pub min_uint_non_zero: ::std::num::NonZeroU64,
     pub no_bounds: u64,
-}
-impl ::std::convert::From<&UintMinimumAndMaximum> for UintMinimumAndMaximum {
-    fn from(value: &UintMinimumAndMaximum) -> Self {
-        value.clone()
-    }
 }
 impl UintMinimumAndMaximum {
     pub fn builder() -> builder::UintMinimumAndMaximum {

@@ -52,11 +52,6 @@ pub struct LetterBox {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub letter: ::std::option::Option<LetterBoxLetter>,
 }
-impl ::std::convert::From<&LetterBox> for LetterBox {
-    fn from(value: &LetterBox) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for LetterBox {
     fn default() -> Self {
         Self {
@@ -102,11 +97,6 @@ pub enum LetterBoxLetter {
     A,
     #[serde(rename = "b")]
     B,
-}
-impl ::std::convert::From<&Self> for LetterBoxLetter {
-    fn from(value: &LetterBoxLetter) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for LetterBoxLetter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {

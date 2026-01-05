@@ -59,11 +59,6 @@ mod types {
     pub struct AllTheTraits {
         pub ok: ::std::string::String,
     }
-    impl ::std::convert::From<&AllTheTraits> for AllTheTraits {
-        fn from(value: &AllTheTraits) -> Self {
-            value.clone()
-        }
-    }
     impl AllTheTraits {
         pub fn builder() -> builder::AllTheTraits {
             Default::default()
@@ -99,11 +94,6 @@ mod types {
         pub value1: ::std::string::String,
         pub value2: u64,
     }
-    impl ::std::convert::From<&CompoundType> for CompoundType {
-        fn from(value: &CompoundType) -> Self {
-            value.clone()
-        }
-    }
     impl CompoundType {
         pub fn builder() -> builder::CompoundType {
             Default::default()
@@ -136,11 +126,6 @@ mod types {
         pub a: StringEnum,
         #[serde(default = "defaults::pair_b")]
         pub b: StringEnum,
-    }
-    impl ::std::convert::From<&Pair> for Pair {
-        fn from(value: &Pair) -> Self {
-            value.clone()
-        }
     }
     impl ::std::default::Default for Pair {
         fn default() -> Self {
@@ -187,11 +172,6 @@ mod types {
         One,
         Two,
         BuckleMyShoe,
-    }
-    impl ::std::convert::From<&Self> for StringEnum {
-        fn from(value: &StringEnum) -> Self {
-            value.clone()
-        }
     }
     impl ::std::fmt::Display for StringEnum {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {

@@ -1082,12 +1082,6 @@ impl TypeEntry {
                 #(#variants_decl)*
             }
 
-            impl ::std::convert::From<&Self> for #type_name {
-                fn from(value: &#type_name) -> Self {
-                    value.clone()
-                }
-            }
-
             #simple_enum_impl
             #default_impl
             #untagged_newtype_from_string_impl
@@ -1203,12 +1197,6 @@ impl TypeEntry {
                         #prop_serde
                         pub #prop_name: #prop_type,
                     )*
-                }
-
-                impl ::std::convert::From<&#type_name> for #type_name {
-                    fn from(value: &#type_name) -> Self {
-                        value.clone()
-                    }
                 }
             },
         );
@@ -1674,12 +1662,6 @@ impl TypeEntry {
             impl ::std::convert::From<#type_name> for #inner_type_name {
                 fn from(value: #type_name) -> Self {
                     value.0
-                }
-            }
-
-            impl ::std::convert::From<&#type_name> for #type_name {
-                fn from(value: &#type_name) -> Self {
-                    value.clone()
                 }
             }
 
