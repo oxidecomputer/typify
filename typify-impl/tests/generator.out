@@ -59,11 +59,6 @@ mod types {
     pub struct AllTheTraits {
         pub ok: ::std::string::String,
     }
-    impl ::std::convert::From<&AllTheTraits> for AllTheTraits {
-        fn from(value: &AllTheTraits) -> Self {
-            value.clone()
-        }
-    }
     impl AllTheTraits {
         pub fn builder() -> builder::AllTheTraits {
             Default::default()
@@ -99,11 +94,6 @@ mod types {
         pub value1: ::std::string::String,
         pub value2: u64,
     }
-    impl ::std::convert::From<&CompoundType> for CompoundType {
-        fn from(value: &CompoundType) -> Self {
-            value.clone()
-        }
-    }
     impl CompoundType {
         pub fn builder() -> builder::CompoundType {
             Default::default()
@@ -136,11 +126,6 @@ mod types {
         pub a: StringEnum,
         #[serde(default = "defaults::pair_b")]
         pub b: StringEnum,
-    }
-    impl ::std::convert::From<&Pair> for Pair {
-        fn from(value: &Pair) -> Self {
-            value.clone()
-        }
     }
     impl ::std::default::Default for Pair {
         fn default() -> Self {
@@ -187,11 +172,6 @@ mod types {
         One,
         Two,
         BuckleMyShoe,
-    }
-    impl ::std::convert::From<&Self> for StringEnum {
-        fn from(value: &StringEnum) -> Self {
-            value.clone()
-        }
     }
     impl ::std::fmt::Display for StringEnum {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -256,7 +236,7 @@ mod types {
             {
                 self.ok = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for ok: {}", e));
+                    .map_err(|e| format!("error converting supplied value for ok: {e}"));
                 self
             }
         }
@@ -294,7 +274,7 @@ mod types {
             {
                 self.value1 = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for value1: {}", e));
+                    .map_err(|e| format!("error converting supplied value for value1: {e}"));
                 self
             }
             pub fn value2<T>(mut self, value: T) -> Self
@@ -304,7 +284,7 @@ mod types {
             {
                 self.value2 = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for value2: {}", e));
+                    .map_err(|e| format!("error converting supplied value for value2: {e}"));
                 self
             }
         }
@@ -348,7 +328,7 @@ mod types {
             {
                 self.a = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for a: {}", e));
+                    .map_err(|e| format!("error converting supplied value for a: {e}"));
                 self
             }
             pub fn b<T>(mut self, value: T) -> Self
@@ -358,7 +338,7 @@ mod types {
             {
                 self.b = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for b: {}", e));
+                    .map_err(|e| format!("error converting supplied value for b: {e}"));
                 self
             }
         }

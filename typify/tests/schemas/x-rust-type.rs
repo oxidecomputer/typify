@@ -50,11 +50,6 @@ pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::path::PathBuf>,
 }
-impl ::std::convert::From<&AllTheThings> for AllTheThings {
-    fn from(value: &AllTheThings) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for AllTheThings {
     fn default() -> Self {
         Self {
@@ -90,11 +85,6 @@ impl AllTheThings {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Marker {}
-impl ::std::convert::From<&Self> for Marker {
-    fn from(value: &Marker) -> Self {
-        value.clone()
-    }
-}
 #[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
@@ -124,7 +114,7 @@ pub mod builder {
         {
             self.option_marker = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for option_marker: {}", e));
+                .map_err(|e| format!("error converting supplied value for option_marker: {e}"));
             self
         }
         pub fn path<T>(mut self, value: T) -> Self
@@ -134,7 +124,7 @@ pub mod builder {
         {
             self.path = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for path: {}", e));
+                .map_err(|e| format!("error converting supplied value for path: {e}"));
             self
         }
     }

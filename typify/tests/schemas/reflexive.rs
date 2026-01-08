@@ -55,11 +55,6 @@ pub struct Node {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub value: ::std::option::Option<i64>,
 }
-impl ::std::convert::From<&Node> for Node {
-    fn from(value: &Node) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for Node {
     fn default() -> Self {
         Self {
@@ -96,7 +91,7 @@ pub mod builder {
         {
             self.children = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for children: {}", e));
+                .map_err(|e| format!("error converting supplied value for children: {e}"));
             self
         }
         pub fn value<T>(mut self, value: T) -> Self
@@ -106,7 +101,7 @@ pub mod builder {
         {
             self.value = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for value: {}", e));
+                .map_err(|e| format!("error converting supplied value for value: {e}"));
             self
         }
     }

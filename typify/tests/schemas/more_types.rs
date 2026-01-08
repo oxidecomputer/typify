@@ -48,11 +48,6 @@ pub mod error {
 pub struct ObjectWithNoExtra {
     pub foo: ::std::string::String,
 }
-impl ::std::convert::From<&ObjectWithNoExtra> for ObjectWithNoExtra {
-    fn from(value: &ObjectWithNoExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithNoExtra {
     pub fn builder() -> builder::ObjectWithNoExtra {
         Default::default()
@@ -78,11 +73,6 @@ impl ObjectWithNoExtra {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ObjectWithOkExtra {
     pub foo: ::std::string::String,
-}
-impl ::std::convert::From<&ObjectWithOkExtra> for ObjectWithOkExtra {
-    fn from(value: &ObjectWithOkExtra) -> Self {
-        value.clone()
-    }
 }
 impl ObjectWithOkExtra {
     pub fn builder() -> builder::ObjectWithOkExtra {
@@ -115,11 +105,6 @@ pub struct ObjectWithStringExtra {
     #[serde(flatten)]
     pub extra: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
 }
-impl ::std::convert::From<&ObjectWithStringExtra> for ObjectWithStringExtra {
-    fn from(value: &ObjectWithStringExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithStringExtra {
     pub fn builder() -> builder::ObjectWithStringExtra {
         Default::default()
@@ -149,11 +134,6 @@ pub struct ObjectWithWhichExtra {
     #[serde(flatten)]
     pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
 }
-impl ::std::convert::From<&ObjectWithWhichExtra> for ObjectWithWhichExtra {
-    fn from(value: &ObjectWithWhichExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithWhichExtra {
     pub fn builder() -> builder::ObjectWithWhichExtra {
         Default::default()
@@ -181,11 +161,6 @@ impl ObjectWithWhichExtra {
 pub struct ObjectWithYesExtra {
     pub foo: ::std::string::String,
 }
-impl ::std::convert::From<&ObjectWithYesExtra> for ObjectWithYesExtra {
-    fn from(value: &ObjectWithYesExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithYesExtra {
     pub fn builder() -> builder::ObjectWithYesExtra {
         Default::default()
@@ -212,7 +187,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }
@@ -248,7 +223,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }
@@ -289,7 +264,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
         pub fn extra<T>(mut self, value: T) -> Self
@@ -301,7 +276,7 @@ pub mod builder {
         {
             self.extra = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for extra: {}", e));
+                .map_err(|e| format!("error converting supplied value for extra: {e}"));
             self
         }
     }
@@ -348,7 +323,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
         pub fn extra<T>(mut self, value: T) -> Self
@@ -360,7 +335,7 @@ pub mod builder {
         {
             self.extra = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for extra: {}", e));
+                .map_err(|e| format!("error converting supplied value for extra: {e}"));
             self
         }
     }
@@ -402,7 +377,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }

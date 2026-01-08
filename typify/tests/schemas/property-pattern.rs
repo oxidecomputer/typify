@@ -57,11 +57,6 @@ pub struct TestGrammarForPatternProperties {
     pub rules:
         ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, ::std::string::String>,
 }
-impl ::std::convert::From<&TestGrammarForPatternProperties> for TestGrammarForPatternProperties {
-    fn from(value: &TestGrammarForPatternProperties) -> Self {
-        value.clone()
-    }
-}
 impl TestGrammarForPatternProperties {
     pub fn builder() -> builder::TestGrammarForPatternProperties {
         Default::default()
@@ -90,13 +85,6 @@ impl ::std::ops::Deref for TestGrammarForPatternPropertiesRulesKey {
 impl ::std::convert::From<TestGrammarForPatternPropertiesRulesKey> for ::std::string::String {
     fn from(value: TestGrammarForPatternPropertiesRulesKey) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&TestGrammarForPatternPropertiesRulesKey>
-    for TestGrammarForPatternPropertiesRulesKey
-{
-    fn from(value: &TestGrammarForPatternPropertiesRulesKey) -> Self {
-        value.clone()
     }
 }
 impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
@@ -176,7 +164,7 @@ pub mod builder {
         {
             self.rules = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for rules: {}", e));
+                .map_err(|e| format!("error converting supplied value for rules: {e}"));
             self
         }
     }

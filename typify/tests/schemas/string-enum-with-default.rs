@@ -61,11 +61,6 @@ pub enum TestEnum {
     #[serde(rename = "success")]
     Success,
 }
-impl ::std::convert::From<&Self> for TestEnum {
-    fn from(value: &TestEnum) -> Self {
-        value.clone()
-    }
-}
 impl ::std::fmt::Display for TestEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {

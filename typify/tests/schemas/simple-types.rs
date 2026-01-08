@@ -42,11 +42,6 @@ pub mod error {
 pub struct AnythingWorks {
     pub value: ::serde_json::Value,
 }
-impl ::std::convert::From<&AnythingWorks> for AnythingWorks {
-    fn from(value: &AnythingWorks) -> Self {
-        value.clone()
-    }
-}
 impl AnythingWorks {
     pub fn builder() -> builder::AnythingWorks {
         Default::default()
@@ -72,11 +67,6 @@ impl AnythingWorks {
 pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub flush_timeout: ::std::option::Option<f32>,
-}
-impl ::std::convert::From<&FloatsArentTerribleImTold> for FloatsArentTerribleImTold {
-    fn from(value: &FloatsArentTerribleImTold) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for FloatsArentTerribleImTold {
     fn default() -> Self {
@@ -124,11 +114,6 @@ impl ::std::ops::Deref for JustOne {
 impl ::std::convert::From<JustOne> for ::std::string::String {
     fn from(value: JustOne) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&JustOne> for JustOne {
-    fn from(value: &JustOne) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::string::String> for JustOne {
@@ -205,11 +190,6 @@ pub struct UintMinimumAndMaximum {
     pub min_uint_non_zero: ::std::num::NonZeroU64,
     pub no_bounds: u64,
 }
-impl ::std::convert::From<&UintMinimumAndMaximum> for UintMinimumAndMaximum {
-    fn from(value: &UintMinimumAndMaximum) -> Self {
-        value.clone()
-    }
-}
 impl UintMinimumAndMaximum {
     pub fn builder() -> builder::UintMinimumAndMaximum {
         Default::default()
@@ -236,7 +216,7 @@ pub mod builder {
         {
             self.value = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for value: {}", e));
+                .map_err(|e| format!("error converting supplied value for value: {e}"));
             self
         }
     }
@@ -276,7 +256,7 @@ pub mod builder {
         {
             self.flush_timeout = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for flush_timeout: {}", e));
+                .map_err(|e| format!("error converting supplied value for flush_timeout: {e}"));
             self
         }
     }
@@ -326,7 +306,7 @@ pub mod builder {
         {
             self.max = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for max: {}", e));
+                .map_err(|e| format!("error converting supplied value for max: {e}"));
             self
         }
         pub fn min<T>(mut self, value: T) -> Self
@@ -336,7 +316,7 @@ pub mod builder {
         {
             self.min = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for min: {}", e));
+                .map_err(|e| format!("error converting supplied value for min: {e}"));
             self
         }
         pub fn min_and_max<T>(mut self, value: T) -> Self
@@ -346,7 +326,7 @@ pub mod builder {
         {
             self.min_and_max = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for min_and_max: {}", e));
+                .map_err(|e| format!("error converting supplied value for min_and_max: {e}"));
             self
         }
         pub fn min_non_zero<T>(mut self, value: T) -> Self
@@ -356,7 +336,7 @@ pub mod builder {
         {
             self.min_non_zero = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for min_non_zero: {}", e));
+                .map_err(|e| format!("error converting supplied value for min_non_zero: {e}"));
             self
         }
         pub fn min_uint_non_zero<T>(mut self, value: T) -> Self
@@ -364,12 +344,9 @@ pub mod builder {
             T: ::std::convert::TryInto<::std::num::NonZeroU64>,
             T::Error: ::std::fmt::Display,
         {
-            self.min_uint_non_zero = value.try_into().map_err(|e| {
-                format!(
-                    "error converting supplied value for min_uint_non_zero: {}",
-                    e
-                )
-            });
+            self.min_uint_non_zero = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for min_uint_non_zero: {e}"));
             self
         }
         pub fn no_bounds<T>(mut self, value: T) -> Self
@@ -379,7 +356,7 @@ pub mod builder {
         {
             self.no_bounds = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for no_bounds: {}", e));
+                .map_err(|e| format!("error converting supplied value for no_bounds: {e}"));
             self
         }
     }
