@@ -284,6 +284,6 @@ mod tests {
             map_type = ::my::map::Type,
         };
 
-        let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item.into()).unwrap();
+        let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item).unwrap();
     }
 }
