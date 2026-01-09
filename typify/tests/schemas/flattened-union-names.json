@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TestFlattenedUnion",
+  "type": "object",
+  "properties": {
+    "steps": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "$ref": "#/definitions/CommandStep" },
+          { "$ref": "#/definitions/WaitStep" },
+          { "$ref": "#/definitions/BlockStep" }
+        ]
+      }
+    }
+  },
+  "required": ["steps"],
+  "definitions": {
+    "CommandStep": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string" },
+        "label": { "type": "string" }
+      },
+      "required": ["command"]
+    },
+    "WaitStep": {
+      "type": "object",
+      "properties": {
+        "wait": { "type": "string" }
+      }
+    },
+    "BlockStep": {
+      "type": "object",
+      "properties": {
+        "block": { "type": "string" },
+        "prompt": { "type": "string" }
+      },
+      "required": ["block"]
+    }
+  }
+}

@@ -20571,31 +20571,32 @@ pub enum DataVariant2Format {
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_0: ::std::option::Option<DataVariant2FormatVariant0Subtype0>,
+        object: ::std::option::Option<DataVariant2FormatVariant0Subtype0>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_1: ::std::option::Option<DataVariant2FormatVariant0Subtype1>,
+        object: ::std::option::Option<DataVariant2FormatVariant0Subtype1>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_2: ::std::option::Option<DataVariant2FormatVariant0Subtype2>,
+        object: ::std::option::Option<DataVariant2FormatVariant0Subtype2>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_3: ::std::option::Option<DataVariant2FormatVariant0Subtype3>,
+        object: ::std::option::Option<DataVariant2FormatVariant0Subtype3>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_4: ::std::option::Option<DataVariant2FormatVariant0Subtype4>,
+        data_variant2_format_variant0_subtype4:
+            ::std::option::Option<DataVariant2FormatVariant0Subtype4>,
     },
     Variant1(SignalRef),
 }
@@ -23285,31 +23286,32 @@ pub enum DataVariant3Format {
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_0: ::std::option::Option<DataVariant3FormatVariant0Subtype0>,
+        object: ::std::option::Option<DataVariant3FormatVariant0Subtype0>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_1: ::std::option::Option<DataVariant3FormatVariant0Subtype1>,
+        object: ::std::option::Option<DataVariant3FormatVariant0Subtype1>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_2: ::std::option::Option<DataVariant3FormatVariant0Subtype2>,
+        object: ::std::option::Option<DataVariant3FormatVariant0Subtype2>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_3: ::std::option::Option<DataVariant3FormatVariant0Subtype3>,
+        object: ::std::option::Option<DataVariant3FormatVariant0Subtype3>,
         #[serde(
             flatten,
             default,
             skip_serializing_if = "::std::option::Option::is_none"
         )]
-        subtype_4: ::std::option::Option<DataVariant3FormatVariant0Subtype4>,
+        data_variant3_format_variant0_subtype4:
+            ::std::option::Option<DataVariant3FormatVariant0Subtype4>,
     },
     Variant1(SignalRef),
 }
@@ -100322,7 +100324,7 @@ pub struct TitleObjectEncode {
         default,
         skip_serializing_if = "::std::option::Option::is_none"
     )]
-    pub subtype_0: ::std::option::Option<
+    pub object: ::std::option::Option<
         ::std::collections::HashMap<TitleObjectEncodeSubtype0Key, EncodeEntry>,
     >,
     #[serde(
@@ -100330,13 +100332,13 @@ pub struct TitleObjectEncode {
         default,
         skip_serializing_if = "::std::option::Option::is_none"
     )]
-    pub subtype_1: ::std::option::Option<TitleObjectEncodeSubtype1>,
+    pub object: ::std::option::Option<TitleObjectEncodeSubtype1>,
 }
 impl ::std::default::Default for TitleObjectEncode {
     fn default() -> Self {
         Self {
-            subtype_0: Default::default(),
-            subtype_1: Default::default(),
+            object: Default::default(),
+            object: Default::default(),
         }
     }
 }

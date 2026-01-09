@@ -273,25 +273,65 @@ impl TypeSpace {
         subschemas: &[Schema],
         optional: bool,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let properties = subschemas
+        // First, derive names from the schemas themselves (before creating type IDs)
+        let schema_names: Vec<Option<String>> = subschemas
+            .iter()
+            .map(|schema| crate::util::schema_is_named(schema))
+            .collect();
+
+        // Second pass: create type IDs for all subschemas
+        let type_ids: Vec<TypeId> = subschemas
             .iter()
             .enumerate()
             .map(|(idx, schema)| {
-                let type_name = match get_type_name(&type_name, metadata) {
+                let subtype_name = match get_type_name(&type_name, metadata) {
                     Some(name) => Name::Suggested(format!("{}Subtype{}", name, idx)),
                     None => Name::Unknown,
                 };
 
-                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
+                let (mut type_id, _) = self.id_for_schema(subtype_name, schema)?;
                 if optional {
                     type_id = self.id_to_option(&type_id);
                 }
+                Ok(type_id)
+            })
+            .collect::<Result<Vec<_>>>()?;
 
-                // TODO we need a reasonable name that could be derived
-                // from the name of the type
-                let name = format!("subtype_{}", idx);
+        // Third pass: derive field names from schema names or registered types
+        let properties = type_ids
+            .into_iter()
+            .zip(schema_names.iter())
+            .enumerate()
+            .map(|(idx, (type_id, schema_name))| {
+                // Try to use the schema name first (from $ref or title)
+                let field_name = if let Some(name) = schema_name {
+                    name.clone()
+                } else {
+                    // Fall back to looking up the registered type
+                    match self.id_to_entry.get(&type_id) {
+                        Some(type_entry) => {
+                            match &type_entry.details {
+                                TypeEntryDetails::Option(inner_id) => {
+                                    // For Option types, try to get the inner type name
+                                    match self.id_to_entry.get(inner_id) {
+                                        Some(inner_entry) => inner_entry.type_name(self),
+                                        // If inner type not found, fall back to numbered naming
+                                        None => format!("subtype_{}", idx),
+                                    }
+                                }
+                                _ => type_entry.type_name(self),
+                            }
+                        }
+                        // If type not found (e.g., forward reference), fall back to numbered naming
+                        None => format!("subtype_{}", idx),
+                    }
+                };
+                
+                // Convert to snake_case for field name
+                use heck::ToSnakeCase;
+                let name = field_name.to_snake_case();
 
-                Ok(StructProperty {
+                StructProperty {
                     name,
                     rename: StructPropertyRename::Flatten,
                     state: if optional {
@@ -301,9 +341,9 @@ impl TypeSpace {
                     },
                     description: None,
                     type_id,
-                })
+                }
             })
-            .collect::<Result<Vec<_>>>()?;
+            .collect::<Vec<_>>();
 
         Ok((
             TypeEntryStruct::from_metadata(
