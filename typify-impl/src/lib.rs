@@ -173,6 +173,8 @@ impl Name {
 pub(crate) enum RefKey {
     Root,
     Def(String),
+    /// JSON Pointer path like ["definitions", "blockStep", "properties", "key"]
+    JsonPointer(Vec<String>),
 }
 
 /// A collection of types.
@@ -648,14 +650,33 @@ impl TypeSpace {
                     let check_name = sanitize(def_name, Case::Pascal);
                     self.settings.replace.get(&check_name)
                 }
+                RefKey::JsonPointer(_) => None, // JSON Pointers are never replaced
             };
 
             match maybe_replace {
                 None => {
-                    let type_name = if let RefKey::Def(name) = ref_name {
-                        Name::Required(name.clone())
-                    } else {
-                        Name::Unknown
+                    let type_name = match &ref_name {
+                        RefKey::Def(name) => Name::Required(name.clone()),
+                        RefKey::JsonPointer(segments) => {
+                            // Generate a name from the path segments
+                            // e.g., ["definitions", "blockStep", "properties", "key"] -> "BlockStepKey"
+                            let name = segments
+                                .iter()
+                                .skip(1) // Skip "definitions"
+                                .filter(|s| *s != "properties") // Skip "properties"
+                                .map(|s| {
+                                    // Convert to PascalCase
+                                    let mut chars = s.chars();
+                                    match chars.next() {
+                                        None => String::new(),
+                                        Some(f) => f.to_uppercase().chain(chars).collect(),
+                                    }
+                                })
+                                .collect::<Vec<_>>()
+                                .join("");
+                            Name::Suggested(name)
+                        }
+                        RefKey::Root => Name::Unknown,
                     };
                     self.convert_ref_type(type_name, schema, type_id)?
                 }
@@ -805,6 +826,27 @@ impl TypeSpace {
         if root_type {
             defs.push((RefKey::Root, schema.into()));
         }
+
+        // Extract JSON Pointer references and create synthetic definitions
+        let defs_map: BTreeMap<RefKey, Schema> = defs.iter().cloned().collect();
+        let mut json_pointer_defs = Vec::new();
+        
+        for (_, schema) in &defs {
+            let pointer_refs = util::collect_json_pointer_refs(schema);
+            for segments in pointer_refs {
+                let pointer_key = RefKey::JsonPointer(segments.clone());
+                // Check if we haven't already added this pointer
+                if !defs_map.contains_key(&pointer_key) 
+                    && !json_pointer_defs.iter().any(|(k, _)| k == &pointer_key) {
+                    // Resolve the pointer to get the actual schema
+                    if let Some(resolved_schema) = util::resolve_json_pointer(&segments, &defs_map) {
+                        json_pointer_defs.push((pointer_key, resolved_schema));
+                    }
+                }
+            }
+        }
+        
+        defs.extend(json_pointer_defs);
 
         self.add_ref_types_impl(defs)?;
 

@@ -550,13 +550,158 @@ fn decode_segment(segment: &str) -> String {
 
 pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     if ref_name == "#" {
-        RefKey::Root
-    } else if let Some(idx) = ref_name.rfind('/') {
-        let decoded_segment = decode_segment(&ref_name[idx + 1..]);
-
-        RefKey::Def(decoded_segment)
+        return RefKey::Root;
+    }
+    
+    // Parse the full path: #/definitions/blockStep/properties/key
+    // or #/components/schemas/Foo
+    // or #/$defs/Foo (newer JSON Schema drafts)
+    let path_str = ref_name.strip_prefix("#/").unwrap_or_else(|| {
+        panic!("expected $ref to start with '#/': {}", ref_name)
+    });
+    
+    let segments: Vec<String> = path_str
+        .split('/')
+        .map(decode_segment)
+        .collect();
+    
+    // Check if this is a simple definition reference (backward compatibility)
+    // Handles #/definitions/Foo, #/components/schemas/Foo, #/$defs/Foo, and #/defs/Foo
+    if segments.len() == 2 && (segments[0] == "definitions" || segments[0] == "$defs" || segments[0] == "defs") {
+        RefKey::Def(segments[1].clone())
+    } else if segments.len() == 3 && segments[0] == "components" && segments[1] == "schemas" {
+        // Map #/components/schemas/Foo to definitions/Foo
+        RefKey::Def(segments[2].clone())
+    } else if segments.len() > 2 {
+        RefKey::JsonPointer(segments)
     } else {
-        panic!("expected a '/' in $ref: {}", ref_name)
+        panic!("unexpected $ref format: {}", ref_name)
+    }
+}
+
+/// Resolve a JSON Pointer path to a schema within the definitions.
+/// For example: ["definitions", "blockStep", "properties", "key"]
+pub(crate) fn resolve_json_pointer<'a>(
+    segments: &[String],
+    definitions: &'a std::collections::BTreeMap<RefKey, Schema>,
+) -> Option<Schema> {
+    // First segment should be "definitions"
+    if segments.is_empty() || segments[0] != "definitions" {
+        return None;
+    }
+    
+    // Second segment is the definition name
+    if segments.len() < 2 {
+        return None;
+    }
+    
+    let def_key = RefKey::Def(segments[1].clone());
+    let mut current_schema = definitions.get(&def_key)?;
+    
+    // Traverse the remaining segments
+    let mut index = 2;
+    while index < segments.len() {
+        let segment = &segments[index];
+        
+        match current_schema {
+            Schema::Object(schema_obj) => {
+                if segment == "properties" {
+                    // Next segment should be a property name
+                    if index + 1 >= segments.len() {
+                        return None;
+                    }
+                    index += 1;
+                    let prop_name = &segments[index];
+                    
+                    let properties = &schema_obj.object.as_ref()?.properties;
+                    current_schema = properties.get(prop_name)?;
+                } else {
+                    // Handle other possible segments if needed
+                    return None;
+                }
+            }
+            _ => return None,
+        }
+        
+        index += 1;
+    }
+    
+    Some(current_schema.clone())
+}
+
+/// Collect all JSON Pointer references from a schema tree
+pub(crate) fn collect_json_pointer_refs(schema: &Schema) -> Vec<Vec<String>> {
+    let mut refs = Vec::new();
+    collect_json_pointer_refs_impl(schema, &mut refs);
+    refs
+}
+
+fn collect_json_pointer_refs_impl(schema: &Schema, refs: &mut Vec<Vec<String>>) {
+    match schema {
+        Schema::Bool(_) => {}
+        Schema::Object(schema_obj) => {
+            // Check if this schema is a reference
+            if let Some(ref_name) = &schema_obj.reference {
+                let key = ref_key(ref_name);
+                if let RefKey::JsonPointer(segments) = key {
+                    refs.push(segments);
+                }
+            }
+            
+            // Traverse subschemas
+            if let Some(subschemas) = &schema_obj.subschemas {
+                if let Some(all_of) = &subschemas.all_of {
+                    for s in all_of {
+                        collect_json_pointer_refs_impl(s, refs);
+                    }
+                }
+                if let Some(any_of) = &subschemas.any_of {
+                    for s in any_of {
+                        collect_json_pointer_refs_impl(s, refs);
+                    }
+                }
+                if let Some(one_of) = &subschemas.one_of {
+                    for s in one_of {
+                        collect_json_pointer_refs_impl(s, refs);
+                    }
+                }
+                if let Some(not) = &subschemas.not {
+                    collect_json_pointer_refs_impl(not, refs);
+                }
+            }
+            
+            // Traverse object properties
+            if let Some(object) = &schema_obj.object {
+                for schema in object.properties.values() {
+                    collect_json_pointer_refs_impl(schema, refs);
+                }
+                if let Some(additional) = &object.additional_properties {
+                    collect_json_pointer_refs_impl(additional, refs);
+                }
+                for schema in object.pattern_properties.values() {
+                    collect_json_pointer_refs_impl(schema, refs);
+                }
+            }
+            
+            // Traverse array items
+            if let Some(array) = &schema_obj.array {
+                if let Some(items) = &array.items {
+                    match items {
+                        schemars::schema::SingleOrVec::Single(schema) => {
+                            collect_json_pointer_refs_impl(schema, refs);
+                        }
+                        schemars::schema::SingleOrVec::Vec(schemas) => {
+                            for schema in schemas {
+                                collect_json_pointer_refs_impl(schema, refs);
+                            }
+                        }
+                    }
+                }
+                if let Some(additional) = &array.additional_items {
+                    collect_json_pointer_refs_impl(additional, refs);
+                }
+            }
+        }
     }
 }
 
