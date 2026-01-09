@@ -2041,10 +2041,122 @@ impl TypeSpace {
                     ))
                 }
                 (1, None) => unreachable!(),
-                _ => panic!(
-                    "multiple implied types for an un-typed enum {:?} {:?}",
-                    instance_types, enum_values,
-                ),
+                _ => {
+                    // We have multiple types in the enum values. Create an
+                    // untagged enum with a variant for each type.
+                    
+                    // Group enum values by their type
+                    let mut values_by_type: std::collections::HashMap<
+                        InstanceType,
+                        Vec<serde_json::Value>,
+                    > = std::collections::HashMap::new();
+                    
+                    for value in enum_values {
+                        let instance_type = match value {
+                            serde_json::Value::Null => InstanceType::Null,
+                            serde_json::Value::Bool(_) => InstanceType::Boolean,
+                            serde_json::Value::Number(_) => InstanceType::Number,
+                            serde_json::Value::String(_) => InstanceType::String,
+                            serde_json::Value::Array(_) => InstanceType::Array,
+                            serde_json::Value::Object(_) => InstanceType::Object,
+                        };
+                        values_by_type
+                            .entry(instance_type)
+                            .or_insert_with(Vec::new)
+                            .push(value.clone());
+                    }
+                    
+                    // Create subschemas for each type with their enum values
+                    let subschemas = instance_types
+                        .iter()
+                        .map(|it| {
+                            let instance_type = Some(schemars::schema::SingleOrVec::Single(
+                                Box::new(*it),
+                            ));
+                            let enum_values = values_by_type
+                                .get(it)
+                                .map(|vals| vals.clone());
+                            
+                            let (label, inner_schema) = match it {
+                                InstanceType::Null => (
+                                    "null",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::Boolean => (
+                                    "boolean",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::Object => (
+                                    "object",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::Array => (
+                                    "array",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::Number => (
+                                    "number",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::String => (
+                                    "string",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                                InstanceType::Integer => (
+                                    "integer",
+                                    schemars::schema::SchemaObject {
+                                        instance_type,
+                                        enum_values,
+                                        ..Default::default()
+                                    },
+                                ),
+                            };
+                            
+                            // Make the wrapping schema.
+                            Schema::Object(schemars::schema::SchemaObject {
+                                metadata: Some(Box::new(schemars::schema::Metadata {
+                                    title: Some(label.to_string()),
+                                    ..Default::default()
+                                })),
+                                subschemas: Some(Box::new(
+                                    schemars::schema::SubschemaValidation {
+                                        all_of: Some(vec![inner_schema.into()]),
+                                        ..Default::default()
+                                    },
+                                )),
+                                ..Default::default()
+                            })
+                        })
+                        .collect::<Vec<_>>();
+                    
+                    let type_entry =
+                        self.untagged_enum(type_name, original_schema, metadata, &subschemas)?;
+                    Ok((type_entry, metadata))
+                }
             }
         }
     }

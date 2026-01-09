@@ -11,15 +11,15 @@ fn test_main() {
 }
 
 fn main() {
-    let veg = Veggie::builder()
-        .veggie_name("carrots")
-        .veggie_like(true)
-        .try_into()
-        .unwrap();
+    // let veg = Veggie::builder()
+    //     .veggie_name("carrots")
+    //     .veggie_like(true)
+    //     .try_into()
+    //     .unwrap();
 
-    let veggies = Veggies {
-        fruits: vec![String::from("apple"), String::from("mango")],
-        vegetables: vec![veg],
-    };
-    println!("{:?}", veggies);
+    // let veggies = Veggies {
+    //     fruits: vec![String::from("apple"), String::from("mango")],
+    //     vegetables: vec![veg],
+    // };
+    // println!("{:?}", veggies);
 }
