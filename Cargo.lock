@@ -367,6 +367,7 @@ name = "example-build"
 version = "0.0.0"
 dependencies = [
  "prettyplease",
+ "regress",
  "schemars",
  "serde",
  "serde_json",

@@ -1748,6 +1748,49 @@ impl TypeSpace {
                 }
             }
 
+            // String pattern that values must NOT match
+            Schema::Object(SchemaObject {
+                metadata: _,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: Some(string_validation),
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            }) if string_validation.pattern.is_some() => {
+                // Generate a String type with pattern denial validation
+                let (type_entry, _) = self.convert_schema_object(
+                    Name::Unknown,
+                    original_schema,
+                    &SchemaObject {
+                        instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
+                        ..Default::default()
+                    },
+                )?;
+                
+                let type_id = self.assign_type(type_entry);
+                let pattern = string_validation.pattern.clone().unwrap();
+                
+                // Mark that we use regress for pattern matching
+                self.uses_regress = true;
+                
+                let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_pattern(
+                    self,
+                    type_name,
+                    metadata,
+                    type_id,
+                    pattern,
+                    original_schema.clone(),
+                );
+                
+                Ok((newtype_entry, metadata))
+            }
+
             _ => todo!("unhandled not schema {:#?}", subschema),
         }
     }
