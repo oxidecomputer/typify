@@ -111,3 +111,73 @@ pub enum StructPropertyState {
     /// serialization will always emit the field.
     DefaultValue(JsonValue),
 }
+
+#[derive(Debug, Clone)]
+pub struct TypeUnitStruct {
+    pub name: NameBuilder,
+    pub description: Option<String>,
+
+    pub repr: serde_json::Value,
+
+    pub(crate) built: Option<TypeStructBuilt>,
+}
+impl TypeUnitStruct {
+    pub(crate) fn new(
+        name: NameBuilder,
+        description: Option<String>,
+        repr: serde_json::Value,
+    ) -> Self {
+        Self {
+            name,
+            description,
+            repr,
+            built: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct TypeTupleStruct {
+    pub name: NameBuilder,
+    pub description: Option<String>,
+    pub fields: Vec<SchemaRef>,
+    pub rest: Option<SchemaRef>,
+
+    pub(crate) built: Option<TypeStructBuilt>,
+}
+impl TypeTupleStruct {
+    pub(crate) fn children(&self) -> Vec<SchemaRef> {
+        let mut children = self.fields.clone();
+        if let Some(rest) = &self.rest {
+            children.push(rest.clone());
+        }
+
+        children
+    }
+
+    pub(crate) fn children_with_context(&self) -> Vec<(SchemaRef, String)> {
+        let mut children = self
+            .fields
+            .iter()
+            .cloned()
+            .enumerate()
+            .map(|(ii, type_id)| (type_id, ii.to_string()))
+            .collect::<Vec<_>>();
+
+        if let Some(rest) = &self.rest {
+            children.push((rest.clone(), self.fields.len().to_string()));
+        }
+
+        children
+    }
+
+    pub(crate) fn contained_children_mut(&mut self) -> Vec<&mut SchemaRef> {
+        let mut children = self.fields.iter_mut().collect::<Vec<&mut SchemaRef>>();
+
+        if let Some(rest) = &mut self.rest {
+            children.push(rest);
+        }
+
+        children
+    }
+}

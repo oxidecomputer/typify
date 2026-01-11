@@ -1,6 +1,7 @@
 mod type_common;
 mod type_enum;
 mod type_struct;
+mod value_tokens;
 
 use serde::Deserialize;
 pub use type_common::*;
@@ -268,6 +269,53 @@ impl Typespace {
                         }
                     }
                 }
+
+                Type::UnitStruct(TypeUnitStruct {
+                    name: _,
+                    description,
+                    repr,
+                    built,
+                }) => {
+                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+
+                    let name = built.as_ref().unwrap().name.to_string();
+                    let name_ident = format_ident!("{name}");
+
+                    let repr_tokens = value_tokens::value_tokens(repr);
+                    let repr_string = serde_json::to_string(repr).unwrap();
+                    quote! {
+                        #description
+                        #[derive(::std::clone::Clone, ::std::fmt::Debug)]
+                        pub struct #name_ident;
+
+                        impl ::serde::Serialize for #name_ident {
+                            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                            where
+                                S: ::serde::Serializer,
+                            {
+                                #repr_tokens.serialize(serializer)
+                            }
+                        }
+
+                        impl<'de> ::serde::Deserialize<'de> for #name_ident {
+                            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                            where
+                                D: ::serde::Deserializer<'de>,
+                            {
+                                let expected = #repr_tokens;
+                                let value: serde_json::Value = ::serde::Deserialize::deserialize(deserializer)?;
+                                if value != expected {
+                                    return Err(::serde::de::Error::custom(format!(
+                                        "expected unit struct value {}, found {}",
+                                        #repr_string,
+                                        ::serde_json::to_string(&value).unwrap())));
+                                }
+                                Ok(#name_ident)
+                            }
+                        }
+                    }
+                }
+
                 _ => quote! {},
             }
         });
@@ -461,8 +509,11 @@ impl Typespace {
             (StructPropertyState::Default, _) => {
                 serde_options.push(quote! { default });
                 match ty {
-                    Type::Enum(type_enum) => todo!(),
-                    Type::Struct(type_struct) => todo!(),
+                    Type::Enum(_) => todo!(),
+                    Type::Struct(_) => todo!(),
+                    Type::UnitStruct(_) => todo!(),
+                    Type::TupleStruct(_) => todo!(),
+
                     Type::Native(_) => todo!(),
                     Type::Option(schema_ref) => {
                         // This case is basically meaningless, but it's also
@@ -669,6 +720,32 @@ impl TypespaceBuilder {
                     };
                     type_struct.built = Some(TypeStructBuilt { name });
                 }
+
+                Type::UnitStruct(type_inner) => {
+                    let name = match &type_inner.name {
+                        NameBuilder::Unset => unreachable!(),
+                        NameBuilder::Fixed(s) => {
+                            let nn = namespace.make_name(id.clone());
+                            nn.set_name(s);
+                            nn
+                        }
+                        NameBuilder::Hints(hints) => {
+                            let nn = namespace.make_name(id.clone());
+
+                            for hint in hints {
+                                match hint {
+                                    NameBuilderHint::Title(_) => todo!(),
+                                    NameBuilderHint::Parent(id, s) => {
+                                        nn.derive_name(id, s);
+                                    }
+                                }
+                            }
+                            nn
+                        }
+                    };
+
+                    type_inner.built = Some(TypeStructBuilt { name });
+                }
                 _ => {}
             }
 
@@ -823,6 +900,8 @@ fn break_cycles(types: &mut BTreeMap<SchemaRef, Type>) {
 pub enum Type {
     Enum(TypeEnum),
     Struct(TypeStruct),
+    UnitStruct(TypeUnitStruct),
+    TupleStruct(TypeTupleStruct),
 
     Native(String),
     Option(SchemaRef),
@@ -880,8 +959,10 @@ impl Type {
     }
     fn is_named(&self) -> bool {
         match self {
-            Type::Enum(type_enum) => true,
-            Type::Struct(type_struct) => true,
+            Type::Enum(_) => true,
+            Type::Struct(_) => true,
+            Type::UnitStruct(_) => true,
+            Type::TupleStruct(_) => true,
             _ => false,
         }
     }
@@ -890,6 +971,9 @@ impl Type {
         match self {
             Type::Enum(type_enum) => type_enum.children(),
             Type::Struct(type_struct) => type_struct.children(),
+            Type::UnitStruct(_) => Vec::new(),
+            Type::TupleStruct(type_tuple_struct) => type_tuple_struct.children(),
+
             Type::Boolean => Vec::new(),
             Type::String => Vec::new(),
             Type::Native(_) => Vec::new(),
@@ -914,6 +998,9 @@ impl Type {
         match self {
             Type::Enum(type_enum) => type_enum.children_with_context(),
             Type::Struct(type_struct) => type_struct.children_with_context(),
+            Type::UnitStruct(_) => Vec::new(),
+            Type::TupleStruct(type_tuple_struct) => type_tuple_struct.children_with_context(),
+
             Type::Native(_) => Vec::new(),
             Type::Option(id) => vec![(id.clone(), "".to_string())],
             Type::Box(_) => todo!(),
@@ -963,6 +1050,10 @@ impl Type {
                 .iter_mut()
                 .map(|prop| &mut prop.type_id)
                 .collect(),
+
+            Type::UnitStruct(_) => vec![],
+            Type::TupleStruct(type_tuple_struct) => type_tuple_struct.contained_children_mut(),
+
             Type::Option(id) => vec![id],
             Type::Array(id, _) => vec![id],
             Type::Tuple(items) => items.iter_mut().collect(),
@@ -1139,5 +1230,75 @@ mod tests {
         let out = prettyplease::unparse(&file);
 
         expectorate::assert_contents("tests/output/test_struct_field_serde.rs", &out);
+    }
+
+    /// I don't really like the term cursed, but I think it apply. Hold your
+    /// nose. Here we're taking the path and contents. If the file doesn't
+    /// exist, the build will fail at the `include!()`, so step 1: make sure
+    /// the file exists. If the file exist but doesn't match the expected
+    /// contents we'll let `expectorate` do its overwrite thing... but then
+    /// we'll fail on an explicit panic. So only if the file matches the
+    /// expected contents and doesn't need to be updated do we proceed.
+    macro_rules! check_and_include {
+        ($path:expr, $out:expr) => {
+            if my_assert_contents($path, &$out) {
+                panic!("fixture updated; run tests again");
+            }
+
+            mod import {
+                include!(concat!("../../", $path));
+            }
+        };
+    }
+
+    /// Return true if the file was updated.
+    #[track_caller]
+    fn my_assert_contents<P: AsRef<std::path::Path>>(path: P, actual: &str) -> bool {
+        let path = path.as_ref();
+        let a2 = newline_converter::dos2unix(actual);
+
+        let ret = match std::fs::read_to_string(path) {
+            Ok(s) if s == a2 => false,
+            _ => true,
+        };
+
+        expectorate::assert_contents(path, actual);
+
+        ret
+    }
+
+    #[test]
+    fn test_unit_struct() {
+        let mut ts = TypespaceBuilder::default();
+
+        let ty = Type::UnitStruct(crate::typespace::TypeUnitStruct::new(
+            NameBuilder::Fixed("MyUnitStruct".to_string()),
+            None,
+            serde_json::json!("<<+>>"),
+        ));
+
+        ts.insert(SchemaRef::Id("MyUnitStruct".to_string()), ty);
+
+        let ts = ts
+            .finalize(TypespaceSettings::default())
+            .expect("finalize typespace");
+
+        let output = ts.render();
+
+        let file = parse_quote! {
+            #output
+        };
+        let out = prettyplease::unparse(&file);
+
+        // Write out what we just generated... and include it too? Yeah, weird.
+        check_and_include!("tests/output/test_unit_struct.rs", out);
+
+        // Test serialization.
+        let value = import::MyUnitStruct;
+        assert_eq!(serde_json::to_string(&value).unwrap(), "\"<<+>>\"");
+
+        // Test deserialization.
+        assert!(serde_json::from_str::<import::MyUnitStruct>("\"<<+>>\"").is_ok());
+        assert!(serde_json::from_str::<import::MyUnitStruct>("null").is_err());
     }
 }
