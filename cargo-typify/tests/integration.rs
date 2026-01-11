@@ -104,6 +104,31 @@ fn test_derive() {
 }
 
 #[test]
+fn test_attr() {
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let temp = TempDir::new("cargo-typify").unwrap();
+    let output_file = temp.path().join("output.rs");
+
+    assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--no-builder",
+            "--additional-attr",
+            "#[extra_attr]",
+            "--output",
+            output_file.to_str().unwrap(),
+        ])
+        .assert()
+        .success();
+
+    let actual = std::fs::read_to_string(output_file).unwrap();
+
+    assert_contents("tests/outputs/attr.rs", &actual);
+}
+
+#[test]
 fn test_multi_derive() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 

@@ -9,7 +9,7 @@ use std::{collections::HashMap, path::Path};
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
 use serde::Deserialize;
-use serde_tokenstream::ParseWrapper;
+use serde_tokenstream::{ParseWrapper, TokenStreamWrapper};
 use syn::LitStr;
 use token_utils::TypeAndImpls;
 use typify_impl::{
@@ -33,6 +33,9 @@ mod token_utils;
 ///
 /// - `derives`: optional array of derive macro paths; the derive macros to be
 ///   applied to all generated types
+///
+/// - `attrs`: optional array of attribute paths; the attributes to be applied
+///   to all generated types
 ///
 /// - `struct_builder`: optional boolean; (if true) generates a `::builder()`
 ///   method for each generated struct that can be used to specify each
@@ -59,7 +62,7 @@ mod token_utils;
 /// - `replace`: optional map from definition name to a replacement type. This
 ///   may be used to skip generation of the named type and use a existing Rust
 ///   type.
-///   
+///
 /// - `convert`: optional map from a JSON schema type defined in `$defs` to a
 ///   replacement type. This may be used to skip generation of the schema and
 ///   use an existing Rust type.
@@ -76,6 +79,8 @@ struct MacroSettings {
     schema: ParseWrapper<LitStr>,
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
+    #[serde(default)]
+    attrs: Vec<TokenStreamWrapper>,
     #[serde(default)]
     struct_builder: bool,
 
@@ -163,6 +168,8 @@ struct MacroPatch {
     rename: Option<String>,
     #[serde(default)]
     derives: Vec<ParseWrapper<syn::Path>>,
+    #[serde(default)]
+    attrs: Vec<TokenStreamWrapper>,
 }
 
 impl From<MacroPatch> for TypeSpacePatch {
@@ -173,6 +180,9 @@ impl From<MacroPatch> for TypeSpacePatch {
         });
         a.derives.iter().for_each(|derive| {
             s.with_derive(derive.to_token_stream());
+        });
+        a.attrs.iter().for_each(|attr| {
+            s.with_attr(attr.to_token_stream());
         });
         s
     }
@@ -193,10 +203,14 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             unknown_crates,
             crates,
             map_type,
+            attrs,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
         let mut settings = TypeSpaceSettings::default();
         derives.into_iter().for_each(|derive| {
             settings.with_derive(derive.to_token_stream().to_string());
+        });
+        attrs.into_iter().for_each(|attr| {
+            settings.with_attr(attr.to_token_stream().to_string());
         });
         settings.with_struct_builder(struct_builder);
 
