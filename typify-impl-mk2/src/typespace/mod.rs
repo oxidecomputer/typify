@@ -78,7 +78,7 @@ pub struct TypespaceNativeType {
 /// There are traits that may require special handling during type generation:
 ///
 /// - `serde::Serialize` and `serde::Deserialize` -- These traits depend on the
-///   shape of the data and while--as much as possible--generated code makes
+///   shape of the data and, while--as much as possible--generated code makes
 ///   use of the derived implementations, the serialized form of some generated
 ///   types may be a little different.
 ///
@@ -88,6 +88,7 @@ pub struct TypespaceNativeType {
 ///   configuration may be required to specify the version or to customize the
 ///   crate name e.g. if one were to support multiple versions simultaneously.
 ///
+/// - `std::clone::Clone` -- XXX
 /// - `std::fmt::Display` -- XXX
 /// - `std::default::Default` -- XXX
 /// XXX
@@ -126,13 +127,13 @@ pub enum TypespaceSettingsStd {
 #[derive(Debug, Default, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsOptionalNullable {
-    /// Model `null` and `optional` as equivalent using the
+    /// Model `null` and `optional` as equivalent by using the
     /// `std::option::Option<T>` type. Skip serialization of `None` values.
     /// This is the default.
     #[default]
     ConflateAsAbsent,
 
-    /// Model `null` and `optional` as equivalent using the
+    /// Model `null` and `optional` as equivalent by using the
     /// `std::option::Option<T>` type. `None` values are serialized as `null`.
     ConflateAsNull,
 
@@ -145,7 +146,7 @@ pub enum TypespaceSettingsOptionalNullable {
 
     /// Use a custom type `Opt` where `Opt: std::default::Default +
     /// serde::Deserialize + serde::Serialize`. The `Default` implementation
-    /// specifies the value of a field when absent; the `Deserialize`
+    /// specifies the value for a field when absent; the `Deserialize`
     /// implementation produces a value otherwise (null or a non-null value of
     /// T). In addition, `Opt` must implement `is_absent(&self) -> bool` which
     /// is used with the serde `skip_serializing_if` attribute to omit the

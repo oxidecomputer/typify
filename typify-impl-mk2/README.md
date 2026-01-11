@@ -753,3 +753,48 @@ chosen from that context"). Also we need to have some way to (optionally?)
 generate types for definitions (in the particular location given the schema
 type) and potentially customize this in some way e.g. for that weird nested
 defs schema that has come up in the issues a few times.
+
+### 1/10/2026
+
+#### Tuple structs and unit structs
+
+I still don't have newtype structs, but I did make tuple structs and unit
+structs. I suppose a newtype struct is just a tuple struct, but the idea is
+pretty different, and I think there's a key distinction in that we intend the
+field of a newtype struct to a non-`pub`. Perhaps a better name for it will be
+`WrapperStruct` since the intended use is to apply constraints to the contained
+type.
+
+Anyways...
+
+I built out the unit and tuple variantions including support for "flattened"
+extension arrays in both type generation, serde generation, and the json-serde
+support library.
+
+#### Next
+
+- [Small] The `typespace` module is looking really nice. I think I could
+  improve that a bunch without needing to think too hard. I could imagine
+  separating that stuff out and using it in typify 1. I'm not sure there would
+  be huge benefits, but it would be a way to get some more near-term benefits.
+  It's not the thing that really needs the most polish, but it's also basically
+  at a leaf and self-contained. If I don't want to think too hard, this is a
+  good place to spend time. (Something like `OutputSpace`, consideration for how to handle trait impls, breaking up `render` to be less nested.)
+- [Medium] The converter isn't complete and in particular for some situations
+  such as flattening maps into objects and arrays into tuples. That's tricky
+  because we will probably end up with some fixed-depth recursion and a more
+  complex return type from `Converter::convert`. That's fine; just something I
+  should probably do sooner rather than later. The only caution is that I don't
+  want to do too much more converting since the canonicalize IR is subject to
+  change.
+- [Large] Fix the normalizer. Make it a real compiler. Figure out a way to
+  separate out testing. This shouldn't be too bad, but I need to really think
+  it through based on the shortcomings of what we have currently. Probably
+  review all the notes above. Definitely need to change the structure of the
+  code to operate on the full graph. Also need to think more about what I
+  preserve and how e.g. titles, and extensions/annotations for naming.
+- [Small] De-lint--the noise is a killer; spending a little time on it will
+  probably help me find areas that need more consideration as well.
+- [Future] The `Bundler` needs to learn about `$id` values and probably needs
+  another layer of lookup to say "this `$id` value is found in this document at
+  this path."

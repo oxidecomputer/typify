@@ -133,12 +133,23 @@
       "details": {
         "Value": {
           "Array": {
+            "items": "http://localhost/#/$defs/unsimple-two-tuple/items",
             "prefix_items": [
               "http://localhost/#/$defs/unsimple-two-tuple/prefixItems/0"
             ],
             "max_items": 2,
             "min_items": 2
           }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/unsimple-two-tuple/items",
+    {
+      "details": {
+        "Value": {
+          "String": {}
         }
       }
     }
@@ -159,9 +170,20 @@
       "details": {
         "Value": {
           "Array": {
+            "items": "http://localhost/#/$defs/yolo-two-array/items",
             "max_items": 2,
             "min_items": 2
           }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/yolo-two-array/items",
+    {
+      "details": {
+        "Value": {
+          "String": {}
         }
       }
     }

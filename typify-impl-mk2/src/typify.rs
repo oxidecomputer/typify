@@ -55,7 +55,7 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct TypeId(SchemaRef);
+pub struct TypeId(pub SchemaRef);
 
 impl Typify {
     pub fn new_with_bundle(bundle: Bundle, settings: TypifySettings) -> Self {
@@ -130,7 +130,7 @@ impl Typify {
             // In the future we can add this as content that the Typespace
             // may add to the doc comment for the type.
             let maybe_original_json = match &work_id {
-                SchemaRef::Id(xxx) => Some(self.bundle.get_fully_qualified(xxx).unwrap()),
+                SchemaRef::Id(id) => Some(self.bundle.get_fully_qualified(id).unwrap()),
                 _ => None,
             };
 

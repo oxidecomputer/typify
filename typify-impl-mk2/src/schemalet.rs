@@ -351,6 +351,8 @@ struct CanonicalSchemaletValueObjectMore {
 pub struct SchemaletValueArray {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<SchemaRef>,
+    // TODO 1/10/2026 maybe this doesn't need to be an option and could just be
+    // an empty array if not specified?
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prefix_items: Option<Vec<SchemaRef>>,
     #[serde(skip_serializing_if = "Option::is_none")]

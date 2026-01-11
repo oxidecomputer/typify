@@ -73,6 +73,18 @@ impl Converter {
         }
     }
 
+    // TODO 1/10/2026
+    // I've tried to model this as a pure function... it's a nice idea, but I'm
+    // not sure it's working out. In particular, I often find that I need to
+    // create multiple types. I guess this doesn't need to be as hard as I'm
+    // making it. This could still be a pure function, but it could return a
+    // "type transaction" i.e. a primary type and then some supporting types to
+    // which it refers.
+    //
+    // The goal was to avoid recursively descending into the tree of types. I
+    // think we can still maintain that idea, but tie ourselves in knots a
+    // little less.
+
     pub fn convert(&self, id: &SchemaRef, original_json: Option<&serde_json::Value>) -> Type {
         let name = match self.known_names.get(id) {
             Some(s) => NameBuilder::Fixed(s.clone()),
