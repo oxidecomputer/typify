@@ -269,7 +269,6 @@ impl Typespace {
                         }
                     }
                 }
-
                 Type::UnitStruct(TypeUnitStruct {
                     name: _,
                     description,
@@ -303,7 +302,8 @@ impl Typespace {
                                 D: ::serde::Deserializer<'de>,
                             {
                                 let expected = #repr_tokens;
-                                let value: serde_json::Value = ::serde::Deserialize::deserialize(deserializer)?;
+                                let value: serde_json::Value =
+                                    ::serde::Deserialize::deserialize(deserializer)?;
                                 if value != expected {
                                     return Err(::serde::de::Error::custom(format!(
                                         "expected unit struct value {}, found {}",
@@ -315,8 +315,128 @@ impl Typespace {
                         }
                     }
                 }
+                Type::TupleStruct(TypeTupleStruct {
+                    name: _,
+                    description,
+                    fields,
+                    rest,
+                    built,
+                }) => {
+                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
 
-                _ => quote! {},
+                    let name = built.as_ref().unwrap().name.to_string();
+                    let name_ident = format_ident!("{name}");
+
+                    let field_ident = fields.iter().map(|field_id| self.render_ident(field_id));
+                    let rest_ident = rest
+                        .as_ref()
+                        .map(|rest_id| self.render_ident(rest_id))
+                        .into_iter();
+
+                    let field_index = (0..fields.len()).map(syn::Index::from);
+                    let rest_index = rest
+                        .as_ref()
+                        .map(|_| syn::Index::from(fields.len()))
+                        .into_iter();
+
+                    let field_var= (0..fields.len()).map(|ii| format_ident!("field_{ii}")).collect::<Vec<_>>();
+                    let field_int = (0..fields.len()).collect::<Vec<_>>();
+                    let rest_var = rest.as_ref().map(|_| format_ident!("rest")).into_iter().collect::<Vec<_>>();
+                    let expected = format!("a tuple of size {} or more", fields.len());
+
+                    quote! {
+                        #description
+                        #[derive(::std::clone::Clone, ::std::fmt::Debug)]
+                        pub struct #name_ident(
+                            #( pub #field_ident, )*
+                            #( pub #rest_ident, )*
+                        );
+
+                        impl ::serde::Serialize for #name_ident {
+                            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                            where
+                                S: ::serde::Serializer,
+                            {
+                                use ::serde::ser::SerializeSeq;
+                                let mut seq = serializer.serialize_seq(None)?;
+                                #(
+                                    seq.serialize_element(&self.#field_index)?;
+                                )*
+                                #(
+                                    self.#rest_index.serialize(
+                                        ::json_serde::FlattenedSequenceSerializer::new(&mut seq)
+                                    )?;
+                                )*
+                                seq.end()
+                            }
+                        }
+
+                        impl<'de> ::serde::Deserialize<'de> for #name_ident {
+                            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                            where
+                                D: ::serde::Deserializer<'de>,
+                            {
+                                struct Visitor;
+
+                                impl<'de> ::serde::de::Visitor<'de> for Visitor {
+                                    type Value = #name_ident;
+
+                                    fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                                        // TODO could we specify the type here?
+                                        formatter.write_str("a sequence")
+                                    }
+
+                                    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+                                    where
+                                        A: ::serde::de::SeqAccess<'de>,
+                                    {
+                                        // Strictly speaking, we don't need to
+                                        // store each tuple element in a
+                                        // variable, but as a practical matter,
+                                        // it makes the generated code much
+                                        // easier to follow and less indented.
+                                        #(
+                                            let #field_var = seq
+                                            .next_element()?
+                                            .ok_or_else(||
+                                                ::serde::de::Error::invalid_length(
+                                                    #field_int,
+                                                    &#expected
+                                                )
+                                            )?;
+                                        )*
+                                        #(
+                                            let #rest_var = ::serde::Deserialize::deserialize(
+                                                ::json_serde::FlattenedSequenceDeserializer::new(&mut seq)
+                                            )?;
+                                        )*
+                                        Ok(#name_ident(
+                                            #( #field_var, )*
+                                            #( #rest_var, )*
+                                        ))
+                                    }
+                                }
+
+                                deserializer.deserialize_seq(Visitor)
+                            }
+                        }
+                    }
+                }
+
+                Type::Native(_)
+                | Type::Option(_)
+                | Type::Box(_)
+                | Type::Vec(_)
+                | Type::Map(_, _)
+                | Type::Set(_)
+                | Type::Array(_, _)
+                | Type::Tuple(_)
+                | Type::Unit
+                | Type::Boolean
+                | Type::Integer(_)
+                | Type::Float(_)
+                | Type::String
+                | Type::JsonValue => Default::default(),
             }
         });
 
@@ -746,6 +866,33 @@ impl TypespaceBuilder {
 
                     type_inner.built = Some(TypeStructBuilt { name });
                 }
+
+                Type::TupleStruct(type_inner) => {
+                    let name = match &type_inner.name {
+                        NameBuilder::Unset => unreachable!(),
+                        NameBuilder::Fixed(s) => {
+                            let nn = namespace.make_name(id.clone());
+                            nn.set_name(s);
+                            nn
+                        }
+                        NameBuilder::Hints(hints) => {
+                            let nn = namespace.make_name(id.clone());
+
+                            for hint in hints {
+                                match hint {
+                                    NameBuilderHint::Title(_) => todo!(),
+                                    NameBuilderHint::Parent(id, s) => {
+                                        nn.derive_name(id, s);
+                                    }
+                                }
+                            }
+                            nn
+                        }
+                    };
+
+                    type_inner.built = Some(TypeStructBuilt { name });
+                }
+
                 _ => {}
             }
 
@@ -1087,7 +1234,7 @@ mod tests {
         schemalet::SchemaRef,
         typespace::{
             JsonValue, NameBuilder, StructProperty, StructPropertySerde, StructPropertyState, Type,
-            TypeStruct, TypespaceBuilder, TypespaceSettings, TypespaceSettingsStd,
+            TypeStruct, TypeTupleStruct, TypespaceBuilder, TypespaceSettings, TypespaceSettingsStd,
         },
     };
 
@@ -1300,5 +1447,84 @@ mod tests {
         // Test deserialization.
         assert!(serde_json::from_str::<import::MyUnitStruct>("\"<<+>>\"").is_ok());
         assert!(serde_json::from_str::<import::MyUnitStruct>("null").is_err());
+    }
+
+    #[test]
+    fn test_tuple_struct() {
+        let mut ts = TypespaceBuilder::default();
+
+        let int_id = SchemaRef::Id("integer type".to_string());
+        let ty = Type::Integer("u32".to_string());
+        ts.insert(int_id.clone(), ty);
+
+        let string_id = SchemaRef::Id("string type".to_string());
+        let ty = Type::String;
+        ts.insert(string_id.clone(), ty);
+
+        let string_array_id = SchemaRef::Id("string array type".to_string());
+        let ty = Type::Vec(string_id.clone());
+        ts.insert(string_array_id.clone(), ty);
+
+        let ty = Type::TupleStruct(TypeTupleStruct::new(
+            NameBuilder::Fixed("MyTupleStruct".to_string()),
+            None,
+            vec![string_id.clone(), int_id.clone()],
+            Some(string_array_id.clone()),
+        ));
+        ts.insert(SchemaRef::Id("MyTupleStruct".to_string()), ty);
+
+        let ts = ts
+            .finalize(TypespaceSettings::default())
+            .expect("finalize typespace");
+
+        let output = ts.render();
+        let file = parse_quote! {
+            #output
+        };
+        let out = prettyplease::unparse(&file);
+        println!("{}", out);
+
+        // Write out what we just generated... and include it too? Yeah, weird.
+        check_and_include!("tests/output/test_tuple_struct.rs", out);
+
+        // Test serialization.
+        let value = import::MyTupleStruct("hello".to_string(), 42, vec![]);
+        assert_eq!(serde_json::to_string(&value).unwrap(), r#"["hello",42]"#);
+
+        let value = import::MyTupleStruct(
+            "hello".to_string(),
+            42,
+            vec!["a".to_string(), "b".to_string(), "c".to_string()],
+        );
+        assert_eq!(
+            serde_json::to_string(&value).unwrap(),
+            r#"["hello",42,"a","b","c"]"#
+        );
+
+        // Test deserialization.
+        let value = serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42]"#).unwrap();
+        assert_eq!(value.0, "hello");
+        assert_eq!(value.1, 42);
+        assert!(value.2.is_empty());
+
+        let value =
+            serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42,"a","b"]"#).unwrap();
+        assert_eq!(value.0, "hello");
+        assert_eq!(value.1, 42);
+        assert!(value.2.len() == 2);
+        assert_eq!(value.2[0], "a");
+        assert_eq!(value.2[1], "b");
+
+        let result = serde_json::from_str::<import::MyTupleStruct>(r#"[]"#);
+        let e = result.unwrap_err().to_string();
+        assert!(e.contains("invalid length 0"), "{e}");
+
+        let result = serde_json::from_str::<import::MyTupleStruct>(r#"["hello"]"#);
+        let e = result.unwrap_err().to_string();
+        assert!(e.contains("invalid length 1"), "{e}");
+
+        let result = serde_json::from_str::<import::MyTupleStruct>(r#"["a",1,2]"#);
+        let e = result.unwrap_err().to_string();
+        assert!(e.contains("invalid type: integer"), "{e}");
     }
 }

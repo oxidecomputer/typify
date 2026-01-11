@@ -141,11 +141,29 @@ pub struct TypeTupleStruct {
     pub name: NameBuilder,
     pub description: Option<String>,
     pub fields: Vec<SchemaRef>,
+
+    /// Optional type, which must be represented as an array, the stores
+    /// items beyond those in `fields`.
     pub rest: Option<SchemaRef>,
 
     pub(crate) built: Option<TypeStructBuilt>,
 }
 impl TypeTupleStruct {
+    pub(crate) fn new(
+        name: NameBuilder,
+        description: Option<String>,
+        fields: Vec<SchemaRef>,
+        rest: Option<SchemaRef>,
+    ) -> Self {
+        Self {
+            name,
+            description,
+            fields,
+            rest,
+            built: None,
+        }
+    }
+
     pub(crate) fn children(&self) -> Vec<SchemaRef> {
         let mut children = self.fields.clone();
         if let Some(rest) = &self.rest {

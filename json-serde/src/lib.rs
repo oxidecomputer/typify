@@ -346,12 +346,14 @@ mod tests {
                     where
                         A: serde::de::SeqAccess<'de>,
                     {
-                        let v_0 = seq
-                            .next_element()?
-                            .ok_or_else(|| serde::de::Error::custom("expected first element"))?;
-                        let v_1 = seq
-                            .next_element()?
-                            .ok_or_else(|| serde::de::Error::custom("expected second element"))?;
+                        let v_0 = seq.next_element()?.ok_or_else(|| {
+                            serde::de::Error::invalid_length(0, &"a tuple of size 2")
+                        })?;
+                        // .ok_or_else(|| serde::de::Error::custom("expected first element"))?;
+                        let v_1 = seq.next_element()?.ok_or_else(|| {
+                            serde::de::Error::invalid_length(1, &"a tuple of size 2")
+                        })?;
+                        // .ok_or_else(|| serde::de::Error::custom("expected second element"))?;
 
                         let rest =
                             Deserialize::deserialize(FlattenedSequenceDeserializer::new(&mut seq))?;
@@ -384,5 +386,18 @@ mod tests {
         let input = "[1, \"Two\", \"Three\", 4, 5, 6]";
         let de_result = serde_json::from_str::<TestType>(&input);
         assert!(de_result.is_err());
+
+        let input = "[100]";
+        let de_result = serde_json::from_str::<TestType>(&input);
+        let e = de_result.unwrap_err().to_string();
+        assert!(
+            e.starts_with("invalid length 1, expected a tuple of size 2"),
+            "{e}",
+        );
+
+        let input = "[1, \"Two\", \"Three\"]";
+        let de_result = serde_json::from_str::<TestType>(&input);
+        let e = de_result.unwrap_err().to_string();
+        assert!(e.starts_with("invalid type"), "{e}",);
     }
 }
