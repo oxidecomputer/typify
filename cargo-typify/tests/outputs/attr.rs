@@ -59,11 +59,6 @@ impl ::std::convert::From<Fruit>
         value.0
     }
 }
-impl ::std::convert::From<&Fruit> for Fruit {
-    fn from(value: &Fruit) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>
     for Fruit
 {
@@ -106,11 +101,6 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::s
 pub enum FruitOrVeg {
     Veg(Veggie),
     Fruit(Fruit),
-}
-impl ::std::convert::From<&Self> for FruitOrVeg {
-    fn from(value: &FruitOrVeg) -> Self {
-        value.clone()
-    }
 }
 impl ::std::convert::From<Veggie> for FruitOrVeg {
     fn from(value: Veggie) -> Self {
@@ -156,11 +146,6 @@ pub struct Veggie {
     #[serde(rename = "veggieName")]
     pub veggie_name: ::std::string::String,
 }
-impl ::std::convert::From<&Veggie> for Veggie {
-    fn from(value: &Veggie) -> Self {
-        value.clone()
-    }
-}
 #[doc = "A representation of a person, company, organization, or place"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -195,11 +180,6 @@ pub struct Veggies {
     pub fruits: ::std::vec::Vec<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
-}
-impl ::std::convert::From<&Veggies> for Veggies {
-    fn from(value: &Veggies) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for Veggies {
     fn default() -> Self {
