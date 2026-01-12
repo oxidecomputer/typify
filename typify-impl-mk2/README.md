@@ -779,7 +779,7 @@ support library.
   be huge benefits, but it would be a way to get some more near-term benefits.
   It's not the thing that really needs the most polish, but it's also basically
   at a leaf and self-contained. If I don't want to think too hard, this is a
-  good place to spend time. (Something like `OutputSpace`, consideration for how to handle trait impls, breaking up `render` to be less nested.)
+  good place to spend time. (Something like `OutputSpace`, consideration for how to handle trait impls, breaking up `render` to be less nested)
 - [Medium] The converter isn't complete and in particular for some situations
   such as flattening maps into objects and arrays into tuples. That's tricky
   because we will probably end up with some fixed-depth recursion and a more

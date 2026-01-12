@@ -1,16 +1,17 @@
 use crate::{
-    convert::Converter,
-    schemalet::{SchemaRef, SchemaletValueArray},
+    convert::{ConvertResult, Converter},
+    schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueArray},
     typespace::{NameBuilder, Type},
 };
 
 impl Converter {
     pub(crate) fn convert_array(
         &self,
+        id: &SchemaRef,
         name: NameBuilder,
-        metadata: &crate::schemalet::SchemaletMetadata,
+        metadata: &SchemaletMetadata,
         array: &SchemaletValueArray,
-    ) -> Type {
+    ) -> ConvertResult {
         match array {
             // Tuple
             //
@@ -56,7 +57,7 @@ impl Converter {
                     .take(*max_items as usize)
                     .collect::<Vec<_>>();
 
-                Type::Tuple(types)
+                Type::Tuple(types).into()
             }
 
             // Tuple
@@ -68,15 +69,53 @@ impl Converter {
             SchemaletValueArray {
                 items,
                 prefix_items: Some(prefix_items),
-                max_items: None,
+                max_items,
                 min_items: Some(min_items),
                 unique_items: None,
             } if prefix_items.len() == *min_items as usize => {
+                assert!(*min_items <= prefix_items.len() as u64);
+
                 let types = prefix_items
                     .iter()
                     .map(|item_id| self.resolve_and_get_stuff(item_id).id.clone())
                     .collect::<Vec<_>>();
-                todo!()
+
+                // TODO 1/11/2026
+                // Need a way to make a relative type name from here and I
+                // don't think there is one at present.
+                let inner_name = NameBuilder::Fixed("xxx-inner".to_string());
+                let inner_metadata = SchemaletMetadata::default();
+                let inner_array = SchemaletValueArray {
+                    items: items.clone(),
+                    prefix_items: None,
+                    max_items: max_items.as_ref().map(|v| v - *min_items),
+                    min_items: None,
+                    unique_items: None,
+                };
+
+                // TODO 1.11.2026
+                // I really need a way to make a generic partial, but since I don't
+                // we're going to hack it up for the moment.
+
+                let inner_id = SchemaRef::Partial(format!("{id}"), "@inner".to_string());
+
+                let ConvertResult {
+                    primary: inner_ty,
+                    additional,
+                } = self.convert_array(&inner_id, inner_name, &inner_metadata, &inner_array);
+                assert!(additional.is_empty());
+
+                let primary = Type::TupleStruct(crate::typespace::TypeTupleStruct::new(
+                    name,
+                    metadata.description.clone(),
+                    types,
+                    Some(inner_id.clone()),
+                ));
+
+                ConvertResult {
+                    primary,
+                    additional: vec![(inner_id, inner_ty)].into_iter().collect(),
+                }
             }
 
             SchemaletValueArray {
@@ -91,7 +130,7 @@ impl Converter {
                 } else {
                     SchemaRef::Internal("any".to_string())
                 };
-                Type::Vec(id)
+                Type::Vec(id).into()
             }
 
             _ => {

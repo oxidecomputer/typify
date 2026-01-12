@@ -128,6 +128,42 @@
     }
   ],
   [
+    "http://localhost/#/$defs/tuple-with-bonus-array",
+    {
+      "details": {
+        "Value": {
+          "Array": {
+            "items": "http://localhost/#/$defs/tuple-with-bonus-array/items",
+            "prefix_items": [
+              "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/0"
+            ],
+            "min_items": 1
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/tuple-with-bonus-array/items",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
     "http://localhost/#/$defs/unsimple-two-tuple",
     {
       "details": {

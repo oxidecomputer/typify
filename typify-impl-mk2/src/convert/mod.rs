@@ -18,6 +18,20 @@ pub struct Converter {
     known_names: BTreeMap<SchemaRef, String>,
 }
 
+pub struct ConvertResult {
+    pub primary: Type,
+    pub additional: BTreeMap<SchemaRef, Type>,
+}
+
+impl From<Type> for ConvertResult {
+    fn from(primary: Type) -> Self {
+        Self {
+            primary,
+            additional: Default::default(),
+        }
+    }
+}
+
 impl Converter {
     pub fn new(graph: BTreeMap<SchemaRef, CanonicalSchemalet>) -> Self {
         Self {
@@ -85,7 +99,11 @@ impl Converter {
     // think we can still maintain that idea, but tie ourselves in knots a
     // little less.
 
-    pub fn convert(&self, id: &SchemaRef, original_json: Option<&serde_json::Value>) -> Type {
+    pub fn convert(
+        &self,
+        id: &SchemaRef,
+        original_json: Option<&serde_json::Value>,
+    ) -> ConvertResult {
         let name = match self.known_names.get(id) {
             Some(s) => NameBuilder::Fixed(s.clone()),
             None => NameBuilder::Unset,
@@ -100,8 +118,8 @@ impl Converter {
         );
         let CanonicalSchemalet { metadata, details } = schemalet;
 
-        let typ = match details {
-            CanonicalSchemaletDetails::Anything => Type::JsonValue,
+        match details {
+            CanonicalSchemaletDetails::Anything => Type::JsonValue.into(),
             CanonicalSchemaletDetails::Nothing => todo!(),
             CanonicalSchemaletDetails::Constant(_) => todo!(),
             CanonicalSchemaletDetails::Reference(schema_ref) => {
@@ -114,25 +132,25 @@ impl Converter {
             CanonicalSchemaletDetails::Note(schema_ref) => self.convert(schema_ref, original_json),
 
             CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
-                self.convert_one_of(name, metadata, subschemas)
+                self.convert_one_of(name, metadata, subschemas).into()
             }
 
-            CanonicalSchemaletDetails::Value(SchemaletValue::Boolean) => Type::Boolean,
+            CanonicalSchemaletDetails::Value(SchemaletValue::Boolean) => Type::Boolean.into(),
             CanonicalSchemaletDetails::Value(SchemaletValue::Array(array)) => {
-                self.convert_array(name, metadata, array)
+                self.convert_array(id, name, metadata, array).into()
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::Object(object)) => {
-                self.convert_object(name, metadata, object)
+                self.convert_object(name, metadata, object).into()
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::String(string_value)) => {
-                self.convert_string(name, metadata, string_value)
+                self.convert_string(name, metadata, string_value).into()
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::Integer {
                 minimum,
                 exclusive_minimum,
             }) => {
                 // TODO not handling this well ...
-                Type::Float("i64".to_string())
+                Type::Float("i64".to_string()).into()
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::Number {
                 minimum,
@@ -146,13 +164,11 @@ impl Converter {
                 // TODO 7/21/2025
                 // The plan here needs to be to generate a wrapper type that
                 // applies any numerical constraints.
-                Type::Float("f64".to_string())
+                Type::Float("f64".to_string()).into()
             }
 
             CanonicalSchemaletDetails::Value(SchemaletValue::Null) => todo!(),
-        };
-
-        typ
+        }
     }
 
     fn convert_string(

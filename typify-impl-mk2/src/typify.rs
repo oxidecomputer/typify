@@ -4,7 +4,7 @@ use url::Url;
 
 use crate::{
     bundler::Bundle,
-    convert::Converter,
+    convert::{ConvertResult, Converter},
     schemalet::{
         to_schemalets, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, Schemalet,
         SchemaletDetails, SchemaletValue, SchemaletValueString, State,
@@ -97,6 +97,8 @@ impl Typify {
         let mut work = VecDeque::from([typ_id.clone()]);
 
         'outer: while let Some(work_id) = work.pop_front() {
+            println!("work on {work_id}");
+
             // If we've already converted this type, we can skip it. Note that
             // this may mean we saw it in a previous iteration of this loop or
             // in a previous invocation of this method.
@@ -147,8 +149,11 @@ impl Typify {
                 }
             }
 
-            let typ = converter.convert(&work_id, maybe_original_json);
-            let children = typ.children();
+            let ConvertResult {
+                primary,
+                additional,
+            } = converter.convert(&work_id, maybe_original_json);
+            let children = primary.children();
 
             if !children.is_empty() {
                 println!("work_id {work_id} children {children:?}");
@@ -156,7 +161,18 @@ impl Typify {
 
             work.extend(children);
 
-            self.typespace.insert(work_id.clone(), typ);
+            self.typespace.insert(work_id.clone(), primary);
+            for (add_id, add_type) in additional {
+                let add_children = add_type.children();
+
+                if !add_children.is_empty() {
+                    println!("add_id {add_id} children {add_children:?}");
+                }
+
+                work.extend(add_children);
+
+                self.typespace.insert(add_id, add_type);
+            }
         }
 
         Ok(TypeId(typ_id.clone()))
