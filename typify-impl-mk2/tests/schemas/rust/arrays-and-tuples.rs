@@ -1,5 +1,9 @@
 #[derive(::std::clone::Clone, ::std::fmt::Debug)]
-pub struct TupleWithBonusArray(pub ::std::string::String, pub ::std::vec::Vec<i64>);
+pub struct TupleWithBonusArray(
+    pub i64,
+    pub ::std::string::String,
+    pub ::std::vec::Vec<i64>,
+);
 impl ::serde::Serialize for TupleWithBonusArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -8,7 +12,8 @@ impl ::serde::Serialize for TupleWithBonusArray {
         use ::serde::ser::SerializeSeq;
         let mut seq = serializer.serialize_seq(None)?;
         seq.serialize_element(&self.0)?;
-        self.1.serialize(::json_serde::FlattenedSequenceSerializer::new(&mut seq))?;
+        seq.serialize_element(&self.1)?;
+        self.2.serialize(::json_serde::FlattenedSequenceSerializer::new(&mut seq))?;
         seq.end()
     }
 }
@@ -34,12 +39,18 @@ impl<'de> ::serde::Deserialize<'de> for TupleWithBonusArray {
                     .next_element()?
                     .ok_or_else(|| ::serde::de::Error::invalid_length(
                         0usize,
-                        &"a tuple of size 1 or more",
+                        &"a tuple of size 2 or more",
+                    ))?;
+                let field_1 = seq
+                    .next_element()?
+                    .ok_or_else(|| ::serde::de::Error::invalid_length(
+                        1usize,
+                        &"a tuple of size 2 or more",
                     ))?;
                 let rest = ::serde::Deserialize::deserialize(
                     ::json_serde::FlattenedSequenceDeserializer::new(&mut seq),
                 )?;
-                Ok(TupleWithBonusArray(field_0, rest))
+                Ok(TupleWithBonusArray(field_0, field_1, rest))
             }
         }
         deserializer.deserialize_seq(Visitor)

@@ -1,7 +1,7 @@
 use crate::{
     convert::{ConvertResult, Converter},
     schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueArray},
-    typespace::{NameBuilder, Type},
+    typespace::{NameBuilder, NameBuilderHint, Type},
 };
 
 impl Converter {
@@ -80,10 +80,10 @@ impl Converter {
                     .map(|item_id| self.resolve_and_get_stuff(item_id).id.clone())
                     .collect::<Vec<_>>();
 
-                // TODO 1/11/2026
-                // Need a way to make a relative type name from here and I
-                // don't think there is one at present.
-                let inner_name = NameBuilder::Fixed("xxx-inner".to_string());
+                let inner_name = NameBuilder::Hints(vec![NameBuilderHint::Parent(
+                    id.clone(),
+                    "rest".to_string(),
+                )]);
                 let inner_metadata = SchemaletMetadata::default();
                 let inner_array = SchemaletValueArray {
                     items: items.clone(),

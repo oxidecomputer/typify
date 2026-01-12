@@ -68,8 +68,11 @@
     "tuple-with-bonus-array": {
       "$comment": "NB, this isn't working, can delete this case, but it's to complete the idea of a tuple with a rest array that I've been working on",
       "type": "array",
-      "minItems": 1,
+      "minItems": 2,
       "prefixItems": [
+        {
+          "type": "integer"
+        },
         {
           "type": "string"
         }

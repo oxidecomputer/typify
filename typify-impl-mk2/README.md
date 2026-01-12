@@ -798,3 +798,48 @@ support library.
 - [Future] The `Bundler` needs to learn about `$id` values and probably needs
   another layer of lookup to say "this `$id` value is found in this document at
   this path."
+
+### 1/11/2026
+
+I took on the idea of the converter returning a collection of type information
+(item 2 above). This is--I think--necessary for constructions such as an object
+with a flattened map or a tuple with a flattened array. In addition, this is
+going to be the case for any type of constraint that we need to enforce at
+runtime rather than in the type system via a wrapper-style newtype struct. For
+example, consider an object or array with a cardinality constraint
+(`maxProperties` or `maxItems`); we'll have the generated struct and then an
+outer wrapper that validates that constraint.
+
+What makes this currently a bit inelegant is that `Convert::convert` didn't
+foresee the need to generate new unique type identifiers (for which we use
+`SchemaRef`s). We've actually worked around this limitation previously. For
+example, consider a schema like this: `{ "type": "array" }`. With no `items`
+field, we don't have a referenced `SchemaRef` to resolve; instead we imagine an
+"any" magic value that we ensure is populated.
+
+Another case we've danced around is something like this:
+
+```json
+{
+    "type": "object",
+    "propertyNames": { "pattern": "^[a-z]*$" }
+}
+```
+
+This should turn into Rust like this:
+
+```rust
+BTreeMap<KeyType, ::serde_json::Value>
+```
+
+That requires two types: the map and the constrained string. If we had another
+constraint such as `"minProperties": 3` then we'd have a third type we'd need
+to create.
+
+We could try to avoid anything that required more than a single type in the
+construction of the canonical representation--but that representation is meant
+to merely be simplified, not hyper-optimized for Rust output in particular.
+
+Some of the code is a little ugly, but the only thing that's really a hack is that there isn't a way to make a "relative" `SchemaRef` i.e. one that descends from the parent... but as I think about it, that's not really necessary. All I really need is a key that I know to be unique.
+
+It's not terrible right now. I think I'd want to flesh out some of the cases I describe above before thinking of a clean up.

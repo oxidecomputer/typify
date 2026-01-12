@@ -135,9 +135,10 @@
           "Array": {
             "items": "http://localhost/#/$defs/tuple-with-bonus-array/items",
             "prefix_items": [
-              "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/0"
+              "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/0",
+              "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/1"
             ],
-            "min_items": 1
+            "min_items": 2
           }
         }
       }
@@ -155,6 +156,16 @@
   ],
   [
     "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/0",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/tuple-with-bonus-array/prefixItems/1",
     {
       "details": {
         "Value": {
