@@ -13,7 +13,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     sanitize,
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description, type_patch, unique},
+    util::{get_type_name, metadata_description, unique, TypePatch},
     Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
@@ -46,11 +46,16 @@ pub(crate) struct TypeEntryEnum {
     pub schema: SchemaWrapper,
 }
 
+/// Cached attributes that (mostly) result in customized impl generation.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum TypeEntryEnumImpl {
     AllSimpleVariants,
     UntaggedFromStr,
     UntaggedDisplay,
+    /// This is a cached marker to let us know that at least one of the
+    /// variants is irrefutably a string. There is currently no associated
+    /// implementation that we generate.
+    UntaggedFromStringIrrefutable,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -133,6 +138,7 @@ impl PartialOrd for WrappedValue {
 pub(crate) struct TypeEntry {
     pub details: TypeEntryDetails,
     pub extra_derives: BTreeSet<String>,
+    pub extra_attrs: BTreeSet<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -285,10 +291,10 @@ impl TypeEntryEnum {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Enum(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -301,7 +307,8 @@ impl TypeEntryEnum {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -315,12 +322,14 @@ impl TypeEntryEnum {
                     .iter()
                     .all(|variant| matches!(variant.details, VariantDetails::Simple)))
             .then_some(TypeEntryEnumImpl::AllSimpleVariants),
-            // Untagged and all variants impl FromStr.
+            // Untagged and all variants impl FromStr, but none **is** a
+            // String (i.e. irrefutably).
             untagged_newtype_variants(
                 type_space,
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::FromStr,
+                Some(TypeSpaceImpl::FromStringIrrefutable),
             )
             .then_some(TypeEntryEnumImpl::UntaggedFromStr),
             // Untagged and all variants impl Display.
@@ -329,8 +338,11 @@ impl TypeEntryEnum {
                 &self.tag_type,
                 &self.variants,
                 TypeSpaceImpl::Display,
+                None,
             )
             .then_some(TypeEntryEnumImpl::UntaggedDisplay),
+            untagged_newtype_string(type_space, &self.tag_type, &self.variants)
+                .then_some(TypeEntryEnumImpl::UntaggedFromStringIrrefutable),
         ]
         .into_iter()
         .flatten()
@@ -371,10 +383,10 @@ impl TypeEntryStruct {
             .cloned()
             .map(WrappedValue::new);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Struct(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default,
@@ -385,7 +397,8 @@ impl TypeEntryStruct {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 }
@@ -402,10 +415,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -416,7 +429,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -432,10 +446,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -448,7 +462,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -464,10 +479,10 @@ impl TypeEntryNewtype {
         let rename = None;
         let description = metadata_description(metadata);
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -480,7 +495,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 
@@ -502,10 +518,10 @@ impl TypeEntryNewtype {
             pattern,
         } = validation.clone();
 
-        let (name, extra_derives) = type_patch(type_space, name);
+        let type_patch = TypePatch::new(type_space, name);
 
         let details = TypeEntryDetails::Newtype(Self {
-            name,
+            name: type_patch.name,
             rename,
             description,
             default: None,
@@ -520,7 +536,8 @@ impl TypeEntryNewtype {
 
         TypeEntry {
             details,
-            extra_derives,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
         }
     }
 }
@@ -530,6 +547,7 @@ impl From<TypeEntryDetails> for TypeEntry {
         Self {
             details,
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
 }
@@ -543,6 +561,7 @@ impl TypeEntry {
                 parameters: Default::default(),
             }),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
@@ -553,12 +572,14 @@ impl TypeEntry {
                 parameters: params.to_vec(),
             }),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_boolean() -> Self {
         TypeEntry {
             details: TypeEntryDetails::Boolean,
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
     pub(crate) fn new_integer<S: ToString>(type_name: S) -> Self {
@@ -568,6 +589,7 @@ impl TypeEntry {
         TypeEntry {
             details: TypeEntryDetails::Float(type_name.to_string()),
             extra_derives: Default::default(),
+            extra_attrs: Default::default(),
         }
     }
 
@@ -597,7 +619,6 @@ impl TypeEntry {
         match &self.details {
             TypeEntryDetails::Enum(details) => match impl_name {
                 TypeSpaceImpl::Default => details.default.is_some(),
-
                 TypeSpaceImpl::FromStr => {
                     details
                         .bespoke_impls
@@ -614,6 +635,9 @@ impl TypeEntry {
                             .bespoke_impls
                             .contains(&TypeEntryEnumImpl::UntaggedDisplay)
                 }
+                TypeSpaceImpl::FromStringIrrefutable => details
+                    .bespoke_impls
+                    .contains(&TypeEntryEnumImpl::UntaggedFromStringIrrefutable),
             },
 
             TypeEntryDetails::Struct(details) => match impl_name {
@@ -627,7 +651,7 @@ impl TypeEntry {
                 (TypeEntryNewtypeConstraints::None, _) => {
                     // TODO this is a lucky kludge that will need to be removed
                     // once we have proper handling of reference cycles (i.e.
-                    // as opposed to containment cycles... which we also do not
+                    // as opposed to containment cycles... which we **do**
                     // handle correctly). In particular output_newtype calls
                     // this to determine if it should produce a FromStr impl.
                     // This implementation could be infinitely recursive for a
@@ -685,10 +709,25 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntryDetails::Boolean => true,
-            TypeEntryDetails::Integer(_) => true,
-            TypeEntryDetails::Float(_) => true,
-            TypeEntryDetails::String => true,
+            TypeEntryDetails::Boolean => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+            TypeEntryDetails::Integer(_) => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+
+            TypeEntryDetails::Float(_) => match impl_name {
+                TypeSpaceImpl::Default | TypeSpaceImpl::FromStr | TypeSpaceImpl::Display => true,
+                TypeSpaceImpl::FromStringIrrefutable => false,
+            },
+            TypeEntryDetails::String => match impl_name {
+                TypeSpaceImpl::Default
+                | TypeSpaceImpl::FromStr
+                | TypeSpaceImpl::Display
+                | TypeSpaceImpl::FromStringIrrefutable => true,
+            },
 
             TypeEntryDetails::Reference(_) => unreachable!(),
         }
@@ -1047,18 +1086,15 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         let item = quote! {
             #doc
+            #(#attrs)*
             #[derive(#(#derives),*)]
             #serde
             pub enum #type_name {
                 #(#variants_decl)*
-            }
-
-            impl ::std::convert::From<&Self> for #type_name {
-                fn from(value: &#type_name) -> Self {
-                    value.clone()
-                }
             }
 
             #simple_enum_impl
@@ -1120,7 +1156,7 @@ impl TypeEntry {
             prop_doc.push(prop.description.as_ref().map(|d| quote! { #[doc = #d] }));
             prop_name.push(format_ident!("{}", prop.name));
             prop_error.push(format!(
-                "error converting supplied value for {}: {{}}",
+                "error converting supplied value for {}: {{e}}",
                 prop.name,
             ));
 
@@ -1163,11 +1199,14 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         output.add_item(
             OutputSpaceMod::Crate,
             name,
             quote! {
                 #doc
+                #(#attrs)*
                 #[derive(#(#derives),*)]
                 #serde
                 pub struct #type_name {
@@ -1176,12 +1215,6 @@ impl TypeEntry {
                         #prop_serde
                         pub #prop_name: #prop_type,
                     )*
-                }
-
-                impl ::std::convert::From<&#type_name> for #type_name {
-                    fn from(value: &#type_name) -> Self {
-                        value.clone()
-                    }
                 }
             },
         );
@@ -1284,7 +1317,7 @@ impl TypeEntry {
                                     T::Error: ::std::fmt::Display,
                             {
                                 self.#prop_name = value.try_into()
-                                    .map_err(|e| format!(#prop_error, e));
+                                    .map_err(|e| format!(#prop_error));
                                 self
                             }
                         )*
@@ -1631,8 +1664,11 @@ impl TypeEntry {
             &type_space.settings.extra_derives,
         );
 
+        let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
+
         let item = quote! {
             #doc
+            #(#attrs)*
             #[derive(#(#derives),*)]
             #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
@@ -1647,12 +1683,6 @@ impl TypeEntry {
             impl ::std::convert::From<#type_name> for #inner_type_name {
                 fn from(value: #type_name) -> Self {
                     value.0
-                }
-            }
-
-            impl ::std::convert::From<&#type_name> for #type_name {
-                fn from(value: &#type_name) -> Self {
-                    value.clone()
                 }
             }
 
@@ -1992,19 +2022,32 @@ fn strings_to_derives<'a>(
     })
 }
 
+fn strings_to_attrs<'a>(
+    type_attrs: &'a BTreeSet<String>,
+    extra_attrs: &'a [String],
+) -> impl Iterator<Item = TokenStream> + 'a {
+    let mut combined_attrs = BTreeSet::new();
+    combined_attrs.extend(extra_attrs.iter().map(String::as_str));
+    combined_attrs.extend(type_attrs.iter().map(String::as_str));
+    combined_attrs
+        .into_iter()
+        .map(|attr| attr.parse::<TokenStream>().unwrap())
+}
+
 /// Returns true iff...
 /// - the enum is untagged
-/// - all variants are 1-item tuple-types (aka newtype variants)
+/// - all variants are single items (aka newtype variants)
 /// - the type of the newtype variant implements the required trait
 fn untagged_newtype_variants(
     type_space: &TypeSpace,
     tag_type: &EnumTagType,
     variants: &[Variant],
     req_impl: TypeSpaceImpl,
+    neg_impl: Option<TypeSpaceImpl>,
 ) -> bool {
     tag_type == &EnumTagType::Untagged
         && variants.iter().all(|variant| {
-            // If the variant is a one-element tuple...
+            // If the variant is a single item...
             match &variant.details {
                 VariantDetails::Item(type_id) => Some(type_id),
                 _ => None,
@@ -2015,6 +2058,34 @@ fn untagged_newtype_variants(
                     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                     // ... and its type has the required impl
                     type_entry.has_impl(type_space, req_impl)
+                        && neg_impl
+                            .is_none_or(|neg_impl| !type_entry.has_impl(type_space, neg_impl))
+                },
+            )
+        })
+}
+
+/// Returns true iff...
+/// - the enum is untagged
+/// - **any** variant is a single items **and** it is irrefutably a string
+fn untagged_newtype_string(
+    type_space: &TypeSpace,
+    tag_type: &EnumTagType,
+    variants: &[Variant],
+) -> bool {
+    tag_type == &EnumTagType::Untagged
+        && variants.iter().any(|variant| {
+            // If the variant is a single item...
+            match &variant.details {
+                VariantDetails::Item(type_id) => Some(type_id),
+                _ => None,
+            }
+            .map_or_else(
+                || false,
+                |type_id| {
+                    let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+                    // ... and it is irrefutably a string
+                    type_entry.has_impl(type_space, TypeSpaceImpl::FromStringIrrefutable)
                 },
             )
         })

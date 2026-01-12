@@ -20,34 +20,34 @@ typify-impl = { version = "0.10.0", path = "typify-impl" }
 typify-impl-mk2 = { version = "0.10.0", path = "typify-impl-mk2" }
 typify-macro = { version = "0.10.0", path = "typify-macro" }
 
-assert_cmd = "2.0.17"
-chrono = { version = "0.4.41", features = ["serde"] }
-clap = { version = "4.5.41", features = ["derive"] }
+assert_cmd = "2.1.1"
+chrono = { version = "0.4.42", features = ["serde"] }
+clap = { version = "4.5.54", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11"
 expectorate = "1.2.0"
-glob = "0.3.2"
+glob = "0.3.3"
 heck = "0.5.0"
 ipnetwork = { version = "0.21.1", features = ["schemars"] }
 jsonschema = "0.33.0"
-log = "0.4.27"
+log = "0.4.29"
 newline-converter = "0.3.0"
 paste = "1.0.15"
-prettyplease = "0.2.35"
-proc-macro2 = "1.0.95"
-quote = "1.0.40"
-regress = "0.10.3"
+prettyplease = "0.2.37"
+proc-macro2 = "1.0.104"
+quote = "1.0.42"
+regress = "0.10.5"
 rustfmt-wrapper = "0.2.1"
 schema = "0.1.0"
 schemars = "0.8.22"
-semver = "1.0.26"
+semver = "1.0.27"
 serde = "1.0.228"
 serde_core = "1.0.228"
-serde_json = "1.0.145"
-syn = { version = "2.0.104", features = ["full"] }
+serde_json = "1.0.148"
+syn = { version = "2.0.114", features = ["full"] }
 tempdir = "0.3.7"
-thiserror = "2.0.12"
-trybuild = "1.0.106"
-unicode-ident = "1.0.18"
+thiserror = "2.0.17"
+trybuild = "1.0.114"
+unicode-ident = "1.0.22"
 url = "2.5.4"
 uuid = "1.16.0"

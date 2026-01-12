@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
+use heck::ToPascalCase;
 use log::debug;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -543,11 +544,17 @@ pub(crate) fn constant_string_value(schema: &Schema) -> Option<&str> {
     }
 }
 
+fn decode_segment(segment: &str) -> String {
+    segment.replace("~1", "/").replace("~0", "~")
+}
+
 pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     if ref_name == "#" {
         RefKey::Root
     } else if let Some(idx) = ref_name.rfind('/') {
-        RefKey::Def(ref_name[idx + 1..].to_string())
+        let decoded_segment = decode_segment(&ref_name[idx + 1..]);
+
+        RefKey::Def(decoded_segment)
     } else {
         panic!("expected a '/' in $ref: {}", ref_name)
     }
@@ -621,6 +628,22 @@ pub(crate) fn schema_is_named(schema: &Schema) -> Option<String> {
             reference: None,
             extensions: _,
         }) => singleton_subschema(subschemas).and_then(schema_is_named),
+
+        // Best-effort fallback for things with raw types that can be easily inferred
+        Schema::Object(SchemaObject {
+            instance_type: Some(SingleOrVec::Single(single)),
+            format,
+            ..
+        }) => match (**single, format.as_deref()) {
+            (_, Some(format)) => Some(format.to_pascal_case()),
+            (InstanceType::Boolean, _) => Some("Boolean".to_string()),
+            (InstanceType::Integer, _) => Some("Integer".to_string()),
+            (InstanceType::Number, _) => Some("Number".to_string()),
+            (InstanceType::String, _) => Some("String".to_string()),
+            (InstanceType::Array, _) => Some("Array".to_string()),
+            (InstanceType::Object, _) => Some("Object".to_string()),
+            (InstanceType::Null, _) => Some("Null".to_string()),
+        },
 
         _ => None,
     }?;
@@ -760,7 +783,6 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
 
     // If every case was special then none of them would be.
     let out = match input {
-        "async" => "async_".to_string(), // TODO syn should handle this case...
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
         _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
@@ -812,17 +834,33 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     Some(sanitize(&name, Case::Pascal))
 }
 
-/// Check for patches which include potential type renames and additional
-/// derive macros.
-pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
-    match type_space.settings.patch.get(&type_name) {
-        None => (type_name, Default::default()),
+pub(crate) struct TypePatch {
+    pub name: String,
+    pub derives: BTreeSet<String>,
+    pub attrs: BTreeSet<String>,
+}
 
-        Some(patch) => {
-            let name = patch.rename.clone().unwrap_or(type_name);
-            let derives = patch.derives.iter().cloned().collect();
+impl TypePatch {
+    /// Creates a new TypePatch by resolving patches for the given type name.
+    pub fn new(type_space: &TypeSpace, type_name: String) -> Self {
+        match type_space.settings.patch.get(&type_name) {
+            None => Self {
+                name: type_name,
+                derives: Default::default(),
+                attrs: Default::default(),
+            },
 
-            (name, derives)
+            Some(patch) => {
+                let name = patch.rename.clone().unwrap_or(type_name);
+                let derives = patch.derives.iter().cloned().collect();
+                let attrs = patch.attrs.iter().cloned().collect();
+
+                Self {
+                    name,
+                    derives,
+                    attrs,
+                }
+            }
         }
     }
 }
@@ -861,15 +899,15 @@ impl StringValidator {
     pub fn is_valid<S: AsRef<str>>(&self, s: S) -> bool {
         self.max_length
             .as_ref()
-            .map_or(true, |max| s.as_ref().len() as u32 <= *max)
+            .is_none_or(|max| s.as_ref().len() as u32 <= *max)
             && self
                 .min_length
                 .as_ref()
-                .map_or(true, |min| s.as_ref().len() as u32 >= *min)
+                .is_none_or(|min| s.as_ref().len() as u32 >= *min)
             && self
                 .pattern
                 .as_ref()
-                .map_or(true, |pattern| pattern.find(s.as_ref()).is_some())
+                .is_none_or(|pattern| pattern.find(s.as_ref()).is_some())
     }
 }
 
@@ -884,7 +922,7 @@ mod tests {
     };
 
     use crate::{
-        util::{sanitize, schemas_mutually_exclusive, Case},
+        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case},
         Name,
     };
 
@@ -988,6 +1026,12 @@ mod tests {
 
         assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
         assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
+    }
+
+    #[test]
+    fn test_decode_segment() {
+        assert_eq!(decode_segment("foo~1bar"), "foo/bar");
+        assert_eq!(decode_segment("foo~0bar"), "foo~bar");
     }
 
     #[test]

@@ -65,11 +65,6 @@ pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-impl ::std::convert::From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
-        value.clone()
-    }
-}
 impl TestType {
     pub fn builder() -> builder::TestType {
         Default::default()
@@ -103,11 +98,6 @@ impl ::std::ops::Deref for TestTypeWhereNot {
 impl ::std::convert::From<TestTypeWhereNot> for ::std::string::String {
     fn from(value: TestTypeWhereNot) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&TestTypeWhereNot> for TestTypeWhereNot {
-    fn from(value: &TestTypeWhereNot) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhereNot {
@@ -160,11 +150,6 @@ impl ::std::convert::From<TestTypeWhyNot> for ::std::string::String {
         value.0
     }
 }
-impl ::std::convert::From<&TestTypeWhyNot> for TestTypeWhyNot {
-    fn from(value: &TestTypeWhyNot) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhyNot {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -209,7 +194,7 @@ pub mod builder {
         {
             self.where_not = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for where_not: {}", e));
+                .map_err(|e| format!("error converting supplied value for where_not: {e}"));
             self
         }
         pub fn why_not<T>(mut self, value: T) -> Self
@@ -219,7 +204,7 @@ pub mod builder {
         {
             self.why_not = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for why_not: {}", e));
+                .map_err(|e| format!("error converting supplied value for why_not: {e}"));
             self
         }
     }

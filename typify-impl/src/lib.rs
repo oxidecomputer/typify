@@ -263,9 +263,31 @@ impl std::fmt::Display for MapType {
     }
 }
 
+impl<'de> serde::Deserialize<'de> for MapType {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Ok(Self::new(s))
+    }
+}
+
+impl From<String> for MapType {
+    fn from(s: String) -> Self {
+        Self::new(&s)
+    }
+}
+
 impl From<&str> for MapType {
     fn from(s: &str) -> Self {
         Self::new(s)
+    }
+}
+
+impl From<syn::Type> for MapType {
+    fn from(t: syn::Type) -> Self {
+        Self(t)
     }
 }
 
@@ -274,6 +296,7 @@ impl From<&str> for MapType {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
+    extra_attrs: Vec<String>,
     struct_builder: bool,
 
     unknown_crates: UnknownPolicy,
@@ -342,6 +365,7 @@ impl CrateVers {
 pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
+    attrs: Vec<String>,
 }
 
 /// Contains the attributes of a replacement of an existing type.
@@ -367,6 +391,7 @@ struct TypeSpaceConversion {
 #[non_exhaustive]
 pub enum TypeSpaceImpl {
     FromStr,
+    FromStringIrrefutable,
     Display,
     Default,
 }
@@ -395,6 +420,14 @@ impl TypeSpaceSettings {
     pub fn with_derive(&mut self, derive: String) -> &mut Self {
         if !self.extra_derives.contains(&derive) {
             self.extra_derives.push(derive);
+        }
+        self
+    }
+
+    /// Add an additional attribute to apply to all defined types.
+    pub fn with_attr(&mut self, attr: String) -> &mut Self {
+        if !self.extra_attrs.contains(&attr) {
+            self.extra_attrs.push(attr);
         }
         self
     }
@@ -540,10 +573,16 @@ impl TypeSpacePatch {
         self.derives.push(derive.to_string());
         self
     }
+
+    /// Specify an additional attribute to apply to the patched type.
+    pub fn with_attr<S: ToString>(&mut self, attr: S) -> &mut Self {
+        self.attrs.push(attr.to_string());
+        self
+    }
 }
 
 impl TypeSpace {
-    /// Create a new TypeSpace with custom settings
+    /// Create a new TypeSpace with custom settings.
     pub fn new(settings: &TypeSpaceSettings) -> Self {
         let mut cache = SchemaCache::default();
 
@@ -793,7 +832,7 @@ impl TypeSpace {
     }
 
     /// Get a type given its ID.
-    pub fn get_type(&self, type_id: &TypeId) -> Result<Type> {
+    pub fn get_type(&self, type_id: &TypeId) -> Result<Type<'_>> {
         let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
         Ok(Type {
             type_space: self,
@@ -823,7 +862,7 @@ impl TypeSpace {
 
     /// Iterate over all types including those defined in this [TypeSpace] and
     /// those referred to by those types.
-    pub fn iter_types(&self) -> impl Iterator<Item = Type> {
+    pub fn iter_types(&self) -> impl Iterator<Item = Type<'_>> {
         self.id_to_entry.values().map(move |type_entry| Type {
             type_space: self,
             type_entry,
@@ -1032,7 +1071,7 @@ impl Type<'_> {
     }
 
     /// Get details about the type.
-    pub fn details(&self) -> TypeDetails {
+    pub fn details(&self) -> TypeDetails<'_> {
         match &self.type_entry.details {
             // Named user-defined types
             TypeEntryDetails::Enum(details) => TypeDetails::Enum(TypeEnum { details }),

@@ -609,7 +609,14 @@ impl TypeSpace {
             // account for types such as Uuid whose names come from outside of
             // the schema... but you can't win them all.
             .map(schema_is_named)
+            // Fall back to `VariantN` naming if any variants do not have names
+            // inferred.
             .collect::<Option<Vec<_>>>()
+            // Fall back to `VariantN` naming if any variants have the same
+            // name.
+            .filter(|variant_names| {
+                variant_names.len() == variant_names.iter().collect::<HashSet<_>>().len()
+            })
             // Prune the common prefixes from all variant names. If this
             // results in any of them being empty, we don't use these names.
             .and_then(|variant_names| {
@@ -1482,12 +1489,6 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
-                    value.clone()
-                }
-            }
-
             impl ::std::convert::From<u32> for ResultX {
                 fn from(value: u32) -> Self {
                     Self::Ok(value)
@@ -1532,12 +1533,6 @@ mod tests {
             pub enum ResultX {
                 Ok(u32),
                 Err(::std::string::String),
-            }
-
-            impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
-                    value.clone()
-                }
             }
 
             impl ::std::convert::From<u32> for ResultX {

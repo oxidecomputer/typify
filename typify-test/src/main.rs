@@ -1,4 +1,4 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
 
 // Include the generated code to make sure it compiles.
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
@@ -57,6 +57,8 @@ fn test_unknown_format() {
 }
 
 mod hashmap {
+    #![allow(dead_code)]
+
     include!(concat!(env!("OUT_DIR"), "/codegen_hashmap.rs"));
 
     #[test]
@@ -69,6 +71,8 @@ mod hashmap {
 }
 
 mod custom_map {
+    #![allow(dead_code)]
+
     #[allow(private_interfaces)]
     #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
     pub struct CustomMap<K, V> {

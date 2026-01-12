@@ -58,11 +58,6 @@ impl ::std::convert::From<Fruit>
         value.0
     }
 }
-impl ::std::convert::From<&Fruit> for Fruit {
-    fn from(value: &Fruit) -> Self {
-        value.clone()
-    }
-}
 impl
     ::std::convert::From<::std::collections::BTreeMap<::std::string::String, ::std::string::String>>
     for Fruit
@@ -105,11 +100,6 @@ impl
 pub enum FruitOrVeg {
     Veg(Veggie),
     Fruit(Fruit),
-}
-impl ::std::convert::From<&Self> for FruitOrVeg {
-    fn from(value: &FruitOrVeg) -> Self {
-        value.clone()
-    }
 }
 impl ::std::convert::From<Veggie> for FruitOrVeg {
     fn from(value: Veggie) -> Self {
@@ -154,11 +144,6 @@ pub struct Veggie {
     #[serde(rename = "veggieName")]
     pub veggie_name: ::std::string::String,
 }
-impl ::std::convert::From<&Veggie> for Veggie {
-    fn from(value: &Veggie) -> Self {
-        value.clone()
-    }
-}
 impl Veggie {
     pub fn builder() -> builder::Veggie {
         Default::default()
@@ -198,11 +183,6 @@ pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
 }
-impl ::std::convert::From<&Veggies> for Veggies {
-    fn from(value: &Veggies) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for Veggies {
     fn default() -> Self {
         Self {
@@ -239,7 +219,7 @@ pub mod builder {
         {
             self.veggie_like = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for veggie_like: {}", e));
+                .map_err(|e| format!("error converting supplied value for veggie_like: {e}"));
             self
         }
         pub fn veggie_name<T>(mut self, value: T) -> Self
@@ -249,7 +229,7 @@ pub mod builder {
         {
             self.veggie_name = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for veggie_name: {}", e));
+                .map_err(|e| format!("error converting supplied value for veggie_name: {e}"));
             self
         }
     }
@@ -292,7 +272,7 @@ pub mod builder {
         {
             self.fruits = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for fruits: {}", e));
+                .map_err(|e| format!("error converting supplied value for fruits: {e}"));
             self
         }
         pub fn vegetables<T>(mut self, value: T) -> Self
@@ -302,7 +282,7 @@ pub mod builder {
         {
             self.vegetables = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for vegetables: {}", e));
+                .map_err(|e| format!("error converting supplied value for vegetables: {e}"));
             self
         }
     }

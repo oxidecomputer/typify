@@ -60,11 +60,6 @@ impl ::std::convert::From<ArrayBs> for ::std::vec::Vec<bool> {
         value.0
     }
 }
-impl ::std::convert::From<&ArrayBs> for ArrayBs {
-    fn from(value: &ArrayBs) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
     fn from(value: ::std::vec::Vec<bool>) -> Self {
         Self(value)
@@ -100,11 +95,6 @@ impl ::std::ops::Deref for IntegerBs {
 impl ::std::convert::From<IntegerBs> for u64 {
     fn from(value: IntegerBs) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&IntegerBs> for IntegerBs {
-    fn from(value: &IntegerBs) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<u64> for IntegerBs {
@@ -164,11 +154,6 @@ pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
 }
-impl ::std::convert::From<&ObjectBs> for ObjectBs {
-    fn from(value: &ObjectBs) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for ObjectBs {
     fn default() -> Self {
         Self {
@@ -202,7 +187,7 @@ pub mod builder {
         {
             self.ok = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for ok: {}", e));
+                .map_err(|e| format!("error converting supplied value for ok: {e}"));
             self
         }
     }

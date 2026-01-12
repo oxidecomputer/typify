@@ -44,11 +44,6 @@ pub struct BarProp {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
 }
-impl ::std::convert::From<&BarProp> for BarProp {
-    fn from(value: &BarProp) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for BarProp {
     fn default() -> Self {
         Self {
@@ -84,11 +79,6 @@ impl BarProp {
 pub struct ButNotThat {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::convert::From<&ButNotThat> for ButNotThat {
-    fn from(value: &ButNotThat) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for ButNotThat {
     fn default() -> Self {
@@ -130,11 +120,6 @@ pub struct CommentedTypeMerged {
     pub x: ::std::option::Option<::serde_json::Value>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::convert::From<&CommentedTypeMerged> for CommentedTypeMerged {
-    fn from(value: &CommentedTypeMerged) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for CommentedTypeMerged {
     fn default() -> Self {
@@ -202,11 +187,6 @@ pub enum HereAndThere {
         foo: ::std::option::Option<::std::string::String>,
     },
 }
-impl ::std::convert::From<&Self> for HereAndThere {
-    fn from(value: &HereAndThere) -> Self {
-        value.clone()
-    }
-}
 #[doc = "`JsonResponseBase`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -226,11 +206,6 @@ impl ::std::convert::From<&Self> for HereAndThere {
 pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
-}
-impl ::std::convert::From<&JsonResponseBase> for JsonResponseBase {
-    fn from(value: &JsonResponseBase) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for JsonResponseBase {
     fn default() -> Self {
@@ -270,11 +245,6 @@ impl JsonResponseBase {
 pub struct JsonSuccess {
     pub msg: ::std::string::String,
     pub result: JsonSuccessResult,
-}
-impl ::std::convert::From<&JsonSuccess> for JsonSuccess {
-    fn from(value: &JsonSuccess) -> Self {
-        value.clone()
-    }
 }
 impl JsonSuccess {
     pub fn builder() -> builder::JsonSuccess {
@@ -317,11 +287,6 @@ pub struct JsonSuccessBase {
     pub msg: ::std::string::String,
     pub result: JsonSuccessBaseResult,
 }
-impl ::std::convert::From<&JsonSuccessBase> for JsonSuccessBase {
-    fn from(value: &JsonSuccessBase) -> Self {
-        value.clone()
-    }
-}
 impl JsonSuccessBase {
     pub fn builder() -> builder::JsonSuccessBase {
         Default::default()
@@ -355,11 +320,6 @@ impl JsonSuccessBase {
 pub enum JsonSuccessBaseResult {
     #[serde(rename = "success")]
     Success,
-}
-impl ::std::convert::From<&Self> for JsonSuccessBaseResult {
-    fn from(value: &JsonSuccessBaseResult) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for JsonSuccessBaseResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -427,11 +387,6 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
 pub enum JsonSuccessResult {
     #[serde(rename = "success")]
     Success,
-}
-impl ::std::convert::From<&Self> for JsonSuccessResult {
-    fn from(value: &JsonSuccessResult) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for JsonSuccessResult {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -516,11 +471,6 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MergeEmpty {}
-impl ::std::convert::From<&MergeEmpty> for MergeEmpty {
-    fn from(value: &MergeEmpty) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for MergeEmpty {
     fn default() -> Self {
         Self {}
@@ -560,11 +510,6 @@ impl ::std::ops::Deref for NarrowNumber {
 impl ::std::convert::From<NarrowNumber> for ::std::num::NonZeroU64 {
     fn from(value: NarrowNumber) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&NarrowNumber> for NarrowNumber {
-    fn from(value: &NarrowNumber) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::num::NonZeroU64> for NarrowNumber {
@@ -631,11 +576,6 @@ pub struct OrderDependentMerge {
     pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
-impl ::std::convert::From<&OrderDependentMerge> for OrderDependentMerge {
-    fn from(value: &OrderDependentMerge) -> Self {
-        value.clone()
-    }
-}
 impl OrderDependentMerge {
     pub fn builder() -> builder::OrderDependentMerge {
         Default::default()
@@ -671,11 +611,6 @@ impl OrderDependentMerge {
 pub struct Pickingone {
     pub suspended_by: PickingoneSuspendedBy,
 }
-impl ::std::convert::From<&Pickingone> for Pickingone {
-    fn from(value: &Pickingone) -> Self {
-        value.clone()
-    }
-}
 impl Pickingone {
     pub fn builder() -> builder::Pickingone {
         Default::default()
@@ -707,11 +642,6 @@ impl Pickingone {
 pub struct PickingoneInstallation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
-}
-impl ::std::convert::From<&PickingoneInstallation> for PickingoneInstallation {
-    fn from(value: &PickingoneInstallation) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for PickingoneInstallation {
     fn default() -> Self {
@@ -760,11 +690,6 @@ pub struct PickingoneSuspendedBy {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
-impl ::std::convert::From<&PickingoneSuspendedBy> for PickingoneSuspendedBy {
-    fn from(value: &PickingoneSuspendedBy) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for PickingoneSuspendedBy {
     fn default() -> Self {
         Self {
@@ -799,11 +724,6 @@ impl PickingoneSuspendedBy {
 pub struct PickingoneUser {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
-}
-impl ::std::convert::From<&PickingoneUser> for PickingoneUser {
-    fn from(value: &PickingoneUser) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for PickingoneUser {
     fn default() -> Self {
@@ -853,11 +773,6 @@ impl PickingoneUser {
 pub struct TrimFat {
     pub a: ::serde_json::Value,
 }
-impl ::std::convert::From<&TrimFat> for TrimFat {
-    fn from(value: &TrimFat) -> Self {
-        value.clone()
-    }
-}
 impl TrimFat {
     pub fn builder() -> builder::TrimFat {
         Default::default()
@@ -906,11 +821,6 @@ impl TrimFat {
 pub struct UnchangedByMerge {
     pub tag: UnchangedByMergeTag,
 }
-impl ::std::convert::From<&UnchangedByMerge> for UnchangedByMerge {
-    fn from(value: &UnchangedByMerge) -> Self {
-        value.clone()
-    }
-}
 impl UnchangedByMerge {
     pub fn builder() -> builder::UnchangedByMerge {
         Default::default()
@@ -943,11 +853,6 @@ impl UnchangedByMerge {
 pub enum UnchangedByMergeTag {
     #[serde(rename = "something")]
     Something,
-}
-impl ::std::convert::From<&Self> for UnchangedByMergeTag {
-    fn from(value: &UnchangedByMergeTag) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for UnchangedByMergeTag {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -1050,11 +955,6 @@ impl ::std::convert::TryFrom<::std::string::String> for UnchangedByMergeTag {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unresolvable {}
-impl ::std::convert::From<&Self> for Unresolvable {
-    fn from(value: &Unresolvable) -> Self {
-        value.clone()
-    }
-}
 #[doc = "`Unsatisfiable1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1092,11 +992,6 @@ impl ::std::convert::From<&Self> for Unresolvable {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
-impl ::std::convert::From<&Self> for Unsatisfiable1 {
-    fn from(value: &Unsatisfiable1) -> Self {
-        value.clone()
-    }
-}
 #[doc = "`Unsatisfiable2`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1150,11 +1045,6 @@ impl ::std::convert::From<&Self> for Unsatisfiable1 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable2 {}
-impl ::std::convert::From<&Self> for Unsatisfiable2 {
-    fn from(value: &Unsatisfiable2) -> Self {
-        value.clone()
-    }
-}
 #[doc = "`Unsatisfiable3`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1195,11 +1085,6 @@ impl ::std::convert::From<&Self> for Unsatisfiable2 {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable3 {}
-impl ::std::convert::From<&Self> for Unsatisfiable3 {
-    fn from(value: &Unsatisfiable3) -> Self {
-        value.clone()
-    }
-}
 #[doc = "`Unsatisfiable3A`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1223,11 +1108,6 @@ impl ::std::convert::From<&Self> for Unsatisfiable3 {
 pub struct Unsatisfiable3A {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
-}
-impl ::std::convert::From<&Unsatisfiable3A> for Unsatisfiable3A {
-    fn from(value: &Unsatisfiable3A) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for Unsatisfiable3A {
     fn default() -> Self {
@@ -1269,11 +1149,6 @@ impl Unsatisfiable3A {
 pub enum Unsatisfiable3B {
     #[serde(rename = "bar")]
     Bar,
-}
-impl ::std::convert::From<&Self> for Unsatisfiable3B {
-    fn from(value: &Unsatisfiable3B) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for Unsatisfiable3B {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -1341,11 +1216,6 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
 pub enum Unsatisfiable3C {
     #[serde(rename = "foo")]
     Foo,
-}
-impl ::std::convert::From<&Self> for Unsatisfiable3C {
-    fn from(value: &Unsatisfiable3C) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for Unsatisfiable3C {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -1525,11 +1395,6 @@ pub enum WeirdEnum {
         pattern_regex: ::std::string::String,
     },
 }
-impl ::std::convert::From<&Self> for WeirdEnum {
-    fn from(value: &WeirdEnum) -> Self {
-        value.clone()
-    }
-}
 #[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
@@ -1554,7 +1419,7 @@ pub mod builder {
         {
             self.bar = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for bar: {}", e));
+                .map_err(|e| format!("error converting supplied value for bar: {e}"));
             self
         }
     }
@@ -1591,7 +1456,7 @@ pub mod builder {
         {
             self.this = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for this: {}", e));
+                .map_err(|e| format!("error converting supplied value for this: {e}"));
             self
         }
     }
@@ -1631,7 +1496,7 @@ pub mod builder {
         {
             self.x = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for x: {}", e));
+                .map_err(|e| format!("error converting supplied value for x: {e}"));
             self
         }
         pub fn y<T>(mut self, value: T) -> Self
@@ -1641,7 +1506,7 @@ pub mod builder {
         {
             self.y = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for y: {}", e));
+                .map_err(|e| format!("error converting supplied value for y: {e}"));
             self
         }
     }
@@ -1686,7 +1551,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1728,7 +1593,7 @@ pub mod builder {
         {
             self.msg = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for msg: {}", e));
+                .map_err(|e| format!("error converting supplied value for msg: {e}"));
             self
         }
         pub fn result<T>(mut self, value: T) -> Self
@@ -1738,7 +1603,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1782,7 +1647,7 @@ pub mod builder {
         {
             self.msg = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for msg: {}", e));
+                .map_err(|e| format!("error converting supplied value for msg: {e}"));
             self
         }
         pub fn result<T>(mut self, value: T) -> Self
@@ -1792,7 +1657,7 @@ pub mod builder {
         {
             self.result = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for result: {}", e));
+                .map_err(|e| format!("error converting supplied value for result: {e}"));
             self
         }
     }
@@ -1860,7 +1725,7 @@ pub mod builder {
         {
             self.bar = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for bar: {}", e));
+                .map_err(|e| format!("error converting supplied value for bar: {e}"));
             self
         }
         pub fn baz<T>(mut self, value: T) -> Self
@@ -1870,7 +1735,7 @@ pub mod builder {
         {
             self.baz = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for baz: {}", e));
+                .map_err(|e| format!("error converting supplied value for baz: {e}"));
             self
         }
     }
@@ -1912,7 +1777,7 @@ pub mod builder {
         {
             self.suspended_by = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for suspended_by: {}", e));
+                .map_err(|e| format!("error converting supplied value for suspended_by: {e}"));
             self
         }
     }
@@ -1955,7 +1820,7 @@ pub mod builder {
         {
             self.suspended_by = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for suspended_by: {}", e));
+                .map_err(|e| format!("error converting supplied value for suspended_by: {e}"));
             self
         }
     }
@@ -1998,7 +1863,7 @@ pub mod builder {
         {
             self.email = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for email: {}", e));
+                .map_err(|e| format!("error converting supplied value for email: {e}"));
             self
         }
     }
@@ -2041,7 +1906,7 @@ pub mod builder {
         {
             self.email = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for email: {}", e));
+                .map_err(|e| format!("error converting supplied value for email: {e}"));
             self
         }
     }
@@ -2081,7 +1946,7 @@ pub mod builder {
         {
             self.a = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for a: {}", e));
+                .map_err(|e| format!("error converting supplied value for a: {e}"));
             self
         }
     }
@@ -2115,7 +1980,7 @@ pub mod builder {
         {
             self.tag = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for tag: {}", e));
+                .map_err(|e| format!("error converting supplied value for tag: {e}"));
             self
         }
     }
@@ -2154,7 +2019,7 @@ pub mod builder {
         {
             self.action = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for action: {}", e));
+                .map_err(|e| format!("error converting supplied value for action: {e}"));
             self
         }
     }

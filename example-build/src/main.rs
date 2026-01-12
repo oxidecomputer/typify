@@ -1,4 +1,6 @@
-// Copyright 2022 Oxide Computer Company
+// Copyright 2025 Oxide Computer Company
+
+#![allow(clippy::derivable_impls)]
 
 // Include the generated code.
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));

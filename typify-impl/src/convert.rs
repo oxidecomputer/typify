@@ -1619,6 +1619,25 @@ impl TypeSpace {
                 Ok((type_entry, metadata))
             }
 
+            // The permissive schema is equivalent to the `true` schema.
+            Schema::Object(SchemaObject {
+                metadata: _,
+                instance_type: None,
+                format: None,
+                enum_values: None,
+                const_value: None,
+                subschemas: None,
+                number: None,
+                string: None,
+                array: None,
+                object: None,
+                reference: None,
+                extensions: _,
+            }) => {
+                let (type_entry, _) = self.convert_schema(type_name, &Schema::Bool(false))?;
+                Ok((type_entry, metadata))
+            }
+
             // An explicit type and enumerated values.
             Schema::Object(
                 schema @ SchemaObject {
