@@ -805,6 +805,7 @@ impl TypeSpace {
             .map(|(key, schema)| (RefKey::Def(key), schema))
             .collect::<Vec<_>>();
 
+        // Does the root type have a name (otherwise... ignore it)
         let root_type = title.is_some();
 
         if root_type {
