@@ -1,3 +1,4 @@
+//! Code generated from tests/schemas/input/json-2020-12
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub enum SimpleTypes {
     #[serde(rename = "array")]

@@ -1,3 +1,4 @@
+//! Code generated from tests/schemas/input/json-2019-09
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]
 pub enum SchemaRootObjectItems {

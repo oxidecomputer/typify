@@ -25,7 +25,7 @@ pub struct TypifySettings {
 }
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
-struct TypifyConvert {
+pub struct TypifyConvert {
     /// JSON Schema that is evaluated for each schema being converted. If it
     /// validates successfully, then the schema is converted into the given
     /// type.
@@ -39,8 +39,14 @@ impl TypifySettings {
         &mut self,
         pattern: serde_json::Value,
         type_name: impl ToString,
-    ) -> Result<Self> {
-        todo!()
+    ) -> &mut Self {
+        self.convert.push(TypifyConvert {
+            pattern,
+            native: TypespaceNativeType {
+                name: type_name.to_string(),
+            },
+        });
+        self
     }
 }
 
@@ -328,7 +334,9 @@ impl Normalizer {
 
     fn normalize(
         &mut self,
-        id: impl AsRef<str>,
+        // TODO 1/12/2026
+        // I think this is here so I have somewhere to start from?
+        _id: impl AsRef<str>,
         mut wip: BTreeMap<SchemaRef, Schemalet>,
     ) -> Result<()> {
         let mut pass = 0;

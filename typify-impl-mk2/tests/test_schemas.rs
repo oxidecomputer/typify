@@ -209,7 +209,7 @@ fn validate_output(path: &PathBuf, settings: TypespaceSettings, typify: Typify) 
     let doc_str = format!(" Code generated from {}", path.display());
 
     let file = parse_quote! {
-        // #![doc = #doc_str]
+        #![doc = #doc_str]
 
         #tokens
 

@@ -1,3 +1,4 @@
+//! Code generated from tests/schemas/input/arrays-and-tuples.json
 #[derive(::std::clone::Clone, ::std::fmt::Debug)]
 pub struct TupleWithBonusArray(
     pub i64,

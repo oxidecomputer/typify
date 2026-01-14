@@ -662,9 +662,13 @@ impl Typespace {
                 }
                 ty_ident
             }
-            (StructPropertyState::DefaultValue(json_value), _) => {
-                // XXX
-                // - make a function that produces the value
+            (StructPropertyState::DefaultValue(_json_value), _) => {
+                // TODO 1/12/2026
+                // We want to construct a value by walking both the type of the
+                // property and the value in tandem.
+                // Alternatively we could emit the JSON value as a string or as
+                // serde_json::Value structure and then deserialize from it.
+
                 serde_options.push(quote! { default = "xxx" });
                 ty_ident
             }
@@ -706,7 +710,10 @@ impl TypespaceBuilder {
                 vacant_entry.insert(typ);
             }
             Entry::Occupied(occupied_entry) => {
-                let key = occupied_entry.key();
+                // TODO 1/12/2026
+                // Not fully sure what I intended for this case. It seems like
+                // if we're getting duplicate entries ... something is way off.
+                let _key = occupied_entry.key();
                 todo!()
             }
         }
@@ -1159,7 +1166,7 @@ impl Type {
             ],
             Type::Set(_) => todo!(),
             Type::Array(_, _) => todo!(),
-            Type::Tuple(items) => todo!(),
+            Type::Tuple(_items) => todo!(),
 
             Type::Unit => Vec::new(),
             Type::Boolean => Vec::new(),

@@ -242,7 +242,7 @@ impl Bundle {
         ref_url.to_string()
     }
 
-    pub fn resolve_root(&self, id: impl AsRef<str>) -> Result<Resolved, Error> {
+    pub fn resolve_root(&self, id: impl AsRef<str>) -> Result<Resolved<'_>, Error> {
         let id_str = id.as_ref();
         let (location, fragment) = if let Some(ii) = id_str.find('#') {
             (&id_str[..ii], &id_str[ii..])
@@ -286,7 +286,7 @@ impl Bundle {
         &self,
         context: &Context,
         reference: impl AsRef<str>,
-    ) -> Result<Resolved, Error> {
+    ) -> Result<Resolved<'_>, Error> {
         let (id, fragment) = Self::xxx_url(&context.location, reference.as_ref());
 
         println!("resolving {} as {} {}", reference.as_ref(), id, fragment);

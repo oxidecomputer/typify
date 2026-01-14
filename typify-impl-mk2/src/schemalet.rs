@@ -330,22 +330,22 @@ pub struct SchemaletValueObject {
     pub pattern_properties: Option<BTreeMap<String, SchemaRef>>,
 }
 
-pub struct CanonicalSchemaletValueObject {
-    pub fixed_properties: BTreeMap<String, CanonicalSchemaletValueObjectFixed>,
+// pub struct CanonicalSchemaletValueObject {
+//     pub fixed_properties: BTreeMap<String, CanonicalSchemaletValueObjectFixed>,
 
-    /// Note that these may be overlapping
-    pub more_properties: Vec<CanonicalSchemaletValueObjectMore>,
+//     /// Note that these may be overlapping
+//     pub more_properties: Vec<CanonicalSchemaletValueObjectMore>,
 
-    pub allow_unknown: bool,
-}
-struct CanonicalSchemaletValueObjectFixed {
-    pub id: SchemaRef,
-    pub required: bool,
-}
-struct CanonicalSchemaletValueObjectMore {
-    pub key: SchemaRef,
-    pub value: SchemaRef,
-}
+//     pub allow_unknown: bool,
+// }
+// pub struct CanonicalSchemaletValueObjectFixed {
+//     pub id: SchemaRef,
+//     pub required: bool,
+// }
+// pub struct CanonicalSchemaletValueObjectMore {
+//     pub key: SchemaRef,
+//     pub value: SchemaRef,
+// }
 
 #[derive(Debug, Clone, Serialize, Default)]
 pub struct SchemaletValueArray {
