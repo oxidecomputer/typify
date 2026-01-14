@@ -554,7 +554,7 @@ impl From<TypeEntryDetails> for TypeEntry {
 
 impl TypeEntry {
     pub(crate) fn new_native<S: ToString>(type_name: S, impls: &[TypeSpaceImpl]) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: impls.to_vec(),
@@ -565,7 +565,7 @@ impl TypeEntry {
         }
     }
     pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Native(TypeEntryNative {
                 type_name: type_name.to_string(),
                 impls: Default::default(),
@@ -576,7 +576,7 @@ impl TypeEntry {
         }
     }
     pub(crate) fn new_boolean() -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Boolean,
             extra_derives: Default::default(),
             extra_attrs: Default::default(),
@@ -586,7 +586,7 @@ impl TypeEntry {
         TypeEntryDetails::Integer(type_name.to_string()).into()
     }
     pub(crate) fn new_float<S: ToString>(type_name: S) -> Self {
-        TypeEntry {
+        Self {
             details: TypeEntryDetails::Float(type_name.to_string()),
             extra_derives: Default::default(),
             extra_attrs: Default::default(),
