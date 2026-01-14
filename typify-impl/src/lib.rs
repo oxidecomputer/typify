@@ -46,11 +46,13 @@ pub enum Error {
     InvalidTypeId,
     #[error("value does not conform to the given schema")]
     InvalidValue,
-    #[error("invalid schema{}: {reason}", format_type_name(.type_name.as_deref()))]
+    #[error("invalid schema for {}: {reason}", show_type_name(.type_name.as_deref()))]
     InvalidSchema {
         type_name: Option<String>,
         reason: String,
     },
+    #[error("invalid root schema: {reason}")]
+    InvalidRootSchema { reason: String },
 }
 
 impl Error {
@@ -62,11 +64,8 @@ impl Error {
 #[allow(missing_docs)]
 pub type Result<T> = std::result::Result<T, Error>;
 
-fn format_type_name(type_name: Option<&str>) -> String {
-    match type_name {
-        Some(name) => format!(" for {}", name),
-        None => String::new(),
-    }
+fn show_type_name(type_name: Option<&str>) -> &str {
+    type_name.unwrap_or("<unknown type>")
 }
 
 /// Representation of a type which may have a definition or may be built-in.
@@ -800,8 +799,7 @@ impl TypeSpace {
                 .and_then(|m| m.title.as_ref())
                 .is_none()
             {
-                return Err(Error::InvalidSchema {
-                    type_name: None,
+                return Err(Error::InvalidRootSchema {
                     reason: "title is required when there are no definitions".to_string(),
                 });
             }
