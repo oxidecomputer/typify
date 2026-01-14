@@ -46,7 +46,7 @@ pub enum Error {
     InvalidTypeId,
     #[error("value does not conform to the given schema")]
     InvalidValue,
-    #[error("invalid schema{}: {reason}", show_type_name(.type_name.as_deref()))]
+    #[error("invalid schema{}: {reason}", format_type_name(.type_name.as_deref()))]
     InvalidSchema {
         type_name: Option<String>,
         reason: String,
@@ -62,7 +62,7 @@ impl Error {
 #[allow(missing_docs)]
 pub type Result<T> = std::result::Result<T, Error>;
 
-fn show_type_name(type_name: Option<&str>) -> String {
+fn format_type_name(type_name: Option<&str>) -> String {
     match type_name {
         Some(name) => format!(" for {}", name),
         None => String::new(),
