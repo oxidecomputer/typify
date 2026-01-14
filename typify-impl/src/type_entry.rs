@@ -1427,16 +1427,6 @@ impl TypeEntry {
                                     value.parse()
                                 }
                             }
-                            impl ::std::convert::TryFrom<&String> for #type_name {
-                                type Error = <#inner_type_name as
-                                    ::std::str::FromStr>::Err;
-
-                                fn try_from(value: &String) ->
-                                    ::std::result::Result<Self, Self::Error>
-                                {
-                                    value.parse()
-                                }
-                            }
                             impl ::std::convert::TryFrom<String> for #type_name {
                                 type Error = <#inner_type_name as
                                     ::std::str::FromStr>::Err;

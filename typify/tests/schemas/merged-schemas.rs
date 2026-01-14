@@ -529,12 +529,6 @@ impl ::std::convert::TryFrom<&str> for NarrowNumber {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&String> for NarrowNumber {
-    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<String> for NarrowNumber {
     type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
