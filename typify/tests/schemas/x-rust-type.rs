@@ -124,7 +124,7 @@ pub mod builder {
         {
             self.option_marker = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for option_marker: {}", e));
+                .map_err(|e| format!("error converting supplied value for option_marker: {e}"));
             self
         }
         pub fn path<T>(mut self, value: T) -> Self
@@ -134,7 +134,7 @@ pub mod builder {
         {
             self.path = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for path: {}", e));
+                .map_err(|e| format!("error converting supplied value for path: {e}"));
             self
         }
     }

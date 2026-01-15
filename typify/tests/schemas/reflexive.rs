@@ -96,7 +96,7 @@ pub mod builder {
         {
             self.children = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for children: {}", e));
+                .map_err(|e| format!("error converting supplied value for children: {e}"));
             self
         }
         pub fn value<T>(mut self, value: T) -> Self
@@ -106,7 +106,7 @@ pub mod builder {
         {
             self.value = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for value: {}", e));
+                .map_err(|e| format!("error converting supplied value for value: {e}"));
             self
         }
     }

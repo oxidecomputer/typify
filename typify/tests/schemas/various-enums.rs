@@ -1856,7 +1856,7 @@ pub mod builder {
         {
             self.alternate = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for alternate: {}", e));
+                .map_err(|e| format!("error converting supplied value for alternate: {e}"));
             self
         }
         pub fn state<T>(mut self, value: T) -> Self
@@ -1866,7 +1866,7 @@ pub mod builder {
         {
             self.state = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for state: {}", e));
+                .map_err(|e| format!("error converting supplied value for state: {e}"));
             self
         }
     }
@@ -1911,7 +1911,7 @@ pub mod builder {
         {
             self.prop = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for prop: {}", e));
+                .map_err(|e| format!("error converting supplied value for prop: {e}"));
             self
         }
     }

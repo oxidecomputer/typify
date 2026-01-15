@@ -202,7 +202,7 @@ pub mod builder {
         {
             self.ok = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for ok: {}", e));
+                .map_err(|e| format!("error converting supplied value for ok: {e}"));
             self
         }
     }

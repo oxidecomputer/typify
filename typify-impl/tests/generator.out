@@ -256,7 +256,7 @@ mod types {
             {
                 self.ok = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for ok: {}", e));
+                    .map_err(|e| format!("error converting supplied value for ok: {e}"));
                 self
             }
         }
@@ -294,7 +294,7 @@ mod types {
             {
                 self.value1 = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for value1: {}", e));
+                    .map_err(|e| format!("error converting supplied value for value1: {e}"));
                 self
             }
             pub fn value2<T>(mut self, value: T) -> Self
@@ -304,7 +304,7 @@ mod types {
             {
                 self.value2 = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for value2: {}", e));
+                    .map_err(|e| format!("error converting supplied value for value2: {e}"));
                 self
             }
         }
@@ -348,7 +348,7 @@ mod types {
             {
                 self.a = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for a: {}", e));
+                    .map_err(|e| format!("error converting supplied value for a: {e}"));
                 self
             }
             pub fn b<T>(mut self, value: T) -> Self
@@ -358,7 +358,7 @@ mod types {
             {
                 self.b = value
                     .try_into()
-                    .map_err(|e| format!("error converting supplied value for b: {}", e));
+                    .map_err(|e| format!("error converting supplied value for b: {e}"));
                 self
             }
         }

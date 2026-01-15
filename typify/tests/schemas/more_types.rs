@@ -212,7 +212,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }
@@ -248,7 +248,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }
@@ -289,7 +289,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
         pub fn extra<T>(mut self, value: T) -> Self
@@ -301,7 +301,7 @@ pub mod builder {
         {
             self.extra = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for extra: {}", e));
+                .map_err(|e| format!("error converting supplied value for extra: {e}"));
             self
         }
     }
@@ -348,7 +348,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
         pub fn extra<T>(mut self, value: T) -> Self
@@ -360,7 +360,7 @@ pub mod builder {
         {
             self.extra = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for extra: {}", e));
+                .map_err(|e| format!("error converting supplied value for extra: {e}"));
             self
         }
     }
@@ -402,7 +402,7 @@ pub mod builder {
         {
             self.foo = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for foo: {}", e));
+                .map_err(|e| format!("error converting supplied value for foo: {e}"));
             self
         }
     }

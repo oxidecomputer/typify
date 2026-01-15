@@ -239,7 +239,7 @@ pub mod builder {
         {
             self.veggie_like = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for veggie_like: {}", e));
+                .map_err(|e| format!("error converting supplied value for veggie_like: {e}"));
             self
         }
         pub fn veggie_name<T>(mut self, value: T) -> Self
@@ -249,7 +249,7 @@ pub mod builder {
         {
             self.veggie_name = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for veggie_name: {}", e));
+                .map_err(|e| format!("error converting supplied value for veggie_name: {e}"));
             self
         }
     }
@@ -292,7 +292,7 @@ pub mod builder {
         {
             self.fruits = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for fruits: {}", e));
+                .map_err(|e| format!("error converting supplied value for fruits: {e}"));
             self
         }
         pub fn vegetables<T>(mut self, value: T) -> Self
@@ -302,7 +302,7 @@ pub mod builder {
         {
             self.vegetables = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for vegetables: {}", e));
+                .map_err(|e| format!("error converting supplied value for vegetables: {e}"));
             self
         }
     }
