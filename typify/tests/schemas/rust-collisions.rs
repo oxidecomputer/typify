@@ -47,11 +47,6 @@ pub mod error {
 pub struct Box {
     pub data: ::std::string::String,
 }
-impl ::std::convert::From<&Box> for Box {
-    fn from(value: &Box) -> Self {
-        value.clone()
-    }
-}
 impl Box {
     pub fn builder() -> builder::Box {
         Default::default()
@@ -78,11 +73,6 @@ impl Box {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Copy {
     pub value: i64,
-}
-impl ::std::convert::From<&Copy> for Copy {
-    fn from(value: &Copy) -> Self {
-        value.clone()
-    }
 }
 impl Copy {
     pub fn builder() -> builder::Copy {
@@ -120,11 +110,6 @@ pub struct DoubleOptionCollision {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
 }
-impl ::std::convert::From<&DoubleOptionCollision> for DoubleOptionCollision {
-    fn from(value: &DoubleOptionCollision) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for DoubleOptionCollision {
     fn default() -> Self {
         Self {
@@ -160,11 +145,6 @@ pub struct DoubleOptionCollisionOption {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
 }
-impl ::std::convert::From<&DoubleOptionCollisionOption> for DoubleOptionCollisionOption {
-    fn from(value: &DoubleOptionCollisionOption) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for DoubleOptionCollisionOption {
     fn default() -> Self {
         Self {
@@ -199,11 +179,6 @@ impl DoubleOptionCollisionOption {
 pub struct Drop {
     pub cleanup: bool,
 }
-impl ::std::convert::From<&Drop> for Drop {
-    fn from(value: &Drop) -> Self {
-        value.clone()
-    }
-}
 impl Drop {
     pub fn builder() -> builder::Drop {
         Default::default()
@@ -235,11 +210,6 @@ pub struct FlattenedKeywords {
     pub normal: ::std::string::String,
     #[serde(flatten)]
     pub extra: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
-}
-impl ::std::convert::From<&FlattenedKeywords> for FlattenedKeywords {
-    fn from(value: &FlattenedKeywords) -> Self {
-        value.clone()
-    }
 }
 impl FlattenedKeywords {
     pub fn builder() -> builder::FlattenedKeywords {
@@ -285,11 +255,6 @@ pub enum FormatCollision {
     QuoteUnquote,
     #[serde(rename = "xyz")]
     Xyz,
-}
-impl ::std::convert::From<&Self> for FormatCollision {
-    fn from(value: &FormatCollision) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for FormatCollision {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -395,11 +360,6 @@ pub enum KeywordFieldsEnum {
     },
     Array([::std::string::String; 2usize]),
 }
-impl ::std::convert::From<&Self> for KeywordFieldsEnum {
-    fn from(value: &KeywordFieldsEnum) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum {
     fn from(value: [::std::string::String; 2usize]) -> Self {
         Self::Array(value)
@@ -446,11 +406,6 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum
 pub struct MapOfKeywords {
     pub keyword_map:
         ::std::collections::HashMap<::std::string::String, MapOfKeywordsKeywordMapValue>,
-}
-impl ::std::convert::From<&MapOfKeywords> for MapOfKeywords {
-    fn from(value: &MapOfKeywords) -> Self {
-        value.clone()
-    }
 }
 impl MapOfKeywords {
     pub fn builder() -> builder::MapOfKeywords {
@@ -524,11 +479,6 @@ pub enum MapOfKeywordsKeywordMapValue {
     Use,
     #[serde(rename = "where")]
     Where,
-}
-impl ::std::convert::From<&Self> for MapOfKeywordsKeywordMapValue {
-    fn from(value: &MapOfKeywordsKeywordMapValue) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for MapOfKeywordsKeywordMapValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -638,11 +588,6 @@ pub struct NestedTypeCollisions {
     pub type_: TypeWithOptionField,
     pub types: ::std::vec::Vec<TypeWithOptionField>,
 }
-impl ::std::convert::From<&NestedTypeCollisions> for NestedTypeCollisions {
-    fn from(value: &NestedTypeCollisions) -> Self {
-        value.clone()
-    }
-}
 impl NestedTypeCollisions {
     pub fn builder() -> builder::NestedTypeCollisions {
         Default::default()
@@ -671,11 +616,6 @@ pub struct NestedTypeCollisionsOptionType {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
-}
-impl ::std::convert::From<&NestedTypeCollisionsOptionType> for NestedTypeCollisionsOptionType {
-    fn from(value: &NestedTypeCollisionsOptionType) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for NestedTypeCollisionsOptionType {
     fn default() -> Self {
@@ -711,11 +651,6 @@ impl NestedTypeCollisionsOptionType {
 pub struct Option {
     pub maybe: ::std::string::String,
 }
-impl ::std::convert::From<&Option> for Option {
-    fn from(value: &Option) -> Self {
-        value.clone()
-    }
-}
 impl Option {
     pub fn builder() -> builder::Option {
         Default::default()
@@ -742,11 +677,6 @@ impl Option {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Pin {
     pub pointer: ::std::string::String,
-}
-impl ::std::convert::From<&Pin> for Pin {
-    fn from(value: &Pin) -> Self {
-        value.clone()
-    }
 }
 impl Pin {
     pub fn builder() -> builder::Pin {
@@ -1070,11 +1000,6 @@ pub struct RustKeywordMonster {
     #[serde(rename = "yield")]
     pub yield_: ::std::string::String,
 }
-impl ::std::convert::From<&RustKeywordMonster> for RustKeywordMonster {
-    fn from(value: &RustKeywordMonster) -> Self {
-        value.clone()
-    }
-}
 impl RustKeywordMonster {
     pub fn builder() -> builder::RustKeywordMonster {
         Default::default()
@@ -1101,11 +1026,6 @@ impl RustKeywordMonster {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Send {
     pub message: ::std::string::String,
-}
-impl ::std::convert::From<&Send> for Send {
-    fn from(value: &Send) -> Self {
-        value.clone()
-    }
 }
 impl Send {
     pub fn builder() -> builder::Send {
@@ -1220,11 +1140,6 @@ pub struct Std {
     pub str: StdStr,
     pub string: StdString,
 }
-impl ::std::convert::From<&Std> for Std {
-    fn from(value: &Std) -> Self {
-        value.clone()
-    }
-}
 impl Std {
     pub fn builder() -> builder::Std {
         Default::default()
@@ -1251,11 +1166,6 @@ impl Std {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdBoxed {
     pub value: ::std::string::String,
-}
-impl ::std::convert::From<&StdBoxed> for StdBoxed {
-    fn from(value: &StdBoxed) -> Self {
-        value.clone()
-    }
 }
 impl StdBoxed {
     pub fn builder() -> builder::StdBoxed {
@@ -1284,11 +1194,6 @@ impl StdBoxed {
 pub struct StdConvert {
     pub value: ::std::string::String,
 }
-impl ::std::convert::From<&StdConvert> for StdConvert {
-    fn from(value: &StdConvert) -> Self {
-        value.clone()
-    }
-}
 impl StdConvert {
     pub fn builder() -> builder::StdConvert {
         Default::default()
@@ -1315,11 +1220,6 @@ impl StdConvert {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdFmt {
     pub value: ::std::string::String,
-}
-impl ::std::convert::From<&StdFmt> for StdFmt {
-    fn from(value: &StdFmt) -> Self {
-        value.clone()
-    }
 }
 impl StdFmt {
     pub fn builder() -> builder::StdFmt {
@@ -1348,11 +1248,6 @@ impl StdFmt {
 pub struct StdOption {
     pub value: ::std::string::String,
 }
-impl ::std::convert::From<&StdOption> for StdOption {
-    fn from(value: &StdOption) -> Self {
-        value.clone()
-    }
-}
 impl StdOption {
     pub fn builder() -> builder::StdOption {
         Default::default()
@@ -1379,11 +1274,6 @@ impl StdOption {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdResult {
     pub value: ::std::string::String,
-}
-impl ::std::convert::From<&StdResult> for StdResult {
-    fn from(value: &StdResult) -> Self {
-        value.clone()
-    }
 }
 impl StdResult {
     pub fn builder() -> builder::StdResult {
@@ -1412,11 +1302,6 @@ impl StdResult {
 pub struct StdStr {
     pub value: ::std::string::String,
 }
-impl ::std::convert::From<&StdStr> for StdStr {
-    fn from(value: &StdStr) -> Self {
-        value.clone()
-    }
-}
 impl StdStr {
     pub fn builder() -> builder::StdStr {
         Default::default()
@@ -1444,11 +1329,6 @@ impl StdStr {
 pub struct StdString {
     pub value: ::std::string::String,
 }
-impl ::std::convert::From<&StdString> for StdString {
-    fn from(value: &StdString) -> Self {
-        value.clone()
-    }
-}
 impl StdString {
     pub fn builder() -> builder::StdString {
         Default::default()
@@ -1475,11 +1355,6 @@ impl StdString {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct String {
     pub text: ::std::string::String,
-}
-impl ::std::convert::From<&String> for String {
-    fn from(value: &String) -> Self {
-        value.clone()
-    }
 }
 impl String {
     pub fn builder() -> builder::String {
@@ -1520,11 +1395,6 @@ pub enum StringEnum {
     Two,
     #[serde(rename = "three")]
     Three,
-}
-impl ::std::convert::From<&Self> for StringEnum {
-    fn from(value: &StringEnum) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for StringEnum {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -1592,11 +1462,6 @@ impl ::std::ops::Deref for StringNewtype {
 impl ::std::convert::From<StringNewtype> for ::std::string::String {
     fn from(value: StringNewtype) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&StringNewtype> for StringNewtype {
-    fn from(value: &StringNewtype) -> Self {
-        value.clone()
     }
 }
 impl ::std::str::FromStr for StringNewtype {
@@ -1667,11 +1532,6 @@ impl<'de> ::serde::Deserialize<'de> for StringNewtype {
 pub struct Sync {
     pub data: ::std::string::String,
 }
-impl ::std::convert::From<&Sync> for Sync {
-    fn from(value: &Sync) -> Self {
-        value.clone()
-    }
-}
 impl Sync {
     pub fn builder() -> builder::Sync {
         Default::default()
@@ -1694,7 +1554,6 @@ pub struct TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConfl
 );
 impl :: std :: ops :: Deref for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { type Target = :: serde_json :: Value ; fn deref (& self) -> & :: serde_json :: Value { & self . 0 } }
 impl :: std :: convert :: From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
-impl :: std :: convert :: From < & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : & TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . clone () } }
 impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
 #[doc = "`TypeWithOptionField`"]
 #[doc = r""]
@@ -1726,11 +1585,6 @@ pub struct TypeWithOptionField {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub optional_field: ::std::option::Option<::std::string::String>,
 }
-impl ::std::convert::From<&TypeWithOptionField> for TypeWithOptionField {
-    fn from(value: &TypeWithOptionField) -> Self {
-        value.clone()
-    }
-}
 impl TypeWithOptionField {
     pub fn builder() -> builder::TypeWithOptionField {
         Default::default()
@@ -1760,11 +1614,6 @@ impl TypeWithOptionField {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Vec {
     pub items: ::std::vec::Vec<::std::string::String>,
-}
-impl ::std::convert::From<&Vec> for Vec {
-    fn from(value: &Vec) -> Self {
-        value.clone()
-    }
 }
 impl Vec {
     pub fn builder() -> builder::Vec {

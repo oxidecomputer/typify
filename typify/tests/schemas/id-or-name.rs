@@ -59,11 +59,6 @@ pub enum IdOrName {
     Id(::uuid::Uuid),
     Name(Name),
 }
-impl ::std::convert::From<&Self> for IdOrName {
-    fn from(value: &IdOrName) -> Self {
-        value.clone()
-    }
-}
 impl ::std::str::FromStr for IdOrName {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -141,11 +136,6 @@ impl ::std::convert::From<Name> for IdOrName {
 pub enum IdOrNameRedundant {
     Uuid(::uuid::Uuid),
     String(Name),
-}
-impl ::std::convert::From<&Self> for IdOrNameRedundant {
-    fn from(value: &IdOrNameRedundant) -> Self {
-        value.clone()
-    }
 }
 impl ::std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
@@ -234,11 +224,6 @@ pub enum IdOrYolo {
     Id(::uuid::Uuid),
     Yolo(IdOrYoloYolo),
 }
-impl ::std::convert::From<&Self> for IdOrYolo {
-    fn from(value: &IdOrYolo) -> Self {
-        value.clone()
-    }
-}
 impl ::std::str::FromStr for IdOrYolo {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -316,11 +301,6 @@ impl ::std::convert::From<IdOrYoloYolo> for ::std::string::String {
         value.0
     }
 }
-impl ::std::convert::From<&IdOrYoloYolo> for IdOrYoloYolo {
-    fn from(value: &IdOrYoloYolo) -> Self {
-        value.clone()
-    }
-}
 impl ::std::str::FromStr for IdOrYoloYolo {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -392,11 +372,6 @@ impl ::std::ops::Deref for Name {
 impl ::std::convert::From<Name> for ::std::string::String {
     fn from(value: Name) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&Name> for Name {
-    fn from(value: &Name) -> Self {
-        value.clone()
     }
 }
 impl ::std::str::FromStr for Name {

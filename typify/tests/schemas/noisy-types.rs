@@ -60,11 +60,6 @@ impl ::std::convert::From<ArrayBs> for ::std::vec::Vec<bool> {
         value.0
     }
 }
-impl ::std::convert::From<&ArrayBs> for ArrayBs {
-    fn from(value: &ArrayBs) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
     fn from(value: ::std::vec::Vec<bool>) -> Self {
         Self(value)
@@ -102,11 +97,6 @@ impl ::std::convert::From<IntegerBs> for u64 {
         value.0
     }
 }
-impl ::std::convert::From<&IntegerBs> for IntegerBs {
-    fn from(value: &IntegerBs) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<u64> for IntegerBs {
     fn from(value: u64) -> Self {
         Self(value)
@@ -121,12 +111,6 @@ impl ::std::str::FromStr for IntegerBs {
 impl ::std::convert::TryFrom<&str> for IntegerBs {
     type Error = <u64 as ::std::str::FromStr>::Err;
     fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&String> for IntegerBs {
-    type Error = <u64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
@@ -163,11 +147,6 @@ impl ::std::fmt::Display for IntegerBs {
 pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
-}
-impl ::std::convert::From<&ObjectBs> for ObjectBs {
-    fn from(value: &ObjectBs) -> Self {
-        value.clone()
-    }
 }
 impl ::std::default::Default for ObjectBs {
     fn default() -> Self {

@@ -1489,12 +1489,6 @@ mod tests {
                 Err(::std::string::String),
             }
 
-            impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
-                    value.clone()
-                }
-            }
-
             impl ::std::convert::From<u32> for ResultX {
                 fn from(value: u32) -> Self {
                     Self::Ok(value)
@@ -1539,12 +1533,6 @@ mod tests {
             pub enum ResultX {
                 Ok(u32),
                 Err(::std::string::String),
-            }
-
-            impl ::std::convert::From<&Self> for ResultX {
-                fn from(value: &ResultX) -> Self {
-                    value.clone()
-                }
             }
 
             impl ::std::convert::From<u32> for ResultX {

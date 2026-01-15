@@ -65,11 +65,6 @@ pub struct TestType {
     pub where_not: TestTypeWhereNot,
     pub why_not: TestTypeWhyNot,
 }
-impl ::std::convert::From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
-        value.clone()
-    }
-}
 impl TestType {
     pub fn builder() -> builder::TestType {
         Default::default()
@@ -103,11 +98,6 @@ impl ::std::ops::Deref for TestTypeWhereNot {
 impl ::std::convert::From<TestTypeWhereNot> for ::std::string::String {
     fn from(value: TestTypeWhereNot) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&TestTypeWhereNot> for TestTypeWhereNot {
-    fn from(value: &TestTypeWhereNot) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhereNot {
@@ -158,11 +148,6 @@ impl ::std::ops::Deref for TestTypeWhyNot {
 impl ::std::convert::From<TestTypeWhyNot> for ::std::string::String {
     fn from(value: TestTypeWhyNot) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&TestTypeWhyNot> for TestTypeWhyNot {
-    fn from(value: &TestTypeWhyNot) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhyNot {

@@ -783,7 +783,6 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
 
     // If every case was special then none of them would be.
     let out = match input {
-        "async" => "async_".to_string(), // TODO syn should handle this case...
         "+1" => "plus1".to_string(),
         "-1" => "minus1".to_string(),
         _ => to_case(&input.replace("'", "").replace(|c| !is_xid_continue(c), "-")),
@@ -835,17 +834,33 @@ pub(crate) fn get_type_name(type_name: &Name, metadata: &Option<Box<Metadata>>) 
     Some(sanitize(&name, Case::Pascal))
 }
 
-/// Check for patches which include potential type renames and additional
-/// derive macros.
-pub(crate) fn type_patch(type_space: &TypeSpace, type_name: String) -> (String, BTreeSet<String>) {
-    match type_space.settings.patch.get(&type_name) {
-        None => (type_name, Default::default()),
+pub(crate) struct TypePatch {
+    pub name: String,
+    pub derives: BTreeSet<String>,
+    pub attrs: BTreeSet<String>,
+}
 
-        Some(patch) => {
-            let name = patch.rename.clone().unwrap_or(type_name);
-            let derives = patch.derives.iter().cloned().collect();
+impl TypePatch {
+    /// Creates a new TypePatch by resolving patches for the given type name.
+    pub fn new(type_space: &TypeSpace, type_name: String) -> Self {
+        match type_space.settings.patch.get(&type_name) {
+            None => Self {
+                name: type_name,
+                derives: Default::default(),
+                attrs: Default::default(),
+            },
 
-            (name, derives)
+            Some(patch) => {
+                let name = patch.rename.clone().unwrap_or(type_name);
+                let derives = patch.derives.iter().cloned().collect();
+                let attrs = patch.attrs.iter().cloned().collect();
+
+                Self {
+                    name,
+                    derives,
+                    attrs,
+                }
+            }
         }
     }
 }

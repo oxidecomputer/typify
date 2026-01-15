@@ -48,11 +48,6 @@ pub mod error {
 pub struct ObjectWithNoExtra {
     pub foo: ::std::string::String,
 }
-impl ::std::convert::From<&ObjectWithNoExtra> for ObjectWithNoExtra {
-    fn from(value: &ObjectWithNoExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithNoExtra {
     pub fn builder() -> builder::ObjectWithNoExtra {
         Default::default()
@@ -78,11 +73,6 @@ impl ObjectWithNoExtra {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ObjectWithOkExtra {
     pub foo: ::std::string::String,
-}
-impl ::std::convert::From<&ObjectWithOkExtra> for ObjectWithOkExtra {
-    fn from(value: &ObjectWithOkExtra) -> Self {
-        value.clone()
-    }
 }
 impl ObjectWithOkExtra {
     pub fn builder() -> builder::ObjectWithOkExtra {
@@ -115,11 +105,6 @@ pub struct ObjectWithStringExtra {
     #[serde(flatten)]
     pub extra: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
 }
-impl ::std::convert::From<&ObjectWithStringExtra> for ObjectWithStringExtra {
-    fn from(value: &ObjectWithStringExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithStringExtra {
     pub fn builder() -> builder::ObjectWithStringExtra {
         Default::default()
@@ -149,11 +134,6 @@ pub struct ObjectWithWhichExtra {
     #[serde(flatten)]
     pub extra: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
 }
-impl ::std::convert::From<&ObjectWithWhichExtra> for ObjectWithWhichExtra {
-    fn from(value: &ObjectWithWhichExtra) -> Self {
-        value.clone()
-    }
-}
 impl ObjectWithWhichExtra {
     pub fn builder() -> builder::ObjectWithWhichExtra {
         Default::default()
@@ -180,11 +160,6 @@ impl ObjectWithWhichExtra {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct ObjectWithYesExtra {
     pub foo: ::std::string::String,
-}
-impl ::std::convert::From<&ObjectWithYesExtra> for ObjectWithYesExtra {
-    fn from(value: &ObjectWithYesExtra) -> Self {
-        value.clone()
-    }
 }
 impl ObjectWithYesExtra {
     pub fn builder() -> builder::ObjectWithYesExtra {

@@ -53,11 +53,6 @@ impl ::std::convert::From<DeadSimple>
         value.0
     }
 }
-impl ::std::convert::From<&DeadSimple> for DeadSimple {
-    fn from(value: &DeadSimple) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
     for DeadSimple
 {
@@ -98,11 +93,6 @@ impl ::std::ops::Deref for Eh {
 impl ::std::convert::From<Eh> for ::std::string::String {
     fn from(value: Eh) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&Eh> for Eh {
-    fn from(value: &Eh) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::string::String> for Eh {
@@ -154,11 +144,6 @@ impl ::std::convert::From<MapWithDateKeys>
         value.0
     }
 }
-impl ::std::convert::From<&MapWithDateKeys> for MapWithDateKeys {
-    fn from(value: &MapWithDateKeys) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<std::collections::BTreeMap<::chrono::naive::NaiveDate, Value>>
     for MapWithDateKeys
 {
@@ -203,11 +188,6 @@ impl ::std::convert::From<MapWithDateTimeKeys>
         value.0
     }
 }
-impl ::std::convert::From<&MapWithDateTimeKeys> for MapWithDateTimeKeys {
-    fn from(value: &MapWithDateTimeKeys) -> Self {
-        value.clone()
-    }
-}
 impl
     ::std::convert::From<
         std::collections::BTreeMap<::chrono::DateTime<::chrono::offset::Utc>, Value>,
@@ -249,11 +229,6 @@ impl ::std::convert::From<MapWithKeys> for std::collections::BTreeMap<Eh, Value>
         value.0
     }
 }
-impl ::std::convert::From<&MapWithKeys> for MapWithKeys {
-    fn from(value: &MapWithKeys) -> Self {
-        value.clone()
-    }
-}
 impl ::std::convert::From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys {
     fn from(value: std::collections::BTreeMap<Eh, Value>) -> Self {
         Self(value)
@@ -291,11 +266,6 @@ impl ::std::ops::Deref for Value {
 impl ::std::convert::From<Value> for ::std::string::String {
     fn from(value: Value) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&Value> for Value {
-    fn from(value: &Value) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::string::String> for Value {

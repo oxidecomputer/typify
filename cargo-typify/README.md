@@ -72,11 +72,6 @@ pub enum IdOrName {
     Id(uuid::Uuid),
     Name(Name),
 }
-impl From<&IdOrName> for IdOrName {
-    fn from(value: &IdOrName) -> Self {
-        value.clone()
-    }
-}
 impl std::str::FromStr for IdOrName {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
@@ -92,12 +87,6 @@ impl std::str::FromStr for IdOrName {
 impl std::convert::TryFrom<&str> for IdOrName {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for IdOrName {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -139,11 +128,6 @@ impl From<Name> for String {
         value.0
     }
 }
-impl From<&Name> for Name {
-    fn from(value: &Name) -> Self {
-        value.clone()
-    }
-}
 impl std::str::FromStr for Name {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
@@ -163,12 +147,6 @@ impl std::str::FromStr for Name {
 impl std::convert::TryFrom<&str> for Name {
     type Error = &'static str;
     fn try_from(value: &str) -> Result<Self, &'static str> {
-        value.parse()
-    }
-}
-impl std::convert::TryFrom<&String> for Name {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
         value.parse()
     }
 }
@@ -204,5 +182,8 @@ default). Builder output lets you write code like this:
 let xy: MyStruct = MyStruct::builder().x_coord(x).y_coord(y).try_into();
 ```
 
-The `--additional-derive` adds the specified derive macro to all generated
+The `--additional-derive` option adds the specified derive macro to all generated
+types. This may be specified more than once.
+
+The `--additional-attr` option adds the specified attribute to all generated
 types. This may be specified more than once.

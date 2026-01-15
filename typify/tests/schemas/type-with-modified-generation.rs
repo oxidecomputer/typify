@@ -62,11 +62,6 @@ pub struct TestType {
     pub patched_type: TypeThatHasMoreDerives,
     pub replaced_type: String,
 }
-impl ::std::convert::From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
-        value.clone()
-    }
-}
 impl TestType {
     pub fn builder() -> builder::TestType {
         Default::default()
@@ -101,11 +96,6 @@ impl ::std::convert::From<TypeThatHasMoreDerives>
 {
     fn from(value: TypeThatHasMoreDerives) -> Self {
         value.0
-    }
-}
-impl ::std::convert::From<&TypeThatHasMoreDerives> for TypeThatHasMoreDerives {
-    fn from(value: &TypeThatHasMoreDerives) -> Self {
-        value.clone()
     }
 }
 impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::std::string::String>>

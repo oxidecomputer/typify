@@ -296,6 +296,7 @@ impl From<syn::Type> for MapType {
 pub struct TypeSpaceSettings {
     type_mod: Option<String>,
     extra_derives: Vec<String>,
+    extra_attrs: Vec<String>,
     struct_builder: bool,
 
     unknown_crates: UnknownPolicy,
@@ -364,6 +365,7 @@ impl CrateVers {
 pub struct TypeSpacePatch {
     rename: Option<String>,
     derives: Vec<String>,
+    attrs: Vec<String>,
 }
 
 /// Contains the attributes of a replacement of an existing type.
@@ -418,6 +420,14 @@ impl TypeSpaceSettings {
     pub fn with_derive(&mut self, derive: String) -> &mut Self {
         if !self.extra_derives.contains(&derive) {
             self.extra_derives.push(derive);
+        }
+        self
+    }
+
+    /// Add an additional attribute to apply to all defined types.
+    pub fn with_attr(&mut self, attr: String) -> &mut Self {
+        if !self.extra_attrs.contains(&attr) {
+            self.extra_attrs.push(attr);
         }
         self
     }
@@ -563,10 +573,16 @@ impl TypeSpacePatch {
         self.derives.push(derive.to_string());
         self
     }
+
+    /// Specify an additional attribute to apply to the patched type.
+    pub fn with_attr<S: ToString>(&mut self, attr: S) -> &mut Self {
+        self.attrs.push(attr.to_string());
+        self
+    }
 }
 
 impl TypeSpace {
-    /// Create a new TypeSpace with custom settings
+    /// Create a new TypeSpace with custom settings.
     pub fn new(settings: &TypeSpaceSettings) -> Self {
         let mut cache = SchemaCache::default();
 

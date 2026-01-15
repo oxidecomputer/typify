@@ -50,11 +50,6 @@ pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::path::PathBuf>,
 }
-impl ::std::convert::From<&AllTheThings> for AllTheThings {
-    fn from(value: &AllTheThings) -> Self {
-        value.clone()
-    }
-}
 impl ::std::default::Default for AllTheThings {
     fn default() -> Self {
         Self {
@@ -90,11 +85,6 @@ impl AllTheThings {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Marker {}
-impl ::std::convert::From<&Self> for Marker {
-    fn from(value: &Marker) -> Self {
-        value.clone()
-    }
-}
 #[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]

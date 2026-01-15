@@ -54,11 +54,6 @@ pub mod error {
 pub struct TestType {
     pub value: ::std::option::Option<TestTypeValue>,
 }
-impl ::std::convert::From<&TestType> for TestType {
-    fn from(value: &TestType) -> Self {
-        value.clone()
-    }
-}
 impl TestType {
     pub fn builder() -> builder::TestType {
         Default::default()
@@ -98,11 +93,6 @@ pub enum TestTypeValue {
     Middle,
     #[serde(rename = "end")]
     End,
-}
-impl ::std::convert::From<&Self> for TestTypeValue {
-    fn from(value: &TestTypeValue) -> Self {
-        value.clone()
-    }
 }
 impl ::std::fmt::Display for TestTypeValue {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
