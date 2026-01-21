@@ -17,7 +17,7 @@ typify-impl = { version = "0.5.0", path = "typify-impl" }
 typify-macro = { version = "0.5.0", path = "typify-macro" }
 
 assert_cmd = "2.1.2"
-chrono = { version = "0.4.42", features = ["serde"] }
+chrono = { version = "0.4.43", features = ["serde"] }
 clap = { version = "4.5.54", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11"
