@@ -51,6 +51,8 @@ pub enum Error {
         type_name: Option<String>,
         reason: String,
     },
+    #[error("invalid root schema: {reason}")]
+    InvalidRootSchema { reason: String },
 }
 
 impl Error {
@@ -806,17 +808,21 @@ impl TypeSpace {
             definitions,
         } = schema;
 
+        let title = schema.metadata.as_ref().and_then(|m| m.title.as_ref());
+
+        if definitions.is_empty() && title.is_none() {
+            return Err(Error::InvalidRootSchema {
+                reason: "title is required when there are no definitions".to_string(),
+            });
+        }
+
         let mut defs = definitions
             .into_iter()
             .map(|(key, schema)| (RefKey::Def(key), schema))
             .collect::<Vec<_>>();
 
         // Does the root type have a name (otherwise... ignore it)
-        let root_type = schema
-            .metadata
-            .as_ref()
-            .and_then(|m| m.title.as_ref())
-            .is_some();
+        let root_type = title.is_some();
 
         if root_type {
             defs.push((RefKey::Root, schema.into()));
