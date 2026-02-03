@@ -17,13 +17,13 @@ https://github.com/oxidecomputer/typify/compare/v0.6.0\...HEAD[Full list of comm
 
 == 0.6.0 (released 2026-02-03)
 
+https://github.com/oxidecomputer/typify/compare/v0.5.0\...v0.6.0[Full list of commits]
+
 * remove non-idiomatic From<&String> trait impls (#946)
 * allow custom attributes to be applied to all generated types with `attrs` setting (#949)
 * remove non-idiomatic From<&T> for T trait impls (#945)
 * use inline format args in generated code (#934)
 * properly handle JSON pointer escape sequences (#940)
-
-https://github.com/oxidecomputer/typify/compare/v0.5.0\...v0.6.0[Full list of commits]
 
 == 0.5.0 (released 2025-10-09)
 
@@ -91,55 +91,55 @@ https://github.com/oxidecomputer/typify/compare/v0.1.0\...v0.2.0[Full list of co
 
 == 0.1.0 (released 2024-05-13)
 
+https://github.com/oxidecomputer/typify/compare/v0.0.16\...v0.1.0[Full list of commits]
+
 * Improvements and bug fixes around schema merging
 * Fixes for various bugs with defaults
 * Support for the `x-rust-type` extension (#584)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.16\...v0.1.0[Full list of commits]
-
 == 0.0.16 (released 2024-02-28)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.15\...v0.0.16[Full list of commits]
 
 * Introduce a proper Error type for various conversions (#475)
 * Add docs to generated mods (#476)
 * Various enum improvements
 
-https://github.com/oxidecomputer/typify/compare/v0.0.15\...v0.0.16[Full list of commits]
-
 == 0.0.15 (released 2023-12-15)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.14\...v0.0.15[Full list of commits]
 
 * Improvements to array merging and mutual exclusivity checks (#412)
 * Support for 32-bit floating-point numbers (#440)
 * Better handling for unsatisfiable merged schemas (#447)
 * Show original JSON Schema in generated type docs (#454)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.14\...v0.0.15[Full list of commits]
-
 == 0.0.14 (released 2023-09-25)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.13\...v0.0.14[Full list of commits]
 
 * Handle arbitrary containment cycles (#300)
 * More permissive of valid (if useless) schema constructions (#306, #320)
 * Much better handling of `allOf` constructions by merging schemas (#405)
 * Support for more `not` subschemas (#410)
 
-https://github.com/oxidecomputer/typify/compare/v0.0.13\...v0.0.14[Full list of commits]
-
 == 0.0.13 (released 2023-05-14)
+
+https://github.com/oxidecomputer/typify/compare/v0.0.12\...v0.0.13[Full list of commits]
 
 * Fixed-length, single-type arrays to `[T; N]` (#286)
 * Support for reflexive schemas (#292)
 * Much improved support for multi-type schemas (#291)
 * Better error messages on failures
 
-https://github.com/oxidecomputer/typify/compare/v0.0.12\...v0.0.13[Full list of commits]
-
 == 0.0.12 (released 2023-05-03)
 
+
+https://github.com/oxidecomputer/typify/compare/v0.0.11\...v0.0.12[Full list of commits]
 * Improved enum generation (#270)
 * Improved integer type selection based on number criteria (#255)
 * `TypeSpace::add_root_schema()` (#236)
 * ... and many general improvements
-
-https://github.com/oxidecomputer/typify/compare/v0.0.11\...v0.0.12[Full list of commits]
 
 == 0.0.11 (released 2023-03-18)
 
@@ -169,7 +169,6 @@ Consumers can now affect how code is generated in several ways:
 * modifying specific types by name to rename them or add derive macros
 * specifying a replacement type by name
 * specifying a replacement type by schema pattern
-
 
 https://github.com/oxidecomputer/typify/compare/v0.0.10\...v0.0.11[Full list of commits]
 
@@ -236,7 +235,6 @@ https://github.com/oxidecomputer/typify/compare/v0.0.4\...v0.0.5[Full list of co
 * use include_str! so that our macro is re-run if the given file changes (#27)
 * Better handling of enums that look like the Result type (#26)
 * Pass through name for make_map (#25)
-
 
 == 0.0.4 (released 2021-11-06)
 
