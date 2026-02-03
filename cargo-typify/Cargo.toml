@@ -1,6 +1,6 @@
 [package]
 name = "cargo-typify"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "cargo command to generate Rust code from a JSON Schema"

@@ -13,13 +13,17 @@
 
 == Unreleased changes (release date TBD)
 
+https://github.com/oxidecomputer/typify/compare/v0.6.0\...HEAD[Full list of commits]
+
+== 0.6.0 (released 2026-02-03)
+
 * remove non-idiomatic From<&String> trait impls (#946)
 * allow custom attributes to be applied to all generated types with `attrs` setting (#949)
 * remove non-idiomatic From<&T> for T trait impls (#945)
 * use inline format args in generated code (#934)
 * properly handle JSON pointer escape sequences (#940)
 
-https://github.com/oxidecomputer/typify/compare/v0.5.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.5.0\...v0.6.0[Full list of commits]
 
 == 0.5.0 (released 2025-10-09)
 
