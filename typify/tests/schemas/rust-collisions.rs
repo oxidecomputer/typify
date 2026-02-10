@@ -710,6 +710,7 @@ impl Pin {
 #[doc = "    \"final\","]
 #[doc = "    \"fn\","]
 #[doc = "    \"for\","]
+#[doc = "    \"gen\","]
 #[doc = "    \"if\","]
 #[doc = "    \"impl\","]
 #[doc = "    \"in\","]
@@ -798,6 +799,9 @@ impl Pin {
 #[doc = "      \"type\": \"string\""]
 #[doc = "    },"]
 #[doc = "    \"for\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"gen\": {"]
 #[doc = "      \"type\": \"string\""]
 #[doc = "    },"]
 #[doc = "    \"if\": {"]
@@ -937,6 +941,8 @@ pub struct RustKeywordMonster {
     pub fn_: ::std::string::String,
     #[serde(rename = "for")]
     pub for_: ::std::string::String,
+    #[serde(rename = "gen")]
+    pub gen_: ::std::string::String,
     #[serde(rename = "if")]
     pub if_: ::std::string::String,
     #[serde(rename = "impl")]
@@ -2147,6 +2153,7 @@ pub mod builder {
         final_: ::std::result::Result<::std::string::String, ::std::string::String>,
         fn_: ::std::result::Result<::std::string::String, ::std::string::String>,
         for_: ::std::result::Result<::std::string::String, ::std::string::String>,
+        gen_: ::std::result::Result<::std::string::String, ::std::string::String>,
         if_: ::std::result::Result<::std::string::String, ::std::string::String>,
         impl_: ::std::result::Result<::std::string::String, ::std::string::String>,
         in_: ::std::result::Result<::std::string::String, ::std::string::String>,
@@ -2201,6 +2208,7 @@ pub mod builder {
                 final_: Err("no value supplied for final_".to_string()),
                 fn_: Err("no value supplied for fn_".to_string()),
                 for_: Err("no value supplied for for_".to_string()),
+                gen_: Err("no value supplied for gen_".to_string()),
                 if_: Err("no value supplied for if_".to_string()),
                 impl_: Err("no value supplied for impl_".to_string()),
                 in_: Err("no value supplied for in_".to_string()),
@@ -2424,6 +2432,16 @@ pub mod builder {
             self.for_ = value
                 .try_into()
                 .map_err(|e| format!("error converting supplied value for for_: {e}"));
+            self
+        }
+        pub fn gen_<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.gen_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for gen_: {e}"));
             self
         }
         pub fn if_<T>(mut self, value: T) -> Self
@@ -2762,6 +2780,7 @@ pub mod builder {
                 final_: value.final_?,
                 fn_: value.fn_?,
                 for_: value.for_?,
+                gen_: value.gen_?,
                 if_: value.if_?,
                 impl_: value.impl_?,
                 in_: value.in_?,
@@ -2818,6 +2837,7 @@ pub mod builder {
                 final_: Ok(value.final_),
                 fn_: Ok(value.fn_),
                 for_: Ok(value.for_),
+                gen_: Ok(value.gen_),
                 if_: Ok(value.if_),
                 impl_: Ok(value.impl_),
                 in_: Ok(value.in_),
