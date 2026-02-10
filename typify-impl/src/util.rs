@@ -797,10 +797,32 @@ pub(crate) fn sanitize(input: &str, case: Case) -> String {
     };
 
     // Make sure the string is a valid Rust identifier.
-    if syn::parse_str::<syn::Ident>(&out).is_ok() {
+    if accept_as_ident(&out) {
         out
     } else {
         format!("{}_", out)
+    }
+}
+
+/// Return true if the string is a valid Rust identifier.
+///
+/// If this function returns false, typify adds a trailing underscore to it. For
+/// example, `fn` becomes `fn_`.
+pub fn accept_as_ident(ident: &str) -> bool {
+    // Adapted from https://docs.rs/syn/2.0.114/src/syn/ident.rs.html#60-74. The
+    // main change is adding `gen` to the list.
+    match ident {
+        "_" |
+        // Based on https://doc.rust-lang.org/1.65.0/reference/keywords.html
+        "abstract" | "as" | "async" | "await" | "become" | "box" | "break" |
+        "const" | "continue" | "crate" | "do" | "dyn" | "else" | "enum" |
+        "extern" | "false" | "final" | "fn" | "for" | "gen" | "if" | "impl" |
+        "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut" |
+        "override" | "priv" | "pub" | "ref" | "return" | "Self" | "self" |
+        "static" | "struct" | "super" | "trait" | "true" | "try" | "type" |
+        "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" |
+        "while" | "yield" => false,
+        _ => true,
     }
 }
 
@@ -1038,6 +1060,8 @@ mod tests {
     fn test_sanitize() {
         assert_eq!(sanitize("type", Case::Snake), "type_");
         assert_eq!(sanitize("ref", Case::Snake), "ref_");
+        assert_eq!(sanitize("gen", Case::Snake), "gen_");
+        assert_eq!(sanitize("gen", Case::Pascal), "Gen");
         assert_eq!(sanitize("+1", Case::Snake), "plus1");
         assert_eq!(sanitize("-1", Case::Snake), "minus1");
         assert_eq!(sanitize("@timestamp", Case::Pascal), "Timestamp");

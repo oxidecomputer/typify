@@ -261,6 +261,9 @@
         "for": {
           "type": "string"
         },
+        "gen": {
+          "type": "string"
+        },
         "if": {
           "type": "string"
         },
@@ -391,6 +394,7 @@
         "false",
         "fn",
         "for",
+        "gen",
         "if",
         "impl",
         "in",

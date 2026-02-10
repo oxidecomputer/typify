@@ -148,6 +148,7 @@
 
 #![deny(missing_docs)]
 
+pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::Type;

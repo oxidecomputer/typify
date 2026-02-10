@@ -20,6 +20,8 @@ use type_entry::{
 
 use crate::util::{sanitize, Case};
 
+pub use crate::util::accept_as_ident;
+
 #[cfg(test)]
 mod test_util;
 
