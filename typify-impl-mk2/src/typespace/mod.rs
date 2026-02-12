@@ -1,9 +1,11 @@
+mod type_alias;
 mod type_common;
 mod type_enum;
 mod type_struct;
 mod value_tokens;
 
 use serde::Deserialize;
+pub use type_alias::*;
 pub use type_common::*;
 pub use type_enum::*;
 pub use type_struct::*;
@@ -424,6 +426,10 @@ impl Typespace {
                     }
                 }
 
+                Type::NewtypeStruct(newtype_info) => newtype_info.render(self),
+
+                Type::TypeAlias(alias_info) => alias_info.render(self),
+
                 Type::Native(_)
                 | Type::Option(_)
                 | Type::Box(_)
@@ -569,13 +575,22 @@ impl Typespace {
         let std_opt_is_none = format!("{std_opt_type}::is_none");
 
         let ty_ident = match (state, maybe_option_type) {
+            // A required field needs no serde annotations.
             (StructPropertyState::Required, None) => ty_ident,
+
+            // A required field that is an Option<T> needs a custom
+            // deserializer so that the field is mandatory, but may be null;
+            // without this attribute, the default handling is to permit
+            // either.
             (StructPropertyState::Required, Some(_)) => {
                 let opt_deserialize = format!("{std_opt_type}::deserialize");
                 // TODO schemars schema_with?
                 serde_options.push(quote! { deserialize_with = #opt_deserialize });
                 ty_ident
             }
+
+            // An optional field that is not an Option<T> may not be null; we
+            // use the json::serde::deserialize_some function to enforce this.
             (StructPropertyState::Optional, None) => {
                 serde_options.push(quote! { default });
                 serde_options.push(quote! {
@@ -588,6 +603,10 @@ impl Typespace {
                     #std_opt_type<#ty_ident>
                 }
             }
+
+            // An optional field that is also an Option<T> may be the type
+            // value, null, or absent. Customizable settings determine the
+            // handling of this.
             (StructPropertyState::Optional, Some(inner_id)) => {
                 match &self.settings.optional_nullable {
                     TypespaceSettingsOptionalNullable::ConflateAsAbsent => {
@@ -634,23 +653,25 @@ impl Typespace {
                     Type::Struct(_) => todo!(),
                     Type::UnitStruct(_) => todo!(),
                     Type::TupleStruct(_) => todo!(),
+                    Type::NewtypeStruct(_) => todo!(),
+                    Type::TypeAlias(_) => todo!(),
 
                     Type::Native(_) => todo!(),
-                    Type::Option(schema_ref) => {
+                    Type::Option(_schema_ref) => {
                         // This case is basically meaningless, but it's also
                         // fine. Note that #[serde(default)] is a no-op for
                         // Option<T>.
                         serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
                     }
-                    Type::Box(schema_ref) => todo!(),
+                    Type::Box(_schema_ref) => todo!(),
 
                     Type::Vec(_) | Type::Map(_, _) | Type::Set(_) | Type::String => {
                         let is_empty = format!("{ty_ident}::is_empty");
                         serde_options.push(quote! { skip_serializing_if = #is_empty });
                     }
 
-                    Type::Array(schema_ref, _) => todo!(),
-                    Type::Tuple(schema_refs) => todo!(),
+                    Type::Array(_schema_ref, _) => todo!(),
+                    Type::Tuple(_schema_refs) => todo!(),
                     Type::Unit => {
                         // This is a weird one
                         todo!()
@@ -1051,12 +1072,16 @@ fn break_cycles(types: &mut BTreeMap<SchemaRef, Type>) {
     }
 }
 
+/// Represents a type in the Typespace.
 #[derive(Debug, Clone)]
 pub enum Type {
     Enum(TypeEnum),
     Struct(TypeStruct),
     UnitStruct(TypeUnitStruct),
     TupleStruct(TypeTupleStruct),
+
+    NewtypeStruct(TypeNewtypeStruct),
+    TypeAlias(TypeTypeAlias),
 
     Native(String),
     Option(SchemaRef),
@@ -1112,7 +1137,7 @@ impl Type {
             _ => None,
         }
     }
-    fn is_named(&self) -> bool {
+    pub fn is_named(&self) -> bool {
         match self {
             Type::Enum(_) => true,
             Type::Struct(_) => true,
@@ -1128,6 +1153,8 @@ impl Type {
             Type::Struct(type_struct) => type_struct.children(),
             Type::UnitStruct(_) => Vec::new(),
             Type::TupleStruct(type_tuple_struct) => type_tuple_struct.children(),
+            Type::NewtypeStruct(type_newtype_struct) => type_newtype_struct.children(),
+            Type::TypeAlias(alias_info) => alias_info.children(),
 
             Type::Boolean => Vec::new(),
             Type::String => Vec::new(),
@@ -1155,6 +1182,8 @@ impl Type {
             Type::Struct(type_struct) => type_struct.children_with_context(),
             Type::UnitStruct(_) => Vec::new(),
             Type::TupleStruct(type_tuple_struct) => type_tuple_struct.children_with_context(),
+            Type::NewtypeStruct(type_newtype_struct) => type_newtype_struct.children_with_context(),
+            Type::TypeAlias(alias_info) => alias_info.children_with_context(),
 
             Type::Native(_) => Vec::new(),
             Type::Option(id) => vec![(id.clone(), "".to_string())],
@@ -1208,6 +1237,21 @@ impl Type {
 
             Type::UnitStruct(_) => vec![],
             Type::TupleStruct(type_tuple_struct) => type_tuple_struct.contained_children_mut(),
+            Type::NewtypeStruct(type_newtype_struct) => {
+                type_newtype_struct.contained_children_mut()
+            }
+
+            // 2/4/2026
+            // This is an interesting case. Let's say I have something like
+            // this:
+            // struct Foo{ foo: OptionString }
+            // where OptionString is a type alias for Option<String>.
+            // I guess we just want to return the target type... but we'll want
+            // to make sure that doesn't turn this into an alias to a Box...
+            // somehow?
+            Type::TypeAlias(alias_info) => {
+                vec![&mut alias_info.target]
+            }
 
             Type::Option(id) => vec![id],
             Type::Array(id, _) => vec![id],

@@ -98,6 +98,11 @@ impl Converter {
     // The goal was to avoid recursively descending into the tree of types. I
     // think we can still maintain that idea, but tie ourselves in knots a
     // little less.
+    //
+    // TODO 2/3/2026
+    // I modified this to return a transaction with the primary type and
+    // referenced types. I think I may still need to consider how we identify
+    // and reference these subordinate types, but for now it's sort of ok.
 
     pub fn convert(
         &self,
@@ -118,7 +123,7 @@ impl Converter {
         );
         let CanonicalSchemalet { metadata, details } = schemalet;
 
-        match details {
+        let result = match details {
             CanonicalSchemaletDetails::Anything => Type::JsonValue.into(),
             CanonicalSchemaletDetails::Nothing => todo!(),
             CanonicalSchemaletDetails::Constant(_) => todo!(),
@@ -168,7 +173,18 @@ impl Converter {
             }
 
             CanonicalSchemaletDetails::Value(SchemaletValue::Null) => todo!(),
-        }
+        };
+
+        // if let Some(name) = self.known_names.get(id) {
+        //     if !result.primary.is_named() {
+        //         panic!(
+        //             "required name {}, but unnamed type {:#?}",
+        //             name, result.primary
+        //         );
+        //     }
+        // }
+
+        result
     }
 
     fn convert_string(

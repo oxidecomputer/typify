@@ -1,9 +1,10 @@
+use quote::{format_ident, quote};
 use syn::Ident;
 
 use crate::{
     namespace::Name,
     schemalet::SchemaRef,
-    typespace::{JsonValue, NameBuilder},
+    typespace::{JsonValue, NameBuilder, Typespace},
 };
 
 #[derive(Debug, Clone)]
@@ -140,9 +141,10 @@ impl TypeUnitStruct {
 pub struct TypeTupleStruct {
     pub name: NameBuilder,
     pub description: Option<String>,
+    /// Fields of the tuple.
     pub fields: Vec<SchemaRef>,
 
-    /// Optional type, which must be represented as an array, the stores
+    /// Optional type, which must be represented as an array, that stores
     /// items beyond those in `fields`.
     pub rest: Option<SchemaRef>,
 
@@ -197,5 +199,66 @@ impl TypeTupleStruct {
         }
 
         children
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct TypeNewtypeStruct {
+    pub name: NameBuilder,
+    pub description: Option<String>,
+    pub inner: SchemaRef,
+    // TODO 2/11/2026
+    // I think I want to add in some representation of constraints here
+    pub(crate) built: Option<TypeStructBuilt>,
+}
+
+impl TypeNewtypeStruct {
+    pub(crate) fn children(&self) -> Vec<SchemaRef> {
+        vec![self.inner.clone()]
+    }
+
+    pub(crate) fn children_with_context(&self) -> Vec<(SchemaRef, String)> {
+        vec![(self.inner.clone(), "0".to_string())]
+    }
+
+    pub(crate) fn contained_children_mut(&mut self) -> Vec<&mut SchemaRef> {
+        vec![&mut self.inner]
+    }
+
+    pub(crate) fn render(&self, typespace: &Typespace) -> proc_macro2::TokenStream {
+        let Self {
+            name: _,
+            description,
+            inner,
+            built,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
+
+        let inner_ident = typespace.render_ident(inner);
+
+        quote! {
+            #description
+            pub struct #name_ident(#inner_ident)
+
+            impl Serialize for #name_ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer,
+                {
+                    self.0.serialize(serializer)
+                }
+            }
+
+            impl<'de> Deserialize<'de> for #name_ident {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    Ok(Self(#inner_ident::deserialize(deserializer)?))
+                }
+            }
+        }
     }
 }
