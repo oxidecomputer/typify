@@ -2,10 +2,11 @@
 name = "typify-test"
 version = "0.0.0"
 edition = "2021"
+rust-version.workspace = true
 
 [dependencies]
 regress = { workspace = true }
-serde = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 
 [build-dependencies]
@@ -14,5 +15,5 @@ typify = { path = "../typify" }
 ipnetwork = { workspace = true }
 prettyplease = { workspace = true }
 schemars = { workspace = true }
-serde = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
 syn = { workspace = true }
