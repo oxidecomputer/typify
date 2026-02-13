@@ -156,17 +156,17 @@ pub(crate) enum Name {
 impl Name {
     pub fn into_option(self) -> Option<String> {
         match self {
-            Name::Required(s) | Name::Suggested(s) => Some(s),
-            Name::Unknown => None,
+            Self::Required(s) | Self::Suggested(s) => Some(s),
+            Self::Unknown => None,
         }
     }
 
     pub fn append(&self, s: &str) -> Self {
         match self {
-            Name::Required(prefix) | Name::Suggested(prefix) => {
+            Self::Required(prefix) | Self::Suggested(prefix) => {
                 Self::Suggested(format!("{}_{}", prefix, s))
             }
-            Name::Unknown => Name::Unknown,
+            Self::Unknown => Self::Unknown,
         }
     }
 }
