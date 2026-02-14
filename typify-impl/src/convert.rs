@@ -1165,10 +1165,9 @@ impl TypeSpace {
         }
     }
 
-    // TODO deal with metadata
     fn convert_number<'a>(
         &self,
-        _metadata: &'a Option<Box<Metadata>>,
+        metadata: &'a Option<Box<Metadata>>,
         _validation: &Option<Box<schemars::schema::NumberValidation>>,
         format: &Option<String>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
@@ -1184,8 +1183,8 @@ impl TypeSpace {
         */
 
         match format.as_deref() {
-            Some("float") => Ok((TypeEntry::new_float("f32"), &None)),
-            _ => Ok((TypeEntry::new_float("f64"), &None)),
+            Some("float") => Ok((TypeEntry::new_float("f32"), metadata)),
+            _ => Ok((TypeEntry::new_float("f64"), metadata)),
         }
     }
 
@@ -2308,5 +2307,84 @@ mod tests {
         let actual = typ.ident();
         let expected = quote! { not::a::real::library::Uuid };
         assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_float_type_description() {
+        // Test that f64 types preserve their description
+        let schema_json = r#"
+        {
+            "description": "A floating point value",
+            "type": "number"
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let schema_obj = schemars::schema::Schema::Object(schema.schema.clone());
+        let (_, metadata) = type_space
+            .convert_schema_object(Name::Unknown, &schema_obj, &schema.schema)
+            .unwrap();
+
+        // Verify that metadata (including description) is preserved
+        assert!(metadata.is_some());
+        assert_eq!(
+            metadata.as_ref().and_then(|m| m.description.as_deref()),
+            Some("A floating point value")
+        );
+    }
+
+    #[test]
+    fn test_float32_type_description() {
+        // Test that f32 types preserve their description
+        let schema_json = r#"
+        {
+            "description": "A 32-bit float",
+            "type": "number",
+            "format": "float"
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let schema_obj = schemars::schema::Schema::Object(schema.schema.clone());
+        let (_, metadata) = type_space
+            .convert_schema_object(Name::Unknown, &schema_obj, &schema.schema)
+            .unwrap();
+
+        // Verify that metadata (including description) is preserved
+        assert!(metadata.is_some());
+        assert_eq!(
+            metadata.as_ref().and_then(|m| m.description.as_deref()),
+            Some("A 32-bit float")
+        );
+    }
+
+    #[test]
+    fn test_integer_type_description() {
+        // Test that integer types preserve their description (control test)
+        let schema_json = r#"
+        {
+            "description": "An integer value",
+            "type": "integer"
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let schema_obj = schemars::schema::Schema::Object(schema.schema.clone());
+        let (_, metadata) = type_space
+            .convert_schema_object(Name::Unknown, &schema_obj, &schema.schema)
+            .unwrap();
+
+        // Verify that metadata (including description) is preserved
+        assert!(metadata.is_some());
+        assert_eq!(
+            metadata.as_ref().and_then(|m| m.description.as_deref()),
+            Some("An integer value")
+        );
     }
 }
