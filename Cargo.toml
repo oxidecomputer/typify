@@ -42,5 +42,5 @@ syn = { version = "2.0.116", features = ["full"] }
 tempdir = "0.3.7"
 thiserror = "2.0.18"
 trybuild = "1.0.116"
-unicode-ident = "1.0.23"
+unicode-ident = "1.0.24"
 uuid = "1.16.0"
