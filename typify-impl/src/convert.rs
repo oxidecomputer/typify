@@ -1001,10 +1001,7 @@ impl TypeSpace {
                 if !v.is_finite() {
                     return Err(Error::InvalidSchema {
                         type_name: type_name.clone().into_option(),
-                        reason: format!(
-                            "non-finite bound value: {}",
-                            v,
-                        ),
+                        reason: format!("non-finite bound value: {}", v,),
                     });
                 }
             }
@@ -1143,12 +1140,9 @@ impl TypeSpace {
                         // needing to use `.get()` during bounds checks).
                         // Convert fractional bounds to the tightest
                         // integer range: ceil for min, floor for max.
-                        let effective_min = min
-                            .filter(|_| !min_is_exact)
-                            .map(|v| v.ceil() as i128);
-                        let effective_max = max
-                            .filter(|_| !max_is_exact)
-                            .map(|v| v.floor() as i128);
+                        let effective_min = min.filter(|_| !min_is_exact).map(|v| v.ceil() as i128);
+                        let effective_max =
+                            max.filter(|_| !max_is_exact).map(|v| v.floor() as i128);
                         // Rounding can invert bounds (e.g. min=0.5,
                         // max=0.5 becomes 1, 0).
                         if let (Some(lo), Some(hi)) = (effective_min, effective_max) {
@@ -2591,12 +2585,7 @@ mod tests {
 
     #[test]
     fn test_non_finite_minimum() {
-        let result = try_convert_named_integer(
-            "Bad",
-            Some("uint8"),
-            Some(f64::NAN),
-            Some(63.0),
-        );
+        let result = try_convert_named_integer("Bad", Some("uint8"), Some(f64::NAN), Some(63.0));
         match result {
             Err(Error::InvalidSchema { type_name, reason }) => {
                 assert_eq!(type_name.as_deref(), Some("Bad"));
@@ -2608,12 +2597,8 @@ mod tests {
 
     #[test]
     fn test_non_finite_maximum() {
-        let result = try_convert_named_integer(
-            "Bad",
-            Some("uint8"),
-            Some(0.0),
-            Some(f64::INFINITY),
-        );
+        let result =
+            try_convert_named_integer("Bad", Some("uint8"), Some(0.0), Some(f64::INFINITY));
         match result {
             Err(Error::InvalidSchema { type_name, reason }) => {
                 assert_eq!(type_name.as_deref(), Some("Bad"));
@@ -2625,12 +2610,7 @@ mod tests {
 
     #[test]
     fn test_non_finite_negative_infinity() {
-        let result = try_convert_named_integer(
-            "Bad",
-            None,
-            Some(f64::NEG_INFINITY),
-            Some(10.0),
-        );
+        let result = try_convert_named_integer("Bad", None, Some(f64::NEG_INFINITY), Some(10.0));
         match result {
             Err(Error::InvalidSchema { type_name, reason }) => {
                 assert_eq!(type_name.as_deref(), Some("Bad"));
@@ -2644,8 +2624,7 @@ mod tests {
     fn test_fractional_bounds_invert_after_rounding_with_format() {
         // minimum=0.5, maximum=0.5 passes the f64 min>max check, but
         // after rounding (ceil for min, floor for max) becomes 1 > 0.
-        let result =
-            try_convert_named_integer("Bad", Some("uint8"), Some(0.5), Some(0.5));
+        let result = try_convert_named_integer("Bad", Some("uint8"), Some(0.5), Some(0.5));
         match result {
             Err(Error::InvalidSchema { type_name, reason }) => {
                 assert_eq!(type_name.as_deref(), Some("Bad"));
@@ -2684,8 +2663,7 @@ mod tests {
     #[test]
     fn test_fractional_bounds_invert_after_rounding_negative() {
         // Negative fractional: min=ceil(-0.5)=0, max=floor(-0.5)=-1.
-        let result =
-            try_convert_named_integer("Bad", Some("int8"), Some(-0.5), Some(-0.5));
+        let result = try_convert_named_integer("Bad", Some("int8"), Some(-0.5), Some(-0.5));
         match result {
             Err(Error::InvalidSchema { type_name, reason }) => {
                 assert_eq!(type_name.as_deref(), Some("Bad"));
