@@ -498,7 +498,18 @@ impl MergeEmpty {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 #[serde(transparent)]
 pub struct NarrowNumber(pub ::std::num::NonZeroU64);
 impl ::std::ops::Deref for NarrowNumber {

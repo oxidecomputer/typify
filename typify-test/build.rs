@@ -99,6 +99,71 @@ impl JsonSchema for NonAsciiChars {
     }
 }
 
+/// A uint8 bounded to [1, 63].
+struct BoundedUint;
+impl JsonSchema for BoundedUint {
+    fn schema_name() -> String {
+        "BoundedUint".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            instance_type: Some(schemars::schema::InstanceType::Integer.into()),
+            format: Some("uint8".to_string()),
+            number: Some(Box::new(schemars::schema::NumberValidation {
+                minimum: Some(1.0),
+                maximum: Some(63.0),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
+/// An int16 bounded to [-50, -10].
+struct BoundedNegative;
+impl JsonSchema for BoundedNegative {
+    fn schema_name() -> String {
+        "BoundedNegative".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            instance_type: Some(schemars::schema::InstanceType::Integer.into()),
+            format: Some("int16".to_string()),
+            number: Some(Box::new(schemars::schema::NumberValidation {
+                minimum: Some(-50.0),
+                maximum: Some(-10.0),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
+/// No format hint, bounds [0, 63] -- should infer u8.
+struct InferredUint;
+impl JsonSchema for InferredUint {
+    fn schema_name() -> String {
+        "InferredUint".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            instance_type: Some(schemars::schema::InstanceType::Integer.into()),
+            number: Some(Box::new(schemars::schema::NumberValidation {
+                minimum: Some(0.0),
+                maximum: Some(63.0),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
 struct Pancakes;
 impl JsonSchema for Pancakes {
     fn schema_name() -> String {
@@ -132,6 +197,9 @@ fn main() {
     LoginName::add(&mut type_space);
     NonAsciiChars::add(&mut type_space);
     UnknownFormat::add(&mut type_space);
+    BoundedUint::add(&mut type_space);
+    BoundedNegative::add(&mut type_space);
+    InferredUint::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
 
     let contents =
