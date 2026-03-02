@@ -1,6 +1,8 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
+/// Emit a `serde_json::Value` as a token stream that constructs the same value
+/// at runtime.
 pub fn value_tokens(value: &serde_json::Value) -> TokenStream {
     match value {
         serde_json::Value::Null => quote! {

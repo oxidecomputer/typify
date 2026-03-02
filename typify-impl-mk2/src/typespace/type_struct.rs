@@ -135,6 +135,53 @@ impl TypeUnitStruct {
             built: None,
         }
     }
+
+    pub(crate) fn render(&self) -> proc_macro2::TokenStream {
+        let Self {
+            name: _,
+            description,
+            repr,
+            built,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
+
+        let repr_tokens = super::value_tokens::value_tokens(repr);
+        let repr_string = serde_json::to_string(repr).unwrap();
+        quote! {
+            #description
+            #[derive(::std::clone::Clone, ::std::fmt::Debug)]
+            pub struct #name_ident;
+
+            impl ::serde::Serialize for #name_ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::serde::Serializer,
+                {
+                    #repr_tokens.serialize(serializer)
+                }
+            }
+
+            impl<'de> ::serde::Deserialize<'de> for #name_ident {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: ::serde::Deserializer<'de>,
+                {
+                    let expected = #repr_tokens;
+                    let value: serde_json::Value =
+                        ::serde::Deserialize::deserialize(deserializer)?;
+                    if value != expected {
+                        return Err(::serde::de::Error::custom(format!(
+                            "expected unit struct value {}, found {}",
+                            #repr_string,
+                            ::serde_json::to_string(&value).unwrap())));
+                    }
+                    Ok(#name_ident)
+                }
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
