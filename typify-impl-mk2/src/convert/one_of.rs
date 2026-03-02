@@ -123,7 +123,7 @@ impl Converter {
                             rust_name,
                             rename,
                             description: proto.description.clone(),
-                            details: VariantDetails::Simple,
+                            details: VariantDetails::Unit,
                         }
                     }
                     ProtoVariantExternalKind::Typed(variant_name, schema_ref) => todo!(),

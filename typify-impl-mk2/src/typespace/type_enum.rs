@@ -87,7 +87,7 @@ pub enum EnumTagType {
 // the typespace module. Why? Well the benefits of using serde derive and the
 // associated annotations are as follows:
 //
-// 1. Familiar notation for users to understand the serialized form.
+// 1. Familiar notation for users to understand the serialized form
 // 2. Less code for us to generate
 //
 // The first of these falls apart quickly--serde annotations are not part of
@@ -96,9 +96,17 @@ pub enum EnumTagType {
 // effort organizing our structures to emit the appropriate annotations. In
 // addition, we know that there are enumerations that serde simply can't
 // represent, such as if the serialized values of unit variants are not
-// strings. The only serde-supported serialization scheme that requires
-// variants to have string names is external tagging. It makes sense that this
-// is the default for serde since it's the most efficient to deserialize.
+// strings. The only serde-supported serialization scheme that actually
+// requires variants to have string names is external tagging. It makes sense
+// that this is the default for serde since it's the most efficient to
+// deserialize.
+//
+// TODO 3/1/2026
+// I'd like to be able to represent enums in this version that the previous
+// version couldn't, in particular simple enums with a variety of serialized
+// data-types as noted above ({ "enum": [true, 1, "on"] }). Rather than
+// thinking about these as special, I think I'd rather generate the serde
+// implementations for all enums (or maybe all types).
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EnumVariant {
@@ -112,7 +120,7 @@ pub struct EnumVariant {
 impl EnumVariant {
     fn children(&self) -> Vec<SchemaRef> {
         match &self.details {
-            VariantDetails::Simple => Vec::new(),
+            VariantDetails::Unit => Vec::new(),
             VariantDetails::Item(id) => vec![id.clone()],
             VariantDetails::Tuple(items) => items.clone(),
             VariantDetails::Struct(items) => {
@@ -123,7 +131,7 @@ impl EnumVariant {
 
     fn children_with_context(&self) -> Vec<(SchemaRef, String)> {
         match &self.details {
-            VariantDetails::Simple => Vec::new(),
+            VariantDetails::Unit => Vec::new(),
             VariantDetails::Item(id) => vec![(id.clone(), self.rust_name.clone())],
             VariantDetails::Tuple(items) => items
                 .iter()
@@ -145,7 +153,7 @@ impl EnumVariant {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum VariantDetails {
-    Simple,
+    Unit,
     Item(SchemaRef),
     Tuple(Vec<SchemaRef>),
     Struct(Vec<StructProperty>),

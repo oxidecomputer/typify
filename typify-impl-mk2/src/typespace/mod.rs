@@ -207,7 +207,7 @@ impl Typespace {
                             description.as_ref().map(|desc| quote! { #[doc = #desc ]});
 
                         let data = match details {
-                            VariantDetails::Simple => TokenStream::new(),
+                            VariantDetails::Unit => TokenStream::new(),
                             VariantDetails::Item(item) => {
                                 let item_ident = self.render_ident(item);
                                 quote! {
@@ -1170,7 +1170,7 @@ impl Type {
                 let mut out = Vec::new();
                 for variant in variants {
                     match &mut variant.details {
-                        VariantDetails::Simple => {}
+                        VariantDetails::Unit => {}
                         VariantDetails::Item(schema_ref) => {
                             out.push(schema_ref);
                         }
