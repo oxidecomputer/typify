@@ -85,6 +85,22 @@
           "default": 1
         }
       }
+    },
+    "UInt": {
+      "type": "integer"
+    },
+    "UIntContainer": {
+      "type": "object",
+      "properties": {
+        "max_path": {
+          "default": 1,
+          "allOf": [
+            {
+              "$ref": "#/$definitions/UInt"
+            }
+          ]
+        }
+      }
     }
   }
 }

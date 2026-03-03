@@ -7,7 +7,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use conversions::SchemaCache;
-use log::info;
+use log::{debug, info};
 use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
@@ -696,6 +696,7 @@ impl TypeSpace {
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
             let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            debug!("finalizing type entry: {} {:#?}", index, &type_entry);
             type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
