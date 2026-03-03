@@ -86,17 +86,17 @@
         }
       }
     },
-    "NZUInt": {
+    "UInt": {
       "type": "integer"
     },
-    "NZUIntContainer": {
+    "UIntContainer": {
       "type": "object",
       "properties": {
         "max_path": {
           "default": 1,
           "allOf": [
             {
-              "$ref": "#/$definitions/NZUInt"
+              "$ref": "#/$definitions/UInt"
             }
           ]
         }

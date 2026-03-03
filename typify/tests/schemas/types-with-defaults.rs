@@ -115,95 +115,6 @@ impl MrDefaultNumbers {
         Default::default()
     }
 }
-#[doc = "`NzuInt`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"integer\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(transparent)]
-pub struct NzuInt(pub i64);
-impl ::std::ops::Deref for NzuInt {
-    type Target = i64;
-    fn deref(&self) -> &i64 {
-        &self.0
-    }
-}
-impl ::std::convert::From<NzuInt> for i64 {
-    fn from(value: NzuInt) -> Self {
-        value.0
-    }
-}
-impl ::std::convert::From<i64> for NzuInt {
-    fn from(value: i64) -> Self {
-        Self(value)
-    }
-}
-impl ::std::str::FromStr for NzuInt {
-    type Err = <i64 as ::std::str::FromStr>::Err;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
-        Ok(Self(value.parse()?))
-    }
-}
-impl ::std::convert::TryFrom<&str> for NzuInt {
-    type Error = <i64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for NzuInt {
-    type Error = <i64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::fmt::Display for NzuInt {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
-#[doc = "`NzuIntContainer`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"max_path\": {"]
-#[doc = "      \"default\": 1,"]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/$definitions/NZUInt\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct NzuIntContainer {
-    #[serde(default = "defaults::nzu_int_container_max_path")]
-    pub max_path: NzuInt,
-}
-impl ::std::default::Default for NzuIntContainer {
-    fn default() -> Self {
-        Self {
-            max_path: defaults::nzu_int_container_max_path(),
-        }
-    }
-}
-impl NzuIntContainer {
-    pub fn builder() -> builder::NzuIntContainer {
-        Default::default()
-    }
-}
 #[doc = "`OuterThing`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -351,6 +262,95 @@ impl ThingWithDefaults {
         Default::default()
     }
 }
+#[doc = "`UInt`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"integer\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct UInt(pub i64);
+impl ::std::ops::Deref for UInt {
+    type Target = i64;
+    fn deref(&self) -> &i64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<UInt> for i64 {
+    fn from(value: UInt) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<i64> for UInt {
+    fn from(value: i64) -> Self {
+        Self(value)
+    }
+}
+impl ::std::str::FromStr for UInt {
+    type Err = <i64 as ::std::str::FromStr>::Err;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+        Ok(Self(value.parse()?))
+    }
+}
+impl ::std::convert::TryFrom<&str> for UInt {
+    type Error = <i64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<String> for UInt {
+    type Error = <i64 as ::std::str::FromStr>::Err;
+    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl ::std::fmt::Display for UInt {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+#[doc = "`UIntContainer`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"max_path\": {"]
+#[doc = "      \"default\": 1,"]
+#[doc = "      \"allOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/$definitions/UInt\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct UIntContainer {
+    #[serde(default = "defaults::u_int_container_max_path")]
+    pub max_path: UInt,
+}
+impl ::std::default::Default for UIntContainer {
+    fn default() -> Self {
+        Self {
+            max_path: defaults::u_int_container_max_path(),
+        }
+    }
+}
+impl UIntContainer {
+    pub fn builder() -> builder::UIntContainer {
+        Default::default()
+    }
+}
 #[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
@@ -458,46 +458,6 @@ pub mod builder {
                 big_nullable: Ok(value.big_nullable),
                 little_u16: Ok(value.little_u16),
                 little_u8: Ok(value.little_u8),
-            }
-        }
-    }
-    #[derive(Clone, Debug)]
-    pub struct NzuIntContainer {
-        max_path: ::std::result::Result<super::NzuInt, ::std::string::String>,
-    }
-    impl ::std::default::Default for NzuIntContainer {
-        fn default() -> Self {
-            Self {
-                max_path: Ok(super::defaults::nzu_int_container_max_path()),
-            }
-        }
-    }
-    impl NzuIntContainer {
-        pub fn max_path<T>(mut self, value: T) -> Self
-        where
-            T: ::std::convert::TryInto<super::NzuInt>,
-            T::Error: ::std::fmt::Display,
-        {
-            self.max_path = value
-                .try_into()
-                .map_err(|e| format!("error converting supplied value for max_path: {e}"));
-            self
-        }
-    }
-    impl ::std::convert::TryFrom<NzuIntContainer> for super::NzuIntContainer {
-        type Error = super::error::ConversionError;
-        fn try_from(
-            value: NzuIntContainer,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
-            Ok(Self {
-                max_path: value.max_path?,
-            })
-        }
-    }
-    impl ::std::convert::From<super::NzuIntContainer> for NzuIntContainer {
-        fn from(value: super::NzuIntContainer) -> Self {
-            Self {
-                max_path: Ok(value.max_path),
             }
         }
     }
@@ -656,6 +616,46 @@ pub mod builder {
             }
         }
     }
+    #[derive(Clone, Debug)]
+    pub struct UIntContainer {
+        max_path: ::std::result::Result<super::UInt, ::std::string::String>,
+    }
+    impl ::std::default::Default for UIntContainer {
+        fn default() -> Self {
+            Self {
+                max_path: Ok(super::defaults::u_int_container_max_path()),
+            }
+        }
+    }
+    impl UIntContainer {
+        pub fn max_path<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::UInt>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.max_path = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for max_path: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UIntContainer> for super::UIntContainer {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UIntContainer,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                max_path: value.max_path?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::UIntContainer> for UIntContainer {
+        fn from(value: super::UIntContainer) -> Self {
+            Self {
+                max_path: Ok(value.max_path),
+            }
+        }
+    }
 }
 #[doc = r" Generation of default values for serde."]
 pub mod defaults {
@@ -676,9 +676,6 @@ pub mod defaults {
     {
         ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
     }
-    pub(super) fn nzu_int_container_max_path() -> super::NzuInt {
-        super::NzuInt(1_i64)
-    }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
             ::serde_json::from_str::<::serde_json::Value>("[8,6,7]").unwrap(),
@@ -687,6 +684,9 @@ pub mod defaults {
     }
     pub(super) fn test_bed_id() -> ::uuid::Uuid {
         ::serde_json::from_str::<::uuid::Uuid>("\"abc123-is-this-a-uuid\"").unwrap()
+    }
+    pub(super) fn u_int_container_max_path() -> super::UInt {
+        super::UInt(1_i64)
     }
 }
 fn main() {}
