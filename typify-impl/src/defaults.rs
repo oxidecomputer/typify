@@ -137,7 +137,8 @@ impl TypeEntry {
     /// The return value indicates whether the default is the "intrinsic",
     /// typical default for the given type, can be handled by generic function,
     /// or requires a bespoke function to generate the value. This contains
-    /// additional validation logic compared with [`value()`] but is able to skip the parts where we actually emit code.
+    /// additional validation logic compared with [`value()`] but is able to
+    /// skip the parts where we actually emit code.
     ///
     /// [`Value`]: serde_json::Value
     pub(crate) fn validate_value(
@@ -172,7 +173,11 @@ impl TypeEntry {
             }
 
             TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
-                validate_type_id(type_id, type_space, default)
+                // Validate the inner type, but irrespective of the result,
+                // we'll need a custom function to make a default of the outer
+                // newtype.
+                let _ = validate_type_id(type_id, type_space, default)?;
+                Ok(DefaultKind::Specific)
             }
             TypeEntryDetails::Option(type_id) => {
                 if let serde_json::Value::Null = default {
