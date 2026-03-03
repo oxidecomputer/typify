@@ -85,6 +85,22 @@
           "default": 1
         }
       }
+    },
+    "NZUInt": {
+      "type": "integer"
+    },
+    "NZUIntContainer": {
+      "type": "object",
+      "properties": {
+        "max_path": {
+          "default": 1,
+          "allOf": [
+            {
+              "$ref": "#/$definitions/NZUInt"
+            }
+          ]
+        }
+      }
     }
   }
 }
