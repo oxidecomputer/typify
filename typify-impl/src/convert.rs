@@ -7,7 +7,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, ref_key, StringValidator};
+use crate::util::{all_mutually_exclusive, ref_key, ReorderedInstanceType, StringValidator};
 use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -672,7 +672,13 @@ impl TypeSpace {
             } => {
                 // Eliminate duplicates (they hold no significance); they
                 // aren't supposed to be there, but we can still handle it.
-                let unique_types = instance_types.iter().collect::<BTreeSet<_>>();
+                // Convert the types into a form that puts integers before numbers to ensure that
+                // integer get matched before numbers in untagged enum generation.
+                let unique_types = instance_types
+                    .iter()
+                    .copied()
+                    .map(ReorderedInstanceType::from)
+                    .collect::<BTreeSet<_>>();
 
                 // Massage the data into labeled subschemas with the following
                 // format:
@@ -695,8 +701,9 @@ impl TypeSpace {
                 // but why do tomorrow what we could easily to today?
                 let subschemas = unique_types
                     .into_iter()
+                    .map(InstanceType::from)
                     .map(|it| {
-                        let instance_type = Some(SingleOrVec::Single(Box::new(*it)));
+                        let instance_type = Some(SingleOrVec::Single(Box::new(it)));
                         let (label, inner_schema) = match it {
                             InstanceType::Null => (
                                 "null",
