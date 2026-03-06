@@ -442,7 +442,9 @@ fn try_merge_oneof_cartesian_product(
             // Try to merge each pair of variants
             if let Ok(merged) = try_merge_schema(base_variant, new_variant, defs) {
                 // Only include if the merge produced a satisfiable schema
-                if merged != Schema::Bool(false) && !result.contains(&merged) {
+                if merged != Schema::Bool(false)
+                    && !result.iter().any(|existing| existing.roughly(&merged))
+                {
                     result.push(merged);
                 }
             }
