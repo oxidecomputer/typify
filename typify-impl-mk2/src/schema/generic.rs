@@ -7,7 +7,7 @@ use crate::{
         SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata, SchemaletValue,
         SchemaletValueArray, SchemaletValueObject, SchemaletValueString,
     },
-    Error, ErrorKind,
+    Error,
 };
 
 pub type GenericSchemaOrBool = ObjectOrBool<GenericSchema>;
