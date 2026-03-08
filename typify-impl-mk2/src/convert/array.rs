@@ -180,7 +180,7 @@ impl Converter {
                     additional,
                 } = self.convert_array(
                     &inner_id,
-                    NameBuilder::Unset,
+                    NameBuilder::Fixed("xxx_busted".to_string()),
                     &inner_metadata,
                     &inner_array,
                 );

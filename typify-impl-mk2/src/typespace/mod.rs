@@ -442,7 +442,7 @@ impl Typespace {
                     #box_type<#boxed_ident>
                 }
             }
-            Type::Vec(inner_id) => {
+            Type::Set(inner_id) | Type::Vec(inner_id) => {
                 let vec_type = match &self.settings.std {
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
@@ -459,7 +459,6 @@ impl Typespace {
                     ::std::collections::BTreeMap<#key_ident, #value_ident>
                 }
             }
-            // Type::Set(_) => todo!(),
             // Type::Array(_, _) => todo!(),
             // Type::Tuple(items) => todo!(),
             // Type::Unit => todo!(),
@@ -472,7 +471,8 @@ impl Typespace {
                 TypespaceSettingsStd::Unqualified => quote! { String },
             },
             Type::JsonValue => quote! { ::serde_json::Value },
-            _ => quote! { () },
+
+            _ => todo!("no identifier for type {id} {:#?}", ty),
         }
     }
 
@@ -878,6 +878,33 @@ impl TypespaceBuilder {
                     type_inner.built = Some(TypeStructBuilt { name });
                 }
 
+                Type::NewtypeStruct(type_inner) => {
+                    println!("newtype {:#?}", type_inner);
+                    let name = match &type_inner.name {
+                        NameBuilder::Unset => unreachable!(),
+                        NameBuilder::Fixed(s) => {
+                            let nn = namespace.make_name(id.clone());
+                            nn.set_name(s);
+                            nn
+                        }
+                        NameBuilder::Hints(hints) => {
+                            let nn = namespace.make_name(id.clone());
+
+                            for hint in hints {
+                                match hint {
+                                    NameBuilderHint::Title(_) => todo!(),
+                                    NameBuilderHint::Parent(id, s) => {
+                                        nn.derive_name(id, s);
+                                    }
+                                }
+                            }
+                            nn
+                        }
+                    };
+
+                    type_inner.built = Some(TypeStructBuilt { name });
+                }
+
                 _ => {}
             }
 
@@ -1150,7 +1177,7 @@ impl Type {
                 (key_id.clone(), "key".to_string()),
                 (value_id.clone(), "value".to_string()),
             ],
-            Type::Set(_) => todo!(),
+            Type::Set(id) => vec![(id.clone(), "item".to_string())],
             Type::Array(_, _) => todo!(),
             Type::Tuple(_items) => todo!(),
 

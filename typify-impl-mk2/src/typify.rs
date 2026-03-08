@@ -128,7 +128,9 @@ impl Typify {
 
                 if let Some(fragment) = url.fragment() {
                     if let Some(name) = fragment.strip_prefix("/$defs/") {
-                        converter.set_name(work_id.clone(), name.to_string());
+                        if !name.contains('/') {
+                            converter.set_name(work_id.clone(), name.to_string());
+                        }
                     }
                 }
             }

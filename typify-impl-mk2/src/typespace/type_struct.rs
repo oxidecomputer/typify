@@ -336,23 +336,23 @@ impl TypeNewtypeStruct {
 
         quote! {
             #description
-            pub struct #name_ident(#inner_ident)
+            pub struct #name_ident(#inner_ident);
 
-            impl Serialize for #name_ident {
+            impl ::serde::Serialize for #name_ident {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where
-                    S: Serializer,
+                    S: ::serde::Serializer,
                 {
                     self.0.serialize(serializer)
                 }
             }
 
-            impl<'de> Deserialize<'de> for #name_ident {
+            impl<'de> ::serde::Deserialize<'de> for #name_ident {
                 fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
                 where
-                    D: Deserializer<'de>,
+                    D: ::serde::Deserializer<'de>,
                 {
-                    Ok(Self(#inner_ident::deserialize(deserializer)?))
+                    Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
                 }
             }
         }

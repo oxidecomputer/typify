@@ -9,7 +9,7 @@ use crate::{
         CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, SchemaletValue,
         SchemaletValueString,
     },
-    typespace::{NameBuilder, Type},
+    typespace::{NameBuilder, Type, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct},
 };
 
 // TODO naming?
@@ -177,10 +177,45 @@ impl Converter {
 
         if let Some(name) = self.known_names.get(id) {
             if !result.primary.is_named() {
-                panic!(
-                    "required name {}, but unnamed type {:#?}",
-                    name, result.primary
+                println!(
+                    "naming ({name}) the unnamed type: {id} {:#?}",
+                    &result.primary
                 );
+                let ConvertResult {
+                    primary,
+                    mut additional,
+                } = result;
+                let primary = match primary {
+                    Type::Tuple(fields) => Type::TupleStruct(TypeTupleStruct::new(
+                        NameBuilder::Fixed(name.clone()),
+                        metadata.description.clone(),
+                        fields,
+                        None,
+                    )),
+                    ty => {
+                        let SchemaRef::Id(inner_id) = id else {
+                            panic!()
+                        };
+
+                        let inner_ref = SchemaRef::Partial(inner_id.clone(), "@@inner".to_string());
+                        additional.insert(inner_ref.clone(), ty);
+
+                        let outer_ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
+                            NameBuilder::Fixed(name.clone()),
+                            metadata.description.clone(),
+                            None,
+                            inner_ref,
+                            TypeNewtypeConstraints::None,
+                        ));
+
+                        outer_ty
+                    }
+                };
+
+                return ConvertResult {
+                    primary,
+                    additional,
+                };
             }
         }
 

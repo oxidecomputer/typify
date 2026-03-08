@@ -225,7 +225,11 @@ impl Converter {
         // TODO or we somehow defer that decision to the Typespace's finalize step?
         let object = schemalet.as_object()?;
 
-        let typ = self.convert_object(NameBuilder::Unset, &schemalet.metadata, object);
+        let typ = self.convert_object(
+            NameBuilder::Fixed("xxx_broken2".to_string()),
+            &schemalet.metadata,
+            object,
+        );
         let Type::Struct(struct_ty) = typ else {
             return None;
         };
