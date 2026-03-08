@@ -696,7 +696,8 @@ to think this through...
 Currently `Typespace` doesn't have a `Type` to represent either a newtype
 (which we had in typify 1) or a named tuple / tuple-like struct. The former is
 particularly useful for applying additional constraints, but has also been used
-to give names to types that need them e.g. if an array type is under `$defs`. Would we continue to do something like:
+to give names to types that need them e.g. if an array type is under `$defs`.
+Would we continue to do something like:
 
 ```rust
 pub struct Foo(Vec<Bar>):
@@ -732,6 +733,11 @@ I'm not clear if we want to represent a tuple and tuple-like struct as two
 distinct internal types or as one with, say, the presence of a name to
 distinguish. Certainly, the need for custom serialization would also require
 the struct-tuple.
+
+##### Update: 3/7/2026
+
+We've added these representations and imagine some configurability wrt newtypes
+vs. type aliases.
 
 
 #### Normalizer v2

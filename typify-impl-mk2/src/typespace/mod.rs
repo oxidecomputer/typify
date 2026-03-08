@@ -1099,6 +1099,7 @@ impl Type {
             Type::Struct(_) => true,
             Type::UnitStruct(_) => true,
             Type::TupleStruct(_) => true,
+            Type::NewtypeStruct(_) => true,
             _ => false,
         }
     }

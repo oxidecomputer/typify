@@ -253,13 +253,60 @@ impl TypeTupleStruct {
 pub struct TypeNewtypeStruct {
     pub name: NameBuilder,
     pub description: Option<String>,
+    pub default: Option<JsonValue>,
     pub inner: SchemaRef,
-    // TODO 2/11/2026
-    // I think I want to add in some representation of constraints here
+    pub constraints: TypeNewtypeConstraints,
+
     pub(crate) built: Option<TypeStructBuilt>,
 }
 
+// TODO 3/7/2026
+// I'm ambivalent as to whether the constrained form of a newtype should be
+// it's own, fundamentally distinct entity. However for now I'm going to just
+// shove it into the existing newtype representation.
+#[derive(Debug, Clone)]
+pub enum TypeNewtypeConstraints {
+    None,
+    String {
+        min: Option<usize>,
+        max: Option<usize>,
+        patterns: Vec<String>,
+    },
+    Array {
+        min: Option<usize>,
+        max: Option<usize>,
+        // TODO 3/7/2026
+        // I'm quite unsure of how to model the contains keyword. It also
+        // occurs to me that the constraints below don't suffice--we need
+        // an array of structures.
+        // As a side-note, as I recall the interaction between `contains` and
+        // `unevaluatedItems` is quite baroque i.e satisfying a `contains`
+        // constraint counts as evaluation. I suppose this also means that
+        // there's an important distinction between `items` being absent vs.
+        // having the value of `true`.
+        // min_contains: Option<usize>,
+        // max_contains: Option<usize>,
+        // contains: (),
+    },
+}
+
 impl TypeNewtypeStruct {
+    pub(crate) fn new(
+        name: NameBuilder,
+        description: Option<String>,
+        default: Option<JsonValue>,
+        inner: SchemaRef,
+        constraints: TypeNewtypeConstraints,
+    ) -> Self {
+        Self {
+            name,
+            description,
+            default,
+            inner,
+            constraints,
+            built: None,
+        }
+    }
     pub(crate) fn children(&self) -> Vec<SchemaRef> {
         vec![self.inner.clone()]
     }
@@ -276,7 +323,9 @@ impl TypeNewtypeStruct {
         let Self {
             name: _,
             description,
+            default: _,
             inner,
+            constraints,
             built,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});

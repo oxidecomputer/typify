@@ -111,6 +111,8 @@ pub struct SchemaletMetadata {
     pub description: Option<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub examples: Vec<serde_json::Value>,
+    // 3/7/2026
+    // Shouldn't default be in here somewhere?
 }
 
 #[derive(Serialize, Debug, Clone)]

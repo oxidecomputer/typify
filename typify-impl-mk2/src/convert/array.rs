@@ -1,7 +1,7 @@
 use crate::{
     convert::{ConvertResult, Converter},
     schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueArray},
-    typespace::{NameBuilder, NameBuilderHint, Type},
+    typespace::{NameBuilder, NameBuilderHint, Type, TypeNewtypeConstraints, TypeNewtypeStruct},
 };
 
 impl Converter {
@@ -17,7 +17,7 @@ impl Converter {
             //
             // A vanilla, no-nonsense tuple has a fixed number of items (min
             // and max are equal). We take the first N items from `prefixItems`
-            // (or `items` prior to JSON Schema 2020-12) and any additional
+            // (nee `items` prior to JSON Schema 2020-12) and any additional
             // items from `items` (or `additionalItems` prior to JSON Schema
             // 2020-12). Note that our canonical form mimics the simpler,
             // modern, backward-incompatible 2020-12+ format.
@@ -51,6 +51,9 @@ impl Converter {
                         if let Some(items) = items {
                             self.resolve_and_get_stuff(items).id.clone()
                         } else {
+                            // TODO 2/7/2026
+                            // Now that we return a bundle, these internal
+                            // types should go away.
                             SchemaRef::Internal("any".to_string())
                         }
                     }))
@@ -103,6 +106,12 @@ impl Converter {
                     primary: inner_ty,
                     additional,
                 } = self.convert_array(&inner_id, inner_name, &inner_metadata, &inner_array);
+
+                // TODO 3/7/2026
+                // This assertion appears to be invalid. For example, if the
+                // "rest" field has length constraints (or contains
+                // constraints), we would expect there to be more than merely
+                // the primary type.
                 assert!(additional.is_empty());
 
                 let primary = Type::TupleStruct(crate::typespace::TypeTupleStruct::new(
@@ -118,11 +127,17 @@ impl Converter {
                 }
             }
 
+            // An unbounded array. Depending on the value of unique_items this
+            // is modeled as a Vec (false or absent) or a Set (true).
+            // TODO 3/7/2026
+            // Note that the proper rendering of a Set requires that the
+            // referenced type implement certain traits that we didn't do
+            // properly in typify 1
             SchemaletValueArray {
                 items,
                 prefix_items: None,
-                max_items,
-                min_items,
+                max_items: None,
+                min_items: None,
                 unique_items,
             } => {
                 let id = if let Some(items) = items {
@@ -130,7 +145,67 @@ impl Converter {
                 } else {
                     SchemaRef::Internal("any".to_string())
                 };
-                Type::Vec(id).into()
+
+                if unique_items.unwrap_or_default() {
+                    Type::Set(id).into()
+                } else {
+                    Type::Vec(id).into()
+                }
+            }
+
+            // A constrained array.
+            SchemaletValueArray {
+                items,
+                prefix_items: None,
+                max_items,
+                min_items,
+                unique_items,
+            } => {
+                // First construct the unconstrained type; we could probably
+                // do this more directly, but we'll rely on our implementation
+                // above for now.
+                let inner_metadata = SchemaletMetadata::default();
+                let inner_array = SchemaletValueArray {
+                    items: items.clone(),
+                    prefix_items: None,
+                    max_items: None,
+                    min_items: None,
+                    unique_items: *unique_items,
+                };
+
+                let inner_id = SchemaRef::Partial(format!("{id}"), "@inner".to_string());
+
+                let ConvertResult {
+                    primary: inner_ty,
+                    additional,
+                } = self.convert_array(
+                    &inner_id,
+                    NameBuilder::Unset,
+                    &inner_metadata,
+                    &inner_array,
+                );
+                assert!(additional.is_empty());
+
+                // Otherwise why are we here?
+                assert!(min_items.is_some() || max_items.is_some());
+
+                let constraints = TypeNewtypeConstraints::Array {
+                    min: min_items.map(|min| min as usize),
+                    max: max_items.map(|max| max as usize),
+                };
+
+                let ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
+                    name,
+                    metadata.description.clone(),
+                    None,
+                    inner_id.clone(),
+                    constraints,
+                ));
+
+                ConvertResult {
+                    primary: ty,
+                    additional: [(inner_id, inner_ty)].into_iter().collect(),
+                }
             }
 
             _ => {

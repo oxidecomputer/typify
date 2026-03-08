@@ -175,14 +175,14 @@ impl Converter {
             CanonicalSchemaletDetails::Value(SchemaletValue::Null) => todo!(),
         };
 
-        // if let Some(name) = self.known_names.get(id) {
-        //     if !result.primary.is_named() {
-        //         panic!(
-        //             "required name {}, but unnamed type {:#?}",
-        //             name, result.primary
-        //         );
-        //     }
-        // }
+        if let Some(name) = self.known_names.get(id) {
+            if !result.primary.is_named() {
+                panic!(
+                    "required name {}, but unnamed type {:#?}",
+                    name, result.primary
+                );
+            }
+        }
 
         result
     }

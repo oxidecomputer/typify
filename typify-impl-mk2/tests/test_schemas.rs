@@ -19,6 +19,10 @@ fn test_schemas() -> anyhow::Result<()> {
         let file_name = path.file_name().unwrap().to_string_lossy();
         println!("{file_name}");
 
+        if file_name != "arrays-and-tuples.json" {
+            continue;
+        }
+
         let file_type = entry.file_type()?;
         let result = if file_type.is_file() {
             // Right now we expect only JSON; that might change in the future

@@ -66,7 +66,7 @@
       "uniqueItems": true
     },
     "tuple-with-bonus-array": {
-      "$comment": "NB, this isn't working, can delete this case, but it's to complete the idea of a tuple with a rest array that I've been working on",
+      "$comment": "this type requires a custom name because it requires a custom serialization",
       "type": "array",
       "minItems": 2,
       "prefixItems": [
