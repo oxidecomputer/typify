@@ -65,7 +65,7 @@ where
             for hint in &hints {
                 match hint {
                     NameInnerHint::Fixed(s) => {
-                        assert!(!resolved_names.contains(s));
+                        assert!(!resolved_names.contains(s), "dup name {s} ({id})");
                         name.replace(NameInner::Resolved(s.to_pascal_case()));
                         resolved_names.insert(s.clone());
                         resolved_ids.insert(id.clone());

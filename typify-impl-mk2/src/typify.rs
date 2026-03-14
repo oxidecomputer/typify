@@ -179,7 +179,9 @@ impl Typify {
 
                 work.extend(add_children);
 
-                self.typespace.insert(add_id, add_type);
+                if !self.typespace.contains_type(&add_id) {
+                    self.typespace.insert(add_id, add_type);
+                }
             }
         }
 

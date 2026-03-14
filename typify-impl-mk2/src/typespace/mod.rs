@@ -419,6 +419,11 @@ impl Typespace {
             Type::Struct(_) => {
                 quote! { Ref<"???"> }
             }
+            Type::NewtypeStruct(inner) => {
+                let name = inner.built.as_ref().unwrap().name.to_string();
+                let name_ident = format_ident!("{name}");
+                name_ident.into_token_stream()
+            }
             Type::Native(native_type) => syn::parse_str::<syn::Type>(native_type)
                 .unwrap()
                 .into_token_stream(),
@@ -691,7 +696,11 @@ impl TypespaceBuilder {
                 // Not fully sure what I intended for this case. It seems like
                 // if we're getting duplicate entries ... something is way off.
                 let _key = occupied_entry.key();
-                todo!()
+
+                println!("existing {:#?}", occupied_entry.get());
+                println!("new {:#?}", typ);
+
+                todo!("{}", occupied_entry.key());
             }
         }
     }
@@ -746,8 +755,11 @@ impl TypespaceBuilder {
 
         let mut name_hints = BTreeMap::<_, Vec<NameBuilderHint>>::new();
 
+        println!("NAMING");
         while let Some((parent_id, child_id, child_sigil)) = work.pop_front() {
+            println!("parent: {parent_id} child: {child_id} child_sigil: {child_sigil}");
             let child_typ = types.get(&child_id).unwrap();
+            println!("child named? {}", child_typ.is_named());
 
             if child_typ.is_named() {
                 name_hints
@@ -765,17 +777,30 @@ impl TypespaceBuilder {
             }
         }
 
-        println!("{:#?}", name_hints);
+        println!("HINTS {:#?}", name_hints);
 
         types.iter_mut().for_each(|(id, typ)| {
             if let Some(hints) = name_hints.remove(id) {
                 typ.add_name_hints(hints);
+                println!("{} {:#?}", id, typ);
             }
         });
 
         let mut namespace = Namespace::<SchemaRef>::default();
 
+        println!("NAMES");
         for (id, typ) in &mut types {
+            let is_named = typ.is_named();
+            if let Some(name) = typ.get_name_mut() {
+                println!("{id} is_named: {}", is_named);
+                println!("{:#?}", name);
+                println!("{:#?}", typ.children_with_context());
+                println!();
+            }
+        }
+
+        for (id, typ) in &mut types {
+            println!("naming id {id}");
             match typ {
                 Type::Enum(type_enum) => {
                     let name = match &type_enum.name {
@@ -1100,11 +1125,7 @@ pub enum Type {
 
 impl Type {
     fn add_name_hints(&mut self, hints: Vec<NameBuilderHint>) {
-        if let Some(name) = match self {
-            Type::Enum(type_enum) => Some(&mut type_enum.name),
-            Type::Struct(type_struct) => Some(&mut type_struct.name),
-            _ => None,
-        } {
+        if let Some(name) = self.get_name_mut() {
             match name {
                 NameBuilder::Unset => *name = NameBuilder::Hints(hints),
                 NameBuilder::Fixed(_) => {}
@@ -1113,13 +1134,31 @@ impl Type {
         }
     }
 
-    fn get_name(&self) -> Option<&NameBuilder> {
+    fn get_name_mut(&mut self) -> Option<&mut NameBuilder> {
         match self {
-            Type::Enum(type_enum) => Some(&type_enum.name),
-            Type::Struct(type_struct) => Some(&type_struct.name),
-            _ => None,
+            Type::Enum(type_enum) => Some(&mut type_enum.name),
+            Type::Struct(type_struct) => Some(&mut type_struct.name),
+            Type::UnitStruct(type_unit_struct) => Some(&mut type_unit_struct.name),
+            Type::TupleStruct(type_tuple_struct) => Some(&mut type_tuple_struct.name),
+            Type::NewtypeStruct(type_newtype_struct) => Some(&mut type_newtype_struct.name),
+            Type::TypeAlias(type_type_alias) => Some(&mut type_type_alias.name),
+            Type::Native(_)
+            | Type::Option(_)
+            | Type::Box(_)
+            | Type::Vec(_)
+            | Type::Map(_, _)
+            | Type::Set(_)
+            | Type::Array(_, _)
+            | Type::Tuple(_)
+            | Type::Unit
+            | Type::Boolean
+            | Type::Integer(_)
+            | Type::Float(_)
+            | Type::String
+            | Type::JsonValue => None,
         }
     }
+
     pub fn is_named(&self) -> bool {
         match self {
             Type::Enum(_) => true,

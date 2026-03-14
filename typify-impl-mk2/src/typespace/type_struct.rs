@@ -312,7 +312,7 @@ impl TypeNewtypeStruct {
     }
 
     pub(crate) fn children_with_context(&self) -> Vec<(SchemaRef, String)> {
-        vec![(self.inner.clone(), "0".to_string())]
+        vec![(self.inner.clone(), "inner".to_string())]
     }
 
     pub(crate) fn contained_children_mut(&mut self) -> Vec<&mut SchemaRef> {
