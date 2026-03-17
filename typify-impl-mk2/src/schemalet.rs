@@ -434,6 +434,12 @@ impl Schemalet {
             }),
             SchemaletDetails::ExclusiveOneOf(schema_refs) => {
                 if let Some(subschemas) = resolve_all(done, &schema_refs) {
+                    // An important difference between an exclusive one of and
+                    // a **canonical** exclusive one of is that the latter can
+                    // have no invalid schemas, or--more affirmatively--every
+                    // subschema must have a value that satisfies it. Both
+                    // must satisfy the condition that a given value must
+                    // satisfy at most one of the subschemas.
                     let subschemas = subschemas
                         .into_iter()
                         .filter(|(_, schemalet)| !schemalet.is_nothing())
@@ -557,9 +563,9 @@ fn simplify_string_of(
     match &ss.details {
         CanonicalSchemaletDetails::Anything => todo!(),
         CanonicalSchemaletDetails::Nothing => todo!(),
-        CanonicalSchemaletDetails::Constant(value) => todo!(),
-        CanonicalSchemaletDetails::Reference(schema_ref) => todo!(),
-        CanonicalSchemaletDetails::Note(schema_ref) => todo!(),
+        CanonicalSchemaletDetails::Constant(_value) => todo!(),
+        CanonicalSchemaletDetails::Reference(_schema_ref) => todo!(),
+        CanonicalSchemaletDetails::Note(_schema_ref) => todo!(),
 
         CanonicalSchemaletDetails::ExclusiveOneOf { typ, subschemas } => {
             let mut new_work = Vec::new();
@@ -643,13 +649,13 @@ fn merge_yes_no(
             },
             Default::default(),
         ),
-        CanonicalSchemaletDetails::Constant(value) => todo!(),
-        CanonicalSchemaletDetails::Reference(schema_ref) => todo!(),
-        CanonicalSchemaletDetails::Note(schema_ref) => todo!(),
+        CanonicalSchemaletDetails::Constant(_value) => todo!(),
+        CanonicalSchemaletDetails::Reference(_schema_ref) => todo!(),
+        CanonicalSchemaletDetails::Note(_schema_ref) => todo!(),
         CanonicalSchemaletDetails::ExclusiveOneOf { typ, subschemas } => {
             todo!()
         }
-        CanonicalSchemaletDetails::Value(schemalet_value) => {
+        CanonicalSchemaletDetails::Value(_schemalet_value) => {
             todo!()
         }
     }
@@ -765,6 +771,11 @@ fn expand_any_of(
         new_subschemas.push(new_ref);
     }
 
+    // TODO 3/16/2026
+    // I'm pretty confident that each unique bit pattern of yesses and nos
+    // results in a unique schema. Where this might unravel is when we expand
+    // out an allOf that has multiple exclusive-one-ofs.
+
     let new_schemalet = Schemalet {
         metadata,
         details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
@@ -782,6 +793,8 @@ fn merge_all(
     // Separate out xors (disjunctions) from other schemas.
     let mut xors = Vec::new();
     let mut rest = Vec::new();
+    // TODO 5/16/2026
+    // Pretty sure this could just be Iterator::partition.
     for (schema_ref, schema) in subschemas {
         match &schema.details {
             CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => xors.push(subschemas),
@@ -790,6 +803,20 @@ fn merge_all(
     }
 
     if let Some(subschemas) = xors.pop() {
+        // When we have multiple exclusive one ofs, we take the outer product
+        // of them. The outer product is itself mutually exclusive. The
+        // process of merging two schemas can only further restrict the input
+        // schemas; alternatively: the result of a merge can be no more
+        // permissive than its inputs. Therefore, for a value to satisfy
+        // multiple schemas from this outer product, it must have also
+        // satisfied multiple schemas from one of the two input sets. Since
+        // we know that to be impossible (both input sets are mutually
+        // exclusive), we can conclude that the outer product is mutually
+        // exclusive as well.
+        //
+        // It may be the case that entries in the outer product are
+        // unsatisfiable, but that's fine--they'll be pruned later.
+
         let mut merge_groups = subschemas
             .iter()
             .map(|schema_ref| (schema_ref, vec![schema_ref]))
@@ -860,6 +887,9 @@ fn merge_all(
             new_work.push((new_schemaref.clone(), new_schemalet));
             new_subschemas.push(new_schemaref);
         }
+
+        // Note that this list may include schemas that turn out to be
+        // unsatisfiable, but that's fine; we prune them later.
 
         let new_schemalet = Schemalet {
             metadata,

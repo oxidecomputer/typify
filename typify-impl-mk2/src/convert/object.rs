@@ -115,21 +115,26 @@ impl Converter {
                 properties,
                 required,
                 additional_properties: Some(additional_properties),
-                property_names: Some(pattern_properties),
+                property_names: Some(property_names),
                 pattern_properties: None,
             } if properties.is_empty() && required.is_empty() => {
                 // TODO 7/25/2025
-                // Another interesting one: patternProperties is implicitly a
+                // Another interesting one: propertyNames is implicitly a
                 // string type, but where do we enforce that? We could do that
                 // here, or we could do that in the
                 // normalization/canonicalization step.
+
+                // TODO 3/14/2026
+                // I need to check on this, but I'm 95% sure that we did end
+                // up enforcing this in the normalization step. It should be
+                // an implicit invariant here.
 
                 let GottenStuff {
                     id: key_id,
                     schemalet: _,
                     description: _,
                     title: _,
-                } = self.resolve_and_get_stuff(pattern_properties);
+                } = self.resolve_and_get_stuff(property_names);
                 // let key_id = SchemaRef::Internal("string".to_string());
                 let GottenStuff {
                     id: value_id,

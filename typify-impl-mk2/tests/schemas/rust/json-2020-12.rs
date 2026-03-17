@@ -1,4 +1,89 @@
 //! Code generated from tests/schemas/input/json-2020-12
+pub struct SchemaArray(Vec<SchemaRoot>);
+impl ::serde::Serialize for SchemaArray {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for SchemaArray {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct AnchorString(String);
+impl ::serde::Serialize for AnchorString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for AnchorString {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct UriReferenceString(::url::Url);
+impl ::serde::Serialize for UriReferenceString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UriReferenceString {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct UriString(::url::Url);
+impl ::serde::Serialize for UriString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UriString {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct NonNegativeInteger(i64);
+impl ::serde::Serialize for NonNegativeInteger {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for NonNegativeInteger {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub enum SimpleTypes {
     #[serde(rename = "array")]
@@ -16,11 +101,45 @@ pub enum SimpleTypes {
     #[serde(rename = "string")]
     String,
 }
+pub struct StringArray(Vec<String>);
+impl ::serde::Serialize for StringArray {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for StringArray {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]
 pub enum SchemaRootObjectType {
     String(SimpleTypes),
-    Array(Vec<SimpleTypes>),
+    Array(SchemaRootObjectTypeArray),
+}
+pub struct SchemaRootObjectTypeArray(Vec<SimpleTypes>);
+impl ::serde::Serialize for SchemaRootObjectTypeArray {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectTypeArray {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]
@@ -32,7 +151,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        anchor: Option<String>,
+        anchor: Option<AnchorString>,
         #[serde(
             rename = "$comment",
             default,
@@ -53,14 +172,14 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        dynamic_anchor: Option<String>,
+        dynamic_anchor: Option<AnchorString>,
         #[serde(
             rename = "$dynamicRef",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        dynamic_ref: Option<::url::Url>,
+        dynamic_ref: Option<UriReferenceString>,
         #[serde(
             rename = "$id",
             default,
@@ -74,35 +193,35 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        recursive_anchor: Option<String>,
+        recursive_anchor: Option<AnchorString>,
         #[serde(
             rename = "$recursiveRef",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        recursive_ref: Option<::url::Url>,
+        recursive_ref: Option<UriReferenceString>,
         #[serde(
             rename = "$ref",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        ref_: Option<::url::Url>,
+        ref_: Option<UriReferenceString>,
         #[serde(
             rename = "$schema",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        schema: Option<::url::Url>,
+        schema: Option<UriString>,
         #[serde(
             rename = "$vocabulary",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        vocabulary: Option<::std::collections::BTreeMap<::url::Url, bool>>,
+        vocabulary: Option<::std::collections::BTreeMap<UriString, bool>>,
         #[serde(
             rename = "additionalProperties",
             default,
@@ -116,14 +235,14 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        all_of: Option<Vec<SchemaRoot>>,
+        all_of: Option<SchemaArray>,
         #[serde(
             rename = "anyOf",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        any_of: Option<Vec<SchemaRoot>>,
+        any_of: Option<SchemaArray>,
         #[serde(
             rename = "const",
             default,
@@ -184,7 +303,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        dependent_required: Option<::std::collections::BTreeMap<String, Vec<String>>>,
+        dependent_required: Option<::std::collections::BTreeMap<String, StringArray>>,
         #[serde(
             rename = "dependentSchemas",
             default,
@@ -263,28 +382,28 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        max_contains: Option<i64>,
+        max_contains: Option<NonNegativeInteger>,
         #[serde(
             rename = "maxItems",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        max_items: Option<i64>,
+        max_items: Option<NonNegativeInteger>,
         #[serde(
             rename = "maxLength",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        max_length: Option<i64>,
+        max_length: Option<NonNegativeInteger>,
         #[serde(
             rename = "maxProperties",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        max_properties: Option<i64>,
+        max_properties: Option<NonNegativeInteger>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -297,28 +416,28 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        min_contains: Option<i64>,
+        min_contains: Option<NonNegativeInteger>,
         #[serde(
             rename = "minItems",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        min_items: Option<i64>,
+        min_items: Option<NonNegativeInteger>,
         #[serde(
             rename = "minLength",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        min_length: Option<i64>,
+        min_length: Option<NonNegativeInteger>,
         #[serde(
             rename = "minProperties",
             default,
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        min_properties: Option<i64>,
+        min_properties: Option<NonNegativeInteger>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -344,7 +463,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        one_of: Option<Vec<SchemaRoot>>,
+        one_of: Option<SchemaArray>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -364,7 +483,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        prefix_items: Option<Vec<SchemaRoot>>,
+        prefix_items: Option<SchemaArray>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -390,7 +509,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        required: Option<Vec<String>>,
+        required: Option<StringArray>,
         #[serde(
             default,
             deserialize_with = "::json_serde::deserialize_some",
@@ -445,6 +564,6 @@ pub enum SchemaRoot {
 #[serde(untagged)]
 pub enum SchemaRootObjectDependenciesValue {
     Variant0(SchemaRoot),
-    Variant1(Vec<String>),
+    Variant1(StringArray),
 }
 fn main() {}

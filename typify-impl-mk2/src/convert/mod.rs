@@ -67,14 +67,27 @@ impl Converter {
         loop {
             let schemalet = self.get(id);
 
-            let CanonicalSchemaletDetails::Reference(next_id) = &schemalet.details else {
-                return GottenStuff {
-                    id,
-                    schemalet,
-                    description,
-                    title,
-                };
+            let next_id = match &schemalet.details {
+                CanonicalSchemaletDetails::Note(next_id)
+                | CanonicalSchemaletDetails::Reference(next_id) => next_id,
+                _ => {
+                    return GottenStuff {
+                        id,
+                        schemalet,
+                        description,
+                        title,
+                    };
+                }
             };
+
+            // let CanonicalSchemaletDetails::Reference(next_id) = &schemalet.details else {
+            //     return GottenStuff {
+            //         id,
+            //         schemalet,
+            //         description,
+            //         title,
+            //     };
+            // };
 
             if let (None, Some(new_title)) = (&title, &schemalet.metadata.title) {
                 title = Some(new_title.clone());
