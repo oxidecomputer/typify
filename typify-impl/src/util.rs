@@ -837,9 +837,9 @@ pub(crate) fn expand_symbols(input: &str) -> String {
         .replace("!=", " bang eq ")
         .replace(">=", " gt eq ")
         .replace("<=", " lt eq ")
-        .replace("\u{2260}", " neq ")  // ≠
-        .replace("\u{2265}", " gte ")  // ≥
-        .replace("\u{2264}", " lte ")  // ≤
+        .replace("\u{2260}", " neq ") // ≠
+        .replace("\u{2265}", " gte ") // ≥
+        .replace("\u{2264}", " lte ") // ≤
         .replace('=', " eq ")
         .replace('>', " gt ")
         .replace('<', " lt ")
@@ -967,7 +967,7 @@ impl StringValidator {
 /// This is used for untagged enum generation to ensure that integer values
 /// are matched before number values.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub(crate)  enum ReorderedInstanceType {
+pub(crate) enum ReorderedInstanceType {
     /// The JSON schema instance type `null`.
     Null,
 
@@ -1189,7 +1189,12 @@ mod tests {
             .map(|c| sanitize(&expand_symbols(c), Case::Pascal))
             .collect();
         let unique_names: std::collections::HashSet<&String> = names.iter().collect();
-        assert_eq!(names.len(), unique_names.len(), "variant names not unique: {:?}", names);
+        assert_eq!(
+            names.len(),
+            unique_names.len(),
+            "variant names not unique: {:?}",
+            names
+        );
     }
 
     #[test]

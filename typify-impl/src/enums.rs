@@ -1470,12 +1470,10 @@ mod tests {
         let mut output = OutputSpace::default();
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
-        let schema_value: serde_json::Value =
-            serde_json::to_value(&original_schema).unwrap();
-        let schema_json = serde_json::to_string_pretty(
-            &crate::type_entry::normalize_json_numbers(schema_value),
-        )
-        .unwrap();
+        let schema_value: serde_json::Value = serde_json::to_value(&original_schema).unwrap();
+        let schema_json =
+            serde_json::to_string_pretty(&crate::type_entry::normalize_json_numbers(schema_value))
+                .unwrap();
         let schema_lines = schema_json.lines();
         let expected = quote! {
             #[doc = "`ResultX`"]
