@@ -93,12 +93,11 @@ this generation is an area of active work.
 
 ### AnyOf
 
-The `anyOf` construct is much trickier. If can be close to an `enum` (`oneOf`),
-but where no particular variant might be canonical or unique for particular
-data. While today we (imprecisely) model these as structs with optional,
-flattened members, this is one of the weaker areas of code generation.
-
-Issues describing example schemas and desired output are welcome and helpful.
+The `anyOf` construct maps to a Rust `#[serde(untagged)]` enum, similar to
+`oneOf`. Typify runs the same enum detection pipeline (external, internal,
+adjacent, untagged tagging) for `anyOf` schemas. This correctly handles
+`anyOf` with primitive types (strings, integers), mixed object/primitive
+schemas, and overlapping object properties.
 
 ### AdditionalProperties
 
@@ -122,6 +121,57 @@ infinity of equivalent schemas. One can therefore construct a `struct` with
 named properties **and** a flattened map of additional properties by using a
 value for `additionalProperties` that is equivalent to `true` or absent with
 regard to validation, by using some e.g. `{}`.
+
+### If / Then / Else
+
+JSON Schema's `if`/`then`/`else` construct is transformed into a `oneOf`:
+the `then` branch becomes `allOf(if, then)` and the `else` branch becomes
+`allOf(not(if), else)`. The result is a Rust enum with variants for each
+branch.
+
+### Not
+
+The `not` construct is supported for schemas with enumerated values (creating
+a "deny list" newtype that rejects those values). For more complex `not`
+schemas (e.g., `not: { type: "object" }`), typify falls back to
+`serde_json::Value`.
+
+### JSON Schema 2020-12 Support
+
+Typify supports JSON Schema 2020-12 (and 2019-09) via automatic
+normalization. When a schema declares `"$schema":
+"https://json-schema.org/draft/2020-12/schema"`, the following keywords are
+transparently converted to their draft-07 equivalents before processing:
+
+| 2020-12 keyword | Transformed to |
+|-----------------|---------------|
+| `$defs` | `definitions` |
+| `prefixItems` + `items` | `items` (array) + `additionalItems` |
+| `$ref` alongside other keywords | `allOf` wrapping |
+| `dependentRequired` | `dependencies` (array form) |
+| `dependentSchemas` | `dependencies` (schema form) |
+| `unevaluatedProperties` | `additionalProperties` (best-effort) |
+| `$dynamicRef` | `$ref` (best-effort) |
+
+Use `add_schema_from_value()` instead of `add_root_schema()` to enable
+auto-detection and normalization.
+
+### External References
+
+Typify supports `$ref` pointing to external files (e.g.,
+`"$ref": "other-file.json#/definitions/Foo"`). External schemas are bundled
+into the root schema's definitions before processing.
+
+Use `add_schema_with_externals()` to provide a map of external schemas:
+
+```rust
+let mut externals = BTreeMap::new();
+externals.insert("types.json".to_string(), types_json_value);
+type_space.add_schema_with_externals(main_schema_value, externals)?;
+```
+
+Non-standard internal references (e.g., `$ref: "#/properties/foo"`) are also
+automatically resolved.
 
 ## Rust -> Schema -> Rust
 
@@ -336,20 +386,6 @@ There are some known areas where we'd like to improve:
 JSON schema can express a wide variety of types. Some of them are easy to model
 in Rust; others aren't. There's a lot of work to be done to handle esoteric
 types. Examples from users are very helpful in this regard.
-
-### Bounded numbers
-
-Bounded numbers aren't very well handled. Consider, for example, the schema:
-
-```json
-{
-  "type": "integer",
-  "minimum": 1,
-  "maximum": 6
-}
-```
-
-The resulting types won't enforce those value constraints.
 
 ### Configurable dependencies
 

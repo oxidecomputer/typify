@@ -11,9 +11,30 @@
 
 // cargo-release: next header goes here (do not change this line)
 
-== Unreleased changes (release date TBD)
+== Unreleased changes (barbacane-dev fork)
 
-https://github.com/oxidecomputer/typify/compare/v0.6.1\...HEAD[Full list of commits]
+=== Bug fixes
+* fix untagged enum variant ordering: Integer now comes before Number to prevent unreachable deserialization (#991)
+* generate `Default` impl for structs where all required fields have explicit defaults (#918)
+* generate `TryFrom` instead of `From` for bounded integer newtypes, enforcing min/max constraints (#986)
+* render integer `minimum`/`maximum` as integers (not floats) in doc comments (#843)
+* handle special characters in enum variant names (`=`, `>`, `≥`, etc.) without panicking (#948)
+* replace broken `anyOf` flattened struct with proper untagged enum generation (#414, #895, #710, #790)
+* replace `patternProperties` and `propertyNames` assertion panics with best-effort behavior (#882)
+* select smallest integer type for bounded ranges (e.g., `[1..32]` → `NonZeroU8`) (#975)
+* replace panics in `not` schema handling with graceful fallback to `serde_json::Value` (#954, #489, #435)
+* replace panics in `ref_key()` and `convert_reference()` with proper error returns
+
+=== New features
+* JSON Schema `if`/`then`/`else` support via transformation to `oneOf` (#480)
+* JSON Schema 2020-12 and 2019-09 support via automatic normalization (#579)
+** `$defs`, `prefixItems`, `dependentRequired`, `dependentSchemas`, `unevaluatedProperties`, `$dynamicRef`
+* external `$ref` support: reference schemas in other files (#201, #933)
+* non-`$defs` internal `$ref` support: reference any JSON Pointer path (#828)
+* new API: `TypeSpace::add_schema_from_value()` — auto-detects and normalizes any JSON Schema draft
+* new API: `TypeSpace::add_schema_with_externals()` — handles multi-file schema bundles
+
+https://github.com/barbacane-dev/typify/compare/v0.6.1\...HEAD[Full list of commits]
 
 == 0.6.1 (released 2026-02-10)
 
