@@ -25,6 +25,57 @@ pub mod error {
         }
     }
 }
+#[doc = "anyOf with many primitive types"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"integer\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"boolean\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"description\": \"anyOf with many primitive types\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum AnyOfManyPrimitives {
+    String(::std::string::String),
+    Integer(i64),
+    Number(f64),
+    Boolean(bool),
+    Null,
+}
+impl ::std::convert::From<i64> for AnyOfManyPrimitives {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+impl ::std::convert::From<f64> for AnyOfManyPrimitives {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+impl ::std::convert::From<bool> for AnyOfManyPrimitives {
+    fn from(value: bool) -> Self {
+        Self::Boolean(value)
+    }
+}
 #[doc = "anyOf with string and integer"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -60,6 +111,47 @@ impl ::std::fmt::Display for AnyOfMixedPrimitives {
 impl ::std::convert::From<i64> for AnyOfMixedPrimitives {
     fn from(value: i64) -> Self {
         Self::Integer(value)
+    }
+}
+#[doc = "anyOf mixing object and primitive (flatten would panic)"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"value\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"value\""]
+#[doc = "      ],"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"boolean\""]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"description\": \"anyOf mixing object and primitive (flatten would panic)\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum AnyOfObjectAndPrimitive {
+    Object { value: ::std::string::String },
+    String(::std::string::String),
+    Boolean(bool),
+}
+impl ::std::convert::From<bool> for AnyOfObjectAndPrimitive {
+    fn from(value: bool) -> Self {
+        Self::Boolean(value)
     }
 }
 #[doc = "anyOf with overlapping object properties"]
@@ -110,6 +202,61 @@ pub enum AnyOfObjectsOverlapping {
         age: i64,
         name: ::std::string::String,
     },
+}
+#[doc = "anyOf with a single subschema (degenerate case)"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"description\": \"anyOf with a single subschema (degenerate case)\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(transparent)]
+pub struct AnyOfSingle(pub ::std::string::String);
+impl ::std::ops::Deref for AnyOfSingle {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
+        &self.0
+    }
+}
+impl ::std::convert::From<AnyOfSingle> for ::std::string::String {
+    fn from(value: AnyOfSingle) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<::std::string::String> for AnyOfSingle {
+    fn from(value: ::std::string::String) -> Self {
+        Self(value)
+    }
+}
+impl ::std::str::FromStr for AnyOfSingle {
+    type Err = ::std::convert::Infallible;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+        Ok(Self(value.to_string()))
+    }
+}
+impl ::std::fmt::Display for AnyOfSingle {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
 }
 #[doc = "anyOf with overlapping string types"]
 #[doc = r""]
@@ -318,6 +465,108 @@ impl ::std::convert::TryFrom<::std::string::String> for AnyOfStringsVariant1 {
     }
 }
 impl<'de> ::serde::Deserialize<'de> for AnyOfStringsVariant1 {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
+    }
+}
+#[doc = "anyOf with null plus two overlapping types"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"minLength\": 1,"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"null\""]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"description\": \"anyOf with null plus two overlapping types\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum AnyOfWithNullAndOverlapping {
+    Variant0(::std::string::String),
+    Variant1(AnyOfWithNullAndOverlappingVariant1),
+    Variant2,
+}
+impl ::std::convert::From<AnyOfWithNullAndOverlappingVariant1> for AnyOfWithNullAndOverlapping {
+    fn from(value: AnyOfWithNullAndOverlappingVariant1) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[doc = "`AnyOfWithNullAndOverlappingVariant1`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"minLength\": 1,"]
+#[doc = "  \"type\": \"string\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
+pub struct AnyOfWithNullAndOverlappingVariant1(::std::string::String);
+impl ::std::ops::Deref for AnyOfWithNullAndOverlappingVariant1 {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
+        &self.0
+    }
+}
+impl ::std::convert::From<AnyOfWithNullAndOverlappingVariant1> for ::std::string::String {
+    fn from(value: AnyOfWithNullAndOverlappingVariant1) -> Self {
+        value.0
+    }
+}
+impl ::std::str::FromStr for AnyOfWithNullAndOverlappingVariant1 {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value.chars().count() < 1usize {
+            return Err("shorter than 1 characters".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl ::std::convert::TryFrom<&str> for AnyOfWithNullAndOverlappingVariant1 {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for AnyOfWithNullAndOverlappingVariant1 {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for AnyOfWithNullAndOverlappingVariant1 {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for AnyOfWithNullAndOverlappingVariant1 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,

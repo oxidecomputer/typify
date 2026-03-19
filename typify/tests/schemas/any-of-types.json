@@ -42,6 +42,44 @@
         { "$ref": "#/definitions/any-of-strings" },
         { "type": "integer" }
       ]
+    },
+    "any-of-with-null-and-overlapping": {
+      "description": "anyOf with null plus two overlapping types",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "any-of-object-and-primitive": {
+      "description": "anyOf mixing object and primitive (flatten would panic)",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "value": { "type": "string" }
+          },
+          "required": ["value"]
+        },
+        { "type": "string" },
+        { "type": "boolean" }
+      ]
+    },
+    "any-of-single": {
+      "description": "anyOf with a single subschema (degenerate case)",
+      "anyOf": [
+        { "type": "string" }
+      ]
+    },
+    "any-of-many-primitives": {
+      "description": "anyOf with many primitive types",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "integer" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
     }
   }
 }
