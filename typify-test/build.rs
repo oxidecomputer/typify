@@ -125,7 +125,118 @@ struct UnknownFormat {
     pancakes: Pancakes,
 }
 
+fn generate_from_json_schema(json: &str, output_name: &str) {
+    let root_schema: schemars::schema::RootSchema = serde_json::from_str(json).unwrap();
+    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+    type_space.add_root_schema(root_schema).unwrap();
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push(output_name);
+    fs::write(out_file, contents).unwrap();
+}
+
 fn main() {
+    // Generate types for runtime serde integration tests.
+    // Using inline JSON schemas to avoid dependency issues with external crates.
+
+    // PR #991: Integer before Number in untagged enums
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "IntOrStr": {
+                    "type": ["integer", "string"]
+                }
+            }
+        }"#,
+        "codegen_int_or_str.rs",
+    );
+
+    // PR #918: Required fields with defaults
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "RequiredWithDefaults": {
+                    "type": "object",
+                    "required": ["name", "count"],
+                    "properties": {
+                        "name": { "type": "string", "default": "unnamed" },
+                        "count": { "type": "integer", "default": 0 },
+                        "label": { "type": "string" }
+                    }
+                }
+            }
+        }"#,
+        "codegen_required_defaults.rs",
+    );
+
+    // PR #986: Bounded integer newtypes
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "Dscp": {
+                    "type": "integer",
+                    "format": "uint8",
+                    "minimum": 0,
+                    "maximum": 63
+                }
+            }
+        }"#,
+        "codegen_dscp.rs",
+    );
+
+    // PR #948: Special char variant names
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "Comparator": {
+                    "anyOf": [
+                        { "type": "string", "const": "=" },
+                        { "type": "string", "const": ">" },
+                        { "type": "string", "const": "<" },
+                        { "type": "string", "const": "\u2265" },
+                        { "type": "string", "const": ">=" },
+                        { "type": "string", "const": "\u2264" },
+                        { "type": "string", "const": "<=" },
+                        { "type": "string", "const": "\u2260" },
+                        { "type": "string", "const": "!=" }
+                    ]
+                }
+            }
+        }"#,
+        "codegen_comparator.rs",
+    );
+
+    // PR #414: anyOf with mixed types (would have panicked before)
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "AnyOfMixed": {
+                    "anyOf": [
+                        { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] },
+                        { "type": "string" },
+                        { "type": "integer" }
+                    ]
+                }
+            }
+        }"#,
+        "codegen_any_of_mixed.rs",
+    );
+
+    // PR #954: not schema (would have panicked before)
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "NotObject": { "not": { "type": "object" } },
+                "ArrayNonObjects": {
+                    "type": "array",
+                    "items": { "not": { "type": "object" } }
+                }
+            }
+        }"#,
+        "codegen_not_types.rs",
+    );
+
     let mut type_space = TypeSpace::default();
 
     WithSet::add(&mut type_space);

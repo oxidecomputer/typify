@@ -74,10 +74,16 @@ mod custom_map {
     #![allow(dead_code)]
 
     #[allow(private_interfaces)]
-    #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+    #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
     pub struct CustomMap<K, V> {
         key: K,
         value: V,
+    }
+
+    impl<K, V> CustomMap<K, V> {
+        fn is_empty(&self) -> bool {
+            false
+        }
     }
 
     include!(concat!(env!("OUT_DIR"), "/codegen_custommap.rs"));
@@ -92,4 +98,180 @@ mod custom_map {
             },
         };
     }
+}
+
+// ========================================================================
+// Runtime serde integration tests for our fork fixes
+// ========================================================================
+
+mod int_or_str {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_int_or_str.rs"));
+}
+
+mod required_defaults {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_required_defaults.rs"));
+}
+
+mod dscp {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_dscp.rs"));
+}
+
+mod comparator {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_comparator.rs"));
+}
+
+mod any_of_mixed {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_any_of_mixed.rs"));
+}
+
+mod not_types {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_not_types.rs"));
+}
+
+// --- PR #991: Integer before Number in untagged enums ---
+
+#[test]
+fn test_int_or_str_integer_deserialization() {
+    let v: int_or_str::IntOrStr = serde_json::from_str("42").unwrap();
+    assert!(matches!(v, int_or_str::IntOrStr::Integer(42)));
+}
+
+#[test]
+fn test_int_or_str_string_deserialization() {
+    let v: int_or_str::IntOrStr = serde_json::from_str(r#""hello""#).unwrap();
+    assert!(matches!(v, int_or_str::IntOrStr::String(_)));
+}
+
+#[test]
+fn test_int_or_str_roundtrip() {
+    let original = int_or_str::IntOrStr::Integer(99);
+    let json = serde_json::to_string(&original).unwrap();
+    let back: int_or_str::IntOrStr = serde_json::from_str(&json).unwrap();
+    assert!(matches!(back, int_or_str::IntOrStr::Integer(99)));
+}
+
+// --- PR #918: Default impl for required fields with defaults ---
+
+#[test]
+fn test_required_with_defaults_default_impl() {
+    let d = required_defaults::RequiredWithDefaults::default();
+    assert_eq!(d.name, "unnamed");
+    assert_eq!(d.count, 0);
+    assert!(d.label.is_none());
+}
+
+#[test]
+fn test_required_with_defaults_deserialize_empty() {
+    let v: required_defaults::RequiredWithDefaults = serde_json::from_str("{}").unwrap();
+    assert_eq!(v.name, "unnamed");
+    assert_eq!(v.count, 0);
+}
+
+#[test]
+fn test_required_with_defaults_deserialize_partial() {
+    let v: required_defaults::RequiredWithDefaults =
+        serde_json::from_str(r#"{"name": "foo"}"#).unwrap();
+    assert_eq!(v.name, "foo");
+    assert_eq!(v.count, 0);
+}
+
+// --- PR #986: TryFrom for bounded integers ---
+
+#[test]
+fn test_dscp_try_from_valid() {
+    assert!(dscp::Dscp::try_from(42u8).is_ok());
+    assert_eq!(*dscp::Dscp::try_from(42u8).unwrap(), 42);
+}
+
+#[test]
+fn test_dscp_try_from_boundary() {
+    assert!(dscp::Dscp::try_from(0u8).is_ok());
+    assert!(dscp::Dscp::try_from(63u8).is_ok());
+    assert!(dscp::Dscp::try_from(64u8).is_err());
+    assert!(dscp::Dscp::try_from(255u8).is_err());
+}
+
+#[test]
+fn test_dscp_deserialize_valid() {
+    let d: dscp::Dscp = serde_json::from_str("42").unwrap();
+    assert_eq!(*d, 42);
+}
+
+#[test]
+fn test_dscp_deserialize_out_of_range() {
+    assert!(serde_json::from_str::<dscp::Dscp>("64").is_err());
+    assert!(serde_json::from_str::<dscp::Dscp>("255").is_err());
+}
+
+// --- PR #948: Special char variant names ---
+
+#[test]
+fn test_comparator_deserialize() {
+    let v: comparator::Comparator = serde_json::from_str(r#""=""#).unwrap();
+    assert!(matches!(v, comparator::Comparator::Eq));
+
+    let v: comparator::Comparator = serde_json::from_str(r#"">=""#).unwrap();
+    assert!(matches!(v, comparator::Comparator::GtEq));
+
+    let v: comparator::Comparator = serde_json::from_str("\"≥\"").unwrap();
+    assert!(matches!(v, comparator::Comparator::Gte));
+
+    let v: comparator::Comparator = serde_json::from_str("\"≠\"").unwrap();
+    assert!(matches!(v, comparator::Comparator::Neq));
+
+    let v: comparator::Comparator = serde_json::from_str(r#""!=""#).unwrap();
+    assert!(matches!(v, comparator::Comparator::BangEq));
+}
+
+#[test]
+fn test_comparator_roundtrip() {
+    for json in [
+        r#""=""#, r#"">""#, r#""<""#, "\"≥\"", r#"">=""#, "\"≤\"", r#""<=""#, "\"≠\"", r#""!=""#,
+    ] {
+        let v: comparator::Comparator = serde_json::from_str(json).unwrap();
+        let back = serde_json::to_string(&v).unwrap();
+        assert_eq!(json, back);
+    }
+}
+
+// --- PR #414: anyOf overhaul (no more panic on primitives) ---
+
+#[test]
+fn test_any_of_mixed_object() {
+    let v: any_of_mixed::AnyOfMixed = serde_json::from_str(r#"{"value": "test"}"#).unwrap();
+    assert!(matches!(v, any_of_mixed::AnyOfMixed::Object { .. }));
+}
+
+#[test]
+fn test_any_of_mixed_string() {
+    let v: any_of_mixed::AnyOfMixed = serde_json::from_str(r#""hello""#).unwrap();
+    assert!(matches!(v, any_of_mixed::AnyOfMixed::String(_)));
+}
+
+#[test]
+fn test_any_of_mixed_integer() {
+    let v: any_of_mixed::AnyOfMixed = serde_json::from_str("42").unwrap();
+    assert!(matches!(v, any_of_mixed::AnyOfMixed::Integer(42)));
+}
+
+// --- PR #954: not schema types don't panic ---
+
+#[test]
+fn test_not_object_accepts_primitives() {
+    // not: { type: "object" } falls back to serde_json::Value
+    let _: not_types::NotObject = serde_json::from_str("42").unwrap();
+    let _: not_types::NotObject = serde_json::from_str(r#""hello""#).unwrap();
+    let _: not_types::NotObject = serde_json::from_str("true").unwrap();
+}
+
+#[test]
+fn test_array_non_objects() {
+    let v: not_types::ArrayNonObjects = serde_json::from_str(r#"[1, "two", true]"#).unwrap();
+    assert_eq!(v.len(), 3);
 }
