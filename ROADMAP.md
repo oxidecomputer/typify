@@ -37,8 +37,8 @@ Major rework following upstream's "Big Plan" (#579).
 ## Phase 5: Polish
 
 - [ ] **#862** — String enums with `const` values + fallback variant.
-- [ ] **#975** — Better constrained integer types (appropriate width, newtype with TryFrom).
-- [ ] **#882** — patternProperties in merged schemas (currently panics).
+- [x] **#975** — Smallest integer type selection for bounded ranges (e.g. `[1..32]` → `NonZeroU8`).
+- [x] **#882** — Replace patternProperties/propertyNames assertion panics with best-effort behavior.
 - [ ] **#498** — Discriminator / internally tagged enum support.
 - [ ] **#821 / #695 / #801** — Naming conflicts and `title` propagation.
 - [ ] **#886** — schemars 1.0 upgrade.
