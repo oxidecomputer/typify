@@ -139,6 +139,16 @@ mod not_types {
     include!(concat!(env!("OUT_DIR"), "/codegen_not_types.rs"));
 }
 
+mod schema_2020_12 {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_2020_12.rs"));
+}
+
+mod external_ref {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_external_ref.rs"));
+}
+
 // --- PR #991: Integer before Number in untagged enums ---
 
 #[test]
@@ -300,4 +310,31 @@ fn test_not_object_accepts_primitives() {
 fn test_array_non_objects() {
     let v: not_types::ArrayNonObjects = serde_json::from_str(r#"[1, "two", true]"#).unwrap();
     assert_eq!(v.len(), 3);
+}
+
+// --- JSON Schema 2020-12 support ---
+
+#[test]
+fn test_2020_12_defs_and_dependent_required() {
+    // Schema uses $defs (not definitions) and dependentRequired (2020-12)
+    let json = r#"{
+        "address": { "street": "123 Main", "city": "Anytown" }
+    }"#;
+    let v: schema_2020_12::Location = serde_json::from_str(json).unwrap();
+    assert_eq!(v.address.street, "123 Main");
+    assert_eq!(v.address.city, "Anytown");
+}
+
+// --- External $ref support ---
+
+#[test]
+fn test_external_ref_order() {
+    // Order schema references Item from types.json
+    let json = r#"{
+        "item": { "name": "Widget", "price": 9.99 },
+        "quantity": 5
+    }"#;
+    let v: external_ref::Order = serde_json::from_str(json).unwrap();
+    assert_eq!(v.quantity, 5);
+    assert_eq!(v.item.name, "Widget");
 }

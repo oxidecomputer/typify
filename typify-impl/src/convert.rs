@@ -1366,13 +1366,23 @@ impl TypeSpace {
         ref_name: &str,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         if !ref_name.starts_with('#') {
-            panic!("external references are not supported: {}", ref_name);
+            return Err(Error::InvalidSchema {
+                type_name: None,
+                reason: format!(
+                    "external reference '{}' not resolved. Use \
+                     add_schema_with_externals() to provide external schemas.",
+                    ref_name
+                ),
+            });
         }
         let key = ref_key(ref_name);
         let type_id = self
             .ref_to_id
             .get(&key)
-            .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
+            .ok_or_else(|| Error::InvalidSchema {
+                type_name: None,
+                reason: format!("$ref '{}' not found in definitions", ref_name),
+            })?;
         Ok((
             TypeEntryDetails::Reference(type_id.clone()).into(),
             metadata,

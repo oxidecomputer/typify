@@ -25,12 +25,14 @@ pub use crate::util::accept_as_ident;
 #[cfg(test)]
 mod test_util;
 
+mod bundler;
 mod conversions;
 mod convert;
 mod cycles;
 mod defaults;
 mod enums;
 mod merge;
+mod normalize;
 mod output;
 mod rust_extension;
 mod structs;
@@ -878,6 +880,10 @@ impl TypeSpace {
     /// referenced types and the top-level type (if there is one and it has a
     /// title).
     pub fn add_root_schema(&mut self, schema: RootSchema) -> Result<Option<TypeId>> {
+        // Resolve any non-$defs internal refs before processing
+        let mut schema = schema;
+        bundler::resolve_internal_refs(&mut schema);
+
         let RootSchema {
             meta_schema: _,
             schema,
@@ -907,6 +913,53 @@ impl TypeSpace {
         } else {
             Ok(None)
         }
+    }
+
+    /// Load a raw JSON schema value (any draft). Auto-detects JSON Schema
+    /// 2020-12 and normalizes keywords to draft-07 equivalents before
+    /// processing. Also resolves non-standard internal `$ref` paths.
+    pub fn add_schema_from_value(
+        &mut self,
+        mut value: serde_json::Value,
+    ) -> Result<Option<TypeId>> {
+        normalize::normalize_schema(&mut value);
+        let root_schema: RootSchema =
+            serde_json::from_value(value).map_err(|e| Error::InvalidSchema {
+                type_name: None,
+                reason: e.to_string(),
+            })?;
+        self.add_root_schema(root_schema)
+    }
+
+    /// Load a raw JSON schema along with external schema files that it may
+    /// reference via `$ref`. The `external_schemas` map is keyed by the
+    /// filename/URI as it appears in `$ref` values (e.g., "other-file.json").
+    ///
+    /// Both the root schema and external schemas are auto-normalized from
+    /// 2020-12 to draft-07 if needed.
+    pub fn add_schema_with_externals(
+        &mut self,
+        mut value: serde_json::Value,
+        external_schemas: std::collections::BTreeMap<String, serde_json::Value>,
+    ) -> Result<Option<TypeId>> {
+        // Normalize all schemas
+        normalize::normalize_schema(&mut value);
+        let mut normalized_externals = std::collections::BTreeMap::new();
+        for (key, mut ext_value) in external_schemas {
+            normalize::normalize_schema(&mut ext_value);
+            normalized_externals.insert(key, ext_value);
+        }
+
+        let mut root_schema: RootSchema =
+            serde_json::from_value(value).map_err(|e| Error::InvalidSchema {
+                type_name: None,
+                reason: e.to_string(),
+            })?;
+
+        // Bundle external refs into local definitions
+        bundler::bundle_external_refs(&mut root_schema, &normalized_externals);
+
+        self.add_root_schema(root_schema)
     }
 
     /// Get a type given its ID.

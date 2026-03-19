@@ -251,6 +251,84 @@ fn main() {
         "codegen_not_types.rs",
     );
 
+    // JSON Schema 2020-12: uses $defs, prefixItems, items:false
+    {
+        let schema_json = r##"{
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$defs": {
+                "Address": {
+                    "type": "object",
+                    "properties": {
+                        "street": { "type": "string" },
+                        "city": { "type": "string" }
+                    },
+                    "required": ["street", "city"]
+                },
+                "Tag": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "type": "object",
+            "title": "Location",
+            "properties": {
+                "address": { "$ref": "#/$defs/Address" },
+                "tag": { "$ref": "#/$defs/Tag" }
+            },
+            "required": ["address"],
+            "dependentRequired": {
+                "tag": ["address"]
+            }
+        }"##;
+        let value: serde_json::Value = serde_json::from_str(schema_json).unwrap();
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+        type_space.add_schema_from_value(value).unwrap();
+        let contents =
+            prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+        out_file.push("codegen_2020_12.rs");
+        fs::write(out_file, contents).unwrap();
+    }
+
+    // External $ref: main schema references types.json
+    {
+        let main_json = r#"{
+            "type": "object",
+            "title": "Order",
+            "definitions": {},
+            "properties": {
+                "item": { "$ref": "types.json#/definitions/Item" },
+                "quantity": { "type": "integer" }
+            },
+            "required": ["item", "quantity"]
+        }"#;
+        let types_json = r#"{
+            "definitions": {
+                "Item": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "price": { "type": "number" }
+                    },
+                    "required": ["name", "price"]
+                }
+            }
+        }"#;
+        let main_value: serde_json::Value = serde_json::from_str(main_json).unwrap();
+        let types_value: serde_json::Value = serde_json::from_str(types_json).unwrap();
+        let mut externals = std::collections::BTreeMap::new();
+        externals.insert("types.json".to_string(), types_value);
+        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+        type_space
+            .add_schema_with_externals(main_value, externals)
+            .unwrap();
+        let contents =
+            prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+        out_file.push("codegen_external_ref.rs");
+        fs::write(out_file, contents).unwrap();
+    }
+
     let mut type_space = TypeSpace::default();
 
     WithSet::add(&mut type_space);

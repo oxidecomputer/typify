@@ -564,10 +564,11 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
         RefKey::Root
     } else if let Some(idx) = ref_name.rfind('/') {
         let decoded_segment = decode_segment(&ref_name[idx + 1..]);
-
         RefKey::Def(decoded_segment)
     } else {
-        panic!("expected a '/' in $ref: {}", ref_name)
+        // Handle bare refs like "#SomeName" (strip leading #)
+        let name = ref_name.strip_prefix('#').unwrap_or(ref_name);
+        RefKey::Def(name.to_string())
     }
 }
 
