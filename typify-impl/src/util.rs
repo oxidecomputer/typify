@@ -826,6 +826,34 @@ pub fn accept_as_ident(ident: &str) -> bool {
     }
 }
 
+/// Expand common symbols and operators into English names so they
+/// produce meaningful identifiers. Used for enum variant naming
+/// when the raw value is primarily symbolic (e.g., ">=", "!=").
+pub(crate) fn expand_symbols(input: &str) -> String {
+    // Multi-character operators must be replaced before single chars.
+    // Unicode symbols get distinct names from their ASCII equivalents
+    // to avoid collisions (e.g. ≥ vs >=).
+    input
+        .replace("!=", " bang eq ")
+        .replace(">=", " gt eq ")
+        .replace("<=", " lt eq ")
+        .replace("\u{2260}", " neq ")  // ≠
+        .replace("\u{2265}", " gte ")  // ≥
+        .replace("\u{2264}", " lte ")  // ≤
+        .replace('=', " eq ")
+        .replace('>', " gt ")
+        .replace('<', " lt ")
+        .replace('+', " plus ")
+        .replace('*', " star ")
+        .replace('/', " slash ")
+        .replace('&', " and ")
+        .replace('|', " or ")
+        .replace('!', " bang ")
+        .replace('~', " tilde ")
+        .replace('^', " caret ")
+        .replace('%', " pct ")
+}
+
 pub(crate) fn recase(input: &str, case: Case) -> (String, Option<String>) {
     let new = sanitize(input, case);
     let rename = if new == input {
@@ -1001,7 +1029,10 @@ mod tests {
     };
 
     use crate::{
-        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case, ReorderedInstanceType},
+        util::{
+            decode_segment, expand_symbols, sanitize, schemas_mutually_exclusive, Case,
+            ReorderedInstanceType,
+        },
         Name,
     };
 
@@ -1132,6 +1163,48 @@ mod tests {
         );
         assert_eq!(sanitize("Ipv6Net", Case::Snake), "ipv6_net");
         assert_eq!(sanitize("V6", Case::Pascal), "V6");
+    }
+
+    #[test]
+    fn test_expand_symbols_operators() {
+        // Basic operators
+        assert_eq!(sanitize(&expand_symbols("="), Case::Pascal), "Eq");
+        assert_eq!(sanitize(&expand_symbols(">"), Case::Pascal), "Gt");
+        assert_eq!(sanitize(&expand_symbols("<"), Case::Pascal), "Lt");
+
+        // Multi-char ASCII operators
+        assert_eq!(sanitize(&expand_symbols(">="), Case::Pascal), "GtEq");
+        assert_eq!(sanitize(&expand_symbols("<="), Case::Pascal), "LtEq");
+        assert_eq!(sanitize(&expand_symbols("!="), Case::Pascal), "BangEq");
+
+        // Unicode operators get distinct names
+        assert_eq!(sanitize(&expand_symbols("≥"), Case::Pascal), "Gte");
+        assert_eq!(sanitize(&expand_symbols("≤"), Case::Pascal), "Lte");
+        assert_eq!(sanitize(&expand_symbols("≠"), Case::Pascal), "Neq");
+
+        // All 9 comparator variants are unique
+        let comparators = ["=", ">", "<", "≥", ">=", "≤", "<=", "≠", "!="];
+        let names: Vec<String> = comparators
+            .iter()
+            .map(|c| sanitize(&expand_symbols(c), Case::Pascal))
+            .collect();
+        let unique_names: std::collections::HashSet<&String> = names.iter().collect();
+        assert_eq!(names.len(), unique_names.len(), "variant names not unique: {:?}", names);
+    }
+
+    #[test]
+    fn test_expand_symbols_preserves_alphanumeric() {
+        // Regular strings should pass through without changes
+        assert_eq!(expand_symbols("hello"), "hello");
+        assert_eq!(expand_symbols("foo_bar"), "foo_bar");
+        assert_eq!(expand_symbols("123"), "123");
+    }
+
+    #[test]
+    fn test_expand_symbols_mixed() {
+        // Mixed strings with some symbols
+        assert_eq!(sanitize(&expand_symbols("x+y"), Case::Pascal), "XPlusY");
+        assert_eq!(sanitize(&expand_symbols("a&b"), Case::Pascal), "AAndB");
     }
 
     #[test]

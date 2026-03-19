@@ -13,7 +13,7 @@ use crate::{
     output::{OutputSpace, OutputSpaceMod},
     sanitize,
     structs::{generate_serde_attr, DefaultFunction},
-    util::{get_type_name, metadata_description, unique, TypePatch},
+    util::{expand_symbols, get_type_name, metadata_description, unique, TypePatch},
     Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
@@ -259,7 +259,18 @@ impl TypeEntryEnum {
             variant.ident_name = Some(ident_name);
         });
 
-        // If variants aren't unique, we're turn the elided characters into
+        // If variants aren't unique, try expanding symbols into English
+        // names (e.g. "=" → "eq", ">=" → "gte") before falling back to
+        // 'X' replacement.
+        if !variants_unique(&variants) {
+            variants.iter_mut().for_each(|variant| {
+                let expanded = expand_symbols(&variant.raw_name);
+                let ident_name = sanitize(&expanded, Case::Pascal);
+                variant.ident_name = Some(ident_name);
+            });
+        }
+
+        // If variants still aren't unique, turn the elided characters into
         // 'x's.
         if !variants_unique(&variants) {
             variants.iter_mut().for_each(|variant| {

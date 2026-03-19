@@ -243,6 +243,140 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
         value.parse()
     }
 }
+#[doc = "Comparison operators"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"const\": \"=\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \">\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"<\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"≥\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \">=\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"≤\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"<=\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"≠\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"const\": \"!=\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"description\": \"Comparison operators\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum ComparatorString {
+    #[serde(rename = "=")]
+    Eq,
+    #[serde(rename = ">")]
+    Gt,
+    #[serde(rename = "<")]
+    Lt,
+    #[serde(rename = "≥")]
+    Gte,
+    #[serde(rename = ">=")]
+    GtEq,
+    #[serde(rename = "≤")]
+    Lte,
+    #[serde(rename = "<=")]
+    LtEq,
+    #[serde(rename = "≠")]
+    Neq,
+    #[serde(rename = "!=")]
+    BangEq,
+}
+impl ::std::fmt::Display for ComparatorString {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Eq => f.write_str("="),
+            Self::Gt => f.write_str(">"),
+            Self::Lt => f.write_str("<"),
+            Self::Gte => f.write_str("≥"),
+            Self::GtEq => f.write_str(">="),
+            Self::Lte => f.write_str("≤"),
+            Self::LtEq => f.write_str("<="),
+            Self::Neq => f.write_str("≠"),
+            Self::BangEq => f.write_str("!="),
+        }
+    }
+}
+impl ::std::str::FromStr for ComparatorString {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "=" => Ok(Self::Eq),
+            ">" => Ok(Self::Gt),
+            "<" => Ok(Self::Lt),
+            "≥" => Ok(Self::Gte),
+            ">=" => Ok(Self::GtEq),
+            "≤" => Ok(Self::Lte),
+            "<=" => Ok(Self::LtEq),
+            "≠" => Ok(Self::Neq),
+            "!=" => Ok(Self::BangEq),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for ComparatorString {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for ComparatorString {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for ComparatorString {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`DiskAttachment`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

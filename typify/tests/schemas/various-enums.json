@@ -402,6 +402,20 @@
           "type": "null"
         }
       ]
+    },
+    "ComparatorString": {
+      "description": "Comparison operators",
+      "anyOf": [
+        { "type": "string", "const": "=" },
+        { "type": "string", "const": ">" },
+        { "type": "string", "const": "<" },
+        { "type": "string", "const": "\u2265" },
+        { "type": "string", "const": ">=" },
+        { "type": "string", "const": "\u2264" },
+        { "type": "string", "const": "<=" },
+        { "type": "string", "const": "\u2260" },
+        { "type": "string", "const": "!=" }
+      ]
     }
   }
 }
