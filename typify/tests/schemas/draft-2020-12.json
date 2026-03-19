@@ -1,0 +1,48 @@
+{
+  "$comment": "Test JSON Schema 2020-12 specific features",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "email-address": {
+      "type": "string",
+      "format": "email",
+      "minLength": 5
+    },
+    "person": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "$ref": "#/$defs/email-address" },
+        "age": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["name", "email"],
+      "dependentRequired": {
+        "age": ["name"]
+      }
+    },
+    "team": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/person" },
+          "minItems": 1
+        },
+        "metadata": {}
+      },
+      "required": ["name", "members"],
+      "unevaluatedProperties": false
+    },
+    "tagged-value": {
+      "description": "2020-12: $ref alongside other keywords (wrapped in allOf)",
+      "type": "object",
+      "properties": {
+        "tag": { "type": "string" },
+        "value": {
+          "$ref": "#/$defs/person",
+          "description": "A person with additional context"
+        }
+      }
+    }
+  }
+}

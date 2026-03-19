@@ -5,7 +5,6 @@ use std::{error::Error, fs::File, io::BufReader};
 use expectorate::assert_contents;
 use glob::glob;
 use quote::quote;
-use schemars::schema::RootSchema;
 use serde_json::json;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
@@ -45,8 +44,9 @@ fn validate_schema(
     let file = File::open(path)?;
     let reader = BufReader::new(file);
 
-    // Read the JSON contents of the file as an instance of `User`.
-    let root_schema: RootSchema = serde_json::from_reader(reader)?;
+    // Read as raw JSON first so we can use add_schema_from_value which
+    // auto-normalizes 2020-12 schemas to draft-07 before processing.
+    let raw_value: serde_json::Value = serde_json::from_reader(reader)?;
 
     let schema_raw = json!(
         {
@@ -83,7 +83,7 @@ fn validate_schema(
             )
             .with_struct_builder(true),
     );
-    type_space.add_root_schema(root_schema)?;
+    type_space.add_schema_from_value(raw_value)?;
 
     // Make a file with the generated code.
     let code = quote! {

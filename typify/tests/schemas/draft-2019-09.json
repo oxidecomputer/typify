@@ -1,0 +1,38 @@
+{
+  "$comment": "Test JSON Schema 2019-09 specific features",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$defs": {
+    "color": {
+      "type": "string",
+      "enum": ["red", "green", "blue"]
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "color": { "$ref": "#/$defs/color" }
+      },
+      "required": ["x", "y"],
+      "dependentSchemas": {
+        "color": {
+          "properties": {
+            "opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+    "shape": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "points": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/point" }
+        }
+      },
+      "required": ["kind", "points"],
+      "unevaluatedProperties": false
+    }
+  }
+}
