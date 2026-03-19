@@ -325,6 +325,16 @@ fn test_2020_12_defs_and_dependent_required() {
     assert_eq!(v.address.city, "Anytown");
 }
 
+#[test]
+fn test_2020_12_prefix_items_tuple() {
+    // prefixItems + items:false should generate a proper Rust tuple
+    let json = r#"[42.5, -73.0]"#;
+    let v: schema_2020_12::Coordinates = serde_json::from_str(json).unwrap();
+    // Coordinates is a newtype around (f64, f64)
+    assert_eq!((v.0).0, 42.5);
+    assert_eq!((v.0).1, -73.0);
+}
+
 // --- External $ref support ---
 
 #[test]

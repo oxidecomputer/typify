@@ -60,11 +60,28 @@ fn normalize_object(map: &mut Map<String, Value>) {
     }
 
     // 2. prefixItems → items (as array), items → additionalItems
+    //    Also inject minItems/maxItems matching the tuple length so that
+    //    typify's tuple detection works (it requires both to be set).
     if let Some(prefix_items) = map.remove("prefixItems") {
+        let tuple_len = prefix_items.as_array().map(|a| a.len());
+
         // In 2020-12, `items` with `prefixItems` means "additionalItems"
         if let Some(items) = map.remove("items") {
+            // items: false means no additional items beyond the tuple
+            let is_closed = matches!(&items, Value::Bool(false));
             map.insert("additionalItems".to_string(), items);
+
+            // For closed tuples, set min/max to the tuple length
+            if is_closed {
+                if let Some(len) = tuple_len {
+                    map.entry("minItems".to_string())
+                        .or_insert_with(|| Value::Number(serde_json::Number::from(len)));
+                    map.entry("maxItems".to_string())
+                        .or_insert_with(|| Value::Number(serde_json::Number::from(len)));
+                }
+            }
         }
+
         map.insert("items".to_string(), prefix_items);
     }
 
@@ -259,6 +276,25 @@ mod tests {
             json!([{ "type": "string" }, { "type": "integer" }])
         );
         assert_eq!(schema["additionalItems"], json!(false));
+        // Closed tuple should have minItems/maxItems set for typify tuple detection
+        assert_eq!(schema["minItems"], json!(2));
+        assert_eq!(schema["maxItems"], json!(2));
+    }
+
+    #[test]
+    fn test_prefix_items_open_no_min_max() {
+        // When items is not false (open tuple), don't inject min/max
+        let mut schema = json!({
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "array",
+            "prefixItems": [
+                { "type": "string" }
+            ],
+            "items": { "type": "integer" }
+        });
+        normalize_schema(&mut schema);
+        assert!(schema.get("minItems").is_none());
+        assert!(schema.get("maxItems").is_none());
     }
 
     #[test]

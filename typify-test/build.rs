@@ -267,13 +267,22 @@ fn main() {
                 "Tag": {
                     "type": "string",
                     "minLength": 1
+                },
+                "Coordinates": {
+                    "type": "array",
+                    "prefixItems": [
+                        { "type": "number" },
+                        { "type": "number" }
+                    ],
+                    "items": false
                 }
             },
             "type": "object",
             "title": "Location",
             "properties": {
                 "address": { "$ref": "#/$defs/Address" },
-                "tag": { "$ref": "#/$defs/Tag" }
+                "tag": { "$ref": "#/$defs/Tag" },
+                "coords": { "$ref": "#/$defs/Coordinates" }
             },
             "required": ["address"],
             "dependentRequired": {
