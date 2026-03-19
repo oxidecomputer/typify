@@ -2128,12 +2128,42 @@ impl TypeEntry {
     }
 }
 
+/// Walk a JSON value and convert whole-number floats (e.g. 105.0) to
+/// integers (e.g. 105) for cleaner doc comment output. This addresses
+/// the fact that schemars stores minimum/maximum as f64 even for
+/// integer schemas.
+pub(crate) fn normalize_json_numbers(value: serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Number(n) => {
+            if let Some(f) = n.as_f64() {
+                if f.fract() == 0.0 && f.abs() < i64::MAX as f64 {
+                    serde_json::Value::Number(serde_json::Number::from(f as i64))
+                } else {
+                    serde_json::Value::Number(n)
+                }
+            } else {
+                serde_json::Value::Number(n)
+            }
+        }
+        serde_json::Value::Array(arr) => {
+            serde_json::Value::Array(arr.into_iter().map(normalize_json_numbers).collect())
+        }
+        serde_json::Value::Object(map) => serde_json::Value::Object(
+            map.into_iter()
+                .map(|(k, v)| (k, normalize_json_numbers(v)))
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
 fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
     let desc = match description {
         Some(desc) => desc,
         None => &format!("`{}`", name),
     };
-    let schema_json = serde_json::to_string_pretty(schema).unwrap();
+    let schema_value: serde_json::Value = serde_json::to_value(schema).unwrap();
+    let schema_json = serde_json::to_string_pretty(&normalize_json_numbers(schema_value)).unwrap();
     let schema_lines = schema_json.lines();
     quote! {
         #[doc = #desc]
@@ -2236,7 +2266,7 @@ fn untagged_newtype_string(
 #[cfg(test)]
 mod tests {
     use crate::{
-        type_entry::{SchemaWrapper, TypeEntry, TypeEntryStruct},
+        type_entry::{normalize_json_numbers, SchemaWrapper, TypeEntry, TypeEntryStruct},
         TypeEntryDetails, TypeSpace,
     };
 
@@ -2282,5 +2312,40 @@ mod tests {
         assert_eq!(parameter.to_string(), "& SomeType");
         let parameter = t.type_parameter_ident(&ts, Some("a"));
         assert_eq!(parameter.to_string(), "& 'a SomeType");
+    }
+
+    #[test]
+    fn test_normalize_json_numbers_whole_floats() {
+        use serde_json::json;
+        let input = json!({
+            "minimum": 105.0,
+            "maximum": 255.0,
+            "nested": {
+                "value": 42.0,
+                "frac": 10.5
+            },
+            "array": [1.0, 2.5, 3.0]
+        });
+        let result = normalize_json_numbers(input);
+        assert_eq!(result["minimum"], json!(105));
+        assert_eq!(result["maximum"], json!(255));
+        assert_eq!(result["nested"]["value"], json!(42));
+        assert_eq!(result["nested"]["frac"], json!(10.5));
+        assert_eq!(result["array"][0], json!(1));
+        assert_eq!(result["array"][1], json!(2.5));
+        assert_eq!(result["array"][2], json!(3));
+    }
+
+    #[test]
+    fn test_normalize_json_numbers_preserves_non_numbers() {
+        use serde_json::json;
+        let input = json!({
+            "type": "integer",
+            "required": true,
+            "name": "test",
+            "items": null
+        });
+        let result = normalize_json_numbers(input.clone());
+        assert_eq!(result, input);
     }
 }

@@ -31,18 +31,18 @@ pub mod error {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"array\","]
-#[doc = "  \"multipleOf\": 100.0,"]
-#[doc = "  \"maxLength\": 100,"]
+#[doc = "  \"additionalProperties\": {"]
+#[doc = "    \"type\": \"string\""]
+#[doc = "  },"]
 #[doc = "  \"items\": {"]
 #[doc = "    \"type\": \"boolean\""]
 #[doc = "  },"]
+#[doc = "  \"maxLength\": 100,"]
+#[doc = "  \"multipleOf\": 100,"]
 #[doc = "  \"properties\": {"]
 #[doc = "    \"ok\": {}"]
 #[doc = "  },"]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
+#[doc = "  \"type\": \"array\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
@@ -71,21 +71,21 @@ impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"integer\","]
-#[doc = "  \"minimum\": 0.0,"]
+#[doc = "  \"additionalProperties\": {"]
+#[doc = "    \"type\": \"string\""]
+#[doc = "  },"]
 #[doc = "  \"maxLength\": 100,"]
+#[doc = "  \"minimum\": 0,"]
 #[doc = "  \"properties\": {"]
 #[doc = "    \"ok\": {}"]
 #[doc = "  },"]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
+#[doc = "  \"type\": \"integer\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct IntegerBs(pub u64);
+pub struct IntegerBs(u64);
 impl ::std::ops::Deref for IntegerBs {
     type Target = u64;
     fn deref(&self) -> &u64 {
@@ -97,32 +97,48 @@ impl ::std::convert::From<IntegerBs> for u64 {
         value.0
     }
 }
-impl ::std::convert::From<u64> for IntegerBs {
-    fn from(value: u64) -> Self {
-        Self(value)
+impl ::std::convert::TryFrom<u64> for IntegerBs {
+    type Error = self::error::ConversionError;
+    fn try_from(value: u64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value < 0i64 as u64 {
+            return Err("value must be >= 0".into());
+        }
+        Ok(Self(value))
     }
 }
-impl ::std::str::FromStr for IntegerBs {
-    type Err = <u64 as ::std::str::FromStr>::Err;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
-        Ok(Self(value.parse()?))
-    }
-}
-impl ::std::convert::TryFrom<&str> for IntegerBs {
-    type Error = <u64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for IntegerBs {
-    type Error = <u64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
+impl<'de> ::serde::Deserialize<'de> for IntegerBs {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<u64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 impl ::std::fmt::Display for IntegerBs {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         self.0.fmt(f)
+    }
+}
+impl ::std::str::FromStr for IntegerBs {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<u64>()
+            .map_err(|e| e.to_string().into())
+            .and_then(|v| Self::try_from(v))
+    }
+}
+impl ::std::convert::TryFrom<&str> for IntegerBs {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<String> for IntegerBs {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
     }
 }
 #[doc = "`ObjectBs`"]
@@ -131,15 +147,15 @@ impl ::std::fmt::Display for IntegerBs {
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"multipleOf\": 100.0,"]
-#[doc = "  \"maxLength\": 100,"]
 #[doc = "  \"maxItems\": 100,"]
+#[doc = "  \"maxLength\": 100,"]
+#[doc = "  \"multipleOf\": 100,"]
 #[doc = "  \"properties\": {"]
 #[doc = "    \"ok\": {"]
 #[doc = "      \"type\": \"boolean\""]
 #[doc = "    }"]
-#[doc = "  }"]
+#[doc = "  },"]
+#[doc = "  \"type\": \"object\""]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
