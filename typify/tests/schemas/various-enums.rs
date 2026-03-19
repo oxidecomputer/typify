@@ -274,6 +274,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
+    #[serde(default = "defaults::disk_attachment_state")]
     pub state: DiskAttachmentState,
 }
 impl DiskAttachment {
@@ -1679,7 +1680,7 @@ pub mod builder {
         fn default() -> Self {
             Self {
                 alternate: Err("no value supplied for alternate".to_string()),
-                state: Err("no value supplied for state".to_string()),
+                state: Ok(super::defaults::disk_attachment_state()),
             }
         }
     }
@@ -1764,6 +1765,12 @@ pub mod builder {
                 prop: Ok(value.prop),
             }
         }
+    }
+}
+#[doc = r" Generation of default values for serde."]
+pub mod defaults {
+    pub(super) fn disk_attachment_state() -> super::DiskAttachmentState {
+        super::DiskAttachmentState::Detached
     }
 }
 fn main() {}

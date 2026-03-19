@@ -54,8 +54,19 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TestGrammarForPatternProperties {
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
     pub rules:
         ::std::collections::HashMap<TestGrammarForPatternPropertiesRulesKey, ::std::string::String>,
+}
+impl ::std::default::Default for TestGrammarForPatternProperties {
+    fn default() -> Self {
+        Self {
+            rules: Default::default(),
+        }
+    }
 }
 impl TestGrammarForPatternProperties {
     pub fn builder() -> builder::TestGrammarForPatternProperties {
@@ -147,7 +158,7 @@ pub mod builder {
     impl ::std::default::Default for TestGrammarForPatternProperties {
         fn default() -> Self {
             Self {
-                rules: Err("no value supplied for rules".to_string()),
+                rules: Ok(Default::default()),
             }
         }
     }

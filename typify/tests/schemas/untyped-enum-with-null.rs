@@ -52,7 +52,15 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub value: ::std::option::Option<TestTypeValue>,
+}
+impl ::std::default::Default for TestType {
+    fn default() -> Self {
+        Self {
+            value: Default::default(),
+        }
+    }
 }
 impl TestType {
     pub fn builder() -> builder::TestType {
@@ -148,7 +156,7 @@ pub mod builder {
     impl ::std::default::Default for TestType {
         fn default() -> Self {
             Self {
-                value: Err("no value supplied for value".to_string()),
+                value: Ok(Default::default()),
             }
         }
     }

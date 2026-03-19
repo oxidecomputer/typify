@@ -655,6 +655,7 @@ impl ::std::convert::TryFrom<::std::string::String> for AlertInstanceState {
 #[serde(deny_unknown_fields)]
 pub struct App {
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The list of events for the GitHub app"]
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
@@ -4052,6 +4053,7 @@ pub struct BranchProtectionRule {
     pub admin_enforced: bool,
     pub allow_deletions_enforcement_level: BranchProtectionRuleAllowDeletionsEnforcementLevel,
     pub allow_force_pushes_enforcement_level: BranchProtectionRuleAllowForcePushesEnforcementLevel,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub authorized_actor_names: ::std::vec::Vec<::std::string::String>,
     pub authorized_actors_only: bool,
     pub authorized_dismissal_actors_only: bool,
@@ -4072,6 +4074,7 @@ pub struct BranchProtectionRule {
         BranchProtectionRuleRequiredConversationResolutionLevel,
     pub required_deployments_enforcement_level:
         BranchProtectionRuleRequiredDeploymentsEnforcementLevel,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub required_status_checks: ::std::vec::Vec<::std::string::String>,
     pub required_status_checks_enforcement_level:
         BranchProtectionRuleRequiredStatusChecksEnforcementLevel,
@@ -4728,7 +4731,15 @@ impl ::std::default::Default for BranchProtectionRuleEditedChanges {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChangesAuthorizedActorNames {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub from: ::std::vec::Vec<::std::string::String>,
+}
+impl ::std::default::Default for BranchProtectionRuleEditedChangesAuthorizedActorNames {
+    fn default() -> Self {
+        Self {
+            from: Default::default(),
+        }
+    }
 }
 #[doc = "`BranchProtectionRuleEditedChangesAuthorizedActorsOnly`"]
 #[doc = r""]
@@ -5975,6 +5986,7 @@ pub struct CheckRunCompletedCheckRun {
     #[doc = "The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub completed_at: ::std::string::String,
     #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunCompletedCheckRunConclusion>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub details_url: ::std::option::Option<::std::string::String>,
@@ -5989,6 +6001,7 @@ pub struct CheckRunCompletedCheckRun {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     pub output: CheckRunCompletedCheckRunOutput,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub started_at: ::std::string::String,
@@ -6104,13 +6117,17 @@ pub struct CheckRunCompletedCheckRun {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedCheckRunCheckSuite {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub after: ::std::option::Option<::std::string::String>,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunCompletedCheckRunCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: ::std::string::String,
@@ -6119,6 +6136,7 @@ pub struct CheckRunCompletedCheckRunCheckSuite {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunCompletedCheckRunCheckSuiteStatus,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -6454,7 +6472,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunCompletedCheckRu
 pub struct CheckRunCompletedCheckRunOutput {
     pub annotations_count: i64,
     pub annotations_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub summary: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<::std::string::String>,
@@ -7177,8 +7197,10 @@ pub struct CheckRunCreatedCheckRun {
     pub app: App,
     pub check_suite: CheckRunCreatedCheckRunCheckSuite,
     #[doc = "The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub completed_at: ::std::option::Option<::std::string::String>,
     #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunCreatedCheckRunConclusion>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub details_url: ::std::option::Option<::std::string::String>,
@@ -7193,6 +7215,7 @@ pub struct CheckRunCreatedCheckRun {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     pub output: CheckRunCreatedCheckRunOutput,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub started_at: ::std::string::String,
@@ -7308,13 +7331,17 @@ pub struct CheckRunCreatedCheckRun {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedCheckRunCheckSuite {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub after: ::std::option::Option<::std::string::String>,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunCreatedCheckRunCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: ::std::string::String,
@@ -7323,6 +7350,7 @@ pub struct CheckRunCreatedCheckRunCheckSuite {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunCreatedCheckRunCheckSuiteStatus,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -7658,7 +7686,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunCreatedCheckRunC
 pub struct CheckRunCreatedCheckRunOutput {
     pub annotations_count: i64,
     pub annotations_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub summary: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<::std::string::String>,
@@ -7847,6 +7877,7 @@ impl ::std::default::Default for CheckRunCreatedRequestedAction {
 #[serde(deny_unknown_fields)]
 pub struct CheckRunDeployment {
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub environment: ::std::string::String,
     pub id: i64,
@@ -8674,8 +8705,10 @@ pub struct CheckRunRequestedActionCheckRun {
     pub app: App,
     pub check_suite: CheckRunRequestedActionCheckRunCheckSuite,
     #[doc = "The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub completed_at: ::std::option::Option<::std::string::String>,
     #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunRequestedActionCheckRunConclusion>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub details_url: ::std::option::Option<::std::string::String>,
@@ -8690,6 +8723,7 @@ pub struct CheckRunRequestedActionCheckRun {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     pub output: CheckRunRequestedActionCheckRunOutput,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub started_at: ::std::string::String,
@@ -8805,13 +8839,17 @@ pub struct CheckRunRequestedActionCheckRun {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionCheckRunCheckSuite {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub after: ::std::option::Option<::std::string::String>,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunRequestedActionCheckRunCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: ::std::string::String,
@@ -8820,6 +8858,7 @@ pub struct CheckRunRequestedActionCheckRunCheckSuite {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunRequestedActionCheckRunCheckSuiteStatus,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -9159,7 +9198,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunRequestedActionC
 pub struct CheckRunRequestedActionCheckRunOutput {
     pub annotations_count: i64,
     pub annotations_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub summary: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<::std::string::String>,
@@ -9872,6 +9913,7 @@ pub struct CheckRunRerequestedCheckRun {
     #[doc = "The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub completed_at: ::std::string::String,
     #[doc = "The result of the completed check run. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckRunRerequestedCheckRunConclusion>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub details_url: ::std::option::Option<::std::string::String>,
@@ -9886,6 +9928,7 @@ pub struct CheckRunRerequestedCheckRun {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     pub output: CheckRunRerequestedCheckRunOutput,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The time that the check run began. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`."]
     pub started_at: ::std::string::String,
@@ -9995,13 +10038,16 @@ pub struct CheckRunRerequestedCheckRun {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedCheckRunCheckSuite {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub after: ::std::option::Option<::std::string::String>,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
     pub conclusion: CheckRunRerequestedCheckRunCheckSuiteConclusion,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub deployment: ::std::option::Option<CheckRunDeployment>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     #[doc = "The SHA of the head commit that is being checked."]
     pub head_sha: ::std::string::String,
@@ -10010,6 +10056,7 @@ pub struct CheckRunRerequestedCheckRunCheckSuite {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub node_id: ::std::option::Option<::std::string::String>,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     pub status: CheckRunRerequestedCheckRunCheckSuiteStatus,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -10339,7 +10386,9 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunRerequestedCheck
 pub struct CheckRunRerequestedCheckRunOutput {
     pub annotations_count: i64,
     pub annotations_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub summary: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<::std::string::String>,
@@ -10804,12 +10853,15 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckSuiteCompletedActio
 pub struct CheckSuiteCompletedCheckSuite {
     pub after: ::std::string::String,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`, `neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has `completed`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckSuiteCompletedCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
@@ -10818,8 +10870,10 @@ pub struct CheckSuiteCompletedCheckSuite {
     pub latest_check_runs_count: i64,
     pub node_id: ::std::string::String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub status: ::std::option::Option<CheckSuiteCompletedCheckSuiteStatus>,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
@@ -11408,12 +11462,15 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckSuiteRequestedActio
 pub struct CheckSuiteRequestedCheckSuite {
     pub after: ::std::string::String,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckSuiteRequestedCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
@@ -11422,8 +11479,10 @@ pub struct CheckSuiteRequestedCheckSuite {
     pub latest_check_runs_count: i64,
     pub node_id: ::std::string::String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub status: ::std::option::Option<CheckSuiteRequestedCheckSuiteStatus>,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
@@ -11970,12 +12029,15 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckSuiteRerequestedAct
 pub struct CheckSuiteRerequestedCheckSuite {
     pub after: ::std::string::String,
     pub app: App,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub before: ::std::option::Option<::std::string::String>,
     pub check_runs_url: ::std::string::String,
     #[doc = "The summary conclusion for all check runs that are part of the check suite. Can be one of `success`, `failure`,` neutral`, `cancelled`, `timed_out`, `action_required` or `stale`. This value will be `null` until the check run has completed."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<CheckSuiteRerequestedCheckSuiteConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The head branch name the changes are on."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_branch: ::std::option::Option<::std::string::String>,
     pub head_commit: CommitSimple,
     #[doc = "The SHA of the head commit that is being checked."]
@@ -11984,8 +12046,10 @@ pub struct CheckSuiteRerequestedCheckSuite {
     pub latest_check_runs_count: i64,
     pub node_id: ::std::string::String,
     #[doc = "An array of pull requests that match this check suite. A pull request matches a check suite if they have the same `head_sha` and `head_branch`. When the check suite's `head_branch` is in a forked repository it will be `null` and the `pull_requests` array will be empty."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<CheckRunPullRequest>,
     #[doc = "The summary status for all check runs that are part of the check suite. Can be `requested`, `in_progress`, or `completed`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub status: ::std::option::Option<CheckSuiteRerequestedCheckSuiteStatus>,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL that points to the check suite API resource."]
@@ -12600,13 +12664,17 @@ pub struct CodeScanningAlertAppearedInBranchAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_by: ::std::option::Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_reason:
         ::std::option::Option<CodeScanningAlertAppearedInBranchAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<AlertInstance>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub most_recent_instance: ::std::option::Option<AlertInstance>,
@@ -12748,6 +12816,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertRule {
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: ::std::string::String,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertAppearedInBranchAlertRuleSeverity>,
 }
 #[doc = "The severity of the alert."]
@@ -12953,6 +13022,7 @@ pub struct CodeScanningAlertAppearedInBranchAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`CodeScanningAlertClosedByUser`"]
@@ -13430,9 +13500,11 @@ pub struct CodeScanningAlertClosedByUserAlert {
     pub dismissed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub dismissed_by: User,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_reason: ::std::option::Option<CodeScanningAlertClosedByUserAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<CodeScanningAlertClosedByUserAlertInstancesItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub most_recent_instance: ::std::option::Option<AlertInstance>,
@@ -13795,6 +13867,7 @@ pub struct CodeScanningAlertClosedByUserAlertRule {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertClosedByUserAlertRuleSeverity>,
     #[serde(default)]
     pub tags: (),
@@ -13996,6 +14069,7 @@ pub struct CodeScanningAlertClosedByUserAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`CodeScanningAlertCreated`"]
@@ -14460,12 +14534,16 @@ pub struct CodeScanningAlertCreatedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default)]
     pub dismissed_at: (),
+    #[serde(default)]
     pub dismissed_by: (),
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default)]
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<CodeScanningAlertCreatedAlertInstancesItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub most_recent_instance: ::std::option::Option<AlertInstance>,
@@ -14751,6 +14829,7 @@ pub struct CodeScanningAlertCreatedAlertRule {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertCreatedAlertRuleSeverity>,
     #[serde(default)]
     pub tags: (),
@@ -14953,6 +15032,7 @@ pub struct CodeScanningAlertCreatedAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`CodeScanningAlertEvent`"]
@@ -15530,12 +15610,16 @@ pub struct CodeScanningAlertFixedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_by: ::std::option::Option<User>,
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub dismissed_reason: ::std::option::Option<CodeScanningAlertFixedAlertDismissedReason>,
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<CodeScanningAlertFixedAlertInstancesItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub instances_url: ::std::option::Option<::std::string::String>,
@@ -15897,6 +15981,7 @@ pub struct CodeScanningAlertFixedAlertRule {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertFixedAlertRuleSeverity>,
     #[serde(default)]
     pub tags: (),
@@ -16094,6 +16179,7 @@ pub struct CodeScanningAlertFixedAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`CodeScanningAlertReopened`"]
@@ -16558,12 +16644,16 @@ pub struct CodeScanningAlertReopenedAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default)]
     pub dismissed_at: (),
+    #[serde(default)]
     pub dismissed_by: (),
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default)]
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<CodeScanningAlertReopenedAlertInstancesItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub most_recent_instance: ::std::option::Option<AlertInstance>,
@@ -16843,6 +16933,7 @@ pub struct CodeScanningAlertReopenedAlertRule {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<::std::string::String>,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertReopenedAlertRuleSeverity>,
     #[serde(default)]
     pub tags: (),
@@ -17052,6 +17143,7 @@ pub struct CodeScanningAlertReopenedAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`CodeScanningAlertReopenedByUser`"]
@@ -17476,12 +17568,16 @@ pub struct CodeScanningAlertReopenedByUserAlert {
     #[doc = "The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`"]
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The time that the alert was dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`."]
+    #[serde(default)]
     pub dismissed_at: (),
+    #[serde(default)]
     pub dismissed_by: (),
     #[doc = "The reason for dismissing or closing the alert. Can be one of: `false positive`, `won't fix`, and `used in tests`."]
+    #[serde(default)]
     pub dismissed_reason: (),
     #[doc = "The GitHub URL of the alert resource."]
     pub html_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub instances: ::std::vec::Vec<CodeScanningAlertReopenedByUserAlertInstancesItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub most_recent_instance: ::std::option::Option<AlertInstance>,
@@ -17743,6 +17839,7 @@ pub struct CodeScanningAlertReopenedByUserAlertRule {
     #[doc = "A unique identifier for the rule used to detect the alert."]
     pub id: ::std::string::String,
     #[doc = "The severity of the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub severity: ::std::option::Option<CodeScanningAlertReopenedByUserAlertRuleSeverity>,
 }
 #[doc = "The severity of the alert."]
@@ -17934,6 +18031,7 @@ pub struct CodeScanningAlertReopenedByUserAlertTool {
     #[doc = "The name of the tool used to generate the code scanning analysis alert."]
     pub name: ::std::string::String,
     #[doc = "The version of the tool used to detect the alert."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub version: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`Commit`"]
@@ -18018,6 +18116,7 @@ pub struct CodeScanningAlertReopenedByUserAlertTool {
 #[serde(deny_unknown_fields)]
 pub struct Commit {
     #[doc = "An array of files added in the commit."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub added: ::std::vec::Vec<::std::string::String>,
     pub author: Committer,
     pub committer: Committer,
@@ -18027,8 +18126,10 @@ pub struct Commit {
     #[doc = "The commit message."]
     pub message: ::std::string::String,
     #[doc = "An array of files modified by the commit."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub modified: ::std::vec::Vec<::std::string::String>,
     #[doc = "An array of files removed in the commit."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub removed: ::std::vec::Vec<::std::string::String>,
     #[doc = "The ISO 8601 timestamp of the commit."]
     pub timestamp: ::std::string::String,
@@ -18336,12 +18437,15 @@ pub struct CommitCommentCreatedComment {
     #[doc = "The ID of the commit comment."]
     pub id: i64,
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub line: ::std::option::Option<i64>,
     #[doc = "The node ID of the commit comment."]
     pub node_id: ::std::string::String,
     #[doc = "The relative path of the file to which the comment applies."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::string::String>,
     #[doc = "The line index in the diff to which the comment applies."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub position: ::std::option::Option<i64>,
     pub updated_at: ::std::string::String,
     pub url: ::std::string::String,
@@ -18480,6 +18584,7 @@ pub struct Committer {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub date: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The git author's email address."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
     pub name: ::std::string::String,
@@ -18761,6 +18866,7 @@ impl ::std::convert::From<ContentReferenceCreated> for ContentReferenceEvent {
 #[serde(deny_unknown_fields)]
 pub struct CreateEvent {
     #[doc = "The repository's current description."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub installation: ::std::option::Option<InstallationLite>,
@@ -19590,7 +19696,9 @@ pub struct DeploymentCreated {
     pub organization: ::std::option::Option<Organization>,
     pub repository: Repository,
     pub sender: User,
+    #[serde(default)]
     pub workflow: (),
+    #[serde(default)]
     pub workflow_run: (),
 }
 #[doc = "`DeploymentCreatedAction`"]
@@ -19755,6 +19863,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DeploymentCreatedAction 
 pub struct DeploymentCreatedDeployment {
     pub created_at: ::std::string::String,
     pub creator: User,
+    #[serde(default)]
     pub description: (),
     pub environment: ::std::string::String,
     pub id: i64,
@@ -20197,12 +20306,14 @@ impl ::std::convert::TryFrom<::std::string::String> for DeploymentStatusCreatedA
 pub struct DeploymentStatusCreatedDeployment {
     pub created_at: ::std::string::String,
     pub creator: User,
+    #[serde(default)]
     pub description: (),
     pub environment: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
     pub original_environment: ::std::string::String,
     pub payload: DeploymentStatusCreatedDeploymentPayload,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub performed_via_github_app: ::std::option::Option<App>,
     #[serde(rename = "ref")]
     pub ref_: ::std::string::String,
@@ -20527,9 +20638,13 @@ impl ::std::convert::From<DeploymentStatusCreated> for DeploymentStatusEvent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Discussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_by: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_html_url: ::std::option::Option<::std::string::String>,
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
@@ -20846,6 +20961,7 @@ pub struct DiscussionAnsweredAnswer {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default)]
     pub parent_id: (),
     pub repository_url: ::std::string::String,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -20906,6 +21022,7 @@ pub struct DiscussionAnsweredAnswer {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionAnsweredDiscussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
     pub answer_chosen_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub answer_chosen_by: DiscussionAnsweredDiscussionAnswerChosenBy,
@@ -22017,6 +22134,7 @@ pub struct DiscussionCommentCreatedComment {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub parent_id: ::std::option::Option<i64>,
     pub repository_url: ::std::string::String,
     pub updated_at: ::std::string::String,
@@ -22281,6 +22399,7 @@ pub struct DiscussionCommentDeletedComment {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub parent_id: ::std::option::Option<i64>,
     pub repository_url: ::std::string::String,
     pub updated_at: ::std::string::String,
@@ -22625,6 +22744,7 @@ pub struct DiscussionCommentEditedComment {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub parent_id: ::std::option::Option<i64>,
     pub repository_url: ::std::string::String,
     pub updated_at: ::std::string::String,
@@ -22884,9 +23004,13 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionCreatedAction 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionCreatedDiscussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
+    #[serde(default)]
     pub answer_chosen_at: (),
+    #[serde(default)]
     pub answer_chosen_by: (),
+    #[serde(default)]
     pub answer_html_url: (),
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
@@ -23860,9 +23984,13 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionLockedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionLockedDiscussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_by: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_html_url: ::std::option::Option<::std::string::String>,
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
@@ -24652,9 +24780,13 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionUnansweredActi
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnansweredDiscussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
+    #[serde(default)]
     pub answer_chosen_at: (),
+    #[serde(default)]
     pub answer_chosen_by: (),
+    #[serde(default)]
     pub answer_html_url: (),
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
@@ -24893,6 +25025,7 @@ pub struct DiscussionUnansweredOldAnswer {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default)]
     pub parent_id: (),
     pub repository_url: ::std::string::String,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -25210,9 +25343,13 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionUnlockedAction
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionUnlockedDiscussion {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_chosen_by: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub answer_html_url: ::std::option::Option<::std::string::String>,
     pub author_association: AuthorAssociation,
     pub body: ::std::string::String,
@@ -26103,6 +26240,7 @@ pub struct ForkEventForkee {
     pub allow_squash_merge: bool,
     pub archive_url: ::std::string::String,
     #[doc = "Whether the repository is archived."]
+    #[serde(default)]
     pub archived: bool,
     pub assignees_url: ::std::string::String,
     pub blobs_url: ::std::string::String,
@@ -26121,6 +26259,7 @@ pub struct ForkEventForkee {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -26137,14 +26276,19 @@ pub struct ForkEventForkee {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -26155,13 +26299,16 @@ pub struct ForkEventForkee {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -26731,6 +26878,7 @@ pub struct GollumEvent {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub organization: ::std::option::Option<Organization>,
     #[doc = "The pages that were updated."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pages: ::std::vec::Vec<GollumEventPagesItem>,
     pub repository: Repository,
     pub sender: User,
@@ -26795,6 +26943,7 @@ pub struct GollumEventPagesItem {
     pub page_name: ::std::string::String,
     #[doc = "The latest commit SHA of the page."]
     pub sha: ::std::string::String,
+    #[serde(default)]
     pub summary: (),
     #[doc = "The current page title."]
     pub title: ::std::string::String,
@@ -27317,6 +27466,7 @@ pub struct Installation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub app_slug: ::std::option::Option<::std::string::String>,
     pub created_at: InstallationCreatedAt,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub events: ::std::vec::Vec<InstallationEventsItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub has_multiple_single_files: ::std::option::Option<bool>,
@@ -27327,10 +27477,13 @@ pub struct Installation {
     pub repositories_url: ::std::string::String,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationRepositorySelection,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub single_file_name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub single_file_paths: ::std::vec::Vec<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<User>,
     #[doc = "The ID of the user or organization this token is being scoped to."]
     pub target_id: i64,
@@ -31444,11 +31597,14 @@ pub struct InstallationRepositoriesAdded {
     pub action: InstallationRepositoriesAddedAction,
     pub installation: Installation,
     #[doc = "An array of repository objects, which were added to the installation."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub repositories_added: ::std::vec::Vec<InstallationRepositoriesAddedRepositoriesAddedItem>,
     #[doc = "An array of repository objects, which were removed from the installation."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub repositories_removed: ::std::vec::Vec<InstallationRepositoriesAddedRepositoriesRemovedItem>,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationRepositoriesAddedRepositorySelection,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub requester: ::std::option::Option<User>,
     pub sender: User,
 }
@@ -31869,12 +32025,15 @@ pub struct InstallationRepositoriesRemoved {
     pub action: InstallationRepositoriesRemovedAction,
     pub installation: Installation,
     #[doc = "An array of repository objects, which were added to the installation."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub repositories_added: ::std::vec::Vec<InstallationRepositoriesRemovedRepositoriesAddedItem>,
     #[doc = "An array of repository objects, which were removed from the installation."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub repositories_removed:
         ::std::vec::Vec<InstallationRepositoriesRemovedRepositoriesRemovedItem>,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationRepositoriesRemovedRepositorySelection,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub requester: ::std::option::Option<User>,
     pub sender: User,
 }
@@ -32405,6 +32564,7 @@ pub struct InstallationSuspendInstallation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub app_slug: ::std::option::Option<::std::string::String>,
     pub created_at: InstallationSuspendInstallationCreatedAt,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub events: ::std::vec::Vec<InstallationSuspendInstallationEventsItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub has_multiple_single_files: ::std::option::Option<bool>,
@@ -32415,6 +32575,7 @@ pub struct InstallationSuspendInstallation {
     pub repositories_url: ::std::string::String,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationSuspendInstallationRepositorySelection,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub single_file_name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub single_file_paths: ::std::vec::Vec<::std::string::String>,
@@ -36652,6 +36813,7 @@ pub struct InstallationUnsuspendInstallation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub app_slug: ::std::option::Option<::std::string::String>,
     pub created_at: InstallationUnsuspendInstallationCreatedAt,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub events: ::std::vec::Vec<InstallationUnsuspendInstallationEventsItem>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub has_multiple_single_files: ::std::option::Option<bool>,
@@ -36662,10 +36824,13 @@ pub struct InstallationUnsuspendInstallation {
     pub repositories_url: ::std::string::String,
     #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
     pub repository_selection: InstallationUnsuspendInstallationRepositorySelection,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub single_file_name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub single_file_paths: ::std::vec::Vec<::std::string::String>,
+    #[serde(default)]
     pub suspended_at: (),
+    #[serde(default)]
     pub suspended_by: (),
     #[doc = "The ID of the user or organization this token is being scoped to."]
     pub target_id: i64,
@@ -40689,13 +40854,17 @@ impl ::std::convert::From<i64> for InstallationUpdatedAt {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Issue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -40708,6 +40877,7 @@ pub struct Issue {
     pub labels_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub locked: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -40897,6 +41067,7 @@ pub struct IssueComment {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub performed_via_github_app: ::std::option::Option<App>,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the issue comment"]
@@ -41186,12 +41357,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssueCommentCreatedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentCreatedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssueCommentCreatedIssueActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<IssueCommentCreatedIssueAssignee>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -41199,9 +41375,11 @@ pub struct IssueCommentCreatedIssue {
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     pub labels_url: ::std::string::String,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -41828,12 +42006,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssueCommentDeletedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentDeletedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssueCommentDeletedIssueActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<IssueCommentDeletedIssueAssignee>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -41841,9 +42024,11 @@ pub struct IssueCommentDeletedIssue {
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     pub labels_url: ::std::string::String,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -42558,12 +42743,17 @@ pub struct IssueCommentEditedChangesBody {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssueCommentEditedIssueActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<IssueCommentEditedIssueAssignee>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -42571,9 +42761,11 @@ pub struct IssueCommentEditedIssue {
     pub events_url: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     pub labels_url: ::std::string::String,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -43407,12 +43599,15 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesClosedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesClosedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesClosedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub closed_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub comments: i64,
@@ -43426,6 +43621,7 @@ pub struct IssuesClosedIssue {
     pub labels_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub locked: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -43934,13 +44130,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesDemilestonedAction
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesDemilestonedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesDemilestonedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -43953,6 +44153,7 @@ pub struct IssuesDemilestonedIssue {
     pub labels_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub locked: ::std::option::Option<bool>,
+    #[serde(default)]
     pub milestone: (),
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -44933,13 +45134,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesLockedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesLockedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesLockedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -44951,6 +45156,7 @@ pub struct IssuesLockedIssue {
     pub labels: ::std::vec::Vec<Label>,
     pub labels_url: ::std::string::String,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -45346,13 +45552,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesMilestonedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesMilestonedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesMilestonedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -45582,11 +45792,14 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesMilestonedIssueAct
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesMilestonedIssueMilestone {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub closed_issues: i64,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -46022,13 +46235,17 @@ pub struct IssuesOpenedChanges {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesOpenedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesOpenedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default)]
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -46041,6 +46258,7 @@ pub struct IssuesOpenedIssue {
     pub labels_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub locked: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -46550,13 +46768,17 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesReopenedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesReopenedIssue {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<IssuesReopenedIssueActiveLockReason>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -46569,6 +46791,7 @@ pub struct IssuesReopenedIssue {
     pub labels_url: ::std::string::String,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub locked: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -47402,10 +47625,13 @@ pub struct IssuesUnlockedIssue {
     pub active_lock_reason: IssuesUnlockedIssueActiveLockReason,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -47417,6 +47643,7 @@ pub struct IssuesUnlockedIssue {
     pub labels: ::std::vec::Vec<Label>,
     pub labels_url: ::std::string::String,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
@@ -47784,6 +48011,7 @@ pub struct Label {
     #[doc = "6-character hex code, without the leading #, identifying the color"]
     pub color: ::std::string::String,
     pub default: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub id: i64,
     #[doc = "The name of the label."]
@@ -48449,6 +48677,7 @@ pub struct License {
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
     pub spdx_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`Link`"]
@@ -48599,6 +48828,7 @@ pub struct Link {
 pub struct MarketplacePurchase {
     pub account: MarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub next_billing_date: ::std::option::Option<::std::string::String>,
@@ -48903,6 +49133,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MarketplacePurchaseCance
 pub struct MarketplacePurchaseCancelledMarketplacePurchase {
     pub account: MarketplacePurchaseCancelledMarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     pub next_billing_date: ::std::string::String,
     pub on_free_trial: bool,
@@ -49014,6 +49245,7 @@ pub struct MarketplacePurchaseCancelledMarketplacePurchaseAccount {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseCancelledMarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -49021,6 +49253,7 @@ pub struct MarketplacePurchaseCancelledMarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -49398,6 +49631,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MarketplacePurchaseChang
 pub struct MarketplacePurchaseChangedMarketplacePurchase {
     pub account: MarketplacePurchaseChangedMarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     pub next_billing_date: ::std::string::String,
     pub on_free_trial: bool,
@@ -49509,6 +49743,7 @@ pub struct MarketplacePurchaseChangedMarketplacePurchaseAccount {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchaseChangedMarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -49516,6 +49751,7 @@ pub struct MarketplacePurchaseChangedMarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -50178,6 +50414,7 @@ impl ::std::convert::TryFrom<::std::string::String>
 pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchase {
     pub account: MarketplacePurchasePendingChangeCancelledMarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     pub next_billing_date: ::std::string::String,
     pub on_free_trial: bool,
@@ -50289,6 +50526,7 @@ pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchaseAccount {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -50296,6 +50534,7 @@ pub struct MarketplacePurchasePendingChangeCancelledMarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -50452,6 +50691,7 @@ pub struct MarketplacePurchasePendingChangeCancelledSender {
 pub struct MarketplacePurchasePendingChangeMarketplacePurchase {
     pub account: MarketplacePurchasePendingChangeMarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     pub next_billing_date: ::std::string::String,
     pub on_free_trial: bool,
@@ -50563,6 +50803,7 @@ pub struct MarketplacePurchasePendingChangeMarketplacePurchaseAccount {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePendingChangeMarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -50570,6 +50811,7 @@ pub struct MarketplacePurchasePendingChangeMarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -50755,6 +50997,7 @@ pub struct MarketplacePurchasePendingChangeSender {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -50762,6 +51005,7 @@ pub struct MarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -51017,6 +51261,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MarketplacePurchasePurch
 pub struct MarketplacePurchasePurchasedMarketplacePurchase {
     pub account: MarketplacePurchasePurchasedMarketplacePurchaseAccount,
     pub billing_cycle: ::std::string::String,
+    #[serde(default)]
     pub free_trial_ends_on: (),
     pub next_billing_date: ::std::string::String,
     pub on_free_trial: bool,
@@ -51128,6 +51373,7 @@ pub struct MarketplacePurchasePurchasedMarketplacePurchaseAccount {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MarketplacePurchasePurchasedMarketplacePurchasePlan {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub bullets: ::std::vec::Vec<::std::string::String>,
     pub description: ::std::string::String,
     pub has_free_trial: bool,
@@ -51135,6 +51381,7 @@ pub struct MarketplacePurchasePurchasedMarketplacePurchasePlan {
     pub monthly_price_in_cents: i64,
     pub name: ::std::string::String,
     pub price_model: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub unit_name: ::std::option::Option<::std::string::String>,
     pub yearly_price_in_cents: i64,
 }
@@ -52989,11 +53236,14 @@ impl ::std::convert::From<MetaDeleted> for MetaEvent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Milestone {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub closed_issues: i64,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -53193,7 +53443,9 @@ pub struct MilestoneClosedMilestone {
     pub closed_issues: i64,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -53455,11 +53707,14 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneCreatedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneCreatedMilestone {
+    #[serde(default)]
     pub closed_at: (),
     pub closed_issues: i64,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -54221,11 +54476,14 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneOpenedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneOpenedMilestone {
+    #[serde(default)]
     pub closed_at: (),
     pub closed_issues: i64,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub creator: User,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub due_on: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub html_url: ::std::string::String,
     pub id: i64,
@@ -54733,6 +54991,7 @@ impl ::std::convert::TryFrom<::std::string::String> for OrgBlockUnblockedAction 
 #[serde(deny_unknown_fields)]
 pub struct Organization {
     pub avatar_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub events_url: ::std::string::String,
     pub hooks_url: ::std::string::String,
@@ -55306,8 +55565,11 @@ impl ::std::convert::TryFrom<::std::string::String> for OrganizationMemberInvite
 #[serde(deny_unknown_fields)]
 pub struct OrganizationMemberInvitedInvitation {
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub failed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub failed_reason: ::std::option::Option<::std::string::String>,
     pub id: f64,
     pub invitation_teams_url: ::std::string::String,
@@ -56290,6 +56552,7 @@ impl ::std::convert::TryFrom<::std::string::String> for PackagePublishedAction {
 #[serde(deny_unknown_fields)]
 pub struct PackagePublishedPackage {
     pub created_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub ecosystem: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -56524,14 +56787,17 @@ pub struct PackagePublishedPackagePackageVersion {
     pub body_html: ::std::string::String,
     pub created_at: ::std::string::String,
     pub description: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub docker_metadata: ::std::vec::Vec<::serde_json::Value>,
     pub draft: bool,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub installation_command: ::std::string::String,
     pub manifest: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub metadata: ::std::vec::Vec<::serde_json::Value>,
     pub name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub package_files: ::std::vec::Vec<PackagePublishedPackagePackageVersionPackageFilesItem>,
     pub prerelease: bool,
     pub release: PackagePublishedPackagePackageVersionRelease,
@@ -57451,6 +57717,7 @@ impl ::std::convert::TryFrom<::std::string::String> for PackageUpdatedAction {
 #[serde(deny_unknown_fields)]
 pub struct PackageUpdatedPackage {
     pub created_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub ecosystem: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -57686,14 +57953,17 @@ pub struct PackageUpdatedPackagePackageVersion {
     pub body_html: ::std::string::String,
     pub created_at: ::std::string::String,
     pub description: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub docker_metadata: ::std::vec::Vec<::serde_json::Value>,
     pub draft: bool,
     pub html_url: ::std::string::String,
     pub id: i64,
     pub installation_command: ::std::string::String,
     pub manifest: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub metadata: ::std::vec::Vec<::serde_json::Value>,
     pub name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub package_files: ::std::vec::Vec<PackageUpdatedPackagePackageVersionPackageFilesItem>,
     pub prerelease: bool,
     pub release: PackageUpdatedPackagePackageVersionRelease,
@@ -58104,7 +58374,15 @@ pub struct PageBuildEventBuild {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PageBuildEventBuildError {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub message: ::std::option::Option<::std::string::String>,
+}
+impl ::std::default::Default for PageBuildEventBuildError {
+    fn default() -> Self {
+        Self {
+            message: Default::default(),
+        }
+    }
 }
 #[doc = "`PingEvent`"]
 #[doc = r""]
@@ -58539,7 +58817,9 @@ impl ::std::convert::TryFrom<::std::string::String> for PingEventHookConfigConte
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PingEventHookLastResponse {
+    #[serde(default)]
     pub code: (),
+    #[serde(default)]
     pub message: (),
     pub status: ::std::string::String,
 }
@@ -58632,6 +58912,7 @@ pub struct PingEventHookLastResponse {
 #[serde(deny_unknown_fields)]
 pub struct Project {
     #[doc = "Body of the project"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub columns_url: ::std::string::String,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -58742,6 +59023,7 @@ pub struct ProjectCard {
     #[doc = "The project card's ID"]
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub note: ::std::option::Option<::std::string::String>,
     pub project_url: ::std::string::String,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -59703,6 +59985,7 @@ pub struct ProjectCardMovedChangesColumnId {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectCardMovedProjectCard {
+    #[serde(default)]
     pub after_id: (),
     #[doc = "Whether or not the card is archived"]
     pub archived: bool,
@@ -59715,6 +59998,7 @@ pub struct ProjectCardMovedProjectCard {
     #[doc = "The project card's ID"]
     pub id: i64,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub note: ::std::option::Option<::std::string::String>,
     pub project_url: ::std::string::String,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -61398,6 +61682,7 @@ pub struct PublicEventRepository {
     pub allow_squash_merge: bool,
     pub archive_url: ::std::string::String,
     #[doc = "Whether the repository is archived."]
+    #[serde(default)]
     pub archived: bool,
     pub assignees_url: ::std::string::String,
     pub blobs_url: ::std::string::String,
@@ -61416,6 +61701,7 @@ pub struct PublicEventRepository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -61432,14 +61718,19 @@ pub struct PublicEventRepository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -61450,13 +61741,16 @@ pub struct PublicEventRepository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -62048,15 +62342,21 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<PullRequestActiveLockReason>,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -62071,25 +62371,35 @@ pub struct PullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_by: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers: ::std::vec::Vec<PullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -62814,13 +63124,18 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestClosedAction 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestClosedPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<PullRequestClosedPullRequestActiveLockReason>,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestClosedPullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
     pub closed_at: ::chrono::DateTime<::chrono::offset::Utc>,
@@ -62837,25 +63152,34 @@ pub struct PullRequestClosedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestClosedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_by: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers: ::std::vec::Vec<PullRequestClosedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -63423,16 +63747,22 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestConvertedToDr
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestConvertedToDraftPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestConvertedToDraftPullRequestActiveLockReason>,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestConvertedToDraftPullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
+    #[serde(default)]
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -63446,26 +63776,35 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestConvertedToDraftPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: bool,
+    #[serde(default)]
     pub merged_at: (),
+    #[serde(default)]
     pub merged_by: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers:
         ::std::vec::Vec<PullRequestConvertedToDraftPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -64851,13 +65190,18 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestOpenedAction 
 pub struct PullRequestOpenedPullRequest {
     pub active_lock_reason: PullRequestOpenedPullRequestActiveLockReason,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestOpenedPullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
+    #[serde(default)]
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -64872,25 +65216,35 @@ pub struct PullRequestOpenedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestOpenedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default)]
     pub merge_commit_sha: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged: ::std::option::Option<bool>,
+    #[serde(default)]
     pub merged_at: (),
+    #[serde(default)]
     pub merged_by: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers: ::std::vec::Vec<PullRequestOpenedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -65426,16 +65780,22 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReadyForRevie
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReadyForReviewPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReadyForReviewPullRequestActiveLockReason>,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestReadyForReviewPullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
+    #[serde(default)]
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -65449,26 +65809,35 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestReadyForReviewPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: bool,
+    #[serde(default)]
     pub merged_at: (),
+    #[serde(default)]
     pub merged_by: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers:
         ::std::vec::Vec<PullRequestReadyForReviewPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -66036,15 +66405,21 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReopenedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReopenedPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<PullRequestReopenedPullRequestActiveLockReason>,
     pub additions: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestReopenedPullRequestBase,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     pub changed_files: i64,
+    #[serde(default)]
     pub closed_at: (),
     pub comments: i64,
     pub comments_url: ::std::string::String,
@@ -66059,25 +66434,34 @@ pub struct PullRequestReopenedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestReopenedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
+    #[serde(default)]
     pub merge_commit_sha: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mergeable: ::std::option::Option<bool>,
     pub mergeable_state: ::std::string::String,
     pub merged: bool,
+    #[serde(default)]
     pub merged_at: (),
+    #[serde(default)]
     pub merged_by: (),
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     #[doc = "Number uniquely identifying the pull request within its repository."]
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub rebaseable: ::std::option::Option<bool>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers: ::std::vec::Vec<PullRequestReopenedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments: i64,
@@ -66662,6 +67046,7 @@ pub struct PullRequestReviewComment {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub in_reply_to_id: ::std::option::Option<i64>,
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub line: ::std::option::Option<i64>,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewCommentLinks,
@@ -66674,10 +67059,12 @@ pub struct PullRequestReviewComment {
     #[doc = "The index of the original line in the diff to which the comment applies."]
     pub original_position: i64,
     #[doc = "The first line of the range for a multi-line comment."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub original_start_line: ::std::option::Option<i64>,
     #[doc = "The relative path of the file to which the comment applies."]
     pub path: ::std::string::String,
     #[doc = "The line index in the diff to which the comment applies."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub position: ::std::option::Option<i64>,
     #[doc = "The ID of the pull request review to which the comment belongs."]
     pub pull_request_review_id: i64,
@@ -66686,8 +67073,10 @@ pub struct PullRequestReviewComment {
     #[doc = "The side of the first line of the range for a multi-line comment."]
     pub side: PullRequestReviewCommentSide,
     #[doc = "The first line of the range for a multi-line comment."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
     #[doc = "The side of the first line of the range for a multi-line comment."]
+    #[serde(default = "defaults::pull_request_review_comment_start_side")]
     pub start_side: ::std::option::Option<PullRequestReviewCommentStartSide>,
     pub updated_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "URL for the pull request review comment"]
@@ -67433,15 +67822,19 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewComment
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentCreatedPullRequestActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestReviewCommentCreatedPullRequestBase,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::std::string::String>,
     pub comments_url: ::std::string::String,
     pub commits_url: ::std::string::String,
@@ -67453,18 +67846,24 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewCommentCreatedPullRequestLinks,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers:
         ::std::vec::Vec<PullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments_url: ::std::string::String,
@@ -68563,15 +68962,19 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewComment
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentDeletedPullRequestActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestReviewCommentDeletedPullRequestBase,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::std::string::String>,
     pub comments_url: ::std::string::String,
     pub commits_url: ::std::string::String,
@@ -68583,18 +68986,24 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewCommentDeletedPullRequestLinks,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers:
         ::std::vec::Vec<PullRequestReviewCommentDeletedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments_url: ::std::string::String,
@@ -69781,15 +70190,19 @@ pub struct PullRequestReviewCommentEditedChangesBody {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentEditedPullRequestActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[serde(default)]
     pub auto_merge: (),
     pub base: PullRequestReviewCommentEditedPullRequestBase,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::std::string::String>,
     pub comments_url: ::std::string::String,
     pub commits_url: ::std::string::String,
@@ -69801,18 +70214,24 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: PullRequestReviewCommentEditedPullRequestLinks,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers:
         ::std::vec::Vec<PullRequestReviewCommentEditedPullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments_url: ::std::string::String,
@@ -70687,6 +71106,7 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewDismiss
 pub struct PullRequestReviewDismissedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     #[doc = "A commit SHA for the review."]
     pub commit_id: ::std::string::String,
@@ -71168,6 +71588,7 @@ pub struct PullRequestReviewEditedChangesBody {
 pub struct PullRequestReviewEditedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     #[doc = "A commit SHA for the review."]
     pub commit_id: ::std::string::String,
@@ -72068,6 +72489,7 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewSubmitt
 pub struct PullRequestReviewSubmittedReview {
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<::std::string::String>,
     #[doc = "A commit SHA for the review."]
     pub commit_id: ::std::string::String,
@@ -72813,15 +73235,18 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestUnlockedActio
 pub struct PushEvent {
     #[doc = "The SHA of the most recent commit on `ref` after the push."]
     pub after: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub base_ref: ::std::option::Option<::std::string::String>,
     #[doc = "The SHA of the most recent commit on `ref` before the push."]
     pub before: ::std::string::String,
     #[doc = "An array of commit objects describing the pushed commits."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub commits: ::std::vec::Vec<Commit>,
     pub compare: ::std::string::String,
     pub created: bool,
     pub deleted: bool,
     pub forced: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub head_commit: ::std::option::Option<Commit>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub installation: ::std::option::Option<InstallationLite>,
@@ -72954,10 +73379,12 @@ pub struct PushEvent {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Release {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assets: ::std::vec::Vec<ReleaseAsset>,
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
@@ -72967,14 +73394,17 @@ pub struct Release {
     pub node_id: ::std::string::String,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub published_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub tarball_url: ::std::option::Option<::std::string::String>,
     #[doc = "Specifies the commitish value that determines where the Git tag is created from."]
     pub target_commitish: ::std::string::String,
     pub upload_url: ::std::string::String,
     pub url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub zipball_url: ::std::option::Option<::std::string::String>,
 }
 #[doc = "Data related to a release."]
@@ -73066,6 +73496,7 @@ pub struct ReleaseAsset {
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub download_count: i64,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub label: ::std::option::Option<::std::string::String>,
     #[doc = "The file name of the asset."]
     pub name: ::std::string::String,
@@ -73902,10 +74333,12 @@ impl ::std::convert::TryFrom<::std::string::String> for ReleasePrereleasedAction
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ReleasePrereleasedRelease {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assets: ::std::vec::Vec<ReleaseAsset>,
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
@@ -73914,14 +74347,17 @@ pub struct ReleasePrereleasedRelease {
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
     pub prerelease: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub published_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub tarball_url: ::std::option::Option<::std::string::String>,
     #[doc = "Specifies the commitish value that determines where the Git tag is created from."]
     pub target_commitish: ::std::string::String,
     pub upload_url: ::std::string::String,
     pub url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub zipball_url: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`ReleasePublished`"]
@@ -74092,10 +74528,12 @@ impl ::std::convert::TryFrom<::std::string::String> for ReleasePublishedAction {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ReleasePublishedRelease {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assets: ::std::vec::Vec<ReleaseAsset>,
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
@@ -74108,11 +74546,13 @@ pub struct ReleasePublishedRelease {
     pub published_at: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub tarball_url: ::std::option::Option<::std::string::String>,
     #[doc = "Specifies the commitish value that determines where the Git tag is created from."]
     pub target_commitish: ::std::string::String,
     pub upload_url: ::std::string::String,
     pub url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub zipball_url: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`ReleaseReleased`"]
@@ -74402,10 +74842,12 @@ impl ::std::convert::TryFrom<::std::string::String> for ReleaseUnpublishedAction
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseUnpublishedRelease {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assets: ::std::vec::Vec<ReleaseAsset>,
     pub assets_url: ::std::string::String,
     pub author: User,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub created_at: ::std::option::Option<::chrono::DateTime<::chrono::offset::Utc>>,
     #[doc = "Wether the release is a draft or published"]
     pub draft: bool,
@@ -74415,14 +74857,17 @@ pub struct ReleaseUnpublishedRelease {
     pub node_id: ::std::string::String,
     #[doc = "Whether the release is identified as a prerelease or a full release."]
     pub prerelease: bool,
+    #[serde(default)]
     pub published_at: (),
     #[doc = "The name of the tag."]
     pub tag_name: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub tarball_url: ::std::option::Option<::std::string::String>,
     #[doc = "Specifies the commitish value that determines where the Git tag is created from."]
     pub target_commitish: ::std::string::String,
     pub upload_url: ::std::string::String,
     pub url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub zipball_url: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`RepoRef`"]
@@ -74954,6 +75399,7 @@ pub struct Repository {
     pub allow_squash_merge: bool,
     pub archive_url: ::std::string::String,
     #[doc = "Whether the repository is archived."]
+    #[serde(default)]
     pub archived: bool,
     pub assignees_url: ::std::string::String,
     pub blobs_url: ::std::string::String,
@@ -74972,6 +75418,7 @@ pub struct Repository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -74988,14 +75435,19 @@ pub struct Repository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -75006,13 +75458,16 @@ pub struct Repository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -75255,6 +75710,7 @@ pub struct RepositoryArchivedRepository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -75271,14 +75727,19 @@ pub struct RepositoryArchivedRepository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -75289,13 +75750,16 @@ pub struct RepositoryArchivedRepository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -75889,6 +76353,7 @@ impl ::std::convert::From<RepositoryDispatchOnDemandTest> for RepositoryDispatch
 pub struct RepositoryDispatchOnDemandTest {
     pub action: RepositoryDispatchOnDemandTestAction,
     pub branch: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
     pub client_payload: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     pub installation: InstallationLite,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -76252,7 +76717,15 @@ pub struct RepositoryEditedChangesDefaultBranch {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChangesDescription {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub from: ::std::option::Option<::std::string::String>,
+}
+impl ::std::default::Default for RepositoryEditedChangesDescription {
+    fn default() -> Self {
+        Self {
+            from: Default::default(),
+        }
+    }
 }
 #[doc = "`RepositoryEditedChangesHomepage`"]
 #[doc = r""]
@@ -76279,7 +76752,15 @@ pub struct RepositoryEditedChangesDescription {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChangesHomepage {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub from: ::std::option::Option<::std::string::String>,
+}
+impl ::std::default::Default for RepositoryEditedChangesHomepage {
+    fn default() -> Self {
+        Self {
+            from: Default::default(),
+        }
+    }
 }
 #[doc = "`RepositoryEvent`"]
 #[doc = r""]
@@ -76764,6 +77245,7 @@ pub struct RepositoryLite {
     pub contents_url: ::std::string::String,
     pub contributors_url: ::std::string::String,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub downloads_url: ::std::string::String,
     pub events_url: ::std::string::String,
@@ -77033,6 +77515,7 @@ pub struct RepositoryPrivatizedRepository {
     pub allow_squash_merge: bool,
     pub archive_url: ::std::string::String,
     #[doc = "Whether the repository is archived."]
+    #[serde(default)]
     pub archived: bool,
     pub assignees_url: ::std::string::String,
     pub blobs_url: ::std::string::String,
@@ -77051,6 +77534,7 @@ pub struct RepositoryPrivatizedRepository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -77067,14 +77551,19 @@ pub struct RepositoryPrivatizedRepository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -77085,13 +77574,16 @@ pub struct RepositoryPrivatizedRepository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -77476,6 +77968,7 @@ pub struct RepositoryPublicizedRepository {
     pub allow_squash_merge: bool,
     pub archive_url: ::std::string::String,
     #[doc = "Whether the repository is archived."]
+    #[serde(default)]
     pub archived: bool,
     pub assignees_url: ::std::string::String,
     pub blobs_url: ::std::string::String,
@@ -77494,6 +77987,7 @@ pub struct RepositoryPublicizedRepository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -77510,14 +78004,19 @@ pub struct RepositoryPublicizedRepository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -77528,13 +78027,16 @@ pub struct RepositoryPublicizedRepository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -78466,6 +78968,7 @@ pub struct RepositoryUnarchivedRepository {
     #[serde(default)]
     pub delete_branch_on_merge: bool,
     pub deployments_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "Returns whether or not this repository is disabled."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -78482,14 +78985,19 @@ pub struct RepositoryUnarchivedRepository {
     pub git_tags_url: ::std::string::String,
     pub git_url: ::std::string::String,
     #[doc = "Whether downloads are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_downloads: bool,
     #[doc = "Whether issues are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_issues: bool,
     pub has_pages: bool,
     #[doc = "Whether projects are enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_projects: bool,
     #[doc = "Whether the wiki is enabled."]
+    #[serde(default = "defaults::default_bool::<true>")]
     pub has_wiki: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<::std::string::String>,
     pub hooks_url: ::std::string::String,
     pub html_url: ::std::string::String,
@@ -78500,13 +79008,16 @@ pub struct RepositoryUnarchivedRepository {
     pub issues_url: ::std::string::String,
     pub keys_url: ::std::string::String,
     pub labels_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub language: ::std::option::Option<::std::string::String>,
     pub languages_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub license: ::std::option::Option<License>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub master_branch: ::std::option::Option<::std::string::String>,
     pub merges_url: ::std::string::String,
     pub milestones_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub mirror_url: ::std::option::Option<::std::string::String>,
     #[doc = "The name of the repository."]
     pub name: ::std::string::String,
@@ -79677,8 +80188,11 @@ impl ::std::convert::TryFrom<::std::string::String> for SecretScanningAlertCreat
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertCreatedAlert {
     pub number: i64,
+    #[serde(default)]
     pub resolution: (),
+    #[serde(default)]
     pub resolved_at: (),
+    #[serde(default)]
     pub resolved_by: (),
     pub secret_type: ::std::string::String,
 }
@@ -79911,8 +80425,11 @@ impl ::std::convert::TryFrom<::std::string::String> for SecretScanningAlertReope
 #[serde(deny_unknown_fields)]
 pub struct SecretScanningAlertReopenedAlert {
     pub number: i64,
+    #[serde(default)]
     pub resolution: (),
+    #[serde(default)]
     pub resolved_at: (),
+    #[serde(default)]
     pub resolved_by: (),
     pub secret_type: ::std::string::String,
 }
@@ -80704,17 +81221,22 @@ impl ::std::convert::TryFrom<::std::string::String> for SecurityAdvisoryPerforme
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisory {
     pub cvss: SecurityAdvisoryPerformedSecurityAdvisoryCvss,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub cwes: ::std::vec::Vec<SecurityAdvisoryPerformedSecurityAdvisoryCwesItem>,
     pub description: ::std::string::String,
     pub ghsa_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub identifiers: ::std::vec::Vec<SecurityAdvisoryPerformedSecurityAdvisoryIdentifiersItem>,
     pub published_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub references: ::std::vec::Vec<SecurityAdvisoryPerformedSecurityAdvisoryReferencesItem>,
     pub severity: ::std::string::String,
     pub summary: ::std::string::String,
     pub updated_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vulnerabilities:
         ::std::vec::Vec<SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub withdrawn_at: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryPerformedSecurityAdvisoryCvss`"]
@@ -80747,6 +81269,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisory {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryCvss {
     pub score: f64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub vector_string: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryPerformedSecurityAdvisoryCwesItem`"]
@@ -80892,6 +81415,7 @@ pub struct SecurityAdvisoryPerformedSecurityAdvisoryReferencesItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItem {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub first_patched_version: ::std::option::Option<
         SecurityAdvisoryPerformedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion,
     >,
@@ -81401,17 +81925,22 @@ impl ::std::convert::TryFrom<::std::string::String> for SecurityAdvisoryPublishe
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisory {
     pub cvss: SecurityAdvisoryPublishedSecurityAdvisoryCvss,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub cwes: ::std::vec::Vec<SecurityAdvisoryPublishedSecurityAdvisoryCwesItem>,
     pub description: ::std::string::String,
     pub ghsa_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub identifiers: ::std::vec::Vec<SecurityAdvisoryPublishedSecurityAdvisoryIdentifiersItem>,
     pub published_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub references: ::std::vec::Vec<SecurityAdvisoryPublishedSecurityAdvisoryReferencesItem>,
     pub severity: ::std::string::String,
     pub summary: ::std::string::String,
     pub updated_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vulnerabilities:
         ::std::vec::Vec<SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub withdrawn_at: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryPublishedSecurityAdvisoryCvss`"]
@@ -81444,6 +81973,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisory {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryCvss {
     pub score: f64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub vector_string: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryPublishedSecurityAdvisoryCwesItem`"]
@@ -81589,6 +82119,7 @@ pub struct SecurityAdvisoryPublishedSecurityAdvisoryReferencesItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItem {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub first_patched_version: ::std::option::Option<
         SecurityAdvisoryPublishedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion,
     >,
@@ -82098,17 +82629,22 @@ impl ::std::convert::TryFrom<::std::string::String> for SecurityAdvisoryUpdatedA
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisory {
     pub cvss: SecurityAdvisoryUpdatedSecurityAdvisoryCvss,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub cwes: ::std::vec::Vec<SecurityAdvisoryUpdatedSecurityAdvisoryCwesItem>,
     pub description: ::std::string::String,
     pub ghsa_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub identifiers: ::std::vec::Vec<SecurityAdvisoryUpdatedSecurityAdvisoryIdentifiersItem>,
     pub published_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub references: ::std::vec::Vec<SecurityAdvisoryUpdatedSecurityAdvisoryReferencesItem>,
     pub severity: ::std::string::String,
     pub summary: ::std::string::String,
     pub updated_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vulnerabilities:
         ::std::vec::Vec<SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub withdrawn_at: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryUpdatedSecurityAdvisoryCvss`"]
@@ -82141,6 +82677,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisory {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryCvss {
     pub score: f64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub vector_string: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryUpdatedSecurityAdvisoryCwesItem`"]
@@ -82286,6 +82823,7 @@ pub struct SecurityAdvisoryUpdatedSecurityAdvisoryReferencesItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItem {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub first_patched_version: ::std::option::Option<
         SecurityAdvisoryUpdatedSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion,
     >,
@@ -82789,15 +83327,19 @@ impl ::std::convert::TryFrom<::std::string::String> for SecurityAdvisoryWithdraw
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisory {
     pub cvss: SecurityAdvisoryWithdrawnSecurityAdvisoryCvss,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub cwes: ::std::vec::Vec<SecurityAdvisoryWithdrawnSecurityAdvisoryCwesItem>,
     pub description: ::std::string::String,
     pub ghsa_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub identifiers: ::std::vec::Vec<SecurityAdvisoryWithdrawnSecurityAdvisoryIdentifiersItem>,
     pub published_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub references: ::std::vec::Vec<SecurityAdvisoryWithdrawnSecurityAdvisoryReferencesItem>,
     pub severity: ::std::string::String,
     pub summary: ::std::string::String,
     pub updated_at: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vulnerabilities:
         ::std::vec::Vec<SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItem>,
     pub withdrawn_at: ::std::string::String,
@@ -82832,6 +83374,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisory {
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryCvss {
     pub score: f64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub vector_string: ::std::option::Option<::std::string::String>,
 }
 #[doc = "`SecurityAdvisoryWithdrawnSecurityAdvisoryCwesItem`"]
@@ -82977,6 +83520,7 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryReferencesItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItem {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub first_patched_version: ::std::option::Option<
         SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemFirstPatchedVersion,
     >,
@@ -83354,13 +83898,18 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemPackage {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SimplePullRequest {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub active_lock_reason: ::std::option::Option<SimplePullRequestActiveLockReason>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub assignee: ::std::option::Option<User>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
+    #[serde(default)]
     pub auto_merge: (),
     pub base: SimplePullRequestBase,
     pub body: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub closed_at: ::std::option::Option<::std::string::String>,
     pub comments_url: ::std::string::String,
     pub commits_url: ::std::string::String,
@@ -83371,17 +83920,23 @@ pub struct SimplePullRequest {
     pub html_url: ::std::string::String,
     pub id: i64,
     pub issue_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<Label>,
     #[serde(rename = "_links")]
     pub links: SimplePullRequestLinks,
     pub locked: bool,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub merged_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub milestone: ::std::option::Option<Milestone>,
     pub node_id: ::std::string::String,
     pub number: i64,
     pub patch_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_reviewers: ::std::vec::Vec<SimplePullRequestRequestedReviewersItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub requested_teams: ::std::vec::Vec<Team>,
     pub review_comment_url: ::std::string::String,
     pub review_comments_url: ::std::string::String,
@@ -85401,6 +85956,7 @@ pub struct StarDeleted {
     pub repository: Repository,
     pub sender: User,
     #[doc = "The time the star was created. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`. Will be `null` for the `deleted` action."]
+    #[serde(default)]
     pub starred_at: (),
 }
 #[doc = "`StarDeletedAction`"]
@@ -85845,11 +86401,13 @@ pub struct StatusEvent {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub avatar_url: ::std::option::Option<::std::string::String>,
     #[doc = "An array of branch objects containing the status' SHA. Each branch contains the given SHA, but the SHA may or may not be the head of the branch. The array includes a maximum of 10 branches."]
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub branches: ::std::vec::Vec<StatusEventBranchesItem>,
     pub commit: StatusEventCommit,
     pub context: ::std::string::String,
     pub created_at: ::std::string::String,
     #[doc = "The optional human-readable description added to the status."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     #[doc = "The unique identifier of the status."]
     pub id: i64,
@@ -85865,6 +86423,7 @@ pub struct StatusEvent {
     #[doc = "The new state. Can be `pending`, `success`, `failure`, or `error`."]
     pub state: StatusEventState,
     #[doc = "The optional link added to the status."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub target_url: ::std::option::Option<::std::string::String>,
     pub updated_at: ::std::string::String,
 }
@@ -86161,12 +86720,15 @@ pub struct StatusEventBranchesItemCommit {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommit {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub author: ::std::option::Option<User>,
     pub comments_url: ::std::string::String,
     pub commit: StatusEventCommitCommit,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub committer: ::std::option::Option<User>,
     pub html_url: ::std::string::String,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub parents: ::std::vec::Vec<StatusEventCommitParentsItem>,
     pub sha: ::std::string::String,
     pub url: ::std::string::String,
@@ -86345,6 +86907,7 @@ pub struct StatusEventCommitCommit {
 pub struct StatusEventCommitCommitAuthor {
     pub date: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The git author's email address."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
     pub name: ::std::string::String,
@@ -86382,6 +86945,7 @@ pub struct StatusEventCommitCommitAuthor {
 pub struct StatusEventCommitCommitCommitter {
     pub date: ::chrono::DateTime<::chrono::offset::Utc>,
     #[doc = "The git author's email address."]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
     #[doc = "The git author's name."]
     pub name: ::std::string::String,
@@ -86473,8 +87037,10 @@ pub struct StatusEventCommitCommitTree {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct StatusEventCommitCommitVerification {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub payload: ::std::option::Option<::std::string::String>,
     pub reason: StatusEventCommitCommitVerificationReason,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub signature: ::std::option::Option<::std::string::String>,
     pub verified: bool,
 }
@@ -86879,6 +87445,7 @@ impl ::std::convert::TryFrom<::std::string::String> for StatusEventState {
 #[serde(deny_unknown_fields)]
 pub struct Team {
     #[doc = "Description of the team"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the team"]
@@ -87974,6 +88541,7 @@ impl ::std::convert::From<TeamRemovedFromRepository> for TeamEvent {
 #[serde(deny_unknown_fields)]
 pub struct TeamParent {
     #[doc = "Description of the team"]
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub description: ::std::option::Option<::std::string::String>,
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the team"]
@@ -89148,6 +89716,7 @@ pub struct Workflow {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowDispatchEvent {
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub inputs:
         ::std::option::Option<::serde_json::Map<::std::string::String, ::serde_json::Value>>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -89268,11 +89837,14 @@ pub struct WorkflowDispatchEvent {
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJob {
     pub check_run_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub completed_at: ::std::option::Option<::std::string::String>,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<WorkflowJobConclusion>,
     pub head_sha: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<::std::string::String>,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
@@ -89280,6 +89852,7 @@ pub struct WorkflowJob {
     pub run_url: ::std::string::String,
     pub started_at: ::std::string::String,
     pub status: WorkflowJobStatus,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub steps: ::std::vec::Vec<WorkflowStep>,
     pub url: ::std::string::String,
 }
@@ -89458,11 +90031,13 @@ impl ::std::convert::TryFrom<::std::string::String> for WorkflowJobCompletedActi
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJobCompletedWorkflowJob {
     pub check_run_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub completed_at: ::std::option::Option<::std::string::String>,
     pub conclusion: WorkflowJobCompletedWorkflowJobConclusion,
     pub head_sha: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<::std::string::String>,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
@@ -89470,6 +90045,7 @@ pub struct WorkflowJobCompletedWorkflowJob {
     pub run_url: ::std::string::String,
     pub started_at: ::std::string::String,
     pub status: WorkflowJobCompletedWorkflowJobStatus,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub steps: ::std::vec::Vec<WorkflowStep>,
     pub url: ::std::string::String,
 }
@@ -90029,11 +90605,14 @@ impl ::std::convert::TryFrom<::std::string::String> for WorkflowJobQueuedAction 
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJobQueuedWorkflowJob {
     pub check_run_url: ::std::string::String,
+    #[serde(default)]
     pub completed_at: (),
+    #[serde(default)]
     pub conclusion: (),
     pub head_sha: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<::std::string::String>,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
@@ -90041,6 +90620,7 @@ pub struct WorkflowJobQueuedWorkflowJob {
     pub run_url: ::std::string::String,
     pub started_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub status: WorkflowJobQueuedWorkflowJobStatus,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub steps: ::std::vec::Vec<WorkflowStep>,
     pub url: ::std::string::String,
 }
@@ -90304,11 +90884,13 @@ impl ::std::convert::TryFrom<::std::string::String> for WorkflowJobStartedAction
 #[serde(deny_unknown_fields)]
 pub struct WorkflowJobStartedWorkflowJob {
     pub check_run_url: ::std::string::String,
+    #[serde(default)]
     pub completed_at: (),
     pub conclusion: WorkflowJobStartedWorkflowJobConclusion,
     pub head_sha: ::std::string::String,
     pub html_url: ::std::string::String,
     pub id: i64,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub labels: ::std::vec::Vec<::std::string::String>,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
@@ -90745,6 +91327,7 @@ pub struct WorkflowRun {
     pub check_suite_id: i64,
     pub check_suite_node_id: ::std::string::String,
     pub check_suite_url: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub conclusion: ::std::option::Option<WorkflowRunConclusion>,
     pub created_at: ::chrono::DateTime<::chrono::offset::Utc>,
     pub event: ::std::string::String,
@@ -90758,6 +91341,7 @@ pub struct WorkflowRun {
     pub logs_url: ::std::string::String,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<WorkflowRunPullRequestsItem>,
     pub repository: RepositoryLite,
     pub rerun_url: ::std::string::String,
@@ -90975,6 +91559,7 @@ pub struct WorkflowRunCompletedWorkflowRun {
     pub logs_url: ::std::string::String,
     pub name: ::std::string::String,
     pub node_id: ::std::string::String,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub pull_requests: ::std::vec::Vec<WorkflowRunCompletedWorkflowRunPullRequestsItem>,
     pub repository: RepositoryLite,
     pub rerun_url: ::std::string::String,
@@ -92086,7 +92671,9 @@ impl ::std::convert::TryFrom<::std::string::String> for WorkflowStepCompletedSta
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct WorkflowStepInProgress {
+    #[serde(default)]
     pub completed_at: (),
+    #[serde(default)]
     pub conclusion: (),
     pub name: ::std::string::String,
     pub number: i64,
@@ -92164,5 +92751,9 @@ impl ::std::convert::TryFrom<::std::string::String> for WorkflowStepInProgressSt
 pub mod defaults {
     pub(super) fn default_bool<const V: bool>() -> bool {
         V
+    }
+    pub(super) fn pull_request_review_comment_start_side(
+    ) -> ::std::option::Option<super::PullRequestReviewCommentStartSide> {
+        ::std::option::Option::Some(super::PullRequestReviewCommentStartSide::Right)
     }
 }

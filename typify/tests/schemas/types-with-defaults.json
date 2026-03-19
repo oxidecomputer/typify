@@ -101,6 +101,23 @@
           ]
         }
       }
+    },
+    "RequiredWithDefaults": {
+      "type": "object",
+      "required": ["name", "count"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "unnamed"
+        },
+        "count": {
+          "type": "integer",
+          "default": 0
+        },
+        "label": {
+          "type": "string"
+        }
+      }
     }
   }
 }

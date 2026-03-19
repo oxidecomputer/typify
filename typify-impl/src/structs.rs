@@ -133,7 +133,18 @@ impl TypeSpace {
         let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
 
         let state = if required.contains(prop_name) {
-            StructPropertyState::Required
+            // Even required fields may have an explicit default value
+            // specified in the schema. If so, we use it for the Default impl
+            // and builder pre-population (and also make serde more lenient).
+            match has_default(
+                self,
+                &type_id,
+                metadata.as_ref().and_then(|m| m.default.as_ref()),
+            ) {
+                StructPropertyState::Optional => StructPropertyState::Optional,
+                StructPropertyState::Default(v) => StructPropertyState::Default(v),
+                StructPropertyState::Required => StructPropertyState::Required,
+            }
         } else {
             // We can use serde's `default` and `skip_serializing_if`
             // construction for options, arrays, and maps--i.e. properties that

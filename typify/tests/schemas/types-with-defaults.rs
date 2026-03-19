@@ -160,6 +160,56 @@ impl OuterThing {
         Default::default()
     }
 }
+#[doc = "`RequiredWithDefaults`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"count\","]
+#[doc = "    \"name\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"count\": {"]
+#[doc = "      \"default\": 0,"]
+#[doc = "      \"type\": \"integer\""]
+#[doc = "    },"]
+#[doc = "    \"label\": {"]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"name\": {"]
+#[doc = "      \"default\": \"unnamed\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct RequiredWithDefaults {
+    #[serde(default)]
+    pub count: i64,
+    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    pub label: ::std::option::Option<::std::string::String>,
+    #[serde(default = "defaults::required_with_defaults_name")]
+    pub name: ::std::string::String,
+}
+impl ::std::default::Default for RequiredWithDefaults {
+    fn default() -> Self {
+        Self {
+            count: Default::default(),
+            label: Default::default(),
+            name: defaults::required_with_defaults_name(),
+        }
+    }
+}
+impl RequiredWithDefaults {
+    pub fn builder() -> builder::RequiredWithDefaults {
+        Default::default()
+    }
+}
 #[doc = "`TestBed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -505,6 +555,77 @@ pub mod builder {
         }
     }
     #[derive(Clone, Debug)]
+    pub struct RequiredWithDefaults {
+        count: ::std::result::Result<i64, ::std::string::String>,
+        label: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        name: ::std::result::Result<::std::string::String, ::std::string::String>,
+    }
+    impl ::std::default::Default for RequiredWithDefaults {
+        fn default() -> Self {
+            Self {
+                count: Ok(Default::default()),
+                label: Ok(Default::default()),
+                name: Ok(super::defaults::required_with_defaults_name()),
+            }
+        }
+    }
+    impl RequiredWithDefaults {
+        pub fn count<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<i64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.count = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for count: {e}"));
+            self
+        }
+        pub fn label<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.label = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for label: {e}"));
+            self
+        }
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::string::String>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<RequiredWithDefaults> for super::RequiredWithDefaults {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: RequiredWithDefaults,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                count: value.count?,
+                label: value.label?,
+                name: value.name?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::RequiredWithDefaults> for RequiredWithDefaults {
+        fn from(value: super::RequiredWithDefaults) -> Self {
+            Self {
+                count: Ok(value.count),
+                label: Ok(value.label),
+                name: Ok(value.name),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
     pub struct TestBed {
         any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
         id: ::std::result::Result<::uuid::Uuid, ::std::string::String>,
@@ -675,6 +796,9 @@ pub mod defaults {
     pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
     {
         ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
+    }
+    pub(super) fn required_with_defaults_name() -> ::std::string::String {
+        "unnamed".to_string()
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![

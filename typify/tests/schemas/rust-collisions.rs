@@ -404,8 +404,19 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MapOfKeywords {
+    #[serde(
+        default,
+        skip_serializing_if = ":: std :: collections :: HashMap::is_empty"
+    )]
     pub keyword_map:
         ::std::collections::HashMap<::std::string::String, MapOfKeywordsKeywordMapValue>,
+}
+impl ::std::default::Default for MapOfKeywords {
+    fn default() -> Self {
+        Self {
+            keyword_map: Default::default(),
+        }
+    }
 }
 impl MapOfKeywords {
     pub fn builder() -> builder::MapOfKeywords {
@@ -586,6 +597,7 @@ pub struct NestedTypeCollisions {
     pub option_type: ::std::option::Option<NestedTypeCollisionsOptionType>,
     #[serde(rename = "type")]
     pub type_: TypeWithOptionField,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub types: ::std::vec::Vec<TypeWithOptionField>,
 }
 impl NestedTypeCollisions {
@@ -1619,7 +1631,15 @@ impl TypeWithOptionField {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Vec {
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub items: ::std::vec::Vec<::std::string::String>,
+}
+impl ::std::default::Default for Vec {
+    fn default() -> Self {
+        Self {
+            items: Default::default(),
+        }
+    }
 }
 impl Vec {
     pub fn builder() -> builder::Vec {
@@ -1895,7 +1915,7 @@ pub mod builder {
     impl ::std::default::Default for MapOfKeywords {
         fn default() -> Self {
             Self {
-                keyword_map: Err("no value supplied for keyword_map".to_string()),
+                keyword_map: Ok(Default::default()),
             }
         }
     }
@@ -1950,7 +1970,7 @@ pub mod builder {
             Self {
                 option_type: Ok(Default::default()),
                 type_: Err("no value supplied for type_".to_string()),
-                types: Err("no value supplied for types".to_string()),
+                types: Ok(Default::default()),
             }
         }
     }
@@ -3442,7 +3462,7 @@ pub mod builder {
     impl ::std::default::Default for Vec {
         fn default() -> Self {
             Self {
-                items: Err("no value supplied for items".to_string()),
+                items: Ok(Default::default()),
             }
         }
     }
