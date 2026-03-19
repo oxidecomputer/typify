@@ -6,11 +6,11 @@ Forked from [oxidecomputer/typify](https://github.com/oxidecomputer/typify). Thi
 
 Small, well-scoped fixes that improve correctness immediately.
 
-- [ ] **Cherry-pick PR #991** — Fix untagged enum automatic ordering. Integer variant must come before Number to avoid unreachable deserialization.
-- [ ] **#918** — Types with explicit defaults on required fields should implement `Default`.
-- [ ] **#986** — Bounded integer constructors ignore bounds (`From<u8>` instead of `TryFrom<u8>`).
-- [ ] **#843** — Integer `minimum` property rendered as float in generated code.
-- [ ] **#948** — Special characters in enum variant names (`=`, `>`, `<`, etc.) cause panics.
+- [x] **Cherry-pick PR #991** — Fix untagged enum automatic ordering. Integer variant must come before Number to avoid unreachable deserialization.
+- [x] **#918** — Types with explicit defaults on required fields should implement `Default`.
+- [x] **#986** — Bounded integer constructors ignore bounds (`From<u8>` instead of `TryFrom<u8>`).
+- [x] **#843** — Integer `minimum` property rendered as float in generated code.
+- [x] **#948** — Special characters in enum variant names (`=`, `>`, `<`, etc.) cause panics.
 
 ## Phase 2: Core `anyOf` Overhaul (Highest Impact)
 
