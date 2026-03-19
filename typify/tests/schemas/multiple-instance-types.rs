@@ -41,14 +41,14 @@ pub mod error {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IntOrStr {
-    String(::std::string::String),
     Integer(i64),
+    String(::std::string::String),
 }
 impl ::std::fmt::Display for IntOrStr {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
-            Self::String(x) => x.fmt(f),
             Self::Integer(x) => x.fmt(f),
+            Self::String(x) => x.fmt(f),
         }
     }
 }
@@ -79,21 +79,19 @@ impl ::std::convert::From<i64> for IntOrStr {
 pub enum OneOfSeveral {
     Null,
     Boolean(bool),
-    Object(::serde_json::Map<::std::string::String, ::serde_json::Value>),
-    Array(::std::vec::Vec<::serde_json::Value>),
-    String(::std::string::String),
     Integer(i64),
+    String(::std::string::String),
+    Array(::std::vec::Vec<::serde_json::Value>),
+    Object(::serde_json::Map<::std::string::String, ::serde_json::Value>),
 }
 impl ::std::convert::From<bool> for OneOfSeveral {
     fn from(value: bool) -> Self {
         Self::Boolean(value)
     }
 }
-impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
-    for OneOfSeveral
-{
-    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
-        Self::Object(value)
+impl ::std::convert::From<i64> for OneOfSeveral {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
     }
 }
 impl ::std::convert::From<::std::vec::Vec<::serde_json::Value>> for OneOfSeveral {
@@ -101,9 +99,11 @@ impl ::std::convert::From<::std::vec::Vec<::serde_json::Value>> for OneOfSeveral
         Self::Array(value)
     }
 }
-impl ::std::convert::From<i64> for OneOfSeveral {
-    fn from(value: i64) -> Self {
-        Self::Integer(value)
+impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json::Value>>
+    for OneOfSeveral
+{
+    fn from(value: ::serde_json::Map<::std::string::String, ::serde_json::Value>) -> Self {
+        Self::Object(value)
     }
 }
 #[doc = "`ReallyJustNull`"]
