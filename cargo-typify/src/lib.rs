@@ -61,6 +61,11 @@ pub struct CliArgs {
         value_parser = ["generate", "allow", "deny"]
     )]
     unknown_crates: Option<String>,
+
+    /// Directory to search for external schemas referenced via `$ref`.
+    /// If not specified, the input file's parent directory is used.
+    #[arg(long = "schema-dir")]
+    schema_dir: Option<PathBuf>,
 }
 
 impl CliArgs {
@@ -140,8 +145,8 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     let content = std::fs::read_to_string(&args.input)
         .wrap_err_with(|| format!("Failed to open input file: {}", &args.input.display()))?;
 
-    let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
-        .wrap_err("Failed to parse input file as JSON Schema")?;
+    let schema_value: serde_json::Value =
+        serde_json::from_str(&content).wrap_err("Failed to parse input file as JSON")?;
 
     let mut settings = TypeSpaceSettings::default();
     settings.with_struct_builder(args.use_builder());
@@ -178,9 +183,21 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     }
 
     let mut type_space = TypeSpace::new(&settings);
-    type_space
-        .add_root_schema(schema)
-        .wrap_err("Schema conversion failed")?;
+
+    // Discover external schemas from the input file's directory
+    let external_schemas = discover_external_schemas(args, &schema_value)?;
+
+    if external_schemas.is_empty() {
+        // No external refs — use add_schema_from_value which handles
+        // 2020-12 normalization and non-$defs internal refs automatically.
+        type_space
+            .add_schema_from_value(schema_value)
+            .wrap_err("Schema conversion failed")?;
+    } else {
+        type_space
+            .add_schema_with_externals(schema_value, external_schemas)
+            .wrap_err("Schema conversion failed")?;
+    }
 
     let intro = "#![allow(clippy::redundant_closure_call)]
 #![allow(clippy::needless_lifetimes)]
@@ -193,6 +210,75 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 
     Ok(contents)
+}
+
+/// Discover external schema files referenced by the input schema.
+/// Looks for external `$ref` values and loads the referenced files
+/// from the schema directory.
+fn discover_external_schemas(
+    args: &CliArgs,
+    schema_value: &serde_json::Value,
+) -> Result<std::collections::BTreeMap<String, serde_json::Value>> {
+    let schema_dir = args
+        .schema_dir
+        .clone()
+        .or_else(|| args.input.parent().map(|p| p.to_path_buf()))
+        .unwrap_or_else(|| PathBuf::from("."));
+
+    let refs = collect_external_refs(schema_value);
+    let mut externals = std::collections::BTreeMap::new();
+
+    for ref_str in refs {
+        // Extract the document URI (before #)
+        let doc_uri = ref_str.split('#').next().unwrap_or(&ref_str).to_string();
+        if doc_uri.is_empty() || externals.contains_key(&doc_uri) {
+            continue;
+        }
+
+        let file_path = schema_dir.join(&doc_uri);
+        if file_path.exists() {
+            let content = std::fs::read_to_string(&file_path).wrap_err_with(|| {
+                format!("Failed to read external schema: {}", file_path.display())
+            })?;
+            let value: serde_json::Value = serde_json::from_str(&content).wrap_err_with(|| {
+                format!(
+                    "Failed to parse external schema as JSON: {}",
+                    file_path.display()
+                )
+            })?;
+            externals.insert(doc_uri, value);
+        }
+    }
+
+    Ok(externals)
+}
+
+/// Recursively collect all external `$ref` strings from a JSON value.
+fn collect_external_refs(value: &serde_json::Value) -> Vec<String> {
+    let mut refs = Vec::new();
+    collect_external_refs_inner(value, &mut refs);
+    refs
+}
+
+fn collect_external_refs_inner(value: &serde_json::Value, refs: &mut Vec<String>) {
+    match value {
+        serde_json::Value::Object(map) => {
+            if let Some(serde_json::Value::String(ref_str)) = map.get("$ref") {
+                if !ref_str.starts_with('#') && !ref_str.is_empty() {
+                    refs.push(ref_str.clone());
+                }
+            }
+            for v in map.values() {
+                collect_external_refs_inner(v, refs);
+            }
+        }
+        serde_json::Value::Array(arr) => {
+            for item in arr {
+                collect_external_refs_inner(item, refs);
+            }
+        }
+        _ => {}
+    }
 }
 
 #[cfg(test)]
@@ -211,6 +297,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert_eq!(args.output_path(), None);
@@ -228,6 +315,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -245,6 +333,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -262,6 +351,7 @@ mod tests {
             crates: vec![],
             map_type: Some("::std::collections::BTreeMap".to_string()),
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert_eq!(
@@ -282,6 +372,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert!(args.use_builder());
@@ -299,6 +390,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert!(!args.use_builder());
@@ -316,6 +408,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            schema_dir: None,
         };
 
         assert!(args.use_builder());

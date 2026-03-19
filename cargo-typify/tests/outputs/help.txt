@@ -35,6 +35,9 @@ Options:
           
           [possible values: generate, allow, deny]
 
+      --schema-dir <SCHEMA_DIR>
+          Directory to search for external schemas referenced via `$ref`. If not specified, the input file's parent directory is used
+
   -h, --help
           Print help (see a summary with '-h')
 
