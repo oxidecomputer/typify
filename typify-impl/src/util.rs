@@ -1,16 +1,23 @@
 // Copyright 2025 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::collections::{BTreeSet, HashSet};
 
 use heck::ToPascalCase;
+#[cfg(test)]
 use log::debug;
+#[cfg(test)]
+use schemars::schema::ArrayValidation;
 use schemars::schema::{
-    ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-    StringValidation, SubschemaValidation,
+    InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec, StringValidation,
+    SubschemaValidation,
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{validate::schema_value_validate, Error, Name, RefKey, Result, TypeSpace};
+#[cfg(test)]
+use crate::validate::schema_value_validate;
+use crate::{Error, Name, RefKey, Result, TypeSpace};
+#[cfg(test)]
+use std::collections::BTreeMap;
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -43,6 +50,7 @@ pub(crate) fn metadata_title_and_description(metadata: &Option<Box<Metadata>>) -
 /// in which case we'll end up looking like a `oneOf`. The logic of merging is
 /// conceptually identical to the logic below that validates **if** the schemas
 /// **could** be merged (i.e. if they're compatible).
+#[cfg(test)]
 pub(crate) fn all_mutually_exclusive(
     subschemas: &[Schema],
     definitions: &BTreeMap<RefKey, Schema>,
@@ -60,6 +68,7 @@ pub(crate) fn all_mutually_exclusive(
 
 /// This function needs to necessarily be conservative. We'd much prefer a
 /// false negative than a false positive.
+#[cfg(test)]
 fn schemas_mutually_exclusive(
     a: &Schema,
     b: &Schema,
@@ -334,6 +343,7 @@ fn schemas_mutually_exclusive(
 // in the other. In other words, see if there are properties that would
 // uniquely identify an objects as validating exclusively with one or the other
 // (but not with both).
+#[cfg(test)]
 fn object_schemas_mutually_exclusive(
     a_validation: &ObjectValidation,
     b_validation: &ObjectValidation,
@@ -394,6 +404,7 @@ fn object_schemas_mutually_exclusive(
     }
 }
 
+#[cfg(test)]
 fn array_schemas_mutually_exclusive(
     a_validation: &ArrayValidation,
     b_validation: &ArrayValidation,
@@ -560,6 +571,7 @@ pub(crate) fn ref_key(ref_name: &str) -> RefKey {
     }
 }
 
+#[cfg(test)]
 fn resolve<'a>(
     schema: &'a Schema,
     definitions: &'a std::collections::BTreeMap<RefKey, Schema>,

@@ -624,7 +624,10 @@ fn all_props<'a>(
             // TODO Rather than an option, this should probably be something
             // that lets us say "explicit name" or "type to validate against"
             TypeEntryDetails::Map(_, value_id) => return vec![(None, value_id, false)],
-            _ => unreachable!(),
+
+            // Flattened properties that resolve to enums, newtypes, or other
+            // non-struct types don't have named properties to validate.
+            _ => return vec![],
         };
 
         properties

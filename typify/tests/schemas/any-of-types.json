@@ -1,0 +1,47 @@
+{
+  "$comment": "Test anyOf with non-exclusive subschemas (issue #414, #895, #710)",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "any-of-strings": {
+      "description": "anyOf with overlapping string types",
+      "anyOf": [
+        { "type": "string", "pattern": "^foo" },
+        { "type": "string", "pattern": "^bar" }
+      ]
+    },
+    "any-of-mixed-primitives": {
+      "description": "anyOf with string and integer",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "integer" }
+      ]
+    },
+    "any-of-objects-overlapping": {
+      "description": "anyOf with overlapping object properties",
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" }
+          },
+          "required": ["name"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "age": { "type": "integer" }
+          },
+          "required": ["name", "age"]
+        }
+      ]
+    },
+    "any-of-with-ref": {
+      "description": "anyOf mixing ref and inline",
+      "anyOf": [
+        { "$ref": "#/definitions/any-of-strings" },
+        { "type": "integer" }
+      ]
+    }
+  }
+}

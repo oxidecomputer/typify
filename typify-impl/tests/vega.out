@@ -20571,111 +20571,329 @@ impl ::std::convert::From<::std::vec::Vec<::std::string::String>> for DataVarian
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum DataVariant2Format {
-    Variant0 {
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_0: ::std::option::Option<DataVariant2FormatVariant0Subtype0>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_1: ::std::option::Option<DataVariant2FormatVariant0Subtype1>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_2: ::std::option::Option<DataVariant2FormatVariant0Subtype2>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_3: ::std::option::Option<DataVariant2FormatVariant0Subtype3>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_4: ::std::option::Option<DataVariant2FormatVariant0Subtype4>,
-    },
+    Variant0(DataVariant2FormatVariant0),
     Variant1(SignalRef),
+}
+impl ::std::convert::From<DataVariant2FormatVariant0> for DataVariant2Format {
+    fn from(value: DataVariant2FormatVariant0) -> Self {
+        Self::Variant0(value)
+    }
 }
 impl ::std::convert::From<SignalRef> for DataVariant2Format {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0`"]
+#[doc = "`DataVariant2FormatVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
 #[doc = "                ]"]
 #[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"copy\": {"]
+#[doc = "          \"$ref\": \"#/definitions/booleanOrSignal\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"property\": {"]
+#[doc = "          \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"json\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"header\": {"]
+#[doc = "          \"items\": {"]
+#[doc = "            \"type\": \"string\""]
 #[doc = "          },"]
+#[doc = "          \"type\": \"array\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"csv\","]
+#[doc = "            \"tsv\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"type\""]
+#[doc = "      ],"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"delimiter\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        },"]
+#[doc = "        \"header\": {"]
+#[doc = "          \"items\": {"]
+#[doc = "            \"type\": \"string\""]
+#[doc = "          },"]
+#[doc = "          \"type\": \"array\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"dsv\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"delimiter\","]
+#[doc = "        \"type\""]
+#[doc = "      ],"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"oneOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"additionalProperties\": false,"]
+#[doc = "          \"properties\": {"]
+#[doc = "            \"feature\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"property\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"type\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"topojson\""]
+#[doc = "              ]"]
+#[doc = "            }"]
+#[doc = "          },"]
+#[doc = "          \"required\": ["]
+#[doc = "            \"feature\","]
+#[doc = "            \"type\""]
+#[doc = "          ],"]
 #[doc = "          \"type\": \"object\""]
 #[doc = "        },"]
 #[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "          \"additionalProperties\": false,"]
+#[doc = "          \"properties\": {"]
+#[doc = "            \"filter\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"interior\","]
+#[doc = "                \"exterior\","]
+#[doc = "                null"]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            \"mesh\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"property\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"type\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"topojson\""]
+#[doc = "              ]"]
+#[doc = "            }"]
+#[doc = "          },"]
+#[doc = "          \"required\": ["]
+#[doc = "            \"mesh\","]
+#[doc = "            \"type\""]
+#[doc = "          ],"]
+#[doc = "          \"type\": \"object\""]
 #[doc = "        }"]
 #[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"$ref\": \"#/definitions/stringOrSignal\""]
 #[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"type\": \"object\""]
+#[doc = "  ]"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct DataVariant2FormatVariant0Subtype0 {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant2FormatVariant0Subtype0Parse>,
-    #[serde(
-        rename = "type",
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub type_: ::std::option::Option<StringOrSignal>,
+#[serde(untagged, deny_unknown_fields)]
+pub enum DataVariant2FormatVariant0 {
+    Variant0 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant2FormatVariant0Variant0Parse>,
+        #[serde(
+            rename = "type",
+            default,
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        type_: ::std::option::Option<StringOrSignal>,
+    },
+    Variant1 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        copy: ::std::option::Option<BooleanOrSignal>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant2FormatVariant0Variant1Parse>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        property: ::std::option::Option<StringOrSignal>,
+        #[serde(
+            rename = "type",
+            default,
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        type_: ::std::option::Option<DataVariant2FormatVariant0Variant1Type>,
+    },
+    Variant2 {
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        header: ::std::vec::Vec<::std::string::String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant2FormatVariant0Variant2Parse>,
+        #[serde(rename = "type")]
+        type_: DataVariant2FormatVariant0Variant2Type,
+    },
+    Variant3 {
+        delimiter: ::std::string::String,
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        header: ::std::vec::Vec<::std::string::String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant2FormatVariant0Variant3Parse>,
+        #[serde(rename = "type")]
+        type_: DataVariant2FormatVariant0Variant3Type,
+    },
+    Variant4(DataVariant2FormatVariant0Variant4),
 }
-impl ::std::default::Default for DataVariant2FormatVariant0Subtype0 {
-    fn default() -> Self {
-        Self {
-            parse: Default::default(),
-            type_: Default::default(),
-        }
+impl ::std::convert::From<DataVariant2FormatVariant0Variant4> for DataVariant2FormatVariant0 {
+    fn from(value: DataVariant2FormatVariant0Variant4) -> Self {
+        Self::Variant4(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0Parse`"]
+#[doc = "`DataVariant2FormatVariant0Variant0Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -20715,20 +20933,20 @@ impl ::std::default::Default for DataVariant2FormatVariant0Subtype0 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype0Parse {
-    Variant0(DataVariant2FormatVariant0Subtype0ParseVariant0),
+pub enum DataVariant2FormatVariant0Variant0Parse {
+    Variant0(DataVariant2FormatVariant0Variant0ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant2FormatVariant0Variant0ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype0ParseVariant0>
-    for DataVariant2FormatVariant0Subtype0Parse
+impl ::std::convert::From<DataVariant2FormatVariant0Variant0ParseVariant0>
+    for DataVariant2FormatVariant0Variant0Parse
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant0ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -20736,25 +20954,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant2FormatVariant0Variant0ParseVariant1Value,
         >,
-    > for DataVariant2FormatVariant0Subtype0Parse
+    > for DataVariant2FormatVariant0Variant0Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant2FormatVariant0Variant0ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype0Parse {
+impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Variant0Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0ParseVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant0ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -20778,18 +20996,18 @@ impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype0Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype0ParseVariant0 {
+pub enum DataVariant2FormatVariant0Variant0ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant0ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant0ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -20798,14 +21016,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant0ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant0
+    for DataVariant2FormatVariant0Variant0ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -20815,7 +21033,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant0
+    for DataVariant2FormatVariant0Variant0ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -20824,7 +21042,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0ParseVariant1Value`"]
+#[doc = "`DataVariant2FormatVariant0Variant0ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -20849,11 +21067,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype0ParseVariant1Value {
-    Variant0(DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1),
+pub enum DataVariant2FormatVariant0Variant0ParseVariant1Value {
+    Variant0(DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0),
+    Variant1(DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant0ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -20865,14 +21083,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant0ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1Value
+    for DataVariant2FormatVariant0Variant0ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -20882,7 +21100,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1Value
+    for DataVariant2FormatVariant0Variant0ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -20891,7 +21109,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant0ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -20899,21 +21117,21 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0>
+    for DataVariant2FormatVariant0Variant0ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1>
+    for DataVariant2FormatVariant0Variant0ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -20940,7 +21158,7 @@ impl ::std::convert::From<DataVariant2FormatVariant0Subtype0ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+pub enum DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -20950,7 +21168,7 @@ pub enum DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -20960,7 +21178,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -20973,7 +21191,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -20981,7 +21199,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -20991,7 +21209,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21000,7 +21218,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21013,21 +21231,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1 {
+pub struct DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -21039,7 +21257,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -21047,7 +21265,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21057,7 +21275,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21067,7 +21285,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -21080,88 +21298,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"copy\": {"]
-#[doc = "      \"$ref\": \"#/definitions/booleanOrSignal\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"property\": {"]
-#[doc = "      \"$ref\": \"#/definitions/stringOrSignal\""]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"json\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant2FormatVariant0Subtype1 {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub copy: ::std::option::Option<BooleanOrSignal>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant2FormatVariant0Subtype1Parse>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub property: ::std::option::Option<StringOrSignal>,
-    #[serde(
-        rename = "type",
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub type_: ::std::option::Option<DataVariant2FormatVariant0Subtype1Type>,
-}
-impl ::std::default::Default for DataVariant2FormatVariant0Subtype1 {
-    fn default() -> Self {
-        Self {
-            copy: Default::default(),
-            parse: Default::default(),
-            property: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
-#[doc = "`DataVariant2FormatVariant0Subtype1Parse`"]
+#[doc = "`DataVariant2FormatVariant0Variant1Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21201,20 +21338,20 @@ impl ::std::default::Default for DataVariant2FormatVariant0Subtype1 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype1Parse {
-    Variant0(DataVariant2FormatVariant0Subtype1ParseVariant0),
+pub enum DataVariant2FormatVariant0Variant1Parse {
+    Variant0(DataVariant2FormatVariant0Variant1ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant2FormatVariant0Variant1ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype1ParseVariant0>
-    for DataVariant2FormatVariant0Subtype1Parse
+impl ::std::convert::From<DataVariant2FormatVariant0Variant1ParseVariant0>
+    for DataVariant2FormatVariant0Variant1Parse
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant1ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -21222,25 +21359,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant2FormatVariant0Variant1ParseVariant1Value,
         >,
-    > for DataVariant2FormatVariant0Subtype1Parse
+    > for DataVariant2FormatVariant0Variant1Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant2FormatVariant0Variant1ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype1Parse {
+impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Variant1Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1ParseVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant1ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21264,18 +21401,18 @@ impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype1Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype1ParseVariant0 {
+pub enum DataVariant2FormatVariant0Variant1ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant1ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant1ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -21284,14 +21421,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant1ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant0
+    for DataVariant2FormatVariant0Variant1ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21301,7 +21438,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant0
+    for DataVariant2FormatVariant0Variant1ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21310,7 +21447,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1ParseVariant1Value`"]
+#[doc = "`DataVariant2FormatVariant0Variant1ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21335,11 +21472,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype1ParseVariant1Value {
-    Variant0(DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1),
+pub enum DataVariant2FormatVariant0Variant1ParseVariant1Value {
+    Variant0(DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0),
+    Variant1(DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant1ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -21351,14 +21488,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant1ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1Value
+    for DataVariant2FormatVariant0Variant1ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21368,7 +21505,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1Value
+    for DataVariant2FormatVariant0Variant1ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21377,7 +21514,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant1ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -21385,21 +21522,21 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0>
+    for DataVariant2FormatVariant0Variant1ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1>
+    for DataVariant2FormatVariant0Variant1ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21426,7 +21563,7 @@ impl ::std::convert::From<DataVariant2FormatVariant0Subtype1ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+pub enum DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -21436,7 +21573,7 @@ pub enum DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -21446,7 +21583,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -21459,7 +21596,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -21467,7 +21604,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21477,7 +21614,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21486,7 +21623,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21499,21 +21636,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1 {
+pub struct DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -21525,7 +21662,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -21533,7 +21670,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21543,7 +21680,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21553,7 +21690,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -21566,7 +21703,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype1Type`"]
+#[doc = "`DataVariant2FormatVariant0Variant1Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21590,18 +21727,18 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype1Type {
+pub enum DataVariant2FormatVariant0Variant1Type {
     #[serde(rename = "json")]
     Json,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype1Type {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Json => f.write_str("json"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1Type {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant1Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -21610,13 +21747,13 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -21624,7 +21761,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -21632,76 +21769,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"header\": {"]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      },"]
-#[doc = "      \"type\": \"array\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"csv\","]
-#[doc = "        \"tsv\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"type\""]
-#[doc = "  ],"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant2FormatVariant0Subtype2 {
-    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
-    pub header: ::std::vec::Vec<::std::string::String>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant2FormatVariant0Subtype2Parse>,
-    #[serde(rename = "type")]
-    pub type_: DataVariant2FormatVariant0Subtype2Type,
-}
-#[doc = "`DataVariant2FormatVariant0Subtype2Parse`"]
+#[doc = "`DataVariant2FormatVariant0Variant2Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21741,20 +21809,20 @@ pub struct DataVariant2FormatVariant0Subtype2 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype2Parse {
-    Variant0(DataVariant2FormatVariant0Subtype2ParseVariant0),
+pub enum DataVariant2FormatVariant0Variant2Parse {
+    Variant0(DataVariant2FormatVariant0Variant2ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant2FormatVariant0Variant2ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype2ParseVariant0>
-    for DataVariant2FormatVariant0Subtype2Parse
+impl ::std::convert::From<DataVariant2FormatVariant0Variant2ParseVariant0>
+    for DataVariant2FormatVariant0Variant2Parse
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant2ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -21762,25 +21830,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant2FormatVariant0Variant2ParseVariant1Value,
         >,
-    > for DataVariant2FormatVariant0Subtype2Parse
+    > for DataVariant2FormatVariant0Variant2Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant2FormatVariant0Variant2ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype2Parse {
+impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Variant2Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2ParseVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant2ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21804,18 +21872,18 @@ impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype2Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype2ParseVariant0 {
+pub enum DataVariant2FormatVariant0Variant2ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant2ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant2ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -21824,14 +21892,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant2ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant0
+    for DataVariant2FormatVariant0Variant2ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21841,7 +21909,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant0
+    for DataVariant2FormatVariant0Variant2ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21850,7 +21918,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2ParseVariant1Value`"]
+#[doc = "`DataVariant2FormatVariant0Variant2ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21875,11 +21943,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype2ParseVariant1Value {
-    Variant0(DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1),
+pub enum DataVariant2FormatVariant0Variant2ParseVariant1Value {
+    Variant0(DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0),
+    Variant1(DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant2ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -21891,14 +21959,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant2ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1Value
+    for DataVariant2FormatVariant0Variant2ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21908,7 +21976,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1Value
+    for DataVariant2FormatVariant0Variant2ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -21917,7 +21985,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant2ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -21925,21 +21993,21 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0>
+    for DataVariant2FormatVariant0Variant2ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1>
+    for DataVariant2FormatVariant0Variant2ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -21966,7 +22034,7 @@ impl ::std::convert::From<DataVariant2FormatVariant0Subtype2ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+pub enum DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -21976,7 +22044,7 @@ pub enum DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -21986,7 +22054,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -21999,7 +22067,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -22007,7 +22075,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22017,7 +22085,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22026,7 +22094,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22039,21 +22107,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1 {
+pub struct DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -22065,7 +22133,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -22073,7 +22141,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22083,7 +22151,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22093,7 +22161,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -22106,7 +22174,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype2Type`"]
+#[doc = "`DataVariant2FormatVariant0Variant2Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22131,13 +22199,13 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype2Type {
+pub enum DataVariant2FormatVariant0Variant2Type {
     #[serde(rename = "csv")]
     Csv,
     #[serde(rename = "tsv")]
     Tsv,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2Type {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Csv => f.write_str("csv"),
@@ -22145,7 +22213,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype2Type {
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2Type {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant2Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22155,13 +22223,13 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -22169,7 +22237,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -22177,80 +22245,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"delimiter\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"header\": {"]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      },"]
-#[doc = "      \"type\": \"array\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"dsv\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"delimiter\","]
-#[doc = "    \"type\""]
-#[doc = "  ],"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant2FormatVariant0Subtype3 {
-    pub delimiter: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
-    pub header: ::std::vec::Vec<::std::string::String>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant2FormatVariant0Subtype3Parse>,
-    #[serde(rename = "type")]
-    pub type_: DataVariant2FormatVariant0Subtype3Type,
-}
-#[doc = "`DataVariant2FormatVariant0Subtype3Parse`"]
+#[doc = "`DataVariant2FormatVariant0Variant3Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22290,20 +22285,20 @@ pub struct DataVariant2FormatVariant0Subtype3 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype3Parse {
-    Variant0(DataVariant2FormatVariant0Subtype3ParseVariant0),
+pub enum DataVariant2FormatVariant0Variant3Parse {
+    Variant0(DataVariant2FormatVariant0Variant3ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant2FormatVariant0Variant3ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype3ParseVariant0>
-    for DataVariant2FormatVariant0Subtype3Parse
+impl ::std::convert::From<DataVariant2FormatVariant0Variant3ParseVariant0>
+    for DataVariant2FormatVariant0Variant3Parse
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant3ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -22311,25 +22306,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant2FormatVariant0Variant3ParseVariant1Value,
         >,
-    > for DataVariant2FormatVariant0Subtype3Parse
+    > for DataVariant2FormatVariant0Variant3Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant2FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant2FormatVariant0Variant3ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype3Parse {
+impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Variant3Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3ParseVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant3ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22353,18 +22348,18 @@ impl ::std::convert::From<SignalRef> for DataVariant2FormatVariant0Subtype3Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype3ParseVariant0 {
+pub enum DataVariant2FormatVariant0Variant3ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant3ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant3ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22373,14 +22368,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant3ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant0
+    for DataVariant2FormatVariant0Variant3ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22390,7 +22385,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant0
+    for DataVariant2FormatVariant0Variant3ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22399,7 +22394,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3ParseVariant1Value`"]
+#[doc = "`DataVariant2FormatVariant0Variant3ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22424,11 +22419,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant2FormatVariant0Subtype3ParseVariant1Value {
-    Variant0(DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0),
-    Variant1(DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1),
+pub enum DataVariant2FormatVariant0Variant3ParseVariant1Value {
+    Variant0(DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0),
+    Variant1(DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant3ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -22440,14 +22435,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant3ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1Value
+    for DataVariant2FormatVariant0Variant3ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22457,7 +22452,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1Value
+    for DataVariant2FormatVariant0Variant3ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22466,7 +22461,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant3ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -22474,21 +22469,21 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0>
+    for DataVariant2FormatVariant0Variant3ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1Value
+impl ::std::convert::From<DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1>
+    for DataVariant2FormatVariant0Variant3ParseVariant1Value
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22515,7 +22510,7 @@ impl ::std::convert::From<DataVariant2FormatVariant0Subtype3ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+pub enum DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -22525,7 +22520,7 @@ pub enum DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -22535,7 +22530,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22548,7 +22543,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -22556,7 +22551,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22566,7 +22561,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22575,7 +22570,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22588,21 +22583,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1 {
+pub struct DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -22614,7 +22609,7 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -22622,7 +22617,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22632,7 +22627,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22642,7 +22637,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant2FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -22655,7 +22650,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype3Type`"]
+#[doc = "`DataVariant2FormatVariant0Variant3Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22679,18 +22674,18 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype3Type {
+pub enum DataVariant2FormatVariant0Variant3Type {
     #[serde(rename = "dsv")]
     Dsv,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype3Type {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Dsv => f.write_str("dsv"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3Type {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant3Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22699,13 +22694,13 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -22713,7 +22708,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -22721,7 +22716,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype4`"]
+#[doc = "`DataVariant2FormatVariant0Variant4`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22783,25 +22778,25 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant2FormatVarian
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged, deny_unknown_fields)]
-pub enum DataVariant2FormatVariant0Subtype4 {
+pub enum DataVariant2FormatVariant0Variant4 {
     Variant0 {
         feature: StringOrSignal,
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         property: ::std::option::Option<StringOrSignal>,
         #[serde(rename = "type")]
-        type_: DataVariant2FormatVariant0Subtype4Variant0Type,
+        type_: DataVariant2FormatVariant0Variant4Variant0Type,
     },
     Variant1 {
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-        filter: ::std::option::Option<DataVariant2FormatVariant0Subtype4Variant1Filter>,
+        filter: ::std::option::Option<DataVariant2FormatVariant0Variant4Variant1Filter>,
         mesh: StringOrSignal,
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         property: ::std::option::Option<StringOrSignal>,
         #[serde(rename = "type")]
-        type_: DataVariant2FormatVariant0Subtype4Variant1Type,
+        type_: DataVariant2FormatVariant0Variant4Variant1Type,
     },
 }
-#[doc = "`DataVariant2FormatVariant0Subtype4Variant0Type`"]
+#[doc = "`DataVariant2FormatVariant0Variant4Variant0Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22825,18 +22820,18 @@ pub enum DataVariant2FormatVariant0Subtype4 {
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype4Variant0Type {
+pub enum DataVariant2FormatVariant0Variant4Variant0Type {
     #[serde(rename = "topojson")]
     Topojson,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant0Type {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant4Variant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Topojson => f.write_str("topojson"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant0Type {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant4Variant0Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22845,14 +22840,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant0Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant0Type {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant4Variant0Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant0Type
+    for DataVariant2FormatVariant0Variant4Variant0Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22862,7 +22857,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant0Type
+    for DataVariant2FormatVariant0Variant4Variant0Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22871,7 +22866,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype4Variant1Filter`"]
+#[doc = "`DataVariant2FormatVariant0Variant4Variant1Filter`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22897,13 +22892,13 @@ impl ::std::convert::TryFrom<::std::string::String>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype4Variant1Filter {
+pub enum DataVariant2FormatVariant0Variant4Variant1Filter {
     #[serde(rename = "interior")]
     Interior,
     #[serde(rename = "exterior")]
     Exterior,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant1Filter {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant4Variant1Filter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Interior => f.write_str("interior"),
@@ -22911,7 +22906,7 @@ impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant1Filter {
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant1Filter {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant4Variant1Filter {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22921,14 +22916,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant1Filter {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant1Filter {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant4Variant1Filter {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Filter
+    for DataVariant2FormatVariant0Variant4Variant1Filter
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22938,7 +22933,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Filter
+    for DataVariant2FormatVariant0Variant4Variant1Filter
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -22947,7 +22942,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant2FormatVariant0Subtype4Variant1Type`"]
+#[doc = "`DataVariant2FormatVariant0Variant4Variant1Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -22971,18 +22966,18 @@ impl ::std::convert::TryFrom<::std::string::String>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant2FormatVariant0Subtype4Variant1Type {
+pub enum DataVariant2FormatVariant0Variant4Variant1Type {
     #[serde(rename = "topojson")]
     Topojson,
 }
-impl ::std::fmt::Display for DataVariant2FormatVariant0Subtype4Variant1Type {
+impl ::std::fmt::Display for DataVariant2FormatVariant0Variant4Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Topojson => f.write_str("topojson"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant1Type {
+impl ::std::str::FromStr for DataVariant2FormatVariant0Variant4Variant1Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -22991,14 +22986,14 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant1Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant1Type {
+impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Variant4Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Type
+    for DataVariant2FormatVariant0Variant4Variant1Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23008,7 +23003,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Type
+    for DataVariant2FormatVariant0Variant4Variant1Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23285,111 +23280,329 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum DataVariant3Format {
-    Variant0 {
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_0: ::std::option::Option<DataVariant3FormatVariant0Subtype0>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_1: ::std::option::Option<DataVariant3FormatVariant0Subtype1>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_2: ::std::option::Option<DataVariant3FormatVariant0Subtype2>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_3: ::std::option::Option<DataVariant3FormatVariant0Subtype3>,
-        #[serde(
-            flatten,
-            default,
-            skip_serializing_if = "::std::option::Option::is_none"
-        )]
-        subtype_4: ::std::option::Option<DataVariant3FormatVariant0Subtype4>,
-    },
+    Variant0(DataVariant3FormatVariant0),
     Variant1(SignalRef),
+}
+impl ::std::convert::From<DataVariant3FormatVariant0> for DataVariant3Format {
+    fn from(value: DataVariant3FormatVariant0) -> Self {
+        Self::Variant0(value)
+    }
 }
 impl ::std::convert::From<SignalRef> for DataVariant3Format {
     fn from(value: SignalRef) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0`"]
+#[doc = "`DataVariant3FormatVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
 #[doc = r" ```json"]
 #[doc = "{"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
+#[doc = "  \"anyOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
 #[doc = "                ]"]
 #[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"copy\": {"]
+#[doc = "          \"$ref\": \"#/definitions/booleanOrSignal\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"property\": {"]
+#[doc = "          \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"json\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"header\": {"]
+#[doc = "          \"items\": {"]
+#[doc = "            \"type\": \"string\""]
 #[doc = "          },"]
+#[doc = "          \"type\": \"array\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"csv\","]
+#[doc = "            \"tsv\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"type\""]
+#[doc = "      ],"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"additionalProperties\": false,"]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"delimiter\": {"]
+#[doc = "          \"type\": \"string\""]
+#[doc = "        },"]
+#[doc = "        \"header\": {"]
+#[doc = "          \"items\": {"]
+#[doc = "            \"type\": \"string\""]
+#[doc = "          },"]
+#[doc = "          \"type\": \"array\""]
+#[doc = "        },"]
+#[doc = "        \"parse\": {"]
+#[doc = "          \"oneOf\": ["]
+#[doc = "            {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"auto\""]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"additionalProperties\": {"]
+#[doc = "                \"oneOf\": ["]
+#[doc = "                  {"]
+#[doc = "                    \"enum\": ["]
+#[doc = "                      \"boolean\","]
+#[doc = "                      \"number\","]
+#[doc = "                      \"date\","]
+#[doc = "                      \"string\""]
+#[doc = "                    ]"]
+#[doc = "                  },"]
+#[doc = "                  {"]
+#[doc = "                    \"pattern\": \"^(date|utc):.*$\","]
+#[doc = "                    \"type\": \"string\""]
+#[doc = "                  }"]
+#[doc = "                ]"]
+#[doc = "              },"]
+#[doc = "              \"type\": \"object\""]
+#[doc = "            },"]
+#[doc = "            {"]
+#[doc = "              \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "            }"]
+#[doc = "          ]"]
+#[doc = "        },"]
+#[doc = "        \"type\": {"]
+#[doc = "          \"enum\": ["]
+#[doc = "            \"dsv\""]
+#[doc = "          ]"]
+#[doc = "        }"]
+#[doc = "      },"]
+#[doc = "      \"required\": ["]
+#[doc = "        \"delimiter\","]
+#[doc = "        \"type\""]
+#[doc = "      ],"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"oneOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"additionalProperties\": false,"]
+#[doc = "          \"properties\": {"]
+#[doc = "            \"feature\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"property\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"type\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"topojson\""]
+#[doc = "              ]"]
+#[doc = "            }"]
+#[doc = "          },"]
+#[doc = "          \"required\": ["]
+#[doc = "            \"feature\","]
+#[doc = "            \"type\""]
+#[doc = "          ],"]
 #[doc = "          \"type\": \"object\""]
 #[doc = "        },"]
 #[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
+#[doc = "          \"additionalProperties\": false,"]
+#[doc = "          \"properties\": {"]
+#[doc = "            \"filter\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"interior\","]
+#[doc = "                \"exterior\","]
+#[doc = "                null"]
+#[doc = "              ]"]
+#[doc = "            },"]
+#[doc = "            \"mesh\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"property\": {"]
+#[doc = "              \"$ref\": \"#/definitions/stringOrSignal\""]
+#[doc = "            },"]
+#[doc = "            \"type\": {"]
+#[doc = "              \"enum\": ["]
+#[doc = "                \"topojson\""]
+#[doc = "              ]"]
+#[doc = "            }"]
+#[doc = "          },"]
+#[doc = "          \"required\": ["]
+#[doc = "            \"mesh\","]
+#[doc = "            \"type\""]
+#[doc = "          ],"]
+#[doc = "          \"type\": \"object\""]
 #[doc = "        }"]
 #[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"$ref\": \"#/definitions/stringOrSignal\""]
 #[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"type\": \"object\""]
+#[doc = "  ]"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct DataVariant3FormatVariant0Subtype0 {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant3FormatVariant0Subtype0Parse>,
-    #[serde(
-        rename = "type",
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub type_: ::std::option::Option<StringOrSignal>,
+#[serde(untagged, deny_unknown_fields)]
+pub enum DataVariant3FormatVariant0 {
+    Variant0 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant3FormatVariant0Variant0Parse>,
+        #[serde(
+            rename = "type",
+            default,
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        type_: ::std::option::Option<StringOrSignal>,
+    },
+    Variant1 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        copy: ::std::option::Option<BooleanOrSignal>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant3FormatVariant0Variant1Parse>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        property: ::std::option::Option<StringOrSignal>,
+        #[serde(
+            rename = "type",
+            default,
+            skip_serializing_if = "::std::option::Option::is_none"
+        )]
+        type_: ::std::option::Option<DataVariant3FormatVariant0Variant1Type>,
+    },
+    Variant2 {
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        header: ::std::vec::Vec<::std::string::String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant3FormatVariant0Variant2Parse>,
+        #[serde(rename = "type")]
+        type_: DataVariant3FormatVariant0Variant2Type,
+    },
+    Variant3 {
+        delimiter: ::std::string::String,
+        #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+        header: ::std::vec::Vec<::std::string::String>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        parse: ::std::option::Option<DataVariant3FormatVariant0Variant3Parse>,
+        #[serde(rename = "type")]
+        type_: DataVariant3FormatVariant0Variant3Type,
+    },
+    Variant4(DataVariant3FormatVariant0Variant4),
 }
-impl ::std::default::Default for DataVariant3FormatVariant0Subtype0 {
-    fn default() -> Self {
-        Self {
-            parse: Default::default(),
-            type_: Default::default(),
-        }
+impl ::std::convert::From<DataVariant3FormatVariant0Variant4> for DataVariant3FormatVariant0 {
+    fn from(value: DataVariant3FormatVariant0Variant4) -> Self {
+        Self::Variant4(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0Parse`"]
+#[doc = "`DataVariant3FormatVariant0Variant0Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23429,20 +23642,20 @@ impl ::std::default::Default for DataVariant3FormatVariant0Subtype0 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype0Parse {
-    Variant0(DataVariant3FormatVariant0Subtype0ParseVariant0),
+pub enum DataVariant3FormatVariant0Variant0Parse {
+    Variant0(DataVariant3FormatVariant0Variant0ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant3FormatVariant0Variant0ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype0ParseVariant0>
-    for DataVariant3FormatVariant0Subtype0Parse
+impl ::std::convert::From<DataVariant3FormatVariant0Variant0ParseVariant0>
+    for DataVariant3FormatVariant0Variant0Parse
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant0ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -23450,25 +23663,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant3FormatVariant0Variant0ParseVariant1Value,
         >,
-    > for DataVariant3FormatVariant0Subtype0Parse
+    > for DataVariant3FormatVariant0Variant0Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype0ParseVariant1Value,
+            DataVariant3FormatVariant0Variant0ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype0Parse {
+impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Variant0Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0ParseVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant0ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23492,18 +23705,18 @@ impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype0Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype0ParseVariant0 {
+pub enum DataVariant3FormatVariant0Variant0ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant0ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant0ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -23512,14 +23725,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant0ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant0
+    for DataVariant3FormatVariant0Variant0ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23529,7 +23742,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant0
+    for DataVariant3FormatVariant0Variant0ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23538,7 +23751,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0ParseVariant1Value`"]
+#[doc = "`DataVariant3FormatVariant0Variant0ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23563,11 +23776,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype0ParseVariant1Value {
-    Variant0(DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1),
+pub enum DataVariant3FormatVariant0Variant0ParseVariant1Value {
+    Variant0(DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0),
+    Variant1(DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant0ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -23579,14 +23792,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant0ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1Value
+    for DataVariant3FormatVariant0Variant0ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23596,7 +23809,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1Value
+    for DataVariant3FormatVariant0Variant0ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23605,7 +23818,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant0ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -23613,21 +23826,21 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0>
+    for DataVariant3FormatVariant0Variant0ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1>
+    for DataVariant3FormatVariant0Variant0ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23654,7 +23867,7 @@ impl ::std::convert::From<DataVariant3FormatVariant0Subtype0ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+pub enum DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -23664,7 +23877,7 @@ pub enum DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -23674,7 +23887,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -23687,7 +23900,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -23695,7 +23908,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23705,7 +23918,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23714,7 +23927,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23727,21 +23940,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1 {
+pub struct DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -23753,7 +23966,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -23761,7 +23974,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23771,7 +23984,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -23781,7 +23994,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant0ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -23794,88 +24007,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"copy\": {"]
-#[doc = "      \"$ref\": \"#/definitions/booleanOrSignal\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"property\": {"]
-#[doc = "      \"$ref\": \"#/definitions/stringOrSignal\""]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"json\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant3FormatVariant0Subtype1 {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub copy: ::std::option::Option<BooleanOrSignal>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant3FormatVariant0Subtype1Parse>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub property: ::std::option::Option<StringOrSignal>,
-    #[serde(
-        rename = "type",
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub type_: ::std::option::Option<DataVariant3FormatVariant0Subtype1Type>,
-}
-impl ::std::default::Default for DataVariant3FormatVariant0Subtype1 {
-    fn default() -> Self {
-        Self {
-            copy: Default::default(),
-            parse: Default::default(),
-            property: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
-#[doc = "`DataVariant3FormatVariant0Subtype1Parse`"]
+#[doc = "`DataVariant3FormatVariant0Variant1Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23915,20 +24047,20 @@ impl ::std::default::Default for DataVariant3FormatVariant0Subtype1 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype1Parse {
-    Variant0(DataVariant3FormatVariant0Subtype1ParseVariant0),
+pub enum DataVariant3FormatVariant0Variant1Parse {
+    Variant0(DataVariant3FormatVariant0Variant1ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant3FormatVariant0Variant1ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype1ParseVariant0>
-    for DataVariant3FormatVariant0Subtype1Parse
+impl ::std::convert::From<DataVariant3FormatVariant0Variant1ParseVariant0>
+    for DataVariant3FormatVariant0Variant1Parse
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant1ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -23936,25 +24068,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant3FormatVariant0Variant1ParseVariant1Value,
         >,
-    > for DataVariant3FormatVariant0Subtype1Parse
+    > for DataVariant3FormatVariant0Variant1Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype1ParseVariant1Value,
+            DataVariant3FormatVariant0Variant1ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype1Parse {
+impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Variant1Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1ParseVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant1ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -23978,18 +24110,18 @@ impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype1Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype1ParseVariant0 {
+pub enum DataVariant3FormatVariant0Variant1ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant1ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant1ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -23998,14 +24130,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant1ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant0
+    for DataVariant3FormatVariant0Variant1ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24015,7 +24147,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant0
+    for DataVariant3FormatVariant0Variant1ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24024,7 +24156,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1ParseVariant1Value`"]
+#[doc = "`DataVariant3FormatVariant0Variant1ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24049,11 +24181,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype1ParseVariant1Value {
-    Variant0(DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1),
+pub enum DataVariant3FormatVariant0Variant1ParseVariant1Value {
+    Variant0(DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0),
+    Variant1(DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant1ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -24065,14 +24197,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant1ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1Value
+    for DataVariant3FormatVariant0Variant1ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24082,7 +24214,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1Value
+    for DataVariant3FormatVariant0Variant1ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24091,7 +24223,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant1ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -24099,21 +24231,21 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0>
+    for DataVariant3FormatVariant0Variant1ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1>
+    for DataVariant3FormatVariant0Variant1ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24140,7 +24272,7 @@ impl ::std::convert::From<DataVariant3FormatVariant0Subtype1ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+pub enum DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -24150,7 +24282,7 @@ pub enum DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -24160,7 +24292,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -24173,7 +24305,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -24181,7 +24313,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24191,7 +24323,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24200,7 +24332,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24213,21 +24345,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1 {
+pub struct DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -24239,7 +24371,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -24247,7 +24379,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24257,7 +24389,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24267,7 +24399,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant1ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -24280,7 +24412,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype1Type`"]
+#[doc = "`DataVariant3FormatVariant0Variant1Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24304,18 +24436,18 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype1Type {
+pub enum DataVariant3FormatVariant0Variant1Type {
     #[serde(rename = "json")]
     Json,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype1Type {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Json => f.write_str("json"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1Type {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant1Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -24324,13 +24456,13 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -24338,7 +24470,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Subtype1Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -24346,76 +24478,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"header\": {"]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      },"]
-#[doc = "      \"type\": \"array\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"csv\","]
-#[doc = "        \"tsv\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"type\""]
-#[doc = "  ],"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant3FormatVariant0Subtype2 {
-    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
-    pub header: ::std::vec::Vec<::std::string::String>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant3FormatVariant0Subtype2Parse>,
-    #[serde(rename = "type")]
-    pub type_: DataVariant3FormatVariant0Subtype2Type,
-}
-#[doc = "`DataVariant3FormatVariant0Subtype2Parse`"]
+#[doc = "`DataVariant3FormatVariant0Variant2Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24455,20 +24518,20 @@ pub struct DataVariant3FormatVariant0Subtype2 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype2Parse {
-    Variant0(DataVariant3FormatVariant0Subtype2ParseVariant0),
+pub enum DataVariant3FormatVariant0Variant2Parse {
+    Variant0(DataVariant3FormatVariant0Variant2ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant3FormatVariant0Variant2ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype2ParseVariant0>
-    for DataVariant3FormatVariant0Subtype2Parse
+impl ::std::convert::From<DataVariant3FormatVariant0Variant2ParseVariant0>
+    for DataVariant3FormatVariant0Variant2Parse
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant2ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -24476,25 +24539,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant3FormatVariant0Variant2ParseVariant1Value,
         >,
-    > for DataVariant3FormatVariant0Subtype2Parse
+    > for DataVariant3FormatVariant0Variant2Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype2ParseVariant1Value,
+            DataVariant3FormatVariant0Variant2ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype2Parse {
+impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Variant2Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2ParseVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant2ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24518,18 +24581,18 @@ impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype2Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype2ParseVariant0 {
+pub enum DataVariant3FormatVariant0Variant2ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant2ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant2ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -24538,14 +24601,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant2ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant0
+    for DataVariant3FormatVariant0Variant2ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24555,7 +24618,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant0
+    for DataVariant3FormatVariant0Variant2ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24564,7 +24627,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2ParseVariant1Value`"]
+#[doc = "`DataVariant3FormatVariant0Variant2ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24589,11 +24652,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype2ParseVariant1Value {
-    Variant0(DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1),
+pub enum DataVariant3FormatVariant0Variant2ParseVariant1Value {
+    Variant0(DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0),
+    Variant1(DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant2ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -24605,14 +24668,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant2ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1Value
+    for DataVariant3FormatVariant0Variant2ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24622,7 +24685,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1Value
+    for DataVariant3FormatVariant0Variant2ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24631,7 +24694,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant2ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -24639,21 +24702,21 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0>
+    for DataVariant3FormatVariant0Variant2ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1>
+    for DataVariant3FormatVariant0Variant2ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24680,7 +24743,7 @@ impl ::std::convert::From<DataVariant3FormatVariant0Subtype2ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+pub enum DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -24690,7 +24753,7 @@ pub enum DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -24700,7 +24763,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -24713,7 +24776,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -24721,7 +24784,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24731,7 +24794,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24740,7 +24803,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24753,21 +24816,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1 {
+pub struct DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -24779,7 +24842,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -24787,7 +24850,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24797,7 +24860,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -24807,7 +24870,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant2ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -24820,7 +24883,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype2Type`"]
+#[doc = "`DataVariant3FormatVariant0Variant2Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -24845,13 +24908,13 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype2Type {
+pub enum DataVariant3FormatVariant0Variant2Type {
     #[serde(rename = "csv")]
     Csv,
     #[serde(rename = "tsv")]
     Tsv,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2Type {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant2Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Csv => f.write_str("csv"),
@@ -24859,7 +24922,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype2Type {
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2Type {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant2Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -24869,13 +24932,13 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -24883,7 +24946,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Subtype2Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Variant2Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -24891,80 +24954,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"delimiter\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"header\": {"]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      },"]
-#[doc = "      \"type\": \"array\""]
-#[doc = "    },"]
-#[doc = "    \"parse\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"auto\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"additionalProperties\": {"]
-#[doc = "            \"oneOf\": ["]
-#[doc = "              {"]
-#[doc = "                \"enum\": ["]
-#[doc = "                  \"boolean\","]
-#[doc = "                  \"number\","]
-#[doc = "                  \"date\","]
-#[doc = "                  \"string\""]
-#[doc = "                ]"]
-#[doc = "              },"]
-#[doc = "              {"]
-#[doc = "                \"pattern\": \"^(date|utc):.*$\","]
-#[doc = "                \"type\": \"string\""]
-#[doc = "              }"]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          \"type\": \"object\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/signalRef\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"dsv\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"delimiter\","]
-#[doc = "    \"type\""]
-#[doc = "  ],"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct DataVariant3FormatVariant0Subtype3 {
-    pub delimiter: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
-    pub header: ::std::vec::Vec<::std::string::String>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub parse: ::std::option::Option<DataVariant3FormatVariant0Subtype3Parse>,
-    #[serde(rename = "type")]
-    pub type_: DataVariant3FormatVariant0Subtype3Type,
-}
-#[doc = "`DataVariant3FormatVariant0Subtype3Parse`"]
+#[doc = "`DataVariant3FormatVariant0Variant3Parse`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25004,20 +24994,20 @@ pub struct DataVariant3FormatVariant0Subtype3 {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype3Parse {
-    Variant0(DataVariant3FormatVariant0Subtype3ParseVariant0),
+pub enum DataVariant3FormatVariant0Variant3Parse {
+    Variant0(DataVariant3FormatVariant0Variant3ParseVariant0),
     Variant1(
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant3FormatVariant0Variant3ParseVariant1Value,
         >,
     ),
     Variant2(SignalRef),
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype3ParseVariant0>
-    for DataVariant3FormatVariant0Subtype3Parse
+impl ::std::convert::From<DataVariant3FormatVariant0Variant3ParseVariant0>
+    for DataVariant3FormatVariant0Variant3Parse
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant3ParseVariant0) -> Self {
         Self::Variant0(value)
     }
 }
@@ -25025,25 +25015,25 @@ impl
     ::std::convert::From<
         ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant3FormatVariant0Variant3ParseVariant1Value,
         >,
-    > for DataVariant3FormatVariant0Subtype3Parse
+    > for DataVariant3FormatVariant0Variant3Parse
 {
     fn from(
         value: ::std::collections::HashMap<
             ::std::string::String,
-            DataVariant3FormatVariant0Subtype3ParseVariant1Value,
+            DataVariant3FormatVariant0Variant3ParseVariant1Value,
         >,
     ) -> Self {
         Self::Variant1(value)
     }
 }
-impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype3Parse {
+impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Variant3Parse {
     fn from(value: SignalRef) -> Self {
         Self::Variant2(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3ParseVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant3ParseVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25067,18 +25057,18 @@ impl ::std::convert::From<SignalRef> for DataVariant3FormatVariant0Subtype3Parse
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype3ParseVariant0 {
+pub enum DataVariant3FormatVariant0Variant3ParseVariant0 {
     #[serde(rename = "auto")]
     Auto,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant3ParseVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Auto => f.write_str("auto"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant3ParseVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25087,14 +25077,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant0 {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant0 {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant3ParseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant0
+    for DataVariant3FormatVariant0Variant3ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25104,7 +25094,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant0
+    for DataVariant3FormatVariant0Variant3ParseVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25113,7 +25103,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3ParseVariant1Value`"]
+#[doc = "`DataVariant3FormatVariant0Variant3ParseVariant1Value`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25138,11 +25128,11 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
-pub enum DataVariant3FormatVariant0Subtype3ParseVariant1Value {
-    Variant0(DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0),
-    Variant1(DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1),
+pub enum DataVariant3FormatVariant0Variant3ParseVariant1Value {
+    Variant0(DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0),
+    Variant1(DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1),
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant3ParseVariant1Value {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if let Ok(v) = value.parse() {
@@ -25154,14 +25144,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant3ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1Value
+    for DataVariant3FormatVariant0Variant3ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25171,7 +25161,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1Value
+    for DataVariant3FormatVariant0Variant3ParseVariant1Value
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25180,7 +25170,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant1Value {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant3ParseVariant1Value {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match self {
             Self::Variant0(x) => x.fmt(f),
@@ -25188,21 +25178,21 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0>
+    for DataVariant3FormatVariant0Variant3ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1Value
+impl ::std::convert::From<DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1>
+    for DataVariant3FormatVariant0Variant3ParseVariant1Value
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1) -> Self {
         Self::Variant1(value)
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0`"]
+#[doc = "`DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25229,7 +25219,7 @@ impl ::std::convert::From<DataVariant3FormatVariant0Subtype3ParseVariant1ValueVa
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+pub enum DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0 {
     #[serde(rename = "boolean")]
     Boolean,
     #[serde(rename = "number")]
@@ -25239,7 +25229,7 @@ pub enum DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
     #[serde(rename = "string")]
     String,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Boolean => f.write_str("boolean"),
@@ -25249,7 +25239,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25262,7 +25252,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -25270,7 +25260,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25280,7 +25270,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant0
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25289,7 +25279,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1`"]
+#[doc = "`DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25302,21 +25292,21 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1(::std::string::String);
-impl ::std::ops::Deref for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1 {
+pub struct DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1(::std::string::String);
+impl ::std::ops::Deref for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1 {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1>
+impl ::std::convert::From<DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1>
     for ::std::string::String
 {
-    fn from(value: DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1) -> Self {
+    fn from(value: DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1 {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1 {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -25328,7 +25318,7 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
     }
 }
 impl ::std::convert::TryFrom<&str>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -25336,7 +25326,7 @@ impl ::std::convert::TryFrom<&str>
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25346,7 +25336,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25356,7 +25346,7 @@ impl ::std::convert::TryFrom<::std::string::String>
     }
 }
 impl<'de> ::serde::Deserialize<'de>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1
+    for DataVariant3FormatVariant0Variant3ParseVariant1ValueVariant1
 {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
@@ -25369,7 +25359,7 @@ impl<'de> ::serde::Deserialize<'de>
             })
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype3Type`"]
+#[doc = "`DataVariant3FormatVariant0Variant3Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25393,18 +25383,18 @@ impl<'de> ::serde::Deserialize<'de>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype3Type {
+pub enum DataVariant3FormatVariant0Variant3Type {
     #[serde(rename = "dsv")]
     Dsv,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype3Type {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant3Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Dsv => f.write_str("dsv"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3Type {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant3Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25413,13 +25403,13 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -25427,7 +25417,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVaria
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Subtype3Type {
+impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVariant0Variant3Type {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -25435,7 +25425,7 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVarian
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype4`"]
+#[doc = "`DataVariant3FormatVariant0Variant4`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25497,25 +25487,25 @@ impl ::std::convert::TryFrom<::std::string::String> for DataVariant3FormatVarian
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged, deny_unknown_fields)]
-pub enum DataVariant3FormatVariant0Subtype4 {
+pub enum DataVariant3FormatVariant0Variant4 {
     Variant0 {
         feature: StringOrSignal,
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         property: ::std::option::Option<StringOrSignal>,
         #[serde(rename = "type")]
-        type_: DataVariant3FormatVariant0Subtype4Variant0Type,
+        type_: DataVariant3FormatVariant0Variant4Variant0Type,
     },
     Variant1 {
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-        filter: ::std::option::Option<DataVariant3FormatVariant0Subtype4Variant1Filter>,
+        filter: ::std::option::Option<DataVariant3FormatVariant0Variant4Variant1Filter>,
         mesh: StringOrSignal,
         #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
         property: ::std::option::Option<StringOrSignal>,
         #[serde(rename = "type")]
-        type_: DataVariant3FormatVariant0Subtype4Variant1Type,
+        type_: DataVariant3FormatVariant0Variant4Variant1Type,
     },
 }
-#[doc = "`DataVariant3FormatVariant0Subtype4Variant0Type`"]
+#[doc = "`DataVariant3FormatVariant0Variant4Variant0Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25539,18 +25529,18 @@ pub enum DataVariant3FormatVariant0Subtype4 {
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype4Variant0Type {
+pub enum DataVariant3FormatVariant0Variant4Variant0Type {
     #[serde(rename = "topojson")]
     Topojson,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant0Type {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant4Variant0Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Topojson => f.write_str("topojson"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant0Type {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant4Variant0Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25559,14 +25549,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant0Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant0Type {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant4Variant0Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant0Type
+    for DataVariant3FormatVariant0Variant4Variant0Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25576,7 +25566,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant0Type
+    for DataVariant3FormatVariant0Variant4Variant0Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25585,7 +25575,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype4Variant1Filter`"]
+#[doc = "`DataVariant3FormatVariant0Variant4Variant1Filter`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25611,13 +25601,13 @@ impl ::std::convert::TryFrom<::std::string::String>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype4Variant1Filter {
+pub enum DataVariant3FormatVariant0Variant4Variant1Filter {
     #[serde(rename = "interior")]
     Interior,
     #[serde(rename = "exterior")]
     Exterior,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant1Filter {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant4Variant1Filter {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Interior => f.write_str("interior"),
@@ -25625,7 +25615,7 @@ impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant1Filter {
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant1Filter {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant4Variant1Filter {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25635,14 +25625,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant1Filter {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant1Filter {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant4Variant1Filter {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Filter
+    for DataVariant3FormatVariant0Variant4Variant1Filter
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25652,7 +25642,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Filter
+    for DataVariant3FormatVariant0Variant4Variant1Filter
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25661,7 +25651,7 @@ impl ::std::convert::TryFrom<::std::string::String>
         value.parse()
     }
 }
-#[doc = "`DataVariant3FormatVariant0Subtype4Variant1Type`"]
+#[doc = "`DataVariant3FormatVariant0Variant4Variant1Type`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -25685,18 +25675,18 @@ impl ::std::convert::TryFrom<::std::string::String>
     PartialEq,
     PartialOrd,
 )]
-pub enum DataVariant3FormatVariant0Subtype4Variant1Type {
+pub enum DataVariant3FormatVariant0Variant4Variant1Type {
     #[serde(rename = "topojson")]
     Topojson,
 }
-impl ::std::fmt::Display for DataVariant3FormatVariant0Subtype4Variant1Type {
+impl ::std::fmt::Display for DataVariant3FormatVariant0Variant4Variant1Type {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
             Self::Topojson => f.write_str("topojson"),
         }
     }
 }
-impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant1Type {
+impl ::std::str::FromStr for DataVariant3FormatVariant0Variant4Variant1Type {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
@@ -25705,14 +25695,14 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant1Type {
         }
     }
 }
-impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant1Type {
+impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Variant4Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Type
+    for DataVariant3FormatVariant0Variant4Variant1Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -25722,7 +25712,7 @@ impl ::std::convert::TryFrom<&::std::string::String>
     }
 }
 impl ::std::convert::TryFrom<::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Type
+    for DataVariant3FormatVariant0Variant4Variant1Type
 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -100327,31 +100317,26 @@ impl ::std::convert::From<NumberValue> for TitleObjectDy {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct TitleObjectEncode {
-    #[serde(
-        flatten,
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub subtype_0: ::std::option::Option<
-        ::std::collections::HashMap<TitleObjectEncodeSubtype0Key, EncodeEntry>,
-    >,
-    #[serde(
-        flatten,
-        default,
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub subtype_1: ::std::option::Option<TitleObjectEncodeSubtype1>,
+#[serde(untagged, deny_unknown_fields)]
+pub enum TitleObjectEncode {
+    Variant0(::std::collections::HashMap<TitleObjectEncodeVariant0Key, EncodeEntry>),
+    Variant1 {
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        group: ::std::option::Option<GuideEncode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        subtitle: ::std::option::Option<GuideEncode>,
+        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        title: ::std::option::Option<GuideEncode>,
+    },
 }
-impl ::std::default::Default for TitleObjectEncode {
-    fn default() -> Self {
-        Self {
-            subtype_0: Default::default(),
-            subtype_1: Default::default(),
-        }
+impl ::std::convert::From<::std::collections::HashMap<TitleObjectEncodeVariant0Key, EncodeEntry>>
+    for TitleObjectEncode
+{
+    fn from(value: ::std::collections::HashMap<TitleObjectEncodeVariant0Key, EncodeEntry>) -> Self {
+        Self::Variant0(value)
     }
 }
-#[doc = "`TitleObjectEncodeSubtype0Key`"]
+#[doc = "`TitleObjectEncodeVariant0Key`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
 #[doc = r""]
@@ -100364,19 +100349,19 @@ impl ::std::default::Default for TitleObjectEncode {
 #[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
-pub struct TitleObjectEncodeSubtype0Key(::std::string::String);
-impl ::std::ops::Deref for TitleObjectEncodeSubtype0Key {
+pub struct TitleObjectEncodeVariant0Key(::std::string::String);
+impl ::std::ops::Deref for TitleObjectEncodeVariant0Key {
     type Target = ::std::string::String;
     fn deref(&self) -> &::std::string::String {
         &self.0
     }
 }
-impl ::std::convert::From<TitleObjectEncodeSubtype0Key> for ::std::string::String {
-    fn from(value: TitleObjectEncodeSubtype0Key) -> Self {
+impl ::std::convert::From<TitleObjectEncodeVariant0Key> for ::std::string::String {
+    fn from(value: TitleObjectEncodeVariant0Key) -> Self {
         value.0
     }
 }
-impl ::std::str::FromStr for TitleObjectEncodeSubtype0Key {
+impl ::std::str::FromStr for TitleObjectEncodeVariant0Key {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
@@ -100389,13 +100374,13 @@ impl ::std::str::FromStr for TitleObjectEncodeSubtype0Key {
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::convert::TryFrom<&str> for TitleObjectEncodeSubtype0Key {
+impl ::std::convert::TryFrom<&str> for TitleObjectEncodeVariant0Key {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectEncodeSubtype0Key {
+impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectEncodeVariant0Key {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &::std::string::String,
@@ -100403,7 +100388,7 @@ impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectEncodeSubtyp
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<::std::string::String> for TitleObjectEncodeSubtype0Key {
+impl ::std::convert::TryFrom<::std::string::String> for TitleObjectEncodeVariant0Key {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -100411,7 +100396,7 @@ impl ::std::convert::TryFrom<::std::string::String> for TitleObjectEncodeSubtype
         value.parse()
     }
 }
-impl<'de> ::serde::Deserialize<'de> for TitleObjectEncodeSubtype0Key {
+impl<'de> ::serde::Deserialize<'de> for TitleObjectEncodeVariant0Key {
     fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
@@ -100421,47 +100406,6 @@ impl<'de> ::serde::Deserialize<'de> for TitleObjectEncodeSubtype0Key {
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
-    }
-}
-#[doc = "`TitleObjectEncodeSubtype1`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"additionalProperties\": false,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"group\": {"]
-#[doc = "      \"$ref\": \"#/definitions/guideEncode\""]
-#[doc = "    },"]
-#[doc = "    \"subtitle\": {"]
-#[doc = "      \"$ref\": \"#/definitions/guideEncode\""]
-#[doc = "    },"]
-#[doc = "    \"title\": {"]
-#[doc = "      \"$ref\": \"#/definitions/guideEncode\""]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"type\": \"object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct TitleObjectEncodeSubtype1 {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub group: ::std::option::Option<GuideEncode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub subtitle: ::std::option::Option<GuideEncode>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for TitleObjectEncodeSubtype1 {
-    fn default() -> Self {
-        Self {
-            group: Default::default(),
-            subtitle: Default::default(),
-            title: Default::default(),
-        }
     }
 }
 #[doc = "`TitleObjectFont`"]

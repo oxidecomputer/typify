@@ -7,7 +7,7 @@ use crate::type_entry::{
     EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
     Variant, VariantDetails,
 };
-use crate::util::{all_mutually_exclusive, ref_key, ReorderedInstanceType, StringValidator};
+use crate::util::{ref_key, ReorderedInstanceType, StringValidator};
 use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -1466,20 +1466,13 @@ impl TypeSpace {
         // Check if this could be more precisely handled as a "one-of". This
         // occurs if each subschema is mutually exclusive i.e. so that exactly
         // one of them can match.
-        if all_mutually_exclusive(subschemas, &self.definitions) {
-            self.convert_one_of(type_name, original_schema, metadata, subschemas)
-        } else {
-            // We'll want to build a struct that looks like this:
-            // struct Name {
-            //     #[serde(flatten)]
-            //     schema1: Option<Schema1Type>,
-            //     #[serde(flatten)]
-            //     schema2: Option<Schema2Type>,
-            //     ...
-            // }
-
-            self.flattened_union_struct(type_name, original_schema, metadata, subschemas, true)
-        }
+        // Treat anyOf as oneOf regardless of mutual exclusivity. The
+        // convert_one_of pipeline produces proper enums (tagged or untagged)
+        // that work correctly with all types including primitives. The
+        // previous flattened_union_struct approach was broken: #[serde(flatten)]
+        // panics on non-object types (#895, #710) and the defaults.rs
+        // all_props function hits unreachable!() on non-struct types (#790).
+        self.convert_one_of(type_name, original_schema, metadata, subschemas)
     }
 
     /// A "one of" may reasonably be converted into a Rust enum, but there are
