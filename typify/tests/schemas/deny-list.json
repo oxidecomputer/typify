@@ -24,5 +24,22 @@
   "required": [
     "where_not",
     "why_not"
-  ]
+  ],
+  "definitions": {
+    "not-type-object": {
+      "$comment": "not with type negation (issue #954)",
+      "not": { "type": "object" }
+    },
+    "not-type-string": {
+      "$comment": "not with type string negation",
+      "not": { "type": "string" }
+    },
+    "array-no-objects": {
+      "$comment": "array items that exclude objects (issue #954 pattern)",
+      "type": "array",
+      "items": {
+        "not": { "type": "object" }
+      }
+    }
+  }
 }

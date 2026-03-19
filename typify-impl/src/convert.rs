@@ -1697,11 +1697,9 @@ impl TypeSpace {
                         serde_json::Value::Number(_) => InstanceType::Number,
                         serde_json::Value::String(_) => InstanceType::String,
 
-                        serde_json::Value::Null
-                        | serde_json::Value::Array(_)
-                        | serde_json::Value::Object(_) => {
-                            panic!("unhandled type for `not` construction: {}", v)
-                        }
+                        serde_json::Value::Null => InstanceType::Null,
+                        serde_json::Value::Array(_) => InstanceType::Array,
+                        serde_json::Value::Object(_) => InstanceType::Object,
                     })
                     .collect::<BTreeSet<_>>();
 
@@ -1740,14 +1738,29 @@ impl TypeSpace {
                         Ok((newtype_entry, metadata))
                     }
 
-                    _ => panic!(
-                        "multiple implied types for an un-typed enum {:?} {:?}",
-                        instance_types, enum_values,
-                    ),
+                    _ => {
+                        info!(
+                            "multiple implied types for an un-typed `not` enum, \
+                             falling back to serde_json::Value: {:?}",
+                            enum_values,
+                        );
+                        Ok((TypeEntryDetails::JsonValue.into(), metadata))
+                    }
                 }
             }
 
-            _ => todo!("unhandled not schema {:#?}", subschema),
+            // For unhandled `not` schemas, fall back to serde_json::Value.
+            // This is a best-effort approach: we can't precisely represent
+            // the negation of arbitrary schemas in Rust's type system, but
+            // we can at least avoid panicking. The generated type will
+            // accept any valid JSON value.
+            _ => {
+                info!(
+                    "unhandled `not` schema, falling back to serde_json::Value: {}",
+                    serde_json::to_string_pretty(subschema).unwrap_or_default()
+                );
+                Ok((TypeEntryDetails::JsonValue.into(), metadata))
+            }
         }
     }
 

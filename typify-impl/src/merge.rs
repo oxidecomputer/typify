@@ -285,12 +285,61 @@ pub(crate) fn try_merge_with_subschemas(
         return Ok(schema_object);
     };
 
+    // Transform if/then/else into oneOf:
+    //   if P then T else E  →  oneOf: [ allOf(P, T), allOf(not(P), E) ]
+    // When else is absent:   →  oneOf: [ allOf(P, T), not(P) ]
+    // When then is absent:   →  oneOf: [ P, allOf(not(P), E) ]
     if if_schema.is_some() || then_schema.is_some() || else_schema.is_some() {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&maybe_subschemas).unwrap()
-        );
-        unimplemented!("if/then/else schemas are not supported");
+        if let Some(if_schema) = if_schema {
+            let not_if = Schema::Object(SchemaObject {
+                subschemas: Some(Box::new(SubschemaValidation {
+                    not: Some(Box::new(if_schema.as_ref().clone())),
+                    ..Default::default()
+                })),
+                ..Default::default()
+            });
+
+            let then_branch = match then_schema {
+                Some(then_s) => Schema::Object(SchemaObject {
+                    subschemas: Some(Box::new(SubschemaValidation {
+                        all_of: Some(vec![if_schema.as_ref().clone(), then_s.as_ref().clone()]),
+                        ..Default::default()
+                    })),
+                    ..Default::default()
+                }),
+                None => if_schema.as_ref().clone(),
+            };
+
+            let else_branch = match else_schema {
+                Some(else_s) => Schema::Object(SchemaObject {
+                    subschemas: Some(Box::new(SubschemaValidation {
+                        all_of: Some(vec![not_if, else_s.as_ref().clone()]),
+                        ..Default::default()
+                    })),
+                    ..Default::default()
+                }),
+                None => not_if,
+            };
+
+            // Replace if/then/else with oneOf and recurse
+            let new_subschemas = SubschemaValidation {
+                all_of: all_of.clone(),
+                any_of: any_of.clone(),
+                one_of: {
+                    let mut variants = one_of.clone().unwrap_or_default();
+                    variants.push(then_branch);
+                    variants.push(else_branch);
+                    Some(variants)
+                },
+                not: not.clone(),
+                if_schema: None,
+                then_schema: None,
+                else_schema: None,
+            };
+
+            schema_object.subschemas = Some(Box::new(new_subschemas.clone()));
+            return try_merge_with_subschemas(schema_object, Some(&new_subschemas), defs);
+        }
     }
 
     if let Some(all_of) = all_of {
@@ -423,8 +472,9 @@ fn merge_schema_not(
 
         (any, Schema::Bool(false)) => any.clone(),
 
-        // TODO I don't know how to subtract something from nothing...
-        (Schema::Bool(true), Schema::Object(_)) => todo!(),
+        // We can't subtract a complex schema from `true` (everything).
+        // Return the schema unchanged — best effort.
+        (Schema::Bool(true), Schema::Object(_)) => Schema::Bool(true),
 
         (Schema::Object(schema_object), any_not) => {
             match try_merge_schema_not(schema_object.clone(), any_not, defs) {
@@ -547,11 +597,9 @@ fn try_merge_with_subschemas_not(
             Err(_) => Ok(schema_object),
         },
 
-        _ => todo!(
-            "{}\nnot: {}",
-            serde_json::to_string_pretty(&schema_object).unwrap(),
-            serde_json::to_string_pretty(&not_subschemas).unwrap(),
-        ),
+        // Unhandled `not` with subschemas — return the schema unchanged
+        // as best-effort rather than panicking.
+        _ => Ok(schema_object),
     }
 }
 

@@ -25,6 +25,105 @@ pub mod error {
         }
     }
 }
+#[doc = "`ArrayNoObjects`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"$comment\": \"array items that exclude objects (issue #954 pattern)\","]
+#[doc = "  \"items\": {"]
+#[doc = "    \"not\": {"]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"type\": \"array\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct ArrayNoObjects(pub ::std::vec::Vec<::serde_json::Value>);
+impl ::std::ops::Deref for ArrayNoObjects {
+    type Target = ::std::vec::Vec<::serde_json::Value>;
+    fn deref(&self) -> &::std::vec::Vec<::serde_json::Value> {
+        &self.0
+    }
+}
+impl ::std::convert::From<ArrayNoObjects> for ::std::vec::Vec<::serde_json::Value> {
+    fn from(value: ArrayNoObjects) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<::std::vec::Vec<::serde_json::Value>> for ArrayNoObjects {
+    fn from(value: ::std::vec::Vec<::serde_json::Value>) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`NotTypeObject`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"$comment\": \"not with type negation (issue #954)\","]
+#[doc = "  \"not\": {"]
+#[doc = "    \"type\": \"object\""]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct NotTypeObject(pub ::serde_json::Value);
+impl ::std::ops::Deref for NotTypeObject {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &::serde_json::Value {
+        &self.0
+    }
+}
+impl ::std::convert::From<NotTypeObject> for ::serde_json::Value {
+    fn from(value: NotTypeObject) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<::serde_json::Value> for NotTypeObject {
+    fn from(value: ::serde_json::Value) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`NotTypeString`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"$comment\": \"not with type string negation\","]
+#[doc = "  \"not\": {"]
+#[doc = "    \"type\": \"string\""]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct NotTypeString(pub ::serde_json::Value);
+impl ::std::ops::Deref for NotTypeString {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &::serde_json::Value {
+        &self.0
+    }
+}
+impl ::std::convert::From<NotTypeString> for ::serde_json::Value {
+    fn from(value: NotTypeString) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<::serde_json::Value> for NotTypeString {
+    fn from(value: ::serde_json::Value) -> Self {
+        Self(value)
+    }
+}
 #[doc = "`TestType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

@@ -1,0 +1,38 @@
+{
+  "$comment": "Test if/then/else schema support (issue #480)",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "if-then-else-basic": {
+      "description": "Basic if/then/else with string discrimination",
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "value": {}
+      },
+      "required": ["kind"],
+      "if": {
+        "properties": { "kind": { "const": "number" } }
+      },
+      "then": {
+        "properties": { "value": { "type": "number" } }
+      },
+      "else": {
+        "properties": { "value": { "type": "string" } }
+      }
+    },
+    "if-then-no-else": {
+      "description": "if/then without else",
+      "type": "object",
+      "properties": {
+        "tag": { "type": "string" },
+        "extra": { "type": "integer" }
+      },
+      "if": {
+        "properties": { "tag": { "const": "special" } }
+      },
+      "then": {
+        "required": ["extra"]
+      }
+    }
+  }
+}
