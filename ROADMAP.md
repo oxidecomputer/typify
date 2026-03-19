@@ -16,8 +16,10 @@ Small, well-scoped fixes that improve correctness immediately.
 
 The single highest-impact change — root cause of 5+ open issues.
 
-- [ ] **#414** — Rewrite `anyOf` generation to use untagged enum (power-set approach) instead of broken `#[serde(flatten)]` on primitives.
-  - Resolves: #895 (flatten on String panic), #710 (anyOf can't serialize), #669 (wrong enum variants), #897 (empty enum with allOf+oneOf), #790 (unreachable code in defaults.rs)
+- [x] **#414** — Replace broken `anyOf` flattened struct with delegation to `convert_one_of` (untagged enum).
+  - Resolves: #895 (flatten on String panic), #710 (anyOf can't serialize), #790 (unreachable code in defaults.rs)
+  - Partially resolves: #669 (wrong enum variants — now enum instead of broken struct)
+  - Not resolved: #897 (allOf of oneOfs — separate merge.rs issue)
 
 ## Phase 3: `not` and `if/then/else` Support
 
