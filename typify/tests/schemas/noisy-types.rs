@@ -100,7 +100,7 @@ impl ::std::convert::From<IntegerBs> for u64 {
 impl ::std::convert::TryFrom<u64> for IntegerBs {
     type Error = self::error::ConversionError;
     fn try_from(value: u64) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if value < 0i64 as u64 {
+        if (value as i64) < 0i64 {
             return Err("value must be >= 0".into());
         }
         Ok(Self(value))

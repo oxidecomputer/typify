@@ -119,6 +119,11 @@ mod dscp {
     include!(concat!(env!("OUT_DIR"), "/codegen_dscp.rs"));
 }
 
+mod small_range {
+    #![allow(dead_code)]
+    include!(concat!(env!("OUT_DIR"), "/codegen_small_range.rs"));
+}
+
 mod comparator {
     #![allow(dead_code)]
     include!(concat!(env!("OUT_DIR"), "/codegen_comparator.rs"));
@@ -207,6 +212,27 @@ fn test_dscp_deserialize_valid() {
 fn test_dscp_deserialize_out_of_range() {
     assert!(serde_json::from_str::<dscp::Dscp>("64").is_err());
     assert!(serde_json::from_str::<dscp::Dscp>("255").is_err());
+}
+
+// --- PR #975: Integer width selection ---
+
+#[test]
+fn test_small_range_uses_narrow_type() {
+    // [1..32] should use NonZeroU8, not NonZeroU64
+    let v = small_range::SmallRange::try_from(std::num::NonZeroU8::new(1).unwrap());
+    assert!(v.is_ok());
+    let v = small_range::SmallRange::try_from(std::num::NonZeroU8::new(32).unwrap());
+    assert!(v.is_ok());
+    let v = small_range::SmallRange::try_from(std::num::NonZeroU8::new(33).unwrap());
+    assert!(v.is_err());
+}
+
+#[test]
+fn test_small_range_deserialize() {
+    let v: small_range::SmallRange = serde_json::from_str("16").unwrap();
+    assert_eq!(v.get(), 16);
+    assert!(serde_json::from_str::<small_range::SmallRange>("0").is_err());
+    assert!(serde_json::from_str::<small_range::SmallRange>("33").is_err());
 }
 
 // --- PR #948: Special char variant names ---

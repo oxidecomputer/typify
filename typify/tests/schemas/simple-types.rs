@@ -77,10 +77,10 @@ impl ::std::convert::From<Dscp> for u8 {
 impl ::std::convert::TryFrom<u8> for Dscp {
     type Error = self::error::ConversionError;
     fn try_from(value: u8) -> ::std::result::Result<Self, self::error::ConversionError> {
-        if value < 0i64 as u8 {
+        if (value as i64) < 0i64 {
             return Err("value must be >= 0".into());
         }
-        if value > 63i64 as u8 {
+        if (value as i64) > 63i64 {
             return Err("value must be <= 63".into());
         }
         Ok(Self(value))

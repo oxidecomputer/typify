@@ -185,6 +185,20 @@ fn main() {
         "codegen_dscp.rs",
     );
 
+    // PR #975: Integer width selection [1..32] should use NonZeroU8, not NonZeroU64
+    generate_from_json_schema(
+        r#"{
+            "definitions": {
+                "SmallRange": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 32
+                }
+            }
+        }"#,
+        "codegen_small_range.rs",
+    );
+
     // PR #948: Special char variant names
     generate_from_json_schema(
         r#"{

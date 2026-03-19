@@ -1687,10 +1687,19 @@ impl TypeEntry {
             }
 
             TypeEntryNewtypeConstraints::Range { min, max } => {
+                // For range checks we need to compare the raw numeric value.
+                // For NonZero types, we use .get() to extract the inner value.
+                let is_nonzero = inner_type_name.to_string().contains("NonZero");
+                let value_expr = if is_nonzero {
+                    quote! { value.get() }
+                } else {
+                    quote! { value }
+                };
+
                 let min_check = min.map(|v| {
                     let err = format!("value must be >= {}", v);
                     quote! {
-                        if value < #v as #inner_type_name {
+                        if (#value_expr as i64) < #v {
                             return Err(#err.into());
                         }
                     }
@@ -1698,7 +1707,7 @@ impl TypeEntry {
                 let max_check = max.map(|v| {
                     let err = format!("value must be <= {}", v);
                     quote! {
-                        if value > #v as #inner_type_name {
+                        if (#value_expr as i64) > #v {
                             return Err(#err.into());
                         }
                     }

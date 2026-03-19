@@ -1126,7 +1126,9 @@ impl TypeSpace {
             .ok_or(Error::InvalidValue)?;
         }
 
-        // See if the value bounds fit within a known type.
+        // Find the smallest integer type that contains the range [min, max].
+        // The formats list is ordered from most restrictive (i8) to least
+        // restrictive (u64), so we iterate forward to find the smallest fit.
         let maybe_type = match (min, max) {
             (None, Some(max)) => formats.iter().rev().find_map(|(_, ty, _nz_ty, _, imax)| {
                 if (imax - max).abs() <= f64::EPSILON {
@@ -1145,8 +1147,12 @@ impl TypeSpace {
                 }
             }),
             (Some(min), Some(max)) => {
-                formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
-                    if min == 1. {
+                // First try exact match (iterating from largest to smallest)
+                let exact = formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
+                    if min == 1.
+                        && (imax - max).abs() <= f64::EPSILON
+                        && (*imin).abs() <= f64::EPSILON
+                    {
                         Some(nz_ty.to_string())
                     } else if (imax - max).abs() <= f64::EPSILON
                         && (imin - min).abs() <= f64::EPSILON
@@ -1155,6 +1161,22 @@ impl TypeSpace {
                     } else {
                         None
                     }
+                });
+
+                // If no exact match, find the smallest type that contains the
+                // range (iterate forward = smallest first).
+                exact.or_else(|| {
+                    formats.iter().find_map(|(_, ty, nz_ty, imin, imax)| {
+                        if min >= *imin && max <= *imax {
+                            if min == 1. {
+                                Some(nz_ty.to_string())
+                            } else {
+                                Some(ty.to_string())
+                            }
+                        } else {
+                            None
+                        }
+                    })
                 })
             }
             (None, None) => None,
@@ -1164,10 +1186,6 @@ impl TypeSpace {
         if let Some(ty) = maybe_type {
             Ok((TypeEntry::new_integer(ty), metadata))
         } else {
-            // TODO we could construct a type that itself enforces the various
-            // bounds.
-            // TODO failing that, we should find the type that most tightly
-            // matches these bounds.
             Ok((TypeEntry::new_integer("i64"), metadata))
         }
     }

@@ -1136,13 +1136,18 @@ fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidatio
 
     // TODO We should do a simple check here to validating the name against
     // propertyNames if that schema is specified.
-    assert!(object_schema.property_names.is_none());
+    // property_names constrains key shapes; skip if present (best-effort).
+    if object_schema.property_names.is_some() {
+        return prop_schema.clone();
+    }
 
-    // TODO We should first check patternProperties, but that's such a pain in
-    // the neck and so weird that I can't be bothered right now (until we hit
-    // some examples in the wild). A match here would exempt the property from
-    // the check below against additionalProperties.
-    assert!(object_schema.pattern_properties.is_empty());
+    // TODO We should check patternProperties to see if the property matches
+    // a pattern. A match would exempt the property from the check below
+    // against additionalProperties. For now, if patternProperties is present
+    // we assume the property is allowed (best-effort rather than panicking).
+    if !object_schema.pattern_properties.is_empty() {
+        return prop_schema.clone();
+    }
 
     merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
         .unwrap_or(Schema::Bool(false))
