@@ -90,6 +90,11 @@ pub(crate) enum TypeEntryNewtypeConstraints {
         min_length: Option<u32>,
         pattern: Option<String>,
     },
+    /// Integer range constraints (min inclusive, max inclusive).
+    Range {
+        min: Option<i64>,
+        max: Option<i64>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -540,6 +545,38 @@ impl TypeEntryNewtype {
             extra_attrs: type_patch.attrs,
         }
     }
+
+    pub(crate) fn from_metadata_with_range(
+        type_space: &TypeSpace,
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        min: Option<i64>,
+        max: Option<i64>,
+        schema: Schema,
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata).unwrap();
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        let type_patch = TypePatch::new(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
+            name: type_patch.name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            constraints: TypeEntryNewtypeConstraints::Range { min, max },
+            schema: SchemaWrapper(schema),
+        });
+
+        TypeEntry {
+            details,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
+        }
+    }
 }
 
 impl From<TypeEntryDetails> for TypeEntry {
@@ -648,6 +685,14 @@ impl TypeEntry {
                 (_, TypeSpaceImpl::Default) => details.default.is_some(),
                 (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::FromStr) => true,
                 (TypeEntryNewtypeConstraints::String { .. }, TypeSpaceImpl::Display) => true,
+                (TypeEntryNewtypeConstraints::Range { .. }, TypeSpaceImpl::FromStr) => {
+                    let type_entry = type_space.id_to_entry.get(&details.type_id).unwrap();
+                    type_entry.has_impl(type_space, TypeSpaceImpl::FromStr)
+                }
+                (TypeEntryNewtypeConstraints::Range { .. }, TypeSpaceImpl::Display) => {
+                    let type_entry = type_space.id_to_entry.get(&details.type_id).unwrap();
+                    type_entry.has_impl(type_space, TypeSpaceImpl::Display)
+                }
                 (TypeEntryNewtypeConstraints::None, _) => {
                     // TODO this is a lucky kludge that will need to be removed
                     // once we have proper handling of reference cycles (i.e.
@@ -1627,6 +1672,113 @@ impl TypeEntry {
                             })
                         }
                     }
+                }
+            }
+
+            TypeEntryNewtypeConstraints::Range { min, max } => {
+                let min_check = min.map(|v| {
+                    let err = format!("value must be >= {}", v);
+                    quote! {
+                        if value < #v as #inner_type_name {
+                            return Err(#err.into());
+                        }
+                    }
+                });
+                let max_check = max.map(|v| {
+                    let err = format!("value must be <= {}", v);
+                    quote! {
+                        if value > #v as #inner_type_name {
+                            return Err(#err.into());
+                        }
+                    }
+                });
+
+                // We're going to impl Deserialize so we can remove it
+                // from the set of derived impls.
+                derive_set.remove("::serde::Deserialize");
+
+                let display_impl = inner_type
+                    .has_impl(type_space, TypeSpaceImpl::Display)
+                    .then(|| {
+                        quote! {
+                            impl ::std::fmt::Display for #type_name {
+                                fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+                                    self.0.fmt(f)
+                                }
+                            }
+                        }
+                    });
+
+                let from_str_impl = inner_type
+                    .has_impl(type_space, TypeSpaceImpl::FromStr)
+                    .then(|| {
+                        quote! {
+                            impl ::std::str::FromStr for #type_name {
+                                type Err = self::error::ConversionError;
+
+                                fn from_str(value: &str) ->
+                                    ::std::result::Result<Self, self::error::ConversionError>
+                                {
+                                    value.parse::<#inner_type_name>()
+                                        .map_err(|e| e.to_string().into())
+                                        .and_then(|v| Self::try_from(v))
+                                }
+                            }
+                            impl ::std::convert::TryFrom<&str> for #type_name {
+                                type Error = self::error::ConversionError;
+
+                                fn try_from(value: &str) ->
+                                    ::std::result::Result<Self, self::error::ConversionError>
+                                {
+                                    value.parse()
+                                }
+                            }
+                            impl ::std::convert::TryFrom<String> for #type_name {
+                                type Error = self::error::ConversionError;
+
+                                fn try_from(value: String) ->
+                                    ::std::result::Result<Self, self::error::ConversionError>
+                                {
+                                    value.parse()
+                                }
+                            }
+                        }
+                    });
+
+                quote! {
+                    impl ::std::convert::TryFrom<#inner_type_name> for #type_name {
+                        type Error = self::error::ConversionError;
+
+                        fn try_from(
+                            value: #inner_type_name
+                        ) -> ::std::result::Result<Self, self::error::ConversionError>
+                        {
+                            #min_check
+                            #max_check
+                            Ok(Self(value))
+                        }
+                    }
+
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> ::std::result::Result<Self, D::Error>
+                        where
+                            D: ::serde::Deserializer<'de>,
+                        {
+                            Self::try_from(
+                                <#inner_type_name>::deserialize(deserializer)?,
+                            )
+                            .map_err(|e| {
+                                <D::Error as ::serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
+                        }
+                    }
+
+                    #display_impl
+                    #from_str_impl
                 }
             }
         };

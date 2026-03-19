@@ -21,6 +21,12 @@
         "value"
       ]
     },
+    "Dscp": {
+      "type": "integer",
+      "format": "uint8",
+      "minimum": 0,
+      "maximum": 63
+    },
     "uint-minimum-and-maximum": {
       "type": "object",
       "required": [

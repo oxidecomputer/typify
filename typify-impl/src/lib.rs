@@ -11,7 +11,7 @@ use log::{debug, info};
 use output::OutputSpace;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
-use schemars::schema::{Metadata, RootSchema, Schema};
+use schemars::schema::{InstanceType, Metadata, RootSchema, Schema, SingleOrVec};
 use thiserror::Error;
 use type_entry::{
     StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
@@ -750,13 +750,29 @@ impl TypeSpace {
                     metadata
                 );
                 let subtype_id = self.assign_type(type_entry);
-                TypeEntryNewtype::from_metadata(
-                    self,
-                    type_name,
-                    metadata,
-                    subtype_id,
-                    schema.clone(),
-                )
+
+                // Check if this is an integer type with range constraints
+                // that don't span the full range of the native type.
+                let range_constraints = Self::extract_integer_range(&schema);
+                if let Some((min, max)) = range_constraints {
+                    TypeEntryNewtype::from_metadata_with_range(
+                        self,
+                        type_name,
+                        metadata,
+                        subtype_id,
+                        min,
+                        max,
+                        schema.clone(),
+                    )
+                } else {
+                    TypeEntryNewtype::from_metadata(
+                        self,
+                        type_name,
+                        metadata,
+                        subtype_id,
+                        schema.clone(),
+                    )
+                }
             }
         };
         // TODO need a type alias?
@@ -765,6 +781,65 @@ impl TypeSpace {
         }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
+    }
+
+    /// Extract integer range constraints from a schema, returning
+    /// `Some((min, max))` when the schema represents an integer with
+    /// bounds that are narrower than the native type's full range.
+    fn extract_integer_range(schema: &Schema) -> Option<(Option<i64>, Option<i64>)> {
+        let schema_obj = match schema {
+            Schema::Object(obj) => obj,
+            _ => return None,
+        };
+
+        // Must be an integer type.
+        let is_integer = match &schema_obj.instance_type {
+            Some(SingleOrVec::Single(t)) => **t == InstanceType::Integer,
+            _ => false,
+        };
+        if !is_integer {
+            return None;
+        }
+
+        let validation = schema_obj.number.as_ref()?;
+        let min = match (&validation.minimum, &validation.exclusive_minimum) {
+            (None, None) => None,
+            (None, Some(value)) => Some(*value as i64 + 1),
+            (Some(value), None) => Some(*value as i64),
+            (Some(min), Some(emin)) => Some((*min as i64).max(*emin as i64 + 1)),
+        };
+        let max = match (&validation.maximum, &validation.exclusive_maximum) {
+            (None, None) => None,
+            (None, Some(value)) => Some(*value as i64 - 1),
+            (Some(value), None) => Some(*value as i64),
+            (Some(max), Some(emax)) => Some((*max as i64).min(*emax as i64 - 1)),
+        };
+
+        // Only return constraints if at least one bound is specified.
+        if min.is_some() || max.is_some() {
+            // Check if the constraints are narrower than the native type's
+            // range. If they span the full range, there's no need for
+            // TryFrom validation.
+            let format = schema_obj.format.as_deref();
+            let is_full_range = match format {
+                Some("uint8") => min == Some(u8::MIN as i64) && max == Some(u8::MAX as i64),
+                Some("uint16") => min == Some(u16::MIN as i64) && max == Some(u16::MAX as i64),
+                Some("uint32") => min == Some(u32::MIN as i64) && max == Some(u32::MAX as i64),
+                Some("int8") => min == Some(i8::MIN as i64) && max == Some(i8::MAX as i64),
+                Some("int16") => min == Some(i16::MIN as i64) && max == Some(i16::MAX as i64),
+                Some("int32") => min == Some(i32::MIN as i64) && max == Some(i32::MAX as i64),
+                _ => false,
+            };
+            // Also skip if minimum is 1 (NonZero types already handle this)
+            let is_nonzero = min == Some(1) && max.is_none();
+            if is_full_range || is_nonzero {
+                None
+            } else {
+                Some((min, max))
+            }
+        } else {
+            None
+        }
     }
 
     /// Add a new type and return a type identifier that may be used in
@@ -1497,5 +1572,112 @@ mod tests {
         let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
         let ty = type_space.get_type(&type_id).unwrap();
         assert!(ty.builder().is_none());
+    }
+
+    #[test]
+    fn test_extract_integer_range_with_bounds() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0,
+            "maximum": 63
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, Some((Some(0), Some(63))));
+    }
+
+    #[test]
+    fn test_extract_integer_range_only_max() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "maximum": 63
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, Some((None, Some(63))));
+    }
+
+    #[test]
+    fn test_extract_integer_range_only_min() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 10
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, Some((Some(10), None)));
+    }
+
+    #[test]
+    fn test_extract_integer_range_exclusive_bounds() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 64
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, Some((Some(1), Some(63))));
+    }
+
+    #[test]
+    fn test_extract_integer_range_full_range_returns_none() {
+        // Full u8 range should not produce constraints.
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0,
+            "maximum": 255
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_extract_integer_range_nonzero_returns_none() {
+        // minimum: 1 with no max is handled by NonZero types.
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 1
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_extract_integer_range_no_bounds_returns_none() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "integer",
+            "format": "uint8"
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_extract_integer_range_not_integer_returns_none() {
+        let schema = serde_json::from_value::<schemars::schema::Schema>(json!({
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+        }))
+        .unwrap();
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_extract_integer_range_bool_schema_returns_none() {
+        let schema = schemars::schema::Schema::Bool(true);
+        let result = TypeSpace::extract_integer_range(&schema);
+        assert_eq!(result, None);
     }
 }

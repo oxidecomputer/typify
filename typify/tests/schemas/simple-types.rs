@@ -47,6 +47,80 @@ impl AnythingWorks {
         Default::default()
     }
 }
+#[doc = "`Dscp`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"integer\","]
+#[doc = "  \"format\": \"uint8\","]
+#[doc = "  \"maximum\": 63.0,"]
+#[doc = "  \"minimum\": 0.0"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct Dscp(u8);
+impl ::std::ops::Deref for Dscp {
+    type Target = u8;
+    fn deref(&self) -> &u8 {
+        &self.0
+    }
+}
+impl ::std::convert::From<Dscp> for u8 {
+    fn from(value: Dscp) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::TryFrom<u8> for Dscp {
+    type Error = self::error::ConversionError;
+    fn try_from(value: u8) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value < 0i64 as u8 {
+            return Err("value must be >= 0".into());
+        }
+        if value > 63i64 as u8 {
+            return Err("value must be <= 63".into());
+        }
+        Ok(Self(value))
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for Dscp {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<u8>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+impl ::std::fmt::Display for Dscp {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+impl ::std::str::FromStr for Dscp {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<u8>()
+            .map_err(|e| e.to_string().into())
+            .and_then(|v| Self::try_from(v))
+    }
+}
+impl ::std::convert::TryFrom<&str> for Dscp {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<String> for Dscp {
+    type Error = self::error::ConversionError;
+    fn try_from(value: String) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`FloatsArentTerribleImTold`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
