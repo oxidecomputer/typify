@@ -24,6 +24,7 @@
 * select smallest integer type for bounded ranges (e.g., `[1..32]` → `NonZeroU8`) (#975)
 * replace panics in `not` schema handling with graceful fallback to `serde_json::Value` (#954, #489, #435)
 * replace panics in `ref_key()` and `convert_reference()` with proper error returns
+* generate Rust tuples from 2020-12 `prefixItems` + `items: false` (#955)
 
 === New features
 * JSON Schema `if`/`then`/`else` support via transformation to `oneOf` (#480)
@@ -33,6 +34,9 @@
 * non-`$defs` internal `$ref` support: reference any JSON Pointer path (#828)
 * new API: `TypeSpace::add_schema_from_value()` — auto-detects and normalizes any JSON Schema draft
 * new API: `TypeSpace::add_schema_with_externals()` — handles multi-file schema bundles
+* `cargo typify` CLI: auto-discovers external schemas from input directory
+* `cargo typify` CLI: new `--schema-dir` flag to specify external schema directory
+* `cargo typify` CLI: automatic 2020-12 normalization (no flags needed)
 
 https://github.com/barbacane-dev/typify/compare/v0.6.1\...HEAD[Full list of commits]
 
