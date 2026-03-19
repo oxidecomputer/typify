@@ -23,9 +23,9 @@ The single highest-impact change — root cause of 5+ open issues.
 
 ## Phase 3: `not` and `if/then/else` Support
 
-- [ ] **#480** — Translate `if/then/else` schemas to `oneOf`. Clear design from maintainer. Unblocks #927.
-- [ ] **#847 / #489 / #954** — Improve `not` handling. Stop panicking on unsupported patterns, add robust fallback.
-- [ ] **#435** — Fix stack overflow with `not` + `required` combination.
+- [x] **#480** — Transform `if/then/else` into `oneOf` via `allOf(if,then)` / `allOf(not(if),else)` in merge.rs.
+- [x] **#847 / #489 / #954** — Replace panics in `convert_not` and merge.rs with graceful fallback to `serde_json::Value`.
+- [x] **#435** — Replace `todo!()` panics in merge.rs `not` handling with best-effort behavior.
 
 ## Phase 4: Reference Handling (Architectural)
 
