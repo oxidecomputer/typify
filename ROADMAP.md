@@ -31,8 +31,9 @@ The single highest-impact change — root cause of 5+ open issues.
 
 Major rework following upstream's "Big Plan" (#579).
 
-- [ ] **#579** — External references, non-`$defs` references, JSON Schema 2020-12 support.
-  - Unblocks: #201 (external `$ref` — most requested feature), #828, #299, #933, #955
+- [x] **#579** — JSON Schema 2020-12 normalization + external `$ref` bundler + non-`$defs` ref resolution.
+  - Resolves: #201 (external `$ref`), #828 (non-`$defs` refs), #933 (bare filename refs)
+  - New APIs: `add_schema_from_value()`, `add_schema_with_externals()`
 
 ## Phase 5: Polish
 
