@@ -104,11 +104,7 @@ impl Converter {
                     unique_items: None,
                 };
 
-                // TODO 1.11.2026
-                // I really need a way to make a generic partial, but since I don't
-                // we're going to hack it up for the moment.
-
-                let inner_id = SchemaRef::Partial(format!("{id}"), "@inner".to_string());
+                let inner_id = SchemaRef::Child(Box::new(id.clone()), "@inner".to_string());
 
                 let ConvertResult {
                     primary: inner_ty,
@@ -193,7 +189,7 @@ impl Converter {
                     unique_items: *unique_items,
                 };
 
-                let inner_id = SchemaRef::Partial(format!("{id}"), "@inner".to_string());
+                let inner_id = SchemaRef::Child(Box::new(id.clone()), "@inner".to_string());
 
                 let ConvertResult {
                     primary: inner_ty,

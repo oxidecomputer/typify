@@ -206,11 +206,7 @@ impl Converter {
                         None,
                     )),
                     ty => {
-                        let SchemaRef::Id(inner_id) = id else {
-                            panic!()
-                        };
-
-                        let inner_ref = SchemaRef::Partial(inner_id.clone(), "@@inner".to_string());
+                        let inner_ref = SchemaRef::Child(Box::new(id.clone()), "@@inner".to_string());
                         additional.insert(inner_ref.clone(), ty);
 
                         let outer_ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
