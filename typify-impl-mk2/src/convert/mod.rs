@@ -158,7 +158,7 @@ impl Converter {
                 self.convert_array(id, name, metadata, array).into()
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::Object(object)) => {
-                self.convert_object(name, metadata, object).into()
+                self.convert_object(id, name, metadata, object)
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::String(string_value)) => {
                 self.convert_string(name, metadata, string_value).into()

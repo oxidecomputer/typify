@@ -22,7 +22,6 @@ pub enum SchemaRef {
         yes: Box<SchemaRef>,
         no: Vec<SchemaRef>,
     },
-    Internal(String),
     Child(Box<SchemaRef>, String),
     Box(Box<SchemaRef>),
 }
@@ -72,10 +71,6 @@ impl Display for SchemaRef {
                     f.write_str("\n")?;
                 }
                 f.write_str("]")
-            }
-            SchemaRef::Internal(s) => {
-                f.write_str("internal@")?;
-                f.write_str(s)
             }
             SchemaRef::Box(id) => {
                 f.write_str("box@")?;

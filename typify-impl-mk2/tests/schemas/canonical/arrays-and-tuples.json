@@ -234,15 +234,5 @@
         }
       }
     }
-  ],
-  [
-    "internal@string",
-    {
-      "details": {
-        "Value": {
-          "String": {}
-        }
-      }
-    }
   ]
 ]

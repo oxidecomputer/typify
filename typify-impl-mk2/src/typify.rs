@@ -6,8 +6,8 @@ use crate::{
     bundler::Bundle,
     convert::{ConvertResult, Converter},
     schemalet::{
-        to_schemalets, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, Schemalet,
-        SchemaletDetails, SchemaletValue, SchemaletValueString, State,
+        to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet,
+        SchemaletDetails, State,
     },
     typespace::{Type, Typespace, TypespaceBuilder, TypespaceNativeType, TypespaceSettings},
 };
@@ -208,30 +208,7 @@ impl Typify {
 
 impl Default for Normalizer {
     fn default() -> Self {
-        let canonical = [
-            (
-                SchemaRef::Internal("string".to_string()),
-                CanonicalSchemalet {
-                    metadata: Default::default(),
-                    details: CanonicalSchemaletDetails::Value(SchemaletValue::String(
-                        SchemaletValueString {
-                            pattern: Vec::new(),
-                            format: Vec::new(),
-                            min_length: None,
-                            max_length: None,
-                        },
-                    )),
-                },
-            ),
-            // (
-            //     SchemaRef::Internal("any".to_string()),
-            //     CanonicalSchemalet {
-            //         metadata: Default::default(),
-            //         details: CanonicalSchemaletDetails::Anything,
-            //     },
-            // ),
-        ]
-        .into();
+        let canonical = BTreeMap::new();
 
         Self {
             raw: Default::default(),

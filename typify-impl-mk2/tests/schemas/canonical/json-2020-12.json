@@ -1895,15 +1895,5 @@
         "Reference": "<merge> [\n  https://json-schema.org/draft/2020-12/schema#\n  https://json-schema.org/draft/2020-12/meta/validation#/$defs/stringArray\n]"
       }
     }
-  ],
-  [
-    "internal@string",
-    {
-      "details": {
-        "Value": {
-          "String": {}
-        }
-      }
-    }
   ]
 ]

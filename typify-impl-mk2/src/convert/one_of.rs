@@ -189,16 +189,17 @@ impl Converter {
         let variants = proto_variants
             .iter()
             .zip(variant_names)
-            .map(|(proto, name)| {
-                let details =
-                    if let Some(struct_props) = self.xxx_maybe_struct_props(&proto.schemalet) {
-                        VariantDetails::Struct(struct_props)
-                    } else {
-                        VariantDetails::Item(proto.id.clone())
-                    };
+            .map(|(proto, variant_name)| {
+                let details = if let Some(struct_props) =
+                    self.xxx_maybe_struct_props(&variant_name, &proto.id, &proto.schemalet)
+                {
+                    VariantDetails::Struct(struct_props)
+                } else {
+                    VariantDetails::Item(proto.id.clone())
+                };
 
                 EnumVariant {
-                    rust_name: name,
+                    rust_name: variant_name,
                     rename: None,
                     description: proto.description.clone(),
                     details,
@@ -218,6 +219,8 @@ impl Converter {
 
     fn xxx_maybe_struct_props(
         &self,
+        variant_name: &str,
+        id: &SchemaRef,
         schemalet: &CanonicalSchemalet,
     ) -> Option<Vec<StructProperty>> {
         // TODO somehow I need to know if this is a type that's going to have a
@@ -225,12 +228,13 @@ impl Converter {
         // TODO or we somehow defer that decision to the Typespace's finalize step?
         let object = schemalet.as_object()?;
 
-        let typ = self.convert_object(
-            NameBuilder::Fixed("xxx_broken2".to_string()),
+        let result = self.convert_object(
+            id,
+            NameBuilder::Fixed(variant_name.to_string()),
             &schemalet.metadata,
             object,
         );
-        let Type::Struct(struct_ty) = typ else {
+        let Type::Struct(struct_ty) = result.primary else {
             return None;
         };
 

@@ -2,7 +2,7 @@ use quote::format_ident;
 use unicode_ident::is_xid_continue;
 
 use crate::{
-    convert::{Converter, GottenStuff},
+    convert::{ConvertResult, Converter, GottenStuff},
     schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueObject},
     typespace::{
         NameBuilder, StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct,
@@ -12,10 +12,11 @@ use crate::{
 impl Converter {
     pub(crate) fn convert_object(
         &self,
+        parent_id: &SchemaRef,
         name: NameBuilder,
         metadata: &SchemaletMetadata,
         object: &SchemaletValueObject,
-    ) -> Type {
+    ) -> ConvertResult {
         // TODO 6/30/2025
         // Increasingly I'm of the opinion I need to do the conversion from the
         // JSON Schema style object into my new, "structural" encoding.
@@ -46,7 +47,7 @@ impl Converter {
                     .zip(prop_names)
                     .map(|((prop_name, prop_id), new_prop_name)| {
                         let GottenStuff {
-                            id,
+                            id: resolved_id,
                             schemalet: _,
                             description,
                             title: _,
@@ -72,7 +73,7 @@ impl Converter {
                             prop_state,
                             // TODO maybe a helper to pull out descriptions for property meta?
                             description,
-                            id.clone(),
+                            resolved_id.clone(),
                         )
                     })
                     .collect();
@@ -84,6 +85,7 @@ impl Converter {
                     properties,
                     false,
                 ))
+                .into()
             }
 
             // Simple case of a map with string keys:
@@ -97,8 +99,7 @@ impl Converter {
                 property_names: None,
                 pattern_properties: None,
             } if properties.is_empty() && required.is_empty() => {
-                // TODO not sure what to do here...
-                let key_id = SchemaRef::Internal("string".to_string());
+                let key_id = SchemaRef::Child(Box::new(parent_id.clone()), "string".to_string());
                 let GottenStuff {
                     id: value_id,
                     schemalet: _,
@@ -106,7 +107,10 @@ impl Converter {
                     title: _,
                 } = self.resolve_and_get_stuff(additional_properties);
 
-                Type::Map(key_id.clone(), value_id.clone())
+                ConvertResult {
+                    primary: Type::Map(key_id.clone(), value_id.clone()),
+                    additional: [(key_id, Type::String)].into_iter().collect(),
+                }
             }
 
             // Slightly more complex of a map. As above, but with a schema for
@@ -135,14 +139,14 @@ impl Converter {
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(property_names);
-                // let key_id = SchemaRef::Internal("string".to_string());
+
                 let GottenStuff {
                     id: value_id,
                     schemalet: _,
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(additional_properties);
-                Type::Map(key_id.clone(), value_id.clone())
+                Type::Map(key_id.clone(), value_id.clone()).into()
             }
 
             _ => todo!(
