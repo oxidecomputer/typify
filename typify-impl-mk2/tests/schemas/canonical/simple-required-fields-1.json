@@ -39,12 +39,6 @@
     }
   ],
   [
-    "internal@any",
-    {
-      "details": "Anything"
-    }
-  ],
-  [
     "internal@string",
     {
       "details": {

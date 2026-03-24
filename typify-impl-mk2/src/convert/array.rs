@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use crate::{
     convert::{ConvertResult, Converter},
     schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueArray},
@@ -43,6 +45,9 @@ impl Converter {
                 // in the caller who would convert a tuple into a tuple struct.
                 // In other cases we **need** to use a tuple struct because we
                 // need a custom serialization (e.g. flattened sequences).
+
+                let mut additional = BTreeMap::new();
+
                 let types = prefix_items
                     .iter()
                     .flatten()
@@ -51,16 +56,19 @@ impl Converter {
                         if let Some(items) = items {
                             self.resolve_and_get_stuff(items).id.clone()
                         } else {
-                            // TODO 2/7/2026
-                            // Now that we return a bundle, these internal
-                            // types should go away.
-                            SchemaRef::Internal("any".to_string())
+                            let inner_id = SchemaRef::Child(id.clone().into(), "any".to_string());
+                            additional.insert(inner_id.clone(), Type::JsonValue);
+                            inner_id
                         }
                     }))
                     .take(*max_items as usize)
                     .collect::<Vec<_>>();
 
-                Type::Tuple(types).into()
+                // Type::Tuple(types).into()
+                ConvertResult {
+                    primary: Type::Tuple(types),
+                    additional,
+                }
             }
 
             // Tuple
@@ -140,16 +148,28 @@ impl Converter {
                 min_items: None,
                 unique_items,
             } => {
-                let id = if let Some(items) = items {
-                    self.resolve_and_get_stuff(items).id.clone()
+                let (id, additional) = if let Some(items) = items {
+                    (
+                        self.resolve_and_get_stuff(items).id.clone(),
+                        BTreeMap::new(),
+                    )
                 } else {
-                    SchemaRef::Internal("any".to_string())
+                    let inner_id = SchemaRef::Child(id.clone().into(), "any".to_string());
+                    (
+                        inner_id.clone(),
+                        [(inner_id, Type::JsonValue)].into_iter().collect(),
+                    )
                 };
 
-                if unique_items.unwrap_or_default() {
-                    Type::Set(id).into()
+                let primary = if unique_items.unwrap_or_default() {
+                    Type::Set(id)
                 } else {
-                    Type::Vec(id).into()
+                    Type::Vec(id)
+                };
+
+                ConvertResult {
+                    primary,
+                    additional,
                 }
             }
 
@@ -177,14 +197,13 @@ impl Converter {
 
                 let ConvertResult {
                     primary: inner_ty,
-                    additional,
+                    mut additional,
                 } = self.convert_array(
                     &inner_id,
                     NameBuilder::Fixed("xxx_busted".to_string()),
                     &inner_metadata,
                     &inner_array,
                 );
-                assert!(additional.is_empty());
 
                 // Otherwise why are we here?
                 assert!(min_items.is_some() || max_items.is_some());
@@ -202,9 +221,11 @@ impl Converter {
                     constraints,
                 ));
 
+                additional.insert(inner_id, inner_ty);
+
                 ConvertResult {
                     primary: ty,
-                    additional: [(inner_id, inner_ty)].into_iter().collect(),
+                    additional,
                 }
             }
 

@@ -223,13 +223,13 @@ impl Default for Normalizer {
                     )),
                 },
             ),
-            (
-                SchemaRef::Internal("any".to_string()),
-                CanonicalSchemalet {
-                    metadata: Default::default(),
-                    details: CanonicalSchemaletDetails::Anything,
-                },
-            ),
+            // (
+            //     SchemaRef::Internal("any".to_string()),
+            //     CanonicalSchemalet {
+            //         metadata: Default::default(),
+            //         details: CanonicalSchemaletDetails::Anything,
+            //     },
+            // ),
         ]
         .into();
 
