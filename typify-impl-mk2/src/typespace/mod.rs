@@ -15,7 +15,10 @@ use std::collections::{btree_map::Entry, BTreeMap, BTreeSet, VecDeque};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 
-use crate::{namespace::Namespace, schemalet::SchemaRef};
+use crate::{
+    namespace::{Name, Namespace},
+    schemalet::SchemaRef,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum NameBuilder {
@@ -420,7 +423,7 @@ impl Typespace {
                 quote! { Ref<"???"> }
             }
             Type::NewtypeStruct(inner) => {
-                let name = inner.built.as_ref().unwrap().name.to_string();
+                let name = inner.common.built.as_ref().unwrap().name.to_string();
                 let name_ident = format_ident!("{name}");
                 name_ident.into_token_stream()
             }
@@ -447,7 +450,21 @@ impl Typespace {
                     #box_type<#boxed_ident>
                 }
             }
-            Type::Set(inner_id) | Type::Vec(inner_id) => {
+            Type::Set(inner_id) => {
+                // TODO 3/25/2026
+                // Replace with set type
+                let vec_type = match &self.settings.std {
+                    TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
+                    TypespaceSettingsStd::Unqualified => quote! { Vec },
+                };
+                let inner_ident = self.render_ident(inner_id);
+                quote! {
+                    #vec_type<#inner_ident>
+                }
+            }
+            Type::Vec(inner_id) => {
+                // TODO 3/25/2026
+                // Make configurable?
                 let vec_type = match &self.settings.std {
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
@@ -458,6 +475,8 @@ impl Typespace {
                 }
             }
             Type::Map(key_id, value_id) => {
+                // TODO 3/25/2026
+                // Configurable like typify 1
                 let key_ident = self.render_ident(key_id);
                 let value_ident = self.render_ident(value_id);
                 quote! {
@@ -905,7 +924,7 @@ impl TypespaceBuilder {
 
                 Type::NewtypeStruct(type_inner) => {
                     println!("newtype {:#?}", type_inner);
-                    let name = match &type_inner.name {
+                    let name = match &type_inner.common.name {
                         NameBuilder::Unset => unreachable!(),
                         NameBuilder::Fixed(s) => {
                             let nn = namespace.make_name(id.clone());
@@ -927,7 +946,10 @@ impl TypespaceBuilder {
                         }
                     };
 
-                    type_inner.built = Some(TypeStructBuilt { name });
+                    type_inner.common.built = Some(TypeCommonBuilt {
+                        name,
+                        traits: Default::default(),
+                    });
                 }
 
                 _ => {}
@@ -950,6 +972,8 @@ impl TypespaceBuilder {
 
         let _n2 = namespace.finalize().unwrap();
         break_cycles(&mut types);
+
+        push_traits(&mut types)?;
 
         Ok(Typespace { settings, types })
     }
@@ -1080,6 +1104,62 @@ fn break_cycles(types: &mut BTreeMap<SchemaRef, Type>) {
     }
 }
 
+fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
+    // First, look through all types to determine what traits are required of
+    // various children.
+    let mut work = types
+        .iter()
+        .filter_map(|(_, ty)| match ty {
+            Type::Map(key_schema_ref, _) => Some((
+                key_schema_ref.clone(),
+                vec![
+                    "Eq".to_string(),
+                    "PartialEq".to_string(),
+                    "Ord".to_string(),
+                    "PartialOrd".to_string(),
+                ],
+            )),
+            _ => None,
+        })
+        .collect::<VecDeque<_>>();
+
+    while let Some((schema_ref, traits)) = work.pop_front() {
+        let ty = types.get_mut(&schema_ref).unwrap();
+
+        let common = match ty {
+            // Type::Enum(type_enum) => &mut type_enum.built.as_mut().unwrap().traits,
+            // Type::Struct(type_struct) => &mut type_struct.built.as_mut().unwrap().traits,
+            // Type::UnitStruct(type_unit_struct) => {
+            //     &mut type_unit_struct.built.as_mut().unwrap().traits
+            // }
+            // Type::TupleStruct(type_tuple_struct) => {
+            //     &mut type_tuple_struct.built.as_mut().unwrap().traits
+            // }
+            Type::NewtypeStruct(type_newtype_struct) => {
+                &mut type_newtype_struct.common.built.as_mut().unwrap().traits
+            }
+            _ => continue,
+        };
+
+        let mut new_traits = Vec::new();
+
+        for trait_name in traits {
+            if !common.contains(&trait_name) {
+                common.push(trait_name.clone());
+                new_traits.push(trait_name.clone());
+            }
+        }
+
+        if !new_traits.is_empty() {
+            for child_id in ty.contained_children_mut() {
+                work.push_back((child_id.clone(), new_traits.clone()));
+            }
+        }
+    }
+
+    Ok(())
+}
+
 /// Represents a type in the Typespace.
 #[derive(Debug, Clone)]
 pub enum Type {
@@ -1112,6 +1192,25 @@ pub enum Type {
     JsonValue,
 }
 
+/// Common properties of named, generated types.
+#[derive(Debug, Clone)]
+pub struct TypeCommon {
+    pub name: NameBuilder,
+    pub description: Option<String>,
+    pub default: Option<JsonValue>,
+
+    pub(crate) built: Option<TypeCommonBuilt>,
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct TypeCommonBuilt {
+    pub name: Name<SchemaRef>,
+
+    // TODO 3/25/2026
+    // This definitely needs more consideration after I start feeling it out.
+    pub traits: Vec<String>,
+}
+
 // 9.15.2025
 // Little bit of a random thought: "Native" is actually kind of a catch-all for
 // which things like boolean, integer, unit, etc. could apply. I think we'll
@@ -1140,7 +1239,7 @@ impl Type {
             Type::Struct(type_struct) => Some(&mut type_struct.name),
             Type::UnitStruct(type_unit_struct) => Some(&mut type_unit_struct.name),
             Type::TupleStruct(type_tuple_struct) => Some(&mut type_tuple_struct.name),
-            Type::NewtypeStruct(type_newtype_struct) => Some(&mut type_newtype_struct.name),
+            Type::NewtypeStruct(type_newtype_struct) => Some(&mut type_newtype_struct.common.name),
             Type::TypeAlias(type_type_alias) => Some(&mut type_type_alias.name),
             Type::Native(_)
             | Type::Option(_)

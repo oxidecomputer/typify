@@ -50,6 +50,7 @@ impl<'de> ::serde::Deserialize<'de> for UriReferenceString {
         Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
     }
 }
+#[derive(Eq, PartialEq, Ord, PartialOrd)]
 pub struct UriString(::url::Url);
 impl ::serde::Serialize for UriString {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

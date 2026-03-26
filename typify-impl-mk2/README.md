@@ -846,6 +846,52 @@ We could try to avoid anything that required more than a single type in the
 construction of the canonical representation--but that representation is meant
 to merely be simplified, not hyper-optimized for Rust output in particular.
 
-Some of the code is a little ugly, but the only thing that's really a hack is that there isn't a way to make a "relative" `SchemaRef` i.e. one that descends from the parent... but as I think about it, that's not really necessary. All I really need is a key that I know to be unique.
+Some of the code is a little ugly, but the only thing that's really a hack is
+that there isn't a way to make a "relative" `SchemaRef` i.e. one that descends
+from the parent... but as I think about it, that's not really necessary. All I
+really need is a key that I know to be unique.
 
 It's not terrible right now. I think I'd want to flesh out some of the cases I describe above before thinking of a clean up.
+
+
+### 3/25/2026
+
+#### Status
+
+We seem to be marching along fairly well. I took the idea of the converter
+returning a bundle of types and have--more or less--pushed that to some
+reasonable state. We're generating newtype wrappers, tuple structs, etc. Here
+are a few next steps:
+
+- Traits: we need certain traits implements to fix the build because the key
+  for BTreeMap requires traits such as Ord and Eq (see below)
+- Typespace settings: I think the Typespace is the right place to implement
+  configurability around traits (see below)
+- Newtype or nah: we're seeing this build issue for generated code because we
+  had previously been using `Uuid` as they key for the BTreeMap, and now we're
+  wrapping that type; I think we'd want the converter to have some
+  configurability here.
+- Map type config: as with typify 1, we need to be able to specify what type to
+  use for maps; that's a Typespace configuration
+
+#### Traits
+
+I've been thinking about trait propagation in two ways. There's the proximate
+need: we need the key for the BTreeMap to have certain traits implemented. So
+we need to "push" traits from a type into it's child/children. Then there's
+global configuration of the form "I want every type that you generate to have
+X, Y, Z traits". In that case, we need something more like "poisoning" where we
+take leaf types (notably floating-point types lack Eq and Ord) and
+back-propagate the inability to implement that trait.
+
+For traits required by parents of children, first we need some way to express
+that. Right now that's just for Map and Set variants of the Type enum, but one
+could imagine also needing that for types with type parameters that come from
+`x-rust-type` extensions or other injected replacements. We'll then walk that
+type transitively to all child types, and add the needed trait (if we see that
+the trait already exists, we can stop). If we encounter a type where the needed
+trait is invalid then we will produce an error. For example, if we say that a
+floating-point type needs to implement Ord, that's an error. For Type::Native,
+we need a way to express what traits are available (that might either look like
+an explicit list or a +/- delta from some expected set such as Ord + Eq +
+Hash).

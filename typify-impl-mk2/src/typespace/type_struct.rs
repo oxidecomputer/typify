@@ -4,7 +4,7 @@ use syn::Ident;
 use crate::{
     namespace::Name,
     schemalet::SchemaRef,
-    typespace::{JsonValue, NameBuilder, Typespace},
+    typespace::{JsonValue, NameBuilder, TypeCommon, TypeCommonBuilt, Typespace},
 };
 
 #[derive(Debug, Clone)]
@@ -251,13 +251,13 @@ impl TypeTupleStruct {
 
 #[derive(Debug, Clone)]
 pub struct TypeNewtypeStruct {
-    pub name: NameBuilder,
-    pub description: Option<String>,
-    pub default: Option<JsonValue>,
+    pub common: TypeCommon,
+    // pub name: NameBuilder,
+    // pub description: Option<String>,
+    // pub default: Option<JsonValue>,
     pub inner: SchemaRef,
     pub constraints: TypeNewtypeConstraints,
-
-    pub(crate) built: Option<TypeStructBuilt>,
+    // pub(crate) built: Option<TypeStructBuilt>,
 }
 
 // TODO 3/7/2026
@@ -299,12 +299,14 @@ impl TypeNewtypeStruct {
         constraints: TypeNewtypeConstraints,
     ) -> Self {
         Self {
-            name,
-            description,
-            default,
+            common: TypeCommon {
+                name,
+                description,
+                default,
+                built: None,
+            },
             inner,
             constraints,
-            built: None,
         }
     }
     pub(crate) fn children(&self) -> Vec<SchemaRef> {
@@ -321,21 +323,37 @@ impl TypeNewtypeStruct {
 
     pub(crate) fn render(&self, typespace: &Typespace) -> proc_macro2::TokenStream {
         let Self {
-            name: _,
-            description,
-            default: _,
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    default: _,
+                    built: Some(TypeCommonBuilt { name, traits }),
+                },
             inner,
             constraints,
-            built,
-        } = self;
+        } = self
+        else {
+            unreachable!()
+        };
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-        let name = built.as_ref().unwrap().name.to_string();
+        let name = name.to_string();
         let name_ident = format_ident!("{name}");
 
         let inner_ident = typespace.render_ident(inner);
 
+        let derive_attr = (!traits.is_empty()).then(|| {
+            let trait_idents = traits
+                .iter()
+                .map(|trait_name| format_ident!("{trait_name}"));
+            quote! {
+                #[derive(#(#trait_idents),*)]
+            }
+        });
+
         quote! {
             #description
+            #derive_attr
             pub struct #name_ident(#inner_ident);
 
             impl ::serde::Serialize for #name_ident {
