@@ -720,8 +720,52 @@ fn merge_so_number(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
-        (Some(_), Some(_)) => {
-            unimplemented!("this is fairly fussy and I don't want to do it")
+        (Some(a), Some(b)) => {
+            let maximum = choose_value(a.maximum, b.maximum, f64::min);
+            let exclusive_maximum =
+                choose_value(a.exclusive_maximum, b.exclusive_maximum, f64::min);
+            let minimum = choose_value(a.minimum, b.minimum, f64::max);
+            let exclusive_minimum =
+                choose_value(a.exclusive_minimum, b.exclusive_minimum, f64::max);
+
+            let multiple_of = choose_value(a.multiple_of, b.multiple_of, |a, b| {
+                let (mut x, mut y) = (a, b);
+                while y != 0.0 {
+                    (x, y) = (y, x % y);
+                }
+                (a / x) * b
+            });
+
+            // Normalize: when both inclusive and exclusive bounds are set,
+            // drop whichever is subsumed by the other.
+            let (minimum, exclusive_minimum) = match (minimum, exclusive_minimum) {
+                (Some(inc), Some(exc)) if exc >= inc => (None, Some(exc)),
+                (Some(inc), Some(_exc)) => (Some(inc), None),
+                pair => pair,
+            };
+            let (maximum, exclusive_maximum) = match (maximum, exclusive_maximum) {
+                (Some(inc), Some(exc)) if exc <= inc => (None, Some(exc)),
+                (Some(inc), Some(_exc)) => (Some(inc), None),
+                pair => pair,
+            };
+
+            // We'll return an error if the merged schema is unsatisfiable.
+            match (minimum, exclusive_minimum, maximum, exclusive_maximum) {
+                (Some(min), None, Some(max), None) if min > max => return Err(()),
+                (Some(min), None, None, Some(xmax)) if min >= xmax => return Err(()),
+                (None, Some(xmin), Some(max), None) if xmin >= max => return Err(()),
+                (None, Some(xmin), None, Some(xmax)) if xmin >= xmax => return Err(()),
+                (Some(_), Some(_), _, _) | (_, _, Some(_), Some(_)) => unreachable!(),
+                _ => {}
+            }
+
+            Ok(Some(Box::new(NumberValidation {
+                multiple_of,
+                maximum,
+                exclusive_maximum,
+                minimum,
+                exclusive_minimum,
+            })))
         }
     }
 }
@@ -733,8 +777,26 @@ fn merge_so_string(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
-        (Some(_), Some(_)) => {
-            unimplemented!("this is fairly fussy and I don't want to do it")
+        (Some(a), Some(b)) => {
+            let max_length = choose_value(a.max_length, b.max_length, Ord::min);
+            let min_length = choose_value(a.min_length, b.min_length, Ord::max);
+            let pattern = match (&a.pattern, &b.pattern) {
+                (None, v) | (v, None) => v.clone(),
+                (Some(x), Some(y)) if x == y => Some(x.clone()),
+                _ => unimplemented!("merging distinct patterns impractical"),
+            };
+
+            if let (Some(min), Some(max)) = (min_length, max_length) {
+                if min > max {
+                    return Err(());
+                }
+            }
+
+            Ok(Some(Box::new(StringValidation {
+                max_length,
+                min_length,
+                pattern,
+            })))
         }
     }
 }
@@ -961,7 +1023,6 @@ fn merge_items_array<'a>(
     Ok((items, true))
 }
 
-/// Prefer Some over None and the result of `prefer` if both are Some.
 fn choose_value<T, F>(a: Option<T>, b: Option<T>, prefer: F) -> Option<T>
 where
     F: FnOnce(T, T) -> T,
