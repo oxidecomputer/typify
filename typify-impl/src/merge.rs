@@ -783,7 +783,7 @@ fn merge_so_string(
             let pattern = match (&a.pattern, &b.pattern) {
                 (None, v) | (v, None) => v.clone(),
                 (Some(x), Some(y)) if x == y => Some(x.clone()),
-                _ => unimplemented!("merging distinct patterns impractical"),
+                _ => unimplemented!("merging distinct patterns is impractical"),
             };
 
             if let (Some(min), Some(max)) = (min_length, max_length) {
