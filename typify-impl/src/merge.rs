@@ -733,8 +733,28 @@ fn merge_so_string(
     match (a, b) {
         (None, other) | (other, None) => Ok(other.cloned().map(Box::new)),
         (Some(a), Some(b)) if a == b => Ok(Some(Box::new(a.clone()))),
-        (Some(_), Some(_)) => {
-            unimplemented!("this is fairly fussy and I don't want to do it")
+        (Some(a), Some(b)) => {
+            fn merge_field<T: Clone + PartialEq>(a: &Option<T>, b: &Option<T>) -> Result<Option<T>, ()> {
+                match (a, b) {
+                    (None, v) | (v, None) => Ok(v.clone()),
+                    (Some(x), Some(y)) if x == y => Ok(Some(x.clone())),
+                    _ => Err(()),
+                }
+            }
+
+            let max_length = merge_field(&a.max_length, &b.max_length);
+            let min_length = merge_field(&a.min_length, &b.min_length);
+            let pattern = merge_field(&a.pattern, &b.pattern);
+
+            if max_length.is_err() || min_length.is_err() || pattern.is_err() {
+                unimplemented!("this is fairly fussy and I don't want to do it")
+            }
+
+            Ok(Some(Box::new(StringValidation {
+                max_length: max_length.unwrap(),
+                min_length: min_length.unwrap(),
+                pattern: pattern.unwrap(),
+            })))
         }
     }
 }
