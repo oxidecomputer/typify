@@ -1,13 +1,16 @@
 mod type_alias;
 mod type_common;
 mod type_enum;
+mod type_native;
 mod type_struct;
 mod value_tokens;
 
 use serde::Deserialize;
+
 pub use type_alias::*;
 pub use type_common::*;
 pub use type_enum::*;
+pub use type_native::*;
 pub use type_struct::*;
 
 use std::collections::{btree_map::Entry, BTreeMap, BTreeSet, VecDeque};
@@ -31,16 +34,6 @@ pub enum NameBuilder {
 pub enum NameBuilderHint {
     Title(String),
     Parent(SchemaRef, String),
-}
-
-// TODO 9/15/2025
-// Placeholder type for non-generated types. We're going to want some mechanism
-// to specify the traits we care about so that users have to specify which ones
-// are implemented. I'm considering a struct of booleans so that things fail to
-// compile if we start to care about some new trait.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-pub struct TypespaceNativeType {
-    pub name: String,
 }
 
 // 6/25/2025
@@ -119,7 +112,7 @@ pub struct TypespaceSettings {
     optional_nullable: TypespaceSettingsOptionalNullable,
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsStd {
     #[default]
@@ -157,6 +150,104 @@ pub enum TypespaceSettingsOptionalNullable {
     /// is used with the serde `skip_serializing_if` attribute to omit the
     /// field.
     CustomType(String),
+}
+
+/// Enumeration of traits for which Typify has particular awareness.
+/// XXX write more docs
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TypespaceTrait {
+    Clone,
+    Debug,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    Display,
+    FromStr,
+    Eq,
+    PartialEq,
+    Ord,
+    PartialOrd,
+    Hash,
+}
+
+impl TypespaceTrait {
+    pub(crate) fn render(&self, settings: &TypespaceSettings) -> proc_macro2::TokenStream {
+        if settings.std == TypespaceSettingsStd::FullyQualified {
+            match self {
+                TypespaceTrait::Clone => quote! { ::std::clone::Clone },
+                TypespaceTrait::Debug => quote! { ::std::fmt::Debug },
+                TypespaceTrait::Serialize => quote! { ::serde::Serialize },
+                TypespaceTrait::Deserialize => quote! { ::serde::Deserialize },
+                TypespaceTrait::JsonSchema => quote! { ::schemars::JsonSchema },
+                TypespaceTrait::Ord => quote! { ::std::cmp::Ord },
+                TypespaceTrait::PartialOrd => quote! { ::std::cmp::PartialOrd },
+                TypespaceTrait::Eq => quote! { ::std::cmp::Eq },
+                TypespaceTrait::PartialEq => quote! { ::std::cmp::PartialEq },
+                TypespaceTrait::Hash => quote! { ::std::hash::Hash },
+                TypespaceTrait::Display => quote! { ::std::fmt::Display },
+                TypespaceTrait::FromStr => quote! { ::std::str::FromStr },
+            }
+        } else {
+            match self {
+                TypespaceTrait::Clone => quote! { Clone },
+                TypespaceTrait::Debug => quote! { Debug },
+                TypespaceTrait::Serialize => quote! { ::serde::Serialize },
+                TypespaceTrait::Deserialize => quote! { ::serde::Deserialize },
+                TypespaceTrait::JsonSchema => quote! { ::schemars::JsonSchema },
+                TypespaceTrait::Ord => quote! { Ord },
+                TypespaceTrait::PartialOrd => quote! { PartialOrd },
+                TypespaceTrait::Eq => quote! { Eq },
+                TypespaceTrait::PartialEq => quote! { PartialEq },
+                TypespaceTrait::Hash => quote! { Hash },
+                TypespaceTrait::Display => quote! { Display },
+                TypespaceTrait::FromStr => quote! { FromStr },
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct TypespaceTraitSet(BTreeSet<TypespaceTrait>);
+
+impl FromIterator<TypespaceTrait> for TypespaceTraitSet {
+    fn from_iter<T: IntoIterator<Item = TypespaceTrait>>(iter: T) -> Self {
+        Self(iter.into_iter().collect())
+    }
+}
+
+impl IntoIterator for TypespaceTraitSet {
+    type Item = TypespaceTrait;
+    type IntoIter = std::collections::btree_set::IntoIter<TypespaceTrait>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
+impl TypespaceTraitSet {
+    pub fn empty() -> Self {
+        Self(Default::default())
+    }
+
+    pub fn contains(&self, tt: &TypespaceTrait) -> bool {
+        self.0.contains(tt)
+    }
+    pub fn add(&mut self, tt: TypespaceTrait) {
+        self.0.insert(tt);
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+    pub fn iter(&self) -> impl Iterator<Item = &TypespaceTrait> {
+        self.0.iter()
+    }
+
+    pub fn difference<'a>(
+        &'a self,
+        other: &'a Self,
+    ) -> impl Iterator<Item = &'a TypespaceTrait> + 'a {
+        self.0.difference(&other.0)
+    }
 }
 
 pub struct Typespace {
@@ -427,9 +518,23 @@ impl Typespace {
                 let name_ident = format_ident!("{name}");
                 name_ident.into_token_stream()
             }
-            Type::Native(native_type) => syn::parse_str::<syn::Type>(native_type)
-                .unwrap()
-                .into_token_stream(),
+            Type::Native(TypeNative {
+                name, parameters, ..
+            }) => {
+                let name_ident = syn::parse_str::<syn::TypePath>(name).unwrap();
+                let parameters = (!parameters.is_empty()).then(|| {
+                    let parameter_idents = parameters
+                        .iter()
+                        .map(|param_id| self.render_ident(param_id));
+                    quote! {
+                        < #( #parameter_idents ),* >
+                    }
+                });
+                quote! {
+                    #name_ident #parameters
+                }
+            }
+
             Type::Option(option_id) => {
                 let option_type = match &self.settings.std {
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
@@ -948,7 +1053,7 @@ impl TypespaceBuilder {
 
                     type_inner.common.built = Some(TypeCommonBuilt {
                         name,
-                        traits: Default::default(),
+                        traits: TypespaceTraitSet::empty(),
                     });
                 }
 
@@ -1110,49 +1215,146 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
     let mut work = types
         .iter()
         .filter_map(|(_, ty)| match ty {
+            // TODO 3/31/2026
+            // need to check map settings
             Type::Map(key_schema_ref, _) => Some((
                 key_schema_ref.clone(),
-                vec![
-                    "Eq".to_string(),
-                    "PartialEq".to_string(),
-                    "Ord".to_string(),
-                    "PartialOrd".to_string(),
-                ],
+                [
+                    TypespaceTrait::Eq,
+                    TypespaceTrait::PartialEq,
+                    TypespaceTrait::Ord,
+                    TypespaceTrait::PartialOrd,
+                ]
+                .into_iter()
+                .collect::<TypespaceTraitSet>(),
             )),
+            // TODO 3/31/2026
+            // This is going to depend on what specific type we're using for a
+            // set.
+            // Type::Set(_) => todo!(),
             _ => None,
         })
         .collect::<VecDeque<_>>();
 
+    // In each iteration, we need to assert the set of required traits to the
+    // current type. If the current type is generated, that means adding the
+    // traits and pushing children. If the type is **not** generated (native or
+    // otherwise external to our control), we need to check that is implements
+    // (or is capable of implementing) the required traits; if it doesn't (or
+    // can't), we'll produce an error. We don't stop on the first failure, but
+    // want to identify as many, distinct failures as is reasonable and as
+    // would be useful for a consumer.
     while let Some((schema_ref, traits)) = work.pop_front() {
         let ty = types.get_mut(&schema_ref).unwrap();
 
-        let common = match ty {
-            // Type::Enum(type_enum) => &mut type_enum.built.as_mut().unwrap().traits,
-            // Type::Struct(type_struct) => &mut type_struct.built.as_mut().unwrap().traits,
-            // Type::UnitStruct(type_unit_struct) => {
-            //     &mut type_unit_struct.built.as_mut().unwrap().traits
-            // }
-            // Type::TupleStruct(type_tuple_struct) => {
-            //     &mut type_tuple_struct.built.as_mut().unwrap().traits
-            // }
+        let common_built = match ty {
             Type::NewtypeStruct(type_newtype_struct) => {
-                &mut type_newtype_struct.common.built.as_mut().unwrap().traits
+                Some(type_newtype_struct.common.built.as_mut().unwrap())
             }
-            _ => continue,
+            Type::Enum(_) => todo!(),
+            Type::Struct(_) => todo!(),
+            Type::UnitStruct(_) => todo!(),
+            Type::TupleStruct(_) => todo!(),
+            Type::TypeAlias(_) => todo!(),
+
+            _ => None,
         };
 
-        let mut new_traits = Vec::new();
+        if let Some(common) = common_built {
+            let built_traits = &mut common.traits;
+            // Collect the traits that this type doesn't already have.
+            let mut new_traits = TypespaceTraitSet::empty();
 
-        for trait_name in traits {
-            if !common.contains(&trait_name) {
-                common.push(trait_name.clone());
-                new_traits.push(trait_name.clone());
+            for trait_name in traits {
+                if !built_traits.contains(&trait_name) {
+                    built_traits.add(trait_name);
+                    new_traits.add(trait_name);
+                }
             }
-        }
 
-        if !new_traits.is_empty() {
-            for child_id in ty.contained_children_mut() {
-                work.push_back((child_id.clone(), new_traits.clone()));
+            if !new_traits.is_empty() {
+                for child_id in ty.contained_children_mut() {
+                    work.push_back((child_id.clone(), new_traits.clone()));
+                }
+            }
+        } else {
+            match ty {
+                Type::Enum(_)
+                | Type::Struct(_)
+                | Type::UnitStruct(_)
+                | Type::TupleStruct(_)
+                | Type::NewtypeStruct(_)
+                | Type::TypeAlias(_) => unreachable!(),
+
+                Type::Native(TypeNative { name, impls, .. }) => {
+                    let missing_traits = traits
+                        .difference(impls)
+                        .cloned()
+                        .collect::<TypespaceTraitSet>();
+                    if !missing_traits.is_empty() {
+                        todo!(
+                            "missing traits {:#?} for native type {name}",
+                            missing_traits,
+                        );
+                    }
+                }
+
+                // Pass the buck...
+                Type::Option(schema_ref) | Type::Box(schema_ref) => {
+                    work.push_back((schema_ref.clone(), traits));
+                }
+
+                // Vec<T> and arrays impl everything we care about--except for
+                // Display and FromStr--as long as T implemented them.
+                Type::Vec(schema_ref) | Type::Array(schema_ref, _) => {
+                    if traits.contains(&TypespaceTrait::Display)
+                        || traits.contains(&TypespaceTrait::FromStr)
+                    {
+                        todo!();
+                    }
+                    work.push_back((schema_ref.clone(), traits));
+                }
+                // Tuples implement everything except for Display and FromStr
+                // as long as all their component types do as well.
+                Type::Tuple(schema_refs) => {
+                    if traits.contains(&TypespaceTrait::Display)
+                        || traits.contains(&TypespaceTrait::FromStr)
+                    {
+                        todo!();
+                    }
+                    for schema_ref in schema_refs {
+                        work.push_back((schema_ref.clone(), traits.clone()));
+                    }
+                }
+
+                Type::Map(_, _) | Type::Set(_) => todo!("wtf {schema_ref} {:#?}", ty),
+
+                // TODO 3/31/2026
+                // Comment and do better
+                Type::Float(_) => {
+                    if traits.contains(&TypespaceTrait::Ord)
+                        || traits.contains(&TypespaceTrait::Eq)
+                        || traits.contains(&TypespaceTrait::Hash)
+                    {
+                        todo!();
+                    }
+                }
+
+                // These all implement all the traits we care about so there's
+                // nothing to do.
+                Type::Unit | Type::Boolean | Type::Integer(_) | Type::String => (),
+
+                // JsonValue implements everything except for Eq, Ord,
+                // PartialOrd, and Hash.
+                Type::JsonValue => {
+                    if traits.contains(&TypespaceTrait::Eq)
+                        || traits.contains(&TypespaceTrait::Ord)
+                        || traits.contains(&TypespaceTrait::PartialOrd)
+                        || traits.contains(&TypespaceTrait::Hash)
+                    {
+                        todo!();
+                    }
+                }
             }
         }
     }
@@ -1171,7 +1373,7 @@ pub enum Type {
     NewtypeStruct(TypeNewtypeStruct),
     TypeAlias(TypeTypeAlias),
 
-    Native(String),
+    Native(TypeNative),
     Option(SchemaRef),
 
     Box(SchemaRef),
@@ -1208,7 +1410,7 @@ pub(crate) struct TypeCommonBuilt {
 
     // TODO 3/25/2026
     // This definitely needs more consideration after I start feeling it out.
-    pub traits: Vec<String>,
+    pub traits: TypespaceTraitSet,
 }
 
 // 9.15.2025

@@ -5,11 +5,10 @@ use url::Url;
 use crate::{
     bundler::Bundle,
     convert::{ConvertResult, Converter},
-    schemalet::{
-        to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet,
-        SchemaletDetails, State,
+    schemalet::{to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State},
+    typespace::{
+        Type, TypeNative, Typespace, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet,
     },
-    typespace::{Type, Typespace, TypespaceBuilder, TypespaceNativeType, TypespaceSettings},
 };
 
 pub struct Typify {
@@ -32,6 +31,16 @@ pub struct TypifyConvert {
     pattern: serde_json::Value,
 
     native: TypespaceNativeType,
+}
+
+// TODO 9/15/2025
+// Placeholder type for non-generated types. We're going to want some mechanism
+// to specify the traits we care about so that users have to specify which ones
+// are implemented. I'm considering a struct of booleans so that things fail to
+// compile if we start to care about some new trait.
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct TypespaceNativeType {
+    pub name: String,
 }
 
 impl TypifySettings {
@@ -150,7 +159,13 @@ impl Typify {
             if let Some(original_json) = maybe_original_json {
                 for conv in &self.settings.convert {
                     if jsonschema::is_valid(&conv.pattern, original_json) {
-                        let typ = Type::Native(conv.native.name.clone());
+                        // TODO 3/31/2026
+                        // Need to fill in impls and type params
+                        let typ = Type::Native(TypeNative {
+                            name: conv.native.name.clone(),
+                            impls: TypespaceTraitSet::empty(),
+                            parameters: vec![],
+                        });
                         self.typespace.insert(work_id.clone(), typ);
                         continue 'outer;
                     }

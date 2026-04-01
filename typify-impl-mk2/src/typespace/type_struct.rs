@@ -343,9 +343,7 @@ impl TypeNewtypeStruct {
         let inner_ident = typespace.render_ident(inner);
 
         let derive_attr = (!traits.is_empty()).then(|| {
-            let trait_idents = traits
-                .iter()
-                .map(|trait_name| format_ident!("{trait_name}"));
+            let trait_idents = traits.iter().map(|tt| tt.render(&typespace.settings));
             quote! {
                 #[derive(#(#trait_idents),*)]
             }

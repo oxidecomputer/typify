@@ -9,7 +9,10 @@ use crate::{
         CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, SchemaletValue,
         SchemaletValueString,
     },
-    typespace::{NameBuilder, Type, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct},
+    typespace::{
+        NameBuilder, Type, TypeNative, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct,
+        TypespaceTraitSet,
+    },
 };
 
 // TODO naming?
@@ -206,7 +209,8 @@ impl Converter {
                         None,
                     )),
                     ty => {
-                        let inner_ref = SchemaRef::Child(Box::new(id.clone()), "@@inner".to_string());
+                        let inner_ref =
+                            SchemaRef::Child(Box::new(id.clone()), "@@inner".to_string());
                         additional.insert(inner_ref.clone(), ty);
 
                         let outer_ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
@@ -253,8 +257,8 @@ impl Converter {
 
             let format_str = format.iter().next().unwrap().as_str();
             match format_str {
-                "uri" => Type::Native("::url::Url".to_string()),
-                "uri-reference" => Type::Native("::url::Url".to_string()),
+                "uri" => Type::Native(TypeNative::new_string_like("::url::Url")),
+                "uri-reference" => Type::Native(TypeNative::new_string_like("::url::Url")),
                 _ => Type::String,
             }
         } else {

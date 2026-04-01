@@ -895,3 +895,31 @@ floating-point type needs to implement Ord, that's an error. For Type::Native,
 we need a way to express what traits are available (that might either look like
 an explicit list or a +/- delta from some expected set such as Ord + Eq +
 Hash).
+
+### 3/26/2026
+
+What traits do we care about? What traits would we allow users to opt into /
+out of? What traits require special handling?
+
+There are some simple ones such as `Clone` and `Debug` that we probably want on
+by default, would derive them on generated types, and could be configured.
+
+More complex ones such as `Serialize`, `Deserialize`, and `JsonSchema`
+(potentially for both versions 0.8 and 1.0), require careful implementation
+**and** should be configurable. `JsonSchema` is particularly interesting
+because of the multiple versions and the challenges associated with supporting
+both versions simultaneously (seems only possible when done by hand).
+(Fortunately, I don't care about `schemars` 1.0 yet and probably won't ever
+care about generating both at once.)
+
+There are important ones that have to do with the comparison of types: `Ord`,
+`PartialOrd`, `Eq`, `PartialEq`, `Hash`. Certainly those may be **required**
+for types used in certain contexts. In typify 1 we also implement those for
+simple string-like types. I'm not sure how much sense that makes. Would someone
+want the ability to configure traits for a subset of types according to some
+criteria (such as "complexity"... whatever that means)?
+
+Two more that I want to know about for native types as they pertain to their
+identity as strings: `Display` and `FromStr`. I think I both want to note them
+for native types **and** (maybe) provide some ability to direct their inclusion
+(or not).
