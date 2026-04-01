@@ -481,6 +481,152 @@ impl MergeEmpty {
         Default::default()
     }
 }
+#[doc = "`MergeNumberBounds`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\","]
+#[doc = "      \"maximum\": 100.0,"]
+#[doc = "      \"minimum\": 1.0"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"number\","]
+#[doc = "      \"exclusiveMaximum\": 50.0,"]
+#[doc = "      \"exclusiveMinimum\": 5.0"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"merging number constraints takes the most restrictive bounds; mixed inclusive/exclusive bounds are normalized to drop the subsumed one\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct MergeNumberBounds(pub f64);
+impl ::std::ops::Deref for MergeNumberBounds {
+    type Target = f64;
+    fn deref(&self) -> &f64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<MergeNumberBounds> for f64 {
+    fn from(value: MergeNumberBounds) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<f64> for MergeNumberBounds {
+    fn from(value: f64) -> Self {
+        Self(value)
+    }
+}
+impl ::std::str::FromStr for MergeNumberBounds {
+    type Err = <f64 as ::std::str::FromStr>::Err;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+        Ok(Self(value.parse()?))
+    }
+}
+impl ::std::convert::TryFrom<&str> for MergeNumberBounds {
+    type Error = <f64 as ::std::str::FromStr>::Err;
+    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<String> for MergeNumberBounds {
+    type Error = <f64 as ::std::str::FromStr>::Err;
+    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+impl ::std::fmt::Display for MergeNumberBounds {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+#[doc = "`MergeStringBounds`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"maxLength\": 20,"]
+#[doc = "      \"minLength\": 5"]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"maxLength\": 10,"]
+#[doc = "      \"minLength\": 2"]
+#[doc = "    }"]
+#[doc = "  ],"]
+#[doc = "  \"$comment\": \"merging string constraints takes the most restrictive bounds: max_length takes the min, min_length takes the max\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
+pub struct MergeStringBounds(::std::string::String);
+impl ::std::ops::Deref for MergeStringBounds {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
+        &self.0
+    }
+}
+impl ::std::convert::From<MergeStringBounds> for ::std::string::String {
+    fn from(value: MergeStringBounds) -> Self {
+        value.0
+    }
+}
+impl ::std::str::FromStr for MergeStringBounds {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value.chars().count() > 10usize {
+            return Err("longer than 10 characters".into());
+        }
+        if value.chars().count() < 5usize {
+            return Err("shorter than 5 characters".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl ::std::convert::TryFrom<&str> for MergeStringBounds {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for MergeStringBounds {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for MergeStringBounds {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for MergeStringBounds {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
+    }
+}
 #[doc = "`NarrowNumber`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

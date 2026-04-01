@@ -491,6 +491,36 @@
         }
       ]
     },
+    "merge-number-bounds": {
+      "$comment": "merging number constraints takes the most restrictive bounds; mixed inclusive/exclusive bounds are normalized to drop the subsumed one",
+      "allOf": [
+        {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 100.0
+        },
+        {
+          "type": "number",
+          "exclusiveMinimum": 5.0,
+          "exclusiveMaximum": 50.0
+        }
+      ]
+    },
+    "merge-string-bounds": {
+      "$comment": "merging string constraints takes the most restrictive bounds: max_length takes the min, min_length takes the max",
+      "allOf": [
+        {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 20
+        },
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 10
+        }
+      ]
+    },
     "unchanged-by-merge": {
       "allOf": [
         {
