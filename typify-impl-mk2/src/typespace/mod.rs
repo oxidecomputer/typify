@@ -100,16 +100,28 @@ pub enum NameBuilderHint {
 /// on a per-type basis... [8/29/2025: done]
 #[derive(Debug, Default, Deserialize)]
 pub struct TypespaceSettings {
-    /// When true, (the default), types in the `std` crate are fully qualified.
-    /// For example, the `Option` type is rendered as `::std::option::Option`.
-    /// When false, these types appear in their more typical, auto-imported
-    /// form. The latter is useful if one intends to use type generation as a
-    /// starting point for manually-edited code.
+    /// When set to `FullyQualified`, (the default), types in the `std` crate's
+    /// prelude are fully qualified. For example, the `Option` type is rendered
+    /// as `::std::option::Option`. When set to `Unqualified`, these types
+    /// appear in their more typical, auto-imported form. The latter is useful
+    /// if one intends to use type generation as a starting point for
+    /// manually-edited code. Note that this is relevant only to types in the
+    /// `std` crate's prelude such as `Option`, `Vec`, and `String`; types such
+    /// as `std::collections::BTreeMap` are always fully qualified since they
+    /// are not in the prelude.
     #[serde(default)]
     std: TypespaceSettingsStd,
 
+    /// Specify the modeling of values that may be either `null` or optional
+    /// (i.e. absent). The default is `ConflateAsAbsent`, which models `null`
+    /// and `optional` as equivalent by using the `std::option::Option<T>` type
+    /// and skipping serialization of `None` values. While imprecise, this is
+    /// typical of Rust code.
     #[serde(default)]
     optional_nullable: TypespaceSettingsOptionalNullable,
+
+    map_type: (),
+    set_type: (),
 }
 
 #[derive(Debug, Default, Deserialize, PartialEq, Eq)]
@@ -262,13 +274,15 @@ impl Typespace {
             match typ {
                 Type::Enum(type_enum) => {
                     let TypeEnum {
-                        name,
-                        description,
-                        default,
+                        common: TypeCommon {
+                            name: _,
+                            description,
+                            default,
+                            built,
+                        },
                         tag_type,
                         variants,
                         deny_unknown_fields,
-                        built,
                     } = type_enum;
                     let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
                     let serde = match tag_type {
@@ -343,12 +357,14 @@ impl Typespace {
                 }
                 Type::Struct(type_struct) => {
                     let TypeStruct {
-                        name: _,
-                        description,
-                        default,
+                        common: TypeCommon {
+                            name: _,
+                            description,
+                            default,
+                            built,
+                        },
                         properties,
                         deny_unknown_fields,
-                        built,
                     } = type_struct;
                     let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
                     let properties = properties
@@ -506,7 +522,7 @@ impl Typespace {
         let ty = self.types.get(id).unwrap();
         match ty {
             Type::Enum(type_enum) => {
-                let name = type_enum.built.as_ref().unwrap().name.to_string();
+                let name = type_enum.common.built.as_ref().unwrap().name.to_string();
                 let name_ident = format_ident!("{name}");
                 name_ident.into_token_stream()
             }
@@ -927,7 +943,7 @@ impl TypespaceBuilder {
             println!("naming id {id}");
             match typ {
                 Type::Enum(type_enum) => {
-                    let name = match &type_enum.name {
+                    let name = match &type_enum.common.name {
                         NameBuilder::Unset => unreachable!(),
                         NameBuilder::Fixed(s) => {
                             let nn = namespace.make_name(id.clone());
@@ -948,10 +964,13 @@ impl TypespaceBuilder {
                             nn
                         }
                     };
-                    type_enum.built = Some(TypeEnumBuilt { name });
+                    type_enum.common.built = Some(TypeCommonBuilt {
+                        name,
+                        traits: TypespaceTraitSet::empty(),
+                    });
                 }
                 Type::Struct(type_struct) => {
-                    let name = match &type_struct.name {
+                    let name = match &type_struct.common.name {
                         NameBuilder::Unset => unreachable!(),
                         NameBuilder::Fixed(s) => {
                             let nn = namespace.make_name(id.clone());
@@ -972,7 +991,10 @@ impl TypespaceBuilder {
                             nn
                         }
                     };
-                    type_struct.built = Some(TypeStructBuilt { name });
+                    type_struct.common.built = Some(TypeCommonBuilt {
+                        name,
+                        traits: TypespaceTraitSet::empty(),
+                    });
                 }
 
                 Type::UnitStruct(type_inner) => {
@@ -1248,11 +1270,9 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
         let ty = types.get_mut(&schema_ref).unwrap();
 
         let common_built = match ty {
-            Type::NewtypeStruct(type_newtype_struct) => {
-                Some(type_newtype_struct.common.built.as_mut().unwrap())
-            }
-            Type::Enum(_) => todo!(),
-            Type::Struct(_) => todo!(),
+            Type::NewtypeStruct(TypeNewtypeStruct { common, .. })
+            | Type::Enum(TypeEnum { common, .. })
+            | Type::Struct(TypeStruct { common, .. }) => Some(common.built.as_mut().unwrap()),
             Type::UnitStruct(_) => todo!(),
             Type::TupleStruct(_) => todo!(),
             Type::TypeAlias(_) => todo!(),
@@ -1437,8 +1457,8 @@ impl Type {
 
     fn get_name_mut(&mut self) -> Option<&mut NameBuilder> {
         match self {
-            Type::Enum(type_enum) => Some(&mut type_enum.name),
-            Type::Struct(type_struct) => Some(&mut type_struct.name),
+            Type::Enum(type_enum) => Some(&mut type_enum.common.name),
+            Type::Struct(type_struct) => Some(&mut type_struct.common.name),
             Type::UnitStruct(type_unit_struct) => Some(&mut type_unit_struct.name),
             Type::TupleStruct(type_tuple_struct) => Some(&mut type_tuple_struct.name),
             Type::NewtypeStruct(type_newtype_struct) => Some(&mut type_newtype_struct.common.name),
@@ -1902,5 +1922,41 @@ mod tests {
         let result = serde_json::from_str::<import::MyTupleStruct>(r#"["a",1,2]"#);
         let e = result.unwrap_err().to_string();
         assert!(e.contains("invalid type: integer"), "{e}");
+    }
+
+    // A map whose key is a struct containing a float cannot satisfy the Ord
+    // and Eq constraints required of BTreeMap keys. This should return Err.
+    #[test]
+    fn test_map_key_struct_with_float() {
+        let mut ts = TypespaceBuilder::default();
+
+        let float_id = SchemaRef::Id("float".to_string());
+        ts.insert(float_id.clone(), Type::Float("f64".to_string()));
+
+        let key_id = SchemaRef::Id("key".to_string());
+        ts.insert(
+            key_id.clone(),
+            Type::Struct(TypeStruct::new(
+                NameBuilder::Fixed("Key".to_string()),
+                None,
+                None,
+                vec![StructProperty {
+                    rust_name: format_ident!("value"),
+                    json_name: StructPropertySerde::None,
+                    state: StructPropertyState::Required,
+                    description: None,
+                    type_id: float_id.clone(),
+                }],
+                false,
+            )),
+        );
+
+        let value_id = SchemaRef::Id("value".to_string());
+        ts.insert(value_id.clone(), Type::String);
+
+        let map_id = SchemaRef::Id("map".to_string());
+        ts.insert(map_id, Type::Map(key_id, value_id));
+
+        ts.finalize(TypespaceSettings::default()).unwrap();
     }
 }

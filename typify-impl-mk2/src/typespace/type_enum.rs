@@ -1,24 +1,15 @@
 use crate::{
-    namespace::Name,
     schemalet::SchemaRef,
-    typespace::{JsonValue, NameBuilder, StructProperty},
+    typespace::{JsonValue, NameBuilder, StructProperty, TypeCommon, TypeCommonBuilt},
 };
 
 #[derive(Debug, Clone)]
 pub struct TypeEnum {
-    pub name: NameBuilder,
-    pub description: Option<String>,
-    pub default: Option<JsonValue>,
+    pub common: TypeCommon,
+
     pub tag_type: EnumTagType,
     pub variants: Vec<EnumVariant>,
     pub deny_unknown_fields: bool,
-
-    pub built: Option<TypeEnumBuilt>,
-}
-
-#[derive(Debug, Clone)]
-pub struct TypeEnumBuilt {
-    pub name: Name<SchemaRef>,
 }
 
 impl TypeEnum {
@@ -30,15 +21,16 @@ impl TypeEnum {
         variants: Vec<EnumVariant>,
         deny_unknown_fields: bool,
     ) -> Self {
-        let name = name.into();
         Self {
-            name,
-            description,
-            default,
+            common: TypeCommon {
+                name: name.into(),
+                description,
+                default,
+                built: None,
+            },
             tag_type,
             variants,
             deny_unknown_fields,
-            built: None,
         }
     }
 

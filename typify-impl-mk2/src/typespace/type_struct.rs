@@ -9,13 +9,9 @@ use crate::{
 
 #[derive(Debug, Clone)]
 pub struct TypeStruct {
-    pub name: NameBuilder,
-    pub description: Option<String>,
-    pub default: Option<JsonValue>,
+    pub common: TypeCommon,
     pub properties: Vec<StructProperty>,
     pub deny_unknown_fields: bool,
-
-    pub(crate) built: Option<TypeStructBuilt>,
 }
 
 #[derive(Debug, Clone)]
@@ -32,12 +28,14 @@ impl TypeStruct {
         deny_unknown_fields: bool,
     ) -> Self {
         Self {
-            name: name.into(),
-            description,
-            default,
+            common: TypeCommon {
+                name: name.into(),
+                description,
+                default,
+                built: None,
+            },
             properties,
             deny_unknown_fields,
-            built: None,
         }
     }
     pub(crate) fn children(&self) -> Vec<SchemaRef> {
@@ -352,7 +350,20 @@ impl TypeNewtypeStruct {
         quote! {
             #description
             #derive_attr
-            pub struct #name_ident(#inner_ident);
+            pub struct #name_ident(pub #inner_ident);
+
+            impl ::std::ops::Deref for #name_ident {
+                type Target = #inner_ident;
+                fn deref(&self) -> &Self::Target {
+                    &self.0
+                }
+            }
+
+            impl ::std::convert::From<#name_ident> for #inner_ident {
+                fn from(value: #name_ident) -> Self {
+                    value.0
+                }
+            }
 
             impl ::serde::Serialize for #name_ident {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
