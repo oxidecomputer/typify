@@ -923,3 +923,44 @@ Two more that I want to know about for native types as they pertain to their
 identity as strings: `Display` and `FromStr`. I think I both want to note them
 for native types **and** (maybe) provide some ability to direct their inclusion
 (or not).
+
+### 3/31/2026 Outstanding Work
+
+#### 1. Normalizer
+
+Gotta get back to the normalizer. As discussed multiple times, we need to
+transform the graph in each pass rather than pulling out the "done" (canonical)
+notes into their own structure.
+
+Other parts are incomplete, but we can fault them in as we see schemas using
+those constructs.
+
+#### 2. Converter
+
+One-of processing is incomplete and needs some coordination with the normalizer
+(in particular around extensions to name variants). Other parts can be faulted in as we hit schemas using those constructs. Better not to write more here especially as the nomalized structures may be changing out from under us.
+
+#### 3. Public API
+
+Figure out how progenitor is going to interact with this.
+
+#### 4. Bundler
+
+The `Bundle` type handles input aggregation, but:
+
+- **`$id` resolution**: Schemas with `$id` values need a secondary lookup
+  table mapping URIs to document locations so that cross-document `$ref`s
+  resolve correctly.
+- **YAML input**: Currently only JSON is supported; YAML is needed for
+  OpenAPI use cases. (Probably can be deferred.)
+
+#### 5. Map and Set Type Configurability
+
+Need a Typespace settings to configure stuff like the map and set types. Tricky
+to describe the requirements of the type parameters and the traits these types
+implement.
+
+
+#### 6. Testing
+
+Migrate typify 1 tests (using an LLM).
