@@ -339,17 +339,10 @@ types. Examples from users are very helpful in this regard.
 
 ### Bounded numbers
 
-Bounded numbers aren't very well handled. Consider, for example, the schema:
-
-```json
-{
-  "type": "integer",
-  "minimum": 1,
-  "maximum": 6
-}
-```
-
-The resulting types won't enforce those value constraints.
+Named integer types with sub-range bounds (e.g., a `uint8` with `maximum: 63`)
+generate constrained newtypes with `TryFrom` validation. Anonymous integer
+properties with bounds that don't match a standard Rust type are not yet
+constrained.
 
 ### Configurable dependencies
 

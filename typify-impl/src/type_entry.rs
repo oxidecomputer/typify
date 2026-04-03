@@ -90,6 +90,10 @@ pub(crate) enum TypeEntryNewtypeConstraints {
         min_length: Option<u32>,
         pattern: Option<String>,
     },
+    Integer {
+        min: Option<i128>,
+        max: Option<i128>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -531,6 +535,39 @@ impl TypeEntryNewtype {
                 min_length,
                 pattern,
             },
+            schema: SchemaWrapper(schema),
+        });
+
+        TypeEntry {
+            details,
+            extra_derives: type_patch.derives,
+            extra_attrs: type_patch.attrs,
+        }
+    }
+
+    pub(crate) fn from_metadata_with_integer_validation(
+        type_space: &TypeSpace,
+        type_name: Name,
+        metadata: &Option<Box<Metadata>>,
+        type_id: TypeId,
+        min: Option<i128>,
+        max: Option<i128>,
+        schema: Schema,
+    ) -> TypeEntry {
+        let name = get_type_name(&type_name, metadata)
+            .expect("type name required for constrained integer newtype");
+        let rename = None;
+        let description = metadata_description(metadata);
+
+        let type_patch = TypePatch::new(type_space, name);
+
+        let details = TypeEntryDetails::Newtype(Self {
+            name: type_patch.name,
+            rename,
+            description,
+            default: None,
+            type_id,
+            constraints: TypeEntryNewtypeConstraints::Integer { min, max },
             schema: SchemaWrapper(schema),
         });
 
@@ -1378,11 +1415,15 @@ impl TypeEntry {
         let inner_type_name = inner_type.type_ident(type_space, &None);
 
         let is_str = matches!(inner_type.details, TypeEntryDetails::String);
+        let is_int = matches!(inner_type.details, TypeEntryDetails::Integer(_));
 
-        // If this is just a wrapper around a string, we can derive some more
-        // useful traits.
-        if is_str {
+        // If this is just a wrapper around a string or integer, we can derive
+        // some more useful traits.
+        if is_str || is_int {
             derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+        }
+        if is_int {
+            derive_set.insert("Copy");
         }
 
         let constraint_impl = match constraints {
@@ -1621,6 +1662,64 @@ impl TypeEntry {
                             ::std::string::String::deserialize(deserializer)?
                             .parse()
                             .map_err(|e: self::error::ConversionError| {
+                                <D::Error as ::serde::de::Error>::custom(
+                                    e.to_string(),
+                                )
+                            })
+                        }
+                    }
+                }
+            }
+
+            TypeEntryNewtypeConstraints::Integer { min, max } => {
+                let min_check = min.map(|v| {
+                    let lit = proc_macro2::Literal::i128_unsuffixed(v);
+                    let err = format!("value must be at least {}", v);
+                    quote! {
+                        if value < #lit {
+                            return Err(#err.into());
+                        }
+                    }
+                });
+                let max_check = max.map(|v| {
+                    let lit = proc_macro2::Literal::i128_unsuffixed(v);
+                    let err = format!("value must be at most {}", v);
+                    quote! {
+                        if value > #lit {
+                            return Err(#err.into());
+                        }
+                    }
+                });
+
+                // We're going to impl Deserialize so we can remove it
+                // from the set of derived impls.
+                derive_set.remove("::serde::Deserialize");
+
+                quote! {
+                    impl ::std::convert::TryFrom<#inner_type_name> for #type_name {
+                        type Error = self::error::ConversionError;
+
+                        fn try_from(
+                            value: #inner_type_name,
+                        ) -> ::std::result::Result<Self, self::error::ConversionError>
+                        {
+                            #min_check
+                            #max_check
+                            Ok(Self(value))
+                        }
+                    }
+
+                    impl<'de> ::serde::Deserialize<'de> for #type_name {
+                        fn deserialize<D>(
+                            deserializer: D,
+                        ) -> ::std::result::Result<Self, D::Error>
+                        where
+                            D: ::serde::Deserializer<'de>,
+                        {
+                            Self::try_from(
+                                <#inner_type_name>::deserialize(deserializer)?,
+                            )
+                            .map_err(|e| {
                                 <D::Error as ::serde::de::Error>::custom(
                                     e.to_string(),
                                 )

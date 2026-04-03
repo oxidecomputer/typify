@@ -201,7 +201,7 @@ impl TypeSpace {
                 reference: None,
                 extensions: _,
             } if single.as_ref() == &InstanceType::Integer => {
-                self.convert_integer(metadata, validation, format)
+                self.convert_integer(type_name, original_schema, metadata, validation, format)
             }
 
             // Numbers
@@ -964,7 +964,9 @@ impl TypeSpace {
     }
 
     fn convert_integer<'a>(
-        &self,
+        &mut self,
+        type_name: Name,
+        original_schema: &'a Schema,
         metadata: &'a Option<Box<Metadata>>,
         validation: &Option<Box<schemars::schema::NumberValidation>>,
         format: &Option<String>,
@@ -972,20 +974,48 @@ impl TypeSpace {
         let (mut min, mut max, multiple) = if let Some(validation) = validation {
             let min = match (&validation.minimum, &validation.exclusive_minimum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value + 1.0),
+                // For integer types, exclusiveMinimum x means > x, so the
+                // tightest inclusive integer minimum is floor(x) + 1.
+                (None, Some(value)) => Some(value.floor() + 1.0),
                 (Some(value), None) => Some(*value),
-                (Some(min), Some(emin)) => Some(min.max(emin + 1.0)),
+                (Some(min), Some(emin)) => Some(min.max(emin.floor() + 1.0)),
             };
             let max = match (&validation.maximum, &validation.exclusive_maximum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value - 1.0),
+                // Symmetrically, exclusiveMaximum x means < x, so the
+                // tightest inclusive integer maximum is ceil(x) - 1.
+                (None, Some(value)) => Some(value.ceil() - 1.0),
                 (Some(value), None) => Some(*value),
-                (Some(max), Some(emax)) => Some(max.min(emax - 1.0)),
+                (Some(max), Some(emax)) => Some(max.min(emax.ceil() - 1.0)),
             };
             (min, max, validation.multiple_of)
         } else {
             (None, None, None)
         };
+
+        // Reject non-finite bounds early. NaN poisons all
+        // downstream comparisons, and infinity would saturate the
+        // later f64-to-i128 casts.
+        for bound in [min, max] {
+            if let Some(v) = bound {
+                if !v.is_finite() {
+                    return Err(Error::InvalidSchema {
+                        type_name: type_name.clone().into_option(),
+                        reason: format!("non-finite bound value: {}", v,),
+                    });
+                }
+            }
+        }
+
+        // Reject contradictory bounds (min > max).
+        if let (Some(lo), Some(hi)) = (min, max) {
+            if lo > hi {
+                return Err(Error::InvalidSchema {
+                    type_name: type_name.into_option(),
+                    reason: format!("minimum ({}) is greater than maximum ({})", lo, hi,),
+                });
+            }
+        }
 
         // Ordered from most- to least-restrictive.
         // JSONSchema format, Rust Type, Rust NonZero Type, Rust type min, Rust type max
@@ -1085,10 +1115,67 @@ impl TypeSpace {
                         }
                     }
 
-                    // Use NonZero types for minimum 1
-                    if min == Some(1.) {
+                    let min_is_exact = min.map_or(true, |m| (m - *imin).abs() <= f64::EPSILON);
+                    let max_is_exact = max.map_or(true, |m| (m - *imax).abs() <= f64::EPSILON);
+
+                    if min == Some(1.)
+                        && (max_is_exact || get_type_name(&type_name, metadata).is_none())
+                    {
+                        // Bounds match a NonZero type exactly, or this is
+                        // an anonymous type where NonZero is the best we
+                        // can do.
                         return Ok((TypeEntry::new_integer(nz_ty), metadata));
+                    } else if min_is_exact && max_is_exact {
+                        // Bounds match the format type exactly.
+                        return Ok((TypeEntry::new_integer(ty), metadata));
+                    } else if get_type_name(&type_name, metadata).is_some() {
+                        // Sub-range bounds on a named type: generate a
+                        // constrained newtype. Only pass bounds that are
+                        // actually a sub-range of the inner type to avoid
+                        // redundant checks which result in a warning (e.g.,
+                        // `value < 0` on u8).
+                        //
+                        // For min >= 1 we could use a NonZero type, but that
+                        // has a number of downstream complications (e.g.,
+                        // needing to use `.get()` during bounds checks).
+                        // Convert fractional bounds to the tightest
+                        // integer range: ceil for min, floor for max.
+                        let effective_min = min.filter(|_| !min_is_exact).map(|v| v.ceil() as i128);
+                        let effective_max =
+                            max.filter(|_| !max_is_exact).map(|v| v.floor() as i128);
+                        // Rounding can invert bounds (e.g. min=0.5,
+                        // max=0.5 becomes 1, 0).
+                        if let (Some(lo), Some(hi)) = (effective_min, effective_max) {
+                            if lo > hi {
+                                return Err(Error::InvalidSchema {
+                                    type_name: type_name.into_option(),
+                                    reason: format!(
+                                        "no valid integers in range \
+                                         (effective minimum {} > \
+                                         effective maximum {} after \
+                                         rounding fractional bounds)",
+                                        lo, hi,
+                                    ),
+                                });
+                            }
+                        }
+                        let inner = TypeEntry::new_integer(ty);
+                        let inner_id = self.assign_type(inner);
+                        return Ok((
+                            TypeEntryNewtype::from_metadata_with_integer_validation(
+                                self,
+                                type_name,
+                                metadata,
+                                inner_id,
+                                effective_min,
+                                effective_max,
+                                original_schema.clone(),
+                            ),
+                            metadata,
+                        ));
                     } else {
+                        // Anonymous sub-range: return the format type
+                        // without constraints.
                         return Ok((TypeEntry::new_integer(ty), metadata));
                     }
                 }
@@ -1139,7 +1226,7 @@ impl TypeSpace {
             }),
             (Some(min), Some(max)) => {
                 formats.iter().rev().find_map(|(_, ty, nz_ty, imin, imax)| {
-                    if min == 1. {
+                    if min == 1. && (imax - max).abs() <= f64::EPSILON {
                         Some(nz_ty.to_string())
                     } else if (imax - max).abs() <= f64::EPSILON
                         && (imin - min).abs() <= f64::EPSILON
@@ -1156,11 +1243,64 @@ impl TypeSpace {
         // TODO we should do something with `multiple`
         if let Some(ty) = maybe_type {
             Ok((TypeEntry::new_integer(ty), metadata))
+        } else if get_type_name(&type_name, metadata).is_some() && (min.is_some() || max.is_some())
+        {
+            // Find the smallest standard integer type that contains the
+            // given range, then wrap it in a constrained newtype.
+            // Prefer unsigned types when min >= 0.
+            let non_negative = min.map_or(false, |m| m >= 0.0);
+            let (containing_ty, imin, imax) = formats
+                .iter()
+                .find(|(fmt, _, _, imin, imax)| {
+                    if non_negative && fmt.starts_with("int") {
+                        return false;
+                    }
+                    min.map_or(true, |m| m >= *imin) && max.map_or(true, |m| m <= *imax)
+                })
+                .map(|(_, ty, _, imin, imax)| (*ty, *imin, *imax))
+                .unwrap_or(("i64", i64::MIN as f64, i64::MAX as f64));
+            // Only pass bounds that are actually a sub-range of the
+            // containing type. Convert fractional bounds to the
+            // tightest integer range: ceil for min, floor for max.
+            let effective_min = min
+                .filter(|m| (m - imin).abs() > f64::EPSILON)
+                .map(|v| v.ceil() as i128);
+            let effective_max = max
+                .filter(|m| (m - imax).abs() > f64::EPSILON)
+                .map(|v| v.floor() as i128);
+            // Rounding can invert bounds (e.g. min=0.5, max=0.5
+            // becomes 1, 0).
+            if let (Some(lo), Some(hi)) = (effective_min, effective_max) {
+                if lo > hi {
+                    return Err(Error::InvalidSchema {
+                        type_name: type_name.into_option(),
+                        reason: format!(
+                            "no valid integers in range \
+                             (effective minimum {} > \
+                             effective maximum {} after \
+                             rounding fractional bounds)",
+                            lo, hi,
+                        ),
+                    });
+                }
+            }
+            let inner = TypeEntry::new_integer(containing_ty);
+            let inner_id = self.assign_type(inner);
+            Ok((
+                TypeEntryNewtype::from_metadata_with_integer_validation(
+                    self,
+                    type_name,
+                    metadata,
+                    inner_id,
+                    effective_min,
+                    effective_max,
+                    original_schema.clone(),
+                ),
+                metadata,
+            ))
         } else {
-            // TODO we could construct a type that itself enforces the various
-            // bounds.
-            // TODO failing that, we should find the type that most tightly
-            // matches these bounds.
+            // TODO we should find the type that most tightly matches
+            // these bounds.
             Ok((TypeEntry::new_integer("i64"), metadata))
         }
     }
@@ -2137,6 +2277,37 @@ mod tests {
     int_test!(NonZeroU32);
     int_test!(NonZeroU64);
 
+    /// Helper to attempt conversion of a named integer schema, returning
+    /// the result (used for error-path tests).
+    fn try_convert_named_integer(
+        name: &str,
+        format: Option<&str>,
+        minimum: Option<f64>,
+        maximum: Option<f64>,
+    ) -> Result<(), crate::Error> {
+        let number = if minimum.is_some() || maximum.is_some() {
+            Some(Box::new(NumberValidation {
+                minimum,
+                maximum,
+                ..Default::default()
+            }))
+        } else {
+            None
+        };
+
+        let schema = SchemaObject {
+            instance_type: Some(InstanceType::Integer.into()),
+            format: format.map(String::from),
+            number,
+            ..Default::default()
+        };
+
+        let mut type_space = TypeSpace::default();
+        let schema_obj = schemars::schema::Schema::Object(schema.clone());
+        type_space.convert_schema_object(Name::Required(name.to_string()), &schema_obj, &schema)?;
+        Ok(())
+    }
+
     #[test]
     fn test_redundant_types() {
         #[derive(JsonSchema)]
@@ -2386,5 +2557,163 @@ mod tests {
             metadata.as_ref().and_then(|m| m.description.as_deref()),
             Some("An integer value")
         );
+    }
+
+    #[test]
+    fn test_min_greater_than_max() {
+        let result = try_convert_named_integer("Bad", Some("uint8"), Some(100.0), Some(50.0));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(reason, "minimum (100) is greater than maximum (50)");
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_min_greater_than_max_no_format() {
+        let result = try_convert_named_integer("Bad", None, Some(100.0), Some(50.0));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(reason, "minimum (100) is greater than maximum (50)");
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_non_finite_minimum() {
+        let result = try_convert_named_integer("Bad", Some("uint8"), Some(f64::NAN), Some(63.0));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(reason, "non-finite bound value: NaN");
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_non_finite_maximum() {
+        let result =
+            try_convert_named_integer("Bad", Some("uint8"), Some(0.0), Some(f64::INFINITY));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(reason, "non-finite bound value: inf");
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_non_finite_negative_infinity() {
+        let result = try_convert_named_integer("Bad", None, Some(f64::NEG_INFINITY), Some(10.0));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(reason, "non-finite bound value: -inf");
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_fractional_bounds_invert_after_rounding_with_format() {
+        // minimum=0.5, maximum=0.5 passes the f64 min>max check, but
+        // after rounding (ceil for min, floor for max) becomes 1 > 0.
+        let result = try_convert_named_integer("Bad", Some("uint8"), Some(0.5), Some(0.5));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(
+                    reason,
+                    "no valid integers in range \
+                     (effective minimum 1 > \
+                     effective maximum 0 after \
+                     rounding fractional bounds)",
+                );
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_fractional_bounds_invert_after_rounding_no_format() {
+        // Same scenario without a format hint: exercises the
+        // no-format constrained newtype path.
+        let result = try_convert_named_integer("Bad", None, Some(0.5), Some(0.5));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(
+                    reason,
+                    "no valid integers in range \
+                     (effective minimum 1 > \
+                     effective maximum 0 after \
+                     rounding fractional bounds)",
+                );
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_fractional_bounds_invert_after_rounding_negative() {
+        // Negative fractional: min=ceil(-0.5)=0, max=floor(-0.5)=-1.
+        let result = try_convert_named_integer("Bad", Some("int8"), Some(-0.5), Some(-0.5));
+        match result {
+            Err(Error::InvalidSchema { type_name, reason }) => {
+                assert_eq!(type_name.as_deref(), Some("Bad"));
+                assert_eq!(
+                    reason,
+                    "no valid integers in range \
+                     (effective minimum 0 > \
+                     effective maximum -1 after \
+                     rounding fractional bounds)",
+                );
+            }
+            other => panic!("expected InvalidSchema, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_fractional_bounds_valid_after_rounding() {
+        // min=0.5, max=1.5 rounds to min=1, max=1: a single valid
+        // value, which is fine.
+        try_convert_named_integer("Ok", Some("uint8"), Some(0.5), Some(1.5))
+            .expect("single-value range should be accepted");
+    }
+
+    #[test]
+    fn test_float_precision_common_values() {
+        // Verify that common integer bounds survive f64 → i128 without
+        // corruption. All integers up to 2^53 are exactly representable
+        // in f64.
+        for v in [
+            0,
+            1,
+            17,
+            63,
+            127,
+            255,
+            1000,
+            65535,
+            100_000,
+            i32::MAX as i128,
+        ] {
+            let f = v as f64;
+            assert_eq!(f.floor() as i128, v, "floor round-trip failed for {v}",);
+            assert_eq!(f.ceil() as i128, v, "ceil round-trip failed for {v}",);
+        }
+
+        // Negative values too.
+        for v in [-1, -10, -50, -128, -1000, -32768, i32::MIN as i128] {
+            let f = v as f64;
+            assert_eq!(f.floor() as i128, v, "floor failed for {v}");
+            assert_eq!(f.ceil() as i128, v, "ceil failed for {v}");
+        }
     }
 }
