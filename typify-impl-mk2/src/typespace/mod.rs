@@ -120,8 +120,8 @@ pub struct TypespaceSettings {
     #[serde(default)]
     optional_nullable: TypespaceSettingsOptionalNullable,
 
-    map_type: (),
-    set_type: (),
+    map_type: Option<()>,
+    set_type: Option<()>,
 }
 
 #[derive(Debug, Default, Deserialize, PartialEq, Eq)]

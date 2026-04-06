@@ -1,5 +1,16 @@
 //! Code generated from tests/schemas/input/arrays-and-tuples.json
-pub struct SchemaRoot(::serde_json::Value);
+pub struct SchemaRoot(pub ::serde_json::Value);
+impl ::std::ops::Deref for SchemaRoot {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaRoot> for ::serde_json::Value {
+    fn from(value: SchemaRoot) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for SchemaRoot {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -16,7 +27,18 @@ impl<'de> ::serde::Deserialize<'de> for SchemaRoot {
         Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
     }
 }
-pub struct ArraySansItems(::std::vec::Vec<::serde_json::Value>);
+pub struct ArraySansItems(pub ::std::vec::Vec<::serde_json::Value>);
+impl ::std::ops::Deref for ArraySansItems {
+    type Target = ::std::vec::Vec<::serde_json::Value>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<ArraySansItems> for ::std::vec::Vec<::serde_json::Value> {
+    fn from(value: ArraySansItems) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for ArraySansItems {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where

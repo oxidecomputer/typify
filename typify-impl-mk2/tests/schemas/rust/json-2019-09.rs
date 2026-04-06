@@ -1,5 +1,16 @@
 //! Code generated from tests/schemas/input/json-2019-09
-pub struct SchemaArray(Vec<SchemaRoot>);
+pub struct SchemaArray(pub Vec<SchemaRoot>);
+impl ::std::ops::Deref for SchemaArray {
+    type Target = Vec<SchemaRoot>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaArray> for Vec<SchemaRoot> {
+    fn from(value: SchemaArray) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for SchemaArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -22,7 +33,18 @@ pub enum SchemaRootObjectItems {
     Variant0(SchemaRoot),
     Variant1(SchemaArray),
 }
-pub struct NonNegativeInteger(i64);
+pub struct NonNegativeInteger(pub i64);
+impl ::std::ops::Deref for NonNegativeInteger {
+    type Target = i64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<NonNegativeInteger> for i64 {
+    fn from(value: NonNegativeInteger) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for NonNegativeInteger {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -56,7 +78,18 @@ pub enum SimpleTypes {
     #[serde(rename = "string")]
     String,
 }
-pub struct StringArray(Vec<String>);
+pub struct StringArray(pub Vec<String>);
+impl ::std::ops::Deref for StringArray {
+    type Target = Vec<String>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<StringArray> for Vec<String> {
+    fn from(value: StringArray) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for StringArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -79,7 +112,18 @@ pub enum SchemaRootObjectType {
     String(SimpleTypes),
     Array(SchemaRootObjectTypeArray),
 }
-pub struct SchemaRootObjectTypeArray(Vec<SimpleTypes>);
+pub struct SchemaRootObjectTypeArray(pub Vec<SimpleTypes>);
+impl ::std::ops::Deref for SchemaRootObjectTypeArray {
+    type Target = Vec<SimpleTypes>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaRootObjectTypeArray> for Vec<SimpleTypes> {
+    fn from(value: SchemaRootObjectTypeArray) -> Self {
+        value.0
+    }
+}
 impl ::serde::Serialize for SchemaRootObjectTypeArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
