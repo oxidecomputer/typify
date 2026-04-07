@@ -933,6 +933,63 @@ impl StringValidator {
     }
 }
 
+/// A re-ordering of JSON schema instance types that puts integer values before
+/// number values.
+///
+/// This is used for untagged enum generation to ensure that integer values
+/// are matched before number values.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub(crate) enum ReorderedInstanceType {
+    /// The JSON schema instance type `null`.
+    Null,
+
+    /// The JSON schema instance type `boolean`.
+    Boolean,
+
+    /// The JSON schema instance type `integer`.
+    Integer,
+
+    /// The JSON schema instance type `number`.
+    Number,
+
+    /// The JSON schema instance type `string`.
+    String,
+
+    /// The JSON schema instance type `array`.
+    Array,
+
+    /// The JSON schema instance type `object`.
+    Object,
+}
+
+impl From<InstanceType> for ReorderedInstanceType {
+    fn from(instance_type: InstanceType) -> Self {
+        match instance_type {
+            InstanceType::Null => Self::Null,
+            InstanceType::Boolean => Self::Boolean,
+            InstanceType::Object => Self::Object,
+            InstanceType::Array => Self::Array,
+            InstanceType::Integer => Self::Integer,
+            InstanceType::Number => Self::Number,
+            InstanceType::String => Self::String,
+        }
+    }
+}
+
+impl From<ReorderedInstanceType> for InstanceType {
+    fn from(instance_type: ReorderedInstanceType) -> Self {
+        match instance_type {
+            ReorderedInstanceType::Null => Self::Null,
+            ReorderedInstanceType::Boolean => Self::Boolean,
+            ReorderedInstanceType::Object => Self::Object,
+            ReorderedInstanceType::Array => Self::Array,
+            ReorderedInstanceType::Integer => Self::Integer,
+            ReorderedInstanceType::Number => Self::Number,
+            ReorderedInstanceType::String => Self::String,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
@@ -944,7 +1001,7 @@ mod tests {
     };
 
     use crate::{
-        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case},
+        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case, ReorderedInstanceType},
         Name,
     };
 
@@ -1120,5 +1177,23 @@ mod tests {
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));
         assert!(!ach.is_valid("Abednego"));
+    }
+
+    #[test]
+    fn test_instance_type_ordering() {
+        let null = ReorderedInstanceType::Null;
+        let boolean = ReorderedInstanceType::Boolean;
+        let integer = ReorderedInstanceType::Integer;
+        let number = ReorderedInstanceType::Number;
+        let string = ReorderedInstanceType::String;
+        let array = ReorderedInstanceType::Array;
+        let object = ReorderedInstanceType::Object;
+
+        assert!(null < boolean);
+        assert!(boolean < integer);
+        assert!(integer < number);
+        assert!(number < string);
+        assert!(string < array);
+        assert!(array < object);
     }
 }
