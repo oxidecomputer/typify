@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, VecDeque};
+use std::collections::VecDeque;
 
 use log::{debug, trace};
 use url::Url;
@@ -6,8 +6,8 @@ use url::Url;
 use crate::{
     bundler::Bundle,
     convert::{ConvertResult, Converter},
-    normalizer::Normalizer2,
-    schemalet::{to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State},
+    normalizer::Normalizer,
+    schemalet::SchemaRef,
     typespace::{
         Type, TypeNative, Typespace, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet,
     },
@@ -62,20 +62,17 @@ pub type Result<T> = std::result::Result<T, anyhow::Error>;
 
 pub struct TypeId(pub SchemaRef);
 
-// TODO 4/6/2026
-// I'm going to rewrite the Typify interface here before replacing the existing
-// version.
 /// Object for accumulating a collection of processed schemas. Each schema is
 /// processed one-at-a-time and added to that canonical representation. Once
 /// all desired schemas have been added, the `typify` method converts these
 /// into a `Typespace` that can be used for code generation.
-pub struct Typify2 {
+pub struct Typify {
     // TODO 4/6/2026
     // Making this an owned object for now, but I think it should be either an
     // owned object or a ref (but Cow requires Clone, which Bundle doesn't
     // currently implement).
     bundle: Bundle,
-    normalizer: Normalizer2,
+    normalizer: Normalizer,
 
     roots: Vec<(SchemaRef, Typify2NameHint)>,
 }
@@ -85,7 +82,7 @@ pub enum Typify2NameHint {
     Suggested(String),
 }
 
-impl Typify2 {
+impl Typify {
     /// Start a new collection of processed schemas within the provided
     /// `Bundle`.
     pub fn new_with_bundle(bundle: Bundle) -> Self {
@@ -124,7 +121,7 @@ impl Typify2 {
     ) -> Result<Typespace> {
         let Self {
             bundle,
-            normalizer: Normalizer2 { raw: _, canonical },
+            normalizer: Normalizer { raw: _, canonical },
             roots,
         } = self;
 

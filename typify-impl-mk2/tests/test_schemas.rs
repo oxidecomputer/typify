@@ -6,7 +6,7 @@ use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
     typespace::{Typespace, TypespaceSettings},
-    Typify2, Typify2NameHint, TypifySettings,
+    Typify, Typify2NameHint, TypifySettings,
 };
 use url::Url;
 
@@ -75,7 +75,7 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
         .map(|m| m.keys().cloned().collect::<Vec<_>>())
         .unwrap_or_default();
 
-    let mut typify = Typify2::new_with_bundle(bundle);
+    let mut typify = Typify::new_with_bundle(bundle);
 
     assert_eq!(context.location.to_string(), "http://localhost/");
 
@@ -203,7 +203,7 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         )
     }
 
-    let mut typify = Typify2::new_with_bundle(bundle);
+    let mut typify = Typify::new_with_bundle(bundle);
     let _type_id = typify
         .add_type(
             &context.location.to_string(),

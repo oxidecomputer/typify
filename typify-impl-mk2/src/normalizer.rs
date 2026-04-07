@@ -1,6 +1,5 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
-use anyhow::bail;
 use log::{debug, trace};
 
 use crate::{
@@ -10,12 +9,12 @@ use crate::{
 };
 
 #[derive(Debug, Default)]
-pub(crate) struct Normalizer2 {
+pub(crate) struct Normalizer {
     pub raw: BTreeMap<SchemaRef, Schemalet>,
     pub canonical: BTreeMap<SchemaRef, CanonicalSchemalet>,
 }
 
-impl Normalizer2 {
+impl Normalizer {
     pub(crate) fn add(&mut self, bundle: &Bundle, id: impl AsRef<str>) -> Result<SchemaRef> {
         let id = id.as_ref();
 
@@ -45,7 +44,6 @@ impl Normalizer2 {
                     Schemalet {
                         details: SchemaletDetails::RawRef(target),
                         metadata,
-                        canonical,
                     } => {
                         let resolved_target = bundle
                             .resolve(&resolved.context, &target)
@@ -59,7 +57,6 @@ impl Normalizer2 {
                                 resolved_target.to_string(),
                             )),
                             metadata,
-                            canonical,
                         }
                     }
 
@@ -69,7 +66,6 @@ impl Normalizer2 {
                     Schemalet {
                         details: SchemaletDetails::RawDynamicRef(target),
                         metadata,
-                        canonical,
                     } => {
                         let resolved = resolved.context.dyn_resolve(&target).clone();
                         debug!("$dynReference => {target} {resolved}");
@@ -78,7 +74,6 @@ impl Normalizer2 {
                                 resolved.to_string(),
                             )),
                             metadata,
-                            canonical,
                         }
                     }
 
@@ -214,12 +209,12 @@ mod tests {
         SchemaletValueString,
     };
 
-    use super::Normalizer2;
+    use super::Normalizer;
 
     #[test]
     fn test_normalize_plain_string() {
         env_logger::init();
-        let mut normalizer = Normalizer2::default();
+        let mut normalizer = Normalizer::default();
 
         let id = SchemaRef::Id("string".to_string());
         normalizer.raw.insert(
@@ -232,7 +227,6 @@ mod tests {
                     min_length: None,
                     max_length: None,
                 })),
-                canonical: false,
             },
         );
 
@@ -243,6 +237,5 @@ mod tests {
             node.details,
             SchemaletDetails::Value(SchemaletValue::String(_))
         ));
-        assert!(node.canonical);
     }
 }

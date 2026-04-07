@@ -960,7 +960,6 @@ Need a Typespace settings to configure stuff like the map and set types. Tricky
 to describe the requirements of the type parameters and the traits these types
 implement.
 
-
 #### 6. Testing
 
 Migrate typify 1 tests (using an LLM).

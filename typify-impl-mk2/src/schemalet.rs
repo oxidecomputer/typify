@@ -103,7 +103,6 @@ pub struct Schemalet {
     #[serde(flatten)]
     pub metadata: SchemaletMetadata,
     pub details: SchemaletDetails,
-    pub canonical: bool,
 }
 
 #[derive(Default, Serialize, Debug, Clone)]
@@ -377,7 +376,6 @@ impl Schemalet {
         Self {
             metadata,
             details,
-            canonical: false,
         }
     }
 
@@ -385,7 +383,6 @@ impl Schemalet {
         Self {
             metadata: Default::default(),
             details,
-            canonical: false,
         }
     }
 
@@ -393,7 +390,6 @@ impl Schemalet {
         let Self {
             metadata,
             details,
-            canonical: _,
         } = self;
         match details {
             SchemaletDetails::OneOf(..) => todo!(),
@@ -428,7 +424,6 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::AllOf(schema_refs),
-                        canonical: false,
                     })
                 }
             }
@@ -443,7 +438,6 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::AnyOf(schema_refs),
-                        canonical: false,
                     })
                 }
             }
@@ -532,7 +526,6 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::ExclusiveOneOf(schema_refs),
-                        canonical: false,
                     })
                 }
             }
@@ -553,7 +546,6 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::YesNo { yes, no },
-                        canonical: false,
                     })
                 }
             }
@@ -628,7 +620,6 @@ fn simplify_string_of(
         return State::Stuck(Schemalet {
             metadata,
             details: SchemaletDetails::StringOf(schema_ref),
-            canonical: false,
         });
     };
 
@@ -674,7 +665,6 @@ fn simplify_string_of(
                 let new_subschema = Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::StringOf(subschema.clone()),
-                    canonical: false,
                 };
 
                 new_work.push((subschema_string_of.clone(), new_subschema));
@@ -684,7 +674,6 @@ fn simplify_string_of(
             let new_schemalet = Schemalet {
                 metadata,
                 details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
-                canonical: false,
             };
 
             State::Simplified(new_schemalet, new_work)
@@ -715,7 +704,6 @@ fn merge_yes_no(
                 Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::ResolvedRef(yes.0),
-                    canonical: false,
                 },
                 Default::default(),
             );
@@ -730,7 +718,6 @@ fn merge_yes_no(
             Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::ResolvedRef(yes.0),
-                canonical: false,
             },
             Default::default(),
         );
@@ -742,7 +729,6 @@ fn merge_yes_no(
             Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::ResolvedRef(yes.0),
-                canonical: false,
             },
             Default::default(),
         ),
@@ -847,7 +833,6 @@ fn expand_any_of(
                 let merge = Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::AllOf(schema_refs),
-                    canonical: false,
                 };
 
                 new_work.push((merge_ref.clone(), merge));
@@ -863,7 +848,6 @@ fn expand_any_of(
         let new_subschema = Schemalet {
             metadata: Default::default(),
             details: SchemaletDetails::YesNo { yes, no },
-            canonical: false,
         };
 
         new_work.push((new_ref.clone(), new_subschema));
@@ -878,7 +862,6 @@ fn expand_any_of(
     let new_schemalet = Schemalet {
         metadata,
         details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
-        canonical: false,
     };
 
     State::Simplified(new_schemalet, new_work)
@@ -968,7 +951,6 @@ fn merge_all(
             let new_schemalet = Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::AllOf(refs.clone()),
-                canonical: false,
             };
 
             new_work.push((new_schemaref.clone(), new_schemalet));
@@ -981,7 +963,6 @@ fn merge_all(
         let new_schemalet = Schemalet {
             metadata,
             details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
-            canonical: false,
         };
 
         State::Simplified(new_schemalet, new_work)
