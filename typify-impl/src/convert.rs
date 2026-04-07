@@ -1,6 +1,6 @@
 // Copyright 2025 Oxide Computer Company
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use crate::merge::{merge_all, try_merge_with_subschemas};
 use crate::type_entry::{
@@ -16,7 +16,7 @@ use schemars::schema::{
 
 use crate::util::get_type_name;
 
-use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
+use crate::{Error, Name, RefKey, Result, TypeSpace, TypeSpaceImpl};
 
 pub const STD_NUM_NONZERO_PREFIX: &str = "::std::num::NonZero";
 
@@ -1427,6 +1427,25 @@ impl TypeSpace {
         // optional field; a number whose value is limited can be converted to
         // the more expansive numeric type.
 
+        // If two or more allOf elements contain oneOf/anyOf subschemas,
+        // merging them produces degenerate results (nested allOf/not that
+        // become empty enums). Instead, use a flattened struct where each
+        // subschema becomes a flattened field. This matches the original
+        // Rust pattern of two flattened internally-tagged enums.
+        let subschema_count = subschemas
+            .iter()
+            .filter(|s| schema_has_one_of_or_any_of(s, &self.definitions))
+            .count();
+        if subschema_count >= 2 {
+            return self.flattened_union_struct(
+                type_name,
+                original_schema,
+                metadata,
+                subschemas,
+                false,
+            );
+        }
+
         let merged_schema = merge_all(subschemas, &self.definitions);
         if let Schema::Bool(false) = &merged_schema {
             self.convert_never(type_name, original_schema)
@@ -2073,6 +2092,40 @@ impl TypeSpace {
             _ => None,
         }
     }
+}
+
+/// Check if a schema (possibly a $ref) contains a oneOf or anyOf subschema.
+fn schema_has_one_of_or_any_of(
+    schema: &Schema,
+    definitions: &BTreeMap<RefKey, Schema>,
+) -> bool {
+    let resolved = match schema {
+        Schema::Object(SchemaObject {
+            metadata: _,
+            instance_type: None,
+            format: None,
+            enum_values: None,
+            const_value: None,
+            subschemas: None,
+            number: None,
+            string: None,
+            array: None,
+            object: None,
+            reference: Some(ref_name),
+            extensions: _,
+        }) => definitions
+            .get(&ref_key(ref_name))
+            .unwrap_or(schema),
+        _ => schema,
+    };
+
+    matches!(
+        resolved,
+        Schema::Object(SchemaObject {
+            subschemas: Some(sub),
+            ..
+        }) if sub.one_of.is_some() || sub.any_of.is_some()
+    )
 }
 
 #[cfg(test)]
