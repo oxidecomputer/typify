@@ -5,13 +5,16 @@ use log::{debug, trace};
 
 use crate::{
     bundler::{Bundle, Context},
-    schemalet::{to_schemalets, SchemaRef, Schemalet, SchemaletDetails},
+    schemalet::{
+        to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State, State2,
+    },
     typify::Result,
 };
 
 #[derive(Debug, Default)]
 pub(crate) struct Normalizer2 {
-    pub nodes: BTreeMap<SchemaRef, Schemalet>,
+    pub raw: BTreeMap<SchemaRef, Schemalet>,
+    pub canonical: BTreeMap<SchemaRef, CanonicalSchemalet>,
 }
 
 impl Normalizer2 {
@@ -84,7 +87,7 @@ impl Normalizer2 {
                     schemalet => schemalet,
                 };
 
-                let old = self.nodes.insert(schema_ref.clone(), schemalet);
+                let old = self.raw.insert(schema_ref.clone(), schemalet);
                 // Note that we really should not hit this; we've checked for
                 // duplicate IDs when processing the WIP queue.
                 assert!(old.is_none(), "already present: {}", schema_ref);
@@ -99,6 +102,13 @@ impl Normalizer2 {
                 .expect("failed to resolve reference");
         }
 
+        for (schema_ref, schemalet) in &self.raw {
+            let xxx = schemalet.children();
+            for yyy in xxx {
+                assert!(self.raw.contains_key(&yyy), "{schema_ref} {schemalet:#?}");
+            }
+        }
+
         Ok(root_ref)
     }
 
@@ -108,10 +118,7 @@ impl Normalizer2 {
                 return None;
             };
 
-            if self
-                .nodes
-                .contains_key(&SchemaRef::Id(context.location.to_string()))
-            {
+            if self.raw.contains_key(&SchemaRef::Id(path.clone())) {
                 continue;
             }
 
@@ -120,40 +127,79 @@ impl Normalizer2 {
     }
 
     fn normalize_from_id(&mut self, id: &str) -> Result<()> {
+        // First, we're going to descend from the given Id and do simple
+        // conversions into the "canonical" form--which is really just a
+        // simpler IR that we'll continue to manipulate.
         let mut pass = 0;
 
         // TODO 4/6/2026
         // Where can I get this SchemaRef from rather that consing it up?
-        let mut wip = vec![SchemaRef::Id(id.to_string())];
+        // let mut wip = vec![SchemaRef::Id(id.to_string())];
 
-        while !wip.is_empty() {
+        loop {
             pass += 1;
-            debug!("pass {pass}");
+            debug!("\npass {pass}\n");
 
             let mut simplified = false;
+            let mut all_canonical = true;
+
+            // TODO 4/7/2026
+            // Very inefficient, but let's just scrub the whole list each time.
+            let mut wip = self.raw.keys().cloned().collect::<Vec<_>>();
 
             for schema_ref in wip.drain(..) {
-                let schemalet = self.nodes.get(&schema_ref).unwrap();
+                // We can skip any schemalet that we've already converted to
+                // their canonical form.
+                if self.canonical.contains_key(&schema_ref) {
+                    trace!("already canonical: {schema_ref}");
+                    continue;
+                }
+
+                all_canonical = false;
+
+                // TODO 4/7/2026 clean up this clone()
+                let schemalet = self.raw.get(&schema_ref).unwrap().clone();
                 debug!("normalizing {schema_ref}");
                 trace!("  {schemalet:#?}");
 
-                let xxx = schemalet.simplify2(&self.nodes);
-
-                if let crate::schemalet::State2::Simplified(new_schemalet, items) = xxx {
-                    simplified = true;
-
-                    self.nodes.insert(schema_ref.clone(), new_schemalet);
-                    self.nodes.extend(items);
+                match schemalet.simplify(&self.canonical) {
+                    State::Stuck(schemalet) => {
+                        let _ = schemalet;
+                    }
+                    State::Simplified(schemalet, items) => {
+                        simplified = true;
+                        self.raw.insert(schema_ref.clone(), schemalet);
+                        self.raw.extend(items);
+                    }
+                    State::Canonical(canonical_schemalet) => {
+                        simplified = true;
+                        self.canonical
+                            .insert(schema_ref.clone(), canonical_schemalet);
+                        debug!("  canonical {schema_ref}");
+                    }
                 }
             }
 
-            if !simplified {
-                debug!("no simplifications on pass {pass}, stopping");
+            if all_canonical {
                 break;
+            }
+
+            if !simplified {
+                debug!("couldn't simplify further on pass {pass}");
+                for (schema_ref, schemalet) in &self.raw {
+                    if !self.canonical.contains_key(schema_ref) {
+                        debug!("stuck: {schema_ref}: {schemalet:#?}");
+                        // } else {
+                        //     debug!("done: {schema_ref}: {schemalet:#?}");
+                    }
+                }
+
+                panic!("no simplifications on pass {pass}, stopping");
             }
         }
 
-        self.check_canonical(id)
+        // self.check_canonical(id)
+        Ok(())
     }
 
     fn check_canonical(&self, id: &str) -> Result<()> {
@@ -167,7 +213,7 @@ impl Normalizer2 {
             }
             seen.insert(schema_ref.clone());
 
-            let schemalet = self.nodes.get(&schema_ref).unwrap();
+            let schemalet = self.raw.get(&schema_ref).unwrap();
             if !schemalet.canonical {
                 bail!(
                     "schemalet {} is not marked canonical after normalization: {:#?}",
@@ -183,7 +229,7 @@ impl Normalizer2 {
     }
 
     pub(crate) fn canonical_output(&self) -> String {
-        serde_json::to_string_pretty(&self.nodes.iter().collect::<Vec<_>>()).unwrap()
+        serde_json::to_string_pretty(&self.canonical.iter().collect::<Vec<_>>()).unwrap()
     }
 }
 
@@ -202,7 +248,7 @@ mod tests {
         let mut normalizer = Normalizer2::default();
 
         let id = SchemaRef::Id("string".to_string());
-        normalizer.nodes.insert(
+        normalizer.raw.insert(
             id.clone(),
             Schemalet {
                 metadata: SchemaletMetadata::default(),
@@ -218,7 +264,7 @@ mod tests {
 
         normalizer.normalize_from_id("string").unwrap();
 
-        let node = &normalizer.nodes[&id];
+        let node = &normalizer.raw[&id];
         assert!(matches!(
             node.details,
             SchemaletDetails::Value(SchemaletValue::String(_))

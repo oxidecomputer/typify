@@ -4,6 +4,7 @@ use std::{
     ops::Deref,
 };
 
+use log::debug;
 use serde::{ser::SerializeMap, Serialize};
 
 use crate::{
@@ -406,6 +407,24 @@ impl Schemalet {
                     println!("{}", serde_json::to_string_pretty(&subschemas).unwrap());
                     merge_all(metadata, subschemas, done)
                 } else {
+                    // We're stuck; here's why:
+                    debug!("stuck on allof with subschemas:");
+                    let mut count = 0;
+                    for schema_ref in &schema_refs {
+                        if let None = resolve(done, schema_ref) {
+                            debug!("  unresolved {schema_ref}");
+                            count += 1;
+                        }
+                    }
+                    if count == 0 {
+                        // We shouldn't be able to be here; let's look at the
+                        // done nodes:
+                        debug!("done nodes:");
+                        for (schema_ref, schemalet) in done {
+                            debug!("  {schema_ref}: {schemalet:#?}");
+                        }
+                        panic!();
+                    }
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::AllOf(schema_refs),
@@ -541,69 +560,6 @@ impl Schemalet {
             SchemaletDetails::StringOf(schema_ref) => {
                 simplify_string_of(metadata, done, schema_ref)
             }
-        }
-    }
-
-    pub fn simplify2(&self, nodes: &BTreeMap<SchemaRef, Schemalet>) -> State2 {
-        match &self.details {
-            SchemaletDetails::Anything
-            | SchemaletDetails::Nothing
-            | SchemaletDetails::Constant(_) => State2::Simplified(
-                Schemalet {
-                    canonical: true,
-                    ..self.clone()
-                },
-                Default::default(),
-            ),
-
-            SchemaletDetails::OneOf(schema_refs) => todo!(),
-            SchemaletDetails::AnyOf(schema_refs) => todo!(),
-            SchemaletDetails::AllOf(schema_refs) => todo!(),
-            SchemaletDetails::Not(schema_ref) => todo!(),
-            SchemaletDetails::IfThen(schema_ref, schema_ref1) => todo!(),
-            SchemaletDetails::IfThenElse(schema_ref, schema_ref1, schema_ref2) => todo!(),
-            SchemaletDetails::RawRef(_) => todo!(),
-            SchemaletDetails::RawDynamicRef(_) => todo!(),
-
-            SchemaletDetails::Value(value) => match value {
-                SchemaletValue::Array(array) => {
-                    if let Some(max) = array.max_items {
-                        if max == 0 {
-                            return State2::Simplified(
-                                Schemalet {
-                                    metadata: self.metadata.clone(),
-                                    details: SchemaletDetails::Constant(serde_json::json!([])),
-                                    canonical: true,
-                                },
-                                Default::default(),
-                            );
-                        }
-                    }
-                    // TODO 4/6/2026
-                    // All I really need to know here is if any of the child
-                    // schemas (items or prefix_items) could be Nothing. If not,
-                    // this this is already canonical. If any **is** Nothing,
-                    // then we can simplify the type. And if we're not sure
-                    // then we're just stuck.
-
-                    todo!()
-                }
-                SchemaletValue::Object(object) => todo!(),
-
-                _ => State2::Simplified(
-                    Schemalet {
-                        canonical: true,
-                        ..self.clone()
-                    },
-                    Default::default(),
-                ),
-            },
-
-            SchemaletDetails::ExclusiveOneOf(schema_refs) => todo!(),
-            SchemaletDetails::ResolvedRef(schema_ref) => todo!(),
-            SchemaletDetails::ResolvedDynamicRef(schema_ref) => todo!(),
-            SchemaletDetails::YesNo { yes, no } => todo!(),
-            SchemaletDetails::StringOf(schema_ref) => todo!(),
         }
     }
 

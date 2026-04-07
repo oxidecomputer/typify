@@ -122,6 +122,7 @@ where
                     continue;
                 };
 
+                println!("looking at parent {parent}");
                 let parent_name = names.get(parent).unwrap().borrow().as_resolved();
 
                 let new_name = format!(

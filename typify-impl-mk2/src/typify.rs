@@ -456,37 +456,13 @@ impl Typify2 {
         typespace_settings: TypespaceSettings,
     ) -> Result<Typespace> {
         let Self {
-            bundle: _,
-            normalizer: Normalizer2 { nodes },
+            bundle,
+            normalizer: Normalizer2 { raw: _, canonical },
             roots,
         } = self;
 
-        // TODO 4/7/2026
-        // Right now the Converter operates on canonical schemalets... we'll
-        // convert them as a stopgap.
-        let nodes = nodes
-            .into_iter()
-            .map(|(k, v)| {
-                let Schemalet {
-                    details,
-                    metadata,
-                    canonical,
-                } = v;
-
-                assert!(canonical);
-
-                (
-                    k,
-                    CanonicalSchemalet {
-                        metadata,
-                        details: to_canonical(details),
-                    },
-                )
-            })
-            .collect::<BTreeMap<_, _>>();
-
         let mut typespace_builder = TypespaceBuilder::default();
-        let mut converter = Converter::new(nodes);
+        let mut converter = Converter::new(canonical);
         let mut work = VecDeque::new();
         roots.into_iter().for_each(|(schema_ref, name)| {
             work.push_front(schema_ref.clone());
@@ -498,6 +474,7 @@ impl Typify2 {
                 Typify2NameHint::Mandatory(name) => name,
                 Typify2NameHint::Suggested(name) => name,
             };
+            trace!("typify name {schema_ref} {xxx}");
             converter.set_name(schema_ref, xxx);
         });
 
@@ -511,12 +488,35 @@ impl Typify2 {
                 continue;
             }
 
+            // TODO 7/2/2025
+            // Not sure if this is the right place to look for a name, but
+            // maybe it's okay. At this point we know that the path really is
+            // about to have a type at this location, and we don't know that
+            // any sooner.
+            //
+            // Note that we need to have something more generic than $defs and
+            // I'm not sure we're always going to apply this heuristic.
+            //
+            // TODO 7/10/2025
+            // In sum: there's more thinking to do here.
+            if let SchemaRef::Id(path) = &work_id {
+                let url = Url::parse(path).unwrap();
+
+                if let Some(fragment) = url.fragment() {
+                    if let Some(name) = fragment.strip_prefix("/$defs/") {
+                        if !name.contains('/') {
+                            converter.set_name(work_id.clone(), name.to_string());
+                        }
+                    }
+                }
+            }
+
             // Get the original JSON that defined this type.
             // TODO 9.15.2025
             // In the future we can add this as content that the Typespace
             // may add to the doc comment for the type.
             let maybe_original_json = match &work_id {
-                SchemaRef::Id(id) => Some(self.bundle.get_fully_qualified(id).unwrap()),
+                SchemaRef::Id(id) => Some(bundle.get_fully_qualified(id).unwrap()),
                 _ => None,
             };
 
