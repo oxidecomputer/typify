@@ -140,6 +140,7 @@ pub enum SchemaletDetails {
     ResolvedDynamicRef(SchemaRef),
     YesNo { yes: SchemaRef, no: Vec<SchemaRef> },
     StringOf(SchemaRef),
+    Canonical(CanonicalSchemaletDetails),
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -523,8 +524,88 @@ impl Schemalet {
             SchemaletDetails::StringOf(schema_ref) => {
                 simplify_string_of(metadata, done, schema_ref)
             }
+            SchemaletDetails::Canonical(_) => todo!(),
         }
     }
+
+    pub fn simplify2(&self, nodes: &BTreeMap<SchemaRef, Schemalet>) -> State2 {
+        let Self { metadata, details } = self;
+        match details {
+            SchemaletDetails::Anything => todo!(),
+            SchemaletDetails::Nothing => todo!(),
+            SchemaletDetails::OneOf(schema_refs) => todo!(),
+            SchemaletDetails::AnyOf(schema_refs) => todo!(),
+            SchemaletDetails::AllOf(schema_refs) => {
+                let xxx = resolve_all(nodes, schema_refs);
+
+                if let Some(yyy) = xxx {
+                    if yyy.iter().all(|(_, schemalet)| {
+                        if let SchemaletDetails::Canonical(_) = &schemalet.details {
+                            true
+                        } else {
+                            false
+                        }
+                    }) {
+                        todo!("all canonical; let's go");
+                    }
+                }
+                State2::Stuck
+
+                // if let Some(subschemas) = resolve_all(done, &schema_refs) {
+                //     println!("{}", serde_json::to_string_pretty(&subschemas).unwrap());
+                //     merge_all(metadata, subschemas, done)
+                // } else {
+                //     State::Stuck(Schemalet {
+                //         metadata,
+                //         details: SchemaletDetails::AllOf(schema_refs),
+                //     })
+                // }
+            }
+            SchemaletDetails::Not(schema_ref) => todo!(),
+            SchemaletDetails::IfThen(schema_ref, schema_ref1) => todo!(),
+            SchemaletDetails::IfThenElse(schema_ref, schema_ref1, schema_ref2) => todo!(),
+            SchemaletDetails::RawRef(_) => todo!(),
+            SchemaletDetails::RawDynamicRef(_) => todo!(),
+            SchemaletDetails::Constant(value) => todo!(),
+
+            SchemaletDetails::Value(schemalet_value) => match schemalet_value {
+                SchemaletValue::Array(_) => todo!(),
+
+                SchemaletValue::Object(obj) => {}
+
+                // Nothing else references other types.
+                v => State2::Simplified(
+                    Schemalet {
+                        metadata: metadata.clone(),
+                        details: SchemaletDetails::Canonical(CanonicalSchemaletDetails::Value(
+                            v.clone(),
+                        )),
+                    },
+                    Default::default(),
+                ),
+            },
+
+            SchemaletDetails::ExclusiveOneOf(schema_refs) => todo!(),
+            SchemaletDetails::ResolvedRef(schema_ref) => State2::Simplified(
+                Schemalet {
+                    metadata: metadata.clone(),
+                    details: SchemaletDetails::Canonical(CanonicalSchemaletDetails::Reference(
+                        schema_ref.clone(),
+                    )),
+                },
+                Default::default(),
+            ),
+            SchemaletDetails::ResolvedDynamicRef(schema_ref) => todo!(),
+            SchemaletDetails::YesNo { yes, no } => todo!(),
+            SchemaletDetails::StringOf(schema_ref) => todo!(),
+            SchemaletDetails::Canonical(canonical_schemalet_details) => todo!(),
+        }
+    }
+}
+
+pub enum State2 {
+    Stuck,
+    Simplified(Schemalet, Vec<(SchemaRef, Schemalet)>),
 }
 
 fn simplify_string_of(

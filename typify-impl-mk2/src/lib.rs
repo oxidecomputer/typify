@@ -3,6 +3,7 @@ pub mod bundler;
 mod convert;
 mod error;
 mod namespace;
+mod normalizer;
 mod schema;
 mod schemalet;
 pub mod typespace;
@@ -10,6 +11,8 @@ mod typify;
 
 pub use typify::TypeId;
 pub use typify::Typify;
+pub use typify::Typify2;
+pub use typify::Typify2NameHint;
 pub use typify::TypifySettings;
 
 pub use error::Error;

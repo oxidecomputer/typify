@@ -2156,6 +2156,7 @@ name = "typify-impl-mk2"
 version = "0.10.0"
 dependencies = [
  "anyhow",
+ "env_logger",
  "expectorate",
  "heck",
  "json-serde",
