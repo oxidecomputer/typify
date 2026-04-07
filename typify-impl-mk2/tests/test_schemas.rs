@@ -6,7 +6,7 @@ use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
     typespace::{Typespace, TypespaceSettings},
-    Typify, Typify2, Typify2NameHint, TypifySettings,
+    Typify2, Typify2NameHint, TypifySettings,
 };
 use url::Url;
 
@@ -74,22 +74,6 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
         .and_then(|v| v.as_object())
         .map(|m| m.keys().cloned().collect::<Vec<_>>())
         .unwrap_or_default();
-
-    // let mut typify = Typify::new_with_bundle(bundle, Default::default());
-
-    // assert_eq!(context.location.to_string(), "http://localhost/");
-
-    // println!("{:?}", defs);
-
-    // for def in defs {
-    //     let xxx = format!("{}#/$defs/{}", context.location, def);
-    //     println!("adding type for {def} {xxx}");
-    //     let _type_id = typify.add_type_by_id(&xxx).unwrap();
-    // }
-
-    // let _type_id = typify
-    //     .add_type_by_id(&context.location.to_string())
-    //     .unwrap();
 
     let mut typify = Typify2::new_with_bundle(bundle);
 
@@ -218,11 +202,6 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
             actual_id
         )
     }
-
-    // let mut typify = Typify::new_with_bundle(bundle, test_json.settings.typify);
-    // let _type_id = typify
-    //     .add_type_by_id(&context.location.to_string())
-    //     .unwrap();
 
     let mut typify = Typify2::new_with_bundle(bundle);
     let _type_id = typify

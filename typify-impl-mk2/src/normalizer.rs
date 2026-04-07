@@ -5,9 +5,7 @@ use log::{debug, trace};
 
 use crate::{
     bundler::{Bundle, Context},
-    schemalet::{
-        to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State, State2,
-    },
+    schemalet::{to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State},
     typify::Result,
 };
 
@@ -198,32 +196,8 @@ impl Normalizer2 {
             }
         }
 
-        // self.check_canonical(id)
-        Ok(())
-    }
-
-    fn check_canonical(&self, id: &str) -> Result<()> {
-        let schema_ref = SchemaRef::Id(id.to_string());
-        let mut seen = BTreeSet::new();
-        let mut wip = vec![schema_ref];
-
-        while let Some(schema_ref) = wip.pop() {
-            if seen.contains(&schema_ref) {
-                continue;
-            }
-            seen.insert(schema_ref.clone());
-
-            let schemalet = self.raw.get(&schema_ref).unwrap();
-            if !schemalet.canonical {
-                bail!(
-                    "schemalet {} is not marked canonical after normalization: {:#?}",
-                    schema_ref,
-                    schemalet
-                );
-            }
-
-            wip.extend(schemalet.children());
-        }
+        // TODO 4/7/2026
+        // DO I want to have something in here to make it... *more* canonical??
 
         Ok(())
     }

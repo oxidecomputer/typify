@@ -14,6 +14,67 @@ use crate::{
 };
 
 impl Converter {
+    // 4/7/2026
+    // Below are some old notes that I wanted to preserve because they're not
+    // fully stupid.
+    //
+    // There are 4 different patterns for enum variants
+    // - Externally tagged: either strings or objects with a single property
+    // - Adjacently tagged: object with a constant-value property and an
+    //   optional other property whose value can be anything
+    // - Internally tagged: object whose constant-value properties we record
+    // - Untagged: everything else
+    //
+    // Note that there is the potential for overlap! For example, every
+    // adjacently tagged variant could be interpreted as an internally tagged
+    // variant (so we need to evaluate the criteria for adjacent tagging before
+    // internal tagging!). Note that an adjacently tagged enum is strictly
+    // less repetitive so there's good reason to prefer it.
+
+    // 6/21/2025
+    // Interesting question about enum variants whose schemas are objects:
+    // when should we embed them vs. creating a new type? I expect we'll need
+    // some pass where we decide which schemas / schema refs we **want** to be
+    // distinct types and which are we simply fine with that happening should
+    // that be what shakes out.
+    // Often I expect we'll want everything with "$defs" in it to be a named
+    // schema in part because we know we have some recognizable name. In the
+    // case of the meta schema I think we don't need particularly bless
+    // anything--we can just let the chips fall where they may.
+
+    // TODO For now, we're just going to do untagged variants.
+
+    // 6/21/2025
+    // For untagged enums, naming is interesting, and maybe an interesting
+    // place to start for the naming project. For each variant, we can
+    // construct a clearly unique name: Variant{n}. But that name kind of
+    // sucks. We have the possibility of naming variants after types they
+    // reference or after the fundamental type of the variant (e.g. boolean,
+    // integer, object) if that alone is a sufficiently distinguishing
+    // characteristic. I think the "best" names are going to be those provided
+    // by the schema itself in the form of titles and named types. After that,
+    // we fall back to boolean/integer, and after that we fall back to
+    // Variant{n}.
+    //
+    // Two additional, signifcant pieces of complexity. First, we don't want to
+    // mix and match e.g. Variant0, Object looks dumb. Second, we don't
+    // necessarily know type name resolution until later, but--I suppose we
+    // *do* know there will be a name and we *do* know the names will be unique
+    // (initially I thought we'd need to choose the modality after doing *all*
+    // the other type generation, etc. but now I don't think that's the
+    // case--we can probably know right away if a type is going to have some
+    // good name or not).
+    //
+    // So! We'll first try to make a set of names based on named types, then
+    // make a set of onological names, and finally fall back to numbered names.
+    // This could suck! Imagine an enum whose variants were all complex types
+    // for which we needed to invent names because the schema declined to name
+    // them: the variant names could also suck. But... meh? We'll see how it
+    // shakes out.
+    //
+    // But without looking pretty closely at a type, how do we know if it needs
+    // a name, etc? I guess we'll just suck it up and look at it.
+
     pub(crate) fn convert_one_of(
         &self,
         name: NameBuilder,
