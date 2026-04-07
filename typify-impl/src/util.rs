@@ -939,7 +939,7 @@ impl StringValidator {
 /// This is used for untagged enum generation to ensure that integer values
 /// are matched before number values.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub(crate)  enum ReorderedInstanceType {
+pub(crate) enum ReorderedInstanceType {
     /// The JSON schema instance type `null`.
     Null,
 

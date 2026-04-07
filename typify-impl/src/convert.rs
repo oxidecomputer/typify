@@ -672,8 +672,9 @@ impl TypeSpace {
             } => {
                 // Eliminate duplicates (they hold no significance); they
                 // aren't supposed to be there, but we can still handle it.
-                // Convert the types into a form that puts integers before numbers to ensure that
-                // integer get matched before numbers in untagged enum generation.
+                // Convert the types into a form that puts integers before
+                // numbers to ensure that integer get matched before numbers in
+                // untagged enum generation.
                 let unique_types = instance_types
                     .iter()
                     .copied()
