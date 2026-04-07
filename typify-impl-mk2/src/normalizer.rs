@@ -1,4 +1,7 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
+
+use anyhow::bail;
+use log::{debug, trace};
 
 use crate::{
     bundler::{Bundle, Context},
@@ -41,19 +44,21 @@ impl Normalizer2 {
                     Schemalet {
                         details: SchemaletDetails::RawRef(target),
                         metadata,
+                        canonical,
                     } => {
                         let resolved_target = bundle
                             .resolve(&resolved.context, &target)
                             .expect("failed to resolved reference")
                             .context
                             .location;
-                        println!("$ref => {target} {resolved_target}");
+                        debug!("$ref => {target} {resolved_target}");
                         wip.push((resolved.context.clone(), resolved_target.to_string()));
                         Schemalet {
                             details: SchemaletDetails::ResolvedRef(SchemaRef::Id(
                                 resolved_target.to_string(),
                             )),
                             metadata,
+                            canonical,
                         }
                     }
 
@@ -63,14 +68,16 @@ impl Normalizer2 {
                     Schemalet {
                         details: SchemaletDetails::RawDynamicRef(target),
                         metadata,
+                        canonical,
                     } => {
                         let resolved = resolved.context.dyn_resolve(&target).clone();
-                        println!("$dynReference => {target} {resolved}");
+                        debug!("$dynReference => {target} {resolved}");
                         Schemalet {
                             details: SchemaletDetails::ResolvedDynamicRef(SchemaRef::Id(
                                 resolved.to_string(),
                             )),
                             metadata,
+                            canonical,
                         }
                     }
 
@@ -112,8 +119,67 @@ impl Normalizer2 {
         }
     }
 
-    fn normalize_from_id(&mut self, _id: &str) -> Result<()> {
-        todo!()
+    fn normalize_from_id(&mut self, id: &str) -> Result<()> {
+        let mut pass = 0;
+
+        // TODO 4/6/2026
+        // Where can I get this SchemaRef from rather that consing it up?
+        let mut wip = vec![SchemaRef::Id(id.to_string())];
+
+        while !wip.is_empty() {
+            pass += 1;
+            debug!("pass {pass}");
+
+            let mut simplified = false;
+
+            for schema_ref in wip.drain(..) {
+                let schemalet = self.nodes.get(&schema_ref).unwrap();
+                debug!("normalizing {schema_ref}");
+                trace!("  {schemalet:#?}");
+
+                let xxx = schemalet.simplify2(&self.nodes);
+
+                if let crate::schemalet::State2::Simplified(new_schemalet, items) = xxx {
+                    simplified = true;
+
+                    self.nodes.insert(schema_ref.clone(), new_schemalet);
+                    self.nodes.extend(items);
+                }
+            }
+
+            if !simplified {
+                debug!("no simplifications on pass {pass}, stopping");
+                break;
+            }
+        }
+
+        self.check_canonical(id)
+    }
+
+    fn check_canonical(&self, id: &str) -> Result<()> {
+        let schema_ref = SchemaRef::Id(id.to_string());
+        let mut seen = BTreeSet::new();
+        let mut wip = vec![schema_ref];
+
+        while let Some(schema_ref) = wip.pop() {
+            if seen.contains(&schema_ref) {
+                continue;
+            }
+            seen.insert(schema_ref.clone());
+
+            let schemalet = self.nodes.get(&schema_ref).unwrap();
+            if !schemalet.canonical {
+                bail!(
+                    "schemalet {} is not marked canonical after normalization: {:#?}",
+                    schema_ref,
+                    schemalet
+                );
+            }
+
+            wip.extend(schemalet.children());
+        }
+
+        Ok(())
     }
 
     pub(crate) fn canonical_output(&self) -> String {
@@ -132,6 +198,7 @@ mod tests {
 
     #[test]
     fn test_normalize_plain_string() {
+        env_logger::init();
         let mut normalizer = Normalizer2::default();
 
         let id = SchemaRef::Id("string".to_string());
@@ -145,21 +212,17 @@ mod tests {
                     min_length: None,
                     max_length: None,
                 })),
+                canonical: false,
             },
         );
 
         normalizer.normalize_from_id("string").unwrap();
 
-        let _node = &normalizer.nodes[&id];
-        // assert!(
-        //     matches!(
-        //         &node.details,
-        //         SchemaletDetails::Canonical(CanonicalSchemaletDetails::Value(
-        //             SchemaletValue::String(_)
-        //         ))
-        //     ),
-        //     "expected canonical string, got {:#?}",
-        //     node.details
-        // );
+        let node = &normalizer.nodes[&id];
+        assert!(matches!(
+            node.details,
+            SchemaletDetails::Value(SchemaletValue::String(_))
+        ));
+        assert!(node.canonical);
     }
 }

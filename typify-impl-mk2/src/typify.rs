@@ -64,12 +64,8 @@ struct Normalizer {
     raw: BTreeMap<SchemaRef, Schemalet>,
     canonical: BTreeMap<SchemaRef, CanonicalSchemalet>,
 }
-#[derive(Debug)]
-pub enum Error {
-    X,
-}
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, anyhow::Error>;
 
 pub struct TypeId(pub SchemaRef);
 
@@ -286,6 +282,7 @@ impl Normalizer {
                     Schemalet {
                         details: SchemaletDetails::RawRef(target),
                         metadata,
+                        canonical: _,
                     } => {
                         let resolved_target = bundle
                             .resolve(&resolved.context, &target)
@@ -299,6 +296,7 @@ impl Normalizer {
                                 resolved_target.to_string(),
                             )),
                             metadata,
+                            canonical: false,
                         }
                     }
 
@@ -308,6 +306,7 @@ impl Normalizer {
                     Schemalet {
                         details: SchemaletDetails::RawDynamicRef(target),
                         metadata,
+                        canonical: _,
                     } => {
                         let resolved = context.dyn_resolve(&target).clone();
                         println!("$dynReference => {target} {resolved}");
@@ -316,6 +315,7 @@ impl Normalizer {
                                 resolved.to_string(),
                             )),
                             metadata,
+                            canonical: false,
                         }
                     }
 

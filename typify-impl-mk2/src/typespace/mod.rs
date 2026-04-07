@@ -268,6 +268,15 @@ pub struct Typespace {
     types: BTreeMap<SchemaRef, Type>,
 }
 
+/// An error indicating that a type cannot satisfy a trait required of it.
+#[derive(Debug)]
+pub struct TraitError {
+    /// The type that cannot satisfy the required traits.
+    pub schema_ref: SchemaRef,
+    /// The traits that cannot be satisfied.
+    pub missing: TypespaceTraitSet,
+}
+
 impl Typespace {
     pub fn render(&self) -> TokenStream {
         let types = self.types.iter().map(|(id, typ)| {
@@ -641,7 +650,7 @@ impl TypespaceBuilder {
         self.types.contains_key(id)
     }
 
-    pub fn finalize(self, settings: TypespaceSettings) -> Result<Typespace, ()> {
+    pub fn finalize(self, settings: TypespaceSettings) -> Result<Typespace, Vec<TraitError>> {
         // Basic steps:
         // 1. Construct the parent and child adjacency lists
         // 2. Figure out names for all types that need them
@@ -910,7 +919,7 @@ fn break_cycles(types: &mut BTreeMap<SchemaRef, Type>) {
     }
 }
 
-fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
+fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), Vec<TraitError>> {
     // First, look through all types to determine what traits are required of
     // various children.
     let mut work = types
@@ -945,6 +954,8 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
     // can't), we'll produce an error. We don't stop on the first failure, but
     // want to identify as many, distinct failures as is reasonable and as
     // would be useful for a consumer.
+    let mut errors: Vec<TraitError> = Vec::new();
+
     while let Some((schema_ref, traits)) = work.pop_front() {
         let ty = types.get_mut(&schema_ref).unwrap();
 
@@ -952,9 +963,7 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
             Type::NewtypeStruct(TypeNewtypeStruct { common, .. })
             | Type::Enum(TypeEnum { common, .. })
             | Type::Struct(TypeStruct { common, .. }) => Some(common.built.as_mut().unwrap()),
-            Type::UnitStruct(_) => todo!(),
-            Type::TupleStruct(_) => todo!(),
-            Type::TypeAlias(_) => todo!(),
+            Type::UnitStruct(_) | Type::TupleStruct(_) | Type::TypeAlias(_) => todo!(),
 
             _ => None,
         };
@@ -985,16 +994,16 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
                 | Type::NewtypeStruct(_)
                 | Type::TypeAlias(_) => unreachable!(),
 
-                Type::Native(TypeNative { name, impls, .. }) => {
+                Type::Native(TypeNative { impls, .. }) => {
                     let missing_traits = traits
                         .difference(impls)
                         .cloned()
                         .collect::<TypespaceTraitSet>();
                     if !missing_traits.is_empty() {
-                        todo!(
-                            "missing traits {:#?} for native type {name}",
-                            missing_traits,
-                        );
+                        errors.push(TraitError {
+                            schema_ref: schema_ref.clone(),
+                            missing: missing_traits,
+                        });
                     }
                 }
 
@@ -1006,36 +1015,48 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
                 // Vec<T> and arrays impl everything we care about--except for
                 // Display and FromStr--as long as T implemented them.
                 Type::Vec(schema_ref) | Type::Array(schema_ref, _) => {
-                    if traits.contains(&TypespaceTrait::Display)
-                        || traits.contains(&TypespaceTrait::FromStr)
-                    {
-                        todo!();
+                    let unsupported = [TypespaceTrait::Display, TypespaceTrait::FromStr]
+                        .into_iter()
+                        .filter(|t| traits.contains(t))
+                        .collect::<TypespaceTraitSet>();
+                    if !unsupported.is_empty() {
+                        errors.push(TraitError {
+                            schema_ref: schema_ref.clone(),
+                            missing: unsupported,
+                        });
                     }
                     work.push_back((schema_ref.clone(), traits));
                 }
                 // Tuples implement everything except for Display and FromStr
                 // as long as all their component types do as well.
                 Type::Tuple(schema_refs) => {
-                    if traits.contains(&TypespaceTrait::Display)
-                        || traits.contains(&TypespaceTrait::FromStr)
-                    {
-                        todo!();
+                    let unsupported = [TypespaceTrait::Display, TypespaceTrait::FromStr]
+                        .into_iter()
+                        .filter(|t| traits.contains(t))
+                        .collect::<TypespaceTraitSet>();
+                    if !unsupported.is_empty() {
+                        errors.push(TraitError {
+                            schema_ref: schema_ref.clone(),
+                            missing: unsupported,
+                        });
                     }
-                    for schema_ref in schema_refs {
-                        work.push_back((schema_ref.clone(), traits.clone()));
+                    for child_ref in schema_refs {
+                        work.push_back((child_ref.clone(), traits.clone()));
                     }
                 }
 
                 Type::Map(_, _) | Type::Set(_) => todo!("wtf {schema_ref} {:#?}", ty),
 
-                // TODO 3/31/2026
-                // Comment and do better
                 Type::Float(_) => {
-                    if traits.contains(&TypespaceTrait::Ord)
-                        || traits.contains(&TypespaceTrait::Eq)
-                        || traits.contains(&TypespaceTrait::Hash)
-                    {
-                        todo!();
+                    let unsupported = [TypespaceTrait::Ord, TypespaceTrait::Eq, TypespaceTrait::Hash]
+                        .into_iter()
+                        .filter(|t| traits.contains(t))
+                        .collect::<TypespaceTraitSet>();
+                    if !unsupported.is_empty() {
+                        errors.push(TraitError {
+                            schema_ref: schema_ref.clone(),
+                            missing: unsupported,
+                        });
                     }
                 }
 
@@ -1046,19 +1067,31 @@ fn push_traits(types: &mut BTreeMap<SchemaRef, Type>) -> Result<(), ()> {
                 // JsonValue implements everything except for Eq, Ord,
                 // PartialOrd, and Hash.
                 Type::JsonValue => {
-                    if traits.contains(&TypespaceTrait::Eq)
-                        || traits.contains(&TypespaceTrait::Ord)
-                        || traits.contains(&TypespaceTrait::PartialOrd)
-                        || traits.contains(&TypespaceTrait::Hash)
-                    {
-                        todo!();
+                    let unsupported = [
+                        TypespaceTrait::Eq,
+                        TypespaceTrait::Ord,
+                        TypespaceTrait::PartialOrd,
+                        TypespaceTrait::Hash,
+                    ]
+                    .into_iter()
+                    .filter(|t| traits.contains(t))
+                    .collect::<TypespaceTraitSet>();
+                    if !unsupported.is_empty() {
+                        errors.push(TraitError {
+                            schema_ref: schema_ref.clone(),
+                            missing: unsupported,
+                        });
                     }
                 }
             }
         }
     }
 
-    Ok(())
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 /// Represents a type in the Typespace.
@@ -1627,6 +1660,9 @@ mod tests {
         let map_id = SchemaRef::Id("map".to_string());
         ts.insert(map_id, Type::Map(key_id, value_id));
 
-        ts.finalize(TypespaceSettings::default()).unwrap();
+        let Err(errors) = ts.finalize(TypespaceSettings::default()) else {
+            panic!("expected finalize to fail");
+        };
+        assert!(errors.iter().any(|e| e.schema_ref == float_id));
     }
 }

@@ -102,6 +102,7 @@ pub struct Schemalet {
     #[serde(flatten)]
     pub metadata: SchemaletMetadata,
     pub details: SchemaletDetails,
+    pub canonical: bool,
 }
 
 #[derive(Default, Serialize, Debug, Clone)]
@@ -129,8 +130,12 @@ pub enum SchemaletDetails {
     Not(SchemaRef),
     IfThen(SchemaRef, SchemaRef),
     IfThenElse(SchemaRef, SchemaRef, SchemaRef),
+
+    // Raw references
     RawRef(String),
     RawDynamicRef(String),
+
+    // Singular forms
     Constant(serde_json::Value),
     Value(SchemaletValue),
 
@@ -281,7 +286,7 @@ pub enum CanonicalSchemaletDetails {
     Reference(SchemaRef),
     // TODO 6/30/2025 What I'm going to do is use "Reference" to indicate some
     // indirection in the original schema and <whatever this is called> to
-    // indicate merely and internal node.
+    // indicate merely an internal node.
     Note(SchemaRef),
     ExclusiveOneOf {
         /// Cached type iff all subschemas share a single type.
@@ -368,18 +373,27 @@ pub struct SchemaletValueArray {
 
 impl Schemalet {
     pub fn new(details: SchemaletDetails, metadata: SchemaletMetadata) -> Self {
-        Self { metadata, details }
+        Self {
+            metadata,
+            details,
+            canonical: false,
+        }
     }
 
     pub fn from_details(details: SchemaletDetails) -> Self {
         Self {
             metadata: Default::default(),
             details,
+            canonical: false,
         }
     }
 
     pub fn simplify(self, done: &BTreeMap<SchemaRef, CanonicalSchemalet>) -> State {
-        let Self { metadata, details } = self;
+        let Self {
+            metadata,
+            details,
+            canonical: _,
+        } = self;
         match details {
             SchemaletDetails::OneOf(..) => todo!(),
             SchemaletDetails::Not(..) => todo!(),
@@ -395,6 +409,7 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::AllOf(schema_refs),
+                        canonical: false,
                     })
                 }
             }
@@ -409,6 +424,7 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::AnyOf(schema_refs),
+                        canonical: false,
                     })
                 }
             }
@@ -497,6 +513,7 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::ExclusiveOneOf(schema_refs),
+                        canonical: false,
                     })
                 }
             }
@@ -517,6 +534,7 @@ impl Schemalet {
                     State::Stuck(Schemalet {
                         metadata,
                         details: SchemaletDetails::YesNo { yes, no },
+                        canonical: false,
                     })
                 }
             }
@@ -527,7 +545,119 @@ impl Schemalet {
     }
 
     pub fn simplify2(&self, nodes: &BTreeMap<SchemaRef, Schemalet>) -> State2 {
-        todo!()
+        match &self.details {
+            SchemaletDetails::Anything
+            | SchemaletDetails::Nothing
+            | SchemaletDetails::Constant(_) => State2::Simplified(
+                Schemalet {
+                    canonical: true,
+                    ..self.clone()
+                },
+                Default::default(),
+            ),
+
+            SchemaletDetails::OneOf(schema_refs) => todo!(),
+            SchemaletDetails::AnyOf(schema_refs) => todo!(),
+            SchemaletDetails::AllOf(schema_refs) => todo!(),
+            SchemaletDetails::Not(schema_ref) => todo!(),
+            SchemaletDetails::IfThen(schema_ref, schema_ref1) => todo!(),
+            SchemaletDetails::IfThenElse(schema_ref, schema_ref1, schema_ref2) => todo!(),
+            SchemaletDetails::RawRef(_) => todo!(),
+            SchemaletDetails::RawDynamicRef(_) => todo!(),
+
+            SchemaletDetails::Value(value) => match value {
+                SchemaletValue::Array(array) => {
+                    if let Some(max) = array.max_items {
+                        if max == 0 {
+                            return State2::Simplified(
+                                Schemalet {
+                                    metadata: self.metadata.clone(),
+                                    details: SchemaletDetails::Constant(serde_json::json!([])),
+                                    canonical: true,
+                                },
+                                Default::default(),
+                            );
+                        }
+                    }
+                    // TODO 4/6/2026
+                    // All I really need to know here is if any of the child
+                    // schemas (items or prefix_items) could be Nothing. If not,
+                    // this this is already canonical. If any **is** Nothing,
+                    // then we can simplify the type. And if we're not sure
+                    // then we're just stuck.
+
+                    todo!()
+                }
+                SchemaletValue::Object(object) => todo!(),
+
+                _ => State2::Simplified(
+                    Schemalet {
+                        canonical: true,
+                        ..self.clone()
+                    },
+                    Default::default(),
+                ),
+            },
+
+            SchemaletDetails::ExclusiveOneOf(schema_refs) => todo!(),
+            SchemaletDetails::ResolvedRef(schema_ref) => todo!(),
+            SchemaletDetails::ResolvedDynamicRef(schema_ref) => todo!(),
+            SchemaletDetails::YesNo { yes, no } => todo!(),
+            SchemaletDetails::StringOf(schema_ref) => todo!(),
+        }
+    }
+
+    pub(crate) fn children(&self) -> Vec<SchemaRef> {
+        match &self.details {
+            SchemaletDetails::Anything => Vec::new(),
+            SchemaletDetails::Nothing => Vec::new(),
+            SchemaletDetails::OneOf(schema_refs)
+            | SchemaletDetails::AnyOf(schema_refs)
+            | SchemaletDetails::AllOf(schema_refs) => schema_refs.clone(),
+
+            SchemaletDetails::Not(schema_ref) => vec![schema_ref.clone()],
+
+            SchemaletDetails::IfThen(schema_ref, schema_ref1) => {
+                vec![schema_ref.clone(), schema_ref1.clone()]
+            }
+            SchemaletDetails::IfThenElse(schema_ref, schema_ref1, schema_ref2) => {
+                vec![schema_ref.clone(), schema_ref1.clone(), schema_ref2.clone()]
+            }
+            SchemaletDetails::RawRef(_) | SchemaletDetails::RawDynamicRef(_) => vec![],
+            SchemaletDetails::Constant(_) => vec![],
+            SchemaletDetails::Value(schemalet_value) => match schemalet_value {
+                SchemaletValue::Boolean
+                | SchemaletValue::Integer { .. }
+                | SchemaletValue::Number { .. }
+                | SchemaletValue::Null => Vec::new(),
+                SchemaletValue::String(_) => Vec::new(),
+
+                SchemaletValue::Array(array) => array
+                    .items
+                    .iter()
+                    .chain(array.prefix_items.iter().flatten())
+                    .cloned()
+                    .collect(),
+                SchemaletValue::Object(obj) => obj
+                    .properties
+                    .values()
+                    .chain(obj.additional_properties.iter())
+                    .chain(obj.property_names.iter())
+                    .chain(obj.pattern_properties.iter().flat_map(|map| map.values()))
+                    .cloned()
+                    .collect(),
+            },
+            SchemaletDetails::ExclusiveOneOf(schema_refs) => schema_refs.clone(),
+            SchemaletDetails::ResolvedRef(schema_ref)
+            | SchemaletDetails::ResolvedDynamicRef(schema_ref) => vec![schema_ref.clone()],
+            SchemaletDetails::YesNo { yes, no } => {
+                let mut result = Vec::new();
+                result.push(yes.clone());
+                result.extend(no.iter().cloned());
+                result
+            }
+            SchemaletDetails::StringOf(schema_ref) => vec![schema_ref.clone()],
+        }
     }
 }
 
@@ -547,6 +677,7 @@ fn simplify_string_of(
         return State::Stuck(Schemalet {
             metadata,
             details: SchemaletDetails::StringOf(schema_ref),
+            canonical: false,
         });
     };
 
@@ -592,6 +723,7 @@ fn simplify_string_of(
                 let new_subschema = Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::StringOf(subschema.clone()),
+                    canonical: false,
                 };
 
                 new_work.push((subschema_string_of.clone(), new_subschema));
@@ -601,6 +733,7 @@ fn simplify_string_of(
             let new_schemalet = Schemalet {
                 metadata,
                 details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+                canonical: false,
             };
 
             State::Simplified(new_schemalet, new_work)
@@ -631,6 +764,7 @@ fn merge_yes_no(
                 Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::ResolvedRef(yes.0),
+                    canonical: false,
                 },
                 Default::default(),
             );
@@ -645,6 +779,7 @@ fn merge_yes_no(
             Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::ResolvedRef(yes.0),
+                canonical: false,
             },
             Default::default(),
         );
@@ -656,6 +791,7 @@ fn merge_yes_no(
             Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::ResolvedRef(yes.0),
+                canonical: false,
             },
             Default::default(),
         ),
@@ -760,6 +896,7 @@ fn expand_any_of(
                 let merge = Schemalet {
                     metadata: Default::default(),
                     details: SchemaletDetails::AllOf(schema_refs),
+                    canonical: false,
                 };
 
                 new_work.push((merge_ref.clone(), merge));
@@ -775,6 +912,7 @@ fn expand_any_of(
         let new_subschema = Schemalet {
             metadata: Default::default(),
             details: SchemaletDetails::YesNo { yes, no },
+            canonical: false,
         };
 
         new_work.push((new_ref.clone(), new_subschema));
@@ -789,6 +927,7 @@ fn expand_any_of(
     let new_schemalet = Schemalet {
         metadata,
         details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+        canonical: false,
     };
 
     State::Simplified(new_schemalet, new_work)
@@ -892,6 +1031,7 @@ fn merge_all(
             let new_schemalet = Schemalet {
                 metadata: Default::default(),
                 details: SchemaletDetails::AllOf(refs.clone()),
+                canonical: false,
             };
 
             new_work.push((new_schemaref.clone(), new_schemalet));
@@ -904,6 +1044,7 @@ fn merge_all(
         let new_schemalet = Schemalet {
             metadata,
             details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+            canonical: false,
         };
 
         State::Simplified(new_schemalet, new_work)
