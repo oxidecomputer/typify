@@ -6,7 +6,7 @@ use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
     typespace::TypespaceSettings,
-    Typify, Typify2, Typify2NameHint, TypifySettings,
+    Typify, TypifySettings,
 };
 use url::Url;
 
@@ -75,44 +75,23 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
         .map(|m| m.keys().cloned().collect::<Vec<_>>())
         .unwrap_or_default();
 
-    // let mut typify = Typify::new_with_bundle(bundle, Default::default());
-
-    // assert_eq!(context.location.to_string(), "http://localhost/");
-
-    // println!("{:?}", defs);
-
-    // for def in defs {
-    //     let xxx = format!("{}#/$defs/{}", context.location, def);
-    //     println!("adding type for {def} {xxx}");
-    //     let _type_id = typify.add_type_by_id(&xxx).unwrap();
-    // }
-
-    // let _type_id = typify
-    //     .add_type_by_id(&context.location.to_string())
-    //     .unwrap();
-
-    // validate_output(path, TypespaceSettings::default(), typify);
-
-    let mut typify2 = Typify2::new_with_bundle(bundle);
+    let mut typify = Typify::new_with_bundle(bundle, Default::default());
 
     assert_eq!(context.location.to_string(), "http://localhost/");
+
+    println!("{:?}", defs);
 
     for def in defs {
         let xxx = format!("{}#/$defs/{}", context.location, def);
         println!("adding type for {def} {xxx}");
-        let _type_id = typify2
-            .add_type(&xxx, Typify2NameHint::Mandatory(def))
-            .unwrap();
+        let _type_id = typify.add_type_by_id(&xxx).unwrap();
     }
 
-    let _type_id = typify2
-        .add_type(
-            &context.location.to_string(),
-            Typify2NameHint::Mandatory("SchemaRoot".to_string()),
-        )
+    let _type_id = typify
+        .add_type_by_id(&context.location.to_string())
         .unwrap();
 
-    validate_output(path, TypespaceSettings::default(), typify2);
+    validate_output(path, TypespaceSettings::default(), typify);
 
     Ok(())
 }
@@ -216,31 +195,21 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         )
     }
 
-    // let mut typify = Typify::new_with_bundle(bundle, test_json.settings.typify);
-    // let _type_id = typify
-    //     .add_type_by_id(&context.location.to_string())
-    //     .unwrap();
-
-    // validate_output(path, test_json.settings.typespace, typify);
-
-    let mut typify2 = Typify2::new_with_bundle(bundle);
-    let _type_id = typify2
-        .add_type(
-            &context.location.to_string(),
-            Typify2NameHint::Mandatory("SchemaRoot".to_string()),
-        )
+    let mut typify = Typify::new_with_bundle(bundle, test_json.settings.typify);
+    let _type_id = typify
+        .add_type_by_id(&context.location.to_string())
         .unwrap();
 
-    validate_output(path, TypespaceSettings::default(), typify2);
+    validate_output(path, test_json.settings.typespace, typify);
 
     Ok(())
 }
 
-fn validate_output(path: &PathBuf, settings: TypespaceSettings, typify: Typify2) {
+fn validate_output(path: &PathBuf, settings: TypespaceSettings, typify: Typify) {
     let canonical_out = typify.canonical_output();
 
-    // let typespace = typify.into_typespace(settings);
-    let typespace = typify.typify(Default::default(), settings).unwrap();
+    let typespace = typify.into_typespace(settings);
+    // let typespace = typify.typify(Default::default(), settings).unwrap();
 
     let tokens = typespace.render();
 

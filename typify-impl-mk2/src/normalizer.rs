@@ -1,10 +1,8 @@
 use std::collections::BTreeMap;
 
-use log::trace;
-
 use crate::{
     bundler::{Bundle, Context},
-    schemalet::{to_schemalets, SchemaRef, Schemalet, SchemaletDetails, State2},
+    schemalet::{to_schemalets, SchemaRef, Schemalet, SchemaletDetails},
     typify::Result,
 };
 
@@ -114,88 +112,8 @@ impl Normalizer2 {
         }
     }
 
-    fn normalize_from_id(&mut self, id: &str) -> Result<()> {
-        let mut pass = 0;
-        // let mut wip = vec![SchemaRef::Id(id.to_string())];
-        let mut wip = self.nodes.keys().cloned().collect::<Vec<_>>();
-
-        while !wip.is_empty() {
-            pass += 1;
-            trace!("");
-            trace!("new normalization pass: {pass}");
-            trace!("");
-
-            let mut modified = Vec::new();
-            let mut next_pass_wip = Vec::new();
-            let mut simplified = false;
-            let mut all_canonical = true;
-
-            // TODO 4/6/2026
-            // This is super-jank. Rather than doing anything even nominally
-            // clever wrt identifying potentially modified nodes that we want
-            // to consider for simplification, we just yeet everything we know
-            // about into that list.
-            next_pass_wip.extend(self.nodes.keys().cloned());
-
-            for schema_ref in wip.drain(..) {
-                let schemalet = self.nodes.get(&schema_ref).unwrap();
-
-                // TODO 4/6/2026
-                // We really shouldn't be putting canonical schemalets into
-                // the work queue... something to sort out later.
-                if let SchemaletDetails::Canonical(_) = &schemalet.details {
-                    // If this is already canonical, we don't need to do anything
-                    // with it.
-                    continue;
-                }
-
-                all_canonical = false;
-
-                trace!("simplifying {schema_ref} with details {schemalet:#?}");
-
-                if let State2::Simplified(schemalet, items) = schemalet.simplify2(&self.nodes) {
-                    simplified = true;
-
-                    // We've modified this node so add it to the list of
-                    // modified nodes so that we can examine any incoming
-                    // edges.
-                    modified.push(schema_ref.clone());
-                    // Add new nodes to the list of nodes to process in the
-                    // next pass.
-                    next_pass_wip
-                        .extend(items.iter().map(|(new_schemaref, _)| new_schemaref.clone()));
-                    // Replace the node with the simplified version.
-                    self.nodes.insert(schema_ref.clone(), schemalet);
-                    // Add any new nodes to the graph.
-                    self.nodes.extend(items);
-                }
-            }
-
-            // We may be able to simplify anything that references a node that
-            // has been modified.
-            // TODO 4/6/2026
-            // We should do that here...
-
-            wip = next_pass_wip;
-
-            // TODO 4/6/2026
-            // This can also be rethought once we more tightly manage the
-            // work queue for each pass.
-            if !simplified {
-                if all_canonical {
-                    trace!("all canonical, done!");
-                    break;
-                } else {
-                    panic!("no simplifications possible, done!");
-                }
-            }
-        }
-
-        // TODO 4/6/2026
-        // It would be cool to validate that everything is normalized as we
-        // descend from the root_id
-
-        Ok(())
+    fn normalize_from_id(&mut self, _id: &str) -> Result<()> {
+        todo!()
     }
 
     pub(crate) fn canonical_output(&self) -> String {
@@ -206,8 +124,8 @@ impl Normalizer2 {
 #[cfg(test)]
 mod tests {
     use crate::schemalet::{
-        CanonicalSchemaletDetails, SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata,
-        SchemaletValue, SchemaletValueString,
+        SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata, SchemaletValue,
+        SchemaletValueString,
     };
 
     use super::Normalizer2;
@@ -232,16 +150,16 @@ mod tests {
 
         normalizer.normalize_from_id("string").unwrap();
 
-        let node = &normalizer.nodes[&id];
-        assert!(
-            matches!(
-                &node.details,
-                SchemaletDetails::Canonical(CanonicalSchemaletDetails::Value(
-                    SchemaletValue::String(_)
-                ))
-            ),
-            "expected canonical string, got {:#?}",
-            node.details
-        );
+        let _node = &normalizer.nodes[&id];
+        // assert!(
+        //     matches!(
+        //         &node.details,
+        //         SchemaletDetails::Canonical(CanonicalSchemaletDetails::Value(
+        //             SchemaletValue::String(_)
+        //         ))
+        //     ),
+        //     "expected canonical string, got {:#?}",
+        //     node.details
+        // );
     }
 }

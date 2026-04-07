@@ -447,117 +447,118 @@ impl Typify2 {
     // Codespace... which isn't implemented yet.
     pub fn typify(
         self,
-        settings: TypifySettings,
-        typespace_settings: TypespaceSettings,
+        _settings: TypifySettings,
+        _typespace_settings: TypespaceSettings,
     ) -> Result<Typespace> {
-        let Self {
-            bundle: _,
-            normalizer: Normalizer2 { nodes },
-            roots,
-        } = self;
+        todo!()
+        // let Self {
+        //     bundle: _,
+        //     normalizer: Normalizer2 { nodes },
+        //     roots,
+        // } = self;
 
-        let nodes = nodes
-            .into_iter()
-            .map(|(k, v)| {
-                let Schemalet { details, metadata } = v;
+        // let nodes = nodes
+        //     .into_iter()
+        //     .map(|(k, v)| {
+        //         let Schemalet { details, metadata } = v;
 
-                let SchemaletDetails::Canonical(canonical) = details else {
-                    panic!()
-                };
+        //         let SchemaletDetails::Canonical(canonical) = details else {
+        //             panic!()
+        //         };
 
-                (
-                    k,
-                    CanonicalSchemalet {
-                        metadata,
-                        details: canonical,
-                    },
-                )
-            })
-            .collect();
+        //         (
+        //             k,
+        //             CanonicalSchemalet {
+        //                 metadata,
+        //                 details: canonical,
+        //             },
+        //         )
+        //     })
+        //     .collect();
 
-        let mut typespace_builder = TypespaceBuilder::default();
-        let mut converter = Converter::new(nodes);
-        let mut work = VecDeque::new();
-        roots.into_iter().for_each(|(schema_ref, name)| {
-            work.push_front(schema_ref.clone());
+        // let mut typespace_builder = TypespaceBuilder::default();
+        // let mut converter = Converter::new(nodes);
+        // let mut work = VecDeque::new();
+        // roots.into_iter().for_each(|(schema_ref, name)| {
+        //     work.push_front(schema_ref.clone());
 
-            // TODO 4/6/2026
-            // Jank alert. I need a way to specify the different kinds of
-            // hints.
-            let xxx = match name {
-                Typify2NameHint::Mandatory(name) => name,
-                Typify2NameHint::Suggested(name) => name,
-            };
-            converter.set_name(schema_ref, xxx);
-        });
+        //     // TODO 4/6/2026
+        //     // Jank alert. I need a way to specify the different kinds of
+        //     // hints.
+        //     let xxx = match name {
+        //         Typify2NameHint::Mandatory(name) => name,
+        //         Typify2NameHint::Suggested(name) => name,
+        //     };
+        //     converter.set_name(schema_ref, xxx);
+        // });
 
-        'outer: while let Some(work_id) = work.pop_front() {
-            println!("work on {work_id}");
+        // 'outer: while let Some(work_id) = work.pop_front() {
+        //     println!("work on {work_id}");
 
-            // If we've already converted this type, we can skip it. Note that
-            // this may mean we saw it in a previous iteration of this loop or
-            // in a previous invocation of this method.
-            if typespace_builder.contains_type(&work_id) {
-                continue;
-            }
+        //     // If we've already converted this type, we can skip it. Note that
+        //     // this may mean we saw it in a previous iteration of this loop or
+        //     // in a previous invocation of this method.
+        //     if typespace_builder.contains_type(&work_id) {
+        //         continue;
+        //     }
 
-            // Get the original JSON that defined this type.
-            // TODO 9.15.2025
-            // In the future we can add this as content that the Typespace
-            // may add to the doc comment for the type.
-            let maybe_original_json = match &work_id {
-                SchemaRef::Id(id) => Some(self.bundle.get_fully_qualified(id).unwrap()),
-                _ => None,
-            };
+        //     // Get the original JSON that defined this type.
+        //     // TODO 9.15.2025
+        //     // In the future we can add this as content that the Typespace
+        //     // may add to the doc comment for the type.
+        //     let maybe_original_json = match &work_id {
+        //         SchemaRef::Id(id) => Some(self.bundle.get_fully_qualified(id).unwrap()),
+        //         _ => None,
+        //     };
 
-            // Compare the original JSON schema against each of the specified
-            // conversions in the settings. If there's a match, we use the
-            // provided type.
-            if let Some(original_json) = maybe_original_json {
-                for conv in &settings.convert {
-                    if jsonschema::is_valid(&conv.pattern, original_json) {
-                        // TODO 3/31/2026
-                        // Need to fill in impls and type params
-                        let typ = Type::Native(TypeNative {
-                            name: conv.native.name.clone(),
-                            impls: TypespaceTraitSet::empty(),
-                            parameters: vec![],
-                        });
-                        typespace_builder.insert(work_id.clone(), typ);
-                        continue 'outer;
-                    }
-                }
-            }
+        //     // Compare the original JSON schema against each of the specified
+        //     // conversions in the settings. If there's a match, we use the
+        //     // provided type.
+        //     if let Some(original_json) = maybe_original_json {
+        //         for conv in &settings.convert {
+        //             if jsonschema::is_valid(&conv.pattern, original_json) {
+        //                 // TODO 3/31/2026
+        //                 // Need to fill in impls and type params
+        //                 let typ = Type::Native(TypeNative {
+        //                     name: conv.native.name.clone(),
+        //                     impls: TypespaceTraitSet::empty(),
+        //                     parameters: vec![],
+        //                 });
+        //                 typespace_builder.insert(work_id.clone(), typ);
+        //                 continue 'outer;
+        //             }
+        //         }
+        //     }
 
-            let ConvertResult {
-                primary,
-                additional,
-            } = converter.convert(&work_id, maybe_original_json);
-            let children = primary.children();
+        //     let ConvertResult {
+        //         primary,
+        //         additional,
+        //     } = converter.convert(&work_id, maybe_original_json);
+        //     let children = primary.children();
 
-            if !children.is_empty() {
-                println!("work_id {work_id} children {children:?}");
-            }
+        //     if !children.is_empty() {
+        //         println!("work_id {work_id} children {children:?}");
+        //     }
 
-            work.extend(children);
+        //     work.extend(children);
 
-            typespace_builder.insert(work_id.clone(), primary);
-            for (add_id, add_type) in additional {
-                let add_children = add_type.children();
+        //     typespace_builder.insert(work_id.clone(), primary);
+        //     for (add_id, add_type) in additional {
+        //         let add_children = add_type.children();
 
-                if !add_children.is_empty() {
-                    println!("add_id {add_id} children {add_children:?}");
-                }
+        //         if !add_children.is_empty() {
+        //             println!("add_id {add_id} children {add_children:?}");
+        //         }
 
-                work.extend(add_children);
+        //         work.extend(add_children);
 
-                if !typespace_builder.contains_type(&add_id) {
-                    typespace_builder.insert(add_id, add_type);
-                }
-            }
-        }
+        //         if !typespace_builder.contains_type(&add_id) {
+        //             typespace_builder.insert(add_id, add_type);
+        //         }
+        //     }
+        // }
 
-        Ok(typespace_builder.finalize(typespace_settings).unwrap())
+        // Ok(typespace_builder.finalize(typespace_settings).unwrap())
     }
 
     #[doc(hidden)]
