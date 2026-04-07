@@ -11,7 +11,6 @@ use crate::{
     },
     typespace::{
         NameBuilder, Type, TypeNative, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct,
-        TypespaceTraitSet,
     },
 };
 
