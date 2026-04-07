@@ -1,6 +1,9 @@
+use proc_macro2::TokenStream;
+use quote::{format_ident, quote};
+
 use crate::{
     schemalet::SchemaRef,
-    typespace::{JsonValue, NameBuilder, StructProperty, TypeCommon, TypeCommonBuilt},
+    typespace::{JsonValue, NameBuilder, StructProperty, TypeCommon, TypeCommonBuilt, Typespace},
 };
 
 #[derive(Debug, Clone)]
@@ -39,6 +42,80 @@ impl TypeEnum {
             .iter()
             .flat_map(|variant| variant.children())
             .collect()
+    }
+
+    pub(crate) fn render(&self, typespace: &Typespace) -> TokenStream {
+        let Self {
+            common: TypeCommon {
+                name: _,
+                description,
+                default: _,
+                built,
+            },
+            tag_type,
+            variants,
+            deny_unknown_fields: _,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let serde = match tag_type {
+            EnumTagType::External => TokenStream::new(),
+            EnumTagType::Internal { tag } => quote! { #[serde(tag = #tag)] },
+            EnumTagType::Adjacent { tag, content } => {
+                quote! { #[serde(tag = #tag, content = #content)] }
+            }
+            EnumTagType::Untagged => quote! { #[serde(untagged)] },
+        };
+
+        let variants = variants.iter().map(|variant| {
+            let EnumVariant {
+                rust_name,
+                rename,
+                description,
+                details,
+            } = variant;
+            let name = format_ident!("{}", rust_name);
+            let variant_serde = rename
+                .as_ref()
+                .map(|n| quote! { #[serde(rename = #n)] });
+            let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+            let data = match details {
+                VariantDetails::Unit => TokenStream::new(),
+                VariantDetails::Item(item) => {
+                    let item_ident = typespace.render_ident(item);
+                    quote! { (#item_ident) }
+                }
+                VariantDetails::Tuple(items) => {
+                    let item_idents = items.iter().map(|item| typespace.render_ident(item));
+                    quote! { ( #( #item_idents, )* ) }
+                }
+                VariantDetails::Struct(properties) => {
+                    let properties = properties
+                        .iter()
+                        .map(|prop| typespace.render_struct_property(prop, false));
+                    quote! { { #( #properties, )* } }
+                }
+            };
+
+            quote! {
+                #description
+                #variant_serde
+                #name #data
+            }
+        });
+
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
+
+        quote! {
+            // TODO I want to have the original unique id available
+            #description
+            #[derive(::serde::Deserialize, ::serde::Serialize)]
+            #serde
+            pub enum #name_ident {
+                #( #variants, )*
+            }
+        }
     }
 
     pub(crate) fn children_with_context(&self) -> Vec<(SchemaRef, String)> {

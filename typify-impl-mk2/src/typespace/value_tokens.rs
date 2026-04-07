@@ -8,7 +8,11 @@ pub fn value_tokens(value: &serde_json::Value) -> TokenStream {
         serde_json::Value::Null => quote! {
             ::serde_json::Value::Null
         },
-        serde_json::Value::Bool(b) => todo!(),
+        serde_json::Value::Bool(b) => {
+            quote! {
+                ::serde_json::Value::Bool(#b)
+            }
+        }
         serde_json::Value::Number(number) => {
             if let Some(n) = number.as_i64() {
                 quote! {

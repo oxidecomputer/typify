@@ -14,11 +14,6 @@ pub struct TypeStruct {
     pub deny_unknown_fields: bool,
 }
 
-#[derive(Debug, Clone)]
-pub(crate) struct TypeStructBuilt {
-    pub name: Name<SchemaRef>,
-}
-
 impl TypeStruct {
     pub fn new(
         name: NameBuilder,
@@ -38,6 +33,35 @@ impl TypeStruct {
             deny_unknown_fields,
         }
     }
+    pub(crate) fn render(&self, typespace: &Typespace) -> proc_macro2::TokenStream {
+        let Self {
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    default: _,
+                    built,
+                },
+            properties,
+            deny_unknown_fields: _,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let properties = properties
+            .iter()
+            .map(|prop| typespace.render_struct_property(prop, true));
+
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
+
+        quote! {
+            #description
+            #[derive(::serde::Deserialize, ::serde::Serialize)]
+            pub struct #name_ident {
+                #( #properties, )*
+            }
+        }
+    }
+
     pub(crate) fn children(&self) -> Vec<SchemaRef> {
         self.properties
             .iter()
@@ -113,12 +137,9 @@ pub enum StructPropertyState {
 
 #[derive(Debug, Clone)]
 pub struct TypeUnitStruct {
-    pub name: NameBuilder,
-    pub description: Option<String>,
+    pub common: TypeCommon,
 
     pub repr: serde_json::Value,
-
-    pub(crate) built: Option<TypeStructBuilt>,
 }
 impl TypeUnitStruct {
     pub(crate) fn new(
@@ -127,19 +148,26 @@ impl TypeUnitStruct {
         repr: serde_json::Value,
     ) -> Self {
         Self {
-            name,
-            description,
+            common: TypeCommon {
+                name: name.into(),
+                description: description.into(),
+                default: None,
+                built: None,
+            },
             repr,
-            built: None,
         }
     }
 
     pub(crate) fn render(&self) -> proc_macro2::TokenStream {
         let Self {
-            name: _,
-            description,
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    built,
+                    default: _,
+                },
             repr,
-            built,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
         let name = built.as_ref().unwrap().name.to_string();
@@ -184,16 +212,13 @@ impl TypeUnitStruct {
 
 #[derive(Debug, Clone)]
 pub struct TypeTupleStruct {
-    pub name: NameBuilder,
-    pub description: Option<String>,
+    pub common: TypeCommon,
     /// Fields of the tuple.
     pub fields: Vec<SchemaRef>,
 
     /// Optional type, which must be represented as an array, that stores
     /// items beyond those in `fields`.
     pub rest: Option<SchemaRef>,
-
-    pub(crate) built: Option<TypeStructBuilt>,
 }
 impl TypeTupleStruct {
     pub(crate) fn new(
@@ -203,11 +228,133 @@ impl TypeTupleStruct {
         rest: Option<SchemaRef>,
     ) -> Self {
         Self {
-            name,
-            description,
+            common: TypeCommon {
+                name,
+                description,
+                default: None,
+                built: None,
+            },
             fields,
             rest,
-            built: None,
+        }
+    }
+
+    pub(crate) fn render(&self, typespace: &Typespace) -> proc_macro2::TokenStream {
+        let Self {
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    default: _,
+                    built,
+                },
+            fields,
+            rest,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
+
+        let field_ident = fields
+            .iter()
+            .map(|field_id| typespace.render_ident(field_id));
+        let rest_ident = rest
+            .as_ref()
+            .map(|rest_id| typespace.render_ident(rest_id))
+            .into_iter();
+
+        let field_index = (0..fields.len()).map(syn::Index::from);
+        let rest_index = rest
+            .as_ref()
+            .map(|_| syn::Index::from(fields.len()))
+            .into_iter();
+
+        let field_var = (0..fields.len())
+            .map(|ii| format_ident!("field_{ii}"))
+            .collect::<Vec<_>>();
+        let field_int = (0..fields.len()).collect::<Vec<_>>();
+        let rest_var = rest
+            .as_ref()
+            .map(|_| format_ident!("rest"))
+            .into_iter()
+            .collect::<Vec<_>>();
+        let expected = format!("a tuple of size {} or more", fields.len());
+
+        quote! {
+            #description
+            #[derive(::std::clone::Clone, ::std::fmt::Debug)]
+            pub struct #name_ident(
+                #( pub #field_ident, )*
+                #( pub #rest_ident, )*
+            );
+
+            impl ::serde::Serialize for #name_ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::serde::Serializer,
+                {
+                    use ::serde::ser::SerializeSeq;
+                    let mut seq = serializer.serialize_seq(None)?;
+                    #(
+                        seq.serialize_element(&self.#field_index)?;
+                    )*
+                    #(
+                        self.#rest_index.serialize(
+                            ::json_serde::FlattenedSequenceSerializer::new(&mut seq)
+                        )?;
+                    )*
+                    seq.end()
+                }
+            }
+
+            impl<'de> ::serde::Deserialize<'de> for #name_ident {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: ::serde::Deserializer<'de>,
+                {
+                    struct Visitor;
+
+                    impl<'de> ::serde::de::Visitor<'de> for Visitor {
+                        type Value = #name_ident;
+
+                        fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                            // TODO could we specify the type here?
+                            formatter.write_str("a sequence")
+                        }
+
+                        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+                        where
+                            A: ::serde::de::SeqAccess<'de>,
+                        {
+                            // Strictly speaking, we don't need to
+                            // store each tuple element in a
+                            // variable, but as a practical matter,
+                            // it makes the generated code much
+                            // easier to follow and less indented.
+                            #(
+                                let #field_var = seq
+                                    .next_element()?
+                                    .ok_or_else(|| ::serde::de::Error::invalid_length(
+                                        #field_int,
+                                        &#expected
+                                    ))?;
+                            )*
+                            #(
+                                let #rest_var = ::serde::Deserialize::deserialize(
+                                    ::json_serde::FlattenedSequenceDeserializer::new(&mut seq)
+                                )?;
+                            )*
+                            Ok(#name_ident(
+                                #( #field_var, )*
+                                #( #rest_var, )*
+                            ))
+                        }
+                    }
+
+                    deserializer.deserialize_seq(Visitor)
+                }
+            }
         }
     }
 

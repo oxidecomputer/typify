@@ -5,6 +5,7 @@ mod type_native;
 mod type_struct;
 mod value_tokens;
 
+use log::debug;
 use serde::Deserialize;
 
 pub use type_alias::*;
@@ -270,232 +271,16 @@ pub struct Typespace {
 impl Typespace {
     pub fn render(&self) -> TokenStream {
         let types = self.types.iter().map(|(id, typ)| {
-            println!("rendering {id}");
+            debug!("rendering {id}");
             match typ {
-                Type::Enum(type_enum) => {
-                    let TypeEnum {
-                        common: TypeCommon {
-                            name: _,
-                            description,
-                            default,
-                            built,
-                        },
-                        tag_type,
-                        variants,
-                        deny_unknown_fields,
-                    } = type_enum;
-                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-                    let serde = match tag_type {
-                        EnumTagType::External => TokenStream::new(),
-                        EnumTagType::Internal { tag } => quote! {
-                            #[serde(tag = #tag)]
-                        },
-                        EnumTagType::Adjacent { tag, content } => quote! {
-                            #[serde(tag = #tag, content = #content)]
-                        },
-                        EnumTagType::Untagged => quote! {
-                            #[serde(untagged)]
-                        },
-                    };
-
-                    let variants = variants.iter().map(|variant| {
-                        let EnumVariant {
-                            rust_name,
-                            rename,
-                            description,
-                            details,
-                        } = variant;
-                        let name = format_ident!("{}", rust_name);
-                        let variant_serde = rename.as_ref().map(|n| {
-                            quote! {
-                                #[serde(rename = #n)]
-                            }
-                        });
-                        let description =
-                            description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-
-                        let data = match details {
-                            VariantDetails::Unit => TokenStream::new(),
-                            VariantDetails::Item(item) => {
-                                let item_ident = self.render_ident(item);
-                                quote! {
-                                    (#item_ident)
-                                }
-                            }
-                            VariantDetails::Tuple(items) => todo!(),
-                            VariantDetails::Struct(properties) => {
-                                let properties = properties.iter().map(|struct_prop| {
-                                    self.render_struct_property(struct_prop, false)
-                                });
-                                quote! {
-                                    {
-                                        #( #properties, )*
-                                    }
-                                }
-                            }
-                        };
-
-                        quote! {
-                            #description
-                            #variant_serde
-                            #name #data
-                        }
-                    });
-
-                    let name = built.as_ref().unwrap().name.to_string();
-                    let name_ident = format_ident!("{name}");
-
-                    quote! {
-                        // TODO I want to have the original unique id available
-                        #description
-                        #[derive(::serde::Deserialize, ::serde::Serialize)]
-                        #serde
-                        pub enum #name_ident {
-                            #( #variants, )*
-                        }
-                    }
-                }
-                Type::Struct(type_struct) => {
-                    let TypeStruct {
-                        common: TypeCommon {
-                            name: _,
-                            description,
-                            default,
-                            built,
-                        },
-                        properties,
-                        deny_unknown_fields,
-                    } = type_struct;
-                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-                    let properties = properties
-                        .iter()
-                        .map(|prop| self.render_struct_property(prop, true));
-
-                    let name = built.as_ref().unwrap().name.to_string();
-                    let name_ident = format_ident!("{name}");
-
-                    quote! {
-                        #description
-                        #[derive(::serde::Deserialize, ::serde::Serialize)]
-                        pub struct #name_ident {
-                            #( #properties, )*
-                        }
-                    }
-                }
+                Type::Enum(type_enum) => type_enum.render(self),
+                Type::Struct(type_struct) => type_struct.render(self),
                 Type::UnitStruct(unit_struct_info) => unit_struct_info.render(),
-
-                Type::TupleStruct(TypeTupleStruct {
-                    name: _,
-                    description,
-                    fields,
-                    rest,
-                    built,
-                }) => {
-                    let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-
-                    let name = built.as_ref().unwrap().name.to_string();
-                    let name_ident = format_ident!("{name}");
-
-                    let field_ident = fields.iter().map(|field_id| self.render_ident(field_id));
-                    let rest_ident = rest
-                        .as_ref()
-                        .map(|rest_id| self.render_ident(rest_id))
-                        .into_iter();
-
-                    let field_index = (0..fields.len()).map(syn::Index::from);
-                    let rest_index = rest
-                        .as_ref()
-                        .map(|_| syn::Index::from(fields.len()))
-                        .into_iter();
-
-                    let field_var= (0..fields.len()).map(|ii| format_ident!("field_{ii}")).collect::<Vec<_>>();
-                    let field_int = (0..fields.len()).collect::<Vec<_>>();
-                    let rest_var = rest.as_ref().map(|_| format_ident!("rest")).into_iter().collect::<Vec<_>>();
-                    let expected = format!("a tuple of size {} or more", fields.len());
-
-                    quote! {
-                        #description
-                        #[derive(::std::clone::Clone, ::std::fmt::Debug)]
-                        pub struct #name_ident(
-                            #( pub #field_ident, )*
-                            #( pub #rest_ident, )*
-                        );
-
-                        impl ::serde::Serialize for #name_ident {
-                            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                            where
-                                S: ::serde::Serializer,
-                            {
-                                use ::serde::ser::SerializeSeq;
-                                let mut seq = serializer.serialize_seq(None)?;
-                                #(
-                                    seq.serialize_element(&self.#field_index)?;
-                                )*
-                                #(
-                                    self.#rest_index.serialize(
-                                        ::json_serde::FlattenedSequenceSerializer::new(&mut seq)
-                                    )?;
-                                )*
-                                seq.end()
-                            }
-                        }
-
-                        impl<'de> ::serde::Deserialize<'de> for #name_ident {
-                            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                            where
-                                D: ::serde::Deserializer<'de>,
-                            {
-                                struct Visitor;
-
-                                impl<'de> ::serde::de::Visitor<'de> for Visitor {
-                                    type Value = #name_ident;
-
-                                    fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                                        // TODO could we specify the type here?
-                                        formatter.write_str("a sequence")
-                                    }
-
-                                    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-                                    where
-                                        A: ::serde::de::SeqAccess<'de>,
-                                    {
-                                        // Strictly speaking, we don't need to
-                                        // store each tuple element in a
-                                        // variable, but as a practical matter,
-                                        // it makes the generated code much
-                                        // easier to follow and less indented.
-                                        #(
-                                            let #field_var = seq
-                                            .next_element()?
-                                            .ok_or_else(||
-                                                ::serde::de::Error::invalid_length(
-                                                    #field_int,
-                                                    &#expected
-                                                )
-                                            )?;
-                                        )*
-                                        #(
-                                            let #rest_var = ::serde::Deserialize::deserialize(
-                                                ::json_serde::FlattenedSequenceDeserializer::new(&mut seq)
-                                            )?;
-                                        )*
-                                        Ok(#name_ident(
-                                            #( #field_var, )*
-                                            #( #rest_var, )*
-                                        ))
-                                    }
-                                }
-
-                                deserializer.deserialize_seq(Visitor)
-                            }
-                        }
-                    }
-                }
-
+                Type::TupleStruct(type_tuple_struct) => type_tuple_struct.render(self),
                 Type::NewtypeStruct(newtype_info) => newtype_info.render(self),
-
                 Type::TypeAlias(alias_info) => alias_info.render(self),
 
+                // There's no type definition, so no code is required.
                 Type::Native(_)
                 | Type::Option(_)
                 | Type::Box(_)
@@ -518,22 +303,20 @@ impl Typespace {
         }
     }
 
-    fn render_ident(&self, id: &SchemaRef) -> TokenStream {
+    pub(crate) fn render_ident(&self, id: &SchemaRef) -> TokenStream {
         let ty = self.types.get(id).unwrap();
         match ty {
-            Type::Enum(type_enum) => {
-                let name = type_enum.common.built.as_ref().unwrap().name.to_string();
+            Type::Enum(TypeEnum { common, .. })
+            | Type::Struct(TypeStruct { common, .. })
+            | Type::UnitStruct(TypeUnitStruct { common, .. })
+            | Type::TupleStruct(TypeTupleStruct { common, .. })
+            | Type::NewtypeStruct(TypeNewtypeStruct { common, .. })
+            | Type::TypeAlias(TypeTypeAlias { common, .. }) => {
+                let name = common.built.as_ref().unwrap().name.to_string();
                 let name_ident = format_ident!("{name}");
                 name_ident.into_token_stream()
             }
-            Type::Struct(_) => {
-                quote! { Ref<"???"> }
-            }
-            Type::NewtypeStruct(inner) => {
-                let name = inner.common.built.as_ref().unwrap().name.to_string();
-                let name_ident = format_ident!("{name}");
-                name_ident.into_token_stream()
-            }
+
             Type::Native(TypeNative {
                 name, parameters, ..
             }) => {
@@ -548,6 +331,19 @@ impl Typespace {
                 });
                 quote! {
                     #name_ident #parameters
+                }
+            }
+
+            Type::Array(schema_ref, n) => {
+                let inner_ident = self.render_ident(schema_ref);
+                quote! {
+                    [#inner_ident; #n]
+                }
+            }
+            Type::Tuple(schema_refs) => {
+                let inner_idents = schema_refs.iter().map(|id| self.render_ident(id));
+                quote! {
+                    ( #( #inner_idents ),* )
                 }
             }
 
@@ -604,9 +400,6 @@ impl Typespace {
                     ::std::collections::BTreeMap<#key_ident, #value_ident>
                 }
             }
-            // Type::Array(_, _) => todo!(),
-            // Type::Tuple(items) => todo!(),
-            // Type::Unit => todo!(),
             Type::Boolean => quote! { bool },
             Type::Integer(name) | Type::Float(name) => syn::parse_str::<syn::TypePath>(name)
                 .unwrap()
@@ -616,12 +409,11 @@ impl Typespace {
                 TypespaceSettingsStd::Unqualified => quote! { String },
             },
             Type::JsonValue => quote! { ::serde_json::Value },
-
-            _ => todo!("no identifier for type {id} {:#?}", ty),
+            Type::Unit => quote! { () },
         }
     }
 
-    fn render_struct_property(
+    pub(crate) fn render_struct_property(
         &self,
         StructProperty {
             rust_name,
@@ -940,146 +732,33 @@ impl TypespaceBuilder {
         }
 
         for (id, typ) in &mut types {
-            println!("naming id {id}");
-            match typ {
-                Type::Enum(type_enum) => {
-                    let name = match &type_enum.common.name {
-                        NameBuilder::Unset => unreachable!(),
-                        NameBuilder::Fixed(s) => {
-                            let nn = namespace.make_name(id.clone());
-                            nn.set_name(s);
-                            nn
-                        }
-                        NameBuilder::Hints(hints) => {
-                            let nn = namespace.make_name(id.clone());
+            debug!("naming id {id}");
+            if let Some(common) = typ.get_common_mut() {
+                let name = match &common.name {
+                    NameBuilder::Unset => unreachable!(),
+                    NameBuilder::Fixed(s) => {
+                        let nn = namespace.make_name(id.clone());
+                        nn.set_name(s);
+                        nn
+                    }
+                    NameBuilder::Hints(hints) => {
+                        let nn = namespace.make_name(id.clone());
 
-                            for hint in hints {
-                                match hint {
-                                    NameBuilderHint::Title(_) => todo!(),
-                                    NameBuilderHint::Parent(id, s) => {
-                                        nn.derive_name(id, s);
-                                    }
+                        for hint in hints {
+                            match hint {
+                                NameBuilderHint::Title(_) => todo!(),
+                                NameBuilderHint::Parent(id, s) => {
+                                    nn.derive_name(id, s);
                                 }
                             }
-                            nn
                         }
-                    };
-                    type_enum.common.built = Some(TypeCommonBuilt {
-                        name,
-                        traits: TypespaceTraitSet::empty(),
-                    });
-                }
-                Type::Struct(type_struct) => {
-                    let name = match &type_struct.common.name {
-                        NameBuilder::Unset => unreachable!(),
-                        NameBuilder::Fixed(s) => {
-                            let nn = namespace.make_name(id.clone());
-                            nn.set_name(s);
-                            nn
-                        }
-                        NameBuilder::Hints(hints) => {
-                            let nn = namespace.make_name(id.clone());
-
-                            for hint in hints {
-                                match hint {
-                                    NameBuilderHint::Title(_) => todo!(),
-                                    NameBuilderHint::Parent(id, s) => {
-                                        nn.derive_name(id, s);
-                                    }
-                                }
-                            }
-                            nn
-                        }
-                    };
-                    type_struct.common.built = Some(TypeCommonBuilt {
-                        name,
-                        traits: TypespaceTraitSet::empty(),
-                    });
-                }
-
-                Type::UnitStruct(type_inner) => {
-                    let name = match &type_inner.name {
-                        NameBuilder::Unset => unreachable!(),
-                        NameBuilder::Fixed(s) => {
-                            let nn = namespace.make_name(id.clone());
-                            nn.set_name(s);
-                            nn
-                        }
-                        NameBuilder::Hints(hints) => {
-                            let nn = namespace.make_name(id.clone());
-
-                            for hint in hints {
-                                match hint {
-                                    NameBuilderHint::Title(_) => todo!(),
-                                    NameBuilderHint::Parent(id, s) => {
-                                        nn.derive_name(id, s);
-                                    }
-                                }
-                            }
-                            nn
-                        }
-                    };
-
-                    type_inner.built = Some(TypeStructBuilt { name });
-                }
-
-                Type::TupleStruct(type_inner) => {
-                    let name = match &type_inner.name {
-                        NameBuilder::Unset => unreachable!(),
-                        NameBuilder::Fixed(s) => {
-                            let nn = namespace.make_name(id.clone());
-                            nn.set_name(s);
-                            nn
-                        }
-                        NameBuilder::Hints(hints) => {
-                            let nn = namespace.make_name(id.clone());
-
-                            for hint in hints {
-                                match hint {
-                                    NameBuilderHint::Title(_) => todo!(),
-                                    NameBuilderHint::Parent(id, s) => {
-                                        nn.derive_name(id, s);
-                                    }
-                                }
-                            }
-                            nn
-                        }
-                    };
-
-                    type_inner.built = Some(TypeStructBuilt { name });
-                }
-
-                Type::NewtypeStruct(type_inner) => {
-                    println!("newtype {:#?}", type_inner);
-                    let name = match &type_inner.common.name {
-                        NameBuilder::Unset => unreachable!(),
-                        NameBuilder::Fixed(s) => {
-                            let nn = namespace.make_name(id.clone());
-                            nn.set_name(s);
-                            nn
-                        }
-                        NameBuilder::Hints(hints) => {
-                            let nn = namespace.make_name(id.clone());
-
-                            for hint in hints {
-                                match hint {
-                                    NameBuilderHint::Title(_) => todo!(),
-                                    NameBuilderHint::Parent(id, s) => {
-                                        nn.derive_name(id, s);
-                                    }
-                                }
-                            }
-                            nn
-                        }
-                    };
-
-                    type_inner.common.built = Some(TypeCommonBuilt {
-                        name,
-                        traits: TypespaceTraitSet::empty(),
-                    });
-                }
-
-                _ => {}
+                        nn
+                    }
+                };
+                common.built = Some(TypeCommonBuilt {
+                    name,
+                    traits: TypespaceTraitSet::empty(),
+                });
             }
 
             println!("{:#?}", typ);
@@ -1455,29 +1134,20 @@ impl Type {
         }
     }
 
-    fn get_name_mut(&mut self) -> Option<&mut NameBuilder> {
+    fn get_common_mut(&mut self) -> Option<&mut TypeCommon> {
         match self {
-            Type::Enum(type_enum) => Some(&mut type_enum.common.name),
-            Type::Struct(type_struct) => Some(&mut type_struct.common.name),
-            Type::UnitStruct(type_unit_struct) => Some(&mut type_unit_struct.name),
-            Type::TupleStruct(type_tuple_struct) => Some(&mut type_tuple_struct.name),
-            Type::NewtypeStruct(type_newtype_struct) => Some(&mut type_newtype_struct.common.name),
-            Type::TypeAlias(type_type_alias) => Some(&mut type_type_alias.name),
-            Type::Native(_)
-            | Type::Option(_)
-            | Type::Box(_)
-            | Type::Vec(_)
-            | Type::Map(_, _)
-            | Type::Set(_)
-            | Type::Array(_, _)
-            | Type::Tuple(_)
-            | Type::Unit
-            | Type::Boolean
-            | Type::Integer(_)
-            | Type::Float(_)
-            | Type::String
-            | Type::JsonValue => None,
+            Type::Enum(TypeEnum { common, .. })
+            | Type::Struct(TypeStruct { common, .. })
+            | Type::UnitStruct(TypeUnitStruct { common, .. })
+            | Type::TupleStruct(TypeTupleStruct { common, .. })
+            | Type::NewtypeStruct(TypeNewtypeStruct { common, .. })
+            | Type::TypeAlias(TypeTypeAlias { common, .. }) => Some(common),
+            _ => None,
         }
+    }
+
+    fn get_name_mut(&mut self) -> Option<&mut NameBuilder> {
+        self.get_common_mut().map(|common| &mut common.name)
     }
 
     pub fn is_named(&self) -> bool {

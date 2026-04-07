@@ -3,16 +3,13 @@ use quote::{format_ident, quote};
 
 use crate::{
     schemalet::SchemaRef,
-    typespace::{NameBuilder, TypeStructBuilt, Typespace},
+    typespace::{TypeCommon, Typespace},
 };
 
 #[derive(Debug, Clone)]
 pub struct TypeTypeAlias {
-    pub name: NameBuilder,
-    pub description: Option<String>,
+    pub common: TypeCommon,
     pub target: SchemaRef,
-
-    pub(crate) built: Option<TypeStructBuilt>,
 }
 
 impl TypeTypeAlias {
@@ -33,10 +30,14 @@ impl TypeTypeAlias {
 
     pub(crate) fn render(&self, typespace: &Typespace) -> TokenStream {
         let Self {
-            name: _,
-            description,
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    built,
+                    default: _,
+                },
             target,
-            built,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
         let name = built.as_ref().unwrap().name.to_string();
