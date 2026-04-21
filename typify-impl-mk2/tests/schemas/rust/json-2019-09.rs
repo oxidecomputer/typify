@@ -33,6 +33,62 @@ pub enum SchemaRootObjectItems {
     Variant0(SchemaRoot),
     Variant1(SchemaArray),
 }
+pub struct SchemaRootObjectAnchor(pub String);
+impl ::std::ops::Deref for SchemaRootObjectAnchor {
+    type Target = String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaRootObjectAnchor> for String {
+    fn from(value: SchemaRootObjectAnchor) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for SchemaRootObjectAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectAnchor {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct SchemaRootObjectId(pub ::url::Url);
+impl ::std::ops::Deref for SchemaRootObjectId {
+    type Target = ::url::Url;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaRootObjectId> for ::url::Url {
+    fn from(value: SchemaRootObjectId) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for SchemaRootObjectId {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
 pub struct NonNegativeInteger(pub i64);
 impl ::std::ops::Deref for NonNegativeInteger {
     type Target = i64;
@@ -151,7 +207,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        anchor: Option<String>,
+        anchor: Option<SchemaRootObjectAnchor>,
         #[serde(
             rename = "$comment",
             default,
@@ -172,7 +228,7 @@ pub enum SchemaRoot {
             deserialize_with = "::json_serde::deserialize_some",
             skip_serializing_if = "Option::is_none"
         )]
-        id: Option<::url::Url>,
+        id: Option<SchemaRootObjectId>,
         #[serde(
             rename = "$recursiveAnchor",
             default,

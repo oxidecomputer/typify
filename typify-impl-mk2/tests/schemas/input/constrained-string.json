@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConstrainedString",
+  "type": "string",
+  "allOf": [
+    { "pattern": "^[a-z]" },
+    { "pattern": "[a-z]$" }
+  ]
+}

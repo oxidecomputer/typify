@@ -5,7 +5,8 @@ use crate::{
     schema::util::{self, ObjectOrBool},
     schemalet::{
         SchemaRef, Schemalet, SchemaletDetails, SchemaletMetadata, SchemaletValue,
-        SchemaletValueArray, SchemaletValueObject, SchemaletValueString,
+        SchemaletValueArray, SchemaletValueInteger, SchemaletValueNumber, SchemaletValueObject,
+        SchemaletValueString,
     },
     Error,
 };
@@ -629,10 +630,10 @@ impl GenericSchema {
 
             GenericSimpleTypes::Integer => {
                 let schema_ref = id.partial("integer");
-                let ir = SchemaletDetails::Value(SchemaletValue::Integer {
+                let ir = SchemaletDetails::Value(SchemaletValue::Integer(SchemaletValueInteger {
                     minimum: minimum.clone(),
                     exclusive_minimum: exclusive_minimum.clone(),
-                });
+                }));
                 Ok((schema_ref, ir))
             }
             //     let schema_ref = id.partial("integer");
@@ -651,13 +652,13 @@ impl GenericSchema {
                 let schema_ref = id.partial("number");
 
                 // Conversion from serde_json::Number to f64 should be infallible.
-                let ir = SchemaletDetails::Value(SchemaletValue::Number {
+                let ir = SchemaletDetails::Value(SchemaletValue::Number(SchemaletValueNumber {
                     minimum: minimum.as_ref().map(|n| n.as_f64().unwrap()),
                     exclusive_minimum: exclusive_minimum.as_ref().map(|n| n.as_f64().unwrap()),
                     maximum: maximum.as_ref().map(|n| n.as_f64().unwrap()),
                     exclusive_maximum: exclusive_maximum.as_ref().map(|n| n.as_f64().unwrap()),
                     multiple_of: multiple_of.as_ref().map(|n| n.as_f64().unwrap()),
-                });
+                }));
                 Ok((schema_ref, ir))
             }
             GenericSimpleTypes::Object => {

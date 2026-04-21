@@ -909,22 +909,26 @@ impl Schema {
             }
             SimpleType::Integer => {
                 let schema_ref = id.partial("integer");
-                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Integer {
-                    minimum: self.minimum.map(serde_json::Number::from),
-                    exclusive_minimum: self.exclusive_minimum.map(serde_json::Number::from),
-                });
+                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Integer(
+                    schemalet::SchemaletValueInteger {
+                        minimum: self.minimum.map(serde_json::Number::from),
+                        exclusive_minimum: self.exclusive_minimum.map(serde_json::Number::from),
+                    },
+                ));
                 Ok((schema_ref, ir))
             }
             SimpleType::Null => todo!(),
             SimpleType::Number => {
                 let schema_ref = id.partial("number");
-                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Number {
-                    minimum: self.minimum.map(|n| n as f64),
-                    exclusive_minimum: self.exclusive_minimum.map(|n| n as f64),
-                    maximum: None,
-                    exclusive_maximum: None,
-                    multiple_of: None,
-                });
+                let ir = schemalet::SchemaletDetails::Value(schemalet::SchemaletValue::Number(
+                    schemalet::SchemaletValueNumber {
+                        minimum: self.minimum.map(|n| n as f64),
+                        exclusive_minimum: self.exclusive_minimum.map(|n| n as f64),
+                        maximum: None,
+                        exclusive_maximum: None,
+                        multiple_of: None,
+                    },
+                ));
                 Ok((schema_ref, ir))
             }
             SimpleType::Object => {

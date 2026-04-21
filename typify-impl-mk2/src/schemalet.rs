@@ -159,30 +159,36 @@ pub struct SchemaletValueString {
     pub max_length: Option<u64>,
 }
 
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct SchemaletValueInteger {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<serde_json::Number>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclusive_minimum: Option<serde_json::Number>,
+}
+
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct SchemaletValueNumber {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclusive_minimum: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclusive_maximum: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multiple_of: Option<f64>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub enum SchemaletValue {
     Boolean,
     Array(SchemaletValueArray),
     Object(SchemaletValueObject),
     String(SchemaletValueString),
-    Integer {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        minimum: Option<serde_json::Number>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        exclusive_minimum: Option<serde_json::Number>,
-    },
-    Number {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        minimum: Option<f64>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        exclusive_minimum: Option<f64>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        maximum: Option<f64>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        exclusive_maximum: Option<f64>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        multiple_of: Option<f64>,
-    },
+    Integer(SchemaletValueInteger),
+    Number(SchemaletValueNumber),
     Null,
 }
 
@@ -575,8 +581,8 @@ impl Schemalet {
             SchemaletDetails::Constant(_) => vec![],
             SchemaletDetails::Value(schemalet_value) => match schemalet_value {
                 SchemaletValue::Boolean
-                | SchemaletValue::Integer { .. }
-                | SchemaletValue::Number { .. }
+                | SchemaletValue::Integer(_)
+                | SchemaletValue::Number(_)
                 | SchemaletValue::Null => Vec::new(),
                 SchemaletValue::String(_) => Vec::new(),
 
@@ -1037,6 +1043,21 @@ fn merge_two(
             CanonicalSchemaletDetails::Value(SchemaletValue::Array(bb)),
         ) => merge_two_arrays(aa, bb),
 
+        (
+            CanonicalSchemaletDetails::Value(SchemaletValue::Null),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Null),
+        ) => CanonicalSchemaletDetails::Value(SchemaletValue::Null),
+
+        (
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(aa)),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(bb)),
+        ) => merge_two_integers(aa, bb),
+
+        (
+            CanonicalSchemaletDetails::Value(SchemaletValue::Number(aa)),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Number(bb)),
+        ) => merge_two_numbers(aa, bb),
+
         _ => todo!(
             "merge_two {}",
             serde_json::to_string_pretty(&[a, b]).unwrap()
@@ -1048,7 +1069,105 @@ fn merge_two_arrays(
     aa: &SchemaletValueArray,
     bb: &SchemaletValueArray,
 ) -> CanonicalSchemaletDetails {
-    todo!()
+    // items: if both specify an items schema, we'd need to intersect them;
+    // for now, take whichever is specified (or None if neither is).
+    let items = match (&aa.items, &bb.items) {
+        (Some(_), Some(_)) => todo!("merge array items constraints"),
+        (Some(r), None) | (None, Some(r)) => Some(r.clone()),
+        (None, None) => None,
+    };
+    // prefix_items: similarly, intersection is complex; take whichever is set.
+    let prefix_items = match (&aa.prefix_items, &bb.prefix_items) {
+        (Some(_), Some(_)) => todo!("merge array prefix_items constraints"),
+        (Some(r), None) | (None, Some(r)) => Some(r.clone()),
+        (None, None) => None,
+    };
+    let max_items = match (aa.max_items, bb.max_items) {
+        (Some(a), Some(b)) => Some(a.min(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let min_items = match (aa.min_items, bb.min_items) {
+        (Some(a), Some(b)) => Some(a.max(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let unique_items = match (aa.unique_items, bb.unique_items) {
+        (Some(true), _) | (_, Some(true)) => Some(true),
+        (Some(false), Some(false)) => Some(false),
+        _ => None,
+    };
+    CanonicalSchemaletDetails::Value(SchemaletValue::Array(SchemaletValueArray {
+        items,
+        prefix_items,
+        max_items,
+        min_items,
+        unique_items,
+    }))
+}
+
+fn number_as_f64(n: &serde_json::Number) -> f64 {
+    n.as_f64().expect("number should be representable as f64")
+}
+
+fn merge_two_integers(
+    aa: &SchemaletValueInteger,
+    bb: &SchemaletValueInteger,
+) -> CanonicalSchemaletDetails {
+    // allOf intersection: take the tightest (highest) lower bound.
+    let minimum = match (&aa.minimum, &bb.minimum) {
+        (Some(a), Some(b)) => Some(if number_as_f64(a) >= number_as_f64(b) { a } else { b }.clone()),
+        (Some(a), None) | (None, Some(a)) => Some(a.clone()),
+        (None, None) => None,
+    };
+    let exclusive_minimum = match (&aa.exclusive_minimum, &bb.exclusive_minimum) {
+        (Some(a), Some(b)) => Some(if number_as_f64(a) >= number_as_f64(b) { a } else { b }.clone()),
+        (Some(a), None) | (None, Some(a)) => Some(a.clone()),
+        (None, None) => None,
+    };
+    CanonicalSchemaletDetails::Value(SchemaletValue::Integer(SchemaletValueInteger {
+        minimum,
+        exclusive_minimum,
+    }))
+}
+
+fn merge_two_numbers(
+    aa: &SchemaletValueNumber,
+    bb: &SchemaletValueNumber,
+) -> CanonicalSchemaletDetails {
+    // allOf intersection: tightest bounds win.
+    let minimum = match (aa.minimum, bb.minimum) {
+        (Some(a), Some(b)) => Some(a.max(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let exclusive_minimum = match (aa.exclusive_minimum, bb.exclusive_minimum) {
+        (Some(a), Some(b)) => Some(a.max(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let maximum = match (aa.maximum, bb.maximum) {
+        (Some(a), Some(b)) => Some(a.min(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let exclusive_maximum = match (aa.exclusive_maximum, bb.exclusive_maximum) {
+        (Some(a), Some(b)) => Some(a.min(b)),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    let multiple_of = match (aa.multiple_of, bb.multiple_of) {
+        (Some(_), Some(_)) => todo!("merge_two_numbers: LCM of multiple_of constraints"),
+        (Some(a), None) | (None, Some(a)) => Some(a),
+        (None, None) => None,
+    };
+    CanonicalSchemaletDetails::Value(SchemaletValue::Number(SchemaletValueNumber {
+        minimum,
+        exclusive_minimum,
+        maximum,
+        exclusive_maximum,
+        multiple_of,
+    }))
 }
 
 fn merge_two_strings(

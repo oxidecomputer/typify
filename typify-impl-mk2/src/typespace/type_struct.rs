@@ -1,3 +1,4 @@
+use log::debug;
 use quote::{format_ident, quote};
 use syn::Ident;
 
@@ -481,6 +482,7 @@ impl TypeNewtypeStruct {
         else {
             unreachable!()
         };
+
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
         let name = name.to_string();
         let name_ident = format_ident!("{name}");
@@ -493,6 +495,8 @@ impl TypeNewtypeStruct {
                 #[derive(#(#trait_idents),*)]
             }
         });
+
+        debug!("constraints: {constraints:#?}");
 
         quote! {
             #description

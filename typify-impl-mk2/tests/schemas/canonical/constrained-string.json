@@ -1,0 +1,346 @@
+[
+  [
+    "http://localhost/#",
+    {
+      "title": "ConstrainedString",
+      "details": {
+        "Note": "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ string\n  http://localhost/#/allOf/0 @@ string\n]\n  http://localhost/# @@ string\n]"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/allOf/0 @@ array",
+            "http://localhost/#/allOf/0 @@ boolean",
+            "http://localhost/#/allOf/0 @@ integer",
+            "http://localhost/#/allOf/0 @@ null",
+            "http://localhost/#/allOf/0 @@ number",
+            "http://localhost/#/allOf/0 @@ object",
+            "http://localhost/#/allOf/0 @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/allOf/1 @@ array",
+            "http://localhost/#/allOf/1 @@ boolean",
+            "http://localhost/#/allOf/1 @@ integer",
+            "http://localhost/#/allOf/1 @@ null",
+            "http://localhost/#/allOf/1 @@ number",
+            "http://localhost/#/allOf/1 @@ object",
+            "http://localhost/#/allOf/1 @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/# @@ allOf",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "<merge> [\n  http://localhost/#/allOf/1 @@ array\n  http://localhost/#/allOf/0 @@ array\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ boolean\n  http://localhost/#/allOf/0 @@ boolean\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ integer\n  http://localhost/#/allOf/0 @@ integer\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ null\n  http://localhost/#/allOf/0 @@ null\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ number\n  http://localhost/#/allOf/0 @@ number\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ object\n  http://localhost/#/allOf/0 @@ object\n]",
+            "<merge> [\n  http://localhost/#/allOf/1 @@ string\n  http://localhost/#/allOf/0 @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/# @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/0 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "^[a-z]"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/allOf/1 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "[a-z]$"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ array\n  http://localhost/#/allOf/0 @@ array\n]",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ boolean\n  http://localhost/#/allOf/0 @@ boolean\n]",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ integer\n  http://localhost/#/allOf/0 @@ integer\n]",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ null\n  http://localhost/#/allOf/0 @@ null\n]",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ number\n  http://localhost/#/allOf/0 @@ number\n]",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ object\n  http://localhost/#/allOf/0 @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/allOf/1 @@ string\n  http://localhost/#/allOf/0 @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "[a-z]$",
+              "^[a-z]"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ array\n  http://localhost/#/allOf/0 @@ array\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ boolean\n  http://localhost/#/allOf/0 @@ boolean\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ integer\n  http://localhost/#/allOf/0 @@ integer\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ null\n  http://localhost/#/allOf/0 @@ null\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ number\n  http://localhost/#/allOf/0 @@ number\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ object\n  http://localhost/#/allOf/0 @@ object\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  <merge> [\n  http://localhost/#/allOf/1 @@ string\n  http://localhost/#/allOf/0 @@ string\n]\n  http://localhost/# @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              "[a-z]$",
+              "^[a-z]"
+            ]
+          }
+        }
+      }
+    }
+  ]
+]

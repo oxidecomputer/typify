@@ -129,6 +129,15 @@ impl Converter {
             None => NameBuilder::Unset,
         };
 
+        self.convert_with_name(id, name, original_json)
+    }
+
+    pub fn convert_with_name(
+        &self,
+        id: &SchemaRef,
+        name: NameBuilder,
+        original_json: Option<&serde_json::Value>,
+    ) -> ConvertResult {
         let schemalet = self.get(id);
 
         println!(
@@ -149,7 +158,9 @@ impl Converter {
             // TODO 7/28/2025
             // This is probably wrong, but I'm not sure exactly how we're going
             // to use this Note thing.
-            CanonicalSchemaletDetails::Note(schema_ref) => self.convert(schema_ref, original_json),
+            CanonicalSchemaletDetails::Note(schema_ref) => {
+                self.convert_with_name(schema_ref, name, original_json)
+            }
 
             CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
                 self.convert_one_of(name, metadata, subschemas).into()
@@ -163,22 +174,13 @@ impl Converter {
                 self.convert_object(id, name, metadata, object)
             }
             CanonicalSchemaletDetails::Value(SchemaletValue::String(string_value)) => {
-                self.convert_string(name, metadata, string_value).into()
+                self.convert_string(id, name, metadata, string_value)
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::Integer {
-                minimum,
-                exclusive_minimum,
-            }) => {
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(_)) => {
                 // TODO not handling this well ...
                 Type::Float("i64".to_string()).into()
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::Number {
-                minimum,
-                exclusive_minimum,
-                maximum,
-                exclusive_maximum,
-                multiple_of,
-            }) => {
+            CanonicalSchemaletDetails::Value(SchemaletValue::Number(_)) => {
                 // TODO not handling this well ...
 
                 // TODO 7/21/2025
@@ -236,35 +238,77 @@ impl Converter {
 
     fn convert_string(
         &self,
+        id: &SchemaRef,
         name: NameBuilder,
         metadata: &crate::schemalet::SchemaletMetadata,
         string_value: &SchemaletValueString,
-    ) -> Type {
-        let SchemaletValueString {
-            pattern,
-            format,
-            min_length,
-            max_length,
-        } = string_value;
+    ) -> ConvertResult {
+        match string_value {
+            SchemaletValueString {
+                pattern,
+                format,
+                min_length,
+                max_length,
+            } if pattern.len() > 0 || min_length.is_some() || max_length.is_some() => {
+                let inner_ref = SchemaRef::Child(Box::new(id.clone()), "@@inner".to_string());
+                let ConvertResult {
+                    primary,
+                    mut additional,
+                } = self.convert_string(
+                    &inner_ref,
+                    NameBuilder::Fixed("unreachable 123".to_string()),
+                    metadata,
+                    &SchemaletValueString {
+                        pattern: Default::default(),
+                        format: format.clone(),
+                        min_length: None,
+                        max_length: None,
+                    },
+                );
 
-        // The format of a string may let us infer a useful type to use for
-        // this schema. Multiple formats may be present e.g. if multiple
-        // schemas with formats were merged as a result of an `allOf`, however
-        // multiple formats are not generally something that's satisfiable.
-        let ty = if !format.is_empty() {
-            assert_eq!(format.len(), 1);
+                additional.insert(inner_ref.clone(), primary);
 
-            let format_str = format.iter().next().unwrap().as_str();
-            match format_str {
-                "uri" => Type::Native(TypeNative::new_string_like("::url::Url")),
-                "uri-reference" => Type::Native(TypeNative::new_string_like("::url::Url")),
-                _ => Type::String,
+                ConvertResult {
+                    primary: Type::NewtypeStruct(TypeNewtypeStruct::new(
+                        name,
+                        metadata.description.clone(),
+                        None,
+                        inner_ref,
+                        TypeNewtypeConstraints::String {
+                            min: min_length.map(|x| x as usize),
+                            max: max_length.map(|x| x as usize),
+                            patterns: pattern.clone(),
+                        },
+                    )),
+                    additional,
+                }
             }
-        } else {
-            Type::String
-        };
 
-        ty
+            SchemaletValueString {
+                pattern,
+                format,
+                min_length: None,
+                max_length: None,
+            } if pattern.is_empty() && format.is_empty() => Type::String.into(),
+
+            // Regular string or known string type
+            SchemaletValueString {
+                pattern,
+                format,
+                min_length: None,
+                max_length: None,
+            } if pattern.is_empty() && format.len() == 1 => {
+                let format_str = format.iter().next().unwrap().as_str();
+                match format_str {
+                    "uri" => Type::Native(TypeNative::new_string_like("::url::Url")),
+                    "uri-reference" => Type::Native(TypeNative::new_string_like("::url::Url")),
+                    _ => Type::String,
+                }
+                .into()
+            }
+
+            _ => todo!("unhandled string type {string_value:#?}"),
+        }
 
         // If we recognize the format, we can use a specific Rust type to model
         // the value.
