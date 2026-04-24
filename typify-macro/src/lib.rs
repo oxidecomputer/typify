@@ -159,7 +159,8 @@ impl<'de> Deserialize<'de> for CrateName {
 }
 
 fn is_crate(s: &str) -> bool {
-    !s.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-')
+    s.starts_with(|cc: char| cc.is_alphabetic() || cc == '_')
+        && !s.contains(|cc: char| !cc.is_alphanumeric() && cc != '_' && cc != '-')
 }
 
 #[derive(Deserialize)]
