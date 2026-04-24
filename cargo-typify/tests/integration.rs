@@ -1,12 +1,12 @@
 use expectorate::assert_contents;
 use newline_converter::dos2unix;
-use tempdir::TempDir;
+use tempfile::TempDir;
 
 #[test]
 fn test_simple() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let input_file = temp.path().join("simple.json");
     std::fs::copy(input, &input_file).unwrap();
 
@@ -26,7 +26,7 @@ fn test_simple() {
 fn test_default_output() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
@@ -59,7 +59,7 @@ fn test_no_builder_stdout() {
 fn test_builder() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
@@ -82,7 +82,7 @@ fn test_builder() {
 fn test_derive() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
@@ -107,7 +107,7 @@ fn test_derive() {
 fn test_attr() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
@@ -132,7 +132,7 @@ fn test_attr() {
 fn test_multi_derive() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
@@ -173,7 +173,7 @@ fn test_help() {
 fn test_btree_map() {
     let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
 
-    let temp = TempDir::new("cargo-typify").unwrap();
+    let temp = TempDir::new().unwrap();
     let output_file = temp.path().join("output.rs");
 
     assert_cmd::cargo::cargo_bin_cmd!()
