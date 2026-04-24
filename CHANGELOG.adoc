@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.6.1\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.6.2\...HEAD[Full list of commits]
+
+== 0.6.2 (released 2026-04-24)
+
+https://github.com/oxidecomputer/typify/compare/v0.6.1\...v0.6.2[Full list of commits]
 
 * Improve merging of strings and numbers (#998)
 * Avoid generation of unused default functions (#990)
