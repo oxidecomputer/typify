@@ -100,7 +100,8 @@ impl std::str::FromStr for CrateSpec {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         fn is_crate(s: &str) -> bool {
-            !s.contains(|cc: char| !cc.is_alphabetic() && cc != '-' && cc != '_')
+            s.starts_with(|cc: char| cc.is_alphabetic() || cc == '_')
+                && !s.contains(|cc: char| !cc.is_alphanumeric() && cc != '-' && cc != '_')
         }
 
         fn convert(s: &str) -> Option<CrateSpec> {
