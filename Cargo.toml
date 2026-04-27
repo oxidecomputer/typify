@@ -18,7 +18,7 @@ typify-macro = { version = "0.6.2", path = "typify-macro" }
 
 assert_cmd = "2.2.0"
 chrono = { version = "0.4.44", features = ["serde"] }
-clap = { version = "4.6.0", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"] }
 color-eyre = "0.6"
 env_logger = "0.11.10"
 expectorate = "1.2.0"
