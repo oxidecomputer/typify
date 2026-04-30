@@ -892,7 +892,41 @@ impl TypeSpace {
 
             Some(unhandled) => {
                 info!("treating a string format '{}' as a String", unhandled);
-                Ok((TypeEntryDetails::String.into(), metadata))
+                // Apply any pattern/length constraints even when the format
+                // is unrecognized.
+                match validation {
+                    None
+                    | Some(schemars::schema::StringValidation {
+                        max_length: None,
+                        min_length: None,
+                        pattern: None,
+                    }) => Ok((TypeEntryDetails::String.into(), metadata)),
+
+                    Some(validation) => {
+                        if let Some(pattern) = &validation.pattern {
+                            let _ =
+                                regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                                    type_name: type_name.clone().into_option(),
+                                    reason: format!("invalid pattern '{}' {}", pattern, e),
+                                })?;
+                            self.uses_regress = true;
+                        }
+
+                        let string = TypeEntryDetails::String.into();
+                        let type_id = self.assign_type(string);
+                        Ok((
+                            TypeEntryNewtype::from_metadata_with_string_validation(
+                                self,
+                                type_name,
+                                metadata,
+                                type_id,
+                                validation,
+                                original_schema.clone(),
+                            ),
+                            metadata,
+                        ))
+                    }
+                }
             }
         }
     }

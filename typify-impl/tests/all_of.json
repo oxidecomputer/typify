@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "TriplePattern": {
+            "allOf": [
+                {
+                    "type": "string",
+                    "pattern": "^[a-z].+$",
+                    "format": "custom-id"
+                },
+                { "type": "string", "pattern": "^.{4,8}$" },
+                { "type": "string", "pattern": ".+[a-z]$" }
+            ]
+        }
+    }
+}

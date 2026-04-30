@@ -70,6 +70,34 @@ mod hashmap {
     }
 }
 
+mod all_of {
+    #![allow(dead_code)]
+
+    include!(concat!(env!("OUT_DIR"), "/codegen_all_of.rs"));
+
+    #[test]
+    fn test_triple_pattern() {
+        // Must satisfy all three patterns simultaneously:
+        //   1. ^[a-z].+$        — starts with lowercase
+        //   2. ^.{4,8}$         — 4–8 characters long
+        //   3. .+[a-z]$         — ends with lowercase
+
+        // Valid: 4 lowercase letters
+        assert!(TriplePattern::try_from("abcd").is_ok());
+        // Valid: 6 lowercase letters
+        assert!(TriplePattern::try_from("abcdef").is_ok());
+
+        // Fails: starts with uppercase
+        assert!(TriplePattern::try_from("Abcd").is_err());
+        // Fails: ends with uppercase
+        assert!(TriplePattern::try_from("abcD").is_err());
+        // Fails: too short
+        assert!(TriplePattern::try_from("abc").is_err());
+        // Fails: too long
+        assert!(TriplePattern::try_from("abcdefghijkl").is_err());
+    }
+}
+
 mod custom_map {
     #![allow(dead_code)]
 

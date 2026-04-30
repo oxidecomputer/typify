@@ -166,6 +166,18 @@ fn main() {
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen_custommap.rs");
     fs::write(out_file, contents).unwrap();
+
+    // Generate types from the allOf test schema.
+    println!("cargo:rerun-if-changed=../typify-impl/tests/all_of.json");
+    let content = fs::read_to_string("../typify-impl/tests/all_of.json").unwrap();
+    let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
+    let mut type_space = TypeSpace::default();
+    type_space.add_root_schema(schema).unwrap();
+    let contents =
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
+    out_file.push("codegen_all_of.rs");
+    fs::write(out_file, contents).unwrap();
 }
 
 trait AddType {
