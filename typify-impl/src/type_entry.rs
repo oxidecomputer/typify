@@ -1555,9 +1555,10 @@ impl TypeEntry {
 
                 let pat = pattern.as_ref().map(|p| {
                     let err = format!("doesn't match pattern \"{}\"", p);
+                    let regress = type_space.settings.regress_crate_path();
                     quote! {
-                        static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
-                            ::regress::Regex::new(#p).unwrap()
+                        static PATTERN: ::std::sync::LazyLock<#regress::Regex> = ::std::sync::LazyLock::new(|| {
+                            #regress::Regex::new(#p).unwrap()
                         });
                         if PATTERN.find(value).is_none() {
                             return Err(#err.into());
