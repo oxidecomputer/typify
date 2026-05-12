@@ -17658,6 +17658,8 @@ pub struct ColorRgb {
     pub g: NumberValue,
     pub r: NumberValue,
 }
+#[allow(unused_imports)]
+pub use ColorValue;
 #[doc = "`Compare`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
