@@ -183,9 +183,9 @@ impl ::std::fmt::Display for JustOne {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct UintMinimumAndMaximum {
-    pub max: u64,
+    pub max: UintMinimumAndMaximumMax,
     pub min: u64,
-    pub min_and_max: ::std::num::NonZeroU64,
+    pub min_and_max: UintMinimumAndMaximumMinAndMax,
     pub min_non_zero: ::std::num::NonZeroU64,
     pub min_uint_non_zero: ::std::num::NonZeroU64,
     pub no_bounds: u64,
@@ -193,6 +193,98 @@ pub struct UintMinimumAndMaximum {
 impl UintMinimumAndMaximum {
     pub fn builder() -> builder::UintMinimumAndMaximum {
         Default::default()
+    }
+}
+#[doc = "`UintMinimumAndMaximumMax`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"integer\","]
+#[doc = "  \"format\": \"uint64\","]
+#[doc = "  \"maximum\": 256.0"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
+pub struct UintMinimumAndMaximumMax(u64);
+impl ::std::ops::Deref for UintMinimumAndMaximumMax {
+    type Target = u64;
+    fn deref(&self) -> &u64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<UintMinimumAndMaximumMax> for u64 {
+    fn from(value: UintMinimumAndMaximumMax) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::TryFrom<u64> for UintMinimumAndMaximumMax {
+    type Error = self::error::ConversionError;
+    fn try_from(value: u64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value > 256 {
+            return Err("value must be at most 256".into());
+        }
+        Ok(Self(value))
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UintMinimumAndMaximumMax {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<u64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[doc = "`UintMinimumAndMaximumMinAndMax`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"integer\","]
+#[doc = "  \"format\": \"uint64\","]
+#[doc = "  \"maximum\": 256.0,"]
+#[doc = "  \"minimum\": 1.0"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
+pub struct UintMinimumAndMaximumMinAndMax(u64);
+impl ::std::ops::Deref for UintMinimumAndMaximumMinAndMax {
+    type Target = u64;
+    fn deref(&self) -> &u64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<UintMinimumAndMaximumMinAndMax> for u64 {
+    fn from(value: UintMinimumAndMaximumMinAndMax) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::TryFrom<u64> for UintMinimumAndMaximumMinAndMax {
+    type Error = self::error::ConversionError;
+    fn try_from(value: u64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value < 1 {
+            return Err("value must be at least 1".into());
+        }
+        if value > 256 {
+            return Err("value must be at most 256".into());
+        }
+        Ok(Self(value))
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UintMinimumAndMaximumMinAndMax {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<u64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
 #[doc = r" Types for composing complex structures."]
@@ -279,9 +371,10 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct UintMinimumAndMaximum {
-        max: ::std::result::Result<u64, ::std::string::String>,
+        max: ::std::result::Result<super::UintMinimumAndMaximumMax, ::std::string::String>,
         min: ::std::result::Result<u64, ::std::string::String>,
-        min_and_max: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
+        min_and_max:
+            ::std::result::Result<super::UintMinimumAndMaximumMinAndMax, ::std::string::String>,
         min_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
         min_uint_non_zero: ::std::result::Result<::std::num::NonZeroU64, ::std::string::String>,
         no_bounds: ::std::result::Result<u64, ::std::string::String>,
@@ -301,7 +394,7 @@ pub mod builder {
     impl UintMinimumAndMaximum {
         pub fn max<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<u64>,
+            T: ::std::convert::TryInto<super::UintMinimumAndMaximumMax>,
             T::Error: ::std::fmt::Display,
         {
             self.max = value
@@ -321,7 +414,7 @@ pub mod builder {
         }
         pub fn min_and_max<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<::std::num::NonZeroU64>,
+            T: ::std::convert::TryInto<super::UintMinimumAndMaximumMinAndMax>,
             T::Error: ::std::fmt::Display,
         {
             self.min_and_max = value
