@@ -464,12 +464,9 @@ impl TypeSpace {
                 extensions: _,
             } => self.convert_unknown_enum(type_name, original_schema, metadata, enum_values),
 
-            // Subschemas with no body validation and either no type or a
+            // Subschemas with no additional validation and either no type or a
             // single type. A multi-type (`Vec`) instance_type is deliberately
-            // excluded so that it flows through the merge arm below, which
-            // folds the type union into each subschema branch. Preserving the
-            // earlier behaviour for `None` / `Single` keeps existing tolerant
-            // handling of schemas whose outer type may conflict with a branch.
+            // excluded so that it flows through the merge arm below.
             SchemaObject {
                 metadata,
                 instance_type: None | Some(SingleOrVec::Single(_)),

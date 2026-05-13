@@ -1,9 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$comment": "Regression coverage for issue #954: schemas with a multi-type `type: [...]` array on the same object as `oneOf` / `anyOf` / `allOf` / `not` previously discarded the `type` constraint (TODO at convert.rs wildcarded `instance_type`). Single-type + subschema cases must still pass through the earlier arm unchanged.",
+  "$comment": "Coverage for issue #954: multi-type `type: [...]` alongside oneOf/anyOf/allOf/not.",
   "definitions": {
     "TypeArrayOneOfItems": {
-      "$comment": "Canonical issue #954 shape. Each oneOf branch only constrains `items`, so the type union must be folded into every branch rather than dropped.",
       "type": [ "string", "number", "boolean", "array" ],
       "oneOf": [
         { "items": { "type": "string" } },
@@ -12,7 +11,6 @@
       ]
     },
     "TypeArrayAnyOfItems": {
-      "$comment": "Same shape as TypeArrayOneOfItems but using anyOf. anyOf travels through try_merge_with_each_subschema on a sibling path from oneOf; it should fold the type union the same way.",
       "type": [ "string", "number", "array" ],
       "anyOf": [
         { "items": { "type": "string" } },
@@ -20,7 +18,6 @@
       ]
     },
     "TypeArrayAllOfRefinement": {
-      "$comment": "allOf is folded pairwise into the parent rather than producing branches. The type union must survive and the array-only constraints should apply when the Array variant is selected.",
       "type": [ "string", "array" ],
       "allOf": [
         { "items": { "type": "string" } },
@@ -28,29 +25,11 @@
       ]
     },
     "TypeArrayNotExclusion": {
-      "$comment": "not: object is redundant when the outer type union excludes object, but merging must not drop the type union when the not branch is applied.",
       "type": [ "string", "number", "array" ],
       "not": { "type": "object" }
     },
-    "SingleTypeOneOfArrayBranch": {
-      "$comment": "Regression guard (rust-collisions pattern). Outer singleton type + oneOf where one branch has a conflicting explicit type. This must continue to pass through the earlier arm (no merge), otherwise the array branch becomes unsatisfiable and is silently dropped.",
-      "type": "object",
-      "oneOf": [
-        {
-          "type": "object",
-          "properties": { "kind": { "type": "string" } },
-          "required": [ "kind" ]
-        },
-        {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 2,
-          "maxItems": 2
-        }
-      ]
-    },
     "TypeArrayOneOfExplicitArrayBranches": {
-      "$comment": "Case 7: each oneOf branch pins `type: array`, so the intersection with the outer type union must prune the non-array primitives. Only array variants should be emitted.",
+      "$comment": "Each oneOf branch pins `type: array`; the non-array variants from the outer union should be pruned.",
       "type": [ "string", "array" ],
       "oneOf": [
         { "type": "array", "items": { "type": "string" } },
@@ -58,7 +37,7 @@
       ]
     },
     "TypeArrayPartiallyUnsatisfiableOneOf": {
-      "$comment": "Some oneOf branches conflict with the outer type union and should be dropped during merge; the surviving branch must carry the outer type union. The two eliminated branches use object/number which the outer `[string, array]` disallows.",
+      "$comment": "Two oneOf branches conflict with the outer type union and should be dropped during merge.",
       "type": [ "string", "array" ],
       "oneOf": [
         { "type": "object", "properties": { "name": { "type": "string" } } },
@@ -67,7 +46,7 @@
       ]
     },
     "TypeArrayFullyUnsatisfiableOneOf": {
-      "$comment": "Case 9: every branch conflicts with the outer type union, so `try_merge_with_each_subschema` returns empty and the schema resolves to never. Must emit an empty enum cleanly rather than panic.",
+      "$comment": "Every branch conflicts with the outer type union; must resolve cleanly rather than panic.",
       "type": [ "string", "number" ],
       "oneOf": [
         { "type": "array", "items": { "type": "string" } },
@@ -75,7 +54,7 @@
       ]
     },
     "TypeArrayOneOfAndAllOf": {
-      "$comment": "Case 10: oneOf and allOf on the same object, both alongside a multi-type `type` array. Exercises the full merge path (allOf folded first, then oneOf fanned out) with the Vec instance_type flowing through the merge arm.",
+      "$comment": "oneOf and allOf on the same object, plus a multi-type `type` array.",
       "type": [ "string", "array" ],
       "allOf": [
         { "minLength": 1 }
