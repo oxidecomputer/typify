@@ -918,6 +918,91 @@ impl TrimFat {
         Default::default()
     }
 }
+#[doc = "`TriplePattern`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"allOf\": ["]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"format\": \"custom-id\","]
+#[doc = "      \"pattern\": \"^[a-z].+$\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^.{4,8}$\""]
+#[doc = "    },"]
+#[doc = "    {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \".+[a-z]$\""]
+#[doc = "    }"]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
+pub struct TriplePattern(::std::string::String);
+impl ::std::ops::Deref for TriplePattern {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &::std::string::String {
+        &self.0
+    }
+}
+impl ::std::convert::From<TriplePattern> for ::std::string::String {
+    fn from(value: TriplePattern) -> Self {
+        value.0
+    }
+}
+impl ::std::str::FromStr for TriplePattern {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::new("(?=^[a-z].+$)(?=^.{4,8}$)(?=.+[a-z]$)").unwrap()
+            });
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \"(?=^[a-z].+$)(?=^.{4,8}$)(?=.+[a-z]$)\"".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl ::std::convert::TryFrom<&str> for TriplePattern {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<&::std::string::String> for TriplePattern {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for TriplePattern {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for TriplePattern {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        ::std::string::String::deserialize(deserializer)?
+            .parse()
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
+    }
+}
 #[doc = "`UnchangedByMerge`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

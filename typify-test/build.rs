@@ -125,6 +125,49 @@ struct UnknownFormat {
     pancakes: Pancakes,
 }
 
+struct TriplePattern;
+impl JsonSchema for TriplePattern {
+    fn schema_name() -> String {
+        "TriplePattern".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            subschemas: Some(Box::new(schemars::schema::SubschemaValidation {
+                all_of: Some(vec![
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some("^[a-z].+$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some("^.{4,8}$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some(".+[a-z]$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                ]),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
 fn main() {
     let mut type_space = TypeSpace::default();
 
@@ -133,6 +176,7 @@ fn main() {
     NonAsciiChars::add(&mut type_space);
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
+    TriplePattern::add(&mut type_space);
 
     let contents =
         prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
@@ -165,18 +209,6 @@ fn main() {
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen_custommap.rs");
-    fs::write(out_file, contents).unwrap();
-
-    // Generate types from the allOf test schema.
-    println!("cargo:rerun-if-changed=../typify-impl/tests/all_of.json");
-    let content = fs::read_to_string("../typify-impl/tests/all_of.json").unwrap();
-    let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
-    let mut type_space = TypeSpace::default();
-    type_space.add_root_schema(schema).unwrap();
-    let contents =
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
-    let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
-    out_file.push("codegen_all_of.rs");
     fs::write(out_file, contents).unwrap();
 }
 

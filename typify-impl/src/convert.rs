@@ -801,41 +801,6 @@ impl TypeSpace {
         validation: Option<&StringValidation>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match format.as_ref().map(String::as_str) {
-            None => match validation {
-                // It should not be possible for the StringValidation to be
-                // Some, but all its fields to be None, but... just to be sure.
-                None
-                | Some(schemars::schema::StringValidation {
-                    max_length: None,
-                    min_length: None,
-                    pattern: None,
-                }) => Ok((TypeEntryDetails::String.into(), metadata)),
-
-                Some(validation) => {
-                    if let Some(pattern) = &validation.pattern {
-                        let _ = regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
-                            type_name: type_name.clone().into_option(),
-                            reason: format!("invalid pattern '{}' {}", pattern, e),
-                        })?;
-                        self.uses_regress = true;
-                    }
-
-                    let string = TypeEntryDetails::String.into();
-                    let type_id = self.assign_type(string);
-                    Ok((
-                        TypeEntryNewtype::from_metadata_with_string_validation(
-                            self,
-                            type_name,
-                            metadata,
-                            type_id,
-                            validation,
-                            original_schema.clone(),
-                        ),
-                        metadata,
-                    ))
-                }
-            },
-
             Some("uuid") => {
                 self.uses_uuid = true;
                 Ok((
@@ -890,11 +855,17 @@ impl TypeSpace {
                 metadata,
             )),
 
-            Some(unhandled) => {
-                info!("treating a string format '{}' as a String", unhandled);
-                // Apply any pattern/length constraints even when the format
-                // is unrecognized.
+            // Apply constaints when there is no format or the format isn't
+            // one of the recognized values above.
+            other => {
+                if let Some(unhandled) = other {
+                    debug!("treating a string format '{}' as a String", unhandled);
+                }
+
                 match validation {
+                    // It should not be possible for the StringValidation to be
+                    // Some, but all its fields to be None, but... just to be
+                    // sure.
                     None
                     | Some(schemars::schema::StringValidation {
                         max_length: None,
