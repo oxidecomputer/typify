@@ -96,7 +96,7 @@ impl TypeSpace {
                     // new name for the inner type; otherwise, the inner type
                     // can just have this name.
                     let inner_type_name = match &type_name {
-                        Name::Required(name) => Name::Suggested(format!("{}Inner", name)),
+                        Name::Required(name) => Name::Required(format!("{}Inner", name)),
                         _ => type_name,
                     };
                     self.convert_option(inner_type_name, metadata, &ss)
