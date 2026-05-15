@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "Coverage for issue #954: multi-type `type: [...]` alongside oneOf/anyOf/allOf/not.",
+  "definitions": {
+    "TypeArrayOneOfItems": {
+      "type": [ "string", "number", "boolean", "array" ],
+      "oneOf": [
+        { "items": { "type": "string" } },
+        { "items": { "type": "number" } },
+        { "items": { "type": "boolean" } }
+      ]
+    },
+    "TypeArrayAnyOfItems": {
+      "type": [ "string", "number", "array" ],
+      "anyOf": [
+        { "items": { "type": "string" } },
+        { "items": { "type": "number" } }
+      ]
+    },
+    "TypeArrayAllOfRefinement": {
+      "type": [ "string", "array" ],
+      "allOf": [
+        { "items": { "type": "string" } },
+        { "minItems": 1 }
+      ]
+    },
+    "TypeArrayNotExclusion": {
+      "type": [ "string", "number", "array" ],
+      "not": { "type": "object" }
+    },
+    "TypeArrayOneOfExplicitArrayBranches": {
+      "$comment": "Each oneOf branch pins `type: array`; the non-array variants from the outer union should be pruned.",
+      "type": [ "string", "array" ],
+      "oneOf": [
+        { "type": "array", "items": { "type": "string" } },
+        { "type": "array", "items": { "type": "number" } }
+      ]
+    },
+    "TypeArrayPartiallyUnsatisfiableOneOf": {
+      "$comment": "Two oneOf branches conflict with the outer type union and should be dropped during merge.",
+      "type": [ "string", "array" ],
+      "oneOf": [
+        { "type": "object", "properties": { "name": { "type": "string" } } },
+        { "items": { "type": "string" } },
+        { "type": "number" }
+      ]
+    },
+    "TypeArrayFullyUnsatisfiableOneOf": {
+      "$comment": "Every branch conflicts with the outer type union; must resolve cleanly rather than panic.",
+      "type": [ "string", "number" ],
+      "oneOf": [
+        { "type": "array", "items": { "type": "string" } },
+        { "type": "object", "properties": { "k": { "type": "string" } } }
+      ]
+    },
+    "TypeArrayOneOfAndAllOf": {
+      "$comment": "oneOf and allOf on the same object, plus a multi-type `type` array.",
+      "type": [ "string", "array" ],
+      "allOf": [
+        { "minLength": 1 }
+      ],
+      "oneOf": [
+        { "items": { "type": "string" } },
+        { "items": { "type": "number" } }
+      ]
+    }
+  }
+}
