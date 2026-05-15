@@ -1,4 +1,4 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -783,7 +783,12 @@ fn merge_so_string(
             let pattern = match (&a.pattern, &b.pattern) {
                 (None, v) | (v, None) => v.clone(),
                 (Some(x), Some(y)) if x == y => Some(x.clone()),
-                _ => unimplemented!("merging distinct patterns is impractical"),
+                // Combine distinct patterns using lookaheads so the merged
+                // string must satisfy all constraints. If x is already a
+                // sequence of lookaheads (produced by a prior merge), append
+                // rather than re-wrap nested lookaheads.
+                (Some(x), Some(y)) if x.starts_with("(?=") => Some(format!("{x}(?={y})")),
+                (Some(x), Some(y)) => Some(format!("(?={x})(?={y})")),
             };
 
             if let (Some(min), Some(max)) = (min_length, max_length) {
@@ -1884,5 +1889,35 @@ mod tests {
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
         )
+    }
+
+    #[test]
+    fn test_merge_multiple_patterns() {
+        // Multiple schemas with distinct string patterns that must all be
+        // satisfied. The merged pattern should be a flat sequence of
+        // lookaheads: (?=p1)(?=p2)(?=p3).
+        let schemas: Vec<schemars::schema::Schema> = [
+            json!({"type": "string", "pattern": "^[a-z]+$"}),
+            json!({"type": "string", "pattern": "^.+[0-9].+$"}),
+            json!({"type": "string", "pattern": ".+[A-Z]$"}),
+        ]
+        .into_iter()
+        .map(|v| serde_json::from_value(v).unwrap())
+        .collect();
+
+        let merged = super::merge_all(&schemas, &BTreeMap::default());
+
+        let expected: schemars::schema::Schema = serde_json::from_value(json!({
+            "type": "string",
+            "pattern": "(?=^[a-z]+$)(?=^.+[0-9].+$)(?=.+[A-Z]$)"
+        }))
+        .unwrap();
+
+        assert_eq!(
+            merged,
+            expected,
+            "{}",
+            serde_json::to_string_pretty(&merged).unwrap(),
+        );
     }
 }

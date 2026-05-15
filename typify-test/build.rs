@@ -1,4 +1,4 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
@@ -125,6 +125,49 @@ struct UnknownFormat {
     pancakes: Pancakes,
 }
 
+struct TriplePattern;
+impl JsonSchema for TriplePattern {
+    fn schema_name() -> String {
+        "TriplePattern".to_string()
+    }
+
+    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+        schemars::schema::SchemaObject {
+            subschemas: Some(Box::new(schemars::schema::SubschemaValidation {
+                all_of: Some(vec![
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some("^[a-z].+$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some("^.{4,8}$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                    schemars::schema::SchemaObject {
+                        string: Some(Box::new(schemars::schema::StringValidation {
+                            pattern: Some(".+[a-z]$".to_string()),
+                            ..Default::default()
+                        })),
+                        ..Default::default()
+                    }
+                    .into(),
+                ]),
+                ..Default::default()
+            })),
+            ..Default::default()
+        }
+        .into()
+    }
+}
+
 fn main() {
     let mut type_space = TypeSpace::default();
 
@@ -133,6 +176,7 @@ fn main() {
     NonAsciiChars::add(&mut type_space);
     UnknownFormat::add(&mut type_space);
     ipnetwork::IpNetwork::add(&mut type_space);
+    TriplePattern::add(&mut type_space);
 
     let contents =
         prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());

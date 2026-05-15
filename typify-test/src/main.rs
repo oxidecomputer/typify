@@ -1,4 +1,4 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 // Include the generated code to make sure it compiles.
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
@@ -54,6 +54,28 @@ fn test_unknown_format() {
     let _ = UnknownFormat {
         pancakes: String::new(),
     };
+}
+
+#[test]
+fn test_triple_pattern() {
+    // Must satisfy all three patterns simultaneously:
+    //   1. ^[a-z].+$        — starts with lowercase
+    //   2. ^.{4,8}$         — 4–8 characters long
+    //   3. .+[a-z]$         — ends with lowercase
+
+    // Valid: 4 lowercase letters
+    assert!(TriplePattern::try_from("abcd").is_ok());
+    // Valid: 6 lowercase letters
+    assert!(TriplePattern::try_from("abcdef").is_ok());
+
+    // Fails: starts with uppercase
+    assert!(TriplePattern::try_from("Abcd").is_err());
+    // Fails: ends with uppercase
+    assert!(TriplePattern::try_from("abcD").is_err());
+    // Fails: too short
+    assert!(TriplePattern::try_from("abc").is_err());
+    // Fails: too long
+    assert!(TriplePattern::try_from("abcdefghijkl").is_err());
 }
 
 mod hashmap {

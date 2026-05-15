@@ -552,6 +552,23 @@
           }
         }
       ]
+    },
+    "TriplePattern": {
+      "allOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z].+$",
+          "format": "custom-id"
+        },
+        {
+          "type": "string",
+          "pattern": "^.{4,8}$"
+        },
+        {
+          "type": "string",
+          "pattern": ".+[a-z]$"
+        }
+      ]
     }
   }
 }
