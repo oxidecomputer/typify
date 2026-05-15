@@ -1,4 +1,4 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 // Include the generated code to make sure it compiles.
 include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
