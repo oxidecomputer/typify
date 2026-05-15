@@ -3,7 +3,6 @@ use quote::{format_ident, quote};
 use syn::Ident;
 
 use crate::{
-    namespace::Name,
     schemalet::SchemaRef,
     typespace::{JsonValue, NameBuilder, TypeCommon, TypeCommonBuilt, Typespace},
 };

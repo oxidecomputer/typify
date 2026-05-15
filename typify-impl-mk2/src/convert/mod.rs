@@ -10,7 +10,8 @@ use crate::{
         SchemaletValueString,
     },
     typespace::{
-        NameBuilder, Type, TypeNative, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct,
+        EnumTagType, NameBuilder, Type, TypeEnum, TypeNative, TypeNewtypeConstraints,
+        TypeNewtypeStruct, TypeTupleStruct, TypeUnitStruct,
     },
 };
 
@@ -149,8 +150,18 @@ impl Converter {
 
         let result = match details {
             CanonicalSchemaletDetails::Anything => Type::JsonValue.into(),
-            CanonicalSchemaletDetails::Nothing => todo!(),
-            CanonicalSchemaletDetails::Constant(_) => todo!(),
+            CanonicalSchemaletDetails::Nothing => Type::Enum(TypeEnum::new(
+                name,
+                metadata.description.clone(),
+                None,
+                EnumTagType::Untagged,
+                vec![],
+                false,
+            ))
+            .into(),
+            CanonicalSchemaletDetails::Constant(repr) => {
+                Type::UnitStruct(TypeUnitStruct::new(name, None, repr.clone())).into()
+            }
             CanonicalSchemaletDetails::Reference(schema_ref) => {
                 self.convert(schema_ref, original_json)
             }
@@ -189,7 +200,7 @@ impl Converter {
                 Type::Float("f64".to_string()).into()
             }
 
-            CanonicalSchemaletDetails::Value(SchemaletValue::Null) => todo!(),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Null) => Type::Unit.into(),
         };
 
         if let Some(name) = self.known_names.get(id) {

@@ -147,7 +147,7 @@ pub enum SchemaletDetails {
     StringOf(SchemaRef),
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Default)]
 pub struct SchemaletValueString {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub pattern: Vec<String>,
@@ -252,7 +252,7 @@ impl CanonicalSchemaletDetails {
             // TODO maybe we should handle this differently?
             CanonicalSchemaletDetails::Reference(_) => todo!(),
             // TODO ^^ Maybe this is a different place we should handle it??
-            CanonicalSchemaletDetails::Note(_) => todo!(),
+            CanonicalSchemaletDetails::Note(_) => None,
             CanonicalSchemaletDetails::ExclusiveOneOf { typ, .. } => typ.clone(),
             CanonicalSchemaletDetails::Value(value) => match value {
                 SchemaletValue::Boolean => Some(SchemaletType::Boolean),
@@ -379,10 +379,7 @@ pub struct SchemaletValueArray {
 
 impl Schemalet {
     pub fn new(details: SchemaletDetails, metadata: SchemaletMetadata) -> Self {
-        Self {
-            metadata,
-            details,
-        }
+        Self { metadata, details }
     }
 
     pub fn from_details(details: SchemaletDetails) -> Self {
@@ -393,12 +390,19 @@ impl Schemalet {
     }
 
     pub fn simplify(self, done: &BTreeMap<SchemaRef, CanonicalSchemalet>) -> State {
-        let Self {
-            metadata,
-            details,
-        } = self;
+        let Self { metadata, details } = self;
         match details {
-            SchemaletDetails::OneOf(..) => todo!(),
+            SchemaletDetails::OneOf(schema_refs) => {
+                if let Some(subschemas) = resolve_all(done, &schema_refs) {
+                    debug!("{}", serde_json::to_string_pretty(&subschemas).unwrap());
+                    expand_one_of(metadata, subschemas)
+                } else {
+                    State::Stuck(Schemalet {
+                        metadata,
+                        details: SchemaletDetails::OneOf(schema_refs),
+                    })
+                }
+            }
             SchemaletDetails::Not(..) => todo!(),
             SchemaletDetails::IfThen(..) => todo!(),
             SchemaletDetails::IfThenElse(..) => todo!(),
@@ -742,10 +746,44 @@ fn merge_yes_no(
         CanonicalSchemaletDetails::Reference(_schema_ref) => todo!(),
         CanonicalSchemaletDetails::Note(_schema_ref) => todo!(),
         CanonicalSchemaletDetails::ExclusiveOneOf { typ, subschemas } => {
-            todo!()
+            println!("exclusive one of {:#?} {:#?}", subschemas, no);
+            println!("done {:#?}", done);
+
+            let nos = no
+                .iter()
+                .map(|(schema_ref, _)| schema_ref.clone())
+                .collect::<Vec<_>>();
+            let mut new_work = Vec::new();
+            let mut new_subschemas = Vec::new();
+
+            for yes in subschemas {
+                let new_ref = SchemaRef::YesNo {
+                    yes: Box::new(yes.clone()),
+                    no: nos.clone(),
+                };
+
+                let new_subschema = Schemalet {
+                    metadata: Default::default(),
+                    details: SchemaletDetails::YesNo {
+                        yes: yes.clone(),
+                        no: nos.clone(),
+                    },
+                };
+
+                new_work.push((new_ref.clone(), new_subschema));
+                new_subschemas.push(new_ref);
+            }
+
+            let new_schemalet = Schemalet {
+                metadata: Default::default(),
+                details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+            };
+
+            State::Simplified(new_schemalet, new_work)
         }
         CanonicalSchemaletDetails::Value(_schemalet_value) => {
-            todo!()
+            println!("{:#?}", done);
+            todo!("merging yes/no with value {:#?} {:#?}", yes.1, no)
         }
     }
 }
@@ -789,6 +827,39 @@ fn type_incompatible(
         {
             true
         }
+
+        // Nothing is incompatible with everything.
+        (
+            CanonicalSchemalet {
+                details: CanonicalSchemaletDetails::Nothing,
+                ..
+            },
+            _,
+        )
+        | (
+            _,
+            CanonicalSchemalet {
+                details: CanonicalSchemaletDetails::Nothing,
+                ..
+            },
+        ) => false,
+
+        // Anything is incompatible with nothing.
+        (
+            CanonicalSchemalet {
+                details: CanonicalSchemaletDetails::Anything,
+                ..
+            },
+            _,
+        )
+        | (
+            _,
+            CanonicalSchemalet {
+                details: CanonicalSchemaletDetails::Anything,
+                ..
+            },
+        ) => true,
+
         _ => {
             println!("unhandled type_incompatible");
             println!(
@@ -796,7 +867,8 @@ fn type_incompatible(
                 serde_json::to_string_pretty(a).unwrap(),
                 serde_json::to_string_pretty(b).unwrap(),
             );
-            todo!()
+            // todo!();
+            false
         }
     }
 }
@@ -864,6 +936,49 @@ fn expand_any_of(
     // I'm pretty confident that each unique bit pattern of yesses and nos
     // results in a unique schema. Where this might unravel is when we expand
     // out an allOf that has multiple exclusive-one-ofs.
+
+    let new_schemalet = Schemalet {
+        metadata,
+        details: SchemaletDetails::ExclusiveOneOf(new_subschemas),
+    };
+
+    State::Simplified(new_schemalet, new_work)
+}
+
+fn expand_one_of(
+    metadata: SchemaletMetadata,
+    subschemas: Vec<(SchemaRef, &CanonicalSchemalet)>,
+) -> State {
+    let (new_subschemas, new_work) = subschemas
+        .iter()
+        .enumerate()
+        .map(|(ii, (schema_ref, _schemalet))| {
+            let yes = schema_ref.clone();
+            let no = subschemas
+                .iter()
+                .enumerate()
+                .filter_map(|(jj, (schema_ref, _schemalet))| {
+                    if ii != jj {
+                        Some(schema_ref.clone())
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<_>>();
+
+            let new_ref = SchemaRef::YesNo {
+                yes: Box::new(yes.clone()),
+                no: no.clone(),
+            };
+
+            let new_subschema = Schemalet {
+                metadata: Default::default(),
+                details: SchemaletDetails::YesNo { yes, no },
+            };
+
+            (new_ref.clone(), (new_ref, new_subschema))
+        })
+        .unzip();
 
     let new_schemalet = Schemalet {
         metadata,
@@ -990,7 +1105,7 @@ fn merge_all(
         let mut merged_details = CanonicalSchemaletDetails::Anything;
 
         for subschema in subschemas {
-            merged_details = merge_two(&merged_details, &subschema.details);
+            merged_details = merge_two(&merged_details, &subschema.details, done);
         }
 
         println!(
@@ -1010,6 +1125,7 @@ fn merge_all(
 fn merge_two(
     a: &CanonicalSchemaletDetails,
     b: &CanonicalSchemaletDetails,
+    done: &BTreeMap<SchemaRef, CanonicalSchemalet>,
 ) -> CanonicalSchemaletDetails {
     match (a.get_type(), b.get_type()) {
         (Some(aa), Some(bb)) if aa != bb => return CanonicalSchemaletDetails::Nothing,
@@ -1058,10 +1174,206 @@ fn merge_two(
             CanonicalSchemaletDetails::Value(SchemaletValue::Number(bb)),
         ) => merge_two_numbers(aa, bb),
 
+        (CanonicalSchemaletDetails::Constant(constant), constraint)
+        | (constraint, CanonicalSchemaletDetails::Constant(constant)) => {
+            if is_valid(constant, constraint, done) {
+                CanonicalSchemaletDetails::Constant(constant.clone())
+            } else {
+                CanonicalSchemaletDetails::Nothing
+            }
+        }
+
         _ => todo!(
             "merge_two {}",
             serde_json::to_string_pretty(&[a, b]).unwrap()
         ),
+    }
+}
+
+/// Determine whether a constant JSON value satisfies a canonical schema
+/// constraint. Used when merging a `Constant` with another schema in an allOf:
+/// if the constant is valid against the constraint, the intersection is just
+/// the constant; otherwise the intersection is `Nothing`.
+///
+/// The `done` map is needed to resolve any `SchemaRef`s within the constraint
+/// (e.g. the items schema of an array, or the value schemas of an object).
+fn is_valid(
+    constant: &serde_json::Value,
+    constraint: &CanonicalSchemaletDetails,
+    done: &BTreeMap<SchemaRef, CanonicalSchemalet>,
+) -> bool {
+    match constraint {
+        CanonicalSchemaletDetails::Anything => true,
+        CanonicalSchemaletDetails::Nothing => false,
+
+        CanonicalSchemaletDetails::Constant(c) => constant == c,
+
+        CanonicalSchemaletDetails::Reference(r) | CanonicalSchemaletDetails::Note(r) => {
+            is_valid(constant, &done[r].details, done)
+        }
+
+        CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
+            subschemas
+                .iter()
+                .filter(|r| is_valid(constant, &done[*r].details, done))
+                .count()
+                == 1
+        }
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::Null) => constant.is_null(),
+        CanonicalSchemaletDetails::Value(SchemaletValue::Boolean) => constant.is_boolean(),
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::Integer(iv)) => {
+            let Some(n) = constant.as_i64().or_else(|| {
+                // JSON numbers that are integers but stored as f64
+                constant
+                    .as_f64()
+                    .filter(|f| f.fract() == 0.0)
+                    .map(|f| f as i64)
+            }) else {
+                return false;
+            };
+            if let Some(min) = &iv.minimum {
+                if number_as_f64(min) > n as f64 {
+                    return false;
+                }
+            }
+            if let Some(emin) = &iv.exclusive_minimum {
+                if number_as_f64(emin) >= n as f64 {
+                    return false;
+                }
+            }
+            true
+        }
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::Number(nv)) => {
+            let Some(n) = constant.as_f64() else {
+                return false;
+            };
+            if let Some(min) = nv.minimum {
+                if n < min {
+                    return false;
+                }
+            }
+            if let Some(emin) = nv.exclusive_minimum {
+                if n <= emin {
+                    return false;
+                }
+            }
+            if let Some(max) = nv.maximum {
+                if n > max {
+                    return false;
+                }
+            }
+            if let Some(emax) = nv.exclusive_maximum {
+                if n >= emax {
+                    return false;
+                }
+            }
+            if let Some(mo) = nv.multiple_of {
+                if (n / mo).fract() != 0.0 {
+                    return false;
+                }
+            }
+            true
+        }
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::String(sv)) => {
+            let Some(s) = constant.as_str() else {
+                return false;
+            };
+            if let Some(min) = sv.min_length {
+                if s.chars().count() < min as usize {
+                    return false;
+                }
+            }
+            if let Some(max) = sv.max_length {
+                if s.chars().count() > max as usize {
+                    return false;
+                }
+            }
+            for pattern in &sv.pattern {
+                let re = regress::Regex::new(pattern).expect("invalid pattern in schema");
+                if re.find(s).is_none() {
+                    return false;
+                }
+            }
+            true
+        }
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::Array(av)) => {
+            let Some(arr) = constant.as_array() else {
+                return false;
+            };
+            if let Some(min) = av.min_items {
+                if arr.len() < min as usize {
+                    return false;
+                }
+            }
+            if let Some(max) = av.max_items {
+                if arr.len() > max as usize {
+                    return false;
+                }
+            }
+            if av.unique_items == Some(true) {
+                for i in 0..arr.len() {
+                    for j in (i + 1)..arr.len() {
+                        if arr[i] == arr[j] {
+                            return false;
+                        }
+                    }
+                }
+            }
+            // Validate prefix_items first, then items for the remainder.
+            let prefix_len = av.prefix_items.as_ref().map_or(0, |p| p.len());
+            if let Some(prefix) = &av.prefix_items {
+                for (item, schema_ref) in arr.iter().zip(prefix.iter()) {
+                    if !is_valid(item, &done[schema_ref].details, done) {
+                        return false;
+                    }
+                }
+            }
+            if let Some(items_ref) = &av.items {
+                for item in arr.iter().skip(prefix_len) {
+                    if !is_valid(item, &done[items_ref].details, done) {
+                        return false;
+                    }
+                }
+            }
+            true
+        }
+
+        CanonicalSchemaletDetails::Value(SchemaletValue::Object(ov)) => {
+            let Some(obj) = constant.as_object() else {
+                return false;
+            };
+            // Required properties must be present.
+            for req in &ov.required {
+                if !obj.contains_key(req) {
+                    return false;
+                }
+            }
+            // Validate known properties.
+            for (key, schema_ref) in &ov.properties {
+                if let Some(value) = obj.get(key) {
+                    if !is_valid(value, &done[schema_ref].details, done) {
+                        return false;
+                    }
+                }
+            }
+            // Validate additional properties.
+            if let Some(additional_ref) = &ov.additional_properties {
+                let additional_constraint = &done[additional_ref].details;
+                for (key, value) in obj {
+                    if !ov.properties.contains_key(key) {
+                        if !is_valid(value, additional_constraint, done) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            true
+        }
     }
 }
 
@@ -1116,12 +1428,26 @@ fn merge_two_integers(
 ) -> CanonicalSchemaletDetails {
     // allOf intersection: take the tightest (highest) lower bound.
     let minimum = match (&aa.minimum, &bb.minimum) {
-        (Some(a), Some(b)) => Some(if number_as_f64(a) >= number_as_f64(b) { a } else { b }.clone()),
+        (Some(a), Some(b)) => Some(
+            if number_as_f64(a) >= number_as_f64(b) {
+                a
+            } else {
+                b
+            }
+            .clone(),
+        ),
         (Some(a), None) | (None, Some(a)) => Some(a.clone()),
         (None, None) => None,
     };
     let exclusive_minimum = match (&aa.exclusive_minimum, &bb.exclusive_minimum) {
-        (Some(a), Some(b)) => Some(if number_as_f64(a) >= number_as_f64(b) { a } else { b }.clone()),
+        (Some(a), Some(b)) => Some(
+            if number_as_f64(a) >= number_as_f64(b) {
+                a
+            } else {
+                b
+            }
+            .clone(),
+        ),
         (Some(a), None) | (None, Some(a)) => Some(a.clone()),
         (None, None) => None,
     };
@@ -1274,10 +1600,10 @@ impl Refers for Schemalet {
 
 impl Refers for CanonicalSchemalet {
     fn refers(&self) -> Option<&SchemaRef> {
-        if let CanonicalSchemaletDetails::Reference(reference) = &self.details {
-            Some(reference)
-        } else {
-            None
+        match &self.details {
+            CanonicalSchemaletDetails::Reference(reference)
+            | CanonicalSchemaletDetails::Note(reference) => Some(reference),
+            _ => None,
         }
     }
 }
@@ -1312,4 +1638,299 @@ where
         .into_iter()
         .map(|schema_ref| resolve(wip, schema_ref))
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::BTreeMap;
+
+    use serde_json::json;
+
+    use super::{
+        is_valid, CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, SchemaletMetadata,
+        SchemaletValue, SchemaletValueArray, SchemaletValueInteger, SchemaletValueNumber,
+        SchemaletValueObject, SchemaletValueString,
+    };
+
+    fn done() -> BTreeMap<SchemaRef, CanonicalSchemalet> {
+        BTreeMap::new()
+    }
+
+    fn canonical(details: CanonicalSchemaletDetails) -> CanonicalSchemalet {
+        CanonicalSchemalet {
+            metadata: SchemaletMetadata::default(),
+            details,
+        }
+    }
+
+    fn done_with(
+        entries: impl IntoIterator<Item = (SchemaRef, CanonicalSchemaletDetails)>,
+    ) -> BTreeMap<SchemaRef, CanonicalSchemalet> {
+        entries
+            .into_iter()
+            .map(|(r, d)| (r, canonical(d)))
+            .collect()
+    }
+
+    // --- Anything / Nothing ---
+
+    #[test]
+    fn anything_accepts_all() {
+        let done = done();
+        assert!(is_valid(
+            &json!("hello"),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+        assert!(is_valid(
+            &json!(42),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+        assert!(is_valid(
+            &json!(null),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+        assert!(is_valid(
+            &json!(true),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+        assert!(is_valid(
+            &json!([1, 2]),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+        assert!(is_valid(
+            &json!({"a": 1}),
+            &CanonicalSchemaletDetails::Anything,
+            &done
+        ));
+    }
+
+    #[test]
+    fn nothing_rejects_all() {
+        let done = done();
+        assert!(!is_valid(
+            &json!("hello"),
+            &CanonicalSchemaletDetails::Nothing,
+            &done
+        ));
+        assert!(!is_valid(
+            &json!(42),
+            &CanonicalSchemaletDetails::Nothing,
+            &done
+        ));
+        assert!(!is_valid(
+            &json!(null),
+            &CanonicalSchemaletDetails::Nothing,
+            &done
+        ));
+    }
+
+    // --- Type mismatches ---
+
+    #[test]
+    fn type_mismatch_rejects() {
+        let done = done();
+        let string_constraint = CanonicalSchemaletDetails::Value(SchemaletValue::String(
+            SchemaletValueString::default(),
+        ));
+        assert!(!is_valid(&json!(42), &string_constraint, &done));
+        assert!(!is_valid(&json!(true), &string_constraint, &done));
+        assert!(!is_valid(&json!(null), &string_constraint, &done));
+
+        let int_constraint = CanonicalSchemaletDetails::Value(SchemaletValue::Integer(
+            SchemaletValueInteger::default(),
+        ));
+        assert!(!is_valid(&json!("hello"), &int_constraint, &done));
+        assert!(!is_valid(&json!(true), &int_constraint, &done));
+    }
+
+    // --- String constraints ---
+
+    #[test]
+    fn unconstrained_string_accepts_strings() {
+        let done = done();
+        let constraint = CanonicalSchemaletDetails::Value(SchemaletValue::String(
+            SchemaletValueString::default(),
+        ));
+        assert!(is_valid(&json!("hello"), &constraint, &done));
+        assert!(is_valid(&json!(""), &constraint, &done));
+    }
+
+    #[test]
+    fn string_pattern_constraint() {
+        let done = done();
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::String(SchemaletValueString {
+                pattern: vec!["^[a-z]+$".to_string()],
+                ..Default::default()
+            }));
+        assert!(is_valid(&json!("hello"), &constraint, &done));
+        assert!(!is_valid(&json!("Hello"), &constraint, &done));
+        assert!(!is_valid(&json!("hello123"), &constraint, &done));
+    }
+
+    #[test]
+    fn string_length_constraints() {
+        let done = done();
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::String(SchemaletValueString {
+                min_length: Some(2),
+                max_length: Some(5),
+                ..Default::default()
+            }));
+        assert!(is_valid(&json!("hi"), &constraint, &done));
+        assert!(is_valid(&json!("hello"), &constraint, &done));
+        assert!(!is_valid(&json!("h"), &constraint, &done));
+        assert!(!is_valid(&json!("toolong"), &constraint, &done));
+    }
+
+    // --- Integer / Number constraints ---
+
+    #[test]
+    fn integer_minimum_constraint() {
+        let done = done();
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(SchemaletValueInteger {
+                minimum: Some(serde_json::Number::from(0)),
+                exclusive_minimum: None,
+            }));
+        assert!(is_valid(&json!(0), &constraint, &done));
+        assert!(is_valid(&json!(100), &constraint, &done));
+        assert!(!is_valid(&json!(-1), &constraint, &done));
+    }
+
+    #[test]
+    fn number_range_constraints() {
+        let done = done();
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Number(SchemaletValueNumber {
+                minimum: Some(0.0),
+                maximum: Some(1.0),
+                exclusive_minimum: None,
+                exclusive_maximum: None,
+                multiple_of: None,
+            }));
+        assert!(is_valid(&json!(0.0), &constraint, &done));
+        assert!(is_valid(&json!(0.5), &constraint, &done));
+        assert!(is_valid(&json!(1.0), &constraint, &done));
+        assert!(!is_valid(&json!(-0.1), &constraint, &done));
+        assert!(!is_valid(&json!(1.1), &constraint, &done));
+    }
+
+    // --- Null ---
+
+    #[test]
+    fn null_constraint() {
+        let done = done();
+        let constraint = CanonicalSchemaletDetails::Value(SchemaletValue::Null);
+        assert!(is_valid(&json!(null), &constraint, &done));
+        assert!(!is_valid(&json!("null"), &constraint, &done));
+        assert!(!is_valid(&json!(0), &constraint, &done));
+    }
+
+    // --- Constant ---
+
+    #[test]
+    fn constant_against_constant() {
+        let done = done();
+        let same = CanonicalSchemaletDetails::Constant(json!("foo"));
+        let different = CanonicalSchemaletDetails::Constant(json!("bar"));
+        assert!(is_valid(&json!("foo"), &same, &done));
+        assert!(!is_valid(&json!("foo"), &different, &done));
+    }
+
+    // --- Array constraints (deep) ---
+
+    #[test]
+    fn array_with_typed_items() {
+        // items schema lives in `done`; the array constraint references it.
+        let items_ref = SchemaRef::Id("items".to_string());
+        let done = done_with([(
+            items_ref.clone(),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(
+                SchemaletValueInteger::default(),
+            )),
+        )]);
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Array(SchemaletValueArray {
+                items: Some(items_ref),
+                ..Default::default()
+            }));
+
+        // Array of integers is valid.
+        assert!(is_valid(&json!([1, 2, 3]), &constraint, &done));
+        // Array containing a string is invalid.
+        assert!(!is_valid(&json!([1, "two", 3]), &constraint, &done));
+        // Non-array is invalid.
+        assert!(!is_valid(&json!("not an array"), &constraint, &done));
+    }
+
+    #[test]
+    fn array_length_constraints() {
+        let done = done();
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Array(SchemaletValueArray {
+                min_items: Some(2),
+                max_items: Some(4),
+                ..Default::default()
+            }));
+        assert!(is_valid(&json!([1, 2]), &constraint, &done));
+        assert!(is_valid(&json!([1, 2, 3, 4]), &constraint, &done));
+        assert!(!is_valid(&json!([1]), &constraint, &done));
+        assert!(!is_valid(&json!([1, 2, 3, 4, 5]), &constraint, &done));
+    }
+
+    // --- Object constraints (deep) ---
+
+    #[test]
+    fn object_required_property_with_typed_value() {
+        // The value schema for "count" lives in `done`.
+        let count_ref = SchemaRef::Id("count".to_string());
+        let done = done_with([(
+            count_ref.clone(),
+            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(
+                SchemaletValueInteger::default(),
+            )),
+        )]);
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Object(SchemaletValueObject {
+                properties: [("count".to_string(), count_ref)].into(),
+                required: vec!["count".to_string()],
+                ..Default::default()
+            }));
+
+        // Object with integer "count" is valid.
+        assert!(is_valid(&json!({"count": 42}), &constraint, &done));
+        // Object with string "count" is invalid.
+        assert!(!is_valid(&json!({"count": "lots"}), &constraint, &done));
+        // Object missing required "count" is invalid.
+        assert!(!is_valid(&json!({}), &constraint, &done));
+        // Non-object is invalid.
+        assert!(!is_valid(&json!("not an object"), &constraint, &done));
+    }
+
+    #[test]
+    fn object_additional_properties() {
+        let value_ref = SchemaRef::Id("value".to_string());
+        let done = done_with([(
+            value_ref.clone(),
+            CanonicalSchemaletDetails::Value(SchemaletValue::String(
+                SchemaletValueString::default(),
+            )),
+        )]);
+        let constraint =
+            CanonicalSchemaletDetails::Value(SchemaletValue::Object(SchemaletValueObject {
+                additional_properties: Some(value_ref),
+                ..Default::default()
+            }));
+
+        // All-string-value object is valid.
+        assert!(is_valid(&json!({"a": "x", "b": "y"}), &constraint, &done));
+        // Object with integer value is invalid.
+        assert!(!is_valid(&json!({"a": "x", "b": 2}), &constraint, &done));
+    }
 }

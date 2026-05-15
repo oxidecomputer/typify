@@ -1,32 +1,4 @@
 //! Code generated from tests/schemas/input/arrays-and-tuples.json
-pub struct SchemaRoot(pub ::serde_json::Value);
-impl ::std::ops::Deref for SchemaRoot {
-    type Target = ::serde_json::Value;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<SchemaRoot> for ::serde_json::Value {
-    fn from(value: SchemaRoot) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for SchemaRoot {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for SchemaRoot {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
 pub struct ArraySansItems(pub ::std::vec::Vec<::serde_json::Value>);
 impl ::std::ops::Deref for ArraySansItems {
     type Target = ::std::vec::Vec<::serde_json::Value>;

@@ -1193,7 +1193,7 @@
     "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ stringOf",
     {
       "details": {
-        "Note": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string @@ stringOf"
+        "Note": "https://json-schema.org/draft/2020-12/meta/applicator#/properties/patternProperties/propertyNames @@ string"
       }
     }
   ],

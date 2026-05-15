@@ -408,6 +408,13 @@ impl GenericSchema {
             SchemaletDetails::AnyOf,
             any_of.as_ref(),
         );
+        let one_of = Self::to_schemalet_subschemas(
+            work,
+            &id,
+            "oneOf",
+            SchemaletDetails::OneOf,
+            one_of.as_ref(),
+        );
 
         let subref = ref_.as_ref().map(|raw_ref| {
             let value_id = id.partial("$ref");
@@ -438,10 +445,18 @@ impl GenericSchema {
             (enum_id, value)
         });
 
-        let everything = [concrete_value, all_of, any_of, subref, dynref, enum_values]
-            .into_iter()
-            .flatten()
-            .collect::<Vec<_>>();
+        let everything = [
+            concrete_value,
+            all_of,
+            any_of,
+            one_of,
+            subref,
+            dynref,
+            enum_values,
+        ]
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
 
         let metadata = SchemaletMetadata {
             title: title.clone(),
@@ -803,6 +818,7 @@ impl GenericSchema {
         let subtypes = GenericSimpleTypes::iter_all()
             .map(|schema_type| {
                 let (sref, sout) = self.to_schemalet_for_type(work, &id, &schema_type)?;
+                println!("got subtype {sout:?} for {id}");
                 work.done(sref.clone(), Schemalet::from_details(sout));
                 Ok(sref)
             })

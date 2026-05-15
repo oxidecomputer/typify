@@ -2166,6 +2166,7 @@ dependencies = [
  "prettyplease",
  "proc-macro2",
  "quote",
+ "regress",
  "schemars",
  "serde",
  "serde_json",

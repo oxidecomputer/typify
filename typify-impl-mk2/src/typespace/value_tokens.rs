@@ -47,9 +47,9 @@ pub fn value_tokens(value: &serde_json::Value) -> TokenStream {
                 }
             });
             quote! {
-                ::serde_json::Value::Object({
+                ::serde_json::Value::Object(
                     ::serde_json::Map::from_iter([#(#entries),*])
-                })
+                )
             }
         }
     }

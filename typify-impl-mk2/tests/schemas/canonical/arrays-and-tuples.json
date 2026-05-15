@@ -1,11 +1,5 @@
 [
   [
-    "http://localhost/#",
-    {
-      "details": "Anything"
-    }
-  ],
-  [
     "http://localhost/#/$defs/array-sans-items",
     {
       "details": {

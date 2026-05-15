@@ -1,0 +1,813 @@
+[
+  [
+    "http://localhost/#/$defs/AlternativeEnum",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/0\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/1\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/2\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AlternativeEnum/enum",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "http://localhost/#/$defs/AlternativeEnum/enum/0",
+            "http://localhost/#/$defs/AlternativeEnum/enum/1",
+            "http://localhost/#/$defs/AlternativeEnum/enum/2"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AlternativeEnum/enum/0",
+    {
+      "details": {
+        "Constant": "Choice1"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AlternativeEnum/enum/1",
+    {
+      "details": {
+        "Constant": "Choice2"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AlternativeEnum/enum/2",
+    {
+      "details": {
+        "Constant": "Choice3"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AnyOfNoStrings",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AnyOfNoStrings/enum",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AnyOfNothing",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "alternate": "http://localhost/#/$defs/DiskAttachment/properties/alternate",
+              "state": "http://localhost/#/$defs/DiskAttachment/properties/state"
+            },
+            "required": [
+              "state",
+              "alternate"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/alternate",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/AlternativeEnum"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/0\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/1\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/2\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state/enum",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "http://localhost/#/$defs/DiskAttachment/properties/state/enum/0",
+            "http://localhost/#/$defs/DiskAttachment/properties/state/enum/1",
+            "http://localhost/#/$defs/DiskAttachment/properties/state/enum/2"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state/enum/0",
+    {
+      "details": {
+        "Constant": "Detached"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state/enum/1",
+    {
+      "details": {
+        "Constant": "Destroyed"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state/enum/2",
+    {
+      "details": {
+        "Constant": "Faulted"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/EmptyObject",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "prop": "http://localhost/#/$defs/EmptyObject/properties/prop"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/EmptyObject/properties/prop",
+    {
+      "details": {
+        "Constant": {}
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/EmptyObject/properties/prop/enum",
+    {
+      "details": {
+        "Note": "http://localhost/#/$defs/EmptyObject/properties/prop/enum/0"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/EmptyObject/properties/prop/enum/0",
+    {
+      "details": {
+        "Constant": {}
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/IpNet",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/Ipv4Net",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              ".*"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/Ipv6Net",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "pattern": [
+              ".*"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/JankNames",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/Never",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NeverEver",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NeverEverForever",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/0\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/1\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]",
+            "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/2\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/0",
+            "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/1",
+            "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/2"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/0",
+    {
+      "details": {
+        "Constant": "a"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/1",
+    {
+      "details": {
+        "Constant": "b"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/2",
+    {
+      "details": {
+        "Constant": "c"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ReferenceDef",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/References",
+    {
+      "description": "issue 280",
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "id": "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
+              "reference": "http://localhost/#/$defs/ShouldBeExclusive/properties/reference"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/properties/reference",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/StringVersion",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/commented-variants",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/enum-and-constant",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-missing-title",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-raw-type",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-const",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-anyof-const/anyOf/0",
+            "http://localhost/#/$defs/option-anyof-const/anyOf/1",
+            "<merge> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-const/anyOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-const/anyOf/1",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-enum",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-anyof-enum/anyOf/0",
+            "http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-enum/anyOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-enum/anyOf/1",
+    {
+      "details": {
+        "Note": "http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0",
+    {
+      "details": {
+        "Constant": null
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-null",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-anyof-null/anyOf/0",
+            "http://localhost/#/$defs/option-anyof-null/anyOf/1"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-null/anyOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-anyof-null/anyOf/1",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-const",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-enum",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-null",
+    {
+      "details": "Anything"
+    }
+  ],
+  [
+    "http://localhost/#/$defs/variants-differ-by-punct",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "String",
+          "subschemas": [
+            "http://localhost/#/$defs/variants-differ-by-punct/enum/0",
+            "http://localhost/#/$defs/variants-differ-by-punct/enum/1",
+            "http://localhost/#/$defs/variants-differ-by-punct/enum/2"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/variants-differ-by-punct/enum/0",
+    {
+      "details": {
+        "Constant": "v1.5GBASE-T"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/variants-differ-by-punct/enum/1",
+    {
+      "details": {
+        "Constant": "v225GBASE-T"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/variants-differ-by-punct/enum/2",
+    {
+      "details": {
+        "Constant": "v32,5,GBASE,T"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AlternativeEnum @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/AnyOfNoStrings @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/DiskAttachment/properties/state @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/EmptyObject/properties/prop @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {
+            "format": [
+              "?"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ value",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string",
+            "http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ null"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/0\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
+    {
+      "details": {
+        "Constant": "Choice1"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/1\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
+    {
+      "details": {
+        "Constant": "Choice2"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/2\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
+    {
+      "details": {
+        "Constant": "Choice3"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/0\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]",
+    {
+      "details": {
+        "Constant": "Detached"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/1\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]",
+    {
+      "details": {
+        "Constant": "Destroyed"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/DiskAttachment/properties/state/enum/2\n  http://localhost/#/$defs/DiskAttachment/properties/state @@ string\n]",
+    {
+      "details": {
+        "Constant": "Faulted"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/0\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]",
+    {
+      "details": {
+        "Constant": "a"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/1\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]",
+    {
+      "details": {
+        "Constant": "b"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat/enum/2\n  http://localhost/#/$defs/NullStringEnumWithUnknownFormat @@ string\n]",
+    {
+      "details": {
+        "Constant": "c"
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/option-anyof-enum/anyOf/0\n  http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<merge> [\n  http://localhost/#/$defs/option-anyof-null/anyOf/0\n  http://localhost/#/$defs/option-anyof-null/anyOf/1\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-const/anyOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-const/anyOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-enum/anyOf/0\n  http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-enum/anyOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0\n  http://localhost/#/$defs/option-anyof-enum/anyOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-null/anyOf/0\n  http://localhost/#/$defs/option-anyof-null/anyOf/1\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-null/anyOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-anyof-null/anyOf/1\n  http://localhost/#/$defs/option-anyof-null/anyOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-anyof-null/anyOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  <merge> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]\n]",
+    {
+      "details": {
+        "Reference": "<merge> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  <merge> [\n  http://localhost/#/$defs/option-anyof-enum/anyOf/0\n  http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0\n]\n]",
+    {
+      "details": {
+        "Reference": "<merge> [\n  http://localhost/#/$defs/option-anyof-enum/anyOf/0\n  http://localhost/#/$defs/option-anyof-enum/anyOf/1/enum/0\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  <merge> [\n  http://localhost/#/$defs/option-anyof-null/anyOf/0\n  http://localhost/#/$defs/option-anyof-null/anyOf/1\n]\n]",
+    {
+      "details": {
+        "Reference": "<merge> [\n  http://localhost/#/$defs/option-anyof-null/anyOf/0\n  http://localhost/#/$defs/option-anyof-null/anyOf/1\n]"
+      }
+    }
+  ]
+]

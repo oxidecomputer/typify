@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "one-of-types": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "bar": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "bar"
+          ]
+        },
+        {
+          "properties": {
+            "foo": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "foo"
+          ]
+        }
+      ]
+    },
+    "one-of-raw-type": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "one-of-missing-title": {
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "A",
+          "properties": {
+            "foo": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "title": "B",
+          "properties": {
+            "bar": {
+              "type": "integer"
+            }
+          }
+        },
+        {
+          "properties": {
+            "bar": {
+              "type": "integer"
+            },
+            "baz": {
+              "type": "integer"
+            }
+          }
+        }
+      ]
+    },
+    "IpNet": {
+      "$comment": "we want to see *nice* variant names in the output",
+      "$skipped": {
+        "oneOf": [
+          {
+            "title": "V4",
+            "allOf": [
+              {
+                "$ref": "#/$defs/Ipv4Net"
+              }
+            ]
+          },
+          {
+            "title": "V6",
+            "allOf": [
+              {
+                "$ref": "#/$defs/Ipv6Net"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "Ipv4Net": {
+      "type": "string",
+      "pattern": "4*"
+    },
+    "Ipv6Net": {
+      "type": "string",
+      "pattern": "6*"
+    },
+    "NullStringEnumWithUnknownFormat": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "a",
+        "b",
+        "c"
+      ],
+      "format": "?"
+    },
+    "AlternativeEnum": {
+      "type": "string",
+      "default": "Choice2",
+      "enum": [
+        "Choice1",
+        "Choice2",
+        "Choice3"
+      ]
+    },
+    "DiskAttachment": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "Detached",
+            "Destroyed",
+            "Faulted"
+          ],
+          "default": "Detached"
+        },
+        "alternate": {
+          "$ref": "#/$defs/AlternativeEnum"
+        }
+      },
+      "required": [
+        "state",
+        "alternate"
+      ]
+    },
+    "EmptyObject": {
+      "type": "object",
+      "properties": {
+        "prop": {
+          "type": "object",
+          "enum": [
+            {}
+          ]
+        }
+      }
+    },
+    "JankNames": {
+      "$skipped": {
+        "oneOf": [
+          {
+            "title": "Animation Specification",
+            "type": "string"
+          },
+          {
+            "title": "Animation Specification",
+            "type": "object",
+            "maxProperties": 1,
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "maxProperties": 2,
+            "minProperties": 2,
+            "additionalProperties": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "References": {
+      "description": "issue 280",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$comment": "Mapping of mod name to the desired version",
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/StringVersion"
+              },
+              {
+                "$ref": "#/$defs/ReferenceDef"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "StringVersion": {
+      "type": "string"
+    },
+    "ReferenceDef": {
+      "type": "number"
+    },
+    "Never": false,
+    "NeverEver": {
+      "not": true
+    },
+    "NeverEverForever": {
+      "not": {}
+    },
+    "AnyOfNothing": {
+      "enum": []
+    },
+    "AnyOfNoStrings": {
+      "type": "string",
+      "enum": []
+    },
+    "ShouldBeExclusive": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "id"
+          ]
+        },
+        {
+          "required": [
+            "reference"
+          ]
+        }
+      ]
+    },
+    "enum-and-constant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "bark"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "enum": [
+                "dog"
+              ]
+            },
+            "bark": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "purr"
+          ],
+          "properties": {
+            "petType": {
+              "type": "string",
+              "const": "cat"
+            },
+            "purr": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "help"
+          ],
+          "properties": {
+            "petType": {
+              "const": "monkey"
+            },
+            "help": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "petType",
+            "float"
+          ],
+          "properties": {
+            "petType": {
+              "enum": [
+                "fish"
+              ]
+            },
+            "float": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "commented-variants": {
+      "oneOf": [
+        {
+          "enum": [
+            "A"
+          ],
+          "description": "An A"
+        },
+        {
+          "enum": [
+            "B"
+          ],
+          "description": "A B"
+        },
+        {
+          "const": "C",
+          "description": "a pirate's favorite letter"
+        }
+      ]
+    },
+    "variants-differ-by-punct": {
+      "enum": [
+        "v1.5GBASE-T",
+        "v225GBASE-T",
+        "v32,5,GBASE,T"
+      ]
+    },
+    "option-oneof-enum": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": [
+            null
+          ]
+        }
+      ]
+    },
+    "option-oneof-const": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": null
+        }
+      ]
+    },
+    "option-oneof-null": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "option-anyof-enum": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "enum": [
+            null
+          ]
+        }
+      ]
+    },
+    "option-anyof-const": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": null
+        }
+      ]
+    },
+    "option-anyof-null": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

@@ -14,6 +14,7 @@
 //!      some additional context? Depends on how we handle dynamic refs.
 
 use std::collections::BTreeMap;
+use std::fmt::Display;
 
 use crate::append_map::AppendMap;
 use crate::schema::{bootstrap, json_schema_2020_12};
@@ -161,6 +162,12 @@ impl Error {
 
     pub fn deserialization_error(id: &str, message: &str) -> Self {
         Self(format!("Document {id} failed to deserialize: {message}"))
+    }
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 

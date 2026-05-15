@@ -61,12 +61,29 @@ fn test_schemas() -> anyhow::Result<()> {
 fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     let mut bundle = Bundle::default();
     let root_content = std::fs::read_to_string(path)?;
-    let context = bundle.add_content(root_content).expect("invalid content");
+    let context = bundle
+        .add_content(root_content)
+        .unwrap_or_else(|e| panic!("failed to add content of {} to bundle: {e}", path.display(),));
 
     // TODO 11/14/2025
     // Pretty kludgy, but I just want to get something going. Not sure what a
     // better version of this is going to look like.
     let file_content = bundle.resolve(&context, "#").unwrap();
+
+    let meat = file_content.value.as_object().map_or(false, |obj| {
+        obj.keys().any(|k| match k.as_str() {
+            "$defs" | "title" | "definitions" | "$id" | "$schema" | "description" | "examples"
+            | "default" => false,
+            _ => true,
+        })
+    });
+
+    let root_schema = file_content
+        .value
+        .get("title")
+        .and_then(|v| v.as_str())
+        .map(ToString::to_string)
+        .or_else(|| meat.then_some("RootSchema".to_string()));
 
     let defs = file_content
         .value
@@ -89,12 +106,14 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
             .unwrap();
     }
 
-    let _type_id = typify
-        .add_type(
-            &context.location.to_string(),
-            Typify2NameHint::Suggested("SchemaRoot".to_string()),
-        )
-        .unwrap();
+    if let Some(root_schema) = root_schema {
+        let _type_id = typify
+            .add_type(
+                &context.location.to_string(),
+                Typify2NameHint::Suggested(root_schema),
+            )
+            .unwrap();
+    }
 
     let canonical_out = typify.canonical_output();
     let typespace = typify.typify(Default::default(), Default::default())?;
