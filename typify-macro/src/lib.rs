@@ -191,7 +191,7 @@ impl From<MacroPatch> for TypeSpacePatch {
 
 fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     // Allow the caller to give us either a simple string or a compound object.
-    let (schema, settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
+    let (schema, mut settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
         (ll, TypeSpaceSettings::default())
     } else {
         let MacroSettings {
@@ -244,6 +244,11 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
         (schema.into_inner(), settings)
     };
+
+    // Macro consumers depend on the `typify` crate, which re-exports `regress`.
+    // Routing the generated path through the re-export saves callers from
+    // having to declare `regress` themselves as a peer dependency of `typify`.
+    settings.with_regress_crate("::typify::regress");
 
     let dir = std::env::var("CARGO_MANIFEST_DIR").map_or_else(
         |_| std::env::current_dir().unwrap(),

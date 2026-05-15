@@ -308,6 +308,8 @@ pub struct TypeSpaceSettings {
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+
+    regress_crate: Option<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -560,6 +562,22 @@ impl TypeSpaceSettings {
     pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
         self.map_type = map_type.into();
         self
+    }
+
+    /// Override the path used to reference the [`regress`] crate in generated
+    /// code. The default `::regress` requires consumers to declare `regress`
+    /// as a direct dependency. The `typify` crate sets this to
+    /// `::typify::regress` so that consumers of the `import_types!` macro do
+    /// not need a direct `regress` dependency.
+    pub fn with_regress_crate<S: ToString>(&mut self, path: S) -> &mut Self {
+        self.regress_crate = Some(path.to_string());
+        self
+    }
+
+    /// The configured regress crate path, or the default `::regress`.
+    pub(crate) fn regress_crate_path(&self) -> syn::Path {
+        let s = self.regress_crate.as_deref().unwrap_or("::regress");
+        syn::parse_str(s).expect("regress_crate must parse as a path")
     }
 }
 
