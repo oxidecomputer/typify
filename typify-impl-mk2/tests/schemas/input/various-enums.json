@@ -37,35 +37,37 @@
       ]
     },
     "one-of-missing-title": {
-      "type": "object",
-      "oneOf": [
-        {
-          "title": "A",
-          "properties": {
-            "foo": {
-              "type": "string"
+      "$xxx": {
+        "type": "object",
+        "oneOf": [
+          {
+            "title": "A",
+            "properties": {
+              "foo": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "B",
+            "properties": {
+              "bar": {
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "properties": {
+              "bar": {
+                "type": "integer"
+              },
+              "baz": {
+                "type": "integer"
+              }
             }
           }
-        },
-        {
-          "title": "B",
-          "properties": {
-            "bar": {
-              "type": "integer"
-            }
-          }
-        },
-        {
-          "properties": {
-            "bar": {
-              "type": "integer"
-            },
-            "baz": {
-              "type": "integer"
-            }
-          }
-        }
-      ]
+        ]
+      }
     },
     "IpNet": {
       "$comment": "we want to see *nice* variant names in the output",
@@ -179,29 +181,31 @@
       }
     },
     "References": {
-      "description": "issue 280",
-      "oneOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "string"
+      "$xxx": {
+        "description": "issue 280",
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$comment": "Mapping of mod name to the desired version",
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/StringVersion"
+                },
+                {
+                  "$ref": "#/$defs/ReferenceDef"
+                }
+              ]
+            }
           }
-        },
-        {
-          "$comment": "Mapping of mod name to the desired version",
-          "type": "object",
-          "additionalProperties": {
-            "oneOf": [
-              {
-                "$ref": "#/$defs/StringVersion"
-              },
-              {
-                "$ref": "#/$defs/ReferenceDef"
-              }
-            ]
-          }
-        }
-      ]
+        ]
+      }
     },
     "StringVersion": {
       "type": "string"
@@ -247,94 +251,98 @@
       ]
     },
     "enum-and-constant": {
-      "oneOf": [
-        {
-          "type": "object",
-          "required": [
-            "petType",
-            "bark"
-          ],
-          "properties": {
-            "petType": {
-              "type": "string",
-              "enum": [
-                "dog"
-              ]
-            },
-            "bark": {
-              "type": "string"
+      "$xxx": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "petType",
+              "bark"
+            ],
+            "properties": {
+              "petType": {
+                "type": "string",
+                "enum": [
+                  "dog"
+                ]
+              },
+              "bark": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "petType",
+              "purr"
+            ],
+            "properties": {
+              "petType": {
+                "type": "string",
+                "const": "cat"
+              },
+              "purr": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "petType",
+              "help"
+            ],
+            "properties": {
+              "petType": {
+                "const": "monkey"
+              },
+              "help": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "petType",
+              "float"
+            ],
+            "properties": {
+              "petType": {
+                "enum": [
+                  "fish"
+                ]
+              },
+              "float": {
+                "type": "string"
+              }
             }
           }
-        },
-        {
-          "type": "object",
-          "required": [
-            "petType",
-            "purr"
-          ],
-          "properties": {
-            "petType": {
-              "type": "string",
-              "const": "cat"
-            },
-            "purr": {
-              "type": "string"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "petType",
-            "help"
-          ],
-          "properties": {
-            "petType": {
-              "const": "monkey"
-            },
-            "help": {
-              "type": "string"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "petType",
-            "float"
-          ],
-          "properties": {
-            "petType": {
-              "enum": [
-                "fish"
-              ]
-            },
-            "float": {
-              "type": "string"
-            }
-          }
-        }
-      ]
+        ]
+      }
     },
     "commented-variants": {
-      "oneOf": [
-        {
-          "enum": [
-            "A"
-          ],
-          "description": "An A"
-        },
-        {
-          "enum": [
-            "B"
-          ],
-          "description": "A B"
-        },
-        {
-          "const": "C",
-          "description": "a pirate's favorite letter"
-        }
-      ]
+      "$xxx": {
+        "oneOf": [
+          {
+            "enum": [
+              "A"
+            ],
+            "description": "An A"
+          },
+          {
+            "enum": [
+              "B"
+            ],
+            "description": "A B"
+          },
+          {
+            "const": "C",
+            "description": "a pirate's favorite letter"
+          }
+        ]
+      }
     },
     "variants-differ-by-punct": {
       "enum": [

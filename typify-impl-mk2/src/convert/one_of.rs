@@ -187,7 +187,22 @@ impl Converter {
                             details: VariantDetails::Unit,
                         }
                     }
-                    ProtoVariantExternalKind::Typed(variant_name, schema_ref) => todo!(),
+                    ProtoVariantExternalKind::Typed(variant_name, schema_ref) => {
+                        // TODO 5.15.2026
+                        // This is actually trickier--we have to decide if
+                        // we're going to inline the struct or refer to the
+                        // referenced type. If we refer to the referenced type
+                        // (and we're the only reference to it) then we'll sort
+                        // of want to eliminate it from the output.
+                        let rust_name = variant_name.to_pascal_case();
+                        let rename = (variant_name != rust_name).then_some(variant_name);
+                        EnumVariant {
+                            rust_name,
+                            rename,
+                            description: proto.description.clone(),
+                            details: VariantDetails::Item(schema_ref.clone()),
+                        }
+                    }
                 }
                 // todo!();
                 // EnumVariant {

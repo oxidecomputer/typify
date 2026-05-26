@@ -80,10 +80,12 @@ impl Normalizer {
                     schemalet => schemalet,
                 };
 
-                let old = self.raw.insert(schema_ref.clone(), schemalet);
+                let old = self.raw.insert(schema_ref.clone(), schemalet.clone());
                 // Note that we really should not hit this; we've checked for
                 // duplicate IDs when processing the WIP queue.
-                assert!(old.is_none(), "already present: {}", schema_ref);
+                if let Some(old) = old {
+                    panic!("duplicate schema reference: {schema_ref}\n  old: {old:#?}\n  new: {schemalet:#?}");
+                }
             }
 
             let Some((context, path)) = self.next_wip(&mut wip) else {

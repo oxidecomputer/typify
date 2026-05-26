@@ -203,7 +203,7 @@
         "Value": {
           "String": {
             "pattern": [
-              ".*"
+              "4*"
             ]
           }
         }
@@ -217,7 +217,7 @@
         "Value": {
           "String": {
             "pattern": [
-              ".*"
+              "6*"
             ]
           }
         }
@@ -307,7 +307,7 @@
     {
       "details": {
         "Value": {
-          "String": {}
+          "Number": {}
         }
       }
     }
@@ -315,7 +315,6 @@
   [
     "http://localhost/#/$defs/References",
     {
-      "description": "issue 280",
       "details": "Anything"
     }
   ],
@@ -323,13 +322,50 @@
     "http://localhost/#/$defs/ShouldBeExclusive",
     {
       "details": {
-        "Value": {
-          "Object": {
-            "properties": {
-              "id": "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
-              "reference": "http://localhost/#/$defs/ShouldBeExclusive/properties/reference"
-            }
-          }
+        "ExclusiveOneOf": {
+          "typ": "Object",
+          "subschemas": [
+            "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]\n  http://localhost/#/$defs/ShouldBeExclusive @@ object\n]",
+            "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]\n  http://localhost/#/$defs/ShouldBeExclusive @@ object\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object",
+            "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string"
+          ]
         }
       }
     }
@@ -379,29 +415,111 @@
   [
     "http://localhost/#/$defs/one-of-missing-title",
     {
-      "details": {
-        "Value": {
-          "Object": {
-            "properties": {}
-          }
-        }
-      }
+      "details": "Anything"
     }
   ],
   [
     "http://localhost/#/$defs/one-of-raw-type",
     {
-      "details": "Anything"
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/one-of-raw-type/oneOf/0",
+            "http://localhost/#/$defs/one-of-raw-type/oneOf/1"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-raw-type/oneOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-raw-type/oneOf/1",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
     }
   ],
   [
     "http://localhost/#/$defs/one-of-types",
     {
       "details": {
+        "ExclusiveOneOf": {
+          "typ": "Object",
+          "subschemas": [
+            "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]\n  http://localhost/#/$defs/one-of-types @@ object\n]",
+            "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]\n  http://localhost/#/$defs/one-of-types @@ object\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ array",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ null",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ number",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ object",
+            "http://localhost/#/$defs/one-of-types/oneOf/0 @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0/properties/bar",
+    {
+      "details": {
         "Value": {
-          "Object": {
-            "properties": {}
-          }
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ array",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ null",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ number",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ object",
+            "http://localhost/#/$defs/one-of-types/oneOf/1 @@ string"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1/properties/foo",
+    {
+      "details": {
+        "Value": {
+          "String": {}
         }
       }
     }
@@ -512,19 +630,103 @@
   [
     "http://localhost/#/$defs/option-oneof-const",
     {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-oneof-const/oneOf/0",
+            "http://localhost/#/$defs/option-oneof-const/oneOf/1"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-const/oneOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-const/oneOf/1",
+    {
       "details": "Anything"
     }
   ],
   [
     "http://localhost/#/$defs/option-oneof-enum",
     {
-      "details": "Anything"
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-oneof-enum/oneOf/0",
+            "http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-enum/oneOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-enum/oneOf/1",
+    {
+      "details": {
+        "Note": "http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0",
+    {
+      "details": {
+        "Constant": null
+      }
     }
   ],
   [
     "http://localhost/#/$defs/option-oneof-null",
     {
-      "details": "Anything"
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": null,
+          "subschemas": [
+            "http://localhost/#/$defs/option-oneof-null/oneOf/0",
+            "http://localhost/#/$defs/option-oneof-null/oneOf/1"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-null/oneOf/0",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/option-oneof-null/oneOf/1",
+    {
+      "details": {
+        "Value": "Null"
+      }
     }
   ],
   [
@@ -645,6 +847,349 @@
     }
   ],
   [
+    "http://localhost/#/$defs/ShouldBeExclusive @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "id": "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
+              "reference": "http://localhost/#/$defs/ShouldBeExclusive/properties/reference"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive @@ oneOf",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "Object",
+          "subschemas": [
+            "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+            "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "required": [
+              "id"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "required": [
+              "reference"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {}
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types @@ oneOf",
+    {
+      "details": {
+        "ExclusiveOneOf": {
+          "typ": "Object",
+          "subschemas": [
+            "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+            "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]"
+          ]
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "bar": "http://localhost/#/$defs/one-of-types/oneOf/0/properties/bar"
+            },
+            "required": [
+              "bar"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/0 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ array",
+    {
+      "details": {
+        "Value": {
+          "Array": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean",
+    {
+      "details": {
+        "Value": "Boolean"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer",
+    {
+      "details": {
+        "Value": {
+          "Integer": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ null",
+    {
+      "details": {
+        "Value": "Null"
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ number",
+    {
+      "details": {
+        "Value": {
+          "Number": {}
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ object",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "foo": "http://localhost/#/$defs/one-of-types/oneOf/1/properties/foo"
+            },
+            "required": [
+              "foo"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "http://localhost/#/$defs/one-of-types/oneOf/1 @@ string",
+    {
+      "details": {
+        "Value": {
+          "String": {}
+        }
+      }
+    }
+  ],
+  [
     "<merge> [\n  http://localhost/#/$defs/AlternativeEnum/enum/0\n  http://localhost/#/$defs/AlternativeEnum @@ string\n]",
     {
       "details": {
@@ -739,6 +1284,112 @@
     }
   ],
   [
+    "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]\n  http://localhost/#/$defs/ShouldBeExclusive @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "id": "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
+              "reference": "http://localhost/#/$defs/ShouldBeExclusive/properties/reference"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]\n  http://localhost/#/$defs/ShouldBeExclusive @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "id": "http://localhost/#/$defs/ShouldBeExclusive/properties/id",
+              "reference": "http://localhost/#/$defs/ShouldBeExclusive/properties/reference"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]\n  http://localhost/#/$defs/one-of-types @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "bar": "http://localhost/#/$defs/one-of-types/oneOf/0/properties/bar"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<merge> [\n  <yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]\n  http://localhost/#/$defs/one-of-types @@ object\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "foo": "http://localhost/#/$defs/one-of-types/oneOf/1/properties/foo"
+            }
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1\n]",
+    {
+      "details": {
+        "Note": "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0\n]",
+    {
+      "details": {
+        "Note": "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-raw-type/oneOf/0\n  http://localhost/#/$defs/one-of-raw-type/oneOf/1\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/one-of-raw-type/oneOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-raw-type/oneOf/1\n  http://localhost/#/$defs/one-of-raw-type/oneOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/one-of-raw-type/oneOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0\n  http://localhost/#/$defs/one-of-types/oneOf/1\n]",
+    {
+      "details": {
+        "Note": "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1\n  http://localhost/#/$defs/one-of-types/oneOf/0\n]",
+    {
+      "details": {
+        "Note": "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]"
+      }
+    }
+  ],
+  [
     "<yes/no> [\n  http://localhost/#/$defs/option-anyof-const/anyOf/0\n  http://localhost/#/$defs/option-anyof-const/anyOf/1\n]",
     {
       "details": {
@@ -784,6 +1435,262 @@
       "details": {
         "Reference": "http://localhost/#/$defs/option-anyof-null/anyOf/1"
       }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-const/oneOf/0\n  http://localhost/#/$defs/option-oneof-const/oneOf/1\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-const/oneOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-const/oneOf/1\n  http://localhost/#/$defs/option-oneof-const/oneOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-const/oneOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-enum/oneOf/0\n  http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-enum/oneOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0\n  http://localhost/#/$defs/option-oneof-enum/oneOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-enum/oneOf/1/enum/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-null/oneOf/0\n  http://localhost/#/$defs/option-oneof-null/oneOf/1\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-null/oneOf/0"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/option-oneof-null/oneOf/1\n  http://localhost/#/$defs/option-oneof-null/oneOf/0\n]",
+    {
+      "details": {
+        "Reference": "http://localhost/#/$defs/option-oneof-null/oneOf/1"
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "required": [
+              "id"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {},
+            "required": [
+              "reference"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/1 @@ string\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ array\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ boolean\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ integer\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ null\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ number\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ object\n  http://localhost/#/$defs/ShouldBeExclusive/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "bar": "http://localhost/#/$defs/one-of-types/oneOf/0/properties/bar"
+            },
+            "required": [
+              "bar"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": {
+        "Value": {
+          "Object": {
+            "properties": {
+              "foo": "http://localhost/#/$defs/one-of-types/oneOf/1/properties/foo"
+            },
+            "required": [
+              "foo"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  [
+    "<yes/no> [\n  http://localhost/#/$defs/one-of-types/oneOf/1 @@ string\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ array\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ boolean\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ integer\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ null\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ number\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ object\n  http://localhost/#/$defs/one-of-types/oneOf/0 @@ string\n]",
+    {
+      "details": "Nothing"
     }
   ],
   [

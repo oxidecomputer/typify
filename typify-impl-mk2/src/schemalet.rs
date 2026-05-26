@@ -1,11 +1,7 @@
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    fmt::Display,
-    ops::Deref,
-};
+use std::{collections::BTreeMap, fmt::Display, ops::Deref};
 
 use log::debug;
-use serde::{ser::SerializeMap, Serialize};
+use serde::Serialize;
 
 use crate::{
     bundler::Resolved,
@@ -704,6 +700,39 @@ fn merge_yes_no(
     no: Vec<(SchemaRef, &CanonicalSchemalet)>,
     done: &BTreeMap<SchemaRef, CanonicalSchemalet>,
 ) -> State {
+    // A "no" of an exclusive one of can be flattened into the list of nos
+    if no.iter().any(|(_, subschema)| {
+        matches!(
+            subschema.details,
+            CanonicalSchemaletDetails::ExclusiveOneOf { .. }
+        )
+    }) {
+        let new_no = no
+            .into_iter()
+            .flat_map(|(schema_ref, nono)| {
+                if let CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } = &nono.details
+                {
+                    subschemas.iter().cloned().collect::<Vec<_>>()
+                } else {
+                    vec![schema_ref]
+                }
+            })
+            .collect::<Vec<_>>();
+
+        return State::Simplified(
+            Schemalet {
+                metadata: Default::default(),
+                details: SchemaletDetails::YesNo {
+                    yes: yes.0.clone(),
+                    no: new_no,
+                },
+            },
+            Default::default(),
+        );
+    }
+
+    // If the "yes" has a type that is incompatible with all of the "no"s, then
+    // we can simplify to the "yes"
     if let Some(typ) = yes.1.get_type() {
         if no.iter().all(|(_, no_subschema)| {
             no_subschema
@@ -781,11 +810,218 @@ fn merge_yes_no(
 
             State::Simplified(new_schemalet, new_work)
         }
-        CanonicalSchemaletDetails::Value(_schemalet_value) => {
-            println!("{:#?}", done);
-            todo!("merging yes/no with value {:#?} {:#?}", yes.1, no)
+        CanonicalSchemaletDetails::Value(schemalet_value) => {
+            merge_yes_no_value(yes.0, schemalet_value, no, done)
         }
     }
+}
+
+fn merge_yes_no_value(
+    yes_ref: SchemaRef,
+    schemalet_value: &SchemaletValue,
+    no: Vec<(SchemaRef, &CanonicalSchemalet)>,
+    done: &BTreeMap<SchemaRef, CanonicalSchemalet>,
+) -> State {
+    println!("merging yes/no with value {:#?} {:#?}", schemalet_value, no);
+
+    let mut new_value = schemalet_value.clone();
+    let mut new_work = Vec::new();
+
+    for (_, no) in no {
+        println!("yes - no: {:#?} - {:#?}", new_value, no);
+
+        // TODO 5.15.2026
+        // This is a whole ordeal and a half. I'm just going to try to get the
+        // shape right and knock down cases as I see them.
+        match (&mut new_value, &no.details) {
+            (
+                SchemaletValue::Boolean,
+                CanonicalSchemaletDetails::Value(SchemaletValue::Boolean),
+            ) => {
+                return State::Simplified(
+                    Schemalet {
+                        metadata: Default::default(),
+                        details: SchemaletDetails::Nothing,
+                    },
+                    Default::default(),
+                )
+            }
+
+            (
+                SchemaletValue::Array(yes_array),
+                CanonicalSchemaletDetails::Value(SchemaletValue::Array(no_array)),
+            ) => match no_array {
+                // Subtracting out a permissive array from any kind of array
+                // produces nothing.
+                SchemaletValueArray {
+                    items: None,
+                    prefix_items: None,
+                    max_items: None,
+                    min_items: None,
+                    unique_items: None,
+                } => {
+                    return State::Simplified(
+                        Schemalet {
+                            metadata: Default::default(),
+                            details: SchemaletDetails::Nothing,
+                        },
+                        Default::default(),
+                    )
+                }
+                _ => todo!("array - array {:#?} - {:#?}", yes_array, no_array),
+            },
+
+            (
+                SchemaletValue::Object(yes_object),
+                CanonicalSchemaletDetails::Value(SchemaletValue::Object(no_object)),
+            ) => match no_object {
+                SchemaletValueObject {
+                    properties,
+                    required,
+                    additional_properties: None,
+                    property_names: None,
+                    pattern_properties: None,
+                } if properties.is_empty() && required.is_empty() => {
+                    return State::Simplified(
+                        Schemalet {
+                            metadata: Default::default(),
+                            details: SchemaletDetails::Nothing,
+                        },
+                        Default::default(),
+                    )
+                }
+
+                SchemaletValueObject {
+                    properties,
+                    required,
+                    additional_properties: None,
+                    property_names: None,
+                    pattern_properties: None,
+                } => {
+                    let no_props = properties
+                        .iter()
+                        .map(|(prop_name, prop_schema_ref)| {
+                            (
+                                prop_name.clone(),
+                                (Some(prop_schema_ref.clone()), required.contains(prop_name)),
+                            )
+                        })
+                        .chain(required.iter().filter_map(|prop_name| {
+                            (!properties.contains_key(prop_name))
+                                .then(|| (prop_name.clone(), (None, true)))
+                        }))
+                        .collect::<BTreeMap<_, _>>();
+
+                    for (prop_name, (no_prop_schema, no_required)) in no_props {
+                        println!("checking prop {prop_name} {no_prop_schema:?} {no_required}");
+
+                        if yes_object.properties.contains_key(&prop_name) {
+                            todo!("don't know how to merge props yet: {prop_name}");
+                        }
+                    }
+                }
+
+                _ => todo!("object - object {:#?} - {:#?}", yes_object, no_object),
+            },
+
+            (
+                SchemaletValue::String(yes_string),
+                CanonicalSchemaletDetails::Value(SchemaletValue::String(no_string)),
+            ) => match no_string {
+                SchemaletValueString {
+                    pattern,
+                    format,
+                    min_length: None,
+                    max_length: None,
+                } if pattern.is_empty() && format.is_empty() => {
+                    return State::Simplified(
+                        Schemalet {
+                            metadata: Default::default(),
+                            details: SchemaletDetails::Nothing,
+                        },
+                        Default::default(),
+                    )
+                }
+                _ => todo!("string - string {:#?} - {:#?}", yes_string, no_string),
+            },
+
+            (
+                SchemaletValue::Integer(yes_integer),
+                CanonicalSchemaletDetails::Value(SchemaletValue::Integer(no_integer)),
+            ) => {
+                match no_integer {
+                    SchemaletValueInteger {
+                        minimum: None,
+                        exclusive_minimum: None,
+                    } => {
+                        return State::Simplified(
+                            Schemalet {
+                                metadata: Default::default(),
+                                details: SchemaletDetails::Nothing,
+                            },
+                            Default::default(),
+                        )
+                    }
+                    _ => (),
+                }
+                todo!("integer - integer {:#?} - {:#?}", yes_integer, no_integer)
+            }
+
+            (
+                SchemaletValue::Number(yes_number),
+                CanonicalSchemaletDetails::Value(SchemaletValue::Number(no_number)),
+            ) => {
+                match no_number {
+                    SchemaletValueNumber {
+                        minimum: None,
+                        exclusive_minimum: None,
+                        maximum: None,
+                        exclusive_maximum: None,
+                        multiple_of: None,
+                    } => {
+                        return State::Simplified(
+                            Schemalet {
+                                metadata: Default::default(),
+                                details: SchemaletDetails::Nothing,
+                            },
+                            Default::default(),
+                        )
+                    }
+                    _ => (),
+                }
+                todo!("number - number {:#?} - {:#?}", yes_number, no_number)
+            }
+
+            (SchemaletValue::Null, CanonicalSchemaletDetails::Value(SchemaletValue::Null)) => {
+                return State::Simplified(
+                    Schemalet {
+                        metadata: Default::default(),
+                        details: SchemaletDetails::Nothing,
+                    },
+                    Default::default(),
+                )
+            }
+
+            (_, CanonicalSchemaletDetails::Value(_)) => {
+                // Subtracting a value from a value of a different type is a
+                // no-op.
+            }
+
+            _ => todo!(
+                "unhandled merge_yes_no_value case {:#?} {:#?}",
+                new_value,
+                no,
+            ),
+        }
+    }
+
+    State::Simplified(
+        Schemalet {
+            metadata: Default::default(),
+            details: SchemaletDetails::Value(new_value),
+        },
+        new_work,
+    )
 }
 
 fn type_incompatible(
