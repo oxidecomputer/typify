@@ -6,6 +6,8 @@ members = [
 	"typify-impl-mk2",
 	"typify-macro",
 	"typify-test",
+	"typespace",
+	"typespace-test-macro",
 	"cargo-typify",
 	"example-build",
 	"example-macro",

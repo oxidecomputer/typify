@@ -2108,6 +2108,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "typespace"
+version = "0.1.0"
+dependencies = [
+ "expectorate",
+ "heck",
+ "json-serde",
+ "log",
+ "newline-converter",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn",
+ "typespace-test-macro",
+]
+
+[[package]]
+name = "typespace-test-macro"
+version = "0.1.0"
+dependencies = [
+ "expectorate",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "typify"
 version = "0.10.0"
 dependencies = [
