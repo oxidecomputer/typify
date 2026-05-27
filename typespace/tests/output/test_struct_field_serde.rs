@@ -1,3 +1,9 @@
+fn __default_ConflatedAsAbsent_peanut_string() -> String {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
+}
+fn __default_ConflatedAsAbsent_peanut_option() -> Option<String> {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
+}
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub struct ConflatedAsAbsent {
     #[serde(
@@ -14,10 +20,16 @@ pub struct ConflatedAsAbsent {
     pub default_string: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_option: Option<String>,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_ConflatedAsAbsent_peanut_string")]
     pub peanut_string: String,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_ConflatedAsAbsent_peanut_option")]
     pub peanut_option: Option<String>,
+}
+fn __default_ConflatedAsNull_peanut_string() -> String {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
+}
+fn __default_ConflatedAsNull_peanut_option() -> Option<String> {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub struct ConflatedAsNull {
@@ -34,10 +46,16 @@ pub struct ConflatedAsNull {
     pub default_string: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_option: Option<String>,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_ConflatedAsNull_peanut_string")]
     pub peanut_string: String,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_ConflatedAsNull_peanut_option")]
     pub peanut_option: Option<String>,
+}
+fn __default_DoubleOption_peanut_string() -> String {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
+}
+fn __default_DoubleOption_peanut_option() -> Option<String> {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub struct DoubleOption {
@@ -59,10 +77,16 @@ pub struct DoubleOption {
     pub default_string: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_option: Option<String>,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_DoubleOption_peanut_string")]
     pub peanut_string: String,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_DoubleOption_peanut_option")]
     pub peanut_option: Option<String>,
+}
+fn __default_CustomType_peanut_string() -> String {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
+}
+fn __default_CustomType_peanut_option() -> Option<String> {
+    ::serde_json::from_str("\"peanuts\"").unwrap()
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub struct CustomType {
@@ -80,8 +104,8 @@ pub struct CustomType {
     pub default_string: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_option: Option<String>,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_CustomType_peanut_string")]
     pub peanut_string: String,
-    #[serde(default = "xxx")]
+    #[serde(default = "__default_CustomType_peanut_option")]
     pub peanut_option: Option<String>,
 }

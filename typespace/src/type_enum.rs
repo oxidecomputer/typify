@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::{type_struct::StructProperty, TypeCommon, Typespace};
+use crate::{type_struct::StructProperty, TypeCommon, TypespaceRenderer};
 
 #[derive(Debug, Clone)]
 pub struct TypeEnum<Id> {
@@ -34,7 +34,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
             .collect()
     }
 
-    pub(crate) fn render(&self, typespace: &Typespace<Id>) -> TokenStream {
+    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
         let description = self
             .common
             .description
@@ -74,7 +74,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
                 VariantDetails::Struct(props) => {
                     let props = props
                         .iter()
-                        .map(|p| typespace.render_struct_property(p, false));
+                        .map(|p| typespace.render_struct_property(p, false, None));
                     quote! { { #( #props, )* } }
                 }
             };

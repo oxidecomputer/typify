@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::Ident;
 
-use crate::{JsonValue, TypeCommon, Typespace};
+use crate::{JsonValue, TypeCommon, TypespaceRenderer};
 
 #[derive(Debug, Clone)]
 pub struct TypeStruct<Id> {
@@ -29,20 +29,42 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeStruct<Id> {
         self.properties.iter().map(|p| p.type_id.clone()).collect()
     }
 
-    pub(crate) fn render(&self, typespace: &Typespace<Id>) -> TokenStream {
+    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
         let description = self
             .common
             .description
             .as_ref()
             .map(|d| quote! { #[doc = #d] });
-        let properties = self
+        let name_ident = format_ident!("{}", self.common.name);
+
+        let mut helper_fns: Vec<TokenStream> = Vec::new();
+        let properties: Vec<TokenStream> = self
             .properties
             .iter()
-            .map(|p| typespace.render_struct_property(p, true));
-        let name_ident = format_ident!("{}", self.common.name);
+            .map(|p| {
+                let default_fn_name =
+                    if let StructPropertyState::DefaultValue(json_value) = &p.state {
+                        let fn_name =
+                            format!("__default_{}_{}", self.common.name, p.rust_name);
+                        let fn_ident = format_ident!("{}", fn_name);
+                        let ty_ident = typespace.render_ident(&p.type_id);
+                        let json_str = json_value.0.to_string();
+                        helper_fns.push(quote! {
+                            fn #fn_ident() -> #ty_ident {
+                                ::serde_json::from_str(#json_str).unwrap()
+                            }
+                        });
+                        Some(fn_name)
+                    } else {
+                        None
+                    };
+                typespace.render_struct_property(p, true, default_fn_name.as_deref())
+            })
+            .collect();
 
         quote! {
             #description
+            #( #helper_fns )*
             #[derive(::serde::Deserialize, ::serde::Serialize)]
             pub struct #name_ident {
                 #( #properties, )*
@@ -175,7 +197,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeTupleStruct<Id> 
         }
     }
 
-    pub(crate) fn render(&self, typespace: &Typespace<Id>) -> TokenStream {
+    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
         let description = self
             .common
             .description
@@ -217,7 +239,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeNewtypeStruct<Id
         }
     }
 
-    pub(crate) fn render(&self, typespace: &Typespace<Id>) -> TokenStream {
+    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
         let description = self
             .common
             .description
@@ -248,7 +270,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeTypeAlias<Id> {
         }
     }
 
-    pub(crate) fn render(&self, typespace: &Typespace<Id>) -> TokenStream {
+    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
         let description = self
             .common
             .description

@@ -15,7 +15,7 @@ use quote::{format_ident, quote};
 use serde::Deserialize;
 
 /// Modify how types are processed and generated.
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize)]
 pub struct TypespaceSettings {
     #[serde(default)]
     pub std: TypespaceSettingsStd,
@@ -23,7 +23,7 @@ pub struct TypespaceSettings {
     pub optional_nullable: TypespaceSettingsOptionalNullable,
 }
 
-#[derive(Debug, Default, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsStd {
     #[default]
@@ -31,7 +31,7 @@ pub enum TypespaceSettingsStd {
     Unqualified,
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum TypespaceSettingsOptionalNullable {
     #[default]
@@ -214,11 +214,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceBuilder<Id>
     /// `make_box_id` is called to generate a fresh ID for each `Box<T>`
     /// wrapper inserted to break a containment cycle. The argument is the ID
     /// of the inner type being wrapped.
-    pub fn finalize<F>(
-        self,
-        settings: TypespaceSettings,
-        make_box_id: F,
-    ) -> Result<Typespace<Id>, ()>
+    pub fn finalize<F>(self, make_box_id: F) -> Result<Typespace<Id>, ()>
     where
         F: FnMut(&Id) -> Id,
     {
@@ -227,17 +223,35 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceBuilder<Id>
         break_cycles(&mut types, make_box_id);
         push_traits(&mut types)?;
 
-        Ok(Typespace { settings, types })
+        Ok(Typespace { types })
     }
 }
 
+pub fn no_cycles<Id>(_: &Id) -> Id {
+    panic!("unexpected cycle in typespace")
+}
+
 pub struct Typespace<Id> {
-    pub settings: TypespaceSettings,
     pub(crate) types: BTreeMap<Id, Type<Id>>,
 }
 
 impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
-    pub fn render(&self) -> TokenStream {
+    pub fn render(&self, settings: TypespaceSettings) -> TokenStream {
+        TypespaceRenderer {
+            types: &self.types,
+            settings,
+        }
+        .render()
+    }
+}
+
+pub(crate) struct TypespaceRenderer<'a, Id> {
+    pub(crate) types: &'a BTreeMap<Id, Type<Id>>,
+    pub(crate) settings: TypespaceSettings,
+}
+
+impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRenderer<'a, Id> {
+    fn render(&self) -> TokenStream {
         let types = self.types.iter().filter_map(|(_, typ)| match typ {
             Type::Enum(e) => Some(e.render(self)),
             Type::Struct(s) => Some(s.render(self)),
@@ -342,7 +356,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
         }
     }
 
-    pub fn render_struct_property(
+    pub(crate) fn render_struct_property(
         &self,
         StructProperty {
             rust_name,
@@ -352,6 +366,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
             type_id,
         }: &StructProperty<Id>,
         vis_pub: bool,
+        default_fn_name: Option<&str>,
     ) -> TokenStream {
         let description = description.as_ref().map(|text| quote! { #[doc = #text] });
 
@@ -448,8 +463,10 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
                 ty_ident
             }
 
-            (StructPropertyState::DefaultValue(_json_value), _) => {
-                serde_options.push(quote! { default = "xxx" });
+            (StructPropertyState::DefaultValue(_), _) => {
+                let fn_name =
+                    default_fn_name.expect("DefaultValue field requires a default_fn_name");
+                serde_options.push(quote! { default = #fn_name });
                 ty_ident
             }
 

@@ -83,6 +83,7 @@ fn expand_inner(
                 );
             }
             mod import {
+                use super::*;
                 #file_tokens
             }
             #( #body_stmts )*

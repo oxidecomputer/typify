@@ -21,6 +21,7 @@ fn wrapper() {
             panic!("snapshot updated, run tests again: {}", __snapshot_path.display());
         }
         mod import {
+            use super::*;
             pub struct MyType(pub String);
         }
         let value = import::MyType("hello".to_string());

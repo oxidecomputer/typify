@@ -1,11 +1,26 @@
-use quote::format_ident;
-use syn::parse_quote; // used by test_struct_field_serde
+use quote::{format_ident, quote};
 use typespace::{
-    JsonValue, StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct,
-    TypeTupleStruct, TypeUnitStruct, TypespaceBuilder, TypespaceSettings,
+    no_cycles, JsonValue, StructProperty, StructPropertySerde, StructPropertyState, Type,
+    TypeStruct, TypeTupleStruct, TypeUnitStruct, TypespaceBuilder, TypespaceSettings,
     TypespaceSettingsOptionalNullable, TypespaceSettingsStd,
 };
 use typespace_test_macro::check_and_include;
+
+// Stub for the user-provided type referenced by TypespaceSettingsOptionalNullable::CustomType.
+#[derive(Debug, Default, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum OptionField<T> {
+    #[default]
+    #[serde(skip)]
+    Absent,
+    Null,
+    Present(T),
+}
+impl<T> OptionField<T> {
+    pub fn is_absent(&self) -> bool {
+        matches!(self, OptionField::Absent)
+    }
+}
 
 #[test]
 fn test_struct_field_serde() {
@@ -116,16 +131,65 @@ fn test_struct_field_serde() {
             Type::Struct(TypeStruct::new(name, None, properties, false)),
         );
 
-        let ts = builder
-            .finalize(settings, |id: &String| format!("__box_{id}"))
-            .unwrap();
+        let ts = builder.finalize(no_cycles).unwrap();
+        let out = ts.render(settings);
 
-        ts.render()
+        out
     });
 
-    let all: syn::File = parse_quote! { #( #outputs )* };
-    let out = prettyplease::unparse(&all);
-    expectorate::assert_contents("tests/output/test_struct_field_serde.rs", &out);
+    let output = quote! {
+        #( #outputs )*
+    };
+
+    #[check_and_include("tests/output/test_struct_field_serde.rs", output)]
+    fn inner() {
+        use serde::Deserialize;
+
+        // optional_string absent → None
+        let v: import::ConflatedAsAbsent =
+            serde_json::from_str(r#"{"required_option": null}"#).unwrap();
+        assert!(v.optional_string.is_none());
+        assert!(v.required_option.is_none());
+        assert_eq!(v.peanut_string, "peanuts");
+        assert_eq!(v.peanut_option, Some("peanuts".to_string()));
+
+        // optional_string present → Some
+        let v: import::ConflatedAsAbsent =
+            serde_json::from_str(r#"{"required_option": null, "optional_string": "hi"}"#).unwrap();
+        assert_eq!(v.optional_string, Some("hi".to_string()));
+
+        // DoubleOption: optional_option absent → None, present-null → Some(None)
+        let v: import::DoubleOption = serde_json::from_str(r#"{"required_option": null}"#).unwrap();
+        assert!(v.optional_option.is_none());
+
+        // CustomType: use OptionField stub from outer scope
+        let value = serde_json::json!({
+            "required_option": null,
+        });
+        let value = import::CustomType::deserialize(value).unwrap();
+        assert!(matches!(value.optional_option, OptionField::Absent));
+
+        let value = serde_json::json!({
+            "required_option": null,
+            "optional_option": null,
+        });
+        let value = import::CustomType::deserialize(value).unwrap();
+        assert!(
+            matches!(value.optional_option, OptionField::Null),
+            "expected Null, got {:?}",
+            value.optional_option,
+        );
+
+        let value = serde_json::json!({
+            "required_option": null,
+            "optional_option": "howdy",
+        });
+        let value = import::CustomType::deserialize(value).unwrap();
+        assert!(matches!(
+            value.optional_option,
+            OptionField::Present(s) if s == "howdy"
+        ));
+    }
 }
 
 #[test]
@@ -141,13 +205,9 @@ fn test_unit_struct() {
         )),
     );
 
-    let ts = builder
-        .finalize(TypespaceSettings::default(), |id: &String| {
-            format!("__box_{id}")
-        })
-        .expect("finalize typespace");
+    let ts = builder.finalize(no_cycles).expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_unit_struct.rs", ts.render())]
+    #[check_and_include("tests/output/test_unit_struct.rs", ts.render(TypespaceSettings::default()))]
     fn inner() {
         let value = import::MyUnitStruct;
         assert_eq!(serde_json::to_string(&value).unwrap(), "\"<<+>>\"");
@@ -180,13 +240,9 @@ fn test_tuple_struct() {
         )),
     );
 
-    let ts = builder
-        .finalize(TypespaceSettings::default(), |id: &String| {
-            format!("__box_{id}")
-        })
-        .expect("finalize typespace");
+    let ts = builder.finalize(no_cycles).expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_tuple_struct.rs", ts.render())]
+    #[check_and_include("tests/output/test_tuple_struct.rs", ts.render(TypespaceSettings::default()))]
     fn inner() {
         // Serialization: rest Vec<String> is a nested array (simple derive behavior).
         let value = import::MyTupleStruct("hello".to_string(), 42, vec![]);
@@ -250,11 +306,7 @@ fn test_map_key_struct_with_float() {
 
     builder.insert("map".to_string(), Type::Map(key_id, value_id));
 
-    assert!(builder
-        .finalize(TypespaceSettings::default(), |id: &String| format!(
-            "__box_{id}"
-        ))
-        .is_err());
+    assert!(builder.finalize(no_cycles).is_err());
 }
 
 // Test a some simple cyclic types.
@@ -320,10 +372,10 @@ fn test_cycles() {
     );
 
     let ts = builder
-        .finalize(TypespaceSettings::default(), |_: &i32| next())
+        .finalize(|_: &i32| next())
         .expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_cycles.rs", ts.render())]
+    #[check_and_include("tests/output/test_cycles.rs", ts.render(TypespaceSettings::default()))]
     fn inner() {
         let value = serde_json::json!({
             "a": {
