@@ -1,5 +1,8 @@
 fn wrapper() {
     {
+        let _ = include_str!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/", "tests/output/my_type.rs")
+        );
         let __snapshot_path = ::std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("tests/output/my_type.rs");
         let __content: ::std::string::String = {

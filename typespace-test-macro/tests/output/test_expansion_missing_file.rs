@@ -13,6 +13,9 @@ fn wrapper() {
         }
         ::std::fs::write(&__snapshot_path, &__content)
             .expect("failed to write snapshot");
+        let _ = include_str!(
+            concat!(env!("CARGO_MANIFEST_DIR"), "/", "tests/output/missing.rs")
+        );
         panic!("snapshot file created, run tests again: {}", __snapshot_path.display());
     }
 }

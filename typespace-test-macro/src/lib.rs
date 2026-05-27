@@ -47,6 +47,7 @@ fn expand_missing_file(filename: &str, output_expr: &Expr) -> proc_macro2::Token
             }
             ::std::fs::write(&__snapshot_path, &__content)
                 .expect("failed to write snapshot");
+            let _ = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", #filename));
             panic!(
                 "snapshot file created, run tests again: {}",
                 __snapshot_path.display()
@@ -64,6 +65,8 @@ fn expand_inner(
     let pretty = pretty_tokens(output_expr);
     quote! {
         {
+            let _ = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", #filename));
+
             let __snapshot_path = ::std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join(#filename);
             let __content: ::std::string::String = #pretty;
@@ -149,6 +152,7 @@ pub fn check_and_include(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         },
         Err(_) => {
+            let _ = std::fs::write(&snapshot_path, "");
             return expand_missing_file(&filename_str, output_expr).into();
         }
     };
