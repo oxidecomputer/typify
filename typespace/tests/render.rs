@@ -397,3 +397,48 @@ fn test_cycles() {
         let _c: import::C = serde_json::from_str(r#"{"b": {}}"#).unwrap();
     }
 }
+
+#[test]
+fn test_tuples() {
+    let mut builder = TypespaceBuilder::default();
+
+    let mut id = 0;
+
+    let mut next = || {
+        id += 1;
+        id
+    };
+
+    let string_id = next();
+    builder.insert(string_id, Type::String);
+
+    let int_id = next();
+    builder.insert(int_id, Type::Integer("u32".to_string()));
+
+    let tuple_a_id = next();
+    builder.insert(
+        tuple_a_id,
+        Type::TupleStruct(TypeTupleStruct::new(
+            "TupleA",
+            None,
+            vec![string_id, int_id],
+            None,
+        )),
+    );
+
+    let tuple_b_id = next();
+    builder.insert(
+        tuple_b_id,
+        Type::TupleStruct(TypeTupleStruct::new(
+            "TupleB",
+            Some("use of 'rest' field".to_string()),
+            vec![string_id, int_id],
+            Some(string_id),
+        )),
+    );
+
+    let ts = builder.finalize(no_cycles).expect("finalize typespace");
+
+    #[check_and_include("tests/output/test_tuples.rs", ts.render(TypespaceSettings::default()))]
+    fn inner() {}
+}
