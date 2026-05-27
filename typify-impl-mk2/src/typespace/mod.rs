@@ -1445,7 +1445,7 @@ mod tests {
         expectorate::assert_contents("tests/output/test_struct_field_serde.rs", &out);
     }
 
-    /// I don't really like the term cursed, but I think it apply. Hold your
+    /// I don't really like the term cursed, but I think it applies. Hold your
     /// nose. Here we're taking the path and contents. If the file doesn't
     /// exist, the build will fail at the `include!()`, so step 1: make sure
     /// the file exists. If the file exist but doesn't match the expected
