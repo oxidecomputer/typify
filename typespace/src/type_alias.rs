@@ -30,15 +30,14 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeTypeAlias<Id> {
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
-                    built,
+                    built: _,
                     default: _,
                 },
             target: type_id,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-        let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
 
         let target_ident = typespace.render_ident(type_id);

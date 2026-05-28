@@ -528,29 +528,29 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
         for (_, typ) in self.types.iter() {
             match typ {
                 Type::Struct(s) => {
-                    let name = s.common.built.as_ref().unwrap().name.to_string();
+                    let name = s.common.name.clone();
                     let tokens = s.render(self, &mut cs);
                     cs.add_item(name, tokens);
                 }
                 Type::Enum(e) => {
-                    let name = e.common.built.as_ref().unwrap().name.to_string();
+                    let name = e.common.name.clone();
                     let tokens = e.render(self, &mut cs);
                     cs.add_item(name, tokens);
                 }
                 Type::UnitStruct(u) => {
-                    let name = u.common.built.as_ref().unwrap().name.to_string();
+                    let name = u.common.name.clone();
                     cs.add_item(name, u.render());
                 }
                 Type::TupleStruct(t) => {
-                    let name = t.common.built.as_ref().unwrap().name.to_string();
+                    let name = t.common.name.clone();
                     cs.add_item(name, t.render(self));
                 }
                 Type::NewtypeStruct(n) => {
-                    let name = n.common.built.as_ref().unwrap().name.to_string();
+                    let name = n.common.name.clone();
                     cs.add_item(name, n.render(self));
                 }
                 Type::TypeAlias(a) => {
-                    let name = a.common.built.as_ref().unwrap().name.to_string();
+                    let name = a.common.name.clone();
                     cs.add_item(name, a.render(self));
                 }
                 _ => {}
@@ -573,7 +573,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             | Type::TupleStruct(TypeTupleStruct { common, .. })
             | Type::NewtypeStruct(TypeNewtypeStruct { common, .. })
             | Type::TypeAlias(TypeTypeAlias { common, .. }) => {
-                let name = common.built.as_ref().unwrap().name.to_string();
+                let name = &common.name;
                 let name_ident = format_ident!("{name}");
 
                 if let Some(scope) = scope {
@@ -900,7 +900,6 @@ fn build_commons<Id: Clone>(types: &mut BTreeMap<Id, Type<Id>>) {
         };
         if let Some(common) = common_opt {
             common.built = Some(TypeCommonBuilt {
-                name: common.name.clone(),
                 traits: TypespaceTraitSet::empty(),
             });
         }

@@ -37,18 +37,17 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeStruct<Id> {
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
                     default: _,
-                    built,
+                    built: _,
                 },
             properties,
             deny_unknown_fields: _,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
-        let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
-        let snake_name = heck::ToSnakeCase::to_snake_case(name.as_str());
+        let snake_name = heck::AsSnakeCase(name.as_str()).to_string();
 
         let mut rendered_properties = Vec::new();
         for prop in properties {
@@ -153,15 +152,14 @@ impl TypeUnitStruct {
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
-                    built,
+                    built: _,
                     default: _,
                 },
             repr,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-        let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
 
         let repr_tokens = crate::value_tokens::value_tokens(repr);
@@ -234,17 +232,16 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeTupleStruct<Id> 
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
                     default: _,
-                    built,
+                    built: _,
                 },
             fields,
             rest,
         } = self;
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
-        let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
 
         let field_ident = fields
@@ -441,10 +438,10 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeNewtypeStruct<Id
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
                     default: _,
-                    built: Some(TypeCommonBuilt { name, traits }),
+                    built: Some(TypeCommonBuilt { traits }),
                 },
             inner,
             constraints,
@@ -454,7 +451,6 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeNewtypeStruct<Id
         };
 
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc ]});
-        let name = name.to_string();
         let name_ident = format_ident!("{name}");
 
         let inner_ident = typespace.render_ident(inner);

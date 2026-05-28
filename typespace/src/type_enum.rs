@@ -49,10 +49,10 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
         let Self {
             common:
                 TypeCommon {
-                    name: _,
+                    name,
                     description,
                     default: _,
-                    built,
+                    built: _,
                 },
             tag_type,
             variants,
@@ -94,7 +94,7 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
                         typespace.render_struct_property(
                             prop,
                             false,
-                            &format!("{}{}", built.as_ref().unwrap().name, name),
+                            &format!("{}{}", name, rust_name),
                             cs,
                         )
                     });
@@ -109,7 +109,6 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
             }
         });
 
-        let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
 
         quote! {
