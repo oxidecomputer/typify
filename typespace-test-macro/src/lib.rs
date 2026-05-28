@@ -47,6 +47,8 @@ fn expand_missing_file(filename: &str, output_expr: &Expr) -> proc_macro2::Token
             }
             ::std::fs::write(&__snapshot_path, &__content)
                 .expect("failed to write snapshot");
+            // This forces re-evaluation of the macro if the snapshot file
+            // changes.
             let _ = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", #filename));
             panic!(
                 "snapshot file created, run tests again: {}",
@@ -65,7 +67,10 @@ fn expand_inner(
     let pretty = pretty_tokens(output_expr);
     quote! {
         {
-            let _ = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", #filename));
+            // This forces re-evaluation of the macro if the snapshot file
+            // changes.
+            let _ = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/",
+            #filename));
 
             let __snapshot_path = ::std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join(#filename);
@@ -145,16 +150,36 @@ pub fn check_and_include(attr: TokenStream, item: TokenStream) -> TokenStream {
     let snapshot_path = std::path::Path::new(&manifest_dir).join(&filename_str);
 
     let file_tokens: proc_macro2::TokenStream = match std::fs::read_to_string(&snapshot_path) {
-        Ok(content) => match proc_macro2::TokenStream::from_str(&content) {
-            Ok(ts) => ts,
-            Err(_) => {
-                return expand_missing_file(&filename_str, output_expr).into();
-            }
-        },
         Err(_) => {
+            // We create a file so that our later use of `include_str!` will
+            // succeed.
             let _ = std::fs::write(&snapshot_path, "");
             return expand_missing_file(&filename_str, output_expr).into();
         }
+
+        // If the file is zero-length, we assume that we made it in a previous
+        // run to satisfy the condition above, but something went wrong. We'll
+        // treat this as a file that needs to be created.
+        Ok(content) if content.trim().is_empty() => {
+            return expand_missing_file(&filename_str, output_expr).into();
+        }
+
+        Ok(content) => match proc_macro2::TokenStream::from_str(&content) {
+            Ok(ts) => ts,
+            Err(e) => {
+                return syn::Error::new_spanned(
+                    &args.filename,
+                    format!(
+                        "snapshot file {} contains invalid Rust ({}): \
+                         fix or delete it to regenerate",
+                        snapshot_path.display(),
+                        e
+                    ),
+                )
+                .to_compile_error()
+                .into();
+            }
+        },
     };
 
     expand_inner(&filename_str, output_expr, file_tokens, body_stmts).into()

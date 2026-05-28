@@ -1,58 +1,71 @@
 # typespace
 
 A crate for modeling Rust types for code generation. Consumers build up a
-`TypespaceBuilder`, by inserting named `Type<Id>` values, call `finalize()` to
-break cycles and propagate trait requirements, then call `render(settings)` to
-emit a `TokenStream` of Rust type definitions.
+`TypespaceBuilder`, by inserting named `Type<Id>` values, call
+`finalize(settings, make_box_id)` to break cycles and propagate trait
+requirements, then call `render()` to emit a `TokenStream` of Rust type
+definitions.
 
 ## TODO
 
-### Naming
+### Correctness
+
+- **`push_traits` incomplete** — `UnitStruct`, `TupleStruct`, and `TypeAlias`
+  all hit `todo!()`, so any type graph that routes through those during
+  finalization will panic. `Display`/`FromStr` requirements on container types
+  (`Vec`, `Array`, `Tuple`) also hit `todo!()`.
+
+- **`StructPropertyState::Default` mostly unimplemented** — only `Option`,
+  `Vec`, `Map`, `Set`, and `String` are handled; `Boolean`, `Integer`, `Float`,
+  `JsonValue`, `Enum`, `Struct`, `Box`, `Array`, and `Tuple` all panic with
+  `todo!()`.
+
+- **`TypeNewtypeConstraints` is unrendered** — the enum is accepted by
+  constructors but ignored entirely by `render()`; callers passing real
+  constraints get no effect and no error.
+
+### Naming / Code Generation
 
 - **`__default_` helper functions** — default-value serde helpers are named
-  `__default_{StructName}_{field}`. This scheme collides if two structs share a
-  field name in the same output and is visually noisy. Consider a short hash
-  suffix or a per-struct private module.
+  `__default_{StructName}_{field}` and generated in the wrong place (in
+  `TypeStruct::render` rather than in `render_struct_property`). Moving them
+  there is a prerequisite for the "codespace" / structured output bundle.
 
 ### Settings / Configurability
 
-- **Trait derivation** — `#[derive(Serialize, Deserialize)]` (and `Clone`, `Debug` on
-  unit structs) are hardcoded in every render method. `TypespaceTrait` and
-  `TypespaceTraitSet` already exist; wire them into `TypespaceSettings` so callers
-  control which traits appear in the output.
+- **Trait derivation** — `#[derive(Serialize, Deserialize)]` (and `Clone`,
+  `Debug` on unit structs) are hardcoded in every render method with
+  inconsistent strategies across variants. `TypespaceTrait` and
+  `TypespaceTraitSet` already exist; wire them into `TypespaceSettings` so
+  callers control which traits appear in the output.
 
 - **Map / Set concrete types** — `Type::Map` always renders as `BTreeMap` and
-  `Type::Set` as `BTreeSet`. Add a `TypespaceSettings` field to choose between
-  `BTreeMap`/`HashMap` and `BTreeSet`/`HashSet`.
+  `Type::Set` as `BTreeSet` (currently renders as `Vec` with a TODO). Add a
+  `TypespaceSettings` field to choose between `BTreeMap`/`HashMap` and
+  `BTreeSet`/`HashSet`.
 
-- **Finalize-time trait configuration** — trait inclusion and propagation (which traits
-  are *required* of generated types, driving the push/poison walk in `finalize`) should
-  be configurable at finalize time, distinct from the render-time setting of which
-  traits to emit.
+- **Finalize-time trait configuration** — trait inclusion and propagation
+  (which traits are *required* of generated types, driving the push/poison walk
+  in `finalize`) should be configurable at finalize time, distinct from the
+  render-time setting of which traits to emit.
 
 ### Cleanup
 
-- **`TypeCommon::default`** — the `default: Option<JsonValue>` field on `TypeCommon`
-  is never populated or rendered; it should be used to generate a `Default` impl.
+- **`TypeCommon::default`** — the `default: Option<JsonValue>` field on
+  `TypeCommon` is never rendered; it should drive a generated `Default` impl.
 
-- **`TypespaceTrait` / `TypespaceTraitSet` in lib.rs** — currently defined but only used
-  inside `push_traits`. Once trait configurability is added these become part of the
-  public settings surface; until then, consider whether they belong in the public API.
+- **`TypespaceTrait` / `TypespaceTraitSet` in lib.rs** — currently defined but
+  only used inside `push_traits`. The API is incomplete (no `remove`, no set
+  operations, no `Display`). Once trait configurability is added these become
+  part of the public settings surface; until then, consider keeping them
+  `pub(crate)`.
 
-- Add a proper error type and make relevant methods fallible.
-
-- Default functions for members are generated in the wrong place
+- **Add a proper error type** — `finalize` returns `Result<_, ()>` and several
+  methods panic instead of returning errors. Introduce a `TypespaceError` enum.
 
 ### Test coverage
 
-The following `Type` variants have no render test:
-- `TypeEnum` — all four tag types (External, Internal, Adjacent, Untagged)
-- `TypeNewtypeStruct`
-- `TypeTypeAlias`
-- `TypeNative`
-- `Type::Map` (valid cases), `Type::Set`, `Type::Array`, `Type::Tuple`
-- `Type::Vec`, `Type::Box` as top-level output
-- Scalar types as struct/enum fields: `Boolean`, `Integer`, `Float`, `String`,
-  `JsonValue`
-- `StructPropertySerde::Rename` and `StructPropertySerde::Flatten`
-- Trait validation error cases: Float/JsonValue used as map keys
+- `Type::Vec` and `Type::Box` as top-level named output (currently only tested
+  as struct fields)
+- `StructPropertyState::Default` field combinations once implemented
+- Additional trait validation error cases beyond Float-as-map-key
