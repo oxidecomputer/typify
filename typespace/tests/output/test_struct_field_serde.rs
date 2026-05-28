@@ -1,7 +1,7 @@
 pub use conflated_as_absent::*;
 pub use conflated_as_null::*;
-pub use double_option::*;
 pub use custom_type::*;
+pub use double_option::*;
 pub mod conflated_as_absent {
     #[derive(::serde::Deserialize, ::serde::Serialize)]
     pub struct ConflatedAsAbsent {

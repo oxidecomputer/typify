@@ -561,10 +561,23 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
     }
 
     pub(crate) fn render_ident(&self, id: &Id) -> TokenStream {
-        self.render_ident_with_scope(id, None)
+        self.render_ident_impl(id, None, false)
     }
 
     pub(crate) fn render_ident_with_scope(&self, id: &Id, scope: Option<&str>) -> TokenStream {
+        self.render_ident_impl(id, scope, false)
+    }
+
+    pub(crate) fn render_raw_type(&self, id: &Id) -> TokenStream {
+        self.render_ident_impl(id, None, true)
+    }
+
+    pub(crate) fn render_ident_impl(
+        &self,
+        id: &Id,
+        scope: Option<&str>,
+        base_type: bool,
+    ) -> TokenStream {
         let ty = self.types.get(id).unwrap();
         match ty {
             Type::Enum(TypeEnum { common, .. })
@@ -588,7 +601,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                 name, parameters, ..
             }) => {
                 let name_ident = syn::parse_str::<syn::TypePath>(name).unwrap();
-                let parameters = (!parameters.is_empty()).then(|| {
+                let parameters = (!base_type && !parameters.is_empty()).then(|| {
                     let parameter_idents = parameters
                         .iter()
                         .map(|param_id| self.render_ident_with_scope(param_id, scope));
@@ -621,9 +634,13 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
                     TypespaceSettingsStd::Unqualified => quote! { Option },
                 };
-                let option_ident = self.render_ident_with_scope(option_id, scope);
-                quote! {
-                    #option_type<#option_ident>
+                if base_type {
+                    option_type
+                } else {
+                    let option_ident = self.render_ident_with_scope(option_id, scope);
+                    quote! {
+                        #option_type<#option_ident>
+                    }
                 }
             }
             Type::Box(boxed_id) => {
@@ -631,9 +648,13 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::boxed::Box },
                     TypespaceSettingsStd::Unqualified => quote! { Box },
                 };
-                let boxed_ident = self.render_ident_with_scope(boxed_id, scope);
-                quote! {
-                    #box_type<#boxed_ident>
+                if base_type {
+                    box_type
+                } else {
+                    let boxed_ident = self.render_ident_with_scope(boxed_id, scope);
+                    quote! {
+                        #box_type<#boxed_ident>
+                    }
                 }
             }
             Type::Set(inner_id) => {
@@ -643,9 +664,13 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
                 };
-                let inner_ident = self.render_ident_with_scope(inner_id, scope);
-                quote! {
-                    #vec_type<#inner_ident>
+                if base_type {
+                    vec_type
+                } else {
+                    let inner_ident = self.render_ident_with_scope(inner_id, scope);
+                    quote! {
+                        #vec_type<#inner_ident>
+                    }
                 }
             }
             Type::Vec(inner_id) => {
@@ -655,18 +680,27 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
                 };
-                let inner_ident = self.render_ident_with_scope(inner_id, scope);
-                quote! {
-                    #vec_type<#inner_ident>
+                if base_type {
+                    vec_type
+                } else {
+                    let inner_ident = self.render_ident_with_scope(inner_id, scope);
+                    quote! {
+                        #vec_type<#inner_ident>
+                    }
                 }
             }
             Type::Map(key_id, value_id) => {
                 // TODO 3/25/2026
                 // Configurable like typify 1
-                let key_ident = self.render_ident_with_scope(key_id, scope);
-                let value_ident = self.render_ident_with_scope(value_id, scope);
-                quote! {
-                    ::std::collections::BTreeMap<#key_ident, #value_ident>
+                let map_type = quote! { ::std::collections::BTreeMap };
+                if base_type {
+                    map_type
+                } else {
+                    let key_ident = self.render_ident_with_scope(key_id, scope);
+                    let value_ident = self.render_ident_with_scope(value_id, scope);
+                    quote! {
+                        #map_type<#key_ident, #value_ident>
+                    }
                 }
             }
             Type::Boolean => quote! { bool },
@@ -738,7 +772,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
         };
         let std_opt_is_none = format!("{std_opt_type}::is_none");
 
-        let ty_ident = match (state, maybe_option_type) {
+        let prop_ty_ident = match (state, maybe_option_type) {
             // A required field needs no serde annotations.
             (StructPropertyState::Required, None) => ty_ident,
 
@@ -812,39 +846,13 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             }
             (StructPropertyState::Default, _) => {
                 serde_options.push(quote! { default });
-                match ty {
-                    Type::Enum(_) => todo!(),
-                    Type::Struct(_) => todo!(),
-                    Type::UnitStruct(_) => todo!(),
-                    Type::TupleStruct(_) => todo!(),
-                    Type::NewtypeStruct(_) => todo!(),
-                    Type::TypeAlias(_) => todo!(),
+                self.render_struct_property_add_skip(
+                    &mut serde_options,
+                    type_id,
+                    &ty,
+                    std_opt_is_none,
+                );
 
-                    Type::Native(_) => todo!(),
-                    Type::Option(_schema_ref) => {
-                        // This case is basically meaningless, but it's also
-                        // fine. Note that #[serde(default)] is a no-op for
-                        // Option<T>.
-                        serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
-                    }
-                    Type::Box(_schema_ref) => todo!(),
-
-                    Type::Vec(_) | Type::Map(_, _) | Type::Set(_) | Type::String => {
-                        let is_empty = format!("{ty_ident}::is_empty");
-                        serde_options.push(quote! { skip_serializing_if = #is_empty });
-                    }
-
-                    Type::Array(_schema_ref, _) => todo!(),
-                    Type::Tuple(_schema_refs) => todo!(),
-                    Type::Unit => {
-                        // This is a weird one
-                        todo!()
-                    }
-                    Type::Boolean => todo!(),
-                    Type::Integer(_) => todo!(),
-                    Type::Float(_) => todo!(),
-                    Type::JsonValue => todo!(),
-                }
                 ty_ident
             }
             (StructPropertyState::DefaultValue(JsonValue(value)), _) => {
@@ -881,7 +889,86 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
         quote! {
             #description
             #serde
-            #vis_pub #rust_name: #ty_ident
+            #vis_pub #rust_name: #prop_ty_ident
+        }
+    }
+
+    fn render_struct_property_add_skip(
+        &self,
+        serde_options: &mut Vec<TokenStream>,
+        ty_id: &Id,
+        ty: &Type<Id>,
+        std_opt_is_none: String,
+    ) {
+        match ty {
+            // Here we assume that the generated type for the field has a
+            // implementation of Default. There isn't a simple "is_default()"
+            // that we can presume... so we'll just leave it.
+            Type::Enum(_)
+            | Type::Struct(_)
+            | Type::UnitStruct(_)
+            | Type::TupleStruct(_)
+            | Type::NewtypeStruct(_)
+            | Type::TypeAlias(_) => {}
+
+            // The same applies to external types.
+            Type::Native(_) => {}
+
+            Type::Option(_) => {
+                // We have a property whose type is an Option meaning that it
+                // may have a value of null. The "Default" state means that it
+                // takes on its "intrinsic" default value if the field is
+                // absent. This means we can ignore any of the
+                // optional/nullable settings as they don't particularly apply
+                // here.
+                //
+                // Note that #[serde(default)] is a no-op for Option<T>.
+                serde_options.push(quote! { skip_serializing_if = #std_opt_is_none });
+            }
+            Type::Box(boxed_id) => {
+                let boxed_ty = self.types.get(boxed_id).unwrap();
+                self.render_struct_property_add_skip(
+                    serde_options,
+                    boxed_id,
+                    boxed_ty,
+                    std_opt_is_none,
+                );
+            }
+
+            Type::Vec(_) | Type::Map(_, _) | Type::Set(_) | Type::String => {
+                let ty_raw_ident = self.render_raw_type(ty_id);
+                let is_empty = format!("{ty_raw_ident}::is_empty");
+                serde_options.push(quote! { skip_serializing_if = #is_empty });
+            }
+
+            // As above, sure--there might be a Default impl--but we don't have
+            // a way to check if the value matches that value, so... whatever.
+            Type::Array(_, _) | Type::Tuple(_) => {}
+
+            Type::Unit => {
+                // There's only one value for the unit type, so I guess we can
+                // unconditionally skip serializing it.
+                serde_options.push(quote! { skip });
+            }
+
+            Type::Boolean => {
+                // Congratulation! You found an external expression of my
+                // insanity. I am genuinely curious if anyone will ever
+                // encounter this via a generated type. Note that this will
+                // cause invalid code to be generated e.g. if the type is
+                // Box<bool>, and I'm fine with that.
+
+                serde_options.push(quote! {
+                    skip_serializing_if = "std::ops::Not::not"
+                });
+            }
+
+            // There isn't an "is_zero()" so... we'll just leave it be.
+            Type::Integer(_) | Type::Float(_) => {}
+
+            // This isn't a runtime error that could be handled; it's a
+            // programming error.
+            Type::JsonValue => panic!("Default value for JsonValue is not supported"),
         }
     }
 }

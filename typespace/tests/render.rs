@@ -137,16 +137,16 @@ fn test_struct_field_serde() {
 
     let mut codespace = Codespace::default();
 
-    for (name, xxx) in outputs {
+    for (name, sub_codespace) in outputs {
         let modname = heck::ToSnakeCase::to_snake_case(name);
         let modname_ident = format_ident!("{modname}");
-        let m = xxx.into_mod();
+        let m = sub_codespace.into_mod();
 
         let root_mod = codespace.get_root_mod();
 
         root_mod.replace_mod(modname, m);
         root_mod.add_item(
-            "",
+            name,
             quote! {
                 pub use #modname_ident::*;
             },
@@ -686,6 +686,15 @@ fn test_compound_field_types() {
     let array_id = "array".to_string();
     builder.insert(array_id.clone(), Type::Array(int_id.clone(), 3));
 
+    let opt_id = "opt_string".to_string();
+    builder.insert(opt_id.clone(), Type::Option(string_id.clone()));
+
+    let box_string_id = "box_string".to_string();
+    builder.insert(box_string_id.clone(), Type::Box(string_id.clone()));
+
+    let box_vec_id = "box_vec_string".to_string();
+    builder.insert(box_vec_id.clone(), Type::Box(vec_id.clone()));
+
     let tuple_id = "tuple".to_string();
     builder.insert(
         tuple_id.clone(),
@@ -703,28 +712,28 @@ fn test_compound_field_types() {
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    bool_id,
+                    bool_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("an_int"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    int_id,
+                    int_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_float"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    float_id,
+                    float_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_string"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    string_id,
+                    string_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_json"),
@@ -738,35 +747,146 @@ fn test_compound_field_types() {
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    vec_id,
+                    vec_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_map"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    map_id,
+                    map_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_set"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    set_id,
+                    set_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("an_array"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
-                    array_id,
+                    array_id.clone(),
                 ),
                 StructProperty::new(
                     format_ident!("a_tuple"),
                     StructPropertySerde::None,
                     StructPropertyState::Required,
                     None,
+                    tuple_id.clone(),
+                ),
+                StructProperty::new(
+                    format_ident!("a_box_string"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Required,
+                    None,
+                    box_string_id.clone(),
+                ),
+                StructProperty::new(
+                    format_ident!("a_box_vec"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Required,
+                    None,
+                    box_vec_id.clone(),
+                ),
+            ],
+            false,
+        )),
+    );
+
+    // Exercise StructPropertyState::Default for each applicable field type.
+    // JsonValue is excluded: Default is not supported for it.
+    builder.insert(
+        "Defaults".to_string(),
+        Type::Struct(TypeStruct::new(
+            "Defaults",
+            None,
+            vec![
+                StructProperty::new(
+                    format_ident!("a_bool"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    bool_id,
+                ),
+                StructProperty::new(
+                    format_ident!("an_int"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    int_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_float"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    float_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_string"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    string_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_vec"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    vec_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_map"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    map_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_set"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    set_id,
+                ),
+                StructProperty::new(
+                    format_ident!("an_array"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    array_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_tuple"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
                     tuple_id,
+                ),
+                StructProperty::new(
+                    format_ident!("an_option"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    opt_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_box_string"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    box_string_id,
+                ),
+                StructProperty::new(
+                    format_ident!("a_box_vec"),
+                    StructPropertySerde::None,
+                    StructPropertyState::Default,
+                    None,
+                    box_vec_id,
                 ),
             ],
             false,
@@ -793,6 +913,8 @@ fn test_compound_field_types() {
             "a_set": ["a", "b"],
             "an_array": [1, 2, 3],
             "a_tuple": ["hi", 99],
+            "a_box_string": "boxed",
+            "a_box_vec": ["p", "q"],
         }))
         .unwrap();
 
@@ -801,6 +923,29 @@ fn test_compound_field_types() {
         assert_eq!(v.a_string, "hello");
         assert_eq!(v.a_vec, vec!["x", "y"]);
         assert_eq!(v.an_array, [1u32, 2, 3]);
+        assert_eq!(*v.a_box_string, "boxed");
+        assert_eq!(*v.a_box_vec, vec!["p", "q"]);
+
+        // All fields omitted — each should take its intrinsic default.
+        let d: import::Defaults =
+            serde_json::from_value(serde_json::json!({})).unwrap();
+        assert_eq!(d.a_bool, false);
+        assert_eq!(d.an_int, 0u32);
+        assert_eq!(d.a_string, "");
+        assert!(d.a_vec.is_empty());
+        assert!(d.a_map.is_empty());
+        assert!(d.a_set.is_empty());
+        assert_eq!(d.an_option, None);
+        assert_eq!(*d.a_box_string, "");
+        assert!(d.a_box_vec.is_empty());
+
+        // Fields with skip_serializing_if are absent from the serialized form
+        // when at their default; fields without it are always present.
+        let serialized = serde_json::to_value(&d).unwrap();
+        assert_eq!(
+            serialized,
+            serde_json::json!({"an_int": 0, "a_float": 0.0, "an_array": [0, 0, 0], "a_tuple": ["", 0]})
+        );
     }
 }
 
