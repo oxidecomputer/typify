@@ -8,48 +8,39 @@
 //! dedicated module.
 //!
 //! `codespace` solves this by providing a tree-shaped accumulator. A
-//! [`Codespace`] holds a root [`Mod`]; each [`Mod`] can contain any mix of
-//! named items (raw [`TokenStream`] fragments) and named sub-[`Mod`]s.
+//! [`Codespace`] holds a root [`Mod`]; each [`Mod`] holds named items (raw
+//! [`TokenStream`] fragments) and named sub-[`Mod`]s in separate maps.
 //! When you're done building, [`Codespace::into_stream`] flattens everything
 //! into a single [`TokenStream`] suitable for writing to a file or handing to
 //! a proc-macro output.
 //!
-//! ## Ordering
+//! ## Paths
 //!
-//! Entries within a [`Mod`] are kept in a [`BTreeMap`], so output is
-//! deterministic and sorted alphabetically by name. Because Rust identifiers
-//! are case-sensitive and ASCII uppercase sorts before lowercase, PascalCase
-//! type names (e.g. `"Foo"`) appear before snake_case module names (e.g.
-//! `"defaults"`) — a natural convention for generated code.
-//!
-//! ## Example
+//! [`Codespace::add_item`] and [`Mod::add_item`] accept a `"::"` delimited
+//! path. All but the last segment name submodules (and must be valid Rust
+//! identifiers); the final segment is an arbitrary sort key that is never
+//! emitted as a token.
 //!
 //! ```rust
 //! use codespace::Codespace;
 //! use quote::quote;
 //!
 //! let mut cs = Codespace::default();
-//!
-//! // Add a struct to the root.
-//! cs.add_item("Status", quote! {
-//!     #[derive(serde::Serialize, serde::Deserialize)]
-//!     pub enum Status { Active, Inactive }
-//! });
-//!
-//! // Add a serde default helper to a "defaults" submodule.
-//! cs.get_mod("defaults").add_item("status_default", quote! {
+//! cs.add_item("Status", quote! { pub enum Status { Active, Inactive } });
+//! cs.add_item("defaults::status_default", quote! {
 //!     pub fn status_default() -> Status { Status::Active }
 //! });
-//!
 //! // Renders to:
-//! //   pub enum Status { Active, Inactive }
-//! //   pub mod defaults {
-//! //       pub fn status_default() -> Status { Status::Active }
-//! //   }
+//! //   pub enum Status { ... }
+//! //   pub mod defaults { pub fn status_default() ... }
 //! let _tokens = cs.into_stream();
 //! ```
+//!
+//! ## Ordering
+//!
+//! Within each [`Mod`], all items are emitted first (in sort-key order),
+//! followed by all submodules (in alphabetical order by name).
 
-use std::collections::btree_map::Entry;
 use std::collections::BTreeMap;
 
 use proc_macro2::TokenStream;
@@ -58,41 +49,56 @@ use quote::{format_ident, quote};
 /// A structured collection of generated Rust items, organized into a tree of
 /// modules.
 ///
-/// `Codespace` is the entry point into the tree. It owns a root [`Mod`] whose
-/// contents are emitted flat (with no surrounding `mod` block) when you call
-/// [`into_stream`](Self::into_stream). Items and submodules added to the root
-/// are ordered alphabetically by name.
+/// `Codespace` is the entry point. It owns a root [`Mod`] whose contents are
+/// emitted flat (with no surrounding `mod` block) by [`into_stream`].
 ///
-/// For most use cases you interact with `Codespace` via its convenience
-/// methods, which delegate directly to the root [`Mod`]:
-///
-/// - [`add_item`](Self::add_item) — add a named [`TokenStream`] fragment
-/// - [`get_mod`](Self::get_mod) — get or create a named submodule
+/// - [`add_item`](Self::add_item) — add a [`TokenStream`] fragment at a
+///   `"::"` delimited path; intermediate segments become submodules.
+/// - [`get_root_mod`](Self::get_root_mod) — borrow the root [`Mod`] directly
+///   for finer-grained manipulation.
 #[derive(Debug, Default)]
 pub struct Codespace {
     root: Mod,
 }
 
 impl Codespace {
-    /// Add (or extend) a named item in the root module.
+    /// Add (or extend) an item at the given path.
     ///
-    /// See [`Mod::add_item`] for full semantics.
-    pub fn add_item(&mut self, name: impl Into<String>, tokens: TokenStream) {
-        self.root.add_item(name, tokens);
+    /// `path` is a `"::"` delimited string. All segments except the last must
+    /// be valid Rust identifiers (they become `pub mod` names). The final
+    /// segment is an arbitrary sort key that is never emitted as a token.
+    ///
+    /// See [`Mod::add_item`] for the single-level form.
+    ///
+    /// # Panics
+    ///
+    /// Panics if any intermediate path segment is not a valid Rust identifier.
+    pub fn add_item(&mut self, path: impl Into<String>, tokens: TokenStream) {
+        let path = path.into();
+        let mut segs = path.split("::").peekable();
+        let mut m = &mut self.root;
+
+        loop {
+            let seg = segs.next().expect("path must not be empty");
+            if segs.peek().is_none() {
+                // Last segment is the sort key, not a mod name.
+                m.add_item(seg, tokens);
+                return;
+            }
+            m = m.get_mod(seg);
+        }
     }
 
-    /// Get (or create) a named submodule of the root module.
-    ///
-    /// See [`Mod::get_mod`] for full semantics.
-    pub fn get_mod(&mut self, name: impl Into<String>) -> &mut Mod {
-        self.root.get_mod(name)
+    /// Return a mutable reference to the root [`Mod`].
+    pub fn get_root_mod(&mut self) -> &mut Mod {
+        &mut self.root
     }
 
     /// Consume the codespace and render it into a [`TokenStream`].
     ///
     /// The root module's contents are emitted flat. Each submodule is wrapped
-    /// in a `pub mod name { ... }` block. Items and submodules are ordered
-    /// alphabetically by name within each level of the tree.
+    /// in a `pub mod name { ... }` block. Within each level, all items are
+    /// emitted first (in sort-key order), then all submodules (alphabetically).
     pub fn into_stream(self) -> TokenStream {
         self.root.into_stream()
     }
@@ -100,121 +106,78 @@ impl Codespace {
 
 /// A node in the [`Codespace`] tree.
 ///
-/// A `Mod` holds an ordered collection of named entries. Each entry is either:
+/// A `Mod` holds two independent ordered maps:
 ///
-/// - an **item**: a raw [`TokenStream`] fragment (a type definition, an `impl`
-///   block, a function, etc.), or
-/// - a **submodule**: a nested `Mod` that will be wrapped in
-///   `pub mod name { ... }` when rendered.
-///
-/// A name may not be used for both an item and a submodule within the same
-/// `Mod`; attempting to do so panics (see [`add_item`](Self::add_item) and
-/// [`get_mod`](Self::get_mod)).
-///
-/// Entries are stored in a [`BTreeMap`] and therefore rendered in alphabetical
-/// order. Because ASCII uppercase (A–Z, 65–90) sorts before lowercase (a–z,
-/// 97–122), PascalCase type names appear before snake_case submodule names in
-/// the output.
+/// - **items**: [`TokenStream`] fragments keyed by an arbitrary sort string
+///   (the key is never emitted as a token), emitted in key order.
+/// - **submodules**: named nested [`Mod`]s keyed by valid Rust identifiers,
+///   rendered as `pub mod name { ... }` blocks in alphabetical order after
+///   all items.
 #[derive(Debug, Default)]
 pub struct Mod {
-    entries: BTreeMap<String, ModEntry>,
-}
-
-#[derive(Debug)]
-enum ModEntry {
-    Item(TokenStream),
-    Submod(Mod),
+    items: BTreeMap<String, TokenStream>,
+    mods: BTreeMap<String, Mod>,
 }
 
 impl Mod {
-    /// Add a named [`TokenStream`] item to this module.
+    /// Add (or extend) an item in this module under the given sort `key`.
     ///
-    /// If an item with `name` already exists, `tokens` is appended to it.
-    /// This is intentional: it lets callers accumulate multiple fragments
-    /// under one logical key — for example, a struct definition followed by
-    /// one or more `impl` blocks:
+    /// `key` is an arbitrary string used only for ordering — it is never
+    /// emitted as a token and does not need to be a valid Rust identifier.
+    ///
+    /// If an item already exists under `key`, `tokens` is appended to it,
+    /// allowing multiple fragments to accumulate under one key:
     ///
     /// ```rust
     /// use codespace::Codespace;
     /// use quote::quote;
     ///
     /// let mut cs = Codespace::default();
-    /// cs.add_item("Foo", quote! { pub struct Foo(u32); });
-    /// cs.add_item("Foo", quote! { impl Foo { pub fn value(&self) -> u32 { self.0 } } });
-    /// // Both fragments appear in the output under the same "Foo" key.
+    /// cs.get_root_mod().add_item("Foo", quote! { pub struct Foo(u32); });
+    /// cs.get_root_mod().add_item("Foo", quote! { impl Foo { pub fn value(&self) -> u32 { self.0 } } });
+    /// // Both fragments appear in the output under the same key.
     /// ```
-    ///
-    /// # Panics
-    ///
-    /// Panics if `name` is already occupied by a submodule.
-    pub fn add_item(&mut self, name: impl Into<String>, tokens: TokenStream) {
-        let name = name.into();
-        match self.entries.entry(name.clone()) {
-            Entry::Occupied(mut e) => match e.get_mut() {
-                ModEntry::Item(existing) => existing.extend(tokens),
-                ModEntry::Submod(_) => panic!("'{name}' is already a submodule"),
-            },
-            Entry::Vacant(e) => {
-                e.insert(ModEntry::Item(tokens));
-            }
-        }
+    pub fn add_item(&mut self, key: impl Into<String>, tokens: TokenStream) {
+        self.items
+            .entry(key.into())
+            .and_modify(|existing| existing.extend(tokens.clone()))
+            .or_insert(tokens);
     }
 
     /// Get (or create) a named submodule.
     ///
     /// If a submodule named `name` already exists it is returned; otherwise a
-    /// new empty [`Mod`] is inserted and returned. This makes it safe to call
-    /// `get_mod` multiple times with the same name — you always get the same
-    /// submodule back:
-    ///
-    /// ```rust
-    /// use codespace::Codespace;
-    /// use quote::quote;
-    ///
-    /// let mut cs = Codespace::default();
-    /// cs.get_mod("defaults").add_item("foo_x", quote! { pub fn foo_x() -> u32 { 0 } });
-    /// cs.get_mod("defaults").add_item("bar_y", quote! { pub fn bar_y() -> u32 { 1 } });
-    /// // Both functions end up in the same "defaults" submodule.
-    /// ```
+    /// new empty [`Mod`] is created and returned. Safe to call multiple times
+    /// with the same name.
     ///
     /// # Panics
     ///
-    /// Panics if `name` is already occupied by an item.
+    /// Panics if `name` is not a valid Rust identifier.
     pub fn get_mod(&mut self, name: impl Into<String>) -> &mut Mod {
         let name = name.into();
-        let entry = self
-            .entries
-            .entry(name.clone())
-            .or_insert_with(|| ModEntry::Submod(Mod::default()));
-        match entry {
-            ModEntry::Submod(m) => m,
-            ModEntry::Item(_) => panic!("'{name}' is already an item"),
-        }
+        // Validate now so the error points here rather than at render time.
+        proc_macro2::Ident::new(&name, proc_macro2::Span::call_site());
+        self.mods.entry(name).or_default()
     }
 
     /// Consume this module and render its contents into a [`TokenStream`].
     ///
-    /// The output contains the module's contents directly — there is no
-    /// surrounding `mod` block (that is the caller's responsibility for
-    /// non-root modules). Items are emitted as-is; submodules are wrapped in
-    /// `pub mod name { ... }`.
-    ///
-    /// Entries appear in alphabetical order by name.
+    /// Items are emitted first in sort-key order, followed by submodules in
+    /// alphabetical order. Each submodule is wrapped in `pub mod name { ... }`.
+    /// The output has no surrounding `mod` block.
     pub fn into_stream(self) -> TokenStream {
         let mut out = TokenStream::new();
-        for (name, entry) in self.entries {
-            match entry {
-                ModEntry::Item(tokens) => out.extend(tokens),
-                ModEntry::Submod(m) => {
-                    let ident = format_ident!("{}", name);
-                    let contents = m.into_stream();
-                    out.extend(quote! {
-                        pub mod #ident {
-                            #contents
-                        }
-                    });
+        for (_, tokens) in self.items {
+            out.extend(tokens);
+        }
+        for (name, m) in self.mods {
+            let ident = format_ident!("{}", name);
+            let contents = m.into_stream();
+            out.extend(quote! {
+                pub mod #ident {
+                    #contents
                 }
-            }
+            });
         }
         out
     }
@@ -237,7 +200,6 @@ mod tests {
         cs.add_item("Foo", quote! { pub struct Foo; });
         cs.add_item("Bar", quote! { pub struct Bar; });
         let out = cs.into_stream().to_string();
-        // BTreeMap order: Bar before Foo
         assert!(out.contains("struct Bar"));
         assert!(out.contains("struct Foo"));
         let bar_pos = out.find("struct Bar").unwrap();
@@ -246,7 +208,7 @@ mod tests {
     }
 
     #[test]
-    fn extend_same_name() {
+    fn extend_same_key() {
         let mut cs = Codespace::default();
         cs.add_item("Foo", quote! { pub struct Foo; });
         cs.add_item("Foo", quote! { impl Foo {} });
@@ -256,27 +218,22 @@ mod tests {
     }
 
     #[test]
-    fn submod_is_wrapped() {
+    fn path_creates_submod() {
         let mut cs = Codespace::default();
         cs.add_item("Foo", quote! { pub struct Foo; });
-        cs.get_mod("defaults")
-            .add_item("foo_x", quote! { pub fn foo_x() -> u32 { 0 } });
+        cs.add_item("defaults::foo_value", quote! { pub fn foo_value() {} });
         let out = cs.into_stream().to_string();
         assert!(out.contains("pub mod defaults"));
-        assert!(out.contains("fn foo_x"));
-        // "Foo" (uppercase F=70) sorts before "defaults" (lowercase d=100)
-        let foo_pos = out.find("struct Foo").unwrap();
+        assert!(out.contains("fn foo_value"));
+        let item_pos = out.find("struct Foo").unwrap();
         let mod_pos = out.find("pub mod defaults").unwrap();
-        assert!(foo_pos < mod_pos, "root items should precede submodules");
+        assert!(item_pos < mod_pos, "items precede submodules");
     }
 
     #[test]
-    fn nested_submods() {
+    fn path_nested() {
         let mut cs = Codespace::default();
-        cs.get_mod("outer").get_mod("inner").add_item(
-            "deep",
-            quote! { pub fn deep() {} },
-        );
+        cs.add_item("outer::inner::deep", quote! { pub fn deep() {} });
         let out = cs.into_stream().to_string();
         assert!(out.contains("pub mod outer"));
         assert!(out.contains("pub mod inner"));
@@ -284,32 +241,102 @@ mod tests {
     }
 
     #[test]
-    fn get_mod_same_name_twice() {
+    fn items_before_mods() {
         let mut cs = Codespace::default();
-        cs.get_mod("defaults")
-            .add_item("a", quote! { pub fn a() {} });
-        cs.get_mod("defaults")
-            .add_item("b", quote! { pub fn b() {} });
+        cs.add_item("zzz", quote! { pub struct Zzz; });
+        cs.add_item("aaa::f", quote! { pub fn f() {} });
         let out = cs.into_stream().to_string();
-        // Both functions should be in the single "defaults" mod.
+        let item_pos = out.find("struct Zzz").unwrap();
+        let mod_pos = out.find("pub mod aaa").unwrap();
+        assert!(item_pos < mod_pos, "items always precede submodules");
+    }
+
+    #[test]
+    fn get_root_mod_direct_access() {
+        let mut cs = Codespace::default();
+        cs.get_root_mod()
+            .get_mod("defaults")
+            .add_item("f", quote! { pub fn f() {} });
+        let out = cs.into_stream().to_string();
+        assert!(out.contains("pub mod defaults"));
+        assert!(out.contains("fn f"));
+    }
+
+    #[test]
+    fn same_path_twice_extends() {
+        let mut cs = Codespace::default();
+        cs.add_item("defaults::a", quote! { pub fn a() {} });
+        cs.add_item("defaults::b", quote! { pub fn b() {} });
+        let out = cs.into_stream().to_string();
         let mod_start = out.find("pub mod defaults").unwrap();
         assert!(out[mod_start..].contains("fn a"));
         assert!(out[mod_start..].contains("fn b"));
     }
 
     #[test]
-    #[should_panic(expected = "already a submodule")]
-    fn item_name_conflicts_with_submod() {
+    fn item_and_mod_may_share_name() {
         let mut cs = Codespace::default();
-        cs.get_mod("foo");
         cs.add_item("foo", quote! { pub struct Foo; });
+        cs.add_item("foo::bar", quote! { pub fn bar() {} });
+        let out = cs.into_stream().to_string();
+        assert!(out.contains("struct Foo"));
+        assert!(out.contains("pub mod foo"));
+        assert!(out.contains("fn bar"));
     }
 
     #[test]
-    #[should_panic(expected = "already an item")]
-    fn submod_name_conflicts_with_item() {
+    #[should_panic]
+    fn invalid_mod_name_panics() {
         let mut cs = Codespace::default();
-        cs.add_item("foo", quote! { pub struct Foo; });
-        cs.get_mod("foo");
+        cs.add_item("not-valid-ident::key", quote! {});
+    }
+
+    #[test]
+    fn mod_add_item_colons_are_literal_sort_key() {
+        // Mod::add_item does NOT do path splitting — "::" is just a sort key char.
+        let mut cs = Codespace::default();
+        cs.get_root_mod().add_item("a::b", quote! { pub struct X; });
+        let out = cs.into_stream().to_string();
+        // No submodule should exist; the item appears flat at root.
+        assert!(!out.contains("pub mod"), "no submodule expected");
+        assert!(out.contains("struct X"));
+    }
+
+    #[test]
+    fn special_sort_key_orders_before_alpha() {
+        // '#' (ASCII 35) sorts before all lowercase letters, so "#preamble" items
+        // appear before e.g. "Foo".
+        let mut cs = Codespace::default();
+        cs.get_root_mod()
+            .add_item("Foo", quote! { pub struct Foo; });
+        cs.get_root_mod()
+            .add_item("#preamble", quote! { use std::collections::BTreeMap; });
+        let out = cs.into_stream().to_string();
+        let use_pos = out.find("BTreeMap").unwrap();
+        let foo_pos = out.find("struct Foo").unwrap();
+        assert!(use_pos < foo_pos, "#preamble should sort before Foo");
+    }
+
+    #[test]
+    fn multiple_submods_alphabetical() {
+        let mut cs = Codespace::default();
+        cs.add_item("zzz::a", quote! { pub fn a() {} });
+        cs.add_item("aaa::b", quote! { pub fn b() {} });
+        cs.add_item("mmm::c", quote! { pub fn c() {} });
+        let out = cs.into_stream().to_string();
+        let aaa = out.find("mod aaa").unwrap();
+        let mmm = out.find("mod mmm").unwrap();
+        let zzz = out.find("mod zzz").unwrap();
+        assert!(
+            aaa < mmm && mmm < zzz,
+            "submods should appear alphabetically"
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn get_mod_invalid_ident_panics() {
+        let mut cs = Codespace::default();
+        cs.get_root_mod().get_mod("not-valid");
     }
 }
