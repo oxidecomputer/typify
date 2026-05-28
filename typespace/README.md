@@ -20,11 +20,6 @@ collisions between e.g. `TypeName::foo` and `Type::name_foo`).
   finalization will panic. `Display`/`FromStr` requirements on container types
   (`Vec`, `Array`, `Tuple`) also hit `todo!()`.
 
-- **`StructPropertyState::Default` mostly unimplemented** — only `Option`,
-  `Vec`, `Map`, `Set`, and `String` are handled; `Boolean`, `Integer`, `Float`,
-  `JsonValue`, `Enum`, `Struct`, `Box`, `Array`, and `Tuple` all panic with
-  `todo!()`.
-
 - **`TypeNewtypeConstraints` is unrendered** — the enum is accepted by
   constructors but ignored entirely by `render()`; callers passing real
   constraints get no effect and no error.
@@ -38,9 +33,8 @@ collisions between e.g. `TypeName::foo` and `Type::name_foo`).
   callers control which traits appear in the output.
 
 - **Map / Set concrete types** — `Type::Map` always renders as `BTreeMap` and
-  `Type::Set` as `BTreeSet` (currently renders as `Vec` with a TODO). Add a
-  `TypespaceSettings` field to choose between `BTreeMap`/`HashMap` and
-  `BTreeSet`/`HashSet`.
+  `Type::Set` as `Vec` with a TODO. Add a `TypespaceSettings` field to choose
+  between `BTreeMap`/`HashMap` and `BTreeSet`/`HashSet`.
 
 - **Finalize-time trait configuration** — trait inclusion and propagation
   (which traits are *required* of generated types, driving the push/poison walk
@@ -63,7 +57,4 @@ collisions between e.g. `TypeName::foo` and `Type::name_foo`).
 
 ### Test coverage
 
-- `Type::Vec` and `Type::Box` as top-level named output (currently only tested
-  as struct fields)
-- `StructPropertyState::Default` field combinations once implemented
 - Additional trait validation error cases beyond Float-as-map-key
