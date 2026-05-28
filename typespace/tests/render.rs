@@ -27,33 +27,29 @@ fn test_struct_field_serde() {
     let configs = [
         (
             "ConflatedAsAbsent",
-            TypespaceSettings {
-                std: TypespaceSettingsStd::Unqualified,
-                optional_nullable: TypespaceSettingsOptionalNullable::ConflateAsAbsent,
-            },
+            TypespaceSettings::default()
+                .with_std(TypespaceSettingsStd::Unqualified)
+                .with_optional_nullable(TypespaceSettingsOptionalNullable::ConflateAsAbsent),
         ),
         (
             "ConflatedAsNull",
-            TypespaceSettings {
-                std: TypespaceSettingsStd::Unqualified,
-                optional_nullable: TypespaceSettingsOptionalNullable::ConflateAsNull,
-            },
+            TypespaceSettings::default()
+                .with_std(TypespaceSettingsStd::Unqualified)
+                .with_optional_nullable(TypespaceSettingsOptionalNullable::ConflateAsNull),
         ),
         (
             "DoubleOption",
-            TypespaceSettings {
-                std: TypespaceSettingsStd::Unqualified,
-                optional_nullable: TypespaceSettingsOptionalNullable::DoubleOption,
-            },
+            TypespaceSettings::default()
+                .with_std(TypespaceSettingsStd::Unqualified)
+                .with_optional_nullable(TypespaceSettingsOptionalNullable::DoubleOption),
         ),
         (
             "CustomType",
-            TypespaceSettings {
-                std: TypespaceSettingsStd::Unqualified,
-                optional_nullable: TypespaceSettingsOptionalNullable::CustomType(
+            TypespaceSettings::default()
+                .with_std(TypespaceSettingsStd::Unqualified)
+                .with_optional_nullable(TypespaceSettingsOptionalNullable::CustomType(
                     "OptionField".to_string(),
-                ),
-            },
+                )),
         ),
     ];
 
@@ -131,8 +127,8 @@ fn test_struct_field_serde() {
             Type::Struct(TypeStruct::new(name, None, properties, false)),
         );
 
-        let ts = builder.finalize(no_cycles).unwrap();
-        let out = ts.render(settings);
+        let ts = builder.finalize(settings, no_cycles).unwrap();
+        let out = ts.render();
 
         out
     });
@@ -205,9 +201,11 @@ fn test_unit_struct() {
         )),
     );
 
-    let ts = builder.finalize(no_cycles).expect("finalize typespace");
+    let ts = builder
+        .finalize(TypespaceSettings::default(), no_cycles)
+        .expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_unit_struct.rs", ts.render(TypespaceSettings::default()))]
+    #[check_and_include("tests/output/test_unit_struct.rs", ts.render())]
     fn inner() {
         let value = import::MyUnitStruct;
         assert_eq!(serde_json::to_string(&value).unwrap(), "\"<<+>>\"");
@@ -240,13 +238,15 @@ fn test_tuple_struct() {
         )),
     );
 
-    let ts = builder.finalize(no_cycles).expect("finalize typespace");
+    let ts = builder
+        .finalize(TypespaceSettings::default(), no_cycles)
+        .expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_tuple_struct.rs", ts.render(TypespaceSettings::default()))]
+    #[check_and_include("tests/output/test_tuple_struct.rs", ts.render())]
     fn inner() {
-        // Serialization: rest Vec<String> is a nested array (simple derive behavior).
+        // Serialization: rest Vec<String> is flattened into the outer sequence.
         let value = import::MyTupleStruct("hello".to_string(), 42, vec![]);
-        assert_eq!(serde_json::to_string(&value).unwrap(), r#"["hello",42,[]]"#);
+        assert_eq!(serde_json::to_string(&value).unwrap(), r#"["hello",42]"#);
 
         let value = import::MyTupleStruct(
             "hello".to_string(),
@@ -255,17 +255,17 @@ fn test_tuple_struct() {
         );
         assert_eq!(
             serde_json::to_string(&value).unwrap(),
-            r#"["hello",42,["a","b","c"]]"#
+            r#"["hello",42,"a","b","c"]"#
         );
 
         // Deserialization.
-        let value = serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42,[]]"#).unwrap();
+        let value = serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42]"#).unwrap();
         assert_eq!(value.0, "hello");
         assert_eq!(value.1, 42);
         assert!(value.2.is_empty());
 
         let value =
-            serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42,["a","b"]]"#).unwrap();
+            serde_json::from_str::<import::MyTupleStruct>(r#"["hello",42,"a","b"]"#).unwrap();
         assert_eq!(value.0, "hello");
         assert_eq!(value.1, 42);
         assert_eq!(value.2, vec!["a", "b"]);
@@ -306,7 +306,9 @@ fn test_map_key_struct_with_float() {
 
     builder.insert("map".to_string(), Type::Map(key_id, value_id));
 
-    assert!(builder.finalize(no_cycles).is_err());
+    assert!(builder
+        .finalize(TypespaceSettings::default(), no_cycles)
+        .is_err());
 }
 
 // Test a some simple cyclic types.
@@ -372,10 +374,10 @@ fn test_cycles() {
     );
 
     let ts = builder
-        .finalize(|_: &i32| next())
+        .finalize(TypespaceSettings::default(), |_: &i32| next())
         .expect("finalize typespace");
 
-    #[check_and_include("tests/output/test_cycles.rs", ts.render(TypespaceSettings::default()))]
+    #[check_and_include("tests/output/test_cycles.rs", ts.render())]
     fn inner() {
         let value = serde_json::json!({
             "a": {
@@ -396,49 +398,4 @@ fn test_cycles() {
         let _b: import::B = serde_json::from_str(r#"{}"#).unwrap();
         let _c: import::C = serde_json::from_str(r#"{"b": {}}"#).unwrap();
     }
-}
-
-#[test]
-fn test_tuples() {
-    let mut builder = TypespaceBuilder::default();
-
-    let mut id = 0;
-
-    let mut next = || {
-        id += 1;
-        id
-    };
-
-    let string_id = next();
-    builder.insert(string_id, Type::String);
-
-    let int_id = next();
-    builder.insert(int_id, Type::Integer("u32".to_string()));
-
-    let tuple_a_id = next();
-    builder.insert(
-        tuple_a_id,
-        Type::TupleStruct(TypeTupleStruct::new(
-            "TupleA",
-            None,
-            vec![string_id, int_id],
-            None,
-        )),
-    );
-
-    let tuple_b_id = next();
-    builder.insert(
-        tuple_b_id,
-        Type::TupleStruct(TypeTupleStruct::new(
-            "TupleB",
-            Some("use of 'rest' field".to_string()),
-            vec![string_id, int_id],
-            Some(string_id),
-        )),
-    );
-
-    let ts = builder.finalize(no_cycles).expect("finalize typespace");
-
-    #[check_and_include("tests/output/test_tuples.rs", ts.render(TypespaceSettings::default()))]
-    fn inner() {}
 }

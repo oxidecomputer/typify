@@ -10,9 +10,9 @@ emit a `TokenStream` of Rust type definitions.
 ### Naming
 
 - **`__default_` helper functions** — default-value serde helpers are named
-  `__default_{StructName}_{field}`. This scheme collides if two structs share a field
-  name in the same output and is visually noisy. Consider a short hash suffix or a
-  per-struct private module.
+  `__default_{StructName}_{field}`. This scheme collides if two structs share a
+  field name in the same output and is visually noisy. Consider a short hash
+  suffix or a per-struct private module.
 
 ### Settings / Configurability
 
@@ -40,6 +40,8 @@ emit a `TokenStream` of Rust type definitions.
   public settings surface; until then, consider whether they belong in the public API.
 
 - Add a proper error type and make relevant methods fallible.
+
+- Default functions for members are generated in the wrong place
 
 ### Test coverage
 

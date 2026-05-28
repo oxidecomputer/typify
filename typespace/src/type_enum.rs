@@ -1,11 +1,12 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::{type_struct::StructProperty, TypeCommon, TypespaceRenderer};
+use crate::{JsonValue, StructProperty, TypeCommon, TypespaceRenderer};
 
 #[derive(Debug, Clone)]
 pub struct TypeEnum<Id> {
     pub common: TypeCommon,
+
     pub tag_type: EnumTagType,
     pub variants: Vec<EnumVariant<Id>>,
     pub deny_unknown_fields: bool,
@@ -15,12 +16,18 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
     pub fn new(
         name: impl Into<String>,
         description: Option<String>,
+        default: Option<JsonValue>,
         tag_type: EnumTagType,
         variants: Vec<EnumVariant<Id>>,
         deny_unknown_fields: bool,
     ) -> Self {
         Self {
-            common: TypeCommon::new(name, description),
+            common: TypeCommon {
+                name: name.into(),
+                description,
+                default,
+                built: None,
+            },
             tag_type,
             variants,
             deny_unknown_fields,
@@ -30,18 +37,25 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
     pub(crate) fn children(&self) -> Vec<Id> {
         self.variants
             .iter()
-            .flat_map(|v| v.children())
+            .flat_map(|variant| variant.children())
             .collect()
     }
 
     pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
-        let description = self
-            .common
-            .description
-            .as_ref()
-            .map(|d| quote! { #[doc = #d] });
-
-        let serde = match &self.tag_type {
+        let Self {
+            common:
+                TypeCommon {
+                    name: _,
+                    description,
+                    default: _,
+                    built,
+                },
+            tag_type,
+            variants,
+            deny_unknown_fields: _,
+        } = self;
+        let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
+        let serde = match tag_type {
             EnumTagType::External => TokenStream::new(),
             EnumTagType::Internal { tag } => quote! { #[serde(tag = #tag)] },
             EnumTagType::Adjacent { tag, content } => {
@@ -50,32 +64,32 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
             EnumTagType::Untagged => quote! { #[serde(untagged)] },
         };
 
-        let variants = self.variants.iter().map(|variant| {
-            let name = format_ident!("{}", variant.rust_name);
-            let variant_serde = variant
-                .rename
-                .as_ref()
-                .map(|n| quote! { #[serde(rename = #n)] });
-            let description = variant
-                .description
-                .as_ref()
-                .map(|d| quote! { #[doc = #d] });
+        let variants = variants.iter().map(|variant| {
+            let EnumVariant {
+                rust_name,
+                rename,
+                description,
+                details,
+            } = variant;
+            let name = format_ident!("{}", rust_name);
+            let variant_serde = rename.as_ref().map(|n| quote! { #[serde(rename = #n)] });
+            let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
 
-            let data = match &variant.details {
+            let data = match details {
                 VariantDetails::Unit => TokenStream::new(),
-                VariantDetails::Item(id) => {
-                    let t = typespace.render_type(id);
-                    quote! { (#t) }
+                VariantDetails::Item(item) => {
+                    let item_ident = typespace.render_ident(item);
+                    quote! { (#item_ident) }
                 }
-                VariantDetails::Tuple(ids) => {
-                    let items = ids.iter().map(|id| typespace.render_type(id));
-                    quote! { ( #( #items, )* ) }
+                VariantDetails::Tuple(items) => {
+                    let item_idents = items.iter().map(|item| typespace.render_ident(item));
+                    quote! { ( #( #item_idents, )* ) }
                 }
-                VariantDetails::Struct(props) => {
-                    let props = props
+                VariantDetails::Struct(properties) => {
+                    let properties = properties
                         .iter()
-                        .map(|p| typespace.render_struct_property(p, false, None));
-                    quote! { { #( #props, )* } }
+                        .map(|prop| typespace.render_struct_property(prop, false, None));
+                    quote! { { #( #properties, )* } }
                 }
             };
 
@@ -86,9 +100,11 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
             }
         });
 
-        let name_ident = format_ident!("{}", self.common.name);
+        let name = built.as_ref().unwrap().name.to_string();
+        let name_ident = format_ident!("{name}");
 
         quote! {
+            // TODO I want to have the original unique id available
             #description
             #[derive(::serde::Deserialize, ::serde::Serialize)]
             #serde
@@ -101,49 +117,78 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum EnumTagType {
+    /// serde external tagging (serde's default)
     External,
+    /// serde internal tagging
     Internal { tag: String },
+    /// serde adjacent tagging
     Adjacent { tag: String, content: String },
+    /// serde untagged
     Untagged,
 }
+
+// TODO 6/24/2025
+// Do I want the variants to have tagging? I mean we could support the variant
+// tagging for untagged if we wanted. Also how would we support more custom
+// enums ala typify#811
+// 6/28/2025
+// Answer: No. Recall that the untagged variant markers need to be at the end
+// of the type which makes it kind of a pain in the neck.
+// TODO 10/7/2025
+// How would we deal with an enum value that isn't a string--a number or
+// boolean value for example? { "enum": [true, 1, "on"] } First we need to be
+// able to represent this and then we need to be able to generate custom
+// serialize/deserialize impls.
+
+// TODO 2/27/2026
+// I'm starting to think that all of the serde impls should be generated by
+// the typespace module. Why? Well the benefits of using serde derive and the
+// associated annotations are as follows:
+//
+// 1. Familiar notation for users to understand the serialized form
+// 2. Less code for us to generate
+//
+// The first of these falls apart quickly--serde annotations are not part of
+// the docs so you'd really have to be looking closely at the code to draw
+// any inferences. The second is only true if we don't spend just as much
+// effort organizing our structures to emit the appropriate annotations. In
+// addition, we know that there are enumerations that serde simply can't
+// represent, such as if the serialized values of unit variants are not
+// strings. The only serde-supported serialization scheme that actually
+// requires variants to have string names is external tagging. It makes sense
+// that this is the default for serde since it's the most efficient to
+// deserialize.
+//
+// TODO 3/1/2026
+// I'd like to be able to represent enums in this version that the previous
+// version couldn't, in particular simple enums with a variety of serialized
+// data-types as noted above ({ "enum": [true, 1, "on"] }). Rather than
+// thinking about these as special, I think I'd rather generate the serde
+// implementations for all enums (or maybe all types).
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct EnumVariant<Id> {
     pub rust_name: String,
     pub rename: Option<String>,
+    // TODO need a name for serialization?
+    // pub json_name: String,
     pub description: Option<String>,
     pub details: VariantDetails<Id>,
 }
-
 impl<Id: Clone> EnumVariant<Id> {
-    pub(crate) fn children(&self) -> Vec<Id> {
+    fn children(&self) -> Vec<Id> {
         match &self.details {
-            VariantDetails::Unit => vec![],
+            VariantDetails::Unit => Vec::new(),
             VariantDetails::Item(id) => vec![id.clone()],
-            VariantDetails::Tuple(ids) => ids.clone(),
-            VariantDetails::Struct(props) => props.iter().map(|p| p.type_id.clone()).collect(),
+            VariantDetails::Tuple(items) => items.clone(),
+            VariantDetails::Struct(items) => {
+                items.iter().map(|prop| prop.type_id.clone()).collect()
+            }
         }
     }
 
     pub(crate) fn contained_children(&self) -> Vec<Id> {
         self.children()
-    }
-
-    pub(crate) fn rewrite_id(&mut self, from: &Id, to: &Id)
-    where
-        Id: PartialEq,
-    {
-        let rewrite = |id: &mut Id| {
-            if id == from {
-                *id = to.clone();
-            }
-        };
-        match &mut self.details {
-            VariantDetails::Unit => {}
-            VariantDetails::Item(id) => rewrite(id),
-            VariantDetails::Tuple(ids) => ids.iter_mut().for_each(rewrite),
-            VariantDetails::Struct(props) => props.iter_mut().for_each(|p| rewrite(&mut p.type_id)),
-        }
     }
 }
 

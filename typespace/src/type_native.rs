@@ -1,12 +1,15 @@
-use proc_macro2::TokenStream;
-use quote::quote;
-
 use crate::{TypespaceTrait, TypespaceTraitSet};
 
 #[derive(Debug, Clone)]
-pub struct TypeNative<Id = ()> {
+pub struct TypeNative<Id> {
     pub name: String,
+
     pub impls: TypespaceTraitSet,
+
+    // TODO from typify 1: in order to support const generics, this could be a
+    // TypeOrConst enum, but note that we may some day need to disambiguate
+    // char and &'static str since schemars represents a char as a string of
+    // length 1.
     pub parameters: Vec<Id>,
 }
 
@@ -32,11 +35,5 @@ impl<Id> TypeNative<Id> {
             .collect(),
             parameters: Default::default(),
         }
-    }
-
-    pub(crate) fn render(&self) -> TokenStream {
-        // Native types are referenced by name, not rendered as declarations.
-        let name = quote::format_ident!("{}", self.name);
-        quote! { #name }
     }
 }

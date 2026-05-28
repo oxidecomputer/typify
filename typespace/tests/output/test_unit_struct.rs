@@ -5,8 +5,7 @@ impl ::serde::Serialize for MyUnitStruct {
     where
         S: ::serde::Serializer,
     {
-        let value: ::serde_json::Value = ::serde_json::from_str("\"<<+>>\"").unwrap();
-        value.serialize(serializer)
+        ::serde_json::Value::String("<<+>>".to_string()).serialize(serializer)
     }
 }
 impl<'de> ::serde::Deserialize<'de> for MyUnitStruct {
@@ -14,16 +13,14 @@ impl<'de> ::serde::Deserialize<'de> for MyUnitStruct {
     where
         D: ::serde::Deserializer<'de>,
     {
-        let expected: ::serde_json::Value = ::serde_json::from_str("\"<<+>>\"").unwrap();
-        let value: ::serde_json::Value = ::serde::Deserialize::deserialize(
-            deserializer,
-        )?;
+        let expected = ::serde_json::Value::String("<<+>>".to_string());
+        let value: serde_json::Value = ::serde::Deserialize::deserialize(deserializer)?;
         if value != expected {
             return Err(
                 ::serde::de::Error::custom(
                     format!(
-                        "expected {}, found {}", "\"<<+>>\"", ::serde_json::to_string(&
-                        value).unwrap()
+                        "expected unit struct value {}, found {}", "\"<<+>>\"",
+                        ::serde_json::to_string(& value).unwrap()
                     ),
                 ),
             );
