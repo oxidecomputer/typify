@@ -2119,6 +2119,7 @@ dependencies = [
 name = "typespace"
 version = "0.1.0"
 dependencies = [
+ "codespace",
  "expectorate",
  "heck",
  "json-serde",

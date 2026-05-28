@@ -102,6 +102,10 @@ impl Codespace {
     pub fn into_stream(self) -> TokenStream {
         self.root.into_stream()
     }
+
+    pub fn into_mod(self) -> Mod {
+        self.root
+    }
 }
 
 /// A node in the [`Codespace`] tree.
@@ -158,6 +162,13 @@ impl Mod {
         // Validate now so the error points here rather than at render time.
         proc_macro2::Ident::new(&name, proc_macro2::Span::call_site());
         self.mods.entry(name).or_default()
+    }
+
+    pub fn replace_mod(&mut self, name: impl Into<String>, m: Mod) -> Option<Mod> {
+        let name = name.into();
+        // Validate now so the error points here rather than at render time.
+        proc_macro2::Ident::new(&name, proc_macro2::Span::call_site());
+        self.mods.insert(name, m)
     }
 
     /// Consume this module and render its contents into a [`TokenStream`].

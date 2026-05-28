@@ -41,7 +41,11 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
             .collect()
     }
 
-    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> TokenStream {
+    pub(crate) fn render(
+        &self,
+        typespace: &TypespaceRenderer<'_, Id>,
+        cs: &mut codespace::Codespace,
+    ) -> TokenStream {
         let Self {
             common:
                 TypeCommon {
@@ -86,9 +90,14 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeEnum<Id> {
                     quote! { ( #( #item_idents, )* ) }
                 }
                 VariantDetails::Struct(properties) => {
-                    let properties = properties
-                        .iter()
-                        .map(|prop| typespace.render_struct_property(prop, false, None));
+                    let properties = properties.iter().map(|prop| {
+                        typespace.render_struct_property(
+                            prop,
+                            false,
+                            &format!("{}{}", built.as_ref().unwrap().name, name),
+                            cs,
+                        )
+                    });
                     quote! { { #( #properties, )* } }
                 }
             };

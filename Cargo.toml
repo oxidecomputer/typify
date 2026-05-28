@@ -17,6 +17,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
+codespace = { version = "0.1.0", path = "codespace" }
 json-serde = { version = "0.1.0", path = "json-serde" }
 typify = { version = "0.10.0", path = "typify" }
 typify-impl = { version = "0.10.0", path = "typify-impl" }

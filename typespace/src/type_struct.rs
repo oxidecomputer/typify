@@ -29,7 +29,11 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeStruct<Id> {
             deny_unknown_fields,
         }
     }
-    pub(crate) fn render(&self, typespace: &TypespaceRenderer<'_, Id>) -> proc_macro2::TokenStream {
+    pub(crate) fn render(
+        &self,
+        typespace: &TypespaceRenderer<'_, Id>,
+        cs: &mut codespace::Codespace,
+    ) -> proc_macro2::TokenStream {
         let Self {
             common:
                 TypeCommon {
@@ -44,33 +48,12 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeStruct<Id> {
         let description = description.as_ref().map(|desc| quote! { #[doc = #desc] });
         let name = built.as_ref().unwrap().name.to_string();
         let name_ident = format_ident!("{name}");
+        let snake_name = heck::ToSnakeCase::to_snake_case(name.as_str());
 
-        let rendered_properties = properties.iter().map(|prop| {
-            let default_fn_name =
-                if let StructPropertyState::DefaultValue(JsonValue(_)) = &prop.state {
-                    Some(format!("__default_{}_{}", name, prop.rust_name))
-                } else {
-                    None
-                };
-            typespace.render_struct_property(prop, true, default_fn_name)
-        });
-
-        // Generate serde default helper functions for DefaultValue fields.
-        let default_fns = properties.iter().filter_map(|prop| {
-            if let StructPropertyState::DefaultValue(JsonValue(value)) = &prop.state {
-                let fn_name = format_ident!("__default_{}_{}", name, prop.rust_name);
-                let ty_ident = typespace.render_ident(&prop.type_id);
-                let value_tokens = crate::value_tokens::value_tokens(value);
-                Some(quote! {
-                    fn #fn_name() -> #ty_ident {
-                        ::serde_json::from_value(#value_tokens)
-                            .expect("invalid default value")
-                    }
-                })
-            } else {
-                None
-            }
-        });
+        let mut rendered_properties = Vec::new();
+        for prop in properties {
+            rendered_properties.push(typespace.render_struct_property(prop, true, &snake_name, cs));
+        }
 
         quote! {
             #description
@@ -78,7 +61,6 @@ impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypeStruct<Id> {
             pub struct #name_ident {
                 #( #rendered_properties, )*
             }
-            #( #default_fns )*
         }
     }
 

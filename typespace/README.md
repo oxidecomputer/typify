@@ -4,7 +4,12 @@ A crate for modeling Rust types for code generation. Consumers build up a
 `TypespaceBuilder`, by inserting named `Type<Id>` values, call
 `finalize(settings, make_box_id)` to break cycles and propagate trait
 requirements, then call `render()` to emit a `TokenStream` of Rust type
-definitions.
+definitions, or `to_codespace()` to get a structured `codespace::Codespace`
+that can be merged with other output before rendering.
+
+Serde default-value helpers are emitted into a `pub mod defaults` submodule
+and named `{snake_case_struct}__{field}` (double underscore separator to avoid
+collisions between e.g. `TypeName::foo` and `Type::name_foo`).
 
 ## TODO
 
@@ -23,13 +28,6 @@ definitions.
 - **`TypeNewtypeConstraints` is unrendered** — the enum is accepted by
   constructors but ignored entirely by `render()`; callers passing real
   constraints get no effect and no error.
-
-### Naming / Code Generation
-
-- **`__default_` helper functions** — default-value serde helpers are named
-  `__default_{StructName}_{field}` and generated in the wrong place (in
-  `TypeStruct::render` rather than in `render_struct_property`). Moving them
-  there is a prerequisite for the "codespace" / structured output bundle.
 
 ### Settings / Configurability
 

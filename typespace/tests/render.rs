@@ -1,3 +1,4 @@
+use codespace::Codespace;
 use quote::{format_ident, quote};
 use typespace::{
     no_cycles, EnumTagType, EnumVariant, JsonValue, StructProperty, StructPropertySerde,
@@ -49,7 +50,7 @@ fn test_struct_field_serde() {
             TypespaceSettings::default()
                 .with_std(TypespaceSettingsStd::Unqualified)
                 .with_optional_nullable(TypespaceSettingsOptionalNullable::CustomType(
-                    "OptionField".to_string(),
+                    "super::OptionField".to_string(),
                 )),
         ),
     ];
@@ -129,16 +130,32 @@ fn test_struct_field_serde() {
         );
 
         let ts = builder.finalize(settings, no_cycles).unwrap();
-        let out = ts.render();
+        let out = ts.to_codespace();
 
-        out
+        (name, out)
     });
 
-    let output = quote! {
-        #( #outputs )*
-    };
+    let mut codespace = Codespace::default();
 
-    #[check_and_include("tests/output/test_struct_field_serde.rs", output)]
+    for (name, xxx) in outputs {
+        let modname = heck::ToSnakeCase::to_snake_case(name);
+        let modname_ident = format_ident!("{modname}");
+        let m = xxx.into_mod();
+
+        let root_mod = codespace.get_root_mod();
+
+        root_mod.replace_mod(modname, m);
+        root_mod.add_item(
+            "",
+            quote! {
+                pub use #modname_ident::*;
+            },
+        );
+    }
+
+    let out = codespace.into_stream();
+
+    #[check_and_include("tests/output/test_struct_field_serde.rs", out)]
     fn inner() {
         use serde::Deserialize;
 

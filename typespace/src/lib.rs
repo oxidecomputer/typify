@@ -14,7 +14,7 @@ pub use type_struct::*;
 use std::collections::{btree_map::Entry, BTreeMap, BTreeSet, VecDeque};
 
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens as _};
+use quote::{format_ident, quote, ToTokens};
 use serde::Deserialize;
 
 // 6/25/2025
@@ -503,12 +503,16 @@ pub struct Typespace<Id> {
 }
 
 impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
-    pub fn render(&self) -> TokenStream {
+    pub fn to_codespace(&self) -> codespace::Codespace {
         TypespaceRenderer {
             types: &self.types,
             settings: &self.settings,
         }
         .render()
+    }
+
+    pub fn render(&self) -> proc_macro2::TokenStream {
+        self.to_codespace().into_stream()
     }
 }
 
@@ -518,21 +522,49 @@ pub(crate) struct TypespaceRenderer<'a, Id> {
 }
 
 impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRenderer<'a, Id> {
-    fn render(&self) -> TokenStream {
-        let types = self.types.iter().filter_map(|(_, typ)| match typ {
-            Type::Enum(e) => Some(e.render(self)),
-            Type::Struct(s) => Some(s.render(self)),
-            Type::UnitStruct(u) => Some(u.render()),
-            Type::TupleStruct(t) => Some(t.render(self)),
-            Type::NewtypeStruct(n) => Some(n.render(self)),
-            Type::TypeAlias(a) => Some(a.render(self)),
-            _ => None,
-        });
+    fn render(&self) -> codespace::Codespace {
+        let mut cs = codespace::Codespace::default();
 
-        quote! { #( #types )* }
+        for (_, typ) in self.types.iter() {
+            match typ {
+                Type::Struct(s) => {
+                    let name = s.common.built.as_ref().unwrap().name.to_string();
+                    let tokens = s.render(self, &mut cs);
+                    cs.add_item(name, tokens);
+                }
+                Type::Enum(e) => {
+                    let name = e.common.built.as_ref().unwrap().name.to_string();
+                    let tokens = e.render(self, &mut cs);
+                    cs.add_item(name, tokens);
+                }
+                Type::UnitStruct(u) => {
+                    let name = u.common.built.as_ref().unwrap().name.to_string();
+                    cs.add_item(name, u.render());
+                }
+                Type::TupleStruct(t) => {
+                    let name = t.common.built.as_ref().unwrap().name.to_string();
+                    cs.add_item(name, t.render(self));
+                }
+                Type::NewtypeStruct(n) => {
+                    let name = n.common.built.as_ref().unwrap().name.to_string();
+                    cs.add_item(name, n.render(self));
+                }
+                Type::TypeAlias(a) => {
+                    let name = a.common.built.as_ref().unwrap().name.to_string();
+                    cs.add_item(name, a.render(self));
+                }
+                _ => {}
+            }
+        }
+
+        cs
     }
 
     pub(crate) fn render_ident(&self, id: &Id) -> TokenStream {
+        self.render_ident_with_scope(id, None)
+    }
+
+    pub(crate) fn render_ident_with_scope(&self, id: &Id, scope: Option<&str>) -> TokenStream {
         let ty = self.types.get(id).unwrap();
         match ty {
             Type::Enum(TypeEnum { common, .. })
@@ -543,7 +575,13 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             | Type::TypeAlias(TypeTypeAlias { common, .. }) => {
                 let name = common.built.as_ref().unwrap().name.to_string();
                 let name_ident = format_ident!("{name}");
-                name_ident.into_token_stream()
+
+                if let Some(scope) = scope {
+                    let scope_ident = format_ident!("{scope}");
+                    quote! { #scope_ident::#name_ident }
+                } else {
+                    name_ident.into_token_stream()
+                }
             }
 
             Type::Native(TypeNative {
@@ -553,7 +591,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                 let parameters = (!parameters.is_empty()).then(|| {
                     let parameter_idents = parameters
                         .iter()
-                        .map(|param_id| self.render_ident(param_id));
+                        .map(|param_id| self.render_ident_with_scope(param_id, scope));
                     quote! {
                         < #( #parameter_idents ),* >
                     }
@@ -564,13 +602,15 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             }
 
             Type::Array(schema_ref, n) => {
-                let inner_ident = self.render_ident(schema_ref);
+                let inner_ident = self.render_ident_with_scope(schema_ref, scope);
                 quote! {
                     [#inner_ident; #n]
                 }
             }
             Type::Tuple(schema_refs) => {
-                let inner_idents = schema_refs.iter().map(|id| self.render_ident(id));
+                let inner_idents = schema_refs
+                    .iter()
+                    .map(|id| self.render_ident_with_scope(id, scope));
                 quote! {
                     ( #( #inner_idents ),* )
                 }
@@ -581,7 +621,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::option::Option },
                     TypespaceSettingsStd::Unqualified => quote! { Option },
                 };
-                let option_ident = self.render_ident(option_id);
+                let option_ident = self.render_ident_with_scope(option_id, scope);
                 quote! {
                     #option_type<#option_ident>
                 }
@@ -591,7 +631,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::boxed::Box },
                     TypespaceSettingsStd::Unqualified => quote! { Box },
                 };
-                let boxed_ident = self.render_ident(boxed_id);
+                let boxed_ident = self.render_ident_with_scope(boxed_id, scope);
                 quote! {
                     #box_type<#boxed_ident>
                 }
@@ -603,7 +643,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
                 };
-                let inner_ident = self.render_ident(inner_id);
+                let inner_ident = self.render_ident_with_scope(inner_id, scope);
                 quote! {
                     #vec_type<#inner_ident>
                 }
@@ -615,7 +655,7 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                     TypespaceSettingsStd::FullyQualified => quote! { ::std::vec::Vec },
                     TypespaceSettingsStd::Unqualified => quote! { Vec },
                 };
-                let inner_ident = self.render_ident(inner_id);
+                let inner_ident = self.render_ident_with_scope(inner_id, scope);
                 quote! {
                     #vec_type<#inner_ident>
                 }
@@ -623,8 +663,8 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             Type::Map(key_id, value_id) => {
                 // TODO 3/25/2026
                 // Configurable like typify 1
-                let key_ident = self.render_ident(key_id);
-                let value_ident = self.render_ident(value_id);
+                let key_ident = self.render_ident_with_scope(key_id, scope);
+                let value_ident = self.render_ident_with_scope(value_id, scope);
                 quote! {
                     ::std::collections::BTreeMap<#key_ident, #value_ident>
                 }
@@ -652,7 +692,8 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
             type_id,
         }: &StructProperty<Id>,
         vis_pub: bool,
-        default_fn_name: Option<String>,
+        context: &str,
+        cs: &mut codespace::Codespace,
     ) -> TokenStream {
         let description = description.as_ref().map(|text| {
             quote! {
@@ -806,18 +847,24 @@ impl<'a, Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> TypespaceRendere
                 }
                 ty_ident
             }
-            (StructPropertyState::DefaultValue(_json_value), _) => {
-                // TODO 1/12/2026
-                // We want to construct a value by walking both the type of the
-                // property and the value in tandem.
-                // Alternatively we could emit the JSON value as a string or as
-                // serde_json::Value structure and then deserialize from it.
+            (StructPropertyState::DefaultValue(JsonValue(value)), _) => {
+                let fn_name_str = format!("{}__{}", context, rust_name);
+                let fn_name_ident = format_ident!("{}", fn_name_str);
+                let serde_path = format!("defaults::{fn_name_str}");
+                serde_options.push(quote! { default = #serde_path });
 
-                let fn_name =
-                    default_fn_name.expect("DefaultValue field requires a default_fn_name");
-                serde_options.push(quote! { default = #fn_name });
+                let ty_for_fn = self.render_ident_with_scope(type_id, Some("super"));
+                let value_tokens = crate::value_tokens::value_tokens(value);
+                cs.get_root_mod().get_mod("defaults").add_item(
+                    &fn_name_str,
+                    quote! {
+                        pub fn #fn_name_ident() -> #ty_for_fn {
+                            ::serde_json::from_value(#value_tokens)
+                                .expect("invalid default value")
+                        }
+                    },
+                );
 
-                // serde_options.push(quote! { default = "xxx" });
                 ty_ident
             }
         };
