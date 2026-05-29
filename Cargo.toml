@@ -12,6 +12,7 @@ members = [
 	"cargo-typify",
 	"example-build",
 	"example-macro",
+	"namespace",
 ]
 
 resolver = "2"
