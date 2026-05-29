@@ -1,5 +1,31 @@
 # Typify
 
+A Rust type generator for JSON Schema (and OpenAPI).
+
+## Principles
+
+Typify tries to generate types that are maximally faithful to the input
+schemas. Only valid data should deserialize into the generated types and
+instances of generated types should always serialize without error. In other
+words, whether created by hand or through deserialization, type instances
+should reflect data that conforms to the schema validation.
+
+### Exceptions
+
+For certain enum types, typify is *slightly* less than perfectly precise.
+
+Externally tagged enums in rust require an object with a single property; we
+use this construction even if other properties should be permitted (though they
+would not be represented in the Rust type).
+
+Similarly, adjacently tagged enums have a tag field and a content field (if
+there is associated content), so an object with exactly 2 properties (or
+exactly 1 property if there is no associated content). The
+`deny_unknown_properties` field determines whether more properties are
+permitted (if absent) or denied (if present). There is no mechanism to deny
+only *some* properties (while others are permitted but ignored). Here again, we
+*acquiesce to this small imprecision.
+
 ## Influencing Code Generation
 
 Typify allows consumers to influence how code is generated:
@@ -113,3 +139,5 @@ impl<'de> ::serde::Deserialize<'de> for Operator {
 
 
 ## Generating Schemas With Typify Hints
+
+XXX
