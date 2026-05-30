@@ -1,6 +1,7 @@
 mod type_alias;
 mod type_common;
 mod type_enum;
+mod type_info;
 mod type_native;
 mod type_struct;
 pub(crate) mod value_tokens;
@@ -8,6 +9,10 @@ pub(crate) mod value_tokens;
 pub use type_alias::*;
 pub use type_common::*;
 pub use type_enum::*;
+pub use type_info::{
+    TypeDetails, TypeEnumInfo, TypeEnumVariant, TypeEnumVariantInfo, TypeInfo, TypeNewtypeInfo,
+    TypeSpaceImpl, TypeStructInfo, TypeStructPropInfo,
+};
 pub use type_native::*;
 pub use type_struct::*;
 
@@ -503,6 +508,25 @@ pub struct Typespace<Id> {
 }
 
 impl<Id: Clone + Ord + std::fmt::Debug + std::fmt::Display> Typespace<Id> {
+    /// Look up a type by its id.
+    pub fn get_type(&self, id: &Id) -> TypeInfo<'_, Id> {
+        let (id, typ) = self.types.get_key_value(id).expect("invalid type id");
+        TypeInfo {
+            typespace: self,
+            id,
+            typ,
+        }
+    }
+
+    /// Iterate over all types in the typespace.
+    pub fn iter_types(&self) -> impl Iterator<Item = TypeInfo<'_, Id>> {
+        self.types.iter().map(|(id, typ)| TypeInfo {
+            typespace: self,
+            id,
+            typ,
+        })
+    }
+
     pub fn to_codespace(&self) -> codespace::Codespace {
         TypespaceRenderer {
             types: &self.types,

@@ -1085,6 +1085,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "namespace"
+version = "0.1.0"
+dependencies = [
+ "heck",
+]
+
+[[package]]
 name = "newline-converter"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
