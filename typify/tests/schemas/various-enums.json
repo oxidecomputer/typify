@@ -64,7 +64,7 @@
               "type": "integer"
             }
           }
-        }        
+        }
       ]
     },
     "IpNet": {
@@ -402,6 +402,24 @@
           "type": "null"
         }
       ]
+    },
+    "BlockSize": {
+      "type": "integer",
+      "enum": [
+        512,
+        2048,
+        4096
+      ]
+    },
+    "NotBlockSize": {
+      "type": "integer",
+      "not": {
+        "enum": [
+          512,
+          2048,
+          4096
+        ]
+      }
     }
   }
 }

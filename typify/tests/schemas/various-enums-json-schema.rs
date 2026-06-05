@@ -52,6 +52,7 @@ pub mod error {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 pub enum AlternativeEnum {
     Choice1,
@@ -127,6 +128,7 @@ impl ::std::default::Default for AlternativeEnum {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(deny_unknown_fields)]
 pub enum AnyOfNoStrings {}
@@ -151,6 +153,7 @@ pub enum AnyOfNoStrings {}
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(deny_unknown_fields)]
 pub enum AnyOfNothing {}
@@ -202,6 +205,24 @@ impl<'de> ::serde::Deserialize<'de> for BlockSize {
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
+impl ::schemars::JsonSchema for BlockSize {
+    fn schema_name() -> ::std::string::String {
+        "BlockSize".to_string()
+    }
+    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = <i64 as ::schemars::JsonSchema>::json_schema(gen).into_object();
+        schema.enum_values = ::std::option::Option::Some(
+            [
+                ::serde_json::from_str("512").unwrap(),
+                ::serde_json::from_str("2048").unwrap(),
+                ::serde_json::from_str("4096").unwrap(),
+            ]
+            .into_iter()
+            .collect(),
+        );
+        schema.into()
+    }
+}
 #[doc = "`CommentedVariants`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -240,6 +261,7 @@ impl<'de> ::serde::Deserialize<'de> for BlockSize {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 pub enum CommentedVariants {
     #[doc = "An A"]
@@ -319,7 +341,7 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
     pub state: DiskAttachmentState,
@@ -356,6 +378,7 @@ impl DiskAttachment {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 pub enum DiskAttachmentState {
     Detached,
@@ -427,7 +450,7 @@ impl ::std::default::Default for DiskAttachmentState {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub prop: ::std::option::Option<EmptyObjectProp>,
@@ -497,6 +520,20 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
             ::serde_json::Value,
         >>::deserialize(deserializer)?)
         .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+impl ::schemars::JsonSchema for EmptyObjectProp {
+    fn schema_name() -> ::std::string::String {
+        "EmptyObjectProp".to_string()
+    }
+    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = < :: serde_json :: Map < :: std :: string :: String , :: serde_json :: Value > as :: schemars :: JsonSchema > :: json_schema (gen) . into_object () ;
+        schema.enum_values = ::std::option::Option::Some(
+            [::serde_json::from_str("{}").unwrap()]
+                .into_iter()
+                .collect(),
+        );
+        schema.into()
     }
 }
 #[doc = "`EnumAndConstant`"]
@@ -576,7 +613,7 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(tag = "petType")]
 pub enum EnumAndConstant {
     #[serde(rename = "dog")]
@@ -616,7 +653,7 @@ pub enum EnumAndConstant {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum IpNet {
     V4(Ipv4Net),
@@ -685,7 +722,17 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    schemars :: JsonSchema,
+)]
 #[serde(transparent)]
 pub struct Ipv4Net(::std::string::String);
 impl ::std::ops::Deref for Ipv4Net {
@@ -755,7 +802,17 @@ impl<'de> ::serde::Deserialize<'de> for Ipv4Net {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    schemars :: JsonSchema,
+)]
 #[serde(transparent)]
 pub struct Ipv6Net(::std::string::String);
 impl ::std::ops::Deref for Ipv6Net {
@@ -846,7 +903,7 @@ impl<'de> ::serde::Deserialize<'de> for Ipv6Net {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum JankNames {
     Variant0(::std::string::String),
@@ -886,6 +943,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, i64
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(deny_unknown_fields)]
 pub enum Never {}
@@ -908,6 +966,7 @@ pub enum Never {}
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(deny_unknown_fields)]
 pub enum NeverEver {}
@@ -930,6 +989,7 @@ pub enum NeverEver {}
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(deny_unknown_fields)]
 pub enum NeverEverForever {}
@@ -983,6 +1043,28 @@ impl<'de> ::serde::Deserialize<'de> for NotBlockSize {
             .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
     }
 }
+impl ::schemars::JsonSchema for NotBlockSize {
+    fn schema_name() -> ::std::string::String {
+        "NotBlockSize".to_string()
+    }
+    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = <f64 as ::schemars::JsonSchema>::json_schema(gen).into_object();
+        let not = ::schemars::schema::SchemaObject {
+            enum_values: ::std::option::Option::Some(
+                [
+                    ::serde_json::from_str("512").unwrap(),
+                    ::serde_json::from_str("2048").unwrap(),
+                    ::serde_json::from_str("4096").unwrap(),
+                ]
+                .into_iter()
+                .collect(),
+            ),
+            ..::std::default::Default::default()
+        };
+        schema.subschemas().not = Some(::std::boxed::Box::new(not.into()));
+        schema.into()
+    }
+}
 #[doc = "`NullStringEnumWithUnknownFormat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -1002,7 +1084,7 @@ impl<'de> ::serde::Deserialize<'de> for NotBlockSize {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct NullStringEnumWithUnknownFormat(
     pub ::std::option::Option<NullStringEnumWithUnknownFormatInner>,
@@ -1054,6 +1136,7 @@ impl ::std::convert::From<::std::option::Option<NullStringEnumWithUnknownFormatI
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 pub enum NullStringEnumWithUnknownFormatInner {
     #[serde(rename = "a")]
@@ -1143,7 +1226,7 @@ impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknow
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum OneOfMissingTitle {
     Variant0 {
@@ -1178,7 +1261,7 @@ pub enum OneOfMissingTitle {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum OneOfRawType {
     String(::std::string::String),
@@ -1229,7 +1312,7 @@ impl ::std::convert::From<i64> for OneOfRawType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 pub enum OneOfTypes {
     #[serde(rename = "bar")]
     Bar(i64),
@@ -1258,7 +1341,7 @@ impl ::std::convert::From<i64> for OneOfTypes {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionAnyofConst(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionAnyofConst {
@@ -1296,7 +1379,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionAnyofEnum(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionAnyofEnum {
@@ -1332,7 +1415,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionAnyofNull(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionAnyofNull {
@@ -1368,7 +1451,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionOneofConst(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionOneofConst {
@@ -1406,7 +1489,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionOneofEnum(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionOneofEnum {
@@ -1442,7 +1525,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(transparent)]
 pub struct OptionOneofNull(pub ::std::option::Option<::std::string::String>);
 impl ::std::ops::Deref for OptionOneofNull {
@@ -1481,6 +1564,7 @@ impl ::std::convert::From<::std::option::Option<::std::string::String>> for Opti
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(transparent)]
 pub struct ReferenceDef(pub ::std::string::String);
@@ -1543,7 +1627,7 @@ impl ::std::fmt::Display for ReferenceDef {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum References {
     Array(::std::vec::Vec<::std::string::String>),
@@ -1580,7 +1664,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, Ref
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum ReferencesObjectValue {
     StringVersion(StringVersion),
@@ -1634,7 +1718,7 @@ impl ::std::convert::From<ReferenceDef> for ReferencesObjectValue {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(untagged)]
 pub enum ShouldBeExclusive {
     Variant0 { id: ::std::string::String },
@@ -1660,6 +1744,7 @@ pub enum ShouldBeExclusive {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 #[serde(transparent)]
 pub struct StringVersion(pub ::std::string::String);
@@ -1715,6 +1800,7 @@ impl ::std::fmt::Display for StringVersion {
     Ord,
     PartialEq,
     PartialOrd,
+    schemars :: JsonSchema,
 )]
 pub enum VariantsDifferByPunct {
     #[serde(rename = "2.5GBASE-T")]
