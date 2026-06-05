@@ -1355,12 +1355,12 @@ impl TypeEntry {
         }
     }
 
-    fn output_newtype(
+    fn output_newtype<'a>(
         &self,
-        type_space: &TypeSpace,
+        type_space: &'a TypeSpace,
         output: &mut OutputSpace,
         newtype_details: &TypeEntryNewtype,
-        mut derive_set: BTreeSet<&str>,
+        mut derive_set: BTreeSet<&'a str>,
     ) {
         let TypeEntryNewtype {
             name,
@@ -1384,6 +1384,8 @@ impl TypeEntry {
         if is_str {
             derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
         }
+
+        derive_set.extend(type_space.settings.extra_derives.iter().map(|s| s.as_str()));
 
         let constraint_impl = match constraints {
             // In the unconstrained case we proxy impls through the inner type.
@@ -1467,8 +1469,6 @@ impl TypeEntry {
 
             TypeEntryNewtypeConstraints::DenyValue(enum_values)
             | TypeEntryNewtypeConstraints::EnumValue(enum_values) => {
-                let not = matches!(constraints, TypeEntryNewtypeConstraints::EnumValue(_))
-                    .then(|| quote! { ! });
                 // Note that string types with enumerated values are converted
                 // into simple enums rather than newtypes so we would not
                 // expect to see a string as the inner type here.
@@ -1481,15 +1481,75 @@ impl TypeEntry {
                 // from the set of derived impls.
                 derive_set.remove("::serde::Deserialize");
 
-                // TODO: if a user were to derive schemars::JsonSchema, it
-                // wouldn't be accurate.
-
                 let value_output = enum_values
                     .iter()
                     .map(|value| inner_type.output_value(type_space, &value.0, &quote! {}));
+
+                let value_string = enum_values
+                    .iter()
+                    .map(|value| serde_json::to_string(&value.0).unwrap());
+
+                // As with Deserialize, serde::JsonSchema requires a custom
+                // impl. If it's present in the set of derives, remove it and
+                // generate something that accurately models the type.
+
+                let has_json_schema = derive_set.remove("schemars::JsonSchema")
+                    || derive_set.remove("::schemars::JsonSchema");
+                let json_schema = has_json_schema.then(|| match constraints {
+                    TypeEntryNewtypeConstraints::DenyValue(_) => quote! {
+                        impl ::schemars::JsonSchema for #type_name {
+                            fn schema_name() -> ::std::string::String {
+                                #name.to_string()
+                            }
+
+                            fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator)
+                                -> ::schemars::schema::Schema {
+                                let mut schema =
+                                    <#inner_type_name as ::schemars::JsonSchema>
+                                        ::json_schema(gen)
+                                        .into_object();
+                                let not = ::schemars::schema::SchemaObject {
+                                    enum_values: ::std::option::Option::Some([
+                                        #( ::serde_json::from_str(#value_string).unwrap(), )*
+                                    ].into_iter().collect()),
+                                    ..::std::default::Default::default()
+                                };
+                                schema.subschemas().not = Some(
+                                    ::std::boxed::Box::new(not.into())
+                                );
+                                schema.into()
+                            }
+                        }
+                    },
+                    TypeEntryNewtypeConstraints::EnumValue(_) => quote! {
+                        impl ::schemars::JsonSchema for #type_name {
+                            fn schema_name() -> ::std::string::String {
+                                #name.to_string()
+                            }
+
+                            fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator)
+                                -> ::schemars::schema::Schema {
+                                let mut schema =
+                                    <#inner_type_name as ::schemars::JsonSchema>
+                                        ::json_schema(gen)
+                                        .into_object();
+                                schema.enum_values = ::std::option::Option::Some([
+                                    #( ::serde_json::from_str(#value_string).unwrap(), )*
+                                ].into_iter().collect());
+                                schema.into()
+                            }
+                        }
+                    },
+
+                    _ => unreachable!(),
+                });
+
                 // TODO if the sub_type is a string we could probably impl
                 // TryFrom<&str> as well and FromStr.
-                // TODO maybe we want to handle JsonSchema here
+
+                let not = matches!(constraints, TypeEntryNewtypeConstraints::EnumValue(_))
+                    .then(|| quote! { ! });
+
                 quote! {
                     // This is effectively the constructor for this type.
                     impl ::std::convert::TryFrom<#inner_type_name> for #type_name {
@@ -1526,6 +1586,8 @@ impl TypeEntry {
                             })
                         }
                     }
+
+                    #json_schema
                 }
             }
 
@@ -1648,11 +1710,10 @@ impl TypeEntry {
             }
         });
 
-        let derives = strings_to_derives(
-            derive_set,
-            &self.extra_derives,
-            &type_space.settings.extra_derives,
-        );
+        // This isn't the cleanest. Unlike other types, we roll in the
+        // extra_derives here so that we can sniff out and override uses of
+        // "schemars::JsonSchema".
+        let derives = strings_to_derives(derive_set, &self.extra_derives, &[]);
 
         let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
 

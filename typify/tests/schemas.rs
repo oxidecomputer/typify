@@ -37,6 +37,20 @@ fn test_custom_map() {
     trybuild::TestCases::new().pass("tests/schemas/maps_custom.rs");
 }
 
+/// Ensure that enumerated types include the enumeration in their JsonSchema
+/// implementation.
+#[test]
+fn test_various_enums_json_schema() {
+    validate_schema(
+        "tests/schemas/various-enums.json".into(),
+        "tests/schemas/various-enums-json-schema.rs".into(),
+        TypeSpaceSettings::default().with_derive("schemars::JsonSchema".to_string()),
+    )
+    .unwrap();
+
+    trybuild::TestCases::new().pass("tests/schemas/various-enums-json-schema.rs");
+}
+
 fn validate_schema(
     path: std::path::PathBuf,
     out_path: std::path::PathBuf,

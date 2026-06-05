@@ -933,6 +933,56 @@ pub enum NeverEver {}
 )]
 #[serde(deny_unknown_fields)]
 pub enum NeverEverForever {}
+#[doc = "`NotBlockSize`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"integer\","]
+#[doc = "  \"not\": {"]
+#[doc = "    \"enum\": ["]
+#[doc = "      512,"]
+#[doc = "      2048,"]
+#[doc = "      4096"]
+#[doc = "    ]"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct NotBlockSize(f64);
+impl ::std::ops::Deref for NotBlockSize {
+    type Target = f64;
+    fn deref(&self) -> &f64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<NotBlockSize> for f64 {
+    fn from(value: NotBlockSize) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::TryFrom<f64> for NotBlockSize {
+    type Error = self::error::ConversionError;
+    fn try_from(value: f64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if [512_f64, 2048_f64, 4096_f64].contains(&value) {
+            Err("invalid value".into())
+        } else {
+            Ok(Self(value))
+        }
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for NotBlockSize {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<f64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
 #[doc = "`NullStringEnumWithUnknownFormat`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
