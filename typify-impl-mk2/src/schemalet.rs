@@ -927,38 +927,40 @@ fn merge_yes_no_value(
                         // This is going to create temporary problems as we
                         // deal with the consequences of this update elsewhere.
 
-                        match (no_prop_schema.as_ref(), no_required) {
-                            // The "no" schema has a property that's required
-                            // and permissive; the "yes" schema must therefore
-                            // have a property that's optional and
-                            // unsatisfiable.
-                            (None, true) => {
-                                // TODO 5/30/2026
-                                // This seems like it should be a child of the
-                                // actual yes/no schema no not of the yes
-                                // schema.
-                                let never_ref = SchemaRef::Child(
-                                    Box::new(yes_ref.clone()),
-                                    format!("never-{prop_name}"),
-                                );
-                                let never_schema = Schemalet {
-                                    metadata: Default::default(),
-                                    details: SchemaletDetails::Nothing,
-                                };
-                                new_work.push((never_ref.clone(), never_schema));
-                                yes_object.properties.insert(prop_name.clone(), never_ref);
-                            }
+                        if false {
+                            match (no_prop_schema.as_ref(), no_required) {
+                                // The "no" schema has a property that's required
+                                // and permissive; the "yes" schema must therefore
+                                // have a property that's optional and
+                                // unsatisfiable.
+                                (None, true) => {
+                                    // TODO 5/30/2026
+                                    // This seems like it should be a child of the
+                                    // actual yes/no schema no not of the yes
+                                    // schema.
+                                    let never_ref = SchemaRef::Child(
+                                        Box::new(yes_ref.clone()),
+                                        format!("never-{prop_name}"),
+                                    );
+                                    let never_schema = Schemalet {
+                                        metadata: Default::default(),
+                                        details: SchemaletDetails::Nothing,
+                                    };
+                                    new_work.push((never_ref.clone(), never_schema));
+                                    yes_object.properties.insert(prop_name.clone(), never_ref);
+                                }
 
-                            // The "no" prop is optional and permissive; the
-                            // "yes" schema would need to have a property
-                            // that's both required and unsatisfiable... which
-                            // is impossible. Therefore the full schema is
-                            // unsatisfiable.
-                            (None, false) => {
-                                todo!()
-                            }
+                                // The "no" prop is optional and permissive; the
+                                // "yes" schema would need to have a property
+                                // that's both required and unsatisfiable... which
+                                // is impossible. Therefore the full schema is
+                                // unsatisfiable.
+                                (None, false) => {
+                                    todo!()
+                                }
 
-                            _ => todo!("{prop_name} {no_prop_schema:?} {no_required}"),
+                                _ => todo!("{prop_name} {no_prop_schema:?} {no_required}"),
+                            }
                         }
                     }
                 }
