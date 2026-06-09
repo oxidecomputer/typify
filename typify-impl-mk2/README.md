@@ -963,3 +963,116 @@ implement.
 #### 6. Testing
 
 Migrate typify 1 tests (using an LLM).
+
+
+### 5/30/2026
+
+Some thoughts about the normalizer. I think it's all quite *ad hoc*; more
+structure would make the thing easier to build and easier to reason about.
+
+First, we need the mindset that simplifying a node probably involves creating
+new node that should be considered subordinate to that node. I should take a
+look at all the places were making new work, and think about what the actual
+parent relationship should be.
+
+I really need to be in the mindset of taking the smallest step possible and
+then getting out. I think (hope?) that will make each step more comprehensible,
+and keep the code narrowly scoped.
+
+I don't think we're keeping track of unevaluatedProperties in a way where we
+can properly enforce them. unevaluatedItems too, but I don't really understand
+yet the proper interpretation.
+
+Everything kind of lives in one file without any useful organization or
+structure. Now that I've gotten a feel for all the various pieces, now I think
+I can spread out a bit and really try to keep these functions more limited.
+
+There's some insane normalization one could do. Consider these two schemas:
+
+```json
+{
+  "const": { "foo": "bar" }
+}
+```
+```json
+{
+  "type": "object",
+  "properties": {
+    "foo": { "const": "bar" }
+  },
+  "required": ["foo"],
+  "additionalProperties": false
+}
+```
+
+These are equivalent! Should we simplify one to the other? If so, which is
+canonical? I can imagine the enum processing path being interested in
+potentially dismantling a constant value to consider it as one of the enum
+encoding modalities.
+
+Another situation to consider:
+
+```json
+{
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "x": { "type": "string" }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "x": { "type": "integer" }
+      },
+      "required": ["x"]
+    }
+  ]
+}
+```
+
+So we have a single property `x` that is unresolvable. I expect we'd first transform this to:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "x": {
+      "allOf": [
+        { "type": "string" },
+        { "type": "integer" }
+      ]
+    }
+  },
+  "required": ["x"]
+}
+```
+
+Then later:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "x": false
+  },
+  "required": ["x"]
+}
+```
+
+So eventually the whole schema needs to be `false`--you can't have an
+unsatisfiable type for a property that's required.
+
+I should really carefully spell out what contitutes a fully normalized schema.
+I think I have a good sense of it, but perhaps it would also be useful to
+actually have a type that spells it out so that we can exhaustively match
+against it. I know it's going to be annoying to rewrite the consumers, but
+perhaps Claude can take some of the string out of that.
+
+All this said, I don't think it's a good idea to rewrite anything yet. I think I can keep plodding along with the current pieces. Then when I feel like I have all the problems sufficiently well expressed, I can start rewriting each layer:
+
+- the Bundler needs some of this $id stuff
+- the normalizer needs a good rethink
+- the converter needs to use the new typespace crate rather than the mod
+
