@@ -3,8 +3,13 @@ name = "json-serde"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["schemars"]
+schemars = ["dep:schemars"]
+
 [dependencies]
 serde_core = { workspace = true }
+schemars = { workspace = true, optional = true }
 
 [dev-dependencies]
 serde = { workspace = true, features = ["derive"] }

@@ -986,6 +986,7 @@ dependencies = [
 name = "json-serde"
 version = "0.1.0"
 dependencies = [
+ "schemars",
  "serde",
  "serde_core",
  "serde_json",

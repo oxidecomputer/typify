@@ -301,11 +301,58 @@ where
     }
 }
 
+/// Represent a value that *must* be absent. This should be accompanied by
+/// serde attributes to indicate that:
+/// - the default value should be taken `#[serde(default)]`
+/// - it should never be serialize `#[serde(skip_serializing)]`
+/// - TODO 6/9/2026 something for JsonSchema
+#[derive(Default, Clone, Debug)]
+pub struct Absent;
+
+impl serde_core::Serialize for Absent {
+    fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        use serde_core::ser::Error;
+        Err(S::Error::custom(
+            "field should be annotated with the `default` attribute",
+        ))
+    }
+}
+
+impl<'de> Deserialize<'de> for Absent {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        use serde_core::de::Error;
+        // Chew up any inputs.
+        let _ = serde_core::de::IgnoredAny::deserialize(deserializer)?;
+        Err(D::Error::custom("field must be absent"))
+    }
+}
+
+#[cfg(feature = "schemars")]
+impl schemars::JsonSchema for Absent {
+    fn schema_name() -> String {
+        "Absent".to_string()
+    }
+
+    fn json_schema(_generator: &mut schemars::r#gen::SchemaGenerator) -> schemars::schema::Schema {
+        schemars::schema::Schema::Bool(false)
+    }
+
+    fn is_referenceable() -> bool {
+        false
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use serde::{Deserialize, Serialize, ser::SerializeSeq};
 
-    use crate::{FlattenedSequenceDeserializer, FlattenedSequenceSerializer};
+    use crate::{Absent, FlattenedSequenceDeserializer, FlattenedSequenceSerializer};
 
     #[test]
     fn flatten_tuple_vec() {
@@ -349,11 +396,9 @@ mod tests {
                         let v_0 = seq.next_element()?.ok_or_else(|| {
                             serde::de::Error::invalid_length(0, &"a tuple of size 2")
                         })?;
-                        // .ok_or_else(|| serde::de::Error::custom("expected first element"))?;
                         let v_1 = seq.next_element()?.ok_or_else(|| {
                             serde::de::Error::invalid_length(1, &"a tuple of size 2")
                         })?;
-                        // .ok_or_else(|| serde::de::Error::custom("expected second element"))?;
 
                         let rest =
                             Deserialize::deserialize(FlattenedSequenceDeserializer::new(&mut seq))?;
@@ -399,5 +444,40 @@ mod tests {
         let de_result = serde_json::from_str::<TestType>(&input);
         let e = de_result.unwrap_err().to_string();
         assert!(e.starts_with("invalid type"), "{e}",);
+    }
+
+    #[test]
+    fn test_absent() {
+        // This is necessary due to a bug present in schemars 0.8.22 where
+        // default + skip_serializing yields a required property. It is fixed
+        // in schemars 1.2.1 (and--perhaps--earlier than that).
+        fn yup<T>(_: &T) -> bool {
+            true
+        }
+
+        #[derive(Serialize, Deserialize, schemars::JsonSchema)]
+        struct Test {
+            #[serde(skip_serializing_if = "yup")]
+            #[serde(default)]
+            absent: Absent,
+        }
+
+        let test = Test { absent: Absent };
+
+        assert_eq!(serde_json::to_string(&test).unwrap(), "{}");
+
+        assert!(serde_json::from_str::<Test>(r#"{ "absent": null }"#).is_err());
+
+        let schema = schemars::schema_for!(Test);
+        let expected = serde_json::json!({
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Test",
+            "type": "object",
+            "properties": {
+                "absent": false
+            }
+        });
+
+        assert_eq!(serde_json::to_value(&schema).unwrap(), expected);
     }
 }
