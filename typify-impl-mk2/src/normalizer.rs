@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, marker::PhantomData};
 
 use log::{debug, trace};
 
@@ -7,6 +7,150 @@ use crate::{
     schemalet::{to_schemalets, CanonicalSchemalet, SchemaRef, Schemalet, SchemaletDetails, State},
     typify::Result,
 };
+
+// TODO 6/9/2026
+// This is really just a re-do on the CanonicalSchemalet, but I'm renaming to
+// draw greater distinction. I'd like this to be the type that we feed into the
+// converter.
+pub struct NormalizedSchema {
+    pub metadata: NormalizedMetadata,
+    pub details: NormalizedSchemaDetails,
+}
+
+pub struct NormalizedMetadata {
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub default: Option<serde_json::Value>,
+    pub examples: Vec<serde_json::Value>,
+}
+
+pub enum NormalizedSchemaDetails {
+    ExclusiveOneOf { subschemas: Vec<SchemaRef> },
+    Concrete(NormalizedSchemaConcreteDetails),
+}
+pub enum NormalizedSchemaConcreteDetails {
+    Anything,
+    Nothing,
+    Constant(serde_json::Value),
+    Boolean,
+    Null,
+    Integer(NormalizedInteger),
+    Number(NormalizedNumber),
+    String(NormalizedString),
+    Array(NormalizedSchemaArray),
+    Object(NormalizedObject),
+}
+
+pub struct NormalizedInteger {
+    pub minimum: Option<serde_json::Number>,
+    pub exclusive_minimum: Option<serde_json::Number>,
+    pub maximum: Option<serde_json::Number>,
+    pub exclusive_maximum: Option<serde_json::Number>,
+    pub multiple_of: Vec<serde_json::Number>,
+}
+
+pub struct NormalizedNumber {
+    pub minimum: Option<f64>,
+    pub exclusive_minimum: Option<f64>,
+    pub maximum: Option<f64>,
+    pub exclusive_maximum: Option<f64>,
+    pub multiple_of: Option<f64>,
+}
+
+pub struct NormalizedString {
+    pub pattern: Vec<String>,
+    pub format: Vec<String>,
+    pub min_length: Option<u64>,
+    pub max_length: Option<u64>,
+}
+
+pub struct NormalizedSchemaArray {
+    pub items: SchemaRef,
+    pub prefix_items: Vec<SchemaRef>,
+    pub min_items: Option<u64>,
+    pub max_items: Option<u64>,
+    pub unique_items: bool,
+    // TODO 6/9/2026
+    // contains/minContains/maxContains are not represented. We'll probably
+    // need them at some point and would turn them into a newtype wrapper
+    // constraint.
+}
+
+pub struct NormalizedObject {
+    pub fields: BTreeMap<String, NormalizedObjectField>,
+    pub additional_properties: Option<SchemaRef>,
+    pub min_properties: Option<u64>,
+    pub max_properties: Option<u64>,
+    pub property_names: Option<SchemaRef>,
+    pub pattern_properties: Vec<(String, SchemaRef)>,
+}
+
+pub struct NormalizedObjectField {
+    pub schema: SchemaRef,
+    pub required: bool,
+}
+
+pub struct NormalizedSchemaGraph {
+    nodes: BTreeMap<SchemaRef, NormalizedSchema>,
+}
+
+pub struct NormalizedSchemaHandle<'a, Kind: NormalizedSchemaHandleKind> {
+    schema: &'a NormalizedSchema,
+    _phantom: PhantomData<Kind>,
+}
+
+impl<'a, Kind: NormalizedSchemaHandleKind> NormalizedSchemaHandle<'a, Kind> {
+    pub fn metadata(&self) -> &'a NormalizedMetadata {
+        &self.schema.metadata
+    }
+}
+
+impl<'a> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindAny> {
+    pub fn get_details_any(&self) -> &'a NormalizedSchemaDetails {
+        &self.schema.details
+    }
+}
+
+impl<'a> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindConcrete> {
+    pub fn get_details_concrete(&self) -> &'a NormalizedSchemaConcreteDetails {
+        match &self.schema.details {
+            NormalizedSchemaDetails::ExclusiveOneOf { .. } => unreachable!(),
+            NormalizedSchemaDetails::Concrete(details) => details,
+        }
+    }
+}
+
+pub trait NormalizedSchemaHandleKind {}
+pub enum NormalizedSchemaHandleKindAny {}
+impl NormalizedSchemaHandleKind for NormalizedSchemaHandleKindAny {}
+pub enum NormalizedSchemaHandleKindConcrete {}
+impl NormalizedSchemaHandleKind for NormalizedSchemaHandleKindConcrete {}
+
+impl NormalizedSchemaGraph {
+    pub fn get_schema<'a>(
+        &'a self,
+        id: &SchemaRef,
+    ) -> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindAny> {
+        NormalizedSchemaHandle {
+            schema: self.nodes.get(id).unwrap(),
+            _phantom: PhantomData,
+        }
+    }
+
+    pub fn get_concrete_schema<'a>(
+        &'a self,
+        id: &SchemaRef,
+    ) -> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindConcrete> {
+        let schema = self.nodes.get(id).unwrap();
+        if let NormalizedSchemaDetails::ExclusiveOneOf { .. } = &schema.details {
+            panic!("expected concrete schema")
+        }
+        NormalizedSchemaHandle {
+            schema: self.nodes.get(id).unwrap(),
+            _phantom: PhantomData,
+        }
+    }
+}
 
 #[derive(Debug, Default)]
 pub(crate) struct Normalizer {
