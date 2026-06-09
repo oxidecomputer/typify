@@ -972,7 +972,7 @@ structure would make the thing easier to build and easier to reason about.
 
 First, we need the mindset that simplifying a node probably involves creating
 new node that should be considered subordinate to that node. I should take a
-look at all the places were making new work, and think about what the actual
+look at all the places we're making new work, and think about what the actual
 parent relationship should be.
 
 I really need to be in the mindset of taking the smallest step possible and
@@ -1062,7 +1062,11 @@ Then later:
 ```
 
 So eventually the whole schema needs to be `false`--you can't have an
-unsatisfiable type for a property that's required.
+unsatisfiable type for a property that's required. The top-level schema needs
+to somehow transition from "ready to be simplified because I'm an `allOf` whose
+subschemas have been processed" to "I've been simplified as much as possible
+for now" to "now that all my dependencies have been addressed I may again be
+able to be simplified".
 
 I should really carefully spell out what contitutes a fully normalized schema.
 I think I have a good sense of it, but perhaps it would also be useful to

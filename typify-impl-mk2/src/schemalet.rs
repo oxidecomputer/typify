@@ -1,4 +1,8 @@
-use std::{collections::BTreeMap, fmt::Display, ops::Deref};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fmt::Display,
+    ops::Deref,
+};
 
 use log::debug;
 use serde::Serialize;
@@ -830,7 +834,7 @@ fn merge_yes_no_value(
     for (_, no) in no {
         println!("yes - no: {:#?} - {:#?}", new_value, no);
 
-        // TODO 5.15.2026
+        // TODO 5/15/2026
         // This is a whole ordeal and a half. I'm just going to try to get the
         // shape right and knock down cases as I see them.
         match (&mut new_value, &no.details) {
@@ -917,6 +921,44 @@ fn merge_yes_no_value(
 
                         if yes_object.properties.contains_key(&prop_name) {
                             todo!("don't know how to merge props yet: {prop_name}");
+                        }
+
+                        // TODO 5/30/2026
+                        // This is going to create temporary problems as we
+                        // deal with the consequences of this update elsewhere.
+
+                        match (no_prop_schema.as_ref(), no_required) {
+                            // The "no" schema has a property that's required
+                            // and permissive; the "yes" schema must therefore
+                            // have a property that's optional and
+                            // unsatisfiable.
+                            (None, true) => {
+                                // TODO 5/30/2026
+                                // This seems like it should be a child of the
+                                // actual yes/no schema no not of the yes
+                                // schema.
+                                let never_ref = SchemaRef::Child(
+                                    Box::new(yes_ref.clone()),
+                                    format!("never-{prop_name}"),
+                                );
+                                let never_schema = Schemalet {
+                                    metadata: Default::default(),
+                                    details: SchemaletDetails::Nothing,
+                                };
+                                new_work.push((never_ref.clone(), never_schema));
+                                yes_object.properties.insert(prop_name.clone(), never_ref);
+                            }
+
+                            // The "no" prop is optional and permissive; the
+                            // "yes" schema would need to have a property
+                            // that's both required and unsatisfiable... which
+                            // is impossible. Therefore the full schema is
+                            // unsatisfiable.
+                            (None, false) => {
+                                todo!()
+                            }
+
+                            _ => todo!("{prop_name} {no_prop_schema:?} {no_required}"),
                         }
                     }
                 }
@@ -1765,8 +1807,13 @@ fn merge_two_objects(
     aa: &SchemaletValueObject,
     bb: &SchemaletValueObject,
 ) -> CanonicalSchemaletDetails {
-    let prop_names = aa.properties.keys().chain(bb.properties.keys());
+    let prop_names = aa
+        .properties
+        .keys()
+        .chain(bb.properties.keys())
+        .collect::<BTreeSet<_>>();
     let properties = prop_names
+        .into_iter()
         .map(
             |prop_name| match (aa.properties.get(prop_name), bb.properties.get(prop_name)) {
                 (None, None) => unreachable!("must exist in one or the other"),
@@ -1775,7 +1822,15 @@ fn merge_two_objects(
                     // additionalProperties field.
                     (prop_name.clone(), prop_ref.clone())
                 }
-                (Some(_), Some(_)) => todo!(),
+                (Some(_), Some(_)) => {
+                    // TODO 5/30/2026
+                    // This should just shove a new AllOf into place and
+                    // return. Additional properties is irrelevant here because
+                    // both objects have a property of this name.
+                    // TODO 6/9/2026
+                    // I *do* need some sort of new ID here.
+                    todo!()
+                }
             },
         )
         .collect();
