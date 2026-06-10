@@ -28,6 +28,37 @@ pub enum TypeOutputSection {
     /// Shared default helper functions.
     Defaults,
 }
+impl TypeOutputSection {
+    /// The Rust module name for this section when emitted as separate files.
+    pub fn module_name(self) -> Option<&'static str> {
+        match self {
+            Self::Error => Some("error"),
+            Self::Crate => None,
+            Self::Builder => Some("builder"),
+            Self::Defaults => Some("defaults"),
+        }
+    }
+
+    /// The Rust file name for this section when emitted as separate files.
+    pub fn file_name(self) -> &'static str {
+        match self {
+            Self::Error => "error.rs",
+            Self::Crate => "mod.rs",
+            Self::Builder => "builder.rs",
+            Self::Defaults => "defaults.rs",
+        }
+    }
+
+    /// The documentation to place on this section's module declaration.
+    pub fn description(self) -> Option<&'static str> {
+        match self {
+            Self::Error => Some("Error types."),
+            Self::Crate => None,
+            Self::Builder => Some("Types for composing complex structures."),
+            Self::Defaults => Some("Generation of default values for serde."),
+        }
+    }
+}
 
 #[derive(Debug, Default)]
 pub struct OutputSpace {
