@@ -12,11 +12,13 @@ use crate::{
 // This is really just a re-do on the CanonicalSchemalet, but I'm renaming to
 // draw greater distinction. I'd like this to be the type that we feed into the
 // converter.
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedSchema {
     pub metadata: NormalizedMetadata,
     pub details: NormalizedSchemaDetails,
 }
 
+#[derive(Debug, Default, serde::Serialize)]
 pub struct NormalizedMetadata {
     pub title: Option<String>,
     pub description: Option<String>,
@@ -24,12 +26,14 @@ pub struct NormalizedMetadata {
     pub examples: Vec<serde_json::Value>,
 }
 
+#[derive(Debug, serde::Serialize)]
 pub enum NormalizedSchemaDetails {
-    ExclusiveOneOf { subschemas: Vec<SchemaRef> },
-    Concrete(NormalizedSchemaConcreteDetails),
-}
-
-pub enum NormalizedSchemaConcreteDetails {
+    ExclusiveOneOf {
+        /// The JSON type that all subschemas share, if known. Used for naming
+        /// untagged enum variants (e.g. a string-typed enum gets "String").
+        typ: Option<crate::schemalet::SchemaletType>,
+        subschemas: Vec<SchemaRef>,
+    },
     /// Carries metadata and delegates type identity to the target.
     Wrapper(SchemaRef),
     Anything,
@@ -44,6 +48,7 @@ pub enum NormalizedSchemaConcreteDetails {
     Object(NormalizedObject),
 }
 
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedInteger {
     pub minimum: Option<serde_json::Number>,
     pub exclusive_minimum: Option<serde_json::Number>,
@@ -52,6 +57,7 @@ pub struct NormalizedInteger {
     pub multiple_of: Vec<serde_json::Number>,
 }
 
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedNumber {
     pub minimum: Option<f64>,
     pub exclusive_minimum: Option<f64>,
@@ -60,6 +66,7 @@ pub struct NormalizedNumber {
     pub multiple_of: Option<f64>,
 }
 
+#[derive(Debug, Default, serde::Serialize)]
 pub struct NormalizedString {
     pub pattern: Vec<String>,
     pub format: Vec<String>,
@@ -67,6 +74,7 @@ pub struct NormalizedString {
     pub max_length: Option<u64>,
 }
 
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedSchemaArray {
     pub items: SchemaRef,
     pub prefix_items: Vec<SchemaRef>,
@@ -79,6 +87,7 @@ pub struct NormalizedSchemaArray {
     // constraint.
 }
 
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedObject {
     pub fields: BTreeMap<String, NormalizedObjectField>,
     pub additional_properties: Option<SchemaRef>,
@@ -88,6 +97,7 @@ pub struct NormalizedObject {
     pub pattern_properties: Vec<(String, SchemaRef)>,
 }
 
+#[derive(Debug, serde::Serialize)]
 pub struct NormalizedObjectField {
     pub schema: SchemaRef,
     pub required: bool,
@@ -97,69 +107,11 @@ pub struct NormalizedSchemaGraph {
     nodes: BTreeMap<SchemaRef, NormalizedSchema>,
 }
 
-pub struct NormalizedSchemaHandle<'a, Kind: NormalizedSchemaHandleKind> {
-    schema: &'a NormalizedSchema,
-    _phantom: PhantomData<Kind>,
-}
-
-impl<'a, Kind: NormalizedSchemaHandleKind> NormalizedSchemaHandle<'a, Kind> {
-    pub fn metadata(&self) -> &'a NormalizedMetadata {
-        &self.schema.metadata
-    }
-}
-
-impl<'a> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindAny> {
-    pub fn get_details_any(&self) -> &'a NormalizedSchemaDetails {
-        &self.schema.details
-    }
-}
-
-impl<'a> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindConcrete> {
-    pub fn get_details_concrete(&self) -> &'a NormalizedSchemaConcreteDetails {
-        match &self.schema.details {
-            NormalizedSchemaDetails::ExclusiveOneOf { .. } => unreachable!(),
-            NormalizedSchemaDetails::Concrete(details) => details,
-        }
-    }
-}
-
-pub trait NormalizedSchemaHandleKind {}
-pub enum NormalizedSchemaHandleKindAny {}
-impl NormalizedSchemaHandleKind for NormalizedSchemaHandleKindAny {}
-pub enum NormalizedSchemaHandleKindConcrete {}
-impl NormalizedSchemaHandleKind for NormalizedSchemaHandleKindConcrete {}
-
 impl NormalizedSchemaGraph {
-    pub fn get_schema<'a>(
-        &'a self,
-        id: &SchemaRef,
-    ) -> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindAny> {
-        NormalizedSchemaHandle {
-            schema: self.nodes.get(id).unwrap(),
-            _phantom: PhantomData,
-        }
-    }
-
-    pub fn get_concrete_schema<'a>(
-        &'a self,
-        id: &SchemaRef,
-    ) -> NormalizedSchemaHandle<'a, NormalizedSchemaHandleKindConcrete> {
-        let schema = self.nodes.get(id).unwrap();
-        match &schema.details {
-            NormalizedSchemaDetails::ExclusiveOneOf { .. } => panic!("expected concrete schema"),
-            NormalizedSchemaDetails::Concrete(NormalizedSchemaConcreteDetails::Wrapper(target)) => {
-                // A wrapper is concrete, but must not point to an ExclusiveOneOf.
-                let target_schema = self.nodes.get(target).unwrap();
-                if let NormalizedSchemaDetails::ExclusiveOneOf { .. } = &target_schema.details {
-                    panic!("wrapper points to ExclusiveOneOf; not a concrete schema");
-                }
-            }
-            NormalizedSchemaDetails::Concrete(_) => {}
-        }
-        NormalizedSchemaHandle {
-            schema,
-            _phantom: PhantomData,
-        }
+    pub(crate) fn get_schema_inner(&self, id: &SchemaRef) -> &NormalizedSchema {
+        self.nodes
+            .get(id)
+            .unwrap_or_else(|| panic!("failed to lookup {id}"))
     }
 }
 
@@ -358,10 +310,29 @@ impl Normalizer {
         serde_json::to_string_pretty(&self.canonical.iter().collect::<Vec<_>>()).unwrap()
     }
 
+    // Follow transparent (no-metadata) Reference/Note chains to find the first
+    // "significant" node — one that has metadata or is not a bare indirection.
+    fn resolve_transparent<'a>(&'a self, start: &'a SchemaRef) -> &'a SchemaRef {
+        use crate::schemalet::CanonicalSchemaletDetails;
+        let mut current = start;
+        loop {
+            let canonical = &self.canonical[current];
+            let has_metadata = canonical.metadata.title.is_some()
+                || canonical.metadata.description.is_some()
+                || !canonical.metadata.examples.is_empty();
+            match &canonical.details {
+                CanonicalSchemaletDetails::Reference(r) | CanonicalSchemaletDetails::Note(r)
+                    if !has_metadata =>
+                {
+                    current = r;
+                }
+                _ => return current,
+            }
+        }
+    }
+
     pub(crate) fn to_normalized_graph(&self) -> NormalizedSchemaGraph {
-        use crate::schemalet::{
-            CanonicalSchemaletDetails, SchemaletValue, SchemaletValueObject,
-        };
+        use crate::schemalet::{CanonicalSchemaletDetails, SchemaletValue, SchemaletValueObject};
 
         // A well-known ref used when a schema has no item/property constraint
         // (i.e. the constraint is implicitly "Anything").
@@ -380,9 +351,7 @@ impl Normalizer {
                     default: None,
                     examples: vec![],
                 },
-                details: NormalizedSchemaDetails::Concrete(
-                    NormalizedSchemaConcreteDetails::Anything,
-                ),
+                details: NormalizedSchemaDetails::Anything,
             },
         );
 
@@ -395,7 +364,7 @@ impl Normalizer {
                     (
                         name.clone(),
                         NormalizedObjectField {
-                            schema: schema_ref.clone(),
+                            schema: self.resolve_transparent(schema_ref).clone(),
                             required: required.contains(name),
                         },
                     )
@@ -405,101 +374,89 @@ impl Normalizer {
                 .pattern_properties
                 .iter()
                 .flat_map(|m| m.iter())
-                .map(|(pat, sr)| (pat.clone(), sr.clone()))
+                .map(|(pat, sr)| (pat.clone(), self.resolve_transparent(sr).clone()))
                 .collect();
             NormalizedObject {
                 fields,
                 pattern_properties,
-                additional_properties: obj.additional_properties.clone(),
-                property_names: obj.property_names.clone(),
+                additional_properties: obj
+                    .additional_properties
+                    .as_ref()
+                    .map(|r| self.resolve_transparent(r).clone()),
+                property_names: obj
+                    .property_names
+                    .as_ref()
+                    .map(|r| self.resolve_transparent(r).clone()),
                 min_properties: None,
                 max_properties: None,
             }
         };
 
         // Translate a non-indirection CanonicalSchemaletDetails to NormalizedSchemaDetails.
-        // Used both for direct nodes and when resolving through empty-metadata
-        // indirection chains.
-        let translate_details =
-            |v: &CanonicalSchemaletDetails| -> NormalizedSchemaDetails {
-                match v {
-                    CanonicalSchemaletDetails::Anything => NormalizedSchemaDetails::Concrete(
-                        NormalizedSchemaConcreteDetails::Anything,
-                    ),
-                    CanonicalSchemaletDetails::Nothing => NormalizedSchemaDetails::Concrete(
-                        NormalizedSchemaConcreteDetails::Nothing,
-                    ),
-                    CanonicalSchemaletDetails::Constant(v) => NormalizedSchemaDetails::Concrete(
-                        NormalizedSchemaConcreteDetails::Constant(v.clone()),
-                    ),
-                    CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
-                        NormalizedSchemaDetails::ExclusiveOneOf {
-                            subschemas: subschemas.clone(),
-                        }
-                    }
-                    CanonicalSchemaletDetails::Value(v) => {
-                        let concrete = match v {
-                            SchemaletValue::Boolean => NormalizedSchemaConcreteDetails::Boolean,
-                            SchemaletValue::Null => NormalizedSchemaConcreteDetails::Null,
-                            SchemaletValue::Integer(i) => {
-                                NormalizedSchemaConcreteDetails::Integer(NormalizedInteger {
-                                    minimum: i.minimum.clone(),
-                                    exclusive_minimum: i.exclusive_minimum.clone(),
-                                    maximum: None,
-                                    exclusive_maximum: None,
-                                    multiple_of: vec![],
-                                })
-                            }
-                            SchemaletValue::Number(n) => {
-                                NormalizedSchemaConcreteDetails::Number(NormalizedNumber {
-                                    minimum: n.minimum,
-                                    exclusive_minimum: n.exclusive_minimum,
-                                    maximum: n.maximum,
-                                    exclusive_maximum: n.exclusive_maximum,
-                                    multiple_of: n.multiple_of,
-                                })
-                            }
-                            SchemaletValue::String(s) => {
-                                NormalizedSchemaConcreteDetails::String(NormalizedString {
-                                    pattern: s.pattern.clone(),
-                                    format: s.format.clone(),
-                                    min_length: s.min_length,
-                                    max_length: s.max_length,
-                                })
-                            }
-                            SchemaletValue::Array(a) => {
-                                NormalizedSchemaConcreteDetails::Array(NormalizedSchemaArray {
-                                    items: a.items.clone().unwrap_or_else(|| anything_ref.clone()),
-                                    prefix_items: a.prefix_items.clone().unwrap_or_default(),
-                                    min_items: a.min_items,
-                                    max_items: a.max_items,
-                                    unique_items: a.unique_items.unwrap_or(false),
-                                })
-                            }
-                            SchemaletValue::Object(obj) => {
-                                NormalizedSchemaConcreteDetails::Object(translate_object(obj))
-                            }
-                        };
-                        NormalizedSchemaDetails::Concrete(concrete)
-                    }
-                    // Callers must have resolved through chains before calling this.
-                    CanonicalSchemaletDetails::Reference(_)
-                    | CanonicalSchemaletDetails::Note(_) => {
-                        unreachable!("indirection should have been resolved before translate_details")
+        let translate_details = |v: &CanonicalSchemaletDetails| -> NormalizedSchemaDetails {
+            match v {
+                CanonicalSchemaletDetails::Anything => NormalizedSchemaDetails::Anything,
+                CanonicalSchemaletDetails::Nothing => NormalizedSchemaDetails::Nothing,
+                CanonicalSchemaletDetails::Constant(v) => {
+                    NormalizedSchemaDetails::Constant(v.clone())
+                }
+                CanonicalSchemaletDetails::ExclusiveOneOf { typ, subschemas } => {
+                    NormalizedSchemaDetails::ExclusiveOneOf {
+                        typ: typ.clone(),
+                        subschemas: subschemas
+                            .iter()
+                            .map(|s| self.resolve_transparent(s).clone())
+                            .collect(),
                     }
                 }
-            };
-
-        // Follow indirection chains until reaching a non-indirection node.
-        let resolve_chain = |start: &SchemaRef| -> &CanonicalSchemaletDetails {
-            let mut current = &self.canonical[start].details;
-            loop {
-                match current {
-                    CanonicalSchemaletDetails::Reference(r)
-                    | CanonicalSchemaletDetails::Note(r) => {
-                        current = &self.canonical[r].details;
+                CanonicalSchemaletDetails::Value(v) => match v {
+                    SchemaletValue::Boolean => NormalizedSchemaDetails::Boolean,
+                    SchemaletValue::Null => NormalizedSchemaDetails::Null,
+                    SchemaletValue::Integer(i) => {
+                        NormalizedSchemaDetails::Integer(NormalizedInteger {
+                            minimum: i.minimum.clone(),
+                            exclusive_minimum: i.exclusive_minimum.clone(),
+                            maximum: None,
+                            exclusive_maximum: None,
+                            multiple_of: vec![],
+                        })
                     }
-                    other => return other,
+                    SchemaletValue::Number(n) => NormalizedSchemaDetails::Number(NormalizedNumber {
+                        minimum: n.minimum,
+                        exclusive_minimum: n.exclusive_minimum,
+                        maximum: n.maximum,
+                        exclusive_maximum: n.exclusive_maximum,
+                        multiple_of: n.multiple_of,
+                    }),
+                    SchemaletValue::String(s) => NormalizedSchemaDetails::String(NormalizedString {
+                        pattern: s.pattern.clone(),
+                        format: s.format.clone(),
+                        min_length: s.min_length,
+                        max_length: s.max_length,
+                    }),
+                    SchemaletValue::Array(a) => NormalizedSchemaDetails::Array(NormalizedSchemaArray {
+                        items: a
+                            .items
+                            .as_ref()
+                            .map(|r| self.resolve_transparent(r).clone())
+                            .unwrap_or_else(|| anything_ref.clone()),
+                        prefix_items: a
+                            .prefix_items
+                            .iter()
+                            .flatten()
+                            .map(|r| self.resolve_transparent(r).clone())
+                            .collect(),
+                        min_items: a.min_items,
+                        max_items: a.max_items,
+                        unique_items: a.unique_items.unwrap_or(false),
+                    }),
+                    SchemaletValue::Object(obj) => {
+                        NormalizedSchemaDetails::Object(translate_object(obj))
+                    }
+                },
+                // Callers must have resolved through chains before calling this.
+                CanonicalSchemaletDetails::Reference(_) | CanonicalSchemaletDetails::Note(_) => {
+                    unreachable!("indirection should have been resolved before translate_details")
                 }
             }
         };
@@ -512,28 +469,24 @@ impl Normalizer {
                 examples: canonical.metadata.examples.clone(),
             };
 
-            let has_metadata = metadata.title.is_some()
-                || metadata.description.is_some()
-                || !metadata.examples.is_empty();
-
             let details = match &canonical.details {
-                CanonicalSchemaletDetails::Anything => {
-                    NormalizedSchemaDetails::Concrete(NormalizedSchemaConcreteDetails::Anything)
+                CanonicalSchemaletDetails::Anything => NormalizedSchemaDetails::Anything,
+                CanonicalSchemaletDetails::Nothing => NormalizedSchemaDetails::Nothing,
+                CanonicalSchemaletDetails::Constant(v) => {
+                    NormalizedSchemaDetails::Constant(v.clone())
                 }
-                CanonicalSchemaletDetails::Nothing => {
-                    NormalizedSchemaDetails::Concrete(NormalizedSchemaConcreteDetails::Nothing)
-                }
-                CanonicalSchemaletDetails::Constant(v) => NormalizedSchemaDetails::Concrete(
-                    NormalizedSchemaConcreteDetails::Constant(v.clone()),
-                ),
-                CanonicalSchemaletDetails::Reference(r)
-                | CanonicalSchemaletDetails::Note(r) => {
+                // References/Notes with metadata become Wrapper nodes so the
+                // converter can collect that metadata while following chains.
+                // Those without metadata are inlined directly to avoid
+                // pointless indirection.
+                CanonicalSchemaletDetails::Reference(r) | CanonicalSchemaletDetails::Note(r) => {
+                    let has_metadata = metadata.title.is_some()
+                        || metadata.description.is_some()
+                        || !metadata.examples.is_empty();
                     if has_metadata {
-                        NormalizedSchemaDetails::Concrete(
-                            NormalizedSchemaConcreteDetails::Wrapper(r.clone()),
-                        )
+                        NormalizedSchemaDetails::Wrapper(r.clone())
                     } else {
-                        translate_details(resolve_chain(r))
+                        translate_details(&self.canonical[self.resolve_transparent(r)].details)
                     }
                 }
                 other => translate_details(other),

@@ -5,10 +5,10 @@ mod one_of;
 use std::collections::BTreeMap;
 
 use crate::{
-    schemalet::{
-        CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, SchemaletValue,
-        SchemaletValueString,
+    normalizer::{
+        NormalizedMetadata, NormalizedSchemaDetails, NormalizedSchemaGraph, NormalizedString,
     },
+    schemalet::SchemaRef,
     typespace::{
         EnumTagType, NameBuilder, Type, TypeEnum, TypeNative, TypeNewtypeConstraints,
         TypeNewtypeStruct, TypeTupleStruct, TypeUnitStruct,
@@ -17,7 +17,7 @@ use crate::{
 
 // TODO naming?
 pub struct Converter {
-    graph: BTreeMap<SchemaRef, CanonicalSchemalet>,
+    graph: NormalizedSchemaGraph,
     known_names: BTreeMap<SchemaRef, String>,
 }
 
@@ -36,7 +36,7 @@ impl From<Type> for ConvertResult {
 }
 
 impl Converter {
-    pub fn new(graph: BTreeMap<SchemaRef, CanonicalSchemalet>) -> Self {
+    pub fn new(graph: NormalizedSchemaGraph) -> Self {
         Self {
             graph,
             known_names: Default::default(),
@@ -47,59 +47,49 @@ impl Converter {
         self.known_names.insert(id, name);
     }
 
-    fn get<'a>(&'a self, id: &SchemaRef) -> &'a CanonicalSchemalet {
-        self.graph
-            .get(id)
-            .unwrap_or_else(|| panic!("failed to lookup {id}"))
+    fn get(&self, id: &SchemaRef) -> &crate::normalizer::NormalizedSchema {
+        self.graph.get_schema_inner(id)
     }
 
-    fn resolve<'a>(&'a self, mut id: &'a SchemaRef) -> &'a CanonicalSchemalet {
+    fn resolve(&self, id: &SchemaRef) -> SchemaRef {
+        let mut current = id.clone();
         loop {
-            let schemalet = self.get(id);
-            if let CanonicalSchemaletDetails::Reference(schema_ref) = &schemalet.details {
-                id = schema_ref;
-            } else {
-                break schemalet;
+            let schema = self.graph.get_schema_inner(&current);
+            match &schema.details {
+                NormalizedSchemaDetails::Wrapper(target) => {
+                    current = target.clone();
+                }
+                _ => return current,
             }
         }
     }
 
-    pub fn resolve_and_get_stuff<'a>(&'a self, mut id: &'a SchemaRef) -> GottenStuff<'a> {
+    pub fn resolve_and_get_stuff(&self, id: &SchemaRef) -> GottenStuff {
+        let mut current = id.clone();
         let mut title = None;
         let mut description = None;
         loop {
-            let schemalet = self.get(id);
+            let schema = self.graph.get_schema_inner(&current);
 
-            let next_id = match &schemalet.details {
-                CanonicalSchemaletDetails::Note(next_id)
-                | CanonicalSchemaletDetails::Reference(next_id) => next_id,
+            let next = match &schema.details {
+                NormalizedSchemaDetails::Wrapper(next_id) => next_id.clone(),
                 _ => {
                     return GottenStuff {
-                        id,
-                        schemalet,
+                        id: current,
                         description,
                         title,
                     };
                 }
             };
 
-            // let CanonicalSchemaletDetails::Reference(next_id) = &schemalet.details else {
-            //     return GottenStuff {
-            //         id,
-            //         schemalet,
-            //         description,
-            //         title,
-            //     };
-            // };
-
-            if let (None, Some(new_title)) = (&title, &schemalet.metadata.title) {
+            if let (None, Some(new_title)) = (&title, &schema.metadata.title) {
                 title = Some(new_title.clone());
             }
-            if let (None, Some(new_description)) = (&description, &schemalet.metadata.description) {
+            if let (None, Some(new_description)) = (&description, &schema.metadata.description) {
                 description = Some(new_description.clone());
             }
 
-            id = next_id;
+            current = next;
         }
     }
 
@@ -139,18 +129,18 @@ impl Converter {
         name: NameBuilder,
         original_json: Option<&serde_json::Value>,
     ) -> ConvertResult {
-        let schemalet = self.get(id);
+        let schema = self.get(id);
 
         println!(
             "converting {id} {} {}",
-            serde_json::to_string_pretty(schemalet).unwrap(),
+            serde_json::to_string_pretty(&self.known_names.get(id)).unwrap(),
             serde_json::to_string_pretty(&original_json).unwrap(),
         );
-        let CanonicalSchemalet { metadata, details } = schemalet;
+        let metadata = &schema.metadata;
 
-        let result = match details {
-            CanonicalSchemaletDetails::Anything => Type::JsonValue.into(),
-            CanonicalSchemaletDetails::Nothing => Type::Enum(TypeEnum::new(
+        let result = match &schema.details {
+            NormalizedSchemaDetails::Anything => Type::JsonValue.into(),
+            NormalizedSchemaDetails::Nothing => Type::Enum(TypeEnum::new(
                 name,
                 metadata.description.clone(),
                 None,
@@ -159,39 +149,35 @@ impl Converter {
                 false,
             ))
             .into(),
-            CanonicalSchemaletDetails::Constant(repr) => {
+            NormalizedSchemaDetails::Constant(repr) => {
                 Type::UnitStruct(TypeUnitStruct::new(name, None, repr.clone())).into()
             }
-            CanonicalSchemaletDetails::Reference(schema_ref) => {
-                self.convert(schema_ref, original_json)
-            }
-
-            // TODO 7/28/2025
-            // This is probably wrong, but I'm not sure exactly how we're going
-            // to use this Note thing.
-            CanonicalSchemaletDetails::Note(schema_ref) => {
+            // TODO 6/9/2026
+            // The Wrapper is the confluence of a couple of ideas. I'm not
+            // exactly sure how we want to use this.
+            NormalizedSchemaDetails::Wrapper(schema_ref) => {
                 self.convert_with_name(schema_ref, name, original_json)
             }
 
-            CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => {
+            NormalizedSchemaDetails::ExclusiveOneOf { subschemas, .. } => {
                 self.convert_one_of(name, metadata, subschemas).into()
             }
 
-            CanonicalSchemaletDetails::Value(SchemaletValue::Boolean) => Type::Boolean.into(),
-            CanonicalSchemaletDetails::Value(SchemaletValue::Array(array)) => {
+            NormalizedSchemaDetails::Boolean => Type::Boolean.into(),
+            NormalizedSchemaDetails::Array(array) => {
                 self.convert_array(id, name, metadata, array).into()
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::Object(object)) => {
+            NormalizedSchemaDetails::Object(object) => {
                 self.convert_object(id, name, metadata, object)
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::String(string_value)) => {
+            NormalizedSchemaDetails::String(string_value) => {
                 self.convert_string(id, name, metadata, string_value)
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::Integer(_)) => {
+            NormalizedSchemaDetails::Integer(_) => {
                 // TODO not handling this well ...
                 Type::Float("i64".to_string()).into()
             }
-            CanonicalSchemaletDetails::Value(SchemaletValue::Number(_)) => {
+            NormalizedSchemaDetails::Number(_) => {
                 // TODO not handling this well ...
 
                 // TODO 7/21/2025
@@ -200,7 +186,7 @@ impl Converter {
                 Type::Float("f64".to_string()).into()
             }
 
-            CanonicalSchemaletDetails::Value(SchemaletValue::Null) => Type::Unit.into(),
+            NormalizedSchemaDetails::Null => Type::Unit.into(),
         };
 
         if let Some(name) = self.known_names.get(id) {
@@ -251,11 +237,11 @@ impl Converter {
         &self,
         id: &SchemaRef,
         name: NameBuilder,
-        metadata: &crate::schemalet::SchemaletMetadata,
-        string_value: &SchemaletValueString,
+        metadata: &NormalizedMetadata,
+        string_value: &NormalizedString,
     ) -> ConvertResult {
         match string_value {
-            SchemaletValueString {
+            NormalizedString {
                 pattern,
                 format,
                 min_length,
@@ -269,7 +255,7 @@ impl Converter {
                     &inner_ref,
                     NameBuilder::Fixed("unreachable 123".to_string()),
                     metadata,
-                    &SchemaletValueString {
+                    &NormalizedString {
                         pattern: Default::default(),
                         format: format.clone(),
                         min_length: None,
@@ -295,7 +281,7 @@ impl Converter {
                 }
             }
 
-            SchemaletValueString {
+            NormalizedString {
                 pattern,
                 format,
                 min_length: None,
@@ -303,7 +289,7 @@ impl Converter {
             } if pattern.is_empty() && format.is_empty() => Type::String.into(),
 
             // Regular string or known string type
-            SchemaletValueString {
+            NormalizedString {
                 pattern,
                 format,
                 min_length: None,
@@ -318,7 +304,10 @@ impl Converter {
                 .into()
             }
 
-            _ => todo!("unhandled string type {string_value:#?}"),
+            _ => todo!(
+                "unhandled string type {}",
+                serde_json::to_string_pretty(string_value).unwrap(),
+            ),
         }
 
         // If we recognize the format, we can use a specific Rust type to model
@@ -357,9 +346,8 @@ impl Converter {
     }
 }
 
-pub struct GottenStuff<'a> {
-    id: &'a SchemaRef,
-    schemalet: &'a CanonicalSchemalet,
-    description: Option<String>,
-    title: Option<String>,
+pub struct GottenStuff {
+    pub id: SchemaRef,
+    pub description: Option<String>,
+    pub title: Option<String>,
 }

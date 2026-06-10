@@ -1,13 +1,12 @@
-use std::{borrow::Cow, collections::BTreeSet};
+use std::borrow::Cow;
+use std::collections::BTreeSet;
 
 use heck::ToPascalCase;
 
 use crate::{
     convert::Converter,
-    schemalet::{
-        CanonicalSchemalet, CanonicalSchemaletDetails, SchemaRef, SchemaletMetadata,
-        SchemaletValue, SchemaletValueObject,
-    },
+    normalizer::{NormalizedMetadata, NormalizedObject, NormalizedSchema, NormalizedSchemaDetails},
+    schemalet::SchemaRef,
     typespace::{
         EnumTagType, EnumVariant, NameBuilder, StructProperty, Type, TypeEnum, VariantDetails,
     },
@@ -78,29 +77,20 @@ impl Converter {
     pub(crate) fn convert_one_of(
         &self,
         name: NameBuilder,
-        metadata: &SchemaletMetadata,
+        metadata: &NormalizedMetadata,
         subschemas: &[SchemaRef],
     ) -> Type {
-        let resolved_subschemas = subschemas
-            .into_iter()
-            .map(|schema_ref| self.get(schema_ref))
-            .collect::<Vec<_>>();
-
-        println!(
-            "subschemas {}",
-            serde_json::to_string_pretty(&resolved_subschemas).unwrap()
-        );
-
         let proto_variants = subschemas
             .iter()
             .map(|variant_id| {
-                let schemalet = self.get(variant_id);
                 // TODO this is where we are going to look for titles and
                 // descriptions. We're going to keep walking until we hit a
                 // concrete type.
+                let resolved_id = self.resolve(variant_id);
+                let schema = self.get(&resolved_id);
                 ProtoVariant {
-                    id: variant_id,
-                    schemalet,
+                    id: resolved_id,
+                    schema,
                     name: None,
                     description: None,
                 }
@@ -124,53 +114,63 @@ impl Converter {
     fn maybe_externally_tagged_enum(
         &self,
         name: NameBuilder,
-        metadata: &SchemaletMetadata,
+        metadata: &NormalizedMetadata,
         proto_variants: &[ProtoVariant],
     ) -> Option<Type> {
         let variants = proto_variants
             .iter()
-            .map(|proto| match &proto.schemalet.details {
-                CanonicalSchemaletDetails::Anything => None,
-                CanonicalSchemaletDetails::Nothing => None,
-                CanonicalSchemaletDetails::Constant(value) => Some(vec![ProtoVariantExternal {
-                    proto: Cow::Borrowed(proto),
-                    kind: ProtoVariantExternalKind::Simple(value.as_str()?.to_string()),
-                }]),
-                CanonicalSchemaletDetails::Reference(_) | CanonicalSchemaletDetails::Note(_) => {
-                    unreachable!("we should have already eliminated this possibility")
-                }
-                CanonicalSchemaletDetails::ExclusiveOneOf { subschemas, .. } => subschemas
-                    .iter()
-                    .map(|id| {
-                        let ss = self.resolve(id);
-
-                        if let CanonicalSchemaletDetails::Constant(value) = &ss.details {
-                            Some(ProtoVariantExternal {
-                                proto: Cow::Owned(ProtoVariant {
-                                    id,
-                                    schemalet: ss,
-                                    name: None,
-                                    description: None,
-                                }),
-                                kind: ProtoVariantExternalKind::Simple(value.as_str()?.to_string()),
-                            })
-                        } else {
-                            None
-                        }
-                    })
-                    .collect::<Option<Vec<_>>>(),
-                CanonicalSchemaletDetails::Value(SchemaletValue::Object(
-                    // TODO more checks?
-                    // TODO required!
-                    SchemaletValueObject { properties, .. },
-                )) if properties.len() == 1 => {
-                    let (name, schema_ref) = properties.iter().next().unwrap().clone();
-                    Some(vec![ProtoVariantExternal {
+            .map(|proto| {
+                match &proto.schema.details {
+                    NormalizedSchemaDetails::Anything => None,
+                    NormalizedSchemaDetails::Nothing => None,
+                    NormalizedSchemaDetails::Constant(value) => Some(vec![ProtoVariantExternal {
                         proto: Cow::Borrowed(proto),
-                        kind: ProtoVariantExternalKind::Typed(name.clone(), schema_ref),
-                    }])
+                        kind: ProtoVariantExternalKind::Simple(value.as_str()?.to_string()),
+                    }]),
+                    NormalizedSchemaDetails::Wrapper(_) => {
+                        unreachable!("we should have already eliminated this possibility")
+                    }
+                    NormalizedSchemaDetails::ExclusiveOneOf { subschemas, .. } => subschemas
+                        .iter()
+                        .map(|id| {
+                            let resolved_id = self.resolve(id);
+                            let resolved_schema = self.get(&resolved_id);
+
+                            if let NormalizedSchemaDetails::Constant(value) =
+                                &resolved_schema.details
+                            {
+                                Some(ProtoVariantExternal {
+                                    proto: Cow::Owned(ProtoVariant {
+                                        id: resolved_id,
+                                        schema: resolved_schema,
+                                        name: None,
+                                        description: None,
+                                    }),
+                                    kind: ProtoVariantExternalKind::Simple(
+                                        value.as_str()?.to_string(),
+                                    ),
+                                })
+                            } else {
+                                None
+                            }
+                        })
+                        .collect::<Option<Vec<_>>>(),
+                    NormalizedSchemaDetails::Object(
+                        // TODO more checks?
+                        // TODO required!
+                        NormalizedObject { fields, .. },
+                    ) if fields.len() == 1 => {
+                        let (field_name, field) = fields.iter().next().unwrap();
+                        Some(vec![ProtoVariantExternal {
+                            proto: Cow::Borrowed(proto),
+                            kind: ProtoVariantExternalKind::Typed(
+                                field_name.clone(),
+                                &field.schema,
+                            ),
+                        }])
+                    }
+                    _ => None,
                 }
-                CanonicalSchemaletDetails::Value(_) => None,
             })
             .collect::<Option<Vec<_>>>()?
             .into_iter()
@@ -226,7 +226,7 @@ impl Converter {
     fn untagged_enum(
         &self,
         name: NameBuilder,
-        metadata: &crate::schemalet::SchemaletMetadata,
+        metadata: &NormalizedMetadata,
         proto_variants: &[ProtoVariant],
     ) -> Type {
         // 6/27/2025
@@ -248,7 +248,7 @@ impl Converter {
                 proto
                     .name
                     .clone()
-                    .or_else(|| proto.schemalet.metadata.title.clone())
+                    .or_else(|| proto.schema.metadata.title.clone())
             })
             .collect::<Option<Vec<_>>>()
         {
@@ -267,7 +267,7 @@ impl Converter {
             .zip(variant_names)
             .map(|(proto, variant_name)| {
                 let details = if let Some(struct_props) =
-                    self.xxx_maybe_struct_props(&variant_name, &proto.id, &proto.schemalet)
+                    self.xxx_maybe_struct_props(&variant_name, &proto.id, proto.schema)
                 {
                     VariantDetails::Struct(struct_props)
                 } else {
@@ -297,17 +297,20 @@ impl Converter {
         &self,
         variant_name: &str,
         id: &SchemaRef,
-        schemalet: &CanonicalSchemalet,
+        schema: &NormalizedSchema,
     ) -> Option<Vec<StructProperty>> {
         // TODO somehow I need to know if this is a type that's going to have a
         // name.
         // TODO or we somehow defer that decision to the Typespace's finalize step?
-        let object = schemalet.as_object()?;
+        let object = match &schema.details {
+            NormalizedSchemaDetails::Object(obj) => obj,
+            _ => return None,
+        };
 
         let result = self.convert_object(
             id,
             NameBuilder::Fixed(variant_name.to_string()),
-            &schemalet.metadata,
+            &schema.metadata,
             object,
         );
         let Type::Struct(struct_ty) = result.primary else {
@@ -323,23 +326,51 @@ impl Converter {
 fn maybe_kind_names(proto_variants: &[ProtoVariant]) -> Option<Vec<String>> {
     let type_list = proto_variants
         .iter()
-        .map(|proto| proto.schemalet.get_type())
+        .map(|proto| concrete_kind_name(&proto.schema.details))
         .collect::<Option<Vec<_>>>()?;
 
     let type_set = type_list.iter().collect::<BTreeSet<_>>();
 
-    (type_list.len() == type_set.len()).then(|| {
-        type_list
-            .into_iter()
-            .map(|t| t.variant_name().to_string())
-            .collect()
-    })
+    (type_list.len() == type_set.len()).then(|| type_list)
+}
+
+/// Returns a variant name string for a schema's type, if one can be determined
+/// unambiguously from the concrete details. Returns None for types that don't
+/// have a meaningful single-word kind (Anything, Nothing, Constant, Wrapper).
+fn concrete_kind_name(details: &NormalizedSchemaDetails) -> Option<String> {
+    match details {
+        NormalizedSchemaDetails::Boolean => Some("Boolean".to_string()),
+        NormalizedSchemaDetails::Integer(_) => Some("Integer".to_string()),
+        NormalizedSchemaDetails::Number(_) => Some("Number".to_string()),
+        NormalizedSchemaDetails::String(_) => Some("String".to_string()),
+        NormalizedSchemaDetails::Array(_) => Some("Array".to_string()),
+        NormalizedSchemaDetails::Object(_) => Some("Object".to_string()),
+        NormalizedSchemaDetails::Null => Some("Null".to_string()),
+        // Constant values carry a type derived from the JSON value kind.
+        NormalizedSchemaDetails::Constant(v) => match v {
+            serde_json::Value::Null => Some("Null".to_string()),
+            serde_json::Value::Bool(_) => Some("Boolean".to_string()),
+            serde_json::Value::Number(_) => Some("Number".to_string()),
+            serde_json::Value::String(_) => Some("String".to_string()),
+            serde_json::Value::Array(_) => Some("Array".to_string()),
+            serde_json::Value::Object(_) => Some("Object".to_string()),
+        },
+        // An ExclusiveOneOf with a known type (e.g. a string-typed enum like
+        // simpleTypes) can still contribute a kind name.
+        NormalizedSchemaDetails::ExclusiveOneOf { typ: Some(t), .. } => {
+            Some(t.variant_name().to_string())
+        }
+        NormalizedSchemaDetails::Anything
+        | NormalizedSchemaDetails::Nothing
+        | NormalizedSchemaDetails::Wrapper(_)
+        | NormalizedSchemaDetails::ExclusiveOneOf { typ: None, .. } => None,
+    }
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
 struct ProtoVariant<'a> {
-    id: &'a SchemaRef,
-    schemalet: &'a CanonicalSchemalet,
+    id: SchemaRef,
+    schema: &'a NormalizedSchema,
     /// A name from a part of the schema.
     name: Option<String>,
     /// A comment from a part of the schema.

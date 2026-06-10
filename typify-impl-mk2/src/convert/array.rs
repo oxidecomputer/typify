@@ -2,7 +2,8 @@ use std::collections::BTreeMap;
 
 use crate::{
     convert::{ConvertResult, Converter},
-    schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueArray},
+    normalizer::{NormalizedMetadata, NormalizedSchemaArray},
+    schemalet::SchemaRef,
     typespace::{NameBuilder, NameBuilderHint, Type, TypeNewtypeConstraints, TypeNewtypeStruct},
 };
 
@@ -11,8 +12,8 @@ impl Converter {
         &self,
         id: &SchemaRef,
         name: NameBuilder,
-        metadata: &SchemaletMetadata,
-        array: &SchemaletValueArray,
+        metadata: &NormalizedMetadata,
+        array: &NormalizedSchemaArray,
     ) -> ConvertResult {
         match array {
             // Tuple
@@ -27,12 +28,12 @@ impl Converter {
             // If we just have items and prefix_items is None/empty we should
             // produce a fixed length array type; when prefix_items is
             // non-empty, we should produce a tuple.
-            SchemaletValueArray {
+            NormalizedSchemaArray {
                 items,
                 prefix_items,
                 max_items: Some(max_items),
                 min_items: Some(min_items),
-                unique_items: None,
+                unique_items: false,
             } if max_items == min_items && *max_items > 0 => {
                 // TODO 11/14/2025
                 // One thing I'm not sure about is tuple-like structs i.e.
@@ -46,29 +47,16 @@ impl Converter {
                 // In other cases we **need** to use a tuple struct because we
                 // need a custom serialization (e.g. flattened sequences).
 
-                let mut additional = BTreeMap::new();
-
                 let types = prefix_items
                     .iter()
-                    .flatten()
                     .map(|item_id| self.resolve_and_get_stuff(item_id).id.clone())
                     .chain(std::iter::repeat_with(|| {
-                        if let Some(items) = items {
-                            self.resolve_and_get_stuff(items).id.clone()
-                        } else {
-                            let inner_id = SchemaRef::Child(id.clone().into(), "any".to_string());
-                            additional.insert(inner_id.clone(), Type::JsonValue);
-                            inner_id
-                        }
+                        self.resolve_and_get_stuff(items).id.clone()
                     }))
                     .take(*max_items as usize)
                     .collect::<Vec<_>>();
 
-                // Type::Tuple(types).into()
-                ConvertResult {
-                    primary: Type::Tuple(types),
-                    additional,
-                }
+                Type::Tuple(types).into()
             }
 
             // Tuple
@@ -77,13 +65,13 @@ impl Converter {
             //
             // TODO 1/10/2026 note that we're pretty restrictive here at the
             // moment, but we can get fancier in the future.
-            SchemaletValueArray {
+            NormalizedSchemaArray {
                 items,
-                prefix_items: Some(prefix_items),
+                prefix_items,
                 max_items,
                 min_items: Some(min_items),
-                unique_items: None,
-            } if prefix_items.len() == *min_items as usize => {
+                unique_items: false,
+            } if !prefix_items.is_empty() && prefix_items.len() == *min_items as usize => {
                 assert!(*min_items <= prefix_items.len() as u64);
 
                 let types = prefix_items
@@ -95,13 +83,13 @@ impl Converter {
                     id.clone(),
                     "rest".to_string(),
                 )]);
-                let inner_metadata = SchemaletMetadata::default();
-                let inner_array = SchemaletValueArray {
+                let inner_metadata = NormalizedMetadata::default();
+                let inner_array = NormalizedSchemaArray {
                     items: items.clone(),
-                    prefix_items: None,
+                    prefix_items: vec![],
                     max_items: max_items.as_ref().map(|v| v - *min_items),
                     min_items: None,
-                    unique_items: None,
+                    unique_items: false,
                 };
 
                 let inner_id = SchemaRef::Child(Box::new(id.clone()), "@inner".to_string());
@@ -137,53 +125,39 @@ impl Converter {
             // Note that the proper rendering of a Set requires that the
             // referenced type implement certain traits that we didn't do
             // properly in typify 1
-            SchemaletValueArray {
+            NormalizedSchemaArray {
                 items,
-                prefix_items: None,
+                prefix_items,
                 max_items: None,
                 min_items: None,
                 unique_items,
-            } => {
-                let (id, additional) = if let Some(items) = items {
-                    (
-                        self.resolve_and_get_stuff(items).id.clone(),
-                        BTreeMap::new(),
-                    )
+            } if prefix_items.is_empty() => {
+                let item_id = self.resolve_and_get_stuff(items).id.clone();
+
+                let primary = if *unique_items {
+                    Type::Set(item_id)
                 } else {
-                    let inner_id = SchemaRef::Child(id.clone().into(), "any".to_string());
-                    (
-                        inner_id.clone(),
-                        [(inner_id, Type::JsonValue)].into_iter().collect(),
-                    )
+                    Type::Vec(item_id)
                 };
 
-                let primary = if unique_items.unwrap_or_default() {
-                    Type::Set(id)
-                } else {
-                    Type::Vec(id)
-                };
-
-                ConvertResult {
-                    primary,
-                    additional,
-                }
+                primary.into()
             }
 
             // A constrained array.
-            SchemaletValueArray {
+            NormalizedSchemaArray {
                 items,
-                prefix_items: None,
+                prefix_items,
                 max_items,
                 min_items,
                 unique_items,
-            } => {
+            } if prefix_items.is_empty() => {
                 // First construct the unconstrained type; we could probably
                 // do this more directly, but we'll rely on our implementation
                 // above for now.
-                let inner_metadata = SchemaletMetadata::default();
-                let inner_array = SchemaletValueArray {
+                let inner_metadata = NormalizedMetadata::default();
+                let inner_array = NormalizedSchemaArray {
                     items: items.clone(),
-                    prefix_items: None,
+                    prefix_items: vec![],
                     max_items: None,
                     min_items: None,
                     unique_items: *unique_items,

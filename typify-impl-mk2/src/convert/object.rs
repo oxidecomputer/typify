@@ -3,7 +3,8 @@ use unicode_ident::is_xid_continue;
 
 use crate::{
     convert::{ConvertResult, Converter, GottenStuff},
-    schemalet::{SchemaRef, SchemaletMetadata, SchemaletValueObject},
+    normalizer::{NormalizedMetadata, NormalizedObject},
+    schemalet::SchemaRef,
     typespace::{
         NameBuilder, StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct,
     },
@@ -14,8 +15,8 @@ impl Converter {
         &self,
         parent_id: &SchemaRef,
         name: NameBuilder,
-        metadata: &SchemaletMetadata,
-        object: &SchemaletValueObject,
+        metadata: &NormalizedMetadata,
+        object: &NormalizedObject,
     ) -> ConvertResult {
         // TODO 6/30/2025
         // Increasingly I'm of the opinion I need to do the conversion from the
@@ -30,28 +31,27 @@ impl Converter {
             // We should probably look at `additionalProperties` and
             // potentially flatten those.
             // TBD what we do for patternProperties.
-            SchemaletValueObject {
-                properties,
-                required,
+            NormalizedObject {
+                fields,
                 additional_properties: None,
                 property_names: None,
-                pattern_properties: None,
-            } => {
-                let prop_names = properties
+                pattern_properties,
+                ..
+            } if pattern_properties.is_empty() => {
+                let prop_names = fields
                     .keys()
                     .map(|prop_name| tmp_sanitize(prop_name))
                     .collect::<Vec<_>>();
 
-                let properties = properties
+                let properties = fields
                     .iter()
                     .zip(prop_names)
-                    .map(|((prop_name, prop_id), new_prop_name)| {
+                    .map(|((prop_name, field), new_prop_name)| {
                         let GottenStuff {
                             id: resolved_id,
-                            schemalet: _,
                             description,
                             title: _,
-                        } = self.resolve_and_get_stuff(prop_id);
+                        } = self.resolve_and_get_stuff(&field.schema);
 
                         let rust_name = format_ident!("{new_prop_name}");
                         let json_name = if *prop_name == new_prop_name {
@@ -60,7 +60,7 @@ impl Converter {
                             StructPropertySerde::Rename(prop_name.clone())
                         };
 
-                        let prop_state = if required.contains(prop_name) {
+                        let prop_state = if field.required {
                             StructPropertyState::Required
                         } else {
                             StructPropertyState::Optional
@@ -90,19 +90,19 @@ impl Converter {
 
             // Simple case of a map with string keys:
             // - just additionalProperties
-            // - no properties (and nothing required)
+            // - no fields (properties / required)
             // - no weirdo propertyNames or patternProperties
-            SchemaletValueObject {
-                properties,
-                required,
+            NormalizedObject {
+                fields,
                 additional_properties: Some(additional_properties),
                 property_names: None,
-                pattern_properties: None,
-            } if properties.is_empty() && required.is_empty() => {
-                let key_id = SchemaRef::Child(Box::new(parent_id.clone()), "string".to_string());
+                pattern_properties,
+                ..
+            } if fields.is_empty() && pattern_properties.is_empty() => {
+                let key_id =
+                    SchemaRef::Child(Box::new(parent_id.clone()), "string".to_string());
                 let GottenStuff {
                     id: value_id,
-                    schemalet: _,
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(additional_properties);
@@ -115,13 +115,13 @@ impl Converter {
 
             // Slightly more complex of a map. As above, but with a schema for
             // propertyNames. This translates to a map with a custom key type.
-            SchemaletValueObject {
-                properties,
-                required,
+            NormalizedObject {
+                fields,
                 additional_properties: Some(additional_properties),
                 property_names: Some(property_names),
-                pattern_properties: None,
-            } if properties.is_empty() && required.is_empty() => {
+                pattern_properties,
+                ..
+            } if fields.is_empty() && pattern_properties.is_empty() => {
                 // TODO 7/25/2025
                 // Another interesting one: propertyNames is implicitly a
                 // string type, but where do we enforce that? We could do that
@@ -135,14 +135,12 @@ impl Converter {
 
                 let GottenStuff {
                     id: key_id,
-                    schemalet: _,
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(property_names);
 
                 let GottenStuff {
                     id: value_id,
-                    schemalet: _,
                     description: _,
                     title: _,
                 } = self.resolve_and_get_stuff(additional_properties);
@@ -151,7 +149,7 @@ impl Converter {
 
             _ => todo!(
                 "unhandled object {}",
-                serde_json::to_string_pretty(object).unwrap()
+                serde_json::to_string_pretty(object).unwrap(),
             ),
         }
     }

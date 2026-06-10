@@ -121,12 +121,12 @@ impl Typify {
     ) -> Result<Typespace> {
         let Self {
             bundle,
-            normalizer: Normalizer { raw: _, canonical },
+            normalizer,
             roots,
         } = self;
 
         let mut typespace_builder = TypespaceBuilder::default();
-        let mut converter = Converter::new(canonical);
+        let mut converter = Converter::new(normalizer.to_normalized_graph());
         let mut work = VecDeque::new();
         roots.into_iter().for_each(|(schema_ref, name)| {
             work.push_front(schema_ref.clone());
@@ -180,7 +180,11 @@ impl Typify {
             // In the future we can add this as content that the Typespace
             // may add to the doc comment for the type.
             let maybe_original_json = match &work_id {
-                SchemaRef::Id(id) => Some(bundle.get_fully_qualified(id).unwrap()),
+                // TODO 6/9/2026
+                // Claude made a synthetic url-like ID at some point for the
+                // Anything schema. This really shouldn't fail for
+                // SchemaRef::Ids, but we can sort that out later.
+                SchemaRef::Id(id) => bundle.get_fully_qualified(id).ok(),
                 _ => None,
             };
 
