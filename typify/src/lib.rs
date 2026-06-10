@@ -157,6 +157,8 @@ pub use typify_impl::TypeEnum;
 pub use typify_impl::TypeEnumVariant;
 pub use typify_impl::TypeId;
 pub use typify_impl::TypeNewtype;
+pub use typify_impl::TypeOutputItem;
+pub use typify_impl::TypeOutputSection;
 pub use typify_impl::TypeSpace;
 pub use typify_impl::TypeSpaceImpl;
 pub use typify_impl::TypeSpacePatch;

@@ -21,6 +21,7 @@ use type_entry::{
 use crate::util::{sanitize, Case};
 
 pub use crate::util::accept_as_ident;
+pub use output::{TypeOutputItem, TypeOutputSection};
 
 #[cfg(test)]
 mod test_util;
@@ -872,8 +873,7 @@ impl TypeSpace {
         })
     }
 
-    /// All code for processed types.
-    pub fn to_stream(&self) -> TokenStream {
+    fn output_space(&self) -> OutputSpace {
         let mut output = OutputSpace::default();
 
         // Add the error type we use for conversions; it's fine if this is
@@ -924,7 +924,17 @@ impl TypeSpace {
             .iter()
             .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
 
-        output.into_stream()
+        output
+    }
+
+    /// Structured code items for processed types.
+    pub fn to_output_items(&self) -> Vec<TypeOutputItem> {
+        self.output_space().into_items()
+    }
+
+    /// All code for processed types.
+    pub fn to_stream(&self) -> TokenStream {
+        self.output_space().into_stream()
     }
 
     /// Allocated the next TypeId.

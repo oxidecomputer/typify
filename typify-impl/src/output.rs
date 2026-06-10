@@ -5,6 +5,30 @@ use std::collections::BTreeMap;
 use proc_macro2::TokenStream;
 use quote::quote;
 
+/// A generated item from a [`crate::TypeSpace`].
+#[derive(Clone, Debug)]
+pub struct TypeOutputItem {
+    /// The logical section where this item belongs.
+    pub section: TypeOutputSection,
+    /// A deterministic key used to order and group generated items.
+    pub order_key: String,
+    /// The generated Rust tokens for this item.
+    pub tokens: TokenStream,
+}
+
+/// The logical section for a generated type output item.
+#[derive(Clone, Debug, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TypeOutputSection {
+    /// Error support items.
+    Error,
+    /// Items emitted directly in the type module.
+    Crate,
+    /// Struct builder items.
+    Builder,
+    /// Shared default helper functions.
+    Defaults,
+}
+
 #[derive(Debug, Default)]
 pub struct OutputSpace {
     items: BTreeMap<(OutputSpaceMod, String), TokenStream>,
@@ -29,6 +53,17 @@ impl OutputSpace {
             .entry((location, order_hint.to_string()))
             .or_default()
             .extend(stream);
+    }
+
+    pub fn into_items(self) -> Vec<TypeOutputItem> {
+        self.items
+            .into_iter()
+            .map(|((location, order_key), tokens)| TypeOutputItem {
+                section: location.into(),
+                order_key,
+                tokens,
+            })
+            .collect()
     }
 
     pub fn into_stream(self) -> TokenStream {
@@ -70,6 +105,28 @@ impl OutputSpace {
 
         quote! {
             #(#mod_streams)*
+        }
+    }
+}
+
+impl From<OutputSpaceMod> for TypeOutputSection {
+    fn from(value: OutputSpaceMod) -> Self {
+        match value {
+            OutputSpaceMod::Error => Self::Error,
+            OutputSpaceMod::Crate => Self::Crate,
+            OutputSpaceMod::Builder => Self::Builder,
+            OutputSpaceMod::Defaults => Self::Defaults,
+        }
+    }
+}
+
+impl From<TypeOutputSection> for OutputSpaceMod {
+    fn from(value: TypeOutputSection) -> Self {
+        match value {
+            TypeOutputSection::Error => Self::Error,
+            TypeOutputSection::Crate => Self::Crate,
+            TypeOutputSection::Builder => Self::Builder,
+            TypeOutputSection::Defaults => Self::Defaults,
         }
     }
 }
