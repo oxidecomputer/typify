@@ -1550,8 +1550,9 @@ impl TypeSpace {
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         debug!(
-            "one_of {}",
-            serde_json::to_string_pretty(subschemas).unwrap()
+            "one_of {:?} {}",
+            type_name,
+            serde_json::to_string_pretty(subschemas).unwrap(),
         );
 
         // TODO it would probably be smart to do a pass through the schema

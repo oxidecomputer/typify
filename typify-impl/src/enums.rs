@@ -368,7 +368,12 @@ impl TypeSpace {
                     _ => unreachable!(),
                 }
 
-                self.internal_variant(type_name.clone(), metadata, validation, tag)
+                self.internal_variant(
+                    get_type_name(&type_name, metadata),
+                    metadata,
+                    validation,
+                    tag,
+                )
             })
             .collect::<Result<Vec<_>>>()
             .ok()?;
@@ -386,7 +391,7 @@ impl TypeSpace {
 
     fn internal_variant(
         &mut self,
-        enum_type_name: Name,
+        enum_type_name: Option<String>,
         metadata: &Option<Box<schemars::schema::Metadata>>,
         validation: &ObjectValidation,
         tag: &str,
@@ -413,8 +418,7 @@ impl TypeSpace {
             new_validation.properties.remove(tag);
             new_validation.required.remove(tag);
 
-            let (properties, _) =
-                self.struct_members(enum_type_name.into_option(), &new_validation)?;
+            let (properties, _) = self.struct_members(enum_type_name, &new_validation)?;
             Ok(Variant::new(
                 variant_name.to_string(),
                 metadata_title_and_description(metadata),
