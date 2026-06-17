@@ -332,7 +332,20 @@ pub(crate) fn try_merge_with_subschemas(
     }
 
     if let Some(one_of) = one_of {
-        let merged_subschemas = try_merge_with_each_subschema(&schema_object, one_of, defs);
+        // Check if the base schema already has a oneOf - if so, we need to
+        // compute the Cartesian product of the two oneOfs
+        let base_one_of = schema_object
+            .subschemas
+            .as_ref()
+            .and_then(|ss| ss.one_of.as_ref());
+
+        let merged_subschemas = if let Some(base_variants) = base_one_of {
+            // Cartesian product: for each base variant and each new variant,
+            // merge them together
+            try_merge_oneof_cartesian_product(base_variants, one_of, defs)
+        } else {
+            try_merge_with_each_subschema(&schema_object, one_of, defs)
+        };
 
         match merged_subschemas.len() {
             0 => return Err(()),
@@ -411,6 +424,34 @@ fn try_merge_with_each_subschema(
         .collect::<Vec<_>>();
 
     joined_schemas
+}
+
+/// Compute the Cartesian product of two oneOf schemas. For each combination
+/// of a variant from the first oneOf and a variant from the second oneOf,
+/// merge them together. This is used when we have `allOf: [oneOf[A,B], oneOf[C,D]]`
+/// which should produce `oneOf[A∩C, A∩D, B∩C, B∩D]`.
+fn try_merge_oneof_cartesian_product(
+    base_variants: &[Schema],
+    new_variants: &[Schema],
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Vec<Schema> {
+    let mut result = Vec::new();
+
+    for base_variant in base_variants {
+        for new_variant in new_variants {
+            // Try to merge each pair of variants
+            if let Ok(merged) = try_merge_schema(base_variant, new_variant, defs) {
+                // Only include if the merge produced a satisfiable schema
+                if merged != Schema::Bool(false)
+                    && !result.iter().any(|existing| existing.roughly(&merged))
+                {
+                    result.push(merged);
+                }
+            }
+        }
+    }
+
+    result
 }
 
 fn merge_schema_not(
