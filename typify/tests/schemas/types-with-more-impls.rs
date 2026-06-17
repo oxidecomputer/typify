@@ -112,7 +112,7 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Serialize, Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct Sub10Primes(u32);
 impl ::std::ops::Deref for Sub10Primes {

@@ -1,0 +1,111 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "bounded-uint": {
+            "description": "A uint8 value between 0 and 63.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0,
+            "maximum": 63
+        },
+        "bounded-negative": {
+            "description": "A negative-only range.",
+            "type": "integer",
+            "format": "int16",
+            "minimum": -50,
+            "maximum": -10
+        },
+        "bounded-mixed-sign": {
+            "description": "A range spanning negative and positive.",
+            "type": "integer",
+            "format": "int32",
+            "minimum": -1000,
+            "maximum": 1000
+        },
+        "fractional-bounds-positive": {
+            "description": "Fractional bounds that must be rounded: min=0.5 -> ceil -> 1, max=63.7 -> floor -> 63.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0.5,
+            "maximum": 63.7
+        },
+        "fractional-bounds-negative": {
+            "description": "Negative fractional bounds: min=-10.3 -> ceil -> -10, max=-0.1 -> floor -> -1.",
+            "type": "integer",
+            "format": "int8",
+            "minimum": -10.3,
+            "maximum": -0.1
+        },
+        "no-format-unsigned": {
+            "description": "No format hint, non-negative range: should pick u8.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 63
+        },
+        "no-format-signed": {
+            "description": "No format hint, signed range: should pick i8.",
+            "type": "integer",
+            "minimum": -50,
+            "maximum": 50
+        },
+        "no-format-large-unsigned": {
+            "description": "No format hint, large unsigned range: should pick u32.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+        },
+        "exact-u8-match": {
+            "description": "Exact u8 bounds: should not produce a constrained newtype.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0,
+            "maximum": 255
+        },
+        "exact-nonzero-u8-match": {
+            "description": "min=1, max=255 matches NonZeroU8 exactly: should not produce a constrained newtype.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 1,
+            "maximum": 255
+        },
+        "min-only-sub-range": {
+            "description": "Only a min bound, no max. min=10 with uint8 format.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 10
+        },
+        "max-only-sub-range": {
+            "description": "Only a max bound, no min. max=200 with uint8 format.",
+            "type": "integer",
+            "format": "uint8",
+            "maximum": 200
+        },
+        "nonzero-with-max": {
+            "description": "min=1 with sub-range max: should be a constrained newtype, not NonZeroU8.",
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 1,
+            "maximum": 100
+        },
+        "exclusive-integer-bounds": {
+            "description": "exclusiveMinimum=0, exclusiveMaximum=64 should produce min=1, max=63.",
+            "type": "integer",
+            "format": "uint8",
+            "exclusiveMinimum": 0,
+            "exclusiveMaximum": 64
+        },
+        "exclusive-fractional-bounds": {
+            "description": "exclusiveMinimum=0.5 should produce min=1, exclusiveMaximum=63.5 should produce max=63.",
+            "type": "integer",
+            "format": "uint8",
+            "exclusiveMinimum": 0.5,
+            "exclusiveMaximum": 63.5
+        },
+        "no-format-min1-with-max": {
+            "description": "No format, min=1, max=10: should be a constrained newtype, not NonZero.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+        }
+    }
+}
