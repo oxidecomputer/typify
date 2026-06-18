@@ -4,6 +4,7 @@ mod convert;
 mod error;
 mod namespace;
 mod normalizer;
+mod normalizer2;
 mod schema;
 mod schemalet;
 pub mod typespace;

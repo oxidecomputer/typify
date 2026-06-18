@@ -7,6 +7,7 @@ use crate::{
     bundler::Bundle,
     convert::{ConvertResult, Converter},
     normalizer::Normalizer,
+    normalizer2::Normalizer2,
     schemalet::SchemaRef,
     typespace::{
         Type, TypeNative, Typespace, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet,
@@ -73,6 +74,7 @@ pub struct Typify {
     // currently implement).
     bundle: Bundle,
     normalizer: Normalizer,
+    normalizer2: Normalizer2,
 
     roots: Vec<(SchemaRef, Typify2NameHint)>,
 }
@@ -89,6 +91,7 @@ impl Typify {
         Self {
             bundle,
             normalizer: Default::default(),
+            normalizer2: Default::default(),
             roots: Default::default(),
         }
     }
@@ -104,6 +107,11 @@ impl Typify {
         } else {
             format!("{}#", id.as_ref())
         };
+
+        // TODO 6/16/2026
+        // We're going to shadow build the new Normalizer2
+        let _root_ref = self.normalizer2.add(&self.bundle, &id)?;
+
         let root_ref = self.normalizer.add(&self.bundle, &id)?;
 
         self.roots.push((root_ref.clone(), name_hint));
@@ -122,8 +130,11 @@ impl Typify {
         let Self {
             bundle,
             normalizer,
+            normalizer2,
             roots,
         } = self;
+
+        let _normalizer = normalizer2.to_normalized_graph();
 
         let mut typespace_builder = TypespaceBuilder::default();
         let mut converter = Converter::new(normalizer.to_normalized_graph());

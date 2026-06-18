@@ -116,25 +116,36 @@ impl NormalizedSchemaGraph {
 }
 
 #[derive(Debug, Default)]
+pub(crate) struct SchemaletGraph {
+    pub nodes: BTreeMap<SchemaRef, Schemalet>,
+}
+
+#[derive(Debug, Default)]
 pub(crate) struct Normalizer {
-    pub raw: BTreeMap<SchemaRef, Schemalet>,
+    pub raw: SchemaletGraph,
     pub canonical: BTreeMap<SchemaRef, CanonicalSchemalet>,
 }
+
+// TODO 6/16/2026
+// Note that I've interspersed these impls as I do a refactor to minimize
+// diffs. I think I'm going to end up deleting a good chunk of it as I build
+// out Normalizer2.
 
 impl Normalizer {
     pub(crate) fn add(&mut self, bundle: &Bundle, id: impl AsRef<str>) -> Result<SchemaRef> {
         let id = id.as_ref();
 
         // Add the schemalets from the bundle...
-        let root_ref = self.add_nodes(bundle, id)?;
+        let root_ref = self.raw.add_nodes(bundle, id)?;
 
         // ... and then normalize descending from the given id.
         self.normalize_from_id(id)?;
 
         Ok(root_ref)
     }
-
-    fn add_nodes(&mut self, bundle: &Bundle, root_id: &str) -> Result<SchemaRef> {
+}
+impl SchemaletGraph {
+    pub(crate) fn add_nodes(&mut self, bundle: &Bundle, root_id: &str) -> Result<SchemaRef> {
         let mut resolved = bundle.resolve_root(root_id).unwrap();
         let mut wip = Vec::new();
 
@@ -187,7 +198,7 @@ impl Normalizer {
                     schemalet => schemalet,
                 };
 
-                let old = self.raw.insert(schema_ref.clone(), schemalet.clone());
+                let old = self.nodes.insert(schema_ref.clone(), schemalet.clone());
                 // Note that we really should not hit this; we've checked for
                 // duplicate IDs when processing the WIP queue.
                 if let Some(old) = old {
@@ -204,10 +215,10 @@ impl Normalizer {
                 .expect("failed to resolve reference");
         }
 
-        for (schema_ref, schemalet) in &self.raw {
+        for (schema_ref, schemalet) in &self.nodes {
             let xxx = schemalet.children();
             for yyy in xxx {
-                assert!(self.raw.contains_key(&yyy), "{schema_ref} {schemalet:#?}");
+                assert!(self.nodes.contains_key(&yyy), "{schema_ref} {schemalet:#?}");
             }
         }
 
@@ -220,7 +231,7 @@ impl Normalizer {
                 return None;
             };
 
-            if self.raw.contains_key(&SchemaRef::Id(path.clone())) {
+            if self.nodes.contains_key(&SchemaRef::Id(path.clone())) {
                 continue;
             }
 
@@ -228,6 +239,13 @@ impl Normalizer {
         }
     }
 
+    pub(crate) fn get(&self, schema_ref: &SchemaRef) -> &Schemalet {
+        self.nodes
+            .get(schema_ref)
+            .expect("unnknown schema_ref {schema_ref}")
+    }
+}
+impl Normalizer {
     fn normalize_from_id(&mut self, id: &str) -> Result<()> {
         // First, we're going to descend from the given Id and do simple
         // conversions into the "canonical" form--which is really just a
@@ -247,7 +265,7 @@ impl Normalizer {
 
             // TODO 4/7/2026
             // Very inefficient, but let's just scrub the whole list each time.
-            let mut wip = self.raw.keys().cloned().collect::<Vec<_>>();
+            let mut wip = self.raw.nodes.keys().cloned().collect::<Vec<_>>();
 
             for schema_ref in wip.drain(..) {
                 // We can skip any schemalet that we've already converted to
@@ -260,7 +278,7 @@ impl Normalizer {
                 all_canonical = false;
 
                 // TODO 4/7/2026 clean up this clone()
-                let schemalet = self.raw.get(&schema_ref).unwrap().clone();
+                let schemalet = self.raw.nodes.get(&schema_ref).unwrap().clone();
                 debug!("normalizing {schema_ref}");
                 trace!("  {schemalet:#?}");
 
@@ -270,8 +288,8 @@ impl Normalizer {
                     }
                     State::Simplified(schemalet, items) => {
                         simplified = true;
-                        self.raw.insert(schema_ref.clone(), schemalet);
-                        self.raw.extend(items);
+                        self.raw.nodes.insert(schema_ref.clone(), schemalet);
+                        self.raw.nodes.extend(items);
                     }
                     State::Canonical(canonical_schemalet) => {
                         simplified = true;
@@ -288,7 +306,7 @@ impl Normalizer {
 
             if !simplified {
                 debug!("couldn't simplify further on pass {pass}");
-                for (schema_ref, schemalet) in &self.raw {
+                for (schema_ref, schemalet) in &self.raw.nodes {
                     if !self.canonical.contains_key(schema_ref) {
                         debug!("stuck: {schema_ref}: {schemalet:#?}");
                         // } else {
@@ -421,35 +439,41 @@ impl Normalizer {
                             multiple_of: vec![],
                         })
                     }
-                    SchemaletValue::Number(n) => NormalizedSchemaDetails::Number(NormalizedNumber {
-                        minimum: n.minimum,
-                        exclusive_minimum: n.exclusive_minimum,
-                        maximum: n.maximum,
-                        exclusive_maximum: n.exclusive_maximum,
-                        multiple_of: n.multiple_of,
-                    }),
-                    SchemaletValue::String(s) => NormalizedSchemaDetails::String(NormalizedString {
-                        pattern: s.pattern.clone(),
-                        format: s.format.clone(),
-                        min_length: s.min_length,
-                        max_length: s.max_length,
-                    }),
-                    SchemaletValue::Array(a) => NormalizedSchemaDetails::Array(NormalizedSchemaArray {
-                        items: a
-                            .items
-                            .as_ref()
-                            .map(|r| self.resolve_transparent(r).clone())
-                            .unwrap_or_else(|| anything_ref.clone()),
-                        prefix_items: a
-                            .prefix_items
-                            .iter()
-                            .flatten()
-                            .map(|r| self.resolve_transparent(r).clone())
-                            .collect(),
-                        min_items: a.min_items,
-                        max_items: a.max_items,
-                        unique_items: a.unique_items.unwrap_or(false),
-                    }),
+                    SchemaletValue::Number(n) => {
+                        NormalizedSchemaDetails::Number(NormalizedNumber {
+                            minimum: n.minimum,
+                            exclusive_minimum: n.exclusive_minimum,
+                            maximum: n.maximum,
+                            exclusive_maximum: n.exclusive_maximum,
+                            multiple_of: n.multiple_of,
+                        })
+                    }
+                    SchemaletValue::String(s) => {
+                        NormalizedSchemaDetails::String(NormalizedString {
+                            pattern: s.pattern.clone(),
+                            format: s.format.clone(),
+                            min_length: s.min_length,
+                            max_length: s.max_length,
+                        })
+                    }
+                    SchemaletValue::Array(a) => {
+                        NormalizedSchemaDetails::Array(NormalizedSchemaArray {
+                            items: a
+                                .items
+                                .as_ref()
+                                .map(|r| self.resolve_transparent(r).clone())
+                                .unwrap_or_else(|| anything_ref.clone()),
+                            prefix_items: a
+                                .prefix_items
+                                .iter()
+                                .flatten()
+                                .map(|r| self.resolve_transparent(r).clone())
+                                .collect(),
+                            min_items: a.min_items,
+                            max_items: a.max_items,
+                            unique_items: a.unique_items.unwrap_or(false),
+                        })
+                    }
                     SchemaletValue::Object(obj) => {
                         NormalizedSchemaDetails::Object(translate_object(obj))
                     }
@@ -514,7 +538,7 @@ mod tests {
         let mut normalizer = Normalizer::default();
 
         let id = SchemaRef::Id("string".to_string());
-        normalizer.raw.insert(
+        normalizer.raw.nodes.insert(
             id.clone(),
             Schemalet {
                 metadata: SchemaletMetadata::default(),
@@ -529,7 +553,7 @@ mod tests {
 
         normalizer.normalize_from_id("string").unwrap();
 
-        let node = &normalizer.raw[&id];
+        let node = &normalizer.raw.nodes[&id];
         assert!(matches!(
             node.details,
             SchemaletDetails::Value(SchemaletValue::String(_))
