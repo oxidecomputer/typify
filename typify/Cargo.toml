@@ -16,6 +16,7 @@ macro = ["typify-macro"]
 [dependencies]
 typify-macro = { workspace = true, optional = true }
 typify-impl = { workspace = true }
+regress = { workspace = true }
 
 [dev-dependencies]
 chrono = { workspace = true }
@@ -23,7 +24,6 @@ env_logger = { workspace = true }
 expectorate = { workspace = true }
 glob = { workspace = true }
 quote = { workspace = true }
-regress = { workspace = true }
 rustfmt-wrapper = { workspace = true }
 schemars = { workspace = true }
 serde = { workspace = true }

@@ -22,6 +22,8 @@ https://github.com/oxidecomputer/typify/compare/v0.6.2\...v0.7.0[Full list of co
 * Support for merging multiple string types with pattern fields (#1008)
 * Generate `JsonSchema` for newtypes with enumerated patterns (#1017)
 
+* `import_types!` no longer requires consumers to declare `regress` as a direct dependency. The macro now references `regress` through a re-export from `typify`. Users of the macro may drop `regress` from their `Cargo.toml`. The `TypeSpace` builder API is unchanged for `cargo-typify` and `build.rs` callers, who continue to emit `::regress` by default; a new `TypeSpaceSettings::with_regress_crate` setter allows overriding the path.
+
 == 0.6.2 (released 2026-04-24)
 
 https://github.com/oxidecomputer/typify/compare/v0.6.1\...v0.6.2[Full list of commits]

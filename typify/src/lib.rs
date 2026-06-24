@@ -148,6 +148,9 @@
 
 #![deny(missing_docs)]
 
+#[doc(hidden)]
+pub use regress;
+
 pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
