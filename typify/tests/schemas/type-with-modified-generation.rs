@@ -25,6 +25,8 @@ pub mod error {
         }
     }
 }
+#[allow(unused_imports)]
+pub use String as HandGeneratedType;
 #[doc = "`TestType`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]

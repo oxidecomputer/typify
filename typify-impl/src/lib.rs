@@ -924,6 +924,36 @@ impl TypeSpace {
             .iter()
             .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
 
+        // Re-export replaced types so callers can access them without knowing
+        // the replacement path. Only emit the re-export when the replacement
+        // was actually used in this schema.
+        self.settings
+            .replace
+            .iter()
+            .filter(|(_, replace)| {
+                self.id_to_entry.values().any(|entry| {
+                    matches!(
+                        &entry.details,
+                        TypeEntryDetails::Native(n) if n.type_name == replace.replace_type
+                    )
+                })
+            })
+            .for_each(|(type_name, replace)| {
+                let type_ident = quote::format_ident!("{}", type_name);
+                let replace_tokens: TokenStream = replace
+                    .replace_type
+                    .parse()
+                    .expect("invalid replacement type path");
+                output.add_item(
+                    output::OutputSpaceMod::Crate,
+                    type_name,
+                    quote! {
+                        #[allow(unused_imports)]
+                        pub use #replace_tokens as #type_ident;
+                    },
+                );
+            });
+
         output.into_stream()
     }
 
@@ -1298,6 +1328,28 @@ mod tests {
             ty.output(&type_space, &mut output);
             println!("{}", output.into_stream());
         }
+    }
+
+    #[test]
+    fn test_replacement_reexport() {
+        let schema = json!({
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "definitions": {
+                "somename": {
+                    "type": "object",
+                    "properties": {
+                        "x": { "type": "string" }
+                    }
+                }
+            }
+        });
+        let schema = serde_json::from_value(schema).unwrap();
+        let mut settings = TypeSpaceSettings::default();
+        settings.with_replacement("Somename", "other_crate::Somename", [].into_iter());
+        let mut type_space = TypeSpace::new(&settings);
+        type_space.add_root_schema(schema).unwrap();
+        let tokens = type_space.to_stream().to_string();
+        assert!(tokens.contains("pub use other_crate :: Somename as Somename"));
     }
 
     #[test]
