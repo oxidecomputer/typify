@@ -41,6 +41,11 @@ mod token_utils;
 ///   method for each generated struct that can be used to specify each
 ///   property and construct the struct
 ///
+/// - `double_option`: optional boolean; (if true) generates
+///   `Option<Option<T>>` for properties that are optional, nullable, and have
+///   no default, so absent / `null` / value stay distinguishable on the wire
+///   (RFC 7396 merge-patch semantics)
+///
 /// - `unknown_crates`: optional policy regarding the handling of schemas that
 ///   contain the `x-rust-type` extension whose crates are not explicitly named
 ///   in the `crates` section. The options are `Generate` to ignore the
@@ -83,6 +88,8 @@ struct MacroSettings {
     attrs: Vec<TokenStreamWrapper>,
     #[serde(default)]
     struct_builder: bool,
+    #[serde(default)]
+    double_option: bool,
 
     #[serde(default)]
     unknown_crates: UnknownPolicy,
@@ -200,6 +207,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             replace,
             patch,
             struct_builder,
+            double_option,
             convert,
             unknown_crates,
             crates,
@@ -214,6 +222,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             settings.with_attr(attr.to_token_stream().to_string());
         });
         settings.with_struct_builder(struct_builder);
+        settings.with_double_option(double_option);
 
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
@@ -296,6 +305,7 @@ mod tests {
                 Baz = ::baz::Baz,
             },
             struct_builder = true,
+            double_option = true,
             map_type = ::my::map::Type,
         };
 

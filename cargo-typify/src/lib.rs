@@ -54,6 +54,12 @@ pub struct CliArgs {
     #[arg(long = "map-type")]
     map_type: Option<String>,
 
+    /// Generate `Option<Option<T>>` for properties that are optional, nullable,
+    /// and have no default, so that absent, `null`, and value stay
+    /// distinguishable on the wire (RFC 7396 merge-patch semantics).
+    #[arg(long = "double-option")]
+    double_option: bool,
+
     /// Specify the policy unknown crates found in schemas with the
     /// x-rust-type extension.
     #[arg(
@@ -146,6 +152,7 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 
     let mut settings = TypeSpaceSettings::default();
     settings.with_struct_builder(args.use_builder());
+    settings.with_double_option(args.double_option);
 
     for derive in &args.additional_derives {
         settings.with_derive(derive.clone());
@@ -212,6 +219,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert_eq!(args.output_path(), None);
@@ -229,6 +237,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -246,6 +255,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -263,6 +273,7 @@ mod tests {
             crates: vec![],
             map_type: Some("::std::collections::BTreeMap".to_string()),
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert_eq!(
@@ -283,6 +294,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert!(args.use_builder());
@@ -300,6 +312,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert!(!args.use_builder());
@@ -317,6 +330,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            double_option: false,
         };
 
         assert!(args.use_builder());

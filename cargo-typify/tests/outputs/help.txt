@@ -30,6 +30,9 @@ Options:
       --map-type <MAP_TYPE>
           Specify the map like type to use
 
+      --double-option
+          Generate `Option<Option<T>>` for properties that are optional, nullable, and have no default, so that absent, `null`, and value stay distinguishable on the wire (RFC 7396 merge-patch semantics)
+
       --unknown-crates <UNKNOWN_CRATES>
           Specify the policy unknown crates found in schemas with the x-rust-type extension
           
