@@ -206,6 +206,11 @@ pub(crate) struct StructProperty {
     pub state: StructPropertyState,
     pub description: Option<String>,
     pub type_id: TypeId,
+    /// Set when the `double_option` setting has caused this property's type to
+    /// be wrapped in a second `Option` (`Option<Option<T>>`). It carries a
+    /// `deserialize_with` attribute so an explicit `null` deserializes to the
+    /// inner `None` rather than being collapsed into the outer `None`.
+    pub double_option: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -1165,15 +1170,8 @@ impl TypeEntry {
             prop_type_scoped
                 .push(prop_type_entry.type_ident(type_space, &Some("super".to_string())));
 
-            let (serde, default_fn) = generate_serde_attr(
-                name,
-                &prop.name,
-                &prop.rename,
-                &prop.state,
-                prop_type_entry,
-                type_space,
-                output,
-            );
+            let (serde, default_fn) =
+                generate_serde_attr(name, &prop.name, prop, prop_type_entry, type_space, output);
 
             prop_serde.push(serde);
             prop_default.push(match default_fn {
@@ -1776,9 +1774,13 @@ impl TypeEntry {
                 let inner_ident = inner_ty.type_ident(type_space, type_mod);
 
                 // Flatten nested Option types. This would only happen if the
-                // schema encoded it; it's an odd construction.
+                // schema encoded it; it's an odd construction. The exception is
+                // the `double_option` setting, whose entire purpose is to
+                // produce a deliberate `Option<Option<T>>`.
                 match &inner_ty.details {
-                    TypeEntryDetails::Option(_) => inner_ident,
+                    TypeEntryDetails::Option(_) if !type_space.settings.double_option => {
+                        inner_ident
+                    }
                     _ => quote! { ::std::option::Option<#inner_ident> },
                 }
             }
@@ -1955,9 +1957,13 @@ impl TypeEntry {
                 let inner_ident = inner_ty.type_parameter_ident(type_space, lifetime_name);
 
                 // Flatten nested Option types. This would only happen if the
-                // schema encoded it; it's an odd construction.
+                // schema encoded it; it's an odd construction. The exception is
+                // the `double_option` setting, whose entire purpose is to
+                // produce a deliberate `Option<Option<T>>`.
                 match &inner_ty.details {
-                    TypeEntryDetails::Option(_) => inner_ident,
+                    TypeEntryDetails::Option(_) if !type_space.settings.double_option => {
+                        inner_ident
+                    }
                     _ => quote! { Option<#inner_ident> },
                 }
             }

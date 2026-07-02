@@ -818,8 +818,7 @@ pub(crate) fn output_variant(
                 let (prop_serde, _) = generate_serde_attr(
                     &format!("{}{}", type_name, variant.ident_name.as_ref().unwrap()),
                     &prop.name,
-                    &prop.rename,
-                    &prop.state,
+                    prop,
                     prop_type_entry,
                     type_space,
                     output,

@@ -26,7 +26,7 @@ quote = { workspace = true }
 regress = { workspace = true }
 rustfmt-wrapper = { workspace = true }
 schemars = { workspace = true }
-serde = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 trybuild = { workspace = true }
 uuid = { workspace = true, features = ["serde"] }

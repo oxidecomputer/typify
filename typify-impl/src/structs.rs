@@ -113,6 +113,7 @@ impl TypeSpace {
                     state: StructPropertyState::Required,
                     description: None,
                     type_id: map_type_id,
+                    double_option: false,
                 };
 
                 properties.push(extra_prop);
@@ -178,14 +179,18 @@ impl TypeSpace {
         // required-nullable fields — the case Omicron models with its
         // `Nullable<T>` wrapper — untouched.
         //
-        // TODO(double_option): when this is true, wrap `type_id` in a second
-        // `Option` and emit the `deserialize_with` helper. The detection is
-        // landed here; the wrapping and serde handling follow. See
+        // When it applies, we wrap the (already `Option<T>`) type in a second
+        // `Option` and flag the property so a `deserialize_with` attribute is
+        // emitted; this preserves the absent / null / value distinction on the
+        // wire (RFC 7396 merge-patch semantics). See
         // .claude/notes/2026-07-01-double-option-plan.md.
-        let _apply_double_option = self.settings.double_option
+        let double_option = self.settings.double_option
             && state == StructPropertyState::Optional
             && metadata.as_ref().and_then(|m| m.default.as_ref()).is_none()
             && schema_is_nullable(schema);
+        if double_option {
+            type_id = self.id_to_option(&type_id);
+        }
 
         let (name, rename) = recase(prop_name, Case::Snake);
         let rename = match rename {
@@ -199,6 +204,7 @@ impl TypeSpace {
             state,
             description: metadata_description(metadata),
             type_id,
+            double_option,
         })
     }
 
@@ -321,6 +327,7 @@ impl TypeSpace {
                     },
                     description: None,
                     type_id,
+                    double_option: false,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
@@ -356,23 +363,33 @@ pub(crate) enum DefaultFunction {
 pub(crate) fn generate_serde_attr(
     type_name: &str,
     prop_name: &str,
-    naming: &StructPropertyRename,
-    state: &StructPropertyState,
+    prop: &StructProperty,
     prop_type: &TypeEntry,
     type_space: &TypeSpace,
     output: &mut OutputSpace,
 ) -> (TokenStream, DefaultFunction) {
     let mut serde_options = Vec::new();
-    match naming {
+    match &prop.rename {
         StructPropertyRename::Rename(s) => serde_options.push(quote! { rename = #s }),
         StructPropertyRename::Flatten => serde_options.push(quote! { flatten }),
         StructPropertyRename::None => (),
     }
 
-    let default_fn = match (state, &prop_type.details) {
+    let default_fn = match (&prop.state, &prop_type.details) {
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
             serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
+            // For a `double_option` property (`Option<Option<T>>`), `default`
+            // and `skip_serializing_if` on the outer option already serialize
+            // all three states correctly (absent -> omitted, `Some(None)` ->
+            // `null`, `Some(Some(v))` -> value). But stock serde deserializes a
+            // present `null` into the *outer* `None`, collapsing null and
+            // absent; a `deserialize_with` helper restores the distinction by
+            // wrapping the deserialized inner `Option<T>` in `Some`.
+            if prop.double_option {
+                serde_options.push(quote! { deserialize_with = "double_option::deserialize" });
+                output.require_double_option();
+            }
             DefaultFunction::Default
         }
         (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
