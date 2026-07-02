@@ -699,7 +699,7 @@ impl TypeSpace {
 /// - type: null (or [null] or [null, null, etc])
 /// - enum: [null] (or [null, null, etc])
 /// - const: null
-fn is_null_schema(schema: &Schema) -> bool {
+pub(crate) fn is_null_schema(schema: &Schema) -> bool {
     match schema {
         // Null instance type singleton
         Schema::Object(SchemaObject {

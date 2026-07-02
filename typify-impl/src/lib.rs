@@ -300,6 +300,7 @@ pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
     extra_attrs: Vec<String>,
     struct_builder: bool,
+    double_option: bool,
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
@@ -437,6 +438,21 @@ impl TypeSpaceSettings {
     /// For structs, include a "builder" type that can be used to construct it.
     pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
         self.struct_builder = struct_builder;
+        self
+    }
+
+    /// Generate `Option<Option<T>>` for struct properties that are optional
+    /// (not `required`), nullable, and have no default. This preserves the
+    /// distinction between an absent field, an explicit `null`, and a value on
+    /// the wire, as needed for RFC 7396 JSON merge-patch (and other
+    /// null-vs-absent) semantics. Without this, such properties collapse to a
+    /// single `Option<T>` and an explicit `null` is indistinguishable from
+    /// absence.
+    ///
+    /// Defaults to off, in which case type generation is unchanged. Required,
+    /// non-nullable, and defaulted properties are never affected.
+    pub fn with_double_option(&mut self, double_option: bool) -> &mut Self {
+        self.double_option = double_option;
         self
     }
 
