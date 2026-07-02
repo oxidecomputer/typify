@@ -194,6 +194,13 @@ impl TypeSpace {
         // emitted; this preserves the absent / null / value distinction on the
         // wire (RFC 7396 merge-patch semantics). See
         // .claude/notes/2026-07-01-double-option-plan.md.
+        //
+        // A property with an explicit default is excluded deliberately, not for
+        // a mechanical reason: the default already assigns a meaning to "absent"
+        // (use the default value), so layering an absent-vs-null distinction on
+        // top would be a different, muddier feature. It also matches the use
+        // case — a merge-patch field's absence means "leave unchanged", which is
+        // incompatible with "absence means apply this default".
         let double_option = self.settings.double_option
             && state == StructPropertyState::Optional
             && metadata.as_ref().and_then(|m| m.default.as_ref()).is_none()

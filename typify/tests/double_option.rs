@@ -230,6 +230,76 @@ struct Outer {
     inner: Patch,
 }
 
+// Inner type that can itself represent `null` (serde_json::Value has a Null
+// variant). The concern: does a present `null` deserialize to the *outer*
+// `Some(None)`, or get swallowed by the inner type as `Some(Some(Value::Null))`?
+// Verified empirically to be the former: `Option::<T>::deserialize` claims the
+// `null` before the inner type is consulted.
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+struct PatchValue {
+    #[serde(
+        default,
+        skip_serializing_if = "::std::option::Option::is_none",
+        deserialize_with = "double_option::deserialize"
+    )]
+    v: Option<Option<serde_json::Value>>,
+}
+
+// Untagged-enum inner type: serde routes these through its Content buffer, the
+// same machinery as `flatten`. Confirm the three-state distinction survives.
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[serde(untagged)]
+enum Untagged {
+    Int(i64),
+    Text(String),
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+struct PatchUntagged {
+    #[serde(
+        default,
+        skip_serializing_if = "::std::option::Option::is_none",
+        deserialize_with = "double_option::deserialize"
+    )]
+    u: Option<Option<Untagged>>,
+}
+
+// Hand-written mirror of the builder typify generates for `Patch` when
+// `struct_builder` is on (cross-checked against real output while writing this).
+// This is progenitor's primary interface, so confirm all three states are
+// expressible through it.
+mod patch_builder {
+    #[derive(Clone, Debug)]
+    pub struct Patch {
+        name: ::std::result::Result<Option<Option<String>>, ::std::string::String>,
+    }
+    impl ::std::default::Default for Patch {
+        fn default() -> Self {
+            Self {
+                name: Ok(Default::default()),
+            }
+        }
+    }
+    impl Patch {
+        pub fn name<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<Option<Option<String>>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.name = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for name: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<Patch> for super::Patch {
+        type Error = ::std::string::String;
+        fn try_from(value: Patch) -> ::std::result::Result<Self, Self::Error> {
+            Ok(Self { name: value.name? })
+        }
+    }
+}
+
 #[test]
 fn test_double_option_serialize_three_states() {
     assert_eq!(
@@ -285,4 +355,123 @@ fn test_double_option_survives_flatten() {
 
     let value = serde_json::from_value::<Outer>(json!({ "name": "x" })).unwrap();
     assert_eq!(value.inner.name, Some(Some("x".to_string())));
+}
+
+#[test]
+fn test_double_option_value_inner_round_trip() {
+    // A present `null` maps to the outer `Some(None)`, not to
+    // `Some(Some(Value::Null))`, even though `Value` can hold null itself.
+    assert_eq!(
+        serde_json::from_value::<PatchValue>(json!({})).unwrap().v,
+        None,
+        "absent field"
+    );
+    assert_eq!(
+        serde_json::from_value::<PatchValue>(json!({ "v": null }))
+            .unwrap()
+            .v,
+        Some(None),
+        "explicit null is the outer Some(None), not Some(Some(Value::Null))"
+    );
+    assert_eq!(
+        serde_json::from_value::<PatchValue>(json!({ "v": 5 }))
+            .unwrap()
+            .v,
+        Some(Some(json!(5))),
+        "a value"
+    );
+}
+
+#[test]
+fn test_double_option_untagged_enum_inner_round_trip() {
+    assert_eq!(
+        serde_json::from_value::<PatchUntagged>(json!({}))
+            .unwrap()
+            .u,
+        None
+    );
+    assert_eq!(
+        serde_json::from_value::<PatchUntagged>(json!({ "u": null }))
+            .unwrap()
+            .u,
+        Some(None),
+        "explicit null survives the untagged Content buffer as Some(None)"
+    );
+    assert_eq!(
+        serde_json::from_value::<PatchUntagged>(json!({ "u": 5 }))
+            .unwrap()
+            .u,
+        Some(Some(Untagged::Int(5)))
+    );
+    assert_eq!(
+        serde_json::from_value::<PatchUntagged>(json!({ "u": "hi" }))
+            .unwrap()
+            .u,
+        Some(Some(Untagged::Text("hi".to_string())))
+    );
+}
+
+#[test]
+fn test_double_option_builder_round_trip() {
+    // Not setting the field leaves it absent.
+    let absent: Patch = patch_builder::Patch::default().try_into().unwrap();
+    assert_eq!(serde_json::to_value(&absent).unwrap(), json!({}));
+
+    // `Some(None)` clears the field (serializes as null).
+    let clear: Patch = patch_builder::Patch::default()
+        .name(Some(None))
+        .try_into()
+        .unwrap();
+    assert_eq!(
+        serde_json::to_value(&clear).unwrap(),
+        json!({ "name": null })
+    );
+
+    // `Some(Some(v))` sets a value.
+    let value: Patch = patch_builder::Patch::default()
+        .name(Some(Some("x".to_string())))
+        .try_into()
+        .unwrap();
+    assert_eq!(
+        serde_json::to_value(&value).unwrap(),
+        json!({ "name": "x" })
+    );
+}
+
+/// Documented limitation: nullability hidden behind a `$ref` is *not* seen by
+/// the gate, because the property resolves to an unresolved reference (not an
+/// `Option`) at the point the gate runs, and refs are deliberately not resolved
+/// there. So an optional `$ref`-to-nullable field stays a single `Option<Named>`
+/// with no `deserialize_with` — inconsistent with the same schema inlined, which
+/// *is* wrapped. This pins that boundary so a future change to ref handling
+/// (which could fix it) is a conscious decision, not an accident.
+#[test]
+fn test_double_option_ref_to_nullable_is_not_wrapped() {
+    let root: RootSchema = serde_json::from_value(json!({
+        "type": "object",
+        "title": "Thing",
+        "definitions": {
+            "Foo": { "type": ["string", "null"] }
+        },
+        "properties": {
+            // Optional, and nullable — but only via the referenced type.
+            "x": { "$ref": "#/definitions/Foo" }
+        }
+    }))
+    .unwrap();
+    let mut settings = TypeSpaceSettings::default();
+    settings.with_double_option(true);
+    let mut type_space = TypeSpace::new(&settings);
+    type_space.add_root_schema(root).unwrap();
+    let output = type_space.to_stream().to_string();
+
+    // The field is a single Option<Foo>, not a double option, and no helper is
+    // emitted or referenced.
+    assert_eq!(count(&output, "deserialize_with"), 0);
+    assert_eq!(count(&output, "moddouble_option"), 0);
+    let squished: String = output.chars().filter(|c| !c.is_whitespace()).collect();
+    assert!(
+        squished.contains("pubx:::std::option::Option<Foo>"),
+        "expected single Option<Foo>, got:\n{output}"
+    );
 }
