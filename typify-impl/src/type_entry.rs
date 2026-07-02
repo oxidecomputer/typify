@@ -1773,16 +1773,11 @@ impl TypeEntry {
                     .expect("unresolved type id for option");
                 let inner_ident = inner_ty.type_ident(type_space, type_mod);
 
-                // Flatten nested Option types. This would only happen if the
-                // schema encoded it; it's an odd construction. The exception is
-                // the `double_option` setting, whose entire purpose is to
-                // produce a deliberate `Option<Option<T>>`.
-                match &inner_ty.details {
-                    TypeEntryDetails::Option(_) if !type_space.settings.double_option => {
-                        inner_ident
-                    }
-                    _ => quote! { ::std::option::Option<#inner_ident> },
-                }
+                // Nested `Option`s are collapsed when the type is built (see
+                // `TypeSpace::id_to_option`), so any nesting that survives to
+                // here is the deliberate `Option<Option<T>>` of the
+                // `double_option` setting and is rendered as-is.
+                quote! { ::std::option::Option<#inner_ident> }
             }
 
             TypeEntryDetails::Box(id) => {
@@ -1956,16 +1951,11 @@ impl TypeEntry {
                     .expect("unresolved type id for option");
                 let inner_ident = inner_ty.type_parameter_ident(type_space, lifetime_name);
 
-                // Flatten nested Option types. This would only happen if the
-                // schema encoded it; it's an odd construction. The exception is
-                // the `double_option` setting, whose entire purpose is to
-                // produce a deliberate `Option<Option<T>>`.
-                match &inner_ty.details {
-                    TypeEntryDetails::Option(_) if !type_space.settings.double_option => {
-                        inner_ident
-                    }
-                    _ => quote! { Option<#inner_ident> },
-                }
+                // Nested `Option`s are collapsed when the type is built (see
+                // `TypeSpace::id_to_option`), so any nesting that survives to
+                // here is the deliberate `Option<Option<T>>` of the
+                // `double_option` setting and is rendered as-is.
+                quote! { Option<#inner_ident> }
             }
 
             TypeEntryDetails::Tuple(items) => {

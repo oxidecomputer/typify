@@ -1020,13 +1020,40 @@ impl TypeSpace {
     }
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
+    ///
+    /// A nested `Option<Option<T>>` is an odd construction that we collapse to
+    /// `Option<T>`: it can arise incidentally (e.g. an `anyOf` whose sole
+    /// non-null branch is itself nullable), and stock serde can't observe the
+    /// distinction anyway. The one deliberate exception is the `double_option`
+    /// setting, which uses [`TypeSpace::id_to_double_option`] to force the
+    /// nesting.
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
+        if matches!(
+            self.id_to_entry.get(id).map(|entry| &entry.details),
+            Some(TypeEntryDetails::Option(_))
+        ) {
+            id.clone()
+        } else {
+            self.assign_type(TypeEntryDetails::Option(id.clone()).into())
+        }
+    }
+
+    /// Wrap a type in `Option` unconditionally, producing `Option<Option<T>>`
+    /// when the input is already an `Option`. Used only by the `double_option`
+    /// setting, where the nesting is intentional (see `structs::struct_property`).
+    fn id_to_double_option(&mut self, id: &TypeId) -> TypeId {
         self.assign_type(TypeEntryDetails::Option(id.clone()).into())
     }
 
     // Create an Option<T> from a TypeEntry by assigning it type.
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
-        TypeEntryDetails::Option(self.assign_type(ty)).into()
+        // Collapse a nested `Option<Option<T>>` to `Option<T>`; see
+        // [`TypeSpace::id_to_option`] for why.
+        if matches!(&ty.details, TypeEntryDetails::Option(_)) {
+            ty
+        } else {
+            TypeEntryDetails::Option(self.assign_type(ty)).into()
+        }
     }
 
     /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.

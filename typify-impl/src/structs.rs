@@ -3,13 +3,9 @@
 use heck::ToSnakeCase;
 use proc_macro2::TokenStream;
 use quote::quote;
-use schemars::schema::{
-    InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
-    SubschemaValidation,
-};
+use schemars::schema::{InstanceType, Metadata, ObjectValidation, Schema, SchemaObject};
 
 use crate::{
-    enums::is_null_schema,
     output::{OutputSpace, OutputSpaceMod},
     type_entry::{
         StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
@@ -137,6 +133,21 @@ impl TypeSpace {
         };
         let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
 
+        // Whether the property's own schema is nullable — i.e. typify converted
+        // it into an `Option<T>` because of a `null` alternative in the schema
+        // itself. This asks the conversion result rather than re-inspecting the
+        // schema, so it stays in lockstep with however typify decides to produce
+        // an `Option` (`type: [T, "null"]`, `anyOf`/`oneOf` with a null variant,
+        // null-bearing enums, singleton `allOf` wrappers, ...). A `$ref` is a
+        // distinct entry here (a reference or newtype, not an `Option`), so it
+        // is correctly excluded: any null-ness belongs to the referenced type.
+        // Captured now, before the `has_default` arm below may wrap a
+        // *non*-nullable optional in `Option`.
+        let nullable = matches!(
+            self.id_to_entry.get(&type_id).map(|entry| &entry.details),
+            Some(TypeEntryDetails::Option(_))
+        );
+
         let state = if required.contains(prop_name) {
             StructPropertyState::Required
         } else {
@@ -173,11 +184,10 @@ impl TypeSpace {
         };
 
         // Gate for the `double_option` setting: a property qualifies for
-        // `Option<Option<T>>` treatment only when it is optional, nullable per
-        // its own schema (not via a `$ref`), and has no default. Required
-        // properties (state != Optional) are excluded here, which also keeps
-        // required-nullable fields — the case Omicron models with its
-        // `Nullable<T>` wrapper — untouched.
+        // `Option<Option<T>>` treatment only when it is optional, nullable, and
+        // has no default. Required properties (state != Optional) are excluded
+        // here, which also keeps required-nullable fields — the case Omicron
+        // models with its `Nullable<T>` wrapper — untouched.
         //
         // When it applies, we wrap the (already `Option<T>`) type in a second
         // `Option` and flag the property so a `deserialize_with` attribute is
@@ -187,9 +197,9 @@ impl TypeSpace {
         let double_option = self.settings.double_option
             && state == StructPropertyState::Optional
             && metadata.as_ref().and_then(|m| m.default.as_ref()).is_none()
-            && schema_is_nullable(schema);
+            && nullable;
         if double_option {
-            type_id = self.id_to_option(&type_id);
+            type_id = self.id_to_double_option(&type_id);
         }
 
         let (name, rename) = recase(prop_name, Case::Snake);
@@ -457,81 +467,6 @@ pub(crate) fn generate_serde_attr(
 /// See if this type is a type that we can omit with a serde directive; note
 /// that the type id lookup will fail only for references (and only during
 /// initial reference processing).
-/// Determine whether a property's schema is *nullable* in the sense that
-/// typify renders it as an `Option<T>` **because of a null alternative in this
-/// very schema** — as opposed to a `$ref` that merely resolves to a type that
-/// is itself an option. This mirrors the two shapes that typify turns into an
-/// `Option`:
-///
-/// 1. an instance-type array of exactly two types, one of which is `null`
-///    (e.g. `{"type": ["string", "null"]}`), handled in
-///    [`TypeSpace::convert_schema_object`]; and
-/// 2. a pure `anyOf`/`oneOf` with exactly one non-null subschema alongside one
-///    or more null subschemas (e.g. `{"anyOf": [{"$ref": …}, {"type": "null"}]}`),
-///    detected by [`TypeSpace::maybe_option`], which both `convert_any_of` and
-///    `convert_one_of` consult first.
-///
-/// A bare `$ref` (even to a type that is itself an option) is intentionally
-/// *not* nullable here: the null-ness belongs to the referenced type, not to
-/// this schema, so we must not resolve the ref. `null`-only schemas (which
-/// become a unit type rather than `Option<T>`) are likewise excluded. This is
-/// the gate used by the `double_option` setting.
-fn schema_is_nullable(schema: &Schema) -> bool {
-    let Schema::Object(schema) = schema else {
-        return false;
-    };
-
-    // Shape 1: `{"type": [T, "null"]}` with exactly one non-null type.
-    if let Some(SingleOrVec::Vec(types)) = &schema.instance_type {
-        if types.len() == 2 && types.contains(&InstanceType::Null) {
-            // Enum values that are all null reduce to a plain `null` (a unit
-            // type), not an `Option<T>`.
-            let only_null = schema
-                .enum_values
-                .as_ref()
-                .is_some_and(|values| values.iter().all(serde_json::Value::is_null));
-            let has_non_null = types.iter().any(|t| t != &InstanceType::Null);
-            if has_non_null && !only_null {
-                return true;
-            }
-        }
-    }
-
-    // Shape 2: a pure `anyOf`/`oneOf` (no other subschema kinds present, which
-    // is what routes to `convert_any_of`/`convert_one_of`) with exactly one
-    // non-null variant. This matches the `maybe_option` condition.
-    let variants = match schema.subschemas.as_deref() {
-        Some(SubschemaValidation {
-            all_of: None,
-            any_of: Some(variants),
-            one_of: None,
-            not: None,
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        })
-        | Some(SubschemaValidation {
-            all_of: None,
-            any_of: None,
-            one_of: Some(variants),
-            not: None,
-            if_schema: None,
-            then_schema: None,
-            else_schema: None,
-        }) => Some(variants),
-        _ => None,
-    };
-    if let Some(variants) = variants {
-        let non_null = variants.iter().filter(|s| !is_null_schema(s)).count();
-        let has_null = variants.iter().any(is_null_schema);
-        if variants.len() > 1 && non_null == 1 && has_null {
-            return true;
-        }
-    }
-
-    false
-}
-
 fn has_default(
     type_space: &mut TypeSpace,
     type_id: &TypeId,
@@ -685,60 +620,5 @@ mod tests {
             output,
             "::serde_json::Map<::std::string::String,::serde_json::Value>"
         );
-    }
-
-    #[test]
-    fn test_schema_is_nullable() {
-        use super::schema_is_nullable;
-        use serde_json::json;
-
-        let nullable = |value: serde_json::Value| {
-            let schema: schemars::schema::Schema = serde_json::from_value(value).unwrap();
-            schema_is_nullable(&schema)
-        };
-
-        // Shape 1: `type` array of a real type plus null renders as Option<T>.
-        assert!(nullable(json!({ "type": ["string", "null"] })));
-        assert!(nullable(json!({ "type": ["null", "integer"] })));
-        // Enumerated-value-or-null is still an Option<T>.
-        assert!(nullable(
-            json!({ "type": ["string", "null"], "enum": ["a", null] })
-        ));
-
-        // Not nullable-of-T: single type, null-only, or an all-null enum (these
-        // become T or the unit type, never Option<T>).
-        assert!(!nullable(json!({ "type": "string" })));
-        assert!(!nullable(json!({ "type": "null" })));
-        assert!(!nullable(json!({ "type": ["null", "null"] })));
-        assert!(!nullable(
-            json!({ "type": ["string", "null"], "enum": [null] })
-        ));
-        // Three-plus types are an untagged enum, not an Option.
-        assert!(!nullable(json!({ "type": ["string", "integer", "null"] })));
-
-        // Shape 2: a pure anyOf/oneOf with exactly one non-null variant.
-        assert!(nullable(
-            json!({ "anyOf": [{ "$ref": "#/definitions/Foo" }, { "type": "null" }] })
-        ));
-        assert!(nullable(
-            json!({ "oneOf": [{ "type": "string" }, { "type": "null" }] })
-        ));
-
-        // Two non-null variants is a real enum, not an Option.
-        assert!(!nullable(
-            json!({ "anyOf": [{ "type": "string" }, { "type": "integer" }] })
-        ));
-        // allOf is not the Option shape even with a null branch.
-        assert!(!nullable(
-            json!({ "allOf": [{ "$ref": "#/definitions/Foo" }, { "type": "null" }] })
-        ));
-
-        // A bare `$ref` is never nullable here: any null-ness belongs to the
-        // referenced type, not to this schema, and we must not resolve it.
-        assert!(!nullable(json!({ "$ref": "#/definitions/Foo" })));
-
-        // Boolean schemas are never nullable.
-        assert!(!nullable(json!(true)));
-        assert!(!nullable(json!(false)));
     }
 }
