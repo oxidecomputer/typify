@@ -41187,7 +41187,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssueCommentCreatedActio
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentCreatedIssue {
     pub active_lock_reason: ::std::option::Option<IssueCommentCreatedIssueActiveLockReason>,
-    pub assignee: ::std::option::Option<IssueCommentCreatedIssueAssignee>,
+    pub assignee: ::std::option::Option<User>,
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
@@ -41293,136 +41293,6 @@ impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentCreatedIssu
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for IssueCommentCreatedIssueActiveLockReason {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "`IssueCommentCreatedIssueAssignee`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/user\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"type\": \"null\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/user\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"type\": \"null\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentCreatedIssueAssignee {
-    pub avatar_url: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub email: ::std::option::Option<::std::string::String>,
-    pub events_url: ::std::string::String,
-    pub followers_url: ::std::string::String,
-    pub following_url: ::std::string::String,
-    pub gists_url: ::std::string::String,
-    pub gravatar_id: ::std::string::String,
-    pub html_url: ::std::string::String,
-    pub id: i64,
-    pub login: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub name: ::std::option::Option<::std::string::String>,
-    pub node_id: ::std::string::String,
-    pub organizations_url: ::std::string::String,
-    pub received_events_url: ::std::string::String,
-    pub repos_url: ::std::string::String,
-    pub site_admin: bool,
-    pub starred_url: ::std::string::String,
-    pub subscriptions_url: ::std::string::String,
-    #[serde(rename = "type")]
-    pub type_: IssueCommentCreatedIssueAssigneeType,
-    pub url: ::std::string::String,
-}
-#[doc = "`IssueCommentCreatedIssueAssigneeType`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"Bot\","]
-#[doc = "    \"User\","]
-#[doc = "    \"Organization\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Copy,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
-pub enum IssueCommentCreatedIssueAssigneeType {
-    Bot,
-    User,
-    Organization,
-}
-impl ::std::fmt::Display for IssueCommentCreatedIssueAssigneeType {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match *self {
-            Self::Bot => f.write_str("Bot"),
-            Self::User => f.write_str("User"),
-            Self::Organization => f.write_str("Organization"),
-        }
-    }
-}
-impl ::std::str::FromStr for IssueCommentCreatedIssueAssigneeType {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        match value {
-            "Bot" => Ok(Self::Bot),
-            "User" => Ok(Self::User),
-            "Organization" => Ok(Self::Organization),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for IssueCommentCreatedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentCreatedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for IssueCommentCreatedIssueAssigneeType {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -41829,7 +41699,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssueCommentDeletedActio
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentDeletedIssue {
     pub active_lock_reason: ::std::option::Option<IssueCommentDeletedIssueActiveLockReason>,
-    pub assignee: ::std::option::Option<IssueCommentDeletedIssueAssignee>,
+    pub assignee: ::std::option::Option<User>,
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
@@ -41935,136 +41805,6 @@ impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentDeletedIssu
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for IssueCommentDeletedIssueActiveLockReason {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "`IssueCommentDeletedIssueAssignee`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/user\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"type\": \"null\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/user\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"type\": \"null\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentDeletedIssueAssignee {
-    pub avatar_url: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub email: ::std::option::Option<::std::string::String>,
-    pub events_url: ::std::string::String,
-    pub followers_url: ::std::string::String,
-    pub following_url: ::std::string::String,
-    pub gists_url: ::std::string::String,
-    pub gravatar_id: ::std::string::String,
-    pub html_url: ::std::string::String,
-    pub id: i64,
-    pub login: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub name: ::std::option::Option<::std::string::String>,
-    pub node_id: ::std::string::String,
-    pub organizations_url: ::std::string::String,
-    pub received_events_url: ::std::string::String,
-    pub repos_url: ::std::string::String,
-    pub site_admin: bool,
-    pub starred_url: ::std::string::String,
-    pub subscriptions_url: ::std::string::String,
-    #[serde(rename = "type")]
-    pub type_: IssueCommentDeletedIssueAssigneeType,
-    pub url: ::std::string::String,
-}
-#[doc = "`IssueCommentDeletedIssueAssigneeType`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"Bot\","]
-#[doc = "    \"User\","]
-#[doc = "    \"Organization\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Copy,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
-pub enum IssueCommentDeletedIssueAssigneeType {
-    Bot,
-    User,
-    Organization,
-}
-impl ::std::fmt::Display for IssueCommentDeletedIssueAssigneeType {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match *self {
-            Self::Bot => f.write_str("Bot"),
-            Self::User => f.write_str("User"),
-            Self::Organization => f.write_str("Organization"),
-        }
-    }
-}
-impl ::std::str::FromStr for IssueCommentDeletedIssueAssigneeType {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        match value {
-            "Bot" => Ok(Self::Bot),
-            "User" => Ok(Self::User),
-            "Organization" => Ok(Self::Organization),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for IssueCommentDeletedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentDeletedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for IssueCommentDeletedIssueAssigneeType {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
@@ -42559,7 +42299,7 @@ pub struct IssueCommentEditedChangesBody {
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedIssue {
     pub active_lock_reason: ::std::option::Option<IssueCommentEditedIssueActiveLockReason>,
-    pub assignee: ::std::option::Option<IssueCommentEditedIssueAssignee>,
+    pub assignee: ::std::option::Option<User>,
     pub assignees: ::std::vec::Vec<User>,
     pub author_association: AuthorAssociation,
     #[doc = "Contents of the issue"]
@@ -42665,136 +42405,6 @@ impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentEditedIssue
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for IssueCommentEditedIssueActiveLockReason {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: ::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-#[doc = "`IssueCommentEditedIssueAssignee`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/user\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"type\": \"null\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/user\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"type\": \"null\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-#[serde(deny_unknown_fields)]
-pub struct IssueCommentEditedIssueAssignee {
-    pub avatar_url: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub email: ::std::option::Option<::std::string::String>,
-    pub events_url: ::std::string::String,
-    pub followers_url: ::std::string::String,
-    pub following_url: ::std::string::String,
-    pub gists_url: ::std::string::String,
-    pub gravatar_id: ::std::string::String,
-    pub html_url: ::std::string::String,
-    pub id: i64,
-    pub login: ::std::string::String,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-    pub name: ::std::option::Option<::std::string::String>,
-    pub node_id: ::std::string::String,
-    pub organizations_url: ::std::string::String,
-    pub received_events_url: ::std::string::String,
-    pub repos_url: ::std::string::String,
-    pub site_admin: bool,
-    pub starred_url: ::std::string::String,
-    pub subscriptions_url: ::std::string::String,
-    #[serde(rename = "type")]
-    pub type_: IssueCommentEditedIssueAssigneeType,
-    pub url: ::std::string::String,
-}
-#[doc = "`IssueCommentEditedIssueAssigneeType`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"Bot\","]
-#[doc = "    \"User\","]
-#[doc = "    \"Organization\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(
-    :: serde :: Deserialize,
-    :: serde :: Serialize,
-    Clone,
-    Copy,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-)]
-pub enum IssueCommentEditedIssueAssigneeType {
-    Bot,
-    User,
-    Organization,
-}
-impl ::std::fmt::Display for IssueCommentEditedIssueAssigneeType {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match *self {
-            Self::Bot => f.write_str("Bot"),
-            Self::User => f.write_str("User"),
-            Self::Organization => f.write_str("Organization"),
-        }
-    }
-}
-impl ::std::str::FromStr for IssueCommentEditedIssueAssigneeType {
-    type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        match value {
-            "Bot" => Ok(Self::Bot),
-            "User" => Ok(Self::User),
-            "Organization" => Ok(Self::Organization),
-            _ => Err("invalid value".into()),
-        }
-    }
-}
-impl ::std::convert::TryFrom<&str> for IssueCommentEditedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IssueCommentEditedIssueAssigneeType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<::std::string::String> for IssueCommentEditedIssueAssigneeType {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
