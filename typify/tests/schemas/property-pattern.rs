@@ -104,14 +104,6 @@ impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TestGrammarForPatternPropertiesRulesKey {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(

@@ -84,14 +84,6 @@ impl ::std::convert::TryFrom<&str> for AlternativeEnum {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AlternativeEnum {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AlternativeEnum {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -275,14 +267,6 @@ impl ::std::convert::TryFrom<&str> for CommentedVariants {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for CommentedVariants {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -385,14 +369,6 @@ impl ::std::str::FromStr for DiskAttachmentState {
 impl ::std::convert::TryFrom<&str> for DiskAttachmentState {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DiskAttachmentState {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -640,14 +616,6 @@ impl ::std::convert::TryFrom<&str> for IpNet {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for IpNet {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for IpNet {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -716,14 +684,6 @@ impl ::std::convert::TryFrom<&str> for Ipv4Net {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for Ipv4Net {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for Ipv4Net {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -783,14 +743,6 @@ impl ::std::str::FromStr for Ipv6Net {
 impl ::std::convert::TryFrom<&str> for Ipv6Net {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for Ipv6Net {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1086,14 +1038,6 @@ impl ::std::str::FromStr for NullStringEnumWithUnknownFormatInner {
 impl ::std::convert::TryFrom<&str> for NullStringEnumWithUnknownFormatInner {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for NullStringEnumWithUnknownFormatInner {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1747,14 +1691,6 @@ impl ::std::str::FromStr for VariantsDifferByPunct {
 impl ::std::convert::TryFrom<&str> for VariantsDifferByPunct {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for VariantsDifferByPunct {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
