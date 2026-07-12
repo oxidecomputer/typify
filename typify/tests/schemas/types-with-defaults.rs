@@ -19,8 +19,8 @@ pub mod error {
             Self(value.into())
         }
     }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
+    impl From<::std::string::String> for ConversionError {
+        fn from(value: ::std::string::String) -> Self {
             Self(value.into())
         }
     }
@@ -303,9 +303,9 @@ impl ::std::convert::TryFrom<&str> for UInt {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for UInt {
+impl ::std::convert::TryFrom<::std::string::String> for UInt {
     type Error = <i64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+    fn try_from(value: ::std::string::String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
