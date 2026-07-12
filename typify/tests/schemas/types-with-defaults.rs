@@ -59,6 +59,46 @@ impl Doodad {
         Default::default()
     }
 }
+#[doc = "`MrDefaultFloats`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"frequency\": {"]
+#[doc = "      \"default\": 0.1,"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    },"]
+#[doc = "    \"zfreq\": {"]
+#[doc = "      \"default\": 0.0,"]
+#[doc = "      \"type\": \"number\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct MrDefaultFloats {
+    #[serde(default = "defaults::mr_default_floats_frequency")]
+    pub frequency: f64,
+    #[serde(default)]
+    pub zfreq: f64,
+}
+impl ::std::default::Default for MrDefaultFloats {
+    fn default() -> Self {
+        Self {
+            frequency: defaults::mr_default_floats_frequency(),
+            zfreq: Default::default(),
+        }
+    }
+}
+impl MrDefaultFloats {
+    pub fn builder() -> builder::MrDefaultFloats {
+        Default::default()
+    }
+}
 #[doc = "`MrDefaultNumbers`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -391,6 +431,60 @@ pub mod builder {
         }
     }
     #[derive(Clone, Debug)]
+    pub struct MrDefaultFloats {
+        frequency: ::std::result::Result<f64, ::std::string::String>,
+        zfreq: ::std::result::Result<f64, ::std::string::String>,
+    }
+    impl ::std::default::Default for MrDefaultFloats {
+        fn default() -> Self {
+            Self {
+                frequency: Ok(super::defaults::mr_default_floats_frequency()),
+                zfreq: Ok(Default::default()),
+            }
+        }
+    }
+    impl MrDefaultFloats {
+        pub fn frequency<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<f64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.frequency = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for frequency: {e}"));
+            self
+        }
+        pub fn zfreq<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<f64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.zfreq = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for zfreq: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<MrDefaultFloats> for super::MrDefaultFloats {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: MrDefaultFloats,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                frequency: value.frequency?,
+                zfreq: value.zfreq?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::MrDefaultFloats> for MrDefaultFloats {
+        fn from(value: super::MrDefaultFloats) -> Self {
+            Self {
+                frequency: Ok(value.frequency),
+                zfreq: Ok(value.zfreq),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
     pub struct MrDefaultNumbers {
         big_nullable: ::std::result::Result<
             ::std::option::Option<::std::num::NonZeroU64>,
@@ -671,6 +765,9 @@ pub mod defaults {
             "\"1970-01-01T00:00:00Z\"",
         )
         .unwrap()
+    }
+    pub(super) fn mr_default_floats_frequency() -> f64 {
+        0.1_f64
     }
     pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
     {
