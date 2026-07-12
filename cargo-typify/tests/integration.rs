@@ -192,3 +192,24 @@ fn test_btree_map() {
 
     assert_contents("tests/outputs/custom_btree_map.rs", &actual);
 }
+
+#[test]
+fn test_invalid_map_type() {
+    let input = concat!(env!("CARGO_MANIFEST_DIR"), "/../example.json");
+
+    let output = assert_cmd::cargo::cargo_bin_cmd!()
+        .args([
+            "typify",
+            input,
+            "--map-type",
+            "not a valid!!type",
+            "--output",
+            "-",
+        ])
+        .output()
+        .unwrap();
+
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(stderr.contains("invalid map type"), "stderr: {stderr}");
+}
