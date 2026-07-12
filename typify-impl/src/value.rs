@@ -437,8 +437,8 @@ fn value_for_struct_props(
             }
 
             let flat_value = type_entry.output_value(type_space, &extra_value, scope)?;
-            let name = &prop.name;
-            Some(quote! { #name: #flat_value })
+            let name_ident = format_ident!("{}", &prop.name);
+            Some(quote! { #name_ident: #flat_value })
         }
         _ => None,
     });
