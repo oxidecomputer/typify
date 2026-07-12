@@ -17,7 +17,7 @@ impl TypeSpace {
     /// We need to root out any containment cycles, breaking them by inserting
     /// a `Box` type. Our choice of *where* to break cycles is more arbitrary
     /// than optimal, but is well beyond sufficient.
-    pub fn break_cycles(&mut self, range: Range<u64>) {
+    pub(crate) fn break_cycles(&mut self, range: Range<u64>) {
         enum Node {
             Start {
                 type_id: TypeId,
