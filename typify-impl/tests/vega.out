@@ -8066,7 +8066,7 @@ impl ::std::convert::From<NumberValue> for AxisDomainWidth {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct AxisEncode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -8081,18 +8081,6 @@ pub struct AxisEncode {
     pub ticks: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for AxisEncode {
-    fn default() -> Self {
-        Self {
-            axis: Default::default(),
-            domain: Default::default(),
-            grid: Default::default(),
-            labels: Default::default(),
-            ticks: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`AxisFormat`"]
 #[doc = r""]
@@ -20264,7 +20252,7 @@ impl ::std::convert::From<SignalRef> for DataVariant2Format {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DataVariant2FormatVariant0Subtype0 {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub parse: ::std::option::Option<DataVariant2FormatVariant0Subtype0Parse>,
@@ -20274,14 +20262,6 @@ pub struct DataVariant2FormatVariant0Subtype0 {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<StringOrSignal>,
-}
-impl ::std::default::Default for DataVariant2FormatVariant0Subtype0 {
-    fn default() -> Self {
-        Self {
-            parse: Default::default(),
-            type_: Default::default(),
-        }
-    }
 }
 #[doc = "`DataVariant2FormatVariant0Subtype0Parse`"]
 #[doc = r""]
@@ -20703,7 +20683,7 @@ impl<'de> ::serde::Deserialize<'de>
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DataVariant2FormatVariant0Subtype1 {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -20718,16 +20698,6 @@ pub struct DataVariant2FormatVariant0Subtype1 {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<DataVariant2FormatVariant0Subtype1Type>,
-}
-impl ::std::default::Default for DataVariant2FormatVariant0Subtype1 {
-    fn default() -> Self {
-        Self {
-            copy: Default::default(),
-            parse: Default::default(),
-            property: Default::default(),
-            type_: Default::default(),
-        }
-    }
 }
 #[doc = "`DataVariant2FormatVariant0Subtype1Parse`"]
 #[doc = r""]
@@ -22764,7 +22734,7 @@ impl ::std::convert::From<SignalRef> for DataVariant3Format {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DataVariant3FormatVariant0Subtype0 {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub parse: ::std::option::Option<DataVariant3FormatVariant0Subtype0Parse>,
@@ -22774,14 +22744,6 @@ pub struct DataVariant3FormatVariant0Subtype0 {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<StringOrSignal>,
-}
-impl ::std::default::Default for DataVariant3FormatVariant0Subtype0 {
-    fn default() -> Self {
-        Self {
-            parse: Default::default(),
-            type_: Default::default(),
-        }
-    }
 }
 #[doc = "`DataVariant3FormatVariant0Subtype0Parse`"]
 #[doc = r""]
@@ -23203,7 +23165,7 @@ impl<'de> ::serde::Deserialize<'de>
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DataVariant3FormatVariant0Subtype1 {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -23218,16 +23180,6 @@ pub struct DataVariant3FormatVariant0Subtype1 {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<DataVariant3FormatVariant0Subtype1Type>,
-}
-impl ::std::default::Default for DataVariant3FormatVariant0Subtype1 {
-    fn default() -> Self {
-        Self {
-            copy: Default::default(),
-            parse: Default::default(),
-            property: Default::default(),
-            type_: Default::default(),
-        }
-    }
 }
 #[doc = "`DataVariant3FormatVariant0Subtype1Parse`"]
 #[doc = r""]
@@ -28306,7 +28258,7 @@ impl ::std::convert::From<::std::collections::HashMap<EncodeKey, EncodeEntry>> f
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct EncodeEntry {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub align: ::std::option::Option<AlignValue>,
@@ -28563,81 +28515,6 @@ pub struct EncodeEntry {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub zindex: ::std::option::Option<NumberValue>,
 }
-impl ::std::default::Default for EncodeEntry {
-    fn default() -> Self {
-        Self {
-            align: Default::default(),
-            angle: Default::default(),
-            aria: Default::default(),
-            aria_role: Default::default(),
-            aria_role_description: Default::default(),
-            aspect: Default::default(),
-            baseline: Default::default(),
-            blend: Default::default(),
-            clip: Default::default(),
-            corner_radius: Default::default(),
-            corner_radius_bottom_left: Default::default(),
-            corner_radius_bottom_right: Default::default(),
-            corner_radius_top_left: Default::default(),
-            corner_radius_top_right: Default::default(),
-            cursor: Default::default(),
-            defined: Default::default(),
-            description: Default::default(),
-            dir: Default::default(),
-            dx: Default::default(),
-            dy: Default::default(),
-            ellipsis: Default::default(),
-            end_angle: Default::default(),
-            fill: Default::default(),
-            fill_opacity: Default::default(),
-            font: Default::default(),
-            font_size: Default::default(),
-            font_style: Default::default(),
-            font_weight: Default::default(),
-            height: Default::default(),
-            inner_radius: Default::default(),
-            interpolate: Default::default(),
-            limit: Default::default(),
-            line_break: Default::default(),
-            line_height: Default::default(),
-            opacity: Default::default(),
-            orient: Default::default(),
-            outer_radius: Default::default(),
-            pad_angle: Default::default(),
-            path: Default::default(),
-            radius: Default::default(),
-            scale_x: Default::default(),
-            scale_y: Default::default(),
-            shape: Default::default(),
-            size: Default::default(),
-            smooth: Default::default(),
-            start_angle: Default::default(),
-            stroke: Default::default(),
-            stroke_cap: Default::default(),
-            stroke_dash: Default::default(),
-            stroke_dash_offset: Default::default(),
-            stroke_foreground: Default::default(),
-            stroke_join: Default::default(),
-            stroke_miter_limit: Default::default(),
-            stroke_offset: Default::default(),
-            stroke_opacity: Default::default(),
-            stroke_width: Default::default(),
-            tension: Default::default(),
-            text: Default::default(),
-            theta: Default::default(),
-            tooltip: Default::default(),
-            url: Default::default(),
-            width: Default::default(),
-            x: Default::default(),
-            x2: Default::default(),
-            xc: Default::default(),
-            y: Default::default(),
-            y2: Default::default(),
-            yc: Default::default(),
-            zindex: Default::default(),
-        }
-    }
-}
 #[doc = "`EncodeKey`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -28748,7 +28625,7 @@ impl<'de> ::serde::Deserialize<'de> for EncodeKey {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Everything {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub autosize: ::std::option::Option<Autosize>,
@@ -28794,32 +28671,6 @@ pub struct Everything {
     pub usermeta: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub width: ::std::option::Option<NumberOrSignal>,
-}
-impl ::std::default::Default for Everything {
-    fn default() -> Self {
-        Self {
-            autosize: Default::default(),
-            axes: Default::default(),
-            background: Default::default(),
-            config: Default::default(),
-            data: Default::default(),
-            description: Default::default(),
-            encode: Default::default(),
-            height: Default::default(),
-            layout: Default::default(),
-            legends: Default::default(),
-            marks: Default::default(),
-            padding: Default::default(),
-            projections: Default::default(),
-            scales: Default::default(),
-            schema: Default::default(),
-            signals: Default::default(),
-            style: Default::default(),
-            title: Default::default(),
-            usermeta: Default::default(),
-            width: Default::default(),
-        }
-    }
 }
 #[doc = "`EverythingMarksItem`"]
 #[doc = r""]
@@ -29327,7 +29178,7 @@ pub enum FacetFacet {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct FacetFacetVariant1Aggregate {
     #[serde(
@@ -29342,16 +29193,6 @@ pub struct FacetFacetVariant1Aggregate {
     pub fields: ::std::vec::Vec<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub ops: ::std::vec::Vec<::std::string::String>,
-}
-impl ::std::default::Default for FacetFacetVariant1Aggregate {
-    fn default() -> Self {
-        Self {
-            as_: Default::default(),
-            cross: Default::default(),
-            fields: Default::default(),
-            ops: Default::default(),
-        }
-    }
 }
 #[doc = "`FacetFacetVariant1Groupby`"]
 #[doc = r""]
@@ -33523,18 +33364,11 @@ impl ::std::convert::TryFrom<::std::string::String> for FormulaTransformType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct From {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub data: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for From {
-    fn default() -> Self {
-        Self {
-            data: Default::default(),
-        }
-    }
 }
 #[doc = "`GeojsonTransform`"]
 #[doc = r""]
@@ -35429,7 +35263,7 @@ impl ::std::convert::TryFrom<::std::string::String> for GraticuleTransformType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct GuideEncode {
     #[serde(default)]
@@ -35438,15 +35272,6 @@ pub struct GuideEncode {
     pub name: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub style: ::std::option::Option<Style>,
-}
-impl ::std::default::Default for GuideEncode {
-    fn default() -> Self {
-        Self {
-            interactive: Default::default(),
-            name: Default::default(),
-            style: Default::default(),
-        }
-    }
 }
 #[doc = "`HeatmapTransform`"]
 #[doc = r""]
@@ -45634,7 +45459,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant0Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -45649,18 +45474,6 @@ pub struct LegendVariant0Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant0Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant0FillColor`"]
 #[doc = r""]
@@ -48141,7 +47954,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant1Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -48156,18 +47969,6 @@ pub struct LegendVariant1Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant1Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant1FillColor`"]
 #[doc = r""]
@@ -50648,7 +50449,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant2Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -50663,18 +50464,6 @@ pub struct LegendVariant2Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant2Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant2FillColor`"]
 #[doc = r""]
@@ -53155,7 +52944,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant3Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -53170,18 +52959,6 @@ pub struct LegendVariant3Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant3Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant3FillColor`"]
 #[doc = r""]
@@ -55662,7 +55439,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant4Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -55677,18 +55454,6 @@ pub struct LegendVariant4Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant4Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant4FillColor`"]
 #[doc = r""]
@@ -58169,7 +57934,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant5Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -58184,18 +57949,6 @@ pub struct LegendVariant5Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant5Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant5FillColor`"]
 #[doc = r""]
@@ -60676,7 +60429,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6Direction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LegendVariant6Encode {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -60691,18 +60444,6 @@ pub struct LegendVariant6Encode {
     pub symbols: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for LegendVariant6Encode {
-    fn default() -> Self {
-        Self {
-            entries: Default::default(),
-            gradient: Default::default(),
-            labels: Default::default(),
-            legend: Default::default(),
-            symbols: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`LegendVariant6FillColor`"]
 #[doc = r""]
@@ -65613,7 +65354,7 @@ impl ::std::convert::TryFrom<::std::string::String> for NestTransformType {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct NumberModifiers {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub band: ::std::option::Option<NumberModifiersBand>,
@@ -65629,19 +65370,6 @@ pub struct NumberModifiers {
     pub round: bool,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub scale: ::std::option::Option<Field>,
-}
-impl ::std::default::Default for NumberModifiers {
-    fn default() -> Self {
-        Self {
-            band: Default::default(),
-            exponent: Default::default(),
-            extra: Default::default(),
-            mult: Default::default(),
-            offset: Default::default(),
-            round: Default::default(),
-            scale: Default::default(),
-        }
-    }
 }
 #[doc = "`NumberModifiersBand`"]
 #[doc = r""]
@@ -75584,17 +75312,10 @@ impl ::std::convert::TryFrom<::std::string::String> for ResolvefilterTransformTy
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Rule {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub test: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for Rule {
-    fn default() -> Self {
-        Self {
-            test: Default::default(),
-        }
-    }
 }
 #[doc = "`SampleTransform`"]
 #[doc = r""]
@@ -88107,7 +87828,7 @@ impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant9Type {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Scope {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub axes: ::std::vec::Vec<Axis>,
@@ -88131,23 +87852,6 @@ pub struct Scope {
     pub title: ::std::option::Option<Title>,
     #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
     pub usermeta: ::serde_json::Map<::std::string::String, ::serde_json::Value>,
-}
-impl ::std::default::Default for Scope {
-    fn default() -> Self {
-        Self {
-            axes: Default::default(),
-            data: Default::default(),
-            encode: Default::default(),
-            layout: Default::default(),
-            legends: Default::default(),
-            marks: Default::default(),
-            projections: Default::default(),
-            scales: Default::default(),
-            signals: Default::default(),
-            title: Default::default(),
-            usermeta: Default::default(),
-        }
-    }
 }
 #[doc = "`ScopeMarksItem`"]
 #[doc = r""]
@@ -89873,17 +89577,10 @@ impl ::std::convert::From<::std::vec::Vec<ExprString>> for StreamVariant2Filter 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct StringModifiers {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub scale: ::std::option::Option<Field>,
-}
-impl ::std::default::Default for StringModifiers {
-    fn default() -> Self {
-        Self {
-            scale: Default::default(),
-        }
-    }
 }
 #[doc = "`StringOrSignal`"]
 #[doc = r""]
@@ -97745,7 +97442,7 @@ impl ::std::convert::From<NumberValue> for TitleObjectDy {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct TitleObjectEncode {
     #[serde(
         flatten,
@@ -97761,14 +97458,6 @@ pub struct TitleObjectEncode {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub subtype_1: ::std::option::Option<TitleObjectEncodeSubtype1>,
-}
-impl ::std::default::Default for TitleObjectEncode {
-    fn default() -> Self {
-        Self {
-            subtype_0: Default::default(),
-            subtype_1: Default::default(),
-        }
-    }
 }
 #[doc = "`TitleObjectEncodeSubtype0Key`"]
 #[doc = r""]
@@ -97856,7 +97545,7 @@ impl<'de> ::serde::Deserialize<'de> for TitleObjectEncodeSubtype0Key {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct TitleObjectEncodeSubtype1 {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -97865,15 +97554,6 @@ pub struct TitleObjectEncodeSubtype1 {
     pub subtitle: ::std::option::Option<GuideEncode>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<GuideEncode>,
-}
-impl ::std::default::Default for TitleObjectEncodeSubtype1 {
-    fn default() -> Self {
-        Self {
-            group: Default::default(),
-            subtitle: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`TitleObjectFont`"]
 #[doc = r""]

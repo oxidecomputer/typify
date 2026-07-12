@@ -47,17 +47,10 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct LetterBox {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub letter: ::std::option::Option<LetterBoxLetter>,
-}
-impl ::std::default::Default for LetterBox {
-    fn default() -> Self {
-        Self {
-            letter: Default::default(),
-        }
-    }
 }
 impl LetterBox {
     pub fn builder() -> builder::LetterBox {

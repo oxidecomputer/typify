@@ -174,18 +174,10 @@ pub struct Veggie {
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[extra_attr]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub fruits: ::std::vec::Vec<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
-}
-impl ::std::default::Default for Veggies {
-    fn default() -> Self {
-        Self {
-            fruits: Default::default(),
-            vegetables: Default::default(),
-        }
-    }
 }

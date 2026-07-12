@@ -154,7 +154,7 @@ pub struct AlertInstance {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct AlertInstanceLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -167,17 +167,6 @@ pub struct AlertInstanceLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for AlertInstanceLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`AlertInstanceMessage`"]
 #[doc = r""]
@@ -195,18 +184,11 @@ impl ::std::default::Default for AlertInstanceLocation {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct AlertInstanceMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for AlertInstanceMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "State of a code scanning alert."]
 #[doc = r""]
@@ -1192,7 +1174,7 @@ impl ::std::convert::TryFrom<::std::string::String> for AppEventsItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct AppPermissions {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -1265,46 +1247,6 @@ pub struct AppPermissions {
     pub vulnerability_alerts: ::std::option::Option<AppPermissionsVulnerabilityAlerts>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub workflows: ::std::option::Option<AppPermissionsWorkflows>,
-}
-impl ::std::default::Default for AppPermissions {
-    fn default() -> Self {
-        Self {
-            actions: Default::default(),
-            administration: Default::default(),
-            checks: Default::default(),
-            content_references: Default::default(),
-            contents: Default::default(),
-            deployments: Default::default(),
-            discussions: Default::default(),
-            emails: Default::default(),
-            environments: Default::default(),
-            issues: Default::default(),
-            members: Default::default(),
-            metadata: Default::default(),
-            organization_administration: Default::default(),
-            organization_hooks: Default::default(),
-            organization_packages: Default::default(),
-            organization_plan: Default::default(),
-            organization_projects: Default::default(),
-            organization_secrets: Default::default(),
-            organization_self_hosted_runners: Default::default(),
-            organization_user_blocking: Default::default(),
-            packages: Default::default(),
-            pages: Default::default(),
-            pull_requests: Default::default(),
-            repository_hooks: Default::default(),
-            repository_projects: Default::default(),
-            secret_scanning_alerts: Default::default(),
-            secrets: Default::default(),
-            security_events: Default::default(),
-            security_scanning_alert: Default::default(),
-            single_file: Default::default(),
-            statuses: Default::default(),
-            team_discussions: Default::default(),
-            vulnerability_alerts: Default::default(),
-            workflows: Default::default(),
-        }
-    }
 }
 #[doc = "`AppPermissionsActions`"]
 #[doc = r""]
@@ -4343,7 +4285,7 @@ impl ::std::convert::TryFrom<::std::string::String> for BranchProtectionRuleEdit
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct BranchProtectionRuleEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -4352,14 +4294,6 @@ pub struct BranchProtectionRuleEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub authorized_actors_only:
         ::std::option::Option<BranchProtectionRuleEditedChangesAuthorizedActorsOnly>,
-}
-impl ::std::default::Default for BranchProtectionRuleEditedChanges {
-    fn default() -> Self {
-        Self {
-            authorized_actor_names: Default::default(),
-            authorized_actors_only: Default::default(),
-        }
-    }
 }
 #[doc = "`BranchProtectionRuleEditedChangesAuthorizedActorNames`"]
 #[doc = r""]
@@ -6091,19 +6025,12 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunCompletedCheckRu
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCompletedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub identifier: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CheckRunCompletedRequestedAction {
-    fn default() -> Self {
-        Self {
-            identifier: Default::default(),
-        }
-    }
 }
 #[doc = "`CheckRunCreated`"]
 #[doc = r""]
@@ -7263,19 +7190,12 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunCreatedCheckRunS
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunCreatedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub identifier: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CheckRunCreatedRequestedAction {
-    fn default() -> Self {
-        Self {
-            identifier: Default::default(),
-        }
-    }
 }
 #[doc = "A deployment to a repository environment. This will only be populated if the check run was created by a GitHub Actions workflow job that references an environment."]
 #[doc = r""]
@@ -8720,19 +8640,12 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunRequestedActionC
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRequestedActionRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub identifier: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CheckRunRequestedActionRequestedAction {
-    fn default() -> Self {
-        Self {
-            identifier: Default::default(),
-        }
-    }
 }
 #[doc = "`CheckRunRerequested`"]
 #[doc = r""]
@@ -9846,19 +9759,12 @@ impl ::std::convert::TryFrom<::std::string::String> for CheckRunRerequestedCheck
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CheckRunRerequestedRequestedAction {
     #[doc = "The integrator reference of the action requested by the user."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub identifier: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CheckRunRerequestedRequestedAction {
-    fn default() -> Self {
-        Self {
-            identifier: Default::default(),
-        }
-    }
 }
 #[doc = "`CheckSuiteCompleted`"]
 #[doc = r""]
@@ -12892,7 +12798,7 @@ pub struct CodeScanningAlertClosedByUserAlertInstancesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlertInstancesItemLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -12905,17 +12811,6 @@ pub struct CodeScanningAlertClosedByUserAlertInstancesItemLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for CodeScanningAlertClosedByUserAlertInstancesItemLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertClosedByUserAlertInstancesItemMessage`"]
 #[doc = r""]
@@ -12933,18 +12828,11 @@ impl ::std::default::Default for CodeScanningAlertClosedByUserAlertInstancesItem
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertClosedByUserAlertInstancesItemMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CodeScanningAlertClosedByUserAlertInstancesItemMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertClosedByUserAlertInstancesItemState`"]
 #[doc = r""]
@@ -13807,7 +13695,7 @@ pub struct CodeScanningAlertCreatedAlertInstancesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlertInstancesItemLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -13820,17 +13708,6 @@ pub struct CodeScanningAlertCreatedAlertInstancesItemLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for CodeScanningAlertCreatedAlertInstancesItemLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertCreatedAlertInstancesItemMessage`"]
 #[doc = r""]
@@ -13848,18 +13725,11 @@ impl ::std::default::Default for CodeScanningAlertCreatedAlertInstancesItemLocat
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertCreatedAlertInstancesItemMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CodeScanningAlertCreatedAlertInstancesItemMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertCreatedAlertInstancesItemState`"]
 #[doc = r""]
@@ -14914,7 +14784,7 @@ pub struct CodeScanningAlertFixedAlertInstancesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlertInstancesItemLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -14927,17 +14797,6 @@ pub struct CodeScanningAlertFixedAlertInstancesItemLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for CodeScanningAlertFixedAlertInstancesItemLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertFixedAlertInstancesItemMessage`"]
 #[doc = r""]
@@ -14955,18 +14814,11 @@ impl ::std::default::Default for CodeScanningAlertFixedAlertInstancesItemLocatio
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertFixedAlertInstancesItemMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CodeScanningAlertFixedAlertInstancesItemMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertFixedAlertInstancesItemState`"]
 #[doc = r""]
@@ -15826,7 +15678,7 @@ pub struct CodeScanningAlertReopenedAlertInstancesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlertInstancesItemLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -15839,17 +15691,6 @@ pub struct CodeScanningAlertReopenedAlertInstancesItemLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for CodeScanningAlertReopenedAlertInstancesItemLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertReopenedAlertInstancesItemMessage`"]
 #[doc = r""]
@@ -15867,18 +15708,11 @@ impl ::std::default::Default for CodeScanningAlertReopenedAlertInstancesItemLoca
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedAlertInstancesItemMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CodeScanningAlertReopenedAlertInstancesItemMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertReopenedAlertInstancesItemState`"]
 #[doc = r""]
@@ -16708,7 +16542,7 @@ pub struct CodeScanningAlertReopenedByUserAlertInstancesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlertInstancesItemLocation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -16721,17 +16555,6 @@ pub struct CodeScanningAlertReopenedByUserAlertInstancesItemLocation {
     pub start_column: ::std::option::Option<i64>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub start_line: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for CodeScanningAlertReopenedByUserAlertInstancesItemLocation {
-    fn default() -> Self {
-        Self {
-            end_column: Default::default(),
-            end_line: Default::default(),
-            path: Default::default(),
-            start_column: Default::default(),
-            start_line: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertReopenedByUserAlertInstancesItemMessage`"]
 #[doc = r""]
@@ -16749,18 +16572,11 @@ impl ::std::default::Default for CodeScanningAlertReopenedByUserAlertInstancesIt
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct CodeScanningAlertReopenedByUserAlertInstancesItemMessage {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub text: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for CodeScanningAlertReopenedByUserAlertInstancesItemMessage {
-    fn default() -> Self {
-        Self {
-            text: Default::default(),
-        }
-    }
 }
 #[doc = "`CodeScanningAlertReopenedByUserAlertInstancesItemState`"]
 #[doc = r""]
@@ -18837,14 +18653,9 @@ pub struct DeploymentCreatedDeployment {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentCreatedDeploymentPayload {}
-impl ::std::default::Default for DeploymentCreatedDeploymentPayload {
-    fn default() -> Self {
-        Self {}
-    }
-}
 #[doc = "`DeploymentEvent`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -19270,14 +19081,9 @@ pub struct DeploymentStatusCreatedDeployment {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DeploymentStatusCreatedDeploymentPayload {}
-impl ::std::default::Default for DeploymentStatusCreatedDeploymentPayload {
-    fn default() -> Self {
-        Self {}
-    }
-}
 #[doc = "The [deployment status](https://docs.github.com/en/rest/reference/repos#list-deployment-statuses)."]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -22308,21 +22114,13 @@ impl ::std::convert::TryFrom<::std::string::String> for DiscussionEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DiscussionEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<DiscussionEditedChangesBody>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<DiscussionEditedChangesTitle>,
-}
-impl ::std::default::Default for DiscussionEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`DiscussionEditedChangesBody`"]
 #[doc = r""]
@@ -27445,7 +27243,7 @@ pub struct InstallationNewPermissionsAcceptedRepositoriesItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationPermissions {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -27522,47 +27320,6 @@ pub struct InstallationPermissions {
     pub vulnerability_alerts: ::std::option::Option<InstallationPermissionsVulnerabilityAlerts>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub workflows: ::std::option::Option<InstallationPermissionsWorkflows>,
-}
-impl ::std::default::Default for InstallationPermissions {
-    fn default() -> Self {
-        Self {
-            actions: Default::default(),
-            administration: Default::default(),
-            checks: Default::default(),
-            content_references: Default::default(),
-            contents: Default::default(),
-            deployments: Default::default(),
-            discussions: Default::default(),
-            emails: Default::default(),
-            environments: Default::default(),
-            issues: Default::default(),
-            members: Default::default(),
-            metadata: Default::default(),
-            organization_administration: Default::default(),
-            organization_events: Default::default(),
-            organization_hooks: Default::default(),
-            organization_packages: Default::default(),
-            organization_plan: Default::default(),
-            organization_projects: Default::default(),
-            organization_secrets: Default::default(),
-            organization_self_hosted_runners: Default::default(),
-            organization_user_blocking: Default::default(),
-            packages: Default::default(),
-            pages: Default::default(),
-            pull_requests: Default::default(),
-            repository_hooks: Default::default(),
-            repository_projects: Default::default(),
-            secret_scanning_alerts: Default::default(),
-            secrets: Default::default(),
-            security_events: Default::default(),
-            security_scanning_alert: Default::default(),
-            single_file: Default::default(),
-            statuses: Default::default(),
-            team_discussions: Default::default(),
-            vulnerability_alerts: Default::default(),
-            workflows: Default::default(),
-        }
-    }
 }
 #[doc = "`InstallationPermissionsActions`"]
 #[doc = r""]
@@ -30090,7 +29847,7 @@ pub struct InstallationRepositoriesAddedRepositoriesAddedItem {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -30106,17 +29863,6 @@ pub struct InstallationRepositoriesAddedRepositoriesRemovedItem {
     #[doc = "Whether the repository is private or public."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub private: ::std::option::Option<bool>,
-}
-impl ::std::default::Default for InstallationRepositoriesAddedRepositoriesRemovedItem {
-    fn default() -> Self {
-        Self {
-            full_name: Default::default(),
-            id: Default::default(),
-            name: Default::default(),
-            node_id: Default::default(),
-            private: Default::default(),
-        }
-    }
 }
 #[doc = "Describe whether all repositories have been selected or there's a selection involved"]
 #[doc = r""]
@@ -31478,7 +31224,7 @@ impl ::std::convert::TryFrom<::std::string::String> for InstallationSuspendInsta
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationSuspendInstallationPermissions {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -31571,47 +31317,6 @@ pub struct InstallationSuspendInstallationPermissions {
         ::std::option::Option<InstallationSuspendInstallationPermissionsVulnerabilityAlerts>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub workflows: ::std::option::Option<InstallationSuspendInstallationPermissionsWorkflows>,
-}
-impl ::std::default::Default for InstallationSuspendInstallationPermissions {
-    fn default() -> Self {
-        Self {
-            actions: Default::default(),
-            administration: Default::default(),
-            checks: Default::default(),
-            content_references: Default::default(),
-            contents: Default::default(),
-            deployments: Default::default(),
-            discussions: Default::default(),
-            emails: Default::default(),
-            environments: Default::default(),
-            issues: Default::default(),
-            members: Default::default(),
-            metadata: Default::default(),
-            organization_administration: Default::default(),
-            organization_events: Default::default(),
-            organization_hooks: Default::default(),
-            organization_packages: Default::default(),
-            organization_plan: Default::default(),
-            organization_projects: Default::default(),
-            organization_secrets: Default::default(),
-            organization_self_hosted_runners: Default::default(),
-            organization_user_blocking: Default::default(),
-            packages: Default::default(),
-            pages: Default::default(),
-            pull_requests: Default::default(),
-            repository_hooks: Default::default(),
-            repository_projects: Default::default(),
-            secret_scanning_alerts: Default::default(),
-            secrets: Default::default(),
-            security_events: Default::default(),
-            security_scanning_alert: Default::default(),
-            single_file: Default::default(),
-            statuses: Default::default(),
-            team_discussions: Default::default(),
-            vulnerability_alerts: Default::default(),
-            workflows: Default::default(),
-        }
-    }
 }
 #[doc = "`InstallationSuspendInstallationPermissionsActions`"]
 #[doc = r""]
@@ -35309,7 +35014,7 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct InstallationUnsuspendInstallationPermissions {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -35404,47 +35109,6 @@ pub struct InstallationUnsuspendInstallationPermissions {
         ::std::option::Option<InstallationUnsuspendInstallationPermissionsVulnerabilityAlerts>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub workflows: ::std::option::Option<InstallationUnsuspendInstallationPermissionsWorkflows>,
-}
-impl ::std::default::Default for InstallationUnsuspendInstallationPermissions {
-    fn default() -> Self {
-        Self {
-            actions: Default::default(),
-            administration: Default::default(),
-            checks: Default::default(),
-            content_references: Default::default(),
-            contents: Default::default(),
-            deployments: Default::default(),
-            discussions: Default::default(),
-            emails: Default::default(),
-            environments: Default::default(),
-            issues: Default::default(),
-            members: Default::default(),
-            metadata: Default::default(),
-            organization_administration: Default::default(),
-            organization_events: Default::default(),
-            organization_hooks: Default::default(),
-            organization_packages: Default::default(),
-            organization_plan: Default::default(),
-            organization_projects: Default::default(),
-            organization_secrets: Default::default(),
-            organization_self_hosted_runners: Default::default(),
-            organization_user_blocking: Default::default(),
-            packages: Default::default(),
-            pages: Default::default(),
-            pull_requests: Default::default(),
-            repository_hooks: Default::default(),
-            repository_projects: Default::default(),
-            secret_scanning_alerts: Default::default(),
-            secrets: Default::default(),
-            security_events: Default::default(),
-            security_scanning_alert: Default::default(),
-            single_file: Default::default(),
-            statuses: Default::default(),
-            team_discussions: Default::default(),
-            vulnerability_alerts: Default::default(),
-            workflows: Default::default(),
-        }
-    }
 }
 #[doc = "`InstallationUnsuspendInstallationPermissionsActions`"]
 #[doc = r""]
@@ -39974,18 +39638,11 @@ impl ::std::convert::TryFrom<::std::string::String> for IssueCommentEditedAction
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssueCommentEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<IssueCommentEditedChangesBody>,
-}
-impl ::std::default::Default for IssueCommentEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-        }
-    }
 }
 #[doc = "`IssueCommentEditedChangesBody`"]
 #[doc = r""]
@@ -40504,7 +40161,7 @@ impl ::std::convert::From<IssueCommentEdited> for IssueCommentEvent {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -40515,16 +40172,6 @@ pub struct IssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
 #[doc = r""]
@@ -41037,7 +40684,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesClosedIssueActiveL
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesClosedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -41048,16 +40695,6 @@ pub struct IssuesClosedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesClosedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "`IssuesClosedIssueState`"]
 #[doc = r""]
@@ -41534,7 +41171,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesDemilestonedIssueA
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesDemilestonedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -41545,16 +41182,6 @@ pub struct IssuesDemilestonedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesDemilestonedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
 #[doc = r""]
@@ -41814,21 +41441,13 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<IssuesEditedChangesBody>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<IssuesEditedChangesTitle>,
-}
-impl ::std::default::Default for IssuesEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`IssuesEditedChangesBody`"]
 #[doc = r""]
@@ -42492,7 +42111,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesLockedIssueActiveL
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesLockedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -42503,16 +42122,6 @@ pub struct IssuesLockedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesLockedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
 #[doc = r""]
@@ -43080,7 +42689,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesMilestonedIssueMil
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesMilestonedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -43091,16 +42700,6 @@ pub struct IssuesMilestonedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesMilestonedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
 #[doc = r""]
@@ -43524,7 +43123,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesOpenedIssueActiveL
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesOpenedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -43535,16 +43134,6 @@ pub struct IssuesOpenedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesOpenedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "`IssuesOpenedIssueState`"]
 #[doc = r""]
@@ -44020,7 +43609,7 @@ impl ::std::convert::TryFrom<::std::string::String> for IssuesReopenedIssueActiv
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesReopenedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -44031,16 +43620,6 @@ pub struct IssuesReopenedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesReopenedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "`IssuesReopenedIssueState`"]
 #[doc = r""]
@@ -44794,7 +44373,7 @@ impl<'de> ::serde::Deserialize<'de> for IssuesUnlockedIssueActiveLockReason {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct IssuesUnlockedIssuePullRequest {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -44805,16 +44384,6 @@ pub struct IssuesUnlockedIssuePullRequest {
     pub patch_url: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub url: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for IssuesUnlockedIssuePullRequest {
-    fn default() -> Self {
-        Self {
-            diff_url: Default::default(),
-            html_url: Default::default(),
-            patch_url: Default::default(),
-            url: Default::default(),
-        }
-    }
 }
 #[doc = "State of the issue; either 'open' or 'closed'"]
 #[doc = r""]
@@ -45506,7 +45075,7 @@ impl ::std::convert::TryFrom<::std::string::String> for LabelEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LabelEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -45515,15 +45084,6 @@ pub struct LabelEditedChanges {
     pub description: ::std::option::Option<LabelEditedChangesDescription>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<LabelEditedChangesName>,
-}
-impl ::std::default::Default for LabelEditedChanges {
-    fn default() -> Self {
-        Self {
-            color: Default::default(),
-            description: Default::default(),
-            name: Default::default(),
-        }
-    }
 }
 #[doc = "`LabelEditedChangesColor`"]
 #[doc = r""]
@@ -48626,18 +48186,11 @@ impl ::std::convert::TryFrom<::std::string::String> for MemberAddedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct MemberAddedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub permission: ::std::option::Option<MemberAddedChangesPermission>,
-}
-impl ::std::default::Default for MemberAddedChanges {
-    fn default() -> Self {
-        Self {
-            permission: Default::default(),
-        }
-    }
 }
 #[doc = "`MemberAddedChangesPermission`"]
 #[doc = r""]
@@ -50958,7 +50511,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MilestoneEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct MilestoneEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -50967,15 +50520,6 @@ pub struct MilestoneEditedChanges {
     pub due_on: ::std::option::Option<MilestoneEditedChangesDueOn>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<MilestoneEditedChangesTitle>,
-}
-impl ::std::default::Default for MilestoneEditedChanges {
-    fn default() -> Self {
-        Self {
-            description: Default::default(),
-            due_on: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`MilestoneEditedChangesDescription`"]
 #[doc = r""]
@@ -57217,18 +56761,11 @@ impl ::std::convert::TryFrom<::std::string::String> for ProjectColumnEditedActio
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectColumnEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<ProjectColumnEditedChangesName>,
-}
-impl ::std::default::Default for ProjectColumnEditedChanges {
-    fn default() -> Self {
-        Self {
-            name: Default::default(),
-        }
-    }
 }
 #[doc = "`ProjectColumnEditedChangesName`"]
 #[doc = r""]
@@ -57832,21 +57369,13 @@ impl ::std::convert::TryFrom<::std::string::String> for ProjectEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<ProjectEditedChangesBody>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<ProjectEditedChangesName>,
-}
-impl ::std::default::Default for ProjectEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-            name: Default::default(),
-        }
-    }
 }
 #[doc = "`ProjectEditedChangesBody`"]
 #[doc = r""]
@@ -60776,21 +60305,13 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestEditedAction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<PullRequestEditedChangesBody>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub title: ::std::option::Option<PullRequestEditedChangesTitle>,
-}
-impl ::std::default::Default for PullRequestEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-            title: Default::default(),
-        }
-    }
 }
 #[doc = "`PullRequestEditedChangesBody`"]
 #[doc = r""]
@@ -66029,18 +65550,11 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewComment
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<PullRequestReviewCommentEditedChangesBody>,
-}
-impl ::std::default::Default for PullRequestReviewCommentEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-        }
-    }
 }
 #[doc = "`PullRequestReviewCommentEditedChangesBody`"]
 #[doc = r""]
@@ -67582,18 +67096,11 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewEditedA
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<PullRequestReviewEditedChangesBody>,
-}
-impl ::std::default::Default for PullRequestReviewEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-        }
-    }
 }
 #[doc = "`PullRequestReviewEditedChangesBody`"]
 #[doc = r""]
@@ -70006,21 +69513,13 @@ impl ::std::convert::TryFrom<::std::string::String> for ReleaseEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct ReleaseEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub body: ::std::option::Option<ReleaseEditedChangesBody>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub name: ::std::option::Option<ReleaseEditedChangesName>,
-}
-impl ::std::default::Default for ReleaseEditedChanges {
-    fn default() -> Self {
-        Self {
-            body: Default::default(),
-            name: Default::default(),
-        }
-    }
 }
 #[doc = "`ReleaseEditedChangesBody`"]
 #[doc = r""]
@@ -72520,7 +72019,7 @@ impl ::std::convert::TryFrom<::std::string::String> for RepositoryEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -72529,15 +72028,6 @@ pub struct RepositoryEditedChanges {
     pub description: ::std::option::Option<RepositoryEditedChangesDescription>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub homepage: ::std::option::Option<RepositoryEditedChangesHomepage>,
-}
-impl ::std::default::Default for RepositoryEditedChanges {
-    fn default() -> Self {
-        Self {
-            default_branch: Default::default(),
-            description: Default::default(),
-            homepage: Default::default(),
-        }
-    }
 }
 #[doc = "`RepositoryEditedChangesDefaultBranch`"]
 #[doc = r""]
@@ -74528,18 +74018,11 @@ pub struct RepositoryTransferredChangesOwner {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct RepositoryTransferredChangesOwnerFrom {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub user: ::std::option::Option<User>,
-}
-impl ::std::default::Default for RepositoryTransferredChangesOwnerFrom {
-    fn default() -> Self {
-        Self {
-            user: Default::default(),
-        }
-    }
 }
 #[doc = "`RepositoryUnarchived`"]
 #[doc = r""]
@@ -80413,18 +79896,11 @@ impl ::std::convert::TryFrom<::std::string::String> for SponsorshipEditedAction 
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct SponsorshipEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub privacy_level: ::std::option::Option<SponsorshipEditedChangesPrivacyLevel>,
-}
-impl ::std::default::Default for SponsorshipEditedChanges {
-    fn default() -> Self {
-        Self {
-            privacy_level: Default::default(),
-        }
-    }
 }
 #[doc = "`SponsorshipEditedChangesPrivacyLevel`"]
 #[doc = r""]
@@ -83646,7 +83122,7 @@ impl ::std::convert::TryFrom<::std::string::String> for TeamEditedAction {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct TeamEditedChanges {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -83657,16 +83133,6 @@ pub struct TeamEditedChanges {
     pub privacy: ::std::option::Option<TeamEditedChangesPrivacy>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub repository: ::std::option::Option<TeamEditedChangesRepository>,
-}
-impl ::std::default::Default for TeamEditedChanges {
-    fn default() -> Self {
-        Self {
-            description: Default::default(),
-            name: Default::default(),
-            privacy: Default::default(),
-            repository: Default::default(),
-        }
-    }
 }
 #[doc = "`TeamEditedChangesDescription`"]
 #[doc = r""]
@@ -83858,7 +83324,7 @@ pub struct TeamEditedChangesRepositoryPermissions {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct TeamEditedChangesRepositoryPermissionsFrom {
     #[doc = "The previous version of the team member's `admin` permission on a repository, if the action was `edited`."]
@@ -83870,15 +83336,6 @@ pub struct TeamEditedChangesRepositoryPermissionsFrom {
     #[doc = "The previous version of the team member's `push` permission on a repository, if the action was `edited`."]
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub push: ::std::option::Option<bool>,
-}
-impl ::std::default::Default for TeamEditedChangesRepositoryPermissionsFrom {
-    fn default() -> Self {
-        Self {
-            admin: Default::default(),
-            pull: Default::default(),
-            push: Default::default(),
-        }
-    }
 }
 #[doc = "`TeamEvent`"]
 #[doc = r""]

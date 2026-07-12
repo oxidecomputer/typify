@@ -63,17 +63,10 @@ impl AnythingWorks {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct FloatsArentTerribleImTold {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub flush_timeout: ::std::option::Option<f32>,
-}
-impl ::std::default::Default for FloatsArentTerribleImTold {
-    fn default() -> Self {
-        Self {
-            flush_timeout: Default::default(),
-        }
-    }
 }
 impl FloatsArentTerribleImTold {
     pub fn builder() -> builder::FloatsArentTerribleImTold {

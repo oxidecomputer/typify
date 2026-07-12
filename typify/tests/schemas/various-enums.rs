@@ -403,17 +403,10 @@ impl ::std::default::Default for DiskAttachmentState {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct EmptyObject {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub prop: ::std::option::Option<EmptyObjectProp>,
-}
-impl ::std::default::Default for EmptyObject {
-    fn default() -> Self {
-        Self {
-            prop: Default::default(),
-        }
-    }
 }
 impl EmptyObject {
     pub fn builder() -> builder::EmptyObject {

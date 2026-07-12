@@ -48,20 +48,12 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Node {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub children: ::std::vec::Vec<Node>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub value: ::std::option::Option<i64>,
-}
-impl ::std::default::Default for Node {
-    fn default() -> Self {
-        Self {
-            children: Default::default(),
-            value: Default::default(),
-        }
-    }
 }
 impl Node {
     pub fn builder() -> builder::Node {

@@ -43,20 +43,12 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option_marker: ::std::option::Option<::std::option::Option<Marker>>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::path::PathBuf>,
-}
-impl ::std::default::Default for AllTheThings {
-    fn default() -> Self {
-        Self {
-            option_marker: Default::default(),
-            path: Default::default(),
-        }
-    }
 }
 impl AllTheThings {
     pub fn builder() -> builder::AllTheThings {

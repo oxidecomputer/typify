@@ -143,17 +143,10 @@ impl MrDefaultNumbers {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct OuterThing {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub thing: ::std::option::Option<ThingWithDefaults>,
-}
-impl ::std::default::Default for OuterThing {
-    fn default() -> Self {
-        Self {
-            thing: Default::default(),
-        }
-    }
 }
 impl OuterThing {
     pub fn builder() -> builder::OuterThing {

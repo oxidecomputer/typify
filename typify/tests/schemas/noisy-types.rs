@@ -143,17 +143,10 @@ impl ::std::fmt::Display for IntegerBs {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ObjectBs {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
-}
-impl ::std::default::Default for ObjectBs {
-    fn default() -> Self {
-        Self {
-            ok: Default::default(),
-        }
-    }
 }
 impl ObjectBs {
     pub fn builder() -> builder::ObjectBs {
