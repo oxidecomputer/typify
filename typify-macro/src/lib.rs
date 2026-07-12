@@ -252,14 +252,19 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
     let path = dir.join(schema.value());
 
-    let root_schema: schemars::schema::RootSchema =
-        serde_json::from_reader(std::fs::File::open(&path).map_err(|e| {
-            syn::Error::new(
-                schema.span(),
-                format!("couldn't read file {}: {}", schema.value(), e),
-            )
-        })?)
-        .unwrap();
+    let file = std::fs::File::open(&path).map_err(|e| {
+        syn::Error::new(
+            schema.span(),
+            format!("couldn't read file {}: {}", schema.value(), e),
+        )
+    })?;
+
+    let root_schema: schemars::schema::RootSchema = serde_json::from_reader(file).map_err(|e| {
+        syn::Error::new(
+            schema.span(),
+            format!("couldn't parse file {}: {}", schema.value(), e),
+        )
+    })?;
 
     let mut type_space = TypeSpace::new(&settings);
     type_space
