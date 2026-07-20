@@ -77,14 +77,6 @@ impl ::std::convert::TryFrom<&str> for IdOrName {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for IdOrName {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for IdOrName {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -152,14 +144,6 @@ impl ::std::str::FromStr for IdOrNameRedundant {
 impl ::std::convert::TryFrom<&str> for IdOrNameRedundant {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IdOrNameRedundant {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -242,14 +226,6 @@ impl ::std::convert::TryFrom<&str> for IdOrYolo {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for IdOrYolo {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for IdOrYolo {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -315,14 +291,6 @@ impl ::std::str::FromStr for IdOrYoloYolo {
 impl ::std::convert::TryFrom<&str> for IdOrYoloYolo {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IdOrYoloYolo {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -394,14 +362,6 @@ impl ::std::str::FromStr for Name {
 impl ::std::convert::TryFrom<&str> for Name {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for Name {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

@@ -286,14 +286,6 @@ impl ::std::convert::TryFrom<&str> for FormatCollision {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for FormatCollision {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -525,14 +517,6 @@ impl ::std::str::FromStr for MapOfKeywordsKeywordMapValue {
 impl ::std::convert::TryFrom<&str> for MapOfKeywordsKeywordMapValue {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for MapOfKeywordsKeywordMapValue {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1428,14 +1412,6 @@ impl ::std::convert::TryFrom<&str> for StringEnum {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for StringEnum {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -1485,14 +1461,6 @@ impl ::std::str::FromStr for StringNewtype {
 impl ::std::convert::TryFrom<&str> for StringNewtype {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for StringNewtype {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

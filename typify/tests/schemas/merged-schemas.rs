@@ -343,14 +343,6 @@ impl ::std::convert::TryFrom<&str> for JsonSuccessBaseResult {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for JsonSuccessBaseResult {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -407,14 +399,6 @@ impl ::std::str::FromStr for JsonSuccessResult {
 impl ::std::convert::TryFrom<&str> for JsonSuccessResult {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for JsonSuccessResult {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -596,14 +580,6 @@ impl ::std::str::FromStr for MergeStringBounds {
 impl ::std::convert::TryFrom<&str> for MergeStringBounds {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for MergeStringBounds {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -975,14 +951,6 @@ impl ::std::convert::TryFrom<&str> for TriplePattern {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TriplePattern {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TriplePattern {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -1098,14 +1066,6 @@ impl ::std::str::FromStr for UnchangedByMergeTag {
 impl ::std::convert::TryFrom<&str> for UnchangedByMergeTag {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for UnchangedByMergeTag {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1397,14 +1357,6 @@ impl ::std::convert::TryFrom<&str> for Unsatisfiable3B {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for Unsatisfiable3B {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -1461,14 +1413,6 @@ impl ::std::str::FromStr for Unsatisfiable3C {
 impl ::std::convert::TryFrom<&str> for Unsatisfiable3C {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for Unsatisfiable3C {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }

@@ -899,14 +899,6 @@ impl ::std::convert::TryFrom<&str> for AggregateTransformOpsArrayItemVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AggregateTransformOpsArrayItemVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AggregateTransformOpsArrayItemVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -962,14 +954,6 @@ impl ::std::str::FromStr for AggregateTransformType {
 impl ::std::convert::TryFrom<&str> for AggregateTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AggregateTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1496,16 +1480,6 @@ impl ::std::convert::TryFrom<&str> for AlignValueVariant0ItemVariant0Variant1Val
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for AlignValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for AlignValueVariant0ItemVariant0Variant1Value
 {
@@ -1554,16 +1528,6 @@ impl ::std::str::FromStr for AlignValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for AlignValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for AlignValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -2113,14 +2077,6 @@ impl ::std::convert::TryFrom<&str> for AlignValueVariant1Variant0Variant1Value {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AlignValueVariant1Variant0Variant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AlignValueVariant1Variant0Variant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -2167,14 +2123,6 @@ impl ::std::str::FromStr for AlignValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for AlignValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AlignValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -2939,16 +2887,6 @@ impl ::std::convert::TryFrom<&str> for AnchorValueVariant0ItemVariant0Variant1Va
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for AnchorValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for AnchorValueVariant0ItemVariant0Variant1Value
 {
@@ -2997,16 +2935,6 @@ impl ::std::str::FromStr for AnchorValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for AnchorValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for AnchorValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -3556,14 +3484,6 @@ impl ::std::convert::TryFrom<&str> for AnchorValueVariant1Variant0Variant1Value 
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AnchorValueVariant1Variant0Variant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AnchorValueVariant1Variant0Variant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -3610,14 +3530,6 @@ impl ::std::str::FromStr for AnchorValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for AnchorValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AnchorValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -4339,14 +4251,6 @@ impl ::std::convert::TryFrom<&str> for AnyValueVariant0ItemVariant0Variant3Range
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AnyValueVariant0ItemVariant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AnyValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -4845,14 +4749,6 @@ impl ::std::str::FromStr for AnyValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for AnyValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AnyValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -5603,16 +5499,6 @@ impl ::std::convert::TryFrom<&str> for ArrayValueVariant0ItemVariant0Variant3Ran
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for ArrayValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for ArrayValueVariant0ItemVariant0Variant3Range
 {
@@ -6124,14 +6010,6 @@ impl ::std::convert::TryFrom<&str> for ArrayValueVariant1Variant0Variant3Range {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ArrayValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ArrayValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -6517,14 +6395,6 @@ impl ::std::convert::TryFrom<&str> for AutosizeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AutosizeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AutosizeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -6585,14 +6455,6 @@ impl ::std::str::FromStr for AutosizeVariant1Contains {
 impl ::std::convert::TryFrom<&str> for AutosizeVariant1Contains {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AutosizeVariant1Contains {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -6672,14 +6534,6 @@ impl ::std::str::FromStr for AutosizeVariant1Type {
 impl ::std::convert::TryFrom<&str> for AutosizeVariant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AutosizeVariant1Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -8423,14 +8277,6 @@ impl ::std::convert::TryFrom<&str> for AxisFormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AxisFormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AxisFormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -8731,14 +8577,6 @@ impl ::std::convert::TryFrom<&str> for AxisLabelAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AxisLabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AxisLabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -8892,14 +8730,6 @@ impl ::std::str::FromStr for AxisLabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for AxisLabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AxisLabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -9540,14 +9370,6 @@ impl ::std::convert::TryFrom<&str> for AxisOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AxisOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AxisOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -9980,14 +9802,6 @@ impl ::std::convert::TryFrom<&str> for AxisTitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for AxisTitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for AxisTitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -10092,14 +9906,6 @@ impl ::std::str::FromStr for AxisTitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for AxisTitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AxisTitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -10256,14 +10062,6 @@ impl ::std::str::FromStr for AxisTitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for AxisTitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for AxisTitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -11196,16 +10994,6 @@ impl ::std::convert::TryFrom<&str> for BaseColorValueVariant0Variant0Variant3Ran
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BaseColorValueVariant0Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for BaseColorValueVariant0Variant0Variant3Range
 {
@@ -12035,16 +11823,6 @@ impl ::std::convert::TryFrom<&str> for BaselineValueVariant0ItemVariant0Variant1
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BaselineValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for BaselineValueVariant0ItemVariant0Variant1Value
 {
@@ -12093,16 +11871,6 @@ impl ::std::str::FromStr for BaselineValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for BaselineValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BaselineValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -12661,16 +12429,6 @@ impl ::std::convert::TryFrom<&str> for BaselineValueVariant1Variant0Variant1Valu
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BaselineValueVariant1Variant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BaselineValueVariant1Variant0Variant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -12717,16 +12475,6 @@ impl ::std::str::FromStr for BaselineValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for BaselineValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BaselineValueVariant1Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -13972,14 +13720,6 @@ impl ::std::convert::TryFrom<&str> for BinTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for BinTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BinTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -14240,14 +13980,6 @@ impl ::std::convert::TryFrom<&str> for BindVariant0Input {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for BindVariant0Input {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BindVariant0Input {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -14311,14 +14043,6 @@ impl ::std::convert::TryFrom<&str> for BindVariant1Input {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for BindVariant1Input {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BindVariant1Input {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -14374,14 +14098,6 @@ impl ::std::str::FromStr for BindVariant2Input {
 impl ::std::convert::TryFrom<&str> for BindVariant2Input {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for BindVariant2Input {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -15080,16 +14796,6 @@ impl ::std::convert::TryFrom<&str> for BlendValueVariant0ItemVariant0Variant1Val
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BlendValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for BlendValueVariant0ItemVariant0Variant1Value
 {
@@ -15138,16 +14844,6 @@ impl ::std::str::FromStr for BlendValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for BlendValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BlendValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -15810,14 +15506,6 @@ impl ::std::convert::TryFrom<&str> for BlendValueVariant1Variant0Variant1Value {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for BlendValueVariant1Variant0Variant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BlendValueVariant1Variant0Variant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -15864,14 +15552,6 @@ impl ::std::str::FromStr for BlendValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for BlendValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for BlendValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -16660,16 +16340,6 @@ impl ::std::convert::TryFrom<&str> for BooleanValueVariant0ItemVariant0Variant3R
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for BooleanValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for BooleanValueVariant0ItemVariant0Variant3Range
 {
@@ -17181,14 +16851,6 @@ impl ::std::convert::TryFrom<&str> for BooleanValueVariant1Variant0Variant3Range
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for BooleanValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for BooleanValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -17511,14 +17173,6 @@ impl ::std::str::FromStr for CollectTransformType {
 impl ::std::convert::TryFrom<&str> for CollectTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for CollectTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -18382,14 +18036,6 @@ impl ::std::convert::TryFrom<&str> for ContourTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ContourTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ContourTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -18907,14 +18553,6 @@ impl ::std::convert::TryFrom<&str> for CountpatternTransformCaseVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for CountpatternTransformCaseVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for CountpatternTransformCaseVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -19074,14 +18712,6 @@ impl ::std::str::FromStr for CountpatternTransformType {
 impl ::std::convert::TryFrom<&str> for CountpatternTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for CountpatternTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -19290,14 +18920,6 @@ impl ::std::str::FromStr for CrossTransformType {
 impl ::std::convert::TryFrom<&str> for CrossTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for CrossTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -19550,14 +19172,6 @@ impl ::std::str::FromStr for CrossfilterTransformType {
 impl ::std::convert::TryFrom<&str> for CrossfilterTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for CrossfilterTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -20798,16 +20412,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype0ParseVariant0
 {
@@ -20862,16 +20466,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype0ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype0ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -20974,16 +20568,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant0
 {
@@ -21037,16 +20621,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype0ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -21284,16 +20858,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype1ParseVariant0
 {
@@ -21348,16 +20912,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -21460,16 +21014,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant0
 {
@@ -21523,16 +21067,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype1ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -21607,14 +21141,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype1Type {
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype1Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -21824,16 +21350,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype2ParseVariant0
 {
@@ -21888,16 +21404,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22000,16 +21506,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant0
 {
@@ -22063,16 +21559,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype2ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22152,14 +21638,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype2Type {
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype2Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype2Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22373,16 +21851,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype3ParseVariant0
 {
@@ -22437,16 +21905,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22549,16 +22007,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant0
 {
@@ -22612,16 +22060,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype3ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22696,14 +22134,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype3Type {
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype3Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant2FormatVariant0Subtype3Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -22845,16 +22275,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant0Type
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype4Variant0Type
 {
@@ -22921,16 +22341,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Filter
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant2FormatVariant0Subtype4Variant1Filter
 {
@@ -22988,16 +22398,6 @@ impl ::std::str::FromStr for DataVariant2FormatVariant0Subtype4Variant1Type {
 impl ::std::convert::TryFrom<&str> for DataVariant2FormatVariant0Subtype4Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant2FormatVariant0Subtype4Variant1Type
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -23512,16 +22912,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype0ParseVariant0
 {
@@ -23576,16 +22966,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype0ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype0ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -23688,16 +23068,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant0
 {
@@ -23751,16 +23121,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype0ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -23998,16 +23358,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype1ParseVariant0
 {
@@ -24062,16 +23412,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -24174,16 +23514,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant0
 {
@@ -24237,16 +23567,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype1ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -24321,14 +23641,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype1Type {
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype1Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -24538,16 +23850,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype2ParseVariant0
 {
@@ -24602,16 +23904,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -24714,16 +24006,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant0
 {
@@ -24777,16 +24059,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype2ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -24866,14 +24138,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype2Type {
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype2Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype2Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -25087,16 +24351,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVa
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype3ParseVariant0
 {
@@ -25151,16 +24405,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3ParseVariant1Valu
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3ParseVariant1Value {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -25263,16 +24507,6 @@ impl ::std::convert::TryFrom<&str>
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant0
 {
@@ -25326,16 +24560,6 @@ impl ::std::convert::TryFrom<&str>
 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype3ParseVariant1ValueVariant1
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -25410,14 +24634,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype3Type {
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype3Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DataVariant3FormatVariant0Subtype3Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -25559,16 +24775,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant0Type
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype4Variant0Type
 {
@@ -25635,16 +24841,6 @@ impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Filter
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DataVariant3FormatVariant0Subtype4Variant1Filter
 {
@@ -25702,16 +24898,6 @@ impl ::std::str::FromStr for DataVariant3FormatVariant0Subtype4Variant1Type {
 impl ::std::convert::TryFrom<&str> for DataVariant3FormatVariant0Subtype4Variant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DataVariant3FormatVariant0Subtype4Variant1Type
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -27017,14 +26203,6 @@ impl ::std::convert::TryFrom<&str> for DensityTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for DensityTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for DensityTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -27539,16 +26717,6 @@ impl ::std::convert::TryFrom<&str> for DirectionValueVariant0ItemVariant0Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DirectionValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DirectionValueVariant0ItemVariant0Variant1Value
 {
@@ -27597,16 +26765,6 @@ impl ::std::str::FromStr for DirectionValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for DirectionValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DirectionValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -28147,16 +27305,6 @@ impl ::std::convert::TryFrom<&str> for DirectionValueVariant1Variant0Variant1Val
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DirectionValueVariant1Variant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for DirectionValueVariant1Variant0Variant1Value
 {
@@ -28205,16 +27353,6 @@ impl ::std::str::FromStr for DirectionValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for DirectionValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for DirectionValueVariant1Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -28852,14 +27990,6 @@ impl ::std::str::FromStr for DotbinTransformType {
 impl ::std::convert::TryFrom<&str> for DotbinTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for DotbinTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -29550,14 +28680,6 @@ impl ::std::convert::TryFrom<&str> for EncodeKey {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for EncodeKey {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for EncodeKey {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -29949,14 +29071,6 @@ impl ::std::str::FromStr for ExtentTransformType {
 impl ::std::convert::TryFrom<&str> for ExtentTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ExtentTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -30440,14 +29554,6 @@ impl ::std::convert::TryFrom<&str> for FilterTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for FilterTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for FilterTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -30790,14 +29896,6 @@ impl ::std::convert::TryFrom<&str> for FlattenTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for FlattenTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for FlattenTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -31111,14 +30209,6 @@ impl ::std::str::FromStr for FoldTransformType {
 impl ::std::convert::TryFrom<&str> for FoldTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for FoldTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -31703,16 +30793,6 @@ impl ::std::str::FromStr for FontWeightValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for FontWeightValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for FontWeightValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -32320,16 +31400,6 @@ impl ::std::str::FromStr for FontWeightValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for FontWeightValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for FontWeightValueVariant1Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -34209,14 +33279,6 @@ impl ::std::convert::TryFrom<&str> for ForceTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ForceTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ForceTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -34434,14 +33496,6 @@ impl ::std::str::FromStr for FormulaTransformType {
 impl ::std::convert::TryFrom<&str> for FormulaTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for FormulaTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -34738,14 +33792,6 @@ impl ::std::convert::TryFrom<&str> for GeojsonTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for GeojsonTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for GeojsonTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -35015,14 +34061,6 @@ impl ::std::str::FromStr for GeopathTransformType {
 impl ::std::convert::TryFrom<&str> for GeopathTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for GeopathTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -35351,14 +34389,6 @@ impl ::std::convert::TryFrom<&str> for GeopointTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for GeopointTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for GeopointTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -35635,14 +34665,6 @@ impl ::std::str::FromStr for GeoshapeTransformType {
 impl ::std::convert::TryFrom<&str> for GeoshapeTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for GeoshapeTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -36371,14 +35393,6 @@ impl ::std::convert::TryFrom<&str> for GraticuleTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for GraticuleTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for GraticuleTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -36816,14 +35830,6 @@ impl ::std::convert::TryFrom<&str> for HeatmapTransformResolveVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for HeatmapTransformResolveVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for HeatmapTransformResolveVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -36879,14 +35885,6 @@ impl ::std::str::FromStr for HeatmapTransformType {
 impl ::std::convert::TryFrom<&str> for HeatmapTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for HeatmapTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -37018,14 +36016,6 @@ impl ::std::str::FromStr for IdentifierTransformType {
 impl ::std::convert::TryFrom<&str> for IdentifierTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IdentifierTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -37482,14 +36472,6 @@ impl ::std::convert::TryFrom<&str> for ImputeTransformMethodVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ImputeTransformMethodVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ImputeTransformMethodVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -37545,14 +36527,6 @@ impl ::std::str::FromStr for ImputeTransformType {
 impl ::std::convert::TryFrom<&str> for ImputeTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ImputeTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -38004,14 +36978,6 @@ impl ::std::convert::TryFrom<&str> for IsocontourTransformResolveVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for IsocontourTransformResolveVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for IsocontourTransformResolveVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -38337,14 +37303,6 @@ impl ::std::str::FromStr for IsocontourTransformType {
 impl ::std::convert::TryFrom<&str> for IsocontourTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for IsocontourTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -39175,16 +38133,6 @@ impl ::std::convert::TryFrom<&str> for JoinaggregateTransformOpsArrayItemVariant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for JoinaggregateTransformOpsArrayItemVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for JoinaggregateTransformOpsArrayItemVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -39240,14 +38188,6 @@ impl ::std::str::FromStr for JoinaggregateTransformType {
 impl ::std::convert::TryFrom<&str> for JoinaggregateTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for JoinaggregateTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -39843,14 +38783,6 @@ impl ::std::str::FromStr for Kde2dTransformType {
 impl ::std::convert::TryFrom<&str> for Kde2dTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for Kde2dTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -40765,14 +39697,6 @@ impl ::std::convert::TryFrom<&str> for KdeTransformResolveVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for KdeTransformResolveVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for KdeTransformResolveVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -40861,14 +39785,6 @@ impl ::std::str::FromStr for KdeTransformType {
 impl ::std::convert::TryFrom<&str> for KdeTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for KdeTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -40977,14 +39893,6 @@ impl ::std::str::FromStr for LabelOverlapVariant1 {
 impl ::std::convert::TryFrom<&str> for LabelOverlapVariant1 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LabelOverlapVariant1 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -41851,14 +40759,6 @@ impl ::std::convert::TryFrom<&str> for LabelTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LabelTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LabelTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -42368,14 +41268,6 @@ impl ::std::convert::TryFrom<&str> for LayoutObjectAlignVariant0Variant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LayoutObjectAlignVariant0Variant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LayoutObjectAlignVariant0Variant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -42480,14 +41372,6 @@ impl ::std::str::FromStr for LayoutObjectAlignVariant1ColumnVariant0 {
 impl ::std::convert::TryFrom<&str> for LayoutObjectAlignVariant1ColumnVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LayoutObjectAlignVariant1ColumnVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -42596,14 +41480,6 @@ impl ::std::convert::TryFrom<&str> for LayoutObjectAlignVariant1RowVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LayoutObjectAlignVariant1RowVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LayoutObjectAlignVariant1RowVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -42700,14 +41576,6 @@ impl ::std::str::FromStr for LayoutObjectBoundsVariant0 {
 impl ::std::convert::TryFrom<&str> for LayoutObjectBoundsVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LayoutObjectBoundsVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -43173,14 +42041,6 @@ impl ::std::convert::TryFrom<&str> for LayoutObjectTitleAnchorVariant0Variant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LayoutObjectTitleAnchorVariant0Variant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LayoutObjectTitleAnchorVariant0Variant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -43279,16 +42139,6 @@ impl ::std::str::FromStr for LayoutObjectTitleAnchorVariant1ColumnVariant0 {
 impl ::std::convert::TryFrom<&str> for LayoutObjectTitleAnchorVariant1ColumnVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for LayoutObjectTitleAnchorVariant1ColumnVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -43392,16 +42242,6 @@ impl ::std::str::FromStr for LayoutObjectTitleAnchorVariant1RowVariant0 {
 impl ::std::convert::TryFrom<&str> for LayoutObjectTitleAnchorVariant1RowVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for LayoutObjectTitleAnchorVariant1RowVariant0
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -46755,14 +45595,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0Direction {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0Direction {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -47045,14 +45877,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -47256,14 +46080,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -47366,14 +46182,6 @@ impl ::std::str::FromStr for LegendVariant0LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant0LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -47497,14 +46305,6 @@ impl ::std::str::FromStr for LegendVariant0LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant0LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -48027,14 +46827,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -48498,14 +47290,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -48612,14 +47396,6 @@ impl ::std::str::FromStr for LegendVariant0TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant0TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -48743,14 +47519,6 @@ impl ::std::str::FromStr for LegendVariant0TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant0TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -49142,14 +47910,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -49246,14 +48006,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant0Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant0Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant0Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -49347,14 +48099,6 @@ impl ::std::str::FromStr for LegendVariant1Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant1Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -49640,14 +48384,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -49851,14 +48587,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -49961,14 +48689,6 @@ impl ::std::str::FromStr for LegendVariant1LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant1LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -50092,14 +48812,6 @@ impl ::std::str::FromStr for LegendVariant1LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant1LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -50622,14 +49334,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -51093,14 +49797,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -51207,14 +49903,6 @@ impl ::std::str::FromStr for LegendVariant1TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant1TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -51338,14 +50026,6 @@ impl ::std::str::FromStr for LegendVariant1TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant1TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -51737,14 +50417,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -51841,14 +50513,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant1Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant1Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant1Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -51942,14 +50606,6 @@ impl ::std::str::FromStr for LegendVariant2Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant2Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -52235,14 +50891,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -52446,14 +51094,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -52556,14 +51196,6 @@ impl ::std::str::FromStr for LegendVariant2LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant2LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -52687,14 +51319,6 @@ impl ::std::str::FromStr for LegendVariant2LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant2LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -53217,14 +51841,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -53688,14 +52304,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -53802,14 +52410,6 @@ impl ::std::str::FromStr for LegendVariant2TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant2TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -53933,14 +52533,6 @@ impl ::std::str::FromStr for LegendVariant2TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant2TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -54332,14 +52924,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -54436,14 +53020,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant2Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant2Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant2Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -54537,14 +53113,6 @@ impl ::std::str::FromStr for LegendVariant3Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant3Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -54830,14 +53398,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -55041,14 +53601,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -55151,14 +53703,6 @@ impl ::std::str::FromStr for LegendVariant3LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant3LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -55282,14 +53826,6 @@ impl ::std::str::FromStr for LegendVariant3LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant3LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -55812,14 +54348,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -56283,14 +54811,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -56397,14 +54917,6 @@ impl ::std::str::FromStr for LegendVariant3TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant3TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -56528,14 +55040,6 @@ impl ::std::str::FromStr for LegendVariant3TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant3TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -56927,14 +55431,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -57031,14 +55527,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant3Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant3Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant3Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -57132,14 +55620,6 @@ impl ::std::str::FromStr for LegendVariant4Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant4Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -57425,14 +55905,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -57636,14 +56108,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -57746,14 +56210,6 @@ impl ::std::str::FromStr for LegendVariant4LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant4LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -57877,14 +56333,6 @@ impl ::std::str::FromStr for LegendVariant4LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant4LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -58407,14 +56855,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -58878,14 +57318,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -58992,14 +57424,6 @@ impl ::std::str::FromStr for LegendVariant4TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant4TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -59123,14 +57547,6 @@ impl ::std::str::FromStr for LegendVariant4TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant4TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -59522,14 +57938,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -59626,14 +58034,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant4Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant4Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant4Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -59727,14 +58127,6 @@ impl ::std::str::FromStr for LegendVariant5Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant5Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -60020,14 +58412,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -60231,14 +58615,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -60341,14 +58717,6 @@ impl ::std::str::FromStr for LegendVariant5LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant5LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -60472,14 +58840,6 @@ impl ::std::str::FromStr for LegendVariant5LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant5LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -61002,14 +59362,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -61473,14 +59825,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -61587,14 +59931,6 @@ impl ::std::str::FromStr for LegendVariant5TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant5TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -61718,14 +60054,6 @@ impl ::std::str::FromStr for LegendVariant5TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant5TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -62117,14 +60445,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -62221,14 +60541,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant5Type {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant5Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant5Type {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -62322,14 +60634,6 @@ impl ::std::str::FromStr for LegendVariant6Direction {
 impl ::std::convert::TryFrom<&str> for LegendVariant6Direction {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6Direction {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -62615,14 +60919,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant6FormatTypeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6FormatTypeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6FormatTypeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -62826,14 +61122,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant6GridAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6GridAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6GridAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -62936,14 +61224,6 @@ impl ::std::str::FromStr for LegendVariant6LabelAlignVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant6LabelAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6LabelAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -63067,14 +61347,6 @@ impl ::std::str::FromStr for LegendVariant6LabelBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant6LabelBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6LabelBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -63597,14 +61869,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant6OrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6OrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6OrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -64068,14 +62332,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant6TitleAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6TitleAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6TitleAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -64182,14 +62438,6 @@ impl ::std::str::FromStr for LegendVariant6TitleAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant6TitleAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6TitleAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -64313,14 +62561,6 @@ impl ::std::str::FromStr for LegendVariant6TitleBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for LegendVariant6TitleBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6TitleBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -64712,14 +62952,6 @@ impl ::std::convert::TryFrom<&str> for LegendVariant6TitleOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6TitleOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LegendVariant6TitleOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -64813,14 +63045,6 @@ impl ::std::str::FromStr for LegendVariant6Type {
 impl ::std::convert::TryFrom<&str> for LegendVariant6Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LegendVariant6Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -64935,14 +63159,6 @@ impl ::std::str::FromStr for LinearGradientGradient {
 impl ::std::convert::TryFrom<&str> for LinearGradientGradient {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LinearGradientGradient {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -65241,14 +63457,6 @@ impl ::std::convert::TryFrom<&str> for LinkpathTransformOrientVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LinkpathTransformOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LinkpathTransformOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -65369,14 +63577,6 @@ impl ::std::str::FromStr for LinkpathTransformShapeVariant0 {
 impl ::std::convert::TryFrom<&str> for LinkpathTransformShapeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LinkpathTransformShapeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -65635,14 +63835,6 @@ impl ::std::str::FromStr for LinkpathTransformType {
 impl ::std::convert::TryFrom<&str> for LinkpathTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LinkpathTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -66072,14 +64264,6 @@ impl ::std::str::FromStr for LoessTransformType {
 impl ::std::convert::TryFrom<&str> for LoessTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for LoessTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -66559,14 +64743,6 @@ impl ::std::convert::TryFrom<&str> for LookupTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for LookupTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for LookupTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -66956,14 +65132,6 @@ impl ::std::str::FromStr for MarkGroupType {
 impl ::std::convert::TryFrom<&str> for MarkGroupType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for MarkGroupType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -67375,14 +65543,6 @@ impl ::std::convert::TryFrom<&str> for NestTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for NestTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for NestTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -67521,14 +65681,6 @@ impl ::std::str::FromStr for NumberModifiersBand {
 impl ::std::convert::TryFrom<&str> for NumberModifiersBand {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for NumberModifiersBand {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -68273,16 +66425,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant0ItemVariant0Variant0Ba
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for NumberValueVariant0ItemVariant0Variant0Band
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for NumberValueVariant0ItemVariant0Variant0Band
 {
@@ -68448,16 +66590,6 @@ impl ::std::str::FromStr for NumberValueVariant0ItemVariant0Variant1Band {
 impl ::std::convert::TryFrom<&str> for NumberValueVariant0ItemVariant0Variant1Band {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for NumberValueVariant0ItemVariant0Variant1Band
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -68629,16 +66761,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant0ItemVariant0Variant2Ba
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for NumberValueVariant0ItemVariant0Variant2Band
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for NumberValueVariant0ItemVariant0Variant2Band
 {
@@ -68807,16 +66929,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant0ItemVariant0Variant3Ba
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for NumberValueVariant0ItemVariant0Variant3Band
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for NumberValueVariant0ItemVariant0Variant3Band
 {
@@ -68982,16 +67094,6 @@ impl ::std::str::FromStr for NumberValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for NumberValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for NumberValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -69804,14 +67906,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant1Variant0Variant0Band {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for NumberValueVariant1Variant0Variant0Band {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for NumberValueVariant1Variant0Variant0Band {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -69981,14 +68075,6 @@ impl ::std::str::FromStr for NumberValueVariant1Variant0Variant1Band {
 impl ::std::convert::TryFrom<&str> for NumberValueVariant1Variant0Variant1Band {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for NumberValueVariant1Variant0Variant1Band {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -70164,14 +68250,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant1Variant0Variant2Band {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for NumberValueVariant1Variant0Variant2Band {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for NumberValueVariant1Variant0Variant2Band {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -70344,14 +68422,6 @@ impl ::std::convert::TryFrom<&str> for NumberValueVariant1Variant0Variant3Band {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for NumberValueVariant1Variant0Variant3Band {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for NumberValueVariant1Variant0Variant3Band {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -70521,14 +68591,6 @@ impl ::std::str::FromStr for NumberValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for NumberValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for NumberValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -72078,16 +70140,6 @@ impl ::std::convert::TryFrom<&str> for OrientValueVariant0ItemVariant0Variant1Va
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for OrientValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for OrientValueVariant0ItemVariant0Variant1Value
 {
@@ -72136,16 +70188,6 @@ impl ::std::str::FromStr for OrientValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for OrientValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for OrientValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -72704,14 +70746,6 @@ impl ::std::convert::TryFrom<&str> for OrientValueVariant1Variant0Variant1Value 
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for OrientValueVariant1Variant0Variant1Value {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for OrientValueVariant1Variant0Variant1Value {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -72758,14 +70792,6 @@ impl ::std::str::FromStr for OrientValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for OrientValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for OrientValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -73487,14 +71513,6 @@ impl ::std::convert::TryFrom<&str> for PackTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for PackTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for PackTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -74058,14 +72076,6 @@ impl ::std::convert::TryFrom<&str> for PartitionTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for PartitionTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for PartitionTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -74469,14 +72479,6 @@ impl ::std::str::FromStr for PieTransformType {
 impl ::std::convert::TryFrom<&str> for PieTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for PieTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -75076,14 +73078,6 @@ impl ::std::convert::TryFrom<&str> for PivotTransformOpVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for PivotTransformOpVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for PivotTransformOpVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -75139,14 +73133,6 @@ impl ::std::str::FromStr for PivotTransformType {
 impl ::std::convert::TryFrom<&str> for PivotTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for PivotTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -75501,14 +73487,6 @@ impl ::std::str::FromStr for ProjectTransformType {
 impl ::std::convert::TryFrom<&str> for ProjectTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ProjectTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -76655,14 +74633,6 @@ impl ::std::convert::TryFrom<&str> for QuantileTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for QuantileTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for QuantileTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -76784,14 +74754,6 @@ impl ::std::str::FromStr for RadialGradientGradient {
 impl ::std::convert::TryFrom<&str> for RadialGradientGradient {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for RadialGradientGradient {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -77377,14 +75339,6 @@ impl ::std::convert::TryFrom<&str> for RegressionTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for RegressionTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for RegressionTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -77607,14 +75561,6 @@ impl ::std::convert::TryFrom<&str> for ResolvefilterTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ResolvefilterTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ResolvefilterTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -77781,14 +75727,6 @@ impl ::std::str::FromStr for SampleTransformType {
 impl ::std::convert::TryFrom<&str> for SampleTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for SampleTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -81279,14 +79217,6 @@ impl ::std::convert::TryFrom<&str> for ScaleDataVariant1SortVariant1Op {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleDataVariant1SortVariant1Op {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleDataVariant1SortVariant1Op {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -81352,14 +79282,6 @@ impl ::std::str::FromStr for ScaleDataVariant1SortVariant2Op {
 impl ::std::convert::TryFrom<&str> for ScaleDataVariant1SortVariant2Op {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleDataVariant1SortVariant2Op {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -81608,14 +79530,6 @@ impl ::std::convert::TryFrom<&str> for ScaleDataVariant2SortVariant1Op {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleDataVariant2SortVariant1Op {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleDataVariant2SortVariant1Op {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -81681,14 +79595,6 @@ impl ::std::str::FromStr for ScaleDataVariant2SortVariant2Op {
 impl ::std::convert::TryFrom<&str> for ScaleDataVariant2SortVariant2Op {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleDataVariant2SortVariant2Op {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -81991,14 +79897,6 @@ impl ::std::str::FromStr for ScaleVariant0Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant0Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant0Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -82438,14 +80336,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant10RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant10RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant10RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -82678,14 +80568,6 @@ impl ::std::str::FromStr for ScaleVariant10Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant10Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant10Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -83125,14 +81007,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant11RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant11RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant11RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -83365,14 +81239,6 @@ impl ::std::str::FromStr for ScaleVariant11Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant11Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant11Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -83976,14 +81842,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant1RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant1RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant1RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -84569,16 +82427,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant1SortVar
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for ScaleVariant1RangeVariant3Variant1SortVariant1Op
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for ScaleVariant1RangeVariant3Variant1SortVariant1Op
 {
@@ -84646,16 +82494,6 @@ impl ::std::str::FromStr for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
 impl ::std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant1SortVariant2Op {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for ScaleVariant1RangeVariant3Variant1SortVariant2Op
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -84906,16 +82744,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant2SortVar
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for ScaleVariant1RangeVariant3Variant2SortVariant1Op
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for ScaleVariant1RangeVariant3Variant2SortVariant1Op
 {
@@ -84986,16 +82814,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant1RangeVariant3Variant2SortVar
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for ScaleVariant1RangeVariant3Variant2SortVariant2Op
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for ScaleVariant1RangeVariant3Variant2SortVariant2Op
 {
@@ -85053,14 +82871,6 @@ impl ::std::str::FromStr for ScaleVariant1Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant1Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant1Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -85412,14 +83222,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant2RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant2RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant2RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -85537,14 +83339,6 @@ impl ::std::str::FromStr for ScaleVariant2Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant2Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant2Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -85896,14 +83690,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant3RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant3RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant3RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -86021,14 +83807,6 @@ impl ::std::str::FromStr for ScaleVariant3Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant3Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant3Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -86466,14 +84244,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant4RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant4RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant4RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -86711,14 +84481,6 @@ impl ::std::str::FromStr for ScaleVariant4Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant4Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant4Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -87114,14 +84876,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant5RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant5RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant5RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -87354,14 +85108,6 @@ impl ::std::str::FromStr for ScaleVariant5Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant5Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant5Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -87757,14 +85503,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant6RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant6RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant6RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -87997,14 +85735,6 @@ impl ::std::str::FromStr for ScaleVariant6Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant6Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant6Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -88345,14 +86075,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant7NiceVariant1 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant7NiceVariant1 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant7NiceVariant1 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -88487,14 +86209,6 @@ impl ::std::str::FromStr for ScaleVariant7NiceVariant2IntervalVariant0 {
 impl ::std::convert::TryFrom<&str> for ScaleVariant7NiceVariant2IntervalVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant7NiceVariant2IntervalVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -88721,14 +86435,6 @@ impl ::std::str::FromStr for ScaleVariant7RangeVariant0 {
 impl ::std::convert::TryFrom<&str> for ScaleVariant7RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant7RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -88969,14 +86675,6 @@ impl ::std::str::FromStr for ScaleVariant7Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant7Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant7Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -89414,14 +87112,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant8RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant8RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant8RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -89664,14 +87354,6 @@ impl ::std::str::FromStr for ScaleVariant8Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant8Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant8Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -90109,14 +87791,6 @@ impl ::std::convert::TryFrom<&str> for ScaleVariant9RangeVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant9RangeVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for ScaleVariant9RangeVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -90349,14 +88023,6 @@ impl ::std::str::FromStr for ScaleVariant9Type {
 impl ::std::convert::TryFrom<&str> for ScaleVariant9Type {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for ScaleVariant9Type {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -90837,14 +88503,6 @@ impl ::std::convert::TryFrom<&str> for SequenceTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for SequenceTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for SequenceTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -91114,14 +88772,6 @@ impl ::std::convert::TryFrom<&str> for SignalVariant0Push {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for SignalVariant0Push {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for SignalVariant0Push {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -91218,14 +88868,6 @@ impl ::std::str::FromStr for SortOrderVariant0 {
 impl ::std::convert::TryFrom<&str> for SortOrderVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for SortOrderVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -91679,14 +89321,6 @@ impl ::std::convert::TryFrom<&str> for StackTransformOffsetVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for StackTransformOffsetVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for StackTransformOffsetVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -91742,14 +89376,6 @@ impl ::std::str::FromStr for StackTransformType {
 impl ::std::convert::TryFrom<&str> for StackTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for StackTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -91955,14 +89581,6 @@ impl ::std::str::FromStr for StratifyTransformType {
 impl ::std::convert::TryFrom<&str> for StratifyTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for StratifyTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -92775,16 +90393,6 @@ impl ::std::convert::TryFrom<&str> for StringValueVariant0ItemVariant0Variant3Ra
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StringValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for StringValueVariant0ItemVariant0Variant3Range
 {
@@ -93293,14 +90901,6 @@ impl ::std::str::FromStr for StringValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for StringValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for StringValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -94057,16 +91657,6 @@ impl ::std::convert::TryFrom<&str> for StrokeCapValueVariant0ItemVariant0Variant
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeCapValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for StrokeCapValueVariant0ItemVariant0Variant1Value
 {
@@ -94115,16 +91705,6 @@ impl ::std::str::FromStr for StrokeCapValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for StrokeCapValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeCapValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -94674,16 +92254,6 @@ impl ::std::convert::TryFrom<&str> for StrokeCapValueVariant1Variant0Variant1Val
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeCapValueVariant1Variant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for StrokeCapValueVariant1Variant0Variant1Value
 {
@@ -94732,16 +92302,6 @@ impl ::std::str::FromStr for StrokeCapValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for StrokeCapValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeCapValueVariant1Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -95508,16 +93068,6 @@ impl ::std::convert::TryFrom<&str> for StrokeJoinValueVariant0ItemVariant0Varian
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeJoinValueVariant0ItemVariant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for StrokeJoinValueVariant0ItemVariant0Variant1Value
 {
@@ -95566,16 +93116,6 @@ impl ::std::str::FromStr for StrokeJoinValueVariant0ItemVariant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for StrokeJoinValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeJoinValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -96125,16 +93665,6 @@ impl ::std::convert::TryFrom<&str> for StrokeJoinValueVariant1Variant0Variant1Va
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeJoinValueVariant1Variant0Variant1Value
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String>
     for StrokeJoinValueVariant1Variant0Variant1Value
 {
@@ -96183,16 +93713,6 @@ impl ::std::str::FromStr for StrokeJoinValueVariant1Variant0Variant3Range {
 impl ::std::convert::TryFrom<&str> for StrokeJoinValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String>
-    for StrokeJoinValueVariant1Variant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -97102,16 +94622,6 @@ impl ::std::convert::TryFrom<&str> for TextValueVariant0ItemVariant0Variant3Rang
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String>
-    for TextValueVariant0ItemVariant0Variant3Range
-{
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TextValueVariant0ItemVariant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -97694,14 +95204,6 @@ impl ::std::convert::TryFrom<&str> for TextValueVariant1Variant0Variant3Range {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TextValueVariant1Variant0Variant3Range {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TextValueVariant1Variant0Variant3Range {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -98051,14 +95553,6 @@ impl ::std::convert::TryFrom<&str> for TickBandVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TickBandVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TickBandVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -98239,14 +95733,6 @@ impl ::std::convert::TryFrom<&str> for TickCountVariant1 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TickCountVariant1 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TickCountVariant1 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -98379,14 +95865,6 @@ impl ::std::str::FromStr for TickCountVariant2IntervalVariant0 {
 impl ::std::convert::TryFrom<&str> for TickCountVariant2IntervalVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TickCountVariant2IntervalVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -99003,14 +96481,6 @@ impl ::std::convert::TryFrom<&str> for TimeunitTransformTimezoneVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TimeunitTransformTimezoneVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TimeunitTransformTimezoneVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -99066,14 +96536,6 @@ impl ::std::str::FromStr for TimeunitTransformType {
 impl ::std::convert::TryFrom<&str> for TimeunitTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TimeunitTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -99286,14 +96748,6 @@ impl ::std::str::FromStr for TimeunitTransformUnitsArrayItemVariant0 {
 impl ::std::convert::TryFrom<&str> for TimeunitTransformUnitsArrayItemVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TimeunitTransformUnitsArrayItemVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -99887,14 +97341,6 @@ impl ::std::convert::TryFrom<&str> for TitleObjectAlignVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectAlignVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TitleObjectAlignVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -99999,14 +97445,6 @@ impl ::std::str::FromStr for TitleObjectAnchorVariant0 {
 impl ::std::convert::TryFrom<&str> for TitleObjectAnchorVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectAnchorVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -100163,14 +97601,6 @@ impl ::std::str::FromStr for TitleObjectBaselineVariant0 {
 impl ::std::convert::TryFrom<&str> for TitleObjectBaselineVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectBaselineVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -100381,14 +97811,6 @@ impl ::std::str::FromStr for TitleObjectEncodeSubtype0Key {
 impl ::std::convert::TryFrom<&str> for TitleObjectEncodeSubtype0Key {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectEncodeSubtype0Key {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -100690,14 +98112,6 @@ impl ::std::convert::TryFrom<&str> for TitleObjectFrameVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectFrameVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TitleObjectFrameVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -100913,14 +98327,6 @@ impl ::std::str::FromStr for TitleObjectOrientVariant0 {
 impl ::std::convert::TryFrom<&str> for TitleObjectOrientVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TitleObjectOrientVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -102293,14 +99699,6 @@ impl ::std::convert::TryFrom<&str> for TreeTransformMethodVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TreeTransformMethodVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TreeTransformMethodVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -102554,14 +99952,6 @@ impl ::std::convert::TryFrom<&str> for TreeTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TreeTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TreeTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -102649,14 +100039,6 @@ impl ::std::str::FromStr for TreelinksTransformType {
 impl ::std::convert::TryFrom<&str> for TreelinksTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for TreelinksTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -103185,14 +100567,6 @@ impl ::std::convert::TryFrom<&str> for TreemapTransformMethodVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TreemapTransformMethodVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TreemapTransformMethodVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -103632,14 +101006,6 @@ impl ::std::convert::TryFrom<&str> for TreemapTransformType {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for TreemapTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TreemapTransformType {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -103985,14 +101351,6 @@ impl ::std::str::FromStr for VoronoiTransformType {
 impl ::std::convert::TryFrom<&str> for VoronoiTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for VoronoiTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -105116,14 +102474,6 @@ impl ::std::convert::TryFrom<&str> for WindowTransformOpsArrayItemVariant0 {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<&::std::string::String> for WindowTransformOpsArrayItemVariant0 {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for WindowTransformOpsArrayItemVariant0 {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -105264,14 +102614,6 @@ impl ::std::str::FromStr for WindowTransformType {
 impl ::std::convert::TryFrom<&str> for WindowTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for WindowTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -106251,14 +103593,6 @@ impl ::std::str::FromStr for WordcloudTransformType {
 impl ::std::convert::TryFrom<&str> for WordcloudTransformType {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<&::std::string::String> for WordcloudTransformType {
-    type Error = self::error::ConversionError;
-    fn try_from(
-        value: &::std::string::String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
