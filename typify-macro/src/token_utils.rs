@@ -1,4 +1,4 @@
-// Copyright 2023 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::collections::HashSet;
 
@@ -7,7 +7,7 @@ use syn::{
     parse::Parse,
     punctuated::Punctuated,
     token::{Colon, Plus},
-    Ident, Path, Token, TraitBoundModifier,
+    Ident, Path, Token,
 };
 use typify_impl::TypeSpaceImpl;
 
@@ -29,15 +29,13 @@ impl TypeAndImpls {
         let mut impls = DEFAULT_IMPLS.into_iter().collect::<HashSet<_>>();
         self.impls.into_iter().for_each(
             |ImplTrait {
-                 modifier,
-                 impl_name,
-                 ..
+                 maybe, impl_name, ..
              }| {
                 // TODO should this be an error rather than silently ignored?
                 if let Some(impl_name) = impl_name {
-                    match modifier {
-                        syn::TraitBoundModifier::None => impls.insert(impl_name),
-                        syn::TraitBoundModifier::Maybe(_) => impls.remove(&impl_name),
+                    match maybe {
+                        None => impls.insert(impl_name),
+                        Some(_) => impls.remove(&impl_name),
                     };
                 }
             },
@@ -82,19 +80,19 @@ impl ToTokens for TypeAndImpls {
 
 #[derive(Debug)]
 pub struct ImplTrait {
-    pub modifier: TraitBoundModifier,
+    pub maybe: Option<Token![?]>,
     pub impl_ident: Ident,
     pub impl_name: Option<TypeSpaceImpl>,
 }
 
 impl Parse for ImplTrait {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        let modifier: TraitBoundModifier = input.parse()?;
+        let maybe = input.parse()?;
         let impl_ident: Ident = input.parse()?;
         let impl_name = impl_ident.to_string().parse().ok();
 
         Ok(Self {
-            modifier,
+            maybe,
             impl_ident,
             impl_name,
         })
@@ -103,7 +101,7 @@ impl Parse for ImplTrait {
 
 impl ToTokens for ImplTrait {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        self.modifier.to_tokens(tokens);
+        self.maybe.to_tokens(tokens);
         self.impl_ident.to_tokens(tokens);
     }
 }
