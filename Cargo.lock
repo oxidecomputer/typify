@@ -367,11 +367,11 @@ dependencies = [
 name = "example-build"
 version = "0.0.0"
 dependencies = [
- "prettyplease",
+ "prettyplease 0.3.0",
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.118",
+ "syn 3.0.2",
  "typify",
 ]
 
@@ -746,6 +746,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "prettyplease"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2bfe0f4c752e450fc2faf62654f1c134747922825d5b04ca717b8874f41a40c0"
+dependencies = [
+ "proc-macro2",
+ "syn 3.0.2",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -864,26 +874,26 @@ dependencies = [
 
 [[package]]
 name = "schema"
-version = "0.1.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96422023a2fbf8c618a005a24bcbe01d1f3159e5ea7c8881120fa25227e39a2c"
+checksum = "8a5a459e4326ca3d0c3c3af4776ae951398e55242df688afc664e088b23af7d6"
 dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 2.0.118",
+ "syn 3.0.2",
 ]
 
 [[package]]
 name = "schema-derive"
-version = "0.1.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "325e57fb235cb8b19d922a8d28c5d22d705b8fe41a27cc6c189b851e0d1cba6f"
+checksum = "99917cb133c90e6c84480e20f2b772c70b4faac3352ae1e5857ee65385b54cad"
 dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 2.0.118",
+ "syn 3.0.2",
 ]
 
 [[package]]
@@ -916,10 +926,6 @@ name = "semver"
 version = "1.0.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a7852d02fc848982e0c167ef163aaff9cd91dc640ba85e263cb1ce46fae51cd"
-dependencies = [
- "serde",
- "serde_core",
-]
 
 [[package]]
 name = "serde"
@@ -995,14 +1001,14 @@ dependencies = [
 
 [[package]]
 name = "serde_tokenstream"
-version = "0.2.3"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7c49585c52c01f13c5c2ebb333f14f6885d76daa768d8a037d28017ec538c69"
+checksum = "db95b8acf6eca5bc1bc771a7d7fb1a0d1485bdef0c46eec2f573bbaf4b4118f8"
 dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.118",
+ "syn 3.0.2",
 ]
 
 [[package]]
@@ -1318,7 +1324,7 @@ dependencies = [
  "semver",
  "serde",
  "serde_json",
- "syn 2.0.118",
+ "syn 3.0.2",
  "thiserror 2.0.18",
  "unicode-ident",
  "uuid",
@@ -1335,7 +1341,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 2.0.118",
+ "syn 3.0.2",
  "typify-impl",
 ]
 
@@ -1344,12 +1350,12 @@ name = "typify-test"
 version = "0.0.0"
 dependencies = [
  "ipnetwork",
- "prettyplease",
+ "prettyplease 0.3.0",
  "regress",
  "schemars",
  "serde",
  "serde_json",
- "syn 2.0.118",
+ "syn 3.0.2",
  "typify",
 ]
 
@@ -1826,7 +1832,7 @@ dependencies = [
  "anyhow",
  "heck",
  "indexmap",
- "prettyplease",
+ "prettyplease 0.2.37",
  "syn 2.0.118",
  "wasm-metadata",
  "wit-bindgen-core",
@@ -1840,7 +1846,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c0f9bfd77e6a48eccf51359e3ae77140a7f50b1e2ebfe62422d8afdaffab17a"
 dependencies = [
  "anyhow",
- "prettyplease",
+ "prettyplease 0.2.37",
  "proc-macro2",
  "quote",
  "syn 2.0.118",
