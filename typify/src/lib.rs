@@ -148,6 +148,19 @@
 
 #![deny(missing_docs)]
 
+extern crate self as typify;
+
+/// Dependencies used by code generated through [`import_types!`].
+#[cfg(feature = "macro")]
+#[doc(hidden)]
+pub mod __private {
+    pub use chrono;
+    pub use regress;
+    pub use serde;
+    pub use serde_json;
+    pub use uuid;
+}
+
 pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;

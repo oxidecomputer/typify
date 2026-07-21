@@ -40,8 +40,10 @@ type to use.
 
 String schemas that include a known `format` are represented with the
 appropriate Rust type. For example `{ "type": "string", "format": "uuid" }` is
-represented as a `uuid::Uuid` (which requires the `uuid` crate be included as a
-dependency).
+represented as a `uuid::Uuid`. Code emitted by `cargo-typify` or a `build.rs`
+requires the corresponding crate as a dependency. The `import_types!` macro
+uses dependencies re-exported by `typify`, so macro consumers do not need to
+declare Typify's built-in generated-code dependencies themselves.
 
 ### Arrays
 

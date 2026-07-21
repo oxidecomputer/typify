@@ -308,6 +308,38 @@ pub struct TypeSpaceSettings {
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+
+    reexported_crates: Option<CratePath>,
+}
+
+#[derive(Clone)]
+struct CratePath(syn::Path);
+
+impl std::fmt::Debug for CratePath {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.to_token_stream().fmt(f)
+    }
+}
+
+#[derive(Clone, Copy)]
+pub(crate) enum GeneratedCrate {
+    Chrono,
+    Regress,
+    Serde,
+    SerdeJson,
+    Uuid,
+}
+
+impl GeneratedCrate {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Chrono => "chrono",
+            Self::Regress => "regress",
+            Self::Serde => "serde",
+            Self::SerdeJson => "serde_json",
+            Self::Uuid => "uuid",
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -560,6 +592,56 @@ impl TypeSpaceSettings {
     pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
         self.map_type = map_type.into();
         self
+    }
+
+    /// Route references to generated-code dependencies through a module that
+    /// re-exports them under their conventional crate names.
+    ///
+    /// This is used by the `typify` facade when expanding [`import_types!`].
+    /// Stand-alone generators should retain the default direct crate paths.
+    ///
+    /// [`import_types!`]: https://docs.rs/typify/latest/typify/macro.import_types.html
+    #[doc(hidden)]
+    pub fn with_reexported_crates(&mut self, path: syn::Path) -> &mut Self {
+        self.reexported_crates = Some(CratePath(path));
+        self
+    }
+
+    /// The path to use when referring to `generated_crate` in generated code:
+    /// the re-exported path when one is configured, otherwise the direct
+    /// `::<crate>` path.
+    pub(crate) fn generated_crate_path(&self, generated_crate: GeneratedCrate) -> syn::Path {
+        self.reexported_crate_path(generated_crate)
+            .unwrap_or_else(|| {
+                let name = format_ident!("{}", generated_crate.name());
+                syn::parse_quote!(::#name)
+            })
+    }
+
+    /// The re-exported path to `generated_crate`, or `None` when generated code
+    /// should use direct crate paths. A `Some` result also signals that derives
+    /// resolving the crate by name (e.g. serde) need a `crate = "..."` override.
+    pub(crate) fn reexported_crate_path(
+        &self,
+        generated_crate: GeneratedCrate,
+    ) -> Option<syn::Path> {
+        self.reexported_crates.as_ref().map(|prefix| {
+            let name = format_ident!("{}", generated_crate.name());
+            let mut path = prefix.0.clone();
+            path.segments.push(name.into());
+            path
+        })
+    }
+
+    /// The `crate = "..."` argument that points serde's derive at the
+    /// re-exported `serde`, or `None` when the derive can resolve `serde`
+    /// directly. Callers splice the result into a `#[serde(...)]` attribute.
+    pub(crate) fn serde_crate_attr_arg(&self) -> Option<TokenStream> {
+        self.reexported_crate_path(GeneratedCrate::Serde)
+            .map(|serde| {
+                let serde = serde.to_token_stream().to_string();
+                quote! { crate = #serde }
+            })
     }
 }
 

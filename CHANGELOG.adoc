@@ -15,6 +15,8 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.7.0\...HEAD[Full list of commits]
 
+* `import_types!` no longer requires direct dependencies on `chrono`, `regress`, `serde`, `serde_json`, or `uuid`, including when the `typify` dependency is renamed.
+
 == 0.7.0 (released 2026-06-05)
 
 https://github.com/oxidecomputer/typify/compare/v0.6.2\...v0.7.0[Full list of commits]

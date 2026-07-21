@@ -14,7 +14,7 @@ use crate::{
     sanitize,
     structs::{generate_serde_attr, DefaultFunction},
     util::{get_type_name, metadata_description, unique, TypePatch},
-    Case, DefaultImpl, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
+    Case, DefaultImpl, GeneratedCrate, Name, Result, TypeId, TypeSpace, TypeSpaceImpl,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -734,11 +734,14 @@ impl TypeEntry {
     }
 
     pub(crate) fn output(&self, type_space: &TypeSpace, output: &mut OutputSpace) {
+        let serde = type_space
+            .settings
+            .generated_crate_path(GeneratedCrate::Serde);
         let derive_set = [
-            "::serde::Serialize",
-            "::serde::Deserialize",
-            "Debug",
-            "Clone",
+            quote!(#serde::Serialize).to_string(),
+            quote!(#serde::Deserialize).to_string(),
+            "Debug".to_string(),
+            "Clone".to_string(),
         ]
         .into_iter()
         .collect::<BTreeSet<_>>();
@@ -768,7 +771,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         enum_details: &TypeEntryEnum,
-        mut derive_set: BTreeSet<&str>,
+        mut derive_set: BTreeSet<String>,
     ) {
         let TypeEntryEnum {
             name,
@@ -790,10 +793,14 @@ impl TypeEntry {
             .iter()
             .all(|variant| matches!(variant.details, VariantDetails::Simple))
         {
-            derive_set.extend(["Copy", "PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+            derive_set
+                .extend(["Copy", "PartialOrd", "Ord", "PartialEq", "Eq", "Hash"].map(String::from));
         }
 
         let mut serde_options = Vec::new();
+        if let Some(serde_crate) = type_space.settings.serde_crate_attr_arg() {
+            serde_options.push(serde_crate);
+        }
         if let Some(old_name) = rename {
             serde_options.push(quote! { rename = #old_name });
         }
@@ -1093,7 +1100,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
-        derive_set: BTreeSet<&str>,
+        derive_set: BTreeSet<String>,
     ) {
         enum PropDefault {
             None(String),
@@ -1114,6 +1121,9 @@ impl TypeEntry {
 
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
+        if let Some(serde_crate) = type_space.settings.serde_crate_attr_arg() {
+            serde_options.push(serde_crate);
+        }
         if let Some(old_name) = rename {
             serde_options.push(quote! { rename = #old_name });
         }
@@ -1337,12 +1347,12 @@ impl TypeEntry {
         }
     }
 
-    fn output_newtype<'a>(
+    fn output_newtype(
         &self,
-        type_space: &'a TypeSpace,
+        type_space: &TypeSpace,
         output: &mut OutputSpace,
         newtype_details: &TypeEntryNewtype,
-        mut derive_set: BTreeSet<&'a str>,
+        mut derive_set: BTreeSet<String>,
     ) {
         let TypeEntryNewtype {
             name,
@@ -1364,10 +1374,21 @@ impl TypeEntry {
         // If this is just a wrapper around a string, we can derive some more
         // useful traits.
         if is_str {
-            derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"]);
+            derive_set.extend(["PartialOrd", "Ord", "PartialEq", "Eq", "Hash"].map(String::from));
         }
 
-        derive_set.extend(type_space.settings.extra_derives.iter().map(|s| s.as_str()));
+        derive_set.extend(type_space.settings.extra_derives.iter().cloned());
+
+        let regress = type_space
+            .settings
+            .generated_crate_path(GeneratedCrate::Regress);
+        let serde = type_space
+            .settings
+            .generated_crate_path(GeneratedCrate::Serde);
+        let serde_deserialize = quote!(#serde::Deserialize).to_string();
+        let serde_json = type_space
+            .settings
+            .generated_crate_path(GeneratedCrate::SerdeJson);
 
         let constraint_impl = match constraints {
             // In the unconstrained case we proxy impls through the inner type.
@@ -1461,7 +1482,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("::serde::Deserialize");
+                derive_set.remove(&serde_deserialize);
 
                 let value_output = enum_values
                     .iter()
@@ -1492,7 +1513,7 @@ impl TypeEntry {
                                         .into_object();
                                 let not = ::schemars::schema::SchemaObject {
                                     enum_values: ::std::option::Option::Some([
-                                        #( ::serde_json::from_str(#value_string).unwrap(), )*
+                                        #( #serde_json::from_str(#value_string).unwrap(), )*
                                     ].into_iter().collect()),
                                     ..::std::default::Default::default()
                                 };
@@ -1516,7 +1537,7 @@ impl TypeEntry {
                                         ::json_schema(gen)
                                         .into_object();
                                 schema.enum_values = ::std::option::Option::Some([
-                                    #( ::serde_json::from_str(#value_string).unwrap(), )*
+                                    #( #serde_json::from_str(#value_string).unwrap(), )*
                                 ].into_iter().collect());
                                 schema.into()
                             }
@@ -1551,18 +1572,18 @@ impl TypeEntry {
                         }
                     }
 
-                    impl<'de> ::serde::Deserialize<'de> for #type_name {
+                    impl<'de> #serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
                         ) -> ::std::result::Result<Self, D::Error>
                         where
-                            D: ::serde::Deserializer<'de>,
+                            D: #serde::Deserializer<'de>,
                         {
                             Self::try_from(
                                 <#inner_type_name>::deserialize(deserializer)?,
                             )
                             .map_err(|e| {
-                                <D::Error as ::serde::de::Error>::custom(
+                                <D::Error as #serde::de::Error>::custom(
                                     e.to_string(),
                                 )
                             })
@@ -1600,8 +1621,8 @@ impl TypeEntry {
                 let pat = pattern.as_ref().map(|p| {
                     let err = format!("doesn't match pattern \"{}\"", p);
                     quote! {
-                        static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
-                            ::regress::Regex::new(#p).unwrap()
+                        static PATTERN: ::std::sync::LazyLock<#regress::Regex> = ::std::sync::LazyLock::new(|| {
+                            #regress::Regex::new(#p).unwrap()
                         });
                         if PATTERN.find(value).is_none() {
                             return Err(#err.into());
@@ -1611,7 +1632,7 @@ impl TypeEntry {
 
                 // We're going to impl Deserialize so we can remove it
                 // from the set of derived impls.
-                derive_set.remove("::serde::Deserialize");
+                derive_set.remove(&serde_deserialize);
 
                 // TODO: if a user were to derive schemars::JsonSchema, it
                 // wouldn't be accurate.
@@ -1646,17 +1667,17 @@ impl TypeEntry {
                         }
                     }
 
-                    impl<'de> ::serde::Deserialize<'de> for #type_name {
+                    impl<'de> #serde::Deserialize<'de> for #type_name {
                         fn deserialize<D>(
                             deserializer: D,
                         ) -> ::std::result::Result<Self, D::Error>
                         where
-                            D: ::serde::Deserializer<'de>,
+                            D: #serde::Deserializer<'de>,
                         {
                             ::std::string::String::deserialize(deserializer)?
                             .parse()
                             .map_err(|e: self::error::ConversionError| {
-                                <D::Error as ::serde::de::Error>::custom(
+                                <D::Error as #serde::de::Error>::custom(
                                     e.to_string(),
                                 )
                             })
@@ -1690,10 +1711,16 @@ impl TypeEntry {
 
         let attrs = strings_to_attrs(&self.extra_attrs, &type_space.settings.extra_attrs);
 
+        let serde_crate = type_space
+            .settings
+            .serde_crate_attr_arg()
+            .map(|arg| quote! { #[serde(#arg)] });
+
         let item = quote! {
             #doc
             #(#attrs)*
             #[derive(#(#derives),*)]
+            #serde_crate
             #[serde(transparent)]
             pub struct #type_name(#vis #inner_type_name);
 
@@ -1791,7 +1818,10 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
+                    let serde_json = type_space
+                        .settings
+                        .generated_crate_path(GeneratedCrate::SerdeJson);
+                    quote! { #serde_json::Map<::std::string::String, #serde_json::Value> }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
@@ -1867,7 +1897,12 @@ impl TypeEntry {
             TypeEntryDetails::Unit => quote! { () },
             TypeEntryDetails::String => quote! { ::std::string::String },
             TypeEntryDetails::Boolean => quote! { bool },
-            TypeEntryDetails::JsonValue => quote! { ::serde_json::Value },
+            TypeEntryDetails::JsonValue => {
+                let serde_json = type_space
+                    .settings
+                    .generated_crate_path(GeneratedCrate::SerdeJson);
+                quote! { #serde_json::Value }
+            }
             TypeEntryDetails::Integer(name) | TypeEntryDetails::Float(name) => {
                 syn::parse_str::<syn::TypePath>(name)
                     .unwrap()
@@ -2031,16 +2066,16 @@ fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenS
     }
 }
 
-fn strings_to_derives<'a>(
-    derive_set: BTreeSet<&'a str>,
-    type_derives: &'a BTreeSet<String>,
-    extra_derives: &'a [String],
-) -> impl Iterator<Item = TokenStream> + 'a {
-    let mut combined_derives = derive_set.clone();
-    combined_derives.extend(extra_derives.iter().map(String::as_str));
-    combined_derives.extend(type_derives.iter().map(String::as_str));
+fn strings_to_derives(
+    derive_set: BTreeSet<String>,
+    type_derives: &BTreeSet<String>,
+    extra_derives: &[String],
+) -> impl Iterator<Item = TokenStream> {
+    let mut combined_derives = derive_set;
+    combined_derives.extend(extra_derives.iter().cloned());
+    combined_derives.extend(type_derives.iter().cloned());
     combined_derives.into_iter().map(|derive| {
-        syn::parse_str::<syn::Path>(derive)
+        syn::parse_str::<syn::Path>(&derive)
             .unwrap()
             .into_token_stream()
     })

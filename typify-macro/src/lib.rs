@@ -7,7 +7,8 @@
 use std::{collections::HashMap, path::Path};
 
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
+use proc_macro_crate::{crate_name, FoundCrate};
+use quote::{format_ident, quote, ToTokens};
 use serde::Deserialize;
 use serde_tokenstream::{ParseWrapper, TokenStreamWrapper};
 use syn::LitStr;
@@ -191,7 +192,7 @@ impl From<MacroPatch> for TypeSpacePatch {
 
 fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
     // Allow the caller to give us either a simple string or a compound object.
-    let (schema, settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
+    let (schema, mut settings) = if let Ok(ll) = syn::parse::<LitStr>(item.clone()) {
         (ll, TypeSpaceSettings::default())
     } else {
         let MacroSettings {
@@ -244,6 +245,22 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
 
         (schema.into_inner(), settings)
     };
+
+    // A direct typify-macro dependency signals direct macro use, which keeps
+    // the traditional direct dependency paths. Otherwise route generated-code
+    // dependencies through the typify facade when it is available.
+    if crate_name("typify-macro").is_err() {
+        if let Ok(found_crate) = crate_name("typify") {
+            let path = match found_crate {
+                FoundCrate::Itself => syn::parse_quote!(::typify::__private),
+                FoundCrate::Name(name) => {
+                    let name = format_ident!("{}", name);
+                    syn::parse_quote!(::#name::__private)
+                }
+            };
+            settings.with_reexported_crates(path);
+        }
+    }
 
     let dir = std::env::var("CARGO_MANIFEST_DIR").map_or_else(
         |_| std::env::current_dir().unwrap(),

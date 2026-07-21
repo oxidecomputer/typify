@@ -11,7 +11,7 @@ use crate::{
         EnumTagType, StructProperty, StructPropertyRename, TypeEntry, TypeEntryDetails,
         TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
     },
-    TypeId, TypeSpace,
+    GeneratedCrate, TypeId, TypeSpace,
 };
 
 impl TypeEntry {
@@ -28,6 +28,9 @@ impl TypeEntry {
         value: &serde_json::Value,
         scope: &TokenStream,
     ) -> Option<TokenStream> {
+        let serde_json = type_space
+            .settings
+            .generated_crate_path(GeneratedCrate::SerdeJson);
         let v = match &self.details {
             TypeEntryDetails::Enum(TypeEntryEnum {
                 name,
@@ -146,13 +149,13 @@ impl TypeEntry {
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    ::serde_json::from_str::< #type_path >(#text).unwrap()
+                    #serde_json::from_str::< #type_path >(#text).unwrap()
                 }
             }
             TypeEntryDetails::JsonValue => {
                 let text = value.to_string();
                 quote! {
-                    ::serde_json::from_str::<::serde_json::Value>(#text).unwrap()
+                    #serde_json::from_str::<#serde_json::Value>(#text).unwrap()
                 }
             }
             TypeEntryDetails::Boolean => {

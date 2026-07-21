@@ -9,6 +9,7 @@ use crate::type_entry::{
 };
 use crate::util::{all_mutually_exclusive, ref_key, ReorderedInstanceType, StringValidator};
 use log::{debug, info};
+use quote::quote;
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
@@ -16,7 +17,7 @@ use schemars::schema::{
 
 use crate::util::get_type_name;
 
-use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
+use crate::{Error, GeneratedCrate, Name, Result, TypeSpace, TypeSpaceImpl};
 
 pub const STD_NUM_NONZERO_PREFIX: &str = "::std::num::NonZero";
 
@@ -803,9 +804,10 @@ impl TypeSpace {
         match format.as_ref().map(String::as_str) {
             Some("uuid") => {
                 self.uses_uuid = true;
+                let uuid = self.settings.generated_crate_path(GeneratedCrate::Uuid);
                 Ok((
                     TypeEntry::new_native(
-                        "::uuid::Uuid",
+                        quote!(#uuid::Uuid),
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -814,9 +816,10 @@ impl TypeSpace {
 
             Some("date") => {
                 self.uses_chrono = true;
+                let chrono = self.settings.generated_crate_path(GeneratedCrate::Chrono);
                 Ok((
                     TypeEntry::new_native(
-                        "::chrono::naive::NaiveDate",
+                        quote!(#chrono::naive::NaiveDate),
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,
@@ -824,9 +827,10 @@ impl TypeSpace {
             }
             Some("date-time") => {
                 self.uses_chrono = true;
+                let chrono = self.settings.generated_crate_path(GeneratedCrate::Chrono);
                 Ok((
                     TypeEntry::new_native(
-                        "::chrono::DateTime<::chrono::offset::Utc>",
+                        quote!(#chrono::DateTime<#chrono::offset::Utc>),
                         &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
                     ),
                     metadata,

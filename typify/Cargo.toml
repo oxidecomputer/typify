@@ -11,11 +11,23 @@ categories = ["api-bindings", "compilers"]
 
 [features]
 default = ["macro"]
-macro = ["typify-macro"]
+macro = [
+	"dep:chrono",
+	"dep:regress",
+	"dep:serde",
+	"dep:serde_json",
+	"dep:typify-macro",
+	"dep:uuid",
+]
 
 [dependencies]
+chrono = { workspace = true, optional = true }
+regress = { workspace = true, optional = true }
+serde = { workspace = true, features = ["derive"], optional = true }
+serde_json = { workspace = true, optional = true }
 typify-macro = { workspace = true, optional = true }
 typify-impl = { workspace = true }
+uuid = { workspace = true, features = ["serde"], optional = true }
 
 [dev-dependencies]
 chrono = { workspace = true }
