@@ -371,7 +371,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 3.0.2",
+ "syn 3.0.3",
  "typify",
 ]
 
@@ -752,7 +752,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2bfe0f4c752e450fc2faf62654f1c134747922825d5b04ca717b8874f41a40c0"
 dependencies = [
  "proc-macro2",
- "syn 3.0.2",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -881,7 +881,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "schema-derive",
- "syn 3.0.2",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -893,7 +893,7 @@ dependencies = [
  "paste",
  "proc-macro2",
  "quote",
- "syn 3.0.2",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -954,7 +954,7 @@ checksum = "e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.2",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -1008,7 +1008,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 3.0.2",
+ "syn 3.0.3",
 ]
 
 [[package]]
@@ -1051,9 +1051,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a207d6d6a2b7fc470b80443726053f18a2481b7e1eee970597051596567987a3"
+checksum = "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1324,7 +1324,7 @@ dependencies = [
  "semver",
  "serde",
  "serde_json",
- "syn 3.0.2",
+ "syn 3.0.3",
  "thiserror 2.0.18",
  "unicode-ident",
  "uuid",
@@ -1341,7 +1341,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_tokenstream",
- "syn 3.0.2",
+ "syn 3.0.3",
  "typify-impl",
 ]
 
@@ -1355,7 +1355,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "syn 3.0.2",
+ "syn 3.0.3",
  "typify",
 ]
 
