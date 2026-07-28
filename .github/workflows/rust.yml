@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@stable
     - name: Report cargo version
       run: cargo --version
     - name: Report rustfmt version
@@ -26,8 +27,15 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        rust: [ stable ]
+        include:
+        - os: ubuntu-latest
+          rust: nightly
     steps:
     - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ matrix.rust }}
     - name: Build
       run: cargo build --locked --tests --verbose
     - name: Run tests
