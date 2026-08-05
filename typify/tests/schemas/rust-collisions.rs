@@ -105,17 +105,10 @@ impl Copy {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollision {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
-}
-impl ::std::default::Default for DoubleOptionCollision {
-    fn default() -> Self {
-        Self {
-            option: Default::default(),
-        }
-    }
 }
 impl DoubleOptionCollision {
     pub fn builder() -> builder::DoubleOptionCollision {
@@ -140,17 +133,10 @@ impl DoubleOptionCollision {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollisionOption {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for DoubleOptionCollisionOption {
-    fn default() -> Self {
-        Self {
-            option: Default::default(),
-        }
-    }
 }
 impl DoubleOptionCollisionOption {
     pub fn builder() -> builder::DoubleOptionCollisionOption {
@@ -592,7 +578,7 @@ impl NestedTypeCollisions {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct NestedTypeCollisionsOptionType {
     #[serde(
         rename = "type",
@@ -600,13 +586,6 @@ pub struct NestedTypeCollisionsOptionType {
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for NestedTypeCollisionsOptionType {
-    fn default() -> Self {
-        Self {
-            type_: Default::default(),
-        }
-    }
 }
 impl NestedTypeCollisionsOptionType {
     pub fn builder() -> builder::NestedTypeCollisionsOptionType {

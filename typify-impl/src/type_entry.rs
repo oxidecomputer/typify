@@ -1093,7 +1093,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
-        derive_set: BTreeSet<&str>,
+        mut derive_set: BTreeSet<&str>,
     ) {
         enum PropDefault {
             None(String),
@@ -1175,6 +1175,19 @@ impl TypeEntry {
             });
         });
 
+        // If there's no whole-type default value and every property's default
+        // is the intrinsic `Default::default()`, the hand-written `impl Default`
+        // would be exactly what `#[derive(Default)]` produces (and would trip
+        // clippy's `derivable_impls` lint downstream). In that case we derive
+        // `Default` rather than emitting the manual impl below.
+        let derive_default = default.is_none()
+            && prop_default
+                .iter()
+                .all(|pd| matches!(pd, PropDefault::Default(_)));
+        if derive_default {
+            derive_set.insert("Default");
+        }
+
         let derives = strings_to_derives(
             derive_set,
             &self.extra_derives,
@@ -1215,6 +1228,8 @@ impl TypeEntry {
                     }
                 },
             );
+        } else if derive_default {
+            // Handled above via `#[derive(Default)]`.
         } else if let Some(prop_default) = prop_default
             .iter()
             .map(|pd| match pd {

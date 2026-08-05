@@ -39,17 +39,10 @@ pub mod error {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct BarProp {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for BarProp {
-    fn default() -> Self {
-        Self {
-            bar: Default::default(),
-        }
-    }
 }
 impl BarProp {
     pub fn builder() -> builder::BarProp {
@@ -75,17 +68,10 @@ impl BarProp {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ButNotThat {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for ButNotThat {
-    fn default() -> Self {
-        Self {
-            this: Default::default(),
-        }
-    }
 }
 impl ButNotThat {
     pub fn builder() -> builder::ButNotThat {
@@ -114,20 +100,12 @@ impl ButNotThat {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct CommentedTypeMerged {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub x: ::std::option::Option<::serde_json::Value>,
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for CommentedTypeMerged {
-    fn default() -> Self {
-        Self {
-            x: Default::default(),
-            y: Default::default(),
-        }
-    }
 }
 impl CommentedTypeMerged {
     pub fn builder() -> builder::CommentedTypeMerged {
@@ -202,17 +180,10 @@ pub enum HereAndThere {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct JsonResponseBase {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for JsonResponseBase {
-    fn default() -> Self {
-        Self {
-            result: Default::default(),
-        }
-    }
 }
 impl JsonResponseBase {
     pub fn builder() -> builder::JsonResponseBase {
@@ -452,14 +423,9 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct MergeEmpty {}
-impl ::std::default::Default for MergeEmpty {
-    fn default() -> Self {
-        Self {}
-    }
-}
 impl MergeEmpty {
     pub fn builder() -> builder::MergeEmpty {
         Default::default()
@@ -754,17 +720,10 @@ impl Pickingone {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneInstallation {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
-}
-impl ::std::default::Default for PickingoneInstallation {
-    fn default() -> Self {
-        Self {
-            suspended_by: Default::default(),
-        }
-    }
 }
 impl PickingoneInstallation {
     pub fn builder() -> builder::PickingoneInstallation {
@@ -801,17 +760,10 @@ impl PickingoneInstallation {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneSuspendedBy {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for PickingoneSuspendedBy {
-    fn default() -> Self {
-        Self {
-            email: Default::default(),
-        }
-    }
 }
 impl PickingoneSuspendedBy {
     pub fn builder() -> builder::PickingoneSuspendedBy {
@@ -836,17 +788,10 @@ impl PickingoneSuspendedBy {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneUser {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for PickingoneUser {
-    fn default() -> Self {
-        Self {
-            email: Default::default(),
-        }
-    }
 }
 impl PickingoneUser {
     pub fn builder() -> builder::PickingoneUser {
@@ -1289,17 +1234,10 @@ pub enum Unsatisfiable3 {}
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Unsatisfiable3A {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
-}
-impl ::std::default::Default for Unsatisfiable3A {
-    fn default() -> Self {
-        Self {
-            action: Default::default(),
-        }
-    }
 }
 impl Unsatisfiable3A {
     pub fn builder() -> builder::Unsatisfiable3A {
