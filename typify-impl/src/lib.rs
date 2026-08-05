@@ -915,9 +915,15 @@ impl TypeSpace {
         );
 
         // Add all types.
-        self.id_to_entry
-            .values()
-            .for_each(|type_entry| type_entry.output(self, &mut output));
+        let mut output_names = BTreeSet::new();
+        self.id_to_entry.values().for_each(|type_entry| {
+            if type_entry
+                .name()
+                .is_none_or(|name| output_names.insert(name.clone()))
+            {
+                type_entry.output(self, &mut output);
+            }
+        });
 
         // Add all shared default functions.
         self.defaults
