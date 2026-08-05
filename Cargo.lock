@@ -623,9 +623,9 @@ checksum = "0ceec5bc11778974d1bcb055b18002eba7f4b3518b6a0081b3af5f21666da9ad"
 
 [[package]]
 name = "memchr"
-version = "2.6.4"
+version = "2.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
+checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "miniz_oxide"
@@ -753,6 +753,15 @@ checksum = "2bfe0f4c752e450fc2faf62654f1c134747922825d5b04ca717b8874f41a40c0"
 dependencies = [
  "proc-macro2",
  "syn 3.0.3",
+]
+
+[[package]]
+name = "proc-macro-crate"
+version = "3.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e67ba7e9b2b56446f1d419b1d807906278ffa1a658a8a5d8a39dcb1f5a78614f"
+dependencies = [
+ "toml_edit 0.25.1+spec-1.1.0",
 ]
 
 [[package]]
@@ -1153,7 +1162,7 @@ dependencies = [
  "serde",
  "serde_spanned 0.6.4",
  "toml_datetime 0.6.5",
- "toml_edit",
+ "toml_edit 0.21.0",
 ]
 
 [[package]]
@@ -1200,6 +1209,18 @@ dependencies = [
  "serde_spanned 0.6.4",
  "toml_datetime 0.6.5",
  "winnow 0.5.28",
+]
+
+[[package]]
+name = "toml_edit"
+version = "0.25.1+spec-1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "538ed8bc4ada0b2549f2a7be9654aac2dfa358faeabb97d7845c3eb5a297e5d6"
+dependencies = [
+ "indexmap",
+ "toml_datetime 1.0.0+spec-1.1.0",
+ "toml_parser",
+ "winnow 0.7.14",
 ]
 
 [[package]]
@@ -1334,6 +1355,7 @@ dependencies = [
 name = "typify-macro"
 version = "0.7.0"
 dependencies = [
+ "proc-macro-crate",
  "proc-macro2",
  "quote",
  "schemars",
@@ -1343,6 +1365,26 @@ dependencies = [
  "serde_tokenstream",
  "syn 3.0.3",
  "typify-impl",
+]
+
+[[package]]
+name = "typify-macro-direct-test"
+version = "0.0.0"
+dependencies = [
+ "chrono",
+ "regress",
+ "serde",
+ "serde_json",
+ "typify",
+ "typify-macro",
+ "uuid",
+]
+
+[[package]]
+name = "typify-macro-test"
+version = "0.0.0"
+dependencies = [
+ "typify",
 ]
 
 [[package]]
@@ -1796,6 +1838,9 @@ name = "winnow"
 version = "0.7.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a5364e9d77fcdeeaa6062ced926ee3381faa2ee02d3eb83a5c27a8825540829"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "wit-bindgen"

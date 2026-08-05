@@ -12,7 +12,7 @@ use crate::{
         WrappedValue,
     },
     util::{get_type_name, metadata_description, recase, Case},
-    Name, Result, TypeEntryDetails, TypeId, TypeSpace,
+    GeneratedCrate, Name, Result, TypeEntryDetails, TypeId, TypeSpace,
 };
 
 impl TypeSpace {
@@ -376,8 +376,22 @@ pub(crate) fn generate_serde_attr(
             if key_ty.details == TypeEntryDetails::String
                 && value_ty.details == TypeEntryDetails::JsonValue
             {
+                // This path lands inside a string literal, whose contents
+                // rustfmt does not reformat, so we can't reuse
+                // `generated_crate_path` here: its `quote!`-derived default
+                // would emit a spaced `":: serde_json :: ..."` into the source
+                // that `build.rs`/`cargo-typify` write out. Spell the direct
+                // path literally and only route through the re-export when one
+                // is configured (macro expansion, which nobody reads).
+                let is_empty = type_space
+                    .settings
+                    .reexported_crate_path(GeneratedCrate::SerdeJson)
+                    .map_or_else(
+                        || "::serde_json::Map::is_empty".to_string(),
+                        |serde_json| quote!(#serde_json::Map::is_empty).to_string(),
+                    );
                 serde_options.push(quote! {
-                    skip_serializing_if = "::serde_json::Map::is_empty"
+                    skip_serializing_if = #is_empty
                 });
             } else {
                 let is_empty = format!("{}::is_empty", map_to_use);

@@ -9,7 +9,7 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 
 [build-dependencies]
-typify = { path = "../typify" }
+typify = { path = "../typify", default-features = false }
 
 ipnetwork = { workspace = true }
 prettyplease = { workspace = true }

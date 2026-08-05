@@ -12,6 +12,7 @@ proc-macro = true
 
 [dependencies]
 proc-macro2 = { workspace = true }
+proc-macro-crate = { workspace = true }
 quote = { workspace = true }
 schemars = { workspace = true }
 semver = { workspace = true }

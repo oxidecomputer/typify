@@ -4,6 +4,8 @@ members = [
 	"typify-impl",
 	"typify-macro",
 	"typify-test",
+	"typify-macro-test",
+	"typify-macro-direct-test",
 	"cargo-typify",
 	"example-build",
 	"example-macro",
@@ -12,7 +14,7 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-typify = { version = "0.7.0", path = "typify" }
+typify = { version = "0.7.0", path = "typify", default-features = false }
 typify-impl = { version = "0.7.0", path = "typify-impl" }
 typify-macro = { version = "0.7.0", path = "typify-macro" }
 
@@ -30,6 +32,7 @@ newline-converter = "0.3.0"
 paste = "1.0.15"
 prettyplease = "0.3.0"
 proc-macro2 = "1.0.106"
+proc-macro-crate = "3.5.0"
 quote = "1.0.45"
 regress = "0.11.1"
 rustfmt-wrapper = "0.2.1"
