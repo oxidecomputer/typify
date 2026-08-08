@@ -48,6 +48,12 @@ pub(crate) fn all_mutually_exclusive(
     definitions: &BTreeMap<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
+    // With fewer than two subschemas there are no pairs to compare, so the
+    // schemas are vacuously mutually exclusive. This also avoids underflow
+    // in `len - 1` below when `subschemas` is empty.
+    if len < 2 {
+        return true;
+    }
     // Consider all pairs
     (0..len - 1)
         .flat_map(|ii| (ii + 1..len).map(move |jj| (ii, jj)))
@@ -1003,7 +1009,10 @@ mod tests {
     };
 
     use crate::{
-        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case, ReorderedInstanceType},
+        util::{
+            all_mutually_exclusive, decode_segment, sanitize, schemas_mutually_exclusive, Case,
+            ReorderedInstanceType,
+        },
         Name,
     };
 
@@ -1107,6 +1116,14 @@ mod tests {
 
         assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
         assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
+    }
+
+    #[test]
+    fn test_all_mutually_exclusive_empty() {
+        // An empty slice of subschemas has no pairs to compare, so it's
+        // vacuously true. This should not panic (previously `len - 1`
+        // underflowed for an empty slice).
+        assert!(all_mutually_exclusive(&[], &BTreeMap::new()));
     }
 
     #[test]

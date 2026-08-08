@@ -1461,6 +1461,15 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        // An empty `anyOf` cannot match any instance.
+        if subschemas.is_empty() {
+            let type_name = match get_type_name(&type_name, metadata) {
+                Some(name) => Name::Required(name),
+                None => type_name,
+            };
+            return self.convert_never(type_name, original_schema);
+        }
+
         // Rust can emit "anyOf":[{"$ref":"#/definitions/C"},{"type":"null"}
         // for Option. We match this here because the mutual exclusion check
         // below may fail for cases such as Option<T> where T is defined to be,
@@ -2291,6 +2300,26 @@ mod tests {
         match file.items.as_slice() {
             [syn::Item::Mod(error)] if error.ident == "error" => {}
             _ => panic!("unexpected file contents {}", file.to_token_stream()),
+        }
+    }
+
+    #[test]
+    fn test_empty_any_of() {
+        let schema_json = r#"
+        {
+            "title": "EmptyAnyOf",
+            "anyOf": []
+        }
+        "#;
+
+        let schema: RootSchema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let type_id = type_space.add_type(&schema.schema.into()).unwrap();
+
+        match &type_space.id_to_entry[&type_id].details {
+            super::TypeEntryDetails::Enum(details) => assert!(details.variants.is_empty()),
+            details => panic!("empty anyOf should be uninhabited, got {details:?}"),
         }
     }
 
