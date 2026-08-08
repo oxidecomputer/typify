@@ -19,8 +19,8 @@ pub mod error {
             Self(value.into())
         }
     }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
+    impl From<::std::string::String> for ConversionError {
+        fn from(value: ::std::string::String) -> Self {
             Self(value.into())
         }
     }
@@ -1008,7 +1008,7 @@ impl ::schemars::JsonSchema for NotBlockSize {
             ),
             ..::std::default::Default::default()
         };
-        schema.subschemas().not = Some(::std::boxed::Box::new(not.into()));
+        schema.subschemas().not = ::std::option::Option::Some(::std::boxed::Box::new(not.into()));
         schema.into()
     }
 }

@@ -906,8 +906,8 @@ impl TypeSpace {
                         Self(value.into())
                     }
                 }
-                impl From<String> for ConversionError {
-                    fn from(value: String) -> Self {
+                impl From<::std::string::String> for ConversionError {
+                    fn from(value: ::std::string::String) -> Self {
                         Self(value.into())
                     }
                 }

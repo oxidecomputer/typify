@@ -1426,11 +1426,11 @@ impl TypeEntry {
                                     value.parse()
                                 }
                             }
-                            impl ::std::convert::TryFrom<String> for #type_name {
+                            impl ::std::convert::TryFrom<::std::string::String> for #type_name {
                                 type Error = <#inner_type_name as
                                     ::std::str::FromStr>::Err;
 
-                                fn try_from(value: String) ->
+                                fn try_from(value: ::std::string::String) ->
                                     ::std::result::Result<Self, Self::Error>
                                 {
                                     value.parse()
@@ -1511,7 +1511,7 @@ impl TypeEntry {
                                     ].into_iter().collect()),
                                     ..::std::default::Default::default()
                                 };
-                                schema.subschemas().not = Some(
+                                schema.subschemas().not = ::std::option::Option::Some(
                                     ::std::boxed::Box::new(not.into())
                                 );
                                 schema.into()
@@ -1824,7 +1824,7 @@ impl TypeEntry {
                 let item = inner_ty.type_ident(type_space, type_mod);
                 // TODO we'll want this to be a Set of some kind, but we need
                 // to get the derives right first.
-                quote! { Vec<#item> }
+                quote! { ::std::vec::Vec<#item> }
             }
 
             TypeEntryDetails::Tuple(items) => {
