@@ -83,7 +83,18 @@ impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 #[serde(transparent)]
 pub struct IntegerBs(pub u64);
 impl ::std::ops::Deref for IntegerBs {

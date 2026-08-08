@@ -49,6 +49,67 @@ fn test_string_constraints_for_non_ascii_chars() {
 }
 
 #[test]
+fn test_integer_bounds_try_from() {
+    // BoundedUint: u8 in [1, 63].
+    assert!(BoundedUint::try_from(0u8).is_err());
+    assert!(BoundedUint::try_from(1u8).is_ok());
+    assert!(BoundedUint::try_from(63u8).is_ok());
+    assert!(BoundedUint::try_from(64u8).is_err());
+    assert!(BoundedUint::try_from(255u8).is_err());
+
+    // Verify the inner value round-trips.
+    let v = BoundedUint::try_from(42u8).unwrap();
+    assert_eq!(*v, 42u8);
+    assert_eq!(u8::from(v), 42u8);
+}
+
+#[test]
+fn test_integer_bounds_negative() {
+    // BoundedNegative: i16 in [-50, -10].
+    assert!(BoundedNegative::try_from(-51i16).is_err());
+    assert!(BoundedNegative::try_from(-50i16).is_ok());
+    assert!(BoundedNegative::try_from(-10i16).is_ok());
+    assert!(BoundedNegative::try_from(-9i16).is_err());
+    assert!(BoundedNegative::try_from(0i16).is_err());
+}
+
+#[test]
+fn test_integer_bounds_inferred() {
+    // InferredUint: no format hint, [0, 63] -> inferred u8.
+    assert!(InferredUint::try_from(0u8).is_ok());
+    assert!(InferredUint::try_from(63u8).is_ok());
+    assert!(InferredUint::try_from(64u8).is_err());
+}
+
+#[test]
+fn test_integer_bounds_serde() {
+    // Deserialization should enforce bounds.
+    let ok: Result<BoundedUint, _> = serde_json::from_str("42");
+    assert!(ok.is_ok());
+    assert_eq!(*ok.unwrap(), 42u8);
+
+    let too_high: Result<BoundedUint, _> = serde_json::from_str("64");
+    assert!(too_high.is_err());
+
+    let too_low: Result<BoundedUint, _> = serde_json::from_str("0");
+    assert!(too_low.is_err());
+
+    // Serialization should produce the bare integer.
+    let v = BoundedUint::try_from(42u8).unwrap();
+    assert_eq!(serde_json::to_string(&v).unwrap(), "42");
+
+    // Negative bounds.
+    let ok: Result<BoundedNegative, _> = serde_json::from_str("-25");
+    assert!(ok.is_ok());
+
+    let too_low: Result<BoundedNegative, _> = serde_json::from_str("-51");
+    assert!(too_low.is_err());
+
+    let too_high: Result<BoundedNegative, _> = serde_json::from_str("-9");
+    assert!(too_high.is_err());
+}
+
+#[test]
 fn test_unknown_format() {
     // An unknown format string should just render as a string.
     let _ = UnknownFormat {
