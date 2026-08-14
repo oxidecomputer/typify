@@ -151,6 +151,7 @@
 pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
+pub use typify_impl::MapType;
 pub use typify_impl::Type;
 pub use typify_impl::TypeDetails;
 pub use typify_impl::TypeEnum;

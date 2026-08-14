@@ -7,8 +7,8 @@
 use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
-use color_eyre::eyre::{Context, Result};
-use typify::{CrateVers, TypeSpace, TypeSpaceSettings, UnknownPolicy};
+use color_eyre::eyre::{eyre, Context, Result};
+use typify::{CrateVers, MapType, TypeSpace, TypeSpaceSettings, UnknownPolicy};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
@@ -165,7 +165,11 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     }
 
     if let Some(map_type) = &args.map_type {
-        settings.with_map_type(map_type.as_str());
+        let map_type = map_type
+            .parse::<MapType>()
+            .map_err(|msg| eyre!(msg))
+            .wrap_err("Invalid map type")?;
+        settings.with_map_type(map_type);
     }
 
     if let Some(unknown_crates) = &args.unknown_crates {
