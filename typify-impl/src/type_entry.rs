@@ -1,6 +1,6 @@
 // Copyright 2025 Oxide Computer Company
 
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::{Punct, Spacing, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
@@ -268,24 +268,44 @@ impl TypeEntryEnum {
             });
         }
 
-        // If variants still aren't unique, we fail: we'd rather not emit code
-        // that can't compile
+        // If variants still aren't unique, we disambiguate deterministically:
+        // proceeding in variant order, the first variant with a given name
+        // keeps it unchanged, and each subsequent duplicate gets the smallest
+        // numeric suffix (starting at 2) that doesn't collide with any other
+        // variant name. For example, three variants that all sanitize to `X`
+        // become `X`, `X2`, and `X3`. Serialized names are unaffected: serde
+        // renames and Display/FromStr impls are all generated from the
+        // variant's raw name.
         if !variants_unique(&variants) {
-            let mut counts = HashMap::new();
-            variants.iter().for_each(|variant| {
-                counts
-                    .entry(variant.ident_name.as_ref().unwrap())
-                    .and_modify(|xxx| *xxx += 1)
-                    .or_insert(0);
-            });
-            let dups = variants
+            // Names of all variants prior to disambiguation; a suffixed name
+            // must not collide with any of these (e.g. an actual `X2`
+            // variant that appears later in the list).
+            let original_names = variants
                 .iter()
-                .filter(|variant| *counts.get(variant.ident_name.as_ref().unwrap()).unwrap() > 0)
-                .map(|variant| variant.raw_name.as_str())
-                .collect::<Vec<_>>()
-                .join(",");
-            panic!("Failed to make unique variant names for [{}]", dups);
+                .map(|variant| variant.ident_name.as_ref().unwrap().clone())
+                .collect::<BTreeSet<_>>();
+
+            // Names assigned so far: first occurrences and suffixed names.
+            let mut assigned_names = BTreeSet::new();
+            for variant in variants.iter_mut() {
+                let name = variant.ident_name.as_ref().unwrap().clone();
+
+                // The first variant with a given name keeps it.
+                if assigned_names.insert(name.clone()) {
+                    continue;
+                }
+
+                let new_name = (2..)
+                    .map(|ii| format!("{}{}", name, ii))
+                    .find(|candidate| {
+                        !original_names.contains(candidate) && !assigned_names.contains(candidate)
+                    })
+                    .unwrap();
+                assigned_names.insert(new_name.clone());
+                variant.ident_name = Some(new_name);
+            }
         }
+        debug_assert!(variants_unique(&variants));
 
         let name = get_type_name(&type_name, metadata).unwrap();
         let rename = None;
