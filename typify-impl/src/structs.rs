@@ -461,12 +461,12 @@ fn has_default(
         }
         // Default specified is the same as the implicit default: 0
         (Some(TypeEntryDetails::Integer(_)), Some(serde_json::Value::Number(n)))
-            if n.as_u64() == Some(0) =>
+            if n.as_f64() == Some(0.0) =>
         {
             StructPropertyState::Optional
         }
         // Default specified is the same as the implicit default: 0.0
-        (Some(TypeEntryDetails::Integer(_)), Some(serde_json::Value::Number(n)))
+        (Some(TypeEntryDetails::Float(_)), Some(serde_json::Value::Number(n)))
             if n.as_f64() == Some(0.0) =>
         {
             StructPropertyState::Optional

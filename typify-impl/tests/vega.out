@@ -103289,13 +103289,6 @@ pub mod defaults {
     pub(super) fn default_bool<const V: bool>() -> bool {
         V
     }
-    pub(super) fn default_i64<T, const V: i64>() -> T
-    where
-        T: ::std::convert::TryFrom<i64>,
-        <T as ::std::convert::TryFrom<i64>>::Error: ::std::fmt::Debug,
-    {
-        T::try_from(V).unwrap()
-    }
     pub(super) fn aggregate_transform_drop() -> super::AggregateTransformDrop {
         super::AggregateTransformDrop::Boolean(true)
     }
