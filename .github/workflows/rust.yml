@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@stable
     - name: Report cargo version
       run: cargo --version
     - name: Report rustfmt version
@@ -26,9 +27,29 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        rust: [ stable ]
+        include:
+        - os: ubuntu-latest
+          rust: nightly
     steps:
     - uses: actions/checkout@v2
+    - uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ matrix.rust }}
     - name: Build
       run: cargo build --locked --tests --verbose
     - name: Run tests
       run: cargo test --locked --verbose
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: taiki-e/install-action@cargo-hack
+    - name: Check published packages on their declared MSRV
+      run: >-
+        cargo hack --workspace
+        --exclude typify-test
+        --exclude example-build
+        --exclude example-macro
+        --no-dev-deps --rust-version check
