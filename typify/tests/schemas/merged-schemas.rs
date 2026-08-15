@@ -19,8 +19,8 @@ pub mod error {
             Self(value.into())
         }
     }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
+    impl From<::std::string::String> for ConversionError {
+        fn from(value: ::std::string::String) -> Self {
             Self(value.into())
         }
     }
@@ -484,9 +484,9 @@ impl ::std::convert::TryFrom<&str> for MergeNumberBounds {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for MergeNumberBounds {
+impl ::std::convert::TryFrom<::std::string::String> for MergeNumberBounds {
     type Error = <f64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+    fn try_from(value: ::std::string::String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }
@@ -617,9 +617,9 @@ impl ::std::convert::TryFrom<&str> for NarrowNumber {
         value.parse()
     }
 }
-impl ::std::convert::TryFrom<String> for NarrowNumber {
+impl ::std::convert::TryFrom<::std::string::String> for NarrowNumber {
     type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
+    fn try_from(value: ::std::string::String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
     }
 }

@@ -19,8 +19,8 @@ pub mod error {
             Self(value.into())
         }
     }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
+    impl From<::std::string::String> for ConversionError {
+        fn from(value: ::std::string::String) -> Self {
             Self(value.into())
         }
     }
@@ -39,20 +39,20 @@ pub mod error {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct ArraySansItems(pub Vec<::serde_json::Value>);
+pub struct ArraySansItems(pub ::std::vec::Vec<::serde_json::Value>);
 impl ::std::ops::Deref for ArraySansItems {
-    type Target = Vec<::serde_json::Value>;
-    fn deref(&self) -> &Vec<::serde_json::Value> {
+    type Target = ::std::vec::Vec<::serde_json::Value>;
+    fn deref(&self) -> &::std::vec::Vec<::serde_json::Value> {
         &self.0
     }
 }
-impl ::std::convert::From<ArraySansItems> for Vec<::serde_json::Value> {
+impl ::std::convert::From<ArraySansItems> for ::std::vec::Vec<::serde_json::Value> {
     fn from(value: ArraySansItems) -> Self {
         value.0
     }
 }
-impl ::std::convert::From<Vec<::serde_json::Value>> for ArraySansItems {
-    fn from(value: Vec<::serde_json::Value>) -> Self {
+impl ::std::convert::From<::std::vec::Vec<::serde_json::Value>> for ArraySansItems {
+    fn from(value: ::std::vec::Vec<::serde_json::Value>) -> Self {
         Self(value)
     }
 }
