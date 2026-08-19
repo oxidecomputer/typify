@@ -3,13 +3,13 @@ use std::collections::BTreeSet;
 
 use heck::ToPascalCase;
 
+use typespace::{EnumTagType, EnumVariant, StructProperty, Type, TypeEnum, VariantDetails};
+
 use crate::{
     convert::Converter,
+    naming::UNRESOLVED_NAME,
     normalizer::{NormalizedMetadata, NormalizedObject, NormalizedSchema, NormalizedSchemaDetails},
     schemalet::SchemaRef,
-    typespace::{
-        EnumTagType, EnumVariant, NameBuilder, StructProperty, Type, TypeEnum, VariantDetails,
-    },
 };
 
 impl Converter {
@@ -76,10 +76,9 @@ impl Converter {
 
     pub(crate) fn convert_one_of(
         &self,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         subschemas: &[SchemaRef],
-    ) -> Type {
+    ) -> Type<SchemaRef> {
         let proto_variants = subschemas
             .iter()
             .map(|variant_id| {
@@ -99,13 +98,11 @@ impl Converter {
 
         println!("{}", serde_json::to_string_pretty(&proto_variants).unwrap());
 
-        let ty = if let Some(ty) =
-            self.maybe_externally_tagged_enum(name.clone(), metadata, &proto_variants)
-        {
+        let ty = if let Some(ty) = self.maybe_externally_tagged_enum(metadata, &proto_variants) {
             ty
         } else {
             // TODO ... adjacent and internal
-            self.untagged_enum(name, metadata, &proto_variants)
+            self.untagged_enum(metadata, &proto_variants)
         };
 
         ty
@@ -113,10 +110,9 @@ impl Converter {
 
     fn maybe_externally_tagged_enum(
         &self,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         proto_variants: &[ProtoVariant],
-    ) -> Option<Type> {
+    ) -> Option<Type<SchemaRef>> {
         let variants = proto_variants
             .iter()
             .map(|proto| {
@@ -180,12 +176,12 @@ impl Converter {
                     ProtoVariantExternalKind::Simple(variant_name) => {
                         let rust_name = variant_name.to_pascal_case();
                         let rename = (variant_name != rust_name).then_some(variant_name);
-                        EnumVariant {
+                        EnumVariant::new(
                             rust_name,
                             rename,
-                            description: proto.description.clone(),
-                            details: VariantDetails::Unit,
-                        }
+                            proto.description.clone(),
+                            VariantDetails::Unit,
+                        )
                     }
                     ProtoVariantExternalKind::Typed(variant_name, schema_ref) => {
                         // TODO 5.15.2026
@@ -196,12 +192,12 @@ impl Converter {
                         // of want to eliminate it from the output.
                         let rust_name = variant_name.to_pascal_case();
                         let rename = (variant_name != rust_name).then_some(variant_name);
-                        EnumVariant {
+                        EnumVariant::new(
                             rust_name,
                             rename,
-                            description: proto.description.clone(),
-                            details: VariantDetails::Item(schema_ref.clone()),
-                        }
+                            proto.description.clone(),
+                            VariantDetails::Item(schema_ref.clone()),
+                        )
                     }
                 }
                 // todo!();
@@ -214,7 +210,7 @@ impl Converter {
             .collect::<Vec<_>>();
 
         Some(Type::Enum(TypeEnum::new(
-            name,
+            UNRESOLVED_NAME,
             metadata.description.clone(),
             None,
             EnumTagType::External,
@@ -225,10 +221,9 @@ impl Converter {
 
     fn untagged_enum(
         &self,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         proto_variants: &[ProtoVariant],
-    ) -> Type {
+    ) -> Type<SchemaRef> {
         // 6/27/2025
         // I need to figure out decent names for the variants... and I'm a
         // little unhappy that I may not know the names of the types yet. I
@@ -267,24 +262,19 @@ impl Converter {
             .zip(variant_names)
             .map(|(proto, variant_name)| {
                 let details = if let Some(struct_props) =
-                    self.xxx_maybe_struct_props(&variant_name, &proto.id, proto.schema)
+                    self.xxx_maybe_struct_props(&proto.id, proto.schema)
                 {
                     VariantDetails::Struct(struct_props)
                 } else {
                     VariantDetails::Item(proto.id.clone())
                 };
 
-                EnumVariant {
-                    rust_name: variant_name,
-                    rename: None,
-                    description: proto.description.clone(),
-                    details,
-                }
+                EnumVariant::new(variant_name, None, proto.description.clone(), details)
             })
             .collect::<Vec<_>>();
 
         Type::Enum(TypeEnum::new(
-            name,
+            UNRESOLVED_NAME,
             metadata.description.clone(),
             None,
             EnumTagType::Untagged,
@@ -295,10 +285,9 @@ impl Converter {
 
     fn xxx_maybe_struct_props(
         &self,
-        variant_name: &str,
         id: &SchemaRef,
         schema: &NormalizedSchema,
-    ) -> Option<Vec<StructProperty>> {
+    ) -> Option<Vec<StructProperty<SchemaRef>>> {
         // TODO somehow I need to know if this is a type that's going to have a
         // name.
         // TODO or we somehow defer that decision to the Typespace's finalize step?
@@ -307,12 +296,7 @@ impl Converter {
             _ => return None,
         };
 
-        let result = self.convert_object(
-            id,
-            NameBuilder::Fixed(variant_name.to_string()),
-            &schema.metadata,
-            object,
-        );
+        let result = self.convert_object(id, &schema.metadata, object);
         let Type::Struct(struct_ty) = result.primary else {
             return None;
         };

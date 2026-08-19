@@ -1,17 +1,16 @@
-use std::collections::BTreeMap;
+use typespace::{Type, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct};
 
 use crate::{
     convert::{ConvertResult, Converter},
+    naming::{NameHint, UNRESOLVED_NAME},
     normalizer::{NormalizedMetadata, NormalizedSchemaArray},
     schemalet::SchemaRef,
-    typespace::{NameBuilder, NameBuilderHint, Type, TypeNewtypeConstraints, TypeNewtypeStruct},
 };
 
 impl Converter {
     pub(crate) fn convert_array(
         &self,
         id: &SchemaRef,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         array: &NormalizedSchemaArray,
     ) -> ConvertResult {
@@ -79,10 +78,6 @@ impl Converter {
                     .map(|item_id| self.resolve_and_get_stuff(item_id).id.clone())
                     .collect::<Vec<_>>();
 
-                let inner_name = NameBuilder::Hints(vec![NameBuilderHint::Parent(
-                    id.clone(),
-                    "rest".to_string(),
-                )]);
                 let inner_metadata = NormalizedMetadata::default();
                 let inner_array = NormalizedSchemaArray {
                     items: items.clone(),
@@ -97,7 +92,8 @@ impl Converter {
                 let ConvertResult {
                     primary: inner_ty,
                     additional,
-                } = self.convert_array(&inner_id, inner_name, &inner_metadata, &inner_array);
+                    mut name_hints,
+                } = self.convert_array(&inner_id, &inner_metadata, &inner_array);
 
                 // TODO 3/7/2026
                 // This assertion appears to be invalid. For example, if the
@@ -106,8 +102,16 @@ impl Converter {
                 // the primary type.
                 assert!(additional.is_empty());
 
-                let primary = Type::TupleStruct(crate::typespace::TypeTupleStruct::new(
-                    name,
+                // The "rest" type is usually unnamed (e.g. a Vec); should it
+                // turn out to be a named type, derive its name from that of
+                // this tuple struct.
+                name_hints.push((
+                    inner_id.clone(),
+                    NameHint::Parent(id.clone(), "rest".to_string()),
+                ));
+
+                let primary = Type::TupleStruct(TypeTupleStruct::new(
+                    UNRESOLVED_NAME,
                     metadata.description.clone(),
                     types,
                     Some(inner_id.clone()),
@@ -116,6 +120,7 @@ impl Converter {
                 ConvertResult {
                     primary,
                     additional: vec![(inner_id, inner_ty)].into_iter().collect(),
+                    name_hints,
                 }
             }
 
@@ -168,12 +173,8 @@ impl Converter {
                 let ConvertResult {
                     primary: inner_ty,
                     mut additional,
-                } = self.convert_array(
-                    &inner_id,
-                    NameBuilder::Fixed("xxx_busted".to_string()),
-                    &inner_metadata,
-                    &inner_array,
-                );
+                    name_hints,
+                } = self.convert_array(&inner_id, &inner_metadata, &inner_array);
 
                 // Otherwise why are we here?
                 assert!(min_items.is_some() || max_items.is_some());
@@ -184,7 +185,7 @@ impl Converter {
                 };
 
                 let ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
-                    name,
+                    UNRESOLVED_NAME,
                     metadata.description.clone(),
                     None,
                     inner_id.clone(),
@@ -196,6 +197,7 @@ impl Converter {
                 ConvertResult {
                     primary: ty,
                     additional,
+                    name_hints,
                 }
             }
 

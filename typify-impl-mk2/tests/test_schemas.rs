@@ -5,8 +5,8 @@ use serde::Deserialize;
 use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
-    typespace::{Typespace, TypespaceSettings},
-    Typify, Typify2NameHint, TypifySettings,
+    typespace::TypespaceSettings,
+    Typespace, Typify, Typify2NameHint, TypifySettings,
 };
 use url::Url;
 
@@ -239,7 +239,7 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
 }
 
 fn validate_output(path: &PathBuf, canonical_out: String, typespace: Typespace) {
-    let tokens = typespace.render();
+    let tokens = typespace.to_codespace().into_stream();
 
     let doc_str = format!(" Code generated from {}", path.display());
 

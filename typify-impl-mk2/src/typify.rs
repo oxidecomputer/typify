@@ -1,18 +1,20 @@
-use std::collections::VecDeque;
+use std::collections::{BTreeMap, VecDeque};
 
 use log::{debug, trace};
+use typespace::{Type, TypeNative, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet};
 use url::Url;
 
 use crate::{
     bundler::Bundle,
     convert::{ConvertResult, Converter},
+    naming,
     normalizer::Normalizer,
     normalizer2::Normalizer2,
     schemalet::SchemaRef,
-    typespace::{
-        Type, TypeNative, Typespace, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet,
-    },
 };
+
+/// The finalized collection of types generated from the added schemas.
+pub type Typespace = ::typespace::Typespace<SchemaRef>;
 
 #[derive(Debug, serde::Deserialize, Default)]
 pub struct TypifySettings {
@@ -136,7 +138,6 @@ impl Typify {
 
         let _normalizer = normalizer2.to_normalized_graph();
 
-        let mut typespace_builder = TypespaceBuilder::default();
         let mut converter = Converter::new(normalizer.to_normalized_graph());
         let mut work = VecDeque::new();
         roots.into_iter().for_each(|(schema_ref, name)| {
@@ -153,13 +154,20 @@ impl Typify {
             converter.set_name(schema_ref, xxx);
         });
 
+        // Converted types are accumulated here--with placeholder names--until
+        // conversion is complete; only after the naming pass has resolved a
+        // name for every named type are they inserted into the (standalone)
+        // TypespaceBuilder, which requires fully-named types.
+        let mut converted = BTreeMap::<SchemaRef, Type<SchemaRef>>::new();
+        let mut name_hints = BTreeMap::<SchemaRef, Vec<naming::NameHint>>::new();
+
         'outer: while let Some(work_id) = work.pop_front() {
             debug!("work on {work_id}");
 
             // If we've already converted this type, we can skip it. Note that
             // this may mean we saw it in a previous iteration of this loop or
             // in a previous invocation of this method.
-            if typespace_builder.contains_type(&work_id) {
+            if converted.contains_key(&work_id) {
                 continue;
             }
 
@@ -212,7 +220,7 @@ impl Typify {
                             impls: TypespaceTraitSet::empty(),
                             parameters: vec![],
                         });
-                        typespace_builder.insert(work_id.clone(), typ);
+                        converted.insert(work_id.clone(), typ);
                         continue 'outer;
                     }
                 }
@@ -221,6 +229,7 @@ impl Typify {
             let ConvertResult {
                 primary,
                 additional,
+                name_hints: convert_hints,
             } = converter.convert(&work_id, maybe_original_json);
             let children = primary.children();
 
@@ -230,7 +239,11 @@ impl Typify {
 
             work.extend(children);
 
-            typespace_builder.insert(work_id.clone(), primary);
+            for (hint_id, hint) in convert_hints {
+                name_hints.entry(hint_id).or_default().push(hint);
+            }
+
+            converted.insert(work_id.clone(), primary);
             for (add_id, add_type) in additional {
                 let add_children = add_type.children();
 
@@ -240,13 +253,33 @@ impl Typify {
 
                 work.extend(add_children);
 
-                if !typespace_builder.contains_type(&add_id) {
-                    typespace_builder.insert(add_id, add_type);
+                if !converted.contains_key(&add_id) {
+                    converted.insert(add_id, add_type);
                 }
             }
         }
 
-        Ok(typespace_builder.finalize(typespace_settings).unwrap())
+        // Resolve a name for every named type; the fixed names known to the
+        // converter (caller hints and $defs segments) take precedence over
+        // converter-emitted and structural hints.
+        let names = naming::resolve_names(&converted, converter.known_names(), &name_hints);
+
+        let mut typespace_builder = TypespaceBuilder::default();
+        for (id, mut typ) in converted {
+            if let Some(common) = typ.common_mut() {
+                common.name = names
+                    .get(&id)
+                    .expect("the naming pass covers every named type")
+                    .clone();
+            }
+            typespace_builder.insert(id, typ)?;
+        }
+
+        // Containment cycles are broken with Box types whose IDs we mint
+        // here.
+        Ok(typespace_builder.finalize(typespace_settings, |inner_id| {
+            SchemaRef::Box(Box::new(inner_id.clone()))
+        })?)
     }
 
     #[doc(hidden)]

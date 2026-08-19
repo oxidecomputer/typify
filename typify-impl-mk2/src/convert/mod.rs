@@ -4,15 +4,17 @@ mod one_of;
 
 use std::collections::BTreeMap;
 
+use typespace::{
+    EnumTagType, Type, TypeEnum, TypeNative, TypeNewtypeConstraints, TypeNewtypeStruct,
+    TypeTupleStruct, TypeUnitStruct,
+};
+
 use crate::{
+    naming::{NameHint, UNRESOLVED_NAME},
     normalizer::{
         NormalizedMetadata, NormalizedSchemaDetails, NormalizedSchemaGraph, NormalizedString,
     },
     schemalet::SchemaRef,
-    typespace::{
-        EnumTagType, NameBuilder, Type, TypeEnum, TypeNative, TypeNewtypeConstraints,
-        TypeNewtypeStruct, TypeTupleStruct, TypeUnitStruct,
-    },
 };
 
 // TODO naming?
@@ -22,15 +24,18 @@ pub struct Converter {
 }
 
 pub struct ConvertResult {
-    pub primary: Type,
-    pub additional: BTreeMap<SchemaRef, Type>,
+    pub primary: Type<SchemaRef>,
+    pub additional: BTreeMap<SchemaRef, Type<SchemaRef>>,
+    /// Naming hints for types in this result, to be fed to the naming pass.
+    pub name_hints: Vec<(SchemaRef, NameHint)>,
 }
 
-impl From<Type> for ConvertResult {
-    fn from(primary: Type) -> Self {
+impl From<Type<SchemaRef>> for ConvertResult {
+    fn from(primary: Type<SchemaRef>) -> Self {
         Self {
             primary,
             additional: Default::default(),
+            name_hints: Default::default(),
         }
     }
 }
@@ -45,6 +50,12 @@ impl Converter {
 
     pub fn set_name(&mut self, id: SchemaRef, name: String) {
         self.known_names.insert(id, name);
+    }
+
+    /// The full set of fixed names recorded via [`Converter::set_name`];
+    /// these become the fixed-name inputs to the naming pass.
+    pub fn known_names(&self) -> &BTreeMap<SchemaRef, String> {
+        &self.known_names
     }
 
     fn get(&self, id: &SchemaRef) -> &crate::normalizer::NormalizedSchema {
@@ -115,20 +126,6 @@ impl Converter {
         id: &SchemaRef,
         original_json: Option<&serde_json::Value>,
     ) -> ConvertResult {
-        let name = match self.known_names.get(id) {
-            Some(s) => NameBuilder::Fixed(s.clone()),
-            None => NameBuilder::Unset,
-        };
-
-        self.convert_with_name(id, name, original_json)
-    }
-
-    pub fn convert_with_name(
-        &self,
-        id: &SchemaRef,
-        name: NameBuilder,
-        original_json: Option<&serde_json::Value>,
-    ) -> ConvertResult {
         let schema = self.get(id);
 
         println!(
@@ -138,10 +135,12 @@ impl Converter {
         );
         let metadata = &schema.metadata;
 
+        // Named types are constructed with a placeholder name; the naming
+        // pass fills in final names before insertion into the typespace.
         let result = match &schema.details {
             NormalizedSchemaDetails::Anything => Type::JsonValue.into(),
             NormalizedSchemaDetails::Nothing => Type::Enum(TypeEnum::new(
-                name,
+                UNRESOLVED_NAME,
                 metadata.description.clone(),
                 None,
                 EnumTagType::Untagged,
@@ -150,28 +149,22 @@ impl Converter {
             ))
             .into(),
             NormalizedSchemaDetails::Constant(repr) => {
-                Type::UnitStruct(TypeUnitStruct::new(name, None, repr.clone())).into()
+                Type::UnitStruct(TypeUnitStruct::new(UNRESOLVED_NAME, None, repr.clone())).into()
             }
             // TODO 6/9/2026
             // The Wrapper is the confluence of a couple of ideas. I'm not
             // exactly sure how we want to use this.
-            NormalizedSchemaDetails::Wrapper(schema_ref) => {
-                self.convert_with_name(schema_ref, name, original_json)
-            }
+            NormalizedSchemaDetails::Wrapper(schema_ref) => self.convert(schema_ref, original_json),
 
             NormalizedSchemaDetails::ExclusiveOneOf { subschemas, .. } => {
-                self.convert_one_of(name, metadata, subschemas).into()
+                self.convert_one_of(metadata, subschemas).into()
             }
 
             NormalizedSchemaDetails::Boolean => Type::Boolean.into(),
-            NormalizedSchemaDetails::Array(array) => {
-                self.convert_array(id, name, metadata, array).into()
-            }
-            NormalizedSchemaDetails::Object(object) => {
-                self.convert_object(id, name, metadata, object)
-            }
+            NormalizedSchemaDetails::Array(array) => self.convert_array(id, metadata, array),
+            NormalizedSchemaDetails::Object(object) => self.convert_object(id, metadata, object),
             NormalizedSchemaDetails::String(string_value) => {
-                self.convert_string(id, name, metadata, string_value)
+                self.convert_string(id, metadata, string_value)
             }
             NormalizedSchemaDetails::Integer(_) => {
                 // TODO not handling this well ...
@@ -198,10 +191,11 @@ impl Converter {
                 let ConvertResult {
                     primary,
                     mut additional,
+                    name_hints,
                 } = result;
                 let primary = match primary {
                     Type::Tuple(fields) => Type::TupleStruct(TypeTupleStruct::new(
-                        NameBuilder::Fixed(name.clone()),
+                        UNRESOLVED_NAME,
                         metadata.description.clone(),
                         fields,
                         None,
@@ -212,7 +206,7 @@ impl Converter {
                         additional.insert(inner_ref.clone(), ty);
 
                         let outer_ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
-                            NameBuilder::Fixed(name.clone()),
+                            UNRESOLVED_NAME,
                             metadata.description.clone(),
                             None,
                             inner_ref,
@@ -226,6 +220,7 @@ impl Converter {
                 return ConvertResult {
                     primary,
                     additional,
+                    name_hints,
                 };
             }
         }
@@ -236,7 +231,6 @@ impl Converter {
     fn convert_string(
         &self,
         id: &SchemaRef,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         string_value: &NormalizedString,
     ) -> ConvertResult {
@@ -251,9 +245,9 @@ impl Converter {
                 let ConvertResult {
                     primary,
                     mut additional,
+                    name_hints,
                 } = self.convert_string(
                     &inner_ref,
-                    NameBuilder::Fixed("unreachable 123".to_string()),
                     metadata,
                     &NormalizedString {
                         pattern: Default::default(),
@@ -267,7 +261,7 @@ impl Converter {
 
                 ConvertResult {
                     primary: Type::NewtypeStruct(TypeNewtypeStruct::new(
-                        name,
+                        UNRESOLVED_NAME,
                         metadata.description.clone(),
                         None,
                         inner_ref,
@@ -278,6 +272,7 @@ impl Converter {
                         },
                     )),
                     additional,
+                    name_hints,
                 }
             }
 

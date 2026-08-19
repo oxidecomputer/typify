@@ -2,15 +2,21 @@ mod append_map;
 pub mod bundler;
 mod convert;
 mod error;
+mod naming;
 mod namespace;
 mod normalizer;
 mod normalizer2;
 mod schema;
 mod schemalet;
-pub mod typespace;
+mod typespace_ext;
 mod typify;
 
+// Re-export the standalone typespace crate under the same path as the
+// internal module it replaces.
+pub use ::typespace;
+
 pub use typify::TypeId;
+pub use typify::Typespace;
 pub use typify::Typify;
 pub use typify::Typify2NameHint;
 pub use typify::TypifySettings;

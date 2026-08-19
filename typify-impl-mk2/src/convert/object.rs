@@ -1,20 +1,19 @@
 use quote::format_ident;
 use unicode_ident::is_xid_continue;
 
+use typespace::{StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct};
+
 use crate::{
     convert::{ConvertResult, Converter, GottenStuff},
+    naming::UNRESOLVED_NAME,
     normalizer::{NormalizedMetadata, NormalizedObject},
     schemalet::SchemaRef,
-    typespace::{
-        NameBuilder, StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct,
-    },
 };
 
 impl Converter {
     pub(crate) fn convert_object(
         &self,
         parent_id: &SchemaRef,
-        name: NameBuilder,
         metadata: &NormalizedMetadata,
         object: &NormalizedObject,
     ) -> ConvertResult {
@@ -79,9 +78,8 @@ impl Converter {
                     .collect();
 
                 Type::Struct(TypeStruct::new(
-                    name,
+                    UNRESOLVED_NAME,
                     metadata.description.clone(),
-                    None,
                     properties,
                     false,
                 ))
@@ -110,6 +108,7 @@ impl Converter {
                 ConvertResult {
                     primary: Type::Map(key_id.clone(), value_id.clone()),
                     additional: [(key_id, Type::String)].into_iter().collect(),
+                    name_hints: Default::default(),
                 }
             }
 
