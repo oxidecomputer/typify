@@ -1,7 +1,7 @@
 // Copyright 2022 Oxide Computer Company
 
 use quote::quote;
-use schemars::{gen::SchemaGenerator, schema::Schema, JsonSchema};
+use schemars::{gen::SchemaGenerator, schema::RootSchema, schema::Schema, JsonSchema};
 use serde::Serialize;
 use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
@@ -111,4 +111,73 @@ fn test_generation() {
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 
     expectorate::assert_contents("tests/generator.out", fmt.as_str());
+}
+
+#[test]
+fn test_required_nullable_object_with_title_uses_distinct_inner_name() {
+    let schema: RootSchema = serde_json::from_value(serde_json::json!({
+        "definitions": {
+            "aaa-wrapper": {
+                "type": "object",
+                "properties": {
+                    "author_association": {
+                        "title": "author_association",
+                        "type": "string",
+                        "enum": ["OWNER", "MEMBER"]
+                    }
+                }
+            },
+            "author-association": {
+                "title": "author_association",
+                "type": "string",
+                "enum": ["OWNER", "MEMBER"]
+            },
+            "simple-user": {
+                "title": "Simple User",
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "type": "string"
+                    }
+                },
+                "required": ["login"]
+            },
+            "auto-merge": {
+                "title": "Auto merge",
+                "type": ["object", "null"],
+                "properties": {
+                    "enabled_by": {
+                        "$ref": "#/definitions/simple-user"
+                    },
+                    "merge_method": {
+                        "type": "string",
+                        "enum": ["merge", "squash", "rebase"]
+                    },
+                    "commit_title": {
+                        "type": "string"
+                    },
+                    "commit_message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "enabled_by",
+                    "merge_method",
+                    "commit_title",
+                    "commit_message"
+                ]
+            }
+        }
+    }))
+    .unwrap();
+
+    let mut type_space = TypeSpace::default();
+    type_space.add_root_schema(schema).unwrap();
+
+    let fmt = rustfmt_wrapper::rustfmt(type_space.to_stream().to_string()).unwrap();
+
+    assert!(fmt.contains("pub struct AutoMerge(pub ::std::option::Option<AutoMergeInner>);"));
+    assert!(fmt.contains("pub struct AutoMergeInner {"));
+    assert!(!fmt.contains("pub struct AutoMerge(pub ::std::option::Option<AutoMerge>);"));
+    assert_eq!(fmt.matches("pub enum AuthorAssociation {").count(), 1);
 }
