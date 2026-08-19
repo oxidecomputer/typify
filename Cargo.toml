@@ -24,6 +24,10 @@ typify = { version = "0.10.0", path = "typify" }
 typify-impl = { version = "0.10.0", path = "typify-impl" }
 typify-impl-mk2 = { version = "0.10.0", path = "typify-impl-mk2" }
 typify-macro = { version = "0.10.0", path = "typify-macro" }
+# The standalone typespace crate (not the stale in-repo copy). The published
+# 0.0.1-alpha.1 lacks the latest local API hardening, so this is a path
+# dependency for now.
+typespace = { version = "0.0.1-alpha.1", path = "../typespace/typespace" }
 
 assert_cmd = "2.1.1"
 chrono = { version = "0.4.42", features = ["serde"] }
