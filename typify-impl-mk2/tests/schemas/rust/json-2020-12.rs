@@ -1,32 +1,4 @@
 //! Code generated from tests/schemas/input/json-2020-12
-pub struct SchemaArray(pub Vec<SchemaRoot>);
-impl ::std::ops::Deref for SchemaArray {
-    type Target = Vec<SchemaRoot>;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<SchemaArray> for Vec<SchemaRoot> {
-    fn from(value: SchemaArray) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for SchemaArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for SchemaArray {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
 pub struct AnchorString(pub String);
 impl ::std::ops::Deref for AnchorString {
     type Target = String;
@@ -48,63 +20,6 @@ impl ::serde::Serialize for AnchorString {
     }
 }
 impl<'de> ::serde::Deserialize<'de> for AnchorString {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-pub struct UriReferenceString(pub ::url::Url);
-impl ::std::ops::Deref for UriReferenceString {
-    type Target = ::url::Url;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<UriReferenceString> for ::url::Url {
-    fn from(value: UriReferenceString) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for UriReferenceString {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for UriReferenceString {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-#[derive(Eq, PartialEq, Ord, PartialOrd)]
-pub struct UriString(pub ::url::Url);
-impl ::std::ops::Deref for UriString {
-    type Target = ::url::Url;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<UriString> for ::url::Url {
-    fn from(value: UriString) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for UriString {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for UriString {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
@@ -140,36 +55,19 @@ impl<'de> ::serde::Deserialize<'de> for NonNegativeInteger {
         Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
     }
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
-pub enum SimpleTypes {
-    #[serde(rename = "array")]
-    Array,
-    #[serde(rename = "boolean")]
-    Boolean,
-    #[serde(rename = "integer")]
-    Integer,
-    #[serde(rename = "null")]
-    Null,
-    #[serde(rename = "number")]
-    Number,
-    #[serde(rename = "object")]
-    Object,
-    #[serde(rename = "string")]
-    String,
-}
-pub struct StringArray(pub Vec<String>);
-impl ::std::ops::Deref for StringArray {
-    type Target = Vec<String>;
+pub struct SchemaArray(pub Vec<SchemaRoot>);
+impl ::std::ops::Deref for SchemaArray {
+    type Target = Vec<SchemaRoot>;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
-impl ::std::convert::From<StringArray> for Vec<String> {
-    fn from(value: StringArray) -> Self {
+impl ::std::convert::From<SchemaArray> for Vec<SchemaRoot> {
+    fn from(value: SchemaArray) -> Self {
         value.0
     }
 }
-impl ::serde::Serialize for StringArray {
+impl ::serde::Serialize for SchemaArray {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: ::serde::Serializer,
@@ -177,41 +75,7 @@ impl ::serde::Serialize for StringArray {
         self.0.serialize(serializer)
     }
 }
-impl<'de> ::serde::Deserialize<'de> for StringArray {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-#[derive(::serde::Deserialize, ::serde::Serialize)]
-#[serde(untagged)]
-pub enum SchemaRootObjectType {
-    String(SimpleTypes),
-    Array(SchemaRootObjectTypeArray),
-}
-pub struct SchemaRootObjectTypeArray(pub Vec<SimpleTypes>);
-impl ::std::ops::Deref for SchemaRootObjectTypeArray {
-    type Target = Vec<SimpleTypes>;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<SchemaRootObjectTypeArray> for Vec<SimpleTypes> {
-    fn from(value: SchemaRootObjectTypeArray) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for SchemaRootObjectTypeArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectTypeArray {
+impl<'de> ::serde::Deserialize<'de> for SchemaArray {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
@@ -665,6 +529,142 @@ impl ::serde::Serialize for SchemaRootObjectId {
     }
 }
 impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[serde(untagged)]
+pub enum SchemaRootObjectType {
+    String(SimpleTypes),
+    Array(SchemaRootObjectTypeArray),
+}
+pub struct SchemaRootObjectTypeArray(pub Vec<SimpleTypes>);
+impl ::std::ops::Deref for SchemaRootObjectTypeArray {
+    type Target = Vec<SimpleTypes>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<SchemaRootObjectTypeArray> for Vec<SimpleTypes> {
+    fn from(value: SchemaRootObjectTypeArray) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for SchemaRootObjectTypeArray {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectTypeArray {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+#[derive(::serde::Deserialize, ::serde::Serialize)]
+pub enum SimpleTypes {
+    #[serde(rename = "array")]
+    Array,
+    #[serde(rename = "boolean")]
+    Boolean,
+    #[serde(rename = "integer")]
+    Integer,
+    #[serde(rename = "null")]
+    Null,
+    #[serde(rename = "number")]
+    Number,
+    #[serde(rename = "object")]
+    Object,
+    #[serde(rename = "string")]
+    String,
+}
+pub struct StringArray(pub Vec<String>);
+impl ::std::ops::Deref for StringArray {
+    type Target = Vec<String>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<StringArray> for Vec<String> {
+    fn from(value: StringArray) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for StringArray {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for StringArray {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct UriReferenceString(pub ::url::Url);
+impl ::std::ops::Deref for UriReferenceString {
+    type Target = ::url::Url;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<UriReferenceString> for ::url::Url {
+    fn from(value: UriReferenceString) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for UriReferenceString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UriReferenceString {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+#[derive(Eq, PartialEq, Ord, PartialOrd)]
+pub struct UriString(pub ::url::Url);
+impl ::std::ops::Deref for UriString {
+    type Target = ::url::Url;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<UriString> for ::url::Url {
+    fn from(value: UriString) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for UriString {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for UriString {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,

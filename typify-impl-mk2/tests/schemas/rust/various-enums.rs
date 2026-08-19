@@ -11,6 +11,34 @@ pub enum AnyOfNoStrings {}
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 #[serde(untagged)]
 pub enum AnyOfNothing {}
+pub struct CommentedVariants(pub ::serde_json::Value);
+impl ::std::ops::Deref for CommentedVariants {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<CommentedVariants> for ::serde_json::Value {
+    fn from(value: CommentedVariants) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for CommentedVariants {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for CommentedVariants {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub struct DiskAttachment {
     pub alternate: AlternativeEnum,
@@ -60,6 +88,34 @@ impl<'de> ::serde::Deserialize<'de> for EmptyObjectProp {
             );
         }
         Ok(EmptyObjectProp)
+    }
+}
+pub struct EnumAndConstant(pub ::serde_json::Value);
+impl ::std::ops::Deref for EnumAndConstant {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<EnumAndConstant> for ::serde_json::Value {
+    fn from(value: EnumAndConstant) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for EnumAndConstant {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for EnumAndConstant {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
     }
 }
 pub struct IpNet(pub ::serde_json::Value);
@@ -242,178 +298,6 @@ pub enum NullStringEnumWithUnknownFormat {
     #[serde(rename = "c")]
     C,
 }
-pub struct ReferenceDef(pub f64);
-impl ::std::ops::Deref for ReferenceDef {
-    type Target = f64;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<ReferenceDef> for f64 {
-    fn from(value: ReferenceDef) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for ReferenceDef {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for ReferenceDef {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-pub struct References(pub ::serde_json::Value);
-impl ::std::ops::Deref for References {
-    type Target = ::serde_json::Value;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<References> for ::serde_json::Value {
-    fn from(value: References) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for References {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for References {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-#[derive(::serde::Deserialize, ::serde::Serialize)]
-#[serde(untagged)]
-pub enum ShouldBeExclusive {
-    Variant0 {
-        #[serde(
-            default,
-            deserialize_with = "::json_serde::deserialize_some",
-            skip_serializing_if = ":: std :: option :: Option::is_none"
-        )]
-        id: ::std::option::Option<::std::string::String>,
-        #[serde(
-            default,
-            deserialize_with = "::json_serde::deserialize_some",
-            skip_serializing_if = ":: std :: option :: Option::is_none"
-        )]
-        reference: ::std::option::Option<::std::string::String>,
-    },
-    Variant1 {
-        #[serde(
-            default,
-            deserialize_with = "::json_serde::deserialize_some",
-            skip_serializing_if = ":: std :: option :: Option::is_none"
-        )]
-        id: ::std::option::Option<::std::string::String>,
-        #[serde(
-            default,
-            deserialize_with = "::json_serde::deserialize_some",
-            skip_serializing_if = ":: std :: option :: Option::is_none"
-        )]
-        reference: ::std::option::Option<::std::string::String>,
-    },
-}
-pub struct StringVersion(pub ::std::string::String);
-impl ::std::ops::Deref for StringVersion {
-    type Target = ::std::string::String;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<StringVersion> for ::std::string::String {
-    fn from(value: StringVersion) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for StringVersion {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for StringVersion {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-pub struct CommentedVariants(pub ::serde_json::Value);
-impl ::std::ops::Deref for CommentedVariants {
-    type Target = ::serde_json::Value;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<CommentedVariants> for ::serde_json::Value {
-    fn from(value: CommentedVariants) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for CommentedVariants {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for CommentedVariants {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-pub struct EnumAndConstant(pub ::serde_json::Value);
-impl ::std::ops::Deref for EnumAndConstant {
-    type Target = ::serde_json::Value;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-impl ::std::convert::From<EnumAndConstant> for ::serde_json::Value {
-    fn from(value: EnumAndConstant) -> Self {
-        value.0
-    }
-}
-impl ::serde::Serialize for EnumAndConstant {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
-    }
-}
-impl<'de> ::serde::Deserialize<'de> for EnumAndConstant {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
 pub struct OneOfMissingTitle(pub ::serde_json::Value);
 impl ::std::ops::Deref for OneOfMissingTitle {
     type Target = ::serde_json::Value;
@@ -551,6 +435,122 @@ impl<'de> ::serde::Deserialize<'de> for OptionOneofEnumNull {
 pub enum OptionOneofNull {
     String(::std::string::String),
     Null(()),
+}
+pub struct ReferenceDef(pub f64);
+impl ::std::ops::Deref for ReferenceDef {
+    type Target = f64;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<ReferenceDef> for f64 {
+    fn from(value: ReferenceDef) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for ReferenceDef {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for ReferenceDef {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+pub struct References(pub ::serde_json::Value);
+impl ::std::ops::Deref for References {
+    type Target = ::serde_json::Value;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<References> for ::serde_json::Value {
+    fn from(value: References) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for References {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for References {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
+}
+#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[serde(untagged)]
+pub enum ShouldBeExclusive {
+    Variant0 {
+        #[serde(
+            default,
+            deserialize_with = "::json_serde::deserialize_some",
+            skip_serializing_if = ":: std :: option :: Option::is_none"
+        )]
+        id: ::std::option::Option<::std::string::String>,
+        #[serde(
+            default,
+            deserialize_with = "::json_serde::deserialize_some",
+            skip_serializing_if = ":: std :: option :: Option::is_none"
+        )]
+        reference: ::std::option::Option<::std::string::String>,
+    },
+    Variant1 {
+        #[serde(
+            default,
+            deserialize_with = "::json_serde::deserialize_some",
+            skip_serializing_if = ":: std :: option :: Option::is_none"
+        )]
+        id: ::std::option::Option<::std::string::String>,
+        #[serde(
+            default,
+            deserialize_with = "::json_serde::deserialize_some",
+            skip_serializing_if = ":: std :: option :: Option::is_none"
+        )]
+        reference: ::std::option::Option<::std::string::String>,
+    },
+}
+pub struct StringVersion(pub ::std::string::String);
+impl ::std::ops::Deref for StringVersion {
+    type Target = ::std::string::String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl ::std::convert::From<StringVersion> for ::std::string::String {
+    fn from(value: StringVersion) -> Self {
+        value.0
+    }
+}
+impl ::serde::Serialize for StringVersion {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        self.0.serialize(serializer)
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for StringVersion {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+    }
 }
 #[derive(::serde::Deserialize, ::serde::Serialize)]
 pub enum VariantsDifferByPunct {
