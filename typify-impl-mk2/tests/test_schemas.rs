@@ -5,7 +5,7 @@ use serde::Deserialize;
 use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
-    typespace::TypespaceSettings,
+    typespace::settings::Settings,
     Typespace, Typify, Typify2NameHint, TypifySettings,
 };
 use url::Url;
@@ -139,7 +139,7 @@ struct TestJsonSettings {
     #[serde(default)]
     typify: TypifySettings,
     #[serde(default)]
-    typespace: TypespaceSettings,
+    typespace: Settings,
 }
 
 #[derive(Debug, Deserialize)]

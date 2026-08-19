@@ -28,18 +28,9 @@
 use std::collections::{BTreeMap, VecDeque};
 
 use log::debug;
-use typespace::Type;
+use typespace::build::Type;
 
-use crate::{
-    namespace::Namespace,
-    schemalet::SchemaRef,
-    typespace_ext::children_with_context,
-};
-
-/// The name for a named type that has not yet been through the naming pass.
-/// The standalone typespace rejects empty names at insertion, so a
-/// placeholder that leaks through is caught rather than rendered.
-pub(crate) const UNRESOLVED_NAME: &str = "";
+use crate::{namespace::Namespace, schemalet::SchemaRef};
 
 /// A converter-supplied naming hint for a single type.
 #[derive(Debug, Clone)]
@@ -72,7 +63,7 @@ pub(crate) fn resolve_names(
             continue;
         }
 
-        for (child_id, child_sigil) in children_with_context(typ) {
+        for (child_id, child_sigil) in typ.children_with_context() {
             work.push_back((id.clone(), child_id, child_sigil))
         }
     }
@@ -92,7 +83,7 @@ pub(crate) fn resolve_names(
                 .or_default()
                 .push(NameHint::Parent(parent_id.clone(), child_sigil));
         } else {
-            for (grandchild_id, grandchild_sigil) in children_with_context(child_typ) {
+            for (grandchild_id, grandchild_sigil) in child_typ.children_with_context() {
                 work.push_back((
                     parent_id.clone(),
                     grandchild_id,

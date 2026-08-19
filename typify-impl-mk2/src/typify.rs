@@ -1,7 +1,11 @@
 use std::collections::{BTreeMap, VecDeque};
 
 use log::{debug, trace};
-use typespace::{Type, TypeNative, TypespaceBuilder, TypespaceSettings, TypespaceTraitSet};
+use typespace::{
+    build::{Native, Type},
+    settings::Settings,
+    TypespaceBuilder, TypespaceTraitSet,
+};
 use url::Url;
 
 use crate::{
@@ -127,7 +131,7 @@ impl Typify {
     pub fn typify(
         self,
         settings: TypifySettings,
-        typespace_settings: TypespaceSettings,
+        typespace_settings: Settings,
     ) -> Result<Typespace> {
         let Self {
             bundle,
@@ -215,11 +219,11 @@ impl Typify {
                     if jsonschema::is_valid(&conv.pattern, original_json) {
                         // TODO 3/31/2026
                         // Need to fill in impls and type params
-                        let typ = Type::Native(TypeNative {
-                            name: conv.native.name.clone(),
-                            impls: TypespaceTraitSet::empty(),
-                            parameters: vec![],
-                        });
+                        let typ = Type::Native(Native::new(
+                            conv.native.name.clone(),
+                            TypespaceTraitSet::empty(),
+                            vec![],
+                        ));
                         converted.insert(work_id.clone(), typ);
                         continue 'outer;
                     }
@@ -264,22 +268,34 @@ impl Typify {
         // converter-emitted and structural hints.
         let names = naming::resolve_names(&converted, converter.known_names(), &name_hints);
 
-        let mut typespace_builder = TypespaceBuilder::default();
-        for (id, mut typ) in converted {
-            if let Some(common) = typ.common_mut() {
-                common.name = names
+        let mut typespace_builder = TypespaceBuilder::new(typespace_settings);
+        for (id, typ) in converted {
+            // Named shapes leave the converter under construction (no
+            // name); apply the resolved name and build the finished type
+            // here. Unnamed types pass through as-is.
+            let typ = if typ.is_named() {
+                let name = names
                     .get(&id)
                     .expect("the naming pass covers every named type")
                     .clone();
-            }
+                match typ {
+                    Type::Struct(type_struct) => type_struct.name(name).build()?,
+                    Type::Enum(type_enum) => type_enum.name(name).build()?,
+                    Type::UnitStruct(unit_struct) => unit_struct.name(name).build()?,
+                    Type::TupleStruct(tuple_struct) => tuple_struct.name(name).build()?,
+                    Type::NewtypeStruct(newtype_struct) => newtype_struct.name(name).build()?,
+                    Type::TypeAlias(type_alias) => type_alias.name(name).build()?,
+                    _ => unreachable!("is_named covers exactly the shape variants"),
+                }
+            } else {
+                typ
+            };
             typespace_builder.insert(id, typ)?;
         }
 
         // Containment cycles are broken with Box types whose IDs we mint
         // here.
-        Ok(typespace_builder.finalize(typespace_settings, |inner_id| {
-            SchemaRef::Box(Box::new(inner_id.clone()))
-        })?)
+        Ok(typespace_builder.finalize(|inner_id| SchemaRef::Box(Box::new(inner_id.clone())))?)
     }
 
     #[doc(hidden)]

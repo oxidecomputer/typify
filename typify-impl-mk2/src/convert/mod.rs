@@ -4,13 +4,12 @@ mod one_of;
 
 use std::collections::BTreeMap;
 
-use typespace::{
-    EnumTagType, Type, TypeEnum, TypeNative, TypeNewtypeConstraints, TypeNewtypeStruct,
-    TypeTupleStruct, TypeUnitStruct,
+use typespace::build::{
+    Enum, EnumTagType, Native, NewtypeConstraints, NewtypeStruct, TupleStruct, Type, UnitStruct,
 };
 
 use crate::{
-    naming::{NameHint, UNRESOLVED_NAME},
+    naming::NameHint,
     normalizer::{
         NormalizedMetadata, NormalizedSchemaDetails, NormalizedSchemaGraph, NormalizedString,
     },
@@ -135,21 +134,20 @@ impl Converter {
         );
         let metadata = &schema.metadata;
 
-        // Named types are constructed with a placeholder name; the naming
-        // pass fills in final names before insertion into the typespace.
+        // Named types are constructed without a name; the naming pass
+        // resolves final names, which are applied via the shapes' name()
+        // just before build() and insertion into the typespace.
         let result = match &schema.details {
             NormalizedSchemaDetails::Anything => Type::JsonValue.into(),
-            NormalizedSchemaDetails::Nothing => Type::Enum(TypeEnum::new(
-                UNRESOLVED_NAME,
-                metadata.description.clone(),
-                None,
-                EnumTagType::Untagged,
-                vec![],
-                false,
-            ))
-            .into(),
+            NormalizedSchemaDetails::Nothing => {
+                let mut type_enum = Enum::new().tag_type(EnumTagType::Untagged);
+                if let Some(description) = &metadata.description {
+                    type_enum = type_enum.description(description.clone());
+                }
+                Type::Enum(type_enum).into()
+            }
             NormalizedSchemaDetails::Constant(repr) => {
-                Type::UnitStruct(TypeUnitStruct::new(UNRESOLVED_NAME, None, repr.clone())).into()
+                Type::UnitStruct(UnitStruct::new(repr.clone())).into()
             }
             // TODO 6/9/2026
             // The Wrapper is the confluence of a couple of ideas. I'm not
@@ -194,26 +192,23 @@ impl Converter {
                     name_hints,
                 } = result;
                 let primary = match primary {
-                    Type::Tuple(fields) => Type::TupleStruct(TypeTupleStruct::new(
-                        UNRESOLVED_NAME,
-                        metadata.description.clone(),
-                        fields,
-                        None,
-                    )),
+                    Type::Tuple(fields) => {
+                        let mut tuple_struct = TupleStruct::new().fields(fields);
+                        if let Some(description) = &metadata.description {
+                            tuple_struct = tuple_struct.description(description.clone());
+                        }
+                        Type::TupleStruct(tuple_struct)
+                    }
                     ty => {
                         let inner_ref =
                             SchemaRef::Child(Box::new(id.clone()), "@@inner".to_string());
                         additional.insert(inner_ref.clone(), ty);
 
-                        let outer_ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
-                            UNRESOLVED_NAME,
-                            metadata.description.clone(),
-                            None,
-                            inner_ref,
-                            TypeNewtypeConstraints::None,
-                        ));
-
-                        outer_ty
+                        let mut newtype = NewtypeStruct::new(inner_ref);
+                        if let Some(description) = &metadata.description {
+                            newtype = newtype.description(description.clone());
+                        }
+                        Type::NewtypeStruct(newtype)
                     }
                 };
 
@@ -259,18 +254,17 @@ impl Converter {
 
                 additional.insert(inner_ref.clone(), primary);
 
+                let mut newtype =
+                    NewtypeStruct::new(inner_ref).constraints(NewtypeConstraints::String {
+                        min: min_length.map(|x| x as usize),
+                        max: max_length.map(|x| x as usize),
+                        patterns: pattern.clone(),
+                    });
+                if let Some(description) = &metadata.description {
+                    newtype = newtype.description(description.clone());
+                }
                 ConvertResult {
-                    primary: Type::NewtypeStruct(TypeNewtypeStruct::new(
-                        UNRESOLVED_NAME,
-                        metadata.description.clone(),
-                        None,
-                        inner_ref,
-                        TypeNewtypeConstraints::String {
-                            min: min_length.map(|x| x as usize),
-                            max: max_length.map(|x| x as usize),
-                            patterns: pattern.clone(),
-                        },
-                    )),
+                    primary: Type::NewtypeStruct(newtype),
                     additional,
                     name_hints,
                 }
@@ -292,8 +286,8 @@ impl Converter {
             } if pattern.is_empty() && format.len() == 1 => {
                 let format_str = format.iter().next().unwrap().as_str();
                 match format_str {
-                    "uri" => Type::Native(TypeNative::new_string_like("::url::Url")),
-                    "uri-reference" => Type::Native(TypeNative::new_string_like("::url::Url")),
+                    "uri" => Type::Native(Native::new_string_like("::url::Url")),
+                    "uri-reference" => Type::Native(Native::new_string_like("::url::Url")),
                     _ => Type::String,
                 }
                 .into()

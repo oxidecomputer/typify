@@ -2,13 +2,12 @@ mod append_map;
 pub mod bundler;
 mod convert;
 mod error;
-mod naming;
 mod namespace;
+mod naming;
 mod normalizer;
 mod normalizer2;
 mod schema;
 mod schemalet;
-mod typespace_ext;
 mod typify;
 
 // Re-export the standalone typespace crate under the same path as the

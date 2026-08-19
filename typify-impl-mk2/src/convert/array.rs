@@ -1,8 +1,8 @@
-use typespace::{Type, TypeNewtypeConstraints, TypeNewtypeStruct, TypeTupleStruct};
+use typespace::build::{NewtypeConstraints, NewtypeStruct, TupleStruct, Type};
 
 use crate::{
     convert::{ConvertResult, Converter},
-    naming::{NameHint, UNRESOLVED_NAME},
+    naming::NameHint,
     normalizer::{NormalizedMetadata, NormalizedSchemaArray},
     schemalet::SchemaRef,
 };
@@ -110,12 +110,11 @@ impl Converter {
                     NameHint::Parent(id.clone(), "rest".to_string()),
                 ));
 
-                let primary = Type::TupleStruct(TypeTupleStruct::new(
-                    UNRESOLVED_NAME,
-                    metadata.description.clone(),
-                    types,
-                    Some(inner_id.clone()),
-                ));
+                let mut tuple_struct = TupleStruct::new().fields(types).rest(inner_id.clone());
+                if let Some(description) = &metadata.description {
+                    tuple_struct = tuple_struct.description(description.clone());
+                }
+                let primary = Type::TupleStruct(tuple_struct);
 
                 ConvertResult {
                     primary,
@@ -179,18 +178,16 @@ impl Converter {
                 // Otherwise why are we here?
                 assert!(min_items.is_some() || max_items.is_some());
 
-                let constraints = TypeNewtypeConstraints::Array {
+                let constraints = NewtypeConstraints::Array {
                     min: min_items.map(|min| min as usize),
                     max: max_items.map(|max| max as usize),
                 };
 
-                let ty = Type::NewtypeStruct(TypeNewtypeStruct::new(
-                    UNRESOLVED_NAME,
-                    metadata.description.clone(),
-                    None,
-                    inner_id.clone(),
-                    constraints,
-                ));
+                let mut newtype = NewtypeStruct::new(inner_id.clone()).constraints(constraints);
+                if let Some(description) = &metadata.description {
+                    newtype = newtype.description(description.clone());
+                }
+                let ty = Type::NewtypeStruct(newtype);
 
                 additional.insert(inner_id, inner_ty);
 

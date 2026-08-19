@@ -3,11 +3,10 @@ use std::collections::BTreeSet;
 
 use heck::ToPascalCase;
 
-use typespace::{EnumTagType, EnumVariant, StructProperty, Type, TypeEnum, VariantDetails};
+use typespace::build::{Enum, EnumTagType, EnumVariant, StructProperty, Type, VariantDetails};
 
 use crate::{
     convert::Converter,
-    naming::UNRESOLVED_NAME,
     normalizer::{NormalizedMetadata, NormalizedObject, NormalizedSchema, NormalizedSchemaDetails},
     schemalet::SchemaRef,
 };
@@ -176,12 +175,14 @@ impl Converter {
                     ProtoVariantExternalKind::Simple(variant_name) => {
                         let rust_name = variant_name.to_pascal_case();
                         let rename = (variant_name != rust_name).then_some(variant_name);
-                        EnumVariant::new(
-                            rust_name,
-                            rename,
-                            proto.description.clone(),
-                            VariantDetails::Unit,
-                        )
+                        let mut variant = EnumVariant::new(rust_name, VariantDetails::Unit);
+                        if let Some(rename) = rename {
+                            variant = variant.with_rename(rename);
+                        }
+                        if let Some(description) = &proto.description {
+                            variant = variant.with_description(description.clone());
+                        }
+                        variant
                     }
                     ProtoVariantExternalKind::Typed(variant_name, schema_ref) => {
                         // TODO 5.15.2026
@@ -192,12 +193,15 @@ impl Converter {
                         // of want to eliminate it from the output.
                         let rust_name = variant_name.to_pascal_case();
                         let rename = (variant_name != rust_name).then_some(variant_name);
-                        EnumVariant::new(
-                            rust_name,
-                            rename,
-                            proto.description.clone(),
-                            VariantDetails::Item(schema_ref.clone()),
-                        )
+                        let mut variant =
+                            EnumVariant::new(rust_name, VariantDetails::Item(schema_ref.clone()));
+                        if let Some(rename) = rename {
+                            variant = variant.with_rename(rename);
+                        }
+                        if let Some(description) = &proto.description {
+                            variant = variant.with_description(description.clone());
+                        }
+                        variant
                     }
                 }
                 // todo!();
@@ -209,14 +213,13 @@ impl Converter {
             })
             .collect::<Vec<_>>();
 
-        Some(Type::Enum(TypeEnum::new(
-            UNRESOLVED_NAME,
-            metadata.description.clone(),
-            None,
-            EnumTagType::External,
-            variants,
-            false,
-        )))
+        let mut type_enum = Enum::new()
+            .tag_type(EnumTagType::External)
+            .variants(variants);
+        if let Some(description) = &metadata.description {
+            type_enum = type_enum.description(description.clone());
+        }
+        Some(Type::Enum(type_enum))
     }
 
     fn untagged_enum(
@@ -269,18 +272,21 @@ impl Converter {
                     VariantDetails::Item(proto.id.clone())
                 };
 
-                EnumVariant::new(variant_name, None, proto.description.clone(), details)
+                let mut variant = EnumVariant::new(variant_name, details);
+                if let Some(description) = &proto.description {
+                    variant = variant.with_description(description.clone());
+                }
+                variant
             })
             .collect::<Vec<_>>();
 
-        Type::Enum(TypeEnum::new(
-            UNRESOLVED_NAME,
-            metadata.description.clone(),
-            None,
-            EnumTagType::Untagged,
-            variants,
-            false,
-        ))
+        let mut type_enum = Enum::new()
+            .tag_type(EnumTagType::Untagged)
+            .variants(variants);
+        if let Some(description) = &metadata.description {
+            type_enum = type_enum.description(description.clone());
+        }
+        Type::Enum(type_enum)
     }
 
     fn xxx_maybe_struct_props(
@@ -303,7 +309,7 @@ impl Converter {
 
         println!("{:#?}", struct_ty);
 
-        Some(struct_ty.properties)
+        Some(struct_ty.get_properties().to_vec())
     }
 }
 

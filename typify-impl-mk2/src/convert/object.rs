@@ -1,11 +1,9 @@
-use quote::format_ident;
 use unicode_ident::is_xid_continue;
 
-use typespace::{StructProperty, StructPropertySerde, StructPropertyState, Type, TypeStruct};
+use typespace::build::{Struct, StructProperty, StructPropertySerde, StructPropertyState, Type};
 
 use crate::{
     convert::{ConvertResult, Converter, GottenStuff},
-    naming::UNRESOLVED_NAME,
     normalizer::{NormalizedMetadata, NormalizedObject},
     schemalet::SchemaRef,
 };
@@ -52,7 +50,7 @@ impl Converter {
                             title: _,
                         } = self.resolve_and_get_stuff(&field.schema);
 
-                        let rust_name = format_ident!("{new_prop_name}");
+                        let rust_name = new_prop_name.clone();
                         let json_name = if *prop_name == new_prop_name {
                             StructPropertySerde::None
                         } else {
@@ -65,25 +63,23 @@ impl Converter {
                             StructPropertyState::Optional
                         };
 
-                        StructProperty::new(
-                            rust_name,
-                            json_name,
+                        let mut property = StructProperty::new(rust_name, resolved_id.clone())
+                            .with_json_name(json_name)
                             // TODO need to figure this out
-                            prop_state,
-                            // TODO maybe a helper to pull out descriptions for property meta?
-                            description,
-                            resolved_id.clone(),
-                        )
+                            .with_state(prop_state);
+                        // TODO maybe a helper to pull out descriptions for property meta?
+                        if let Some(description) = description {
+                            property = property.with_description(description);
+                        }
+                        property
                     })
-                    .collect();
+                    .collect::<Vec<_>>();
 
-                Type::Struct(TypeStruct::new(
-                    UNRESOLVED_NAME,
-                    metadata.description.clone(),
-                    properties,
-                    false,
-                ))
-                .into()
+                let mut type_struct = Struct::new().properties(properties);
+                if let Some(description) = &metadata.description {
+                    type_struct = type_struct.description(description.clone());
+                }
+                Type::Struct(type_struct).into()
             }
 
             // Simple case of a map with string keys:
@@ -97,8 +93,7 @@ impl Converter {
                 pattern_properties,
                 ..
             } if fields.is_empty() && pattern_properties.is_empty() => {
-                let key_id =
-                    SchemaRef::Child(Box::new(parent_id.clone()), "string".to_string());
+                let key_id = SchemaRef::Child(Box::new(parent_id.clone()), "string".to_string());
                 let GottenStuff {
                     id: value_id,
                     description: _,
