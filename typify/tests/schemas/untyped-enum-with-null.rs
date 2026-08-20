@@ -26,30 +26,6 @@ pub mod error {
     }
 }
 #[doc = "`TestType`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"TestType\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        null,"]
-#[doc = "        \"start\","]
-#[doc = "        \"middle\","]
-#[doc = "        \"end\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"$comment\": \"validate a type with no type and enum values that include a null\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {
     pub value: ::std::option::Option<TestTypeValue>,
@@ -60,20 +36,6 @@ impl TestType {
     }
 }
 #[doc = "`TestTypeValue`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    null,"]
-#[doc = "    \"start\","]
-#[doc = "    \"middle\","]
-#[doc = "    \"end\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,

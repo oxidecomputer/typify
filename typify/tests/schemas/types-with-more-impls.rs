@@ -26,16 +26,6 @@ pub mod error {
     }
 }
 #[doc = "`PatternString`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"pattern\": \"xx\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct PatternString(::std::string::String);
@@ -88,22 +78,6 @@ impl<'de> ::serde::Deserialize<'de> for PatternString {
     }
 }
 #[doc = "`Sub10Primes`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"integer\","]
-#[doc = "  \"format\": \"uint\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    2,"]
-#[doc = "    3,"]
-#[doc = "    5,"]
-#[doc = "    7"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct Sub10Primes(u32);

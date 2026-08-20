@@ -26,23 +26,6 @@ pub mod error {
     }
 }
 #[doc = "`AllTheThings`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"option_marker\": {"]
-#[doc = "      \"$ref\": \"#/$defs/OptionMarker\""]
-#[doc = "    },"]
-#[doc = "    \"path\": {"]
-#[doc = "      \"$ref\": \"#/$defs/PathBuf\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct AllTheThings {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -56,13 +39,6 @@ impl AllTheThings {
     }
 }
 #[doc = "`Marker`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "false"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
