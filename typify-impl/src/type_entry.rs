@@ -1806,7 +1806,9 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
+                    quote! {
+                        ::serde_json::Map<::std::string::String, ::serde_json::Value>
+                    }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
@@ -1824,7 +1826,7 @@ impl TypeEntry {
                 let item = inner_ty.type_ident(type_space, type_mod);
                 // TODO we'll want this to be a Set of some kind, but we need
                 // to get the derives right first.
-                quote! { Vec<#item> }
+                quote! { ::std::vec::Vec<#item> }
             }
 
             TypeEntryDetails::Tuple(items) => {

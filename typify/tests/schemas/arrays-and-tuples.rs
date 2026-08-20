@@ -33,26 +33,26 @@ pub mod error {
 #[doc = "{"]
 #[doc = "  \"type\": \"array\","]
 #[doc = "  \"minItems\": 1,"]
-#[doc = "  \"uniqueItems\": true"]
+#[doc = "  \"uniqueItems\": false"]
 #[doc = "}"]
 #[doc = r" ```"]
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
-pub struct ArraySansItems(pub Vec<::serde_json::Value>);
+pub struct ArraySansItems(pub ::std::vec::Vec<::serde_json::Value>);
 impl ::std::ops::Deref for ArraySansItems {
-    type Target = Vec<::serde_json::Value>;
-    fn deref(&self) -> &Vec<::serde_json::Value> {
+    type Target = ::std::vec::Vec<::serde_json::Value>;
+    fn deref(&self) -> &::std::vec::Vec<::serde_json::Value> {
         &self.0
     }
 }
-impl ::std::convert::From<ArraySansItems> for Vec<::serde_json::Value> {
+impl ::std::convert::From<ArraySansItems> for ::std::vec::Vec<::serde_json::Value> {
     fn from(value: ArraySansItems) -> Self {
         value.0
     }
 }
-impl ::std::convert::From<Vec<::serde_json::Value>> for ArraySansItems {
-    fn from(value: Vec<::serde_json::Value>) -> Self {
+impl ::std::convert::From<::std::vec::Vec<::serde_json::Value>> for ArraySansItems {
+    fn from(value: ::std::vec::Vec<::serde_json::Value>) -> Self {
         Self(value)
     }
 }
@@ -95,6 +95,40 @@ impl ::std::convert::From<LessSimpleTwoTuple> for (::std::string::String, ::std:
 }
 impl ::std::convert::From<(::std::string::String, ::std::string::String)> for LessSimpleTwoTuple {
     fn from(value: (::std::string::String, ::std::string::String)) -> Self {
+        Self(value)
+    }
+}
+#[doc = "`SetAvecItem`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"array\","]
+#[doc = "  \"items\": {"]
+#[doc = "    \"type\": \"string\""]
+#[doc = "  },"]
+#[doc = "  \"minItems\": 1,"]
+#[doc = "  \"uniqueItems\": true"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct SetAvecItem(pub ::std::vec::Vec<::std::string::String>);
+impl ::std::ops::Deref for SetAvecItem {
+    type Target = ::std::vec::Vec<::std::string::String>;
+    fn deref(&self) -> &::std::vec::Vec<::std::string::String> {
+        &self.0
+    }
+}
+impl ::std::convert::From<SetAvecItem> for ::std::vec::Vec<::std::string::String> {
+    fn from(value: SetAvecItem) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<::std::vec::Vec<::std::string::String>> for SetAvecItem {
+    fn from(value: ::std::vec::Vec<::std::string::String>) -> Self {
         Self(value)
     }
 }
