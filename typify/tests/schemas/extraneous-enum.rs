@@ -26,27 +26,6 @@ pub mod error {
     }
 }
 #[doc = "`LetterBox`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"LetterBox\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"letter\": {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"a\","]
-#[doc = "        \"b\","]
-#[doc = "        \"cee\""]
-#[doc = "      ],"]
-#[doc = "      \"maxLength\": 2"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct LetterBox {
     #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
@@ -58,21 +37,6 @@ impl LetterBox {
     }
 }
 #[doc = "`LetterBoxLetter`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"a\","]
-#[doc = "    \"b\","]
-#[doc = "    \"cee\""]
-#[doc = "  ],"]
-#[doc = "  \"maxLength\": 2"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,

@@ -26,17 +26,6 @@ pub mod error {
     }
 }
 #[doc = "`DeadSimple`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"DeadSimple\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"$comment\": \"usual case of a map whose name must come from its title\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct DeadSimple(pub ::serde_json::Map<::std::string::String, ::serde_json::Value>);
@@ -61,16 +50,6 @@ impl ::std::convert::From<::serde_json::Map<::std::string::String, ::serde_json:
     }
 }
 #[doc = "`Eh`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"format\": \"^a*$\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -112,22 +91,6 @@ impl ::std::fmt::Display for Eh {
     }
 }
 #[doc = "`MapWithDateKeys`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"$ref\": \"#/definitions/Value\""]
-#[doc = "  },"]
-#[doc = "  \"propertyNames\": {"]
-#[doc = "    \"format\": \"date\""]
-#[doc = "  },"]
-#[doc = "  \"$comment\": \"test that a type isn't needed for propertyNames\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MapWithDateKeys(pub std::collections::BTreeMap<::chrono::naive::NaiveDate, Value>);
@@ -152,22 +115,6 @@ impl ::std::convert::From<std::collections::BTreeMap<::chrono::naive::NaiveDate,
     }
 }
 #[doc = "`MapWithDateTimeKeys`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"$ref\": \"#/definitions/Value\""]
-#[doc = "  },"]
-#[doc = "  \"propertyNames\": {"]
-#[doc = "    \"format\": \"date-time\""]
-#[doc = "  },"]
-#[doc = "  \"$comment\": \"test that a type isn't needed for propertyNames\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MapWithDateTimeKeys(
@@ -200,21 +147,6 @@ impl
     }
 }
 #[doc = "`MapWithKeys`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"$ref\": \"#/definitions/Value\""]
-#[doc = "  },"]
-#[doc = "  \"propertyNames\": {"]
-#[doc = "    \"$ref\": \"#/definitions/Eh\""]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MapWithKeys(pub std::collections::BTreeMap<Eh, Value>);
@@ -235,15 +167,6 @@ impl ::std::convert::From<std::collections::BTreeMap<Eh, Value>> for MapWithKeys
     }
 }
 #[doc = "`Value`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,

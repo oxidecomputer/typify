@@ -779,10 +779,10 @@ impl TypeEntry {
             variants,
             deny_unknown_fields,
             bespoke_impls,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = enum_details;
 
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         // TODO this is a one-off for some useful traits; this should move into
         // the creation of the enum type.
@@ -1108,9 +1108,9 @@ impl TypeEntry {
             default,
             properties,
             deny_unknown_fields,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = struct_details;
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
@@ -1366,9 +1366,9 @@ impl TypeEntry {
             default,
             type_id,
             constraints,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = newtype_details;
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         let type_name = format_ident!("{}", name);
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
@@ -2027,25 +2027,13 @@ impl TypeEntry {
     }
 }
 
-fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
+fn make_doc(name: &str, description: Option<&String>) -> TokenStream {
     let desc = match description {
         Some(desc) => desc,
         None => &format!("`{}`", name),
     };
-    let schema_json = serde_json::to_string_pretty(schema).unwrap();
-    let schema_lines = schema_json.lines();
-    quote! {
-        #[doc = #desc]
-        ///
-        /// <details><summary>JSON schema</summary>
-        ///
-        /// ```json
-        #(
-            #[doc = #schema_lines]
-        )*
-        /// ```
-        /// </details>
-    }
+
+    quote! { #[doc = #desc] }
 }
 
 fn strings_to_derives<'a>(

@@ -26,24 +26,6 @@ mod types {
         }
     }
     #[doc = "`AllTheTraits`"]
-    #[doc = r""]
-    #[doc = r" <details><summary>JSON schema</summary>"]
-    #[doc = r""]
-    #[doc = r" ```json"]
-    #[doc = "{"]
-    #[doc = "  \"title\": \"AllTheTraits\","]
-    #[doc = "  \"type\": \"object\","]
-    #[doc = "  \"required\": ["]
-    #[doc = "    \"ok\""]
-    #[doc = "  ],"]
-    #[doc = "  \"properties\": {"]
-    #[doc = "    \"ok\": {"]
-    #[doc = "      \"type\": \"string\""]
-    #[doc = "    }"]
-    #[doc = "  }"]
-    #[doc = "}"]
-    #[doc = r" ```"]
-    #[doc = r" </details>"]
     #[derive(
         :: serde :: Deserialize,
         :: serde :: Serialize,
@@ -65,30 +47,6 @@ mod types {
         }
     }
     #[doc = "`CompoundType`"]
-    #[doc = r""]
-    #[doc = r" <details><summary>JSON schema</summary>"]
-    #[doc = r""]
-    #[doc = r" ```json"]
-    #[doc = "{"]
-    #[doc = "  \"title\": \"CompoundType\","]
-    #[doc = "  \"type\": \"object\","]
-    #[doc = "  \"required\": ["]
-    #[doc = "    \"value1\","]
-    #[doc = "    \"value2\""]
-    #[doc = "  ],"]
-    #[doc = "  \"properties\": {"]
-    #[doc = "    \"value1\": {"]
-    #[doc = "      \"type\": \"string\""]
-    #[doc = "    },"]
-    #[doc = "    \"value2\": {"]
-    #[doc = "      \"type\": \"integer\","]
-    #[doc = "      \"format\": \"uint64\","]
-    #[doc = "      \"minimum\": 0.0"]
-    #[doc = "    }"]
-    #[doc = "  }"]
-    #[doc = "}"]
-    #[doc = r" ```"]
-    #[doc = r" </details>"]
     #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
     pub struct CompoundType {
         pub value1: ::std::string::String,
@@ -100,26 +58,6 @@ mod types {
         }
     }
     #[doc = "`Pair`"]
-    #[doc = r""]
-    #[doc = r" <details><summary>JSON schema</summary>"]
-    #[doc = r""]
-    #[doc = r" ```json"]
-    #[doc = "{"]
-    #[doc = "  \"title\": \"Pair\","]
-    #[doc = "  \"type\": \"object\","]
-    #[doc = "  \"properties\": {"]
-    #[doc = "    \"a\": {"]
-    #[doc = "      \"default\": \"One\","]
-    #[doc = "      \"$ref\": \"#/definitions/StringEnum\""]
-    #[doc = "    },"]
-    #[doc = "    \"b\": {"]
-    #[doc = "      \"default\": \"Two\","]
-    #[doc = "      \"$ref\": \"#/definitions/StringEnum\""]
-    #[doc = "    }"]
-    #[doc = "  }"]
-    #[doc = "}"]
-    #[doc = r" ```"]
-    #[doc = r" </details>"]
     #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
     pub struct Pair {
         #[serde(default = "defaults::pair_a")]
@@ -141,20 +79,6 @@ mod types {
         }
     }
     #[doc = "`StringEnum`"]
-    #[doc = r""]
-    #[doc = r" <details><summary>JSON schema</summary>"]
-    #[doc = r""]
-    #[doc = r" ```json"]
-    #[doc = "{"]
-    #[doc = "  \"type\": \"string\","]
-    #[doc = "  \"enum\": ["]
-    #[doc = "    \"One\","]
-    #[doc = "    \"Two\","]
-    #[doc = "    \"BuckleMyShoe\""]
-    #[doc = "  ]"]
-    #[doc = "}"]
-    #[doc = r" ```"]
-    #[doc = r" </details>"]
     #[derive(
         :: serde :: Deserialize,
         :: serde :: Serialize,
