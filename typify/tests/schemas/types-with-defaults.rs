@@ -153,6 +153,111 @@ impl OuterThing {
         Default::default()
     }
 }
+#[doc = "`SeparatorConfig`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"default\": {},"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"lineColor\": {"]
+#[doc = "      \"default\": \"#B2000000\","]
+#[doc = "      \"type\": ["]
+#[doc = "        \"string\","]
+#[doc = "        \"null\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"lineThickness\": {"]
+#[doc = "      \"default\": 1,"]
+#[doc = "      \"type\": \"integer\""]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"additionalProperties\": false"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(deny_unknown_fields)]
+pub struct SeparatorConfig {
+    #[serde(
+        rename = "lineColor",
+        default = "defaults::separator_config_line_color"
+    )]
+    pub line_color: ::std::option::Option<::std::string::String>,
+    #[serde(rename = "lineThickness", default = "defaults::default_u64::<i64, 1>")]
+    pub line_thickness: i64,
+}
+impl ::std::default::Default for SeparatorConfig {
+    fn default() -> Self {
+        Self {
+            line_color: defaults::separator_config_line_color(),
+            line_thickness: defaults::default_u64::<i64, 1>(),
+        }
+    }
+}
+impl SeparatorConfig {
+    pub fn builder() -> builder::SeparatorConfig {
+        Default::default()
+    }
+}
+#[doc = "`SeparatorHolder`"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"separatorAll\": {"]
+#[doc = "      \"default\": {},"]
+#[doc = "      \"allOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/definitions/SeparatorConfig\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"separatorSome\": {"]
+#[doc = "      \"default\": {"]
+#[doc = "        \"lineThickness\": 5"]
+#[doc = "      },"]
+#[doc = "      \"allOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/definitions/SeparatorConfig\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct SeparatorHolder {
+    #[serde(
+        rename = "separatorAll",
+        default = "defaults::separator_holder_separator_all"
+    )]
+    pub separator_all: SeparatorConfig,
+    #[serde(
+        rename = "separatorSome",
+        default = "defaults::separator_holder_separator_some"
+    )]
+    pub separator_some: SeparatorConfig,
+}
+impl ::std::default::Default for SeparatorHolder {
+    fn default() -> Self {
+        Self {
+            separator_all: defaults::separator_holder_separator_all(),
+            separator_some: defaults::separator_holder_separator_some(),
+        }
+    }
+}
+impl SeparatorHolder {
+    pub fn builder() -> builder::SeparatorHolder {
+        Default::default()
+    }
+}
 #[doc = "`TestBed`"]
 #[doc = r""]
 #[doc = r" <details><summary>JSON schema</summary>"]
@@ -245,7 +350,7 @@ pub struct ThingWithDefaults {
 impl ::std::default::Default for ThingWithDefaults {
     fn default() -> Self {
         ThingWithDefaults {
-            a: Default::default(),
+            a: ::std::default::Default::default(),
             type_: ::std::option::Option::Some("bee".to_string()),
         }
     }
@@ -498,6 +603,117 @@ pub mod builder {
         }
     }
     #[derive(Clone, Debug)]
+    pub struct SeparatorConfig {
+        line_color: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        line_thickness: ::std::result::Result<i64, ::std::string::String>,
+    }
+    impl ::std::default::Default for SeparatorConfig {
+        fn default() -> Self {
+            Self {
+                line_color: Ok(super::defaults::separator_config_line_color()),
+                line_thickness: Ok(super::defaults::default_u64::<i64, 1>()),
+            }
+        }
+    }
+    impl SeparatorConfig {
+        pub fn line_color<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.line_color = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for line_color: {e}"));
+            self
+        }
+        pub fn line_thickness<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<i64>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.line_thickness = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for line_thickness: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SeparatorConfig> for super::SeparatorConfig {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SeparatorConfig,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                line_color: value.line_color?,
+                line_thickness: value.line_thickness?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::SeparatorConfig> for SeparatorConfig {
+        fn from(value: super::SeparatorConfig) -> Self {
+            Self {
+                line_color: Ok(value.line_color),
+                line_thickness: Ok(value.line_thickness),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct SeparatorHolder {
+        separator_all: ::std::result::Result<super::SeparatorConfig, ::std::string::String>,
+        separator_some: ::std::result::Result<super::SeparatorConfig, ::std::string::String>,
+    }
+    impl ::std::default::Default for SeparatorHolder {
+        fn default() -> Self {
+            Self {
+                separator_all: Ok(super::defaults::separator_holder_separator_all()),
+                separator_some: Ok(super::defaults::separator_holder_separator_some()),
+            }
+        }
+    }
+    impl SeparatorHolder {
+        pub fn separator_all<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::SeparatorConfig>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.separator_all = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for separator_all: {e}"));
+            self
+        }
+        pub fn separator_some<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::SeparatorConfig>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.separator_some = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for separator_some: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<SeparatorHolder> for super::SeparatorHolder {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: SeparatorHolder,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                separator_all: value.separator_all?,
+                separator_some: value.separator_some?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::SeparatorHolder> for SeparatorHolder {
+        fn from(value: super::SeparatorHolder) -> Self {
+            Self {
+                separator_all: Ok(value.separator_all),
+                separator_some: Ok(value.separator_some),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
     pub struct TestBed {
         any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
         id: ::std::result::Result<::uuid::Uuid, ::std::string::String>,
@@ -652,6 +868,13 @@ pub mod builder {
 }
 #[doc = r" Generation of default values for serde."]
 pub mod defaults {
+    pub(super) fn default_u64<T, const V: u64>() -> T
+    where
+        T: ::std::convert::TryFrom<u64>,
+        <T as ::std::convert::TryFrom<u64>>::Error: ::std::fmt::Debug,
+    {
+        T::try_from(V).unwrap()
+    }
     pub(super) fn default_nzu64<T, const V: u64>() -> T
     where
         T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
@@ -668,6 +891,21 @@ pub mod defaults {
     pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
     {
         ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
+    }
+    pub(super) fn separator_config_line_color() -> ::std::option::Option<::std::string::String> {
+        ::std::option::Option::Some("#B2000000".to_string())
+    }
+    pub(super) fn separator_holder_separator_all() -> super::SeparatorConfig {
+        super::SeparatorConfig {
+            line_color: ::std::option::Option::Some("#B2000000".to_string()),
+            line_thickness: 1_i64,
+        }
+    }
+    pub(super) fn separator_holder_separator_some() -> super::SeparatorConfig {
+        super::SeparatorConfig {
+            line_color: ::std::option::Option::Some("#B2000000".to_string()),
+            line_thickness: 5_i64,
+        }
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
