@@ -26,6 +26,17 @@ permitted (if absent) or denied (if present). There is no mechanism to deny
 only *some* properties (while others are permitted but ignored). Here again, we
 *acquiesce to this small imprecision.
 
+### Rejections
+
+A schema that specifies `uniqueItems: true` whose item type cannot implement
+the comparison traits (`Eq`, `Ord`, `Hash`) is an error. For example, an array
+with no `items` schema has elements of arbitrary JSON values, which admit no
+total comparison (JSON numbers include floats). Rather than silently dropping
+the uniqueness constraint, typify reports a trait conflict identifying the
+item type and the requirement's origin. If this proves troublesome for real
+schemas in the wild, we can revisit how to address it (e.g. pairwise
+`PartialEq` enforcement at deserialization).
+
 ## Influencing Code Generation
 
 Typify allows consumers to influence how code is generated:
