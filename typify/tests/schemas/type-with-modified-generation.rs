@@ -25,6 +25,8 @@ pub mod error {
         }
     }
 }
+#[allow(unused_imports)]
+pub use String as HandGeneratedType;
 #[doc = "`TestType`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TestType {

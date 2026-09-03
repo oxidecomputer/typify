@@ -6078,6 +6078,8 @@ pub struct ColorRgb {
     pub g: NumberValue,
     pub r: NumberValue,
 }
+#[allow(unused_imports)]
+pub use ColorValue;
 #[doc = "`Compare`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged, deny_unknown_fields)]
