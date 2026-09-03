@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Some": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "DenyValueWithSomeCollision": {
+      "type": "integer",
+      "not": {
+        "enum": [
+          1
+        ]
+      }
+    }
+  }
+}

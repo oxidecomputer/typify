@@ -51,6 +51,20 @@ fn test_various_enums_json_schema() {
     trybuild::TestCases::new().pass("tests/schemas/various-enums-json-schema.rs");
 }
 
+/// Ensure that generated `JsonSchema` implementations do not collide with a
+/// schema type named `Some`.
+#[test]
+fn test_some_collision_json_schema() {
+    validate_schema(
+        "tests/schemas/some-collision.json".into(),
+        "tests/schemas/some-collision-json-schema.rs".into(),
+        TypeSpaceSettings::default().with_derive("schemars::JsonSchema".to_string()),
+    )
+    .unwrap();
+
+    trybuild::TestCases::new().pass("tests/schemas/some-collision-json-schema.rs");
+}
+
 fn validate_schema(
     path: std::path::PathBuf,
     out_path: std::path::PathBuf,
