@@ -881,7 +881,9 @@ impl TypeSpace {
     /// assumes of the container itself (`Default` unconditionally, and
     /// `Clone`, `Debug`, `Serialize`, `Deserialize` following the
     /// parameters), which is the conservative answer for a path typify
-    /// cannot otherwise reason about. Global extra attributes have no
+    /// cannot otherwise reason about. `with_typify_compat` withholds
+    /// `Default` from a tuple struct, a unit struct, and a newtype, which
+    /// typify never derives it for. Global extra attributes have no
     /// typespace home yet; see the implementation gaps on
     /// [`TypeSpace::to_stream`] and typespace_ext.rs gap note 3.
     fn typespace_settings(&self) -> typespace::settings::Settings {
@@ -908,7 +910,8 @@ impl TypeSpace {
             .with_required_trait(typespace::TypespaceTrait::Clone)
             .with_required_trait(typespace::TypespaceTrait::Debug)
             .with_desired_trait(typespace::TypespaceTrait::Default)
-            .with_map_type(map_type);
+            .with_map_type(map_type)
+            .with_typify_compat(true);
         for derive in &self.settings.extra_derives {
             match derive.as_str() {
                 "::schemars::JsonSchema" | "schemars::JsonSchema" | "JsonSchema" => {
