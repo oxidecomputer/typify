@@ -910,6 +910,14 @@ impl TypeSpace {
             .with_required_trait(typespace::TypespaceTrait::Clone)
             .with_required_trait(typespace::TypespaceTrait::Debug)
             .with_desired_trait(typespace::TypespaceTrait::Default)
+            .with_desired_trait(typespace::TypespaceTrait::Eq)
+            .with_desired_trait(typespace::TypespaceTrait::PartialEq)
+            .with_desired_trait(typespace::TypespaceTrait::Ord)
+            .with_desired_trait(typespace::TypespaceTrait::PartialOrd)
+            .with_desired_trait(typespace::TypespaceTrait::Hash)
+            .with_desired_trait(typespace::TypespaceTrait::Display)
+            .with_desired_trait(typespace::TypespaceTrait::FromStr)
+            .with_desired_trait(typespace::TypespaceTrait::Copy)
             .with_map_type(map_type)
             .with_typify_compat(true);
         for derive in &self.settings.extra_derives {
@@ -921,6 +929,9 @@ impl TypeSpace {
                     settings = settings.with_derive(derive.clone());
                 }
             }
+        }
+        for attr in &self.settings.extra_attrs {
+            settings = settings.with_attr(attr.clone());
         }
         settings = settings.with_struct_builder(self.settings.struct_builder);
         settings
