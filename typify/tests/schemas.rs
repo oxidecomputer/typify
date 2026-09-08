@@ -104,9 +104,7 @@ fn validate_schema(
 
     // Make a file with the generated code.
     let code = quote! {
-        // TODO 9/3/2026
-        // revert
-        #![allow(warnings)]
+        #![deny(warnings)]
 
         #types
 
