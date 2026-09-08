@@ -249,6 +249,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a822ea5bc7590f9d40f1ba12c0dc3c2760f3482c6984db1573ad11031420831"
 
 [[package]]
+name = "codespace"
+version = "0.0.1-alpha.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61018db61b1cdf32bed05d3addbd3a49d03be38e1a7674e067e6ded193d0cf49"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.4",
+]
+
+[[package]]
 name = "color-eyre"
 version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1271,6 +1282,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "typespace"
+version = "0.0.1-alpha.1"
+dependencies = [
+ "codespace",
+ "heck",
+ "log",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn 3.0.4",
+ "thiserror 2.0.20",
+]
+
+[[package]]
 name = "typify"
 version = "0.8.0"
 dependencies = [
@@ -1310,6 +1336,7 @@ dependencies = [
  "serde_json",
  "syn 3.0.6",
  "thiserror 2.0.20",
+ "typespace",
  "unicode-ident",
  "uuid",
 ]

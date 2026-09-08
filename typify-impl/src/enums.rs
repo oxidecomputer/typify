@@ -1,27 +1,22 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 use heck::{ToKebabCase, ToPascalCase};
-use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
 use schemars::schema::{
     InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
 };
 
 use crate::{
-    output::OutputSpace,
-    structs::generate_serde_attr,
-    type_entry::{
-        EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryStruct, Variant,
-        VariantDetails,
-    },
+    type_entry::{TypeEntry, TypeEntryEnum, Variant},
     util::{
         constant_string_value, get_object, get_type_name, metadata_description,
         metadata_title_and_description, schema_is_named,
     },
     Name, Result, TypeSpace,
 };
+
+use typespace::build::{EnumTagType, Type, VariantDetails};
 
 impl TypeSpace {
     pub(crate) fn maybe_option(
@@ -209,7 +204,7 @@ impl TypeSpace {
                 } => Some(Variant::new(
                     variant_name.to_string(),
                     description,
-                    VariantDetails::Simple,
+                    VariantDetails::Unit,
                 )),
 
                 ProtoVariant::Typed {
@@ -246,39 +241,23 @@ impl TypeSpace {
         &mut self,
         prop_type_name: Name,
         variant_schema: &Schema,
-    ) -> Result<(VariantDetails, bool)> {
+    ) -> Result<(VariantDetails<crate::TypeId>, bool)> {
         let (ty, _) = self.convert_schema(prop_type_name, variant_schema)?;
 
         match ty {
-            TypeEntry {
-                details: TypeEntryDetails::Tuple(types),
-                ..
-            } => {
+            TypeEntry::Type(Type::Tuple(types)) => {
                 let details = VariantDetails::Tuple(types);
                 Ok((details, false))
             }
-            TypeEntry {
-                details: TypeEntryDetails::Unit,
-                ..
-            } => {
-                let details = VariantDetails::Simple;
+            TypeEntry::Type(Type::Unit) => {
+                let details = VariantDetails::Unit;
                 Ok((details, false))
             }
-            TypeEntry {
-                details:
-                    TypeEntryDetails::Struct(TypeEntryStruct {
-                        name: _,
-                        rename: _,
-                        description: _,
-                        default: _, // TODO arguably we should look at this
-                        properties,
-                        deny_unknown_fields,
-                        schema: _,
-                    }),
-                ..
-            } => {
-                let details = VariantDetails::Struct(properties);
-                Ok((details, deny_unknown_fields))
+            TypeEntry::Type(Type::Struct(type_struct)) => {
+                // The struct's name and description are discarded; the
+                // variant supplies its own.
+                let details = VariantDetails::Struct(type_struct.get_properties().to_vec());
+                Ok((details, type_struct.get_deny_unknown_fields()))
             }
 
             ty => {
@@ -407,7 +386,7 @@ impl TypeSpace {
             Ok(Variant::new(
                 variant_name.to_string(),
                 None,
-                VariantDetails::Simple,
+                VariantDetails::Unit,
             ))
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
@@ -531,7 +510,7 @@ impl TypeSpace {
             assert_eq!(tag_name, tag);
             assert_eq!(validation.required.len(), 1);
 
-            let variant = Variant::new(variant_name.to_string(), None, VariantDetails::Simple);
+            let variant = Variant::new(variant_name.to_string(), None, VariantDetails::Unit);
             Ok((variant, false))
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();
@@ -747,109 +726,10 @@ fn get_common_prefix(name: &str, prefix: &str) -> String {
         .to_pascal_case()
 }
 
-pub(crate) fn output_variant(
-    variant: &Variant,
-    type_space: &TypeSpace,
-    output: &mut OutputSpace,
-    type_name: &str,
-) -> TokenStream {
-    let ident_name = variant.ident_name.as_ref().unwrap();
-    let variant_name = format_ident!("{}", ident_name);
-    let doc = variant.description.as_ref().map(|s| {
-        quote! { #[doc = #s] }
-    });
-    let serde = (&variant.raw_name != ident_name).then(|| {
-        let s = &variant.raw_name;
-        quote! { #[serde(rename = #s)] }
-    });
-    match &variant.details {
-        VariantDetails::Simple => quote! {
-            #doc
-            #serde
-            #variant_name,
-        },
-        VariantDetails::Item(type_id) => {
-            let item_type_ident = type_space
-                .id_to_entry
-                .get(type_id)
-                .unwrap()
-                .type_ident(type_space, &None);
-
-            quote! {
-                #doc
-                #serde
-                #variant_name(#item_type_ident),
-            }
-        }
-
-        VariantDetails::Tuple(tuple) => {
-            let types = tuple.iter().map(|type_id| {
-                type_space
-                    .id_to_entry
-                    .get(type_id)
-                    .unwrap()
-                    .type_ident(type_space, &None)
-            });
-
-            if tuple.len() != 1 {
-                quote! {
-                    #doc
-                    #serde
-                    #variant_name(#(#types),*),
-                }
-            } else {
-                // A tuple variant with a single element requires special
-                // handling lest its "tuple-ness" be lost. This is important to
-                // ensure correct serialization and deserialization behavior.
-                // Note in particular the extra parentheses and trailing comma.
-                quote! {
-                    #doc
-                    #serde
-                    #variant_name((#(#types,)*)),
-                }
-            }
-        }
-
-        VariantDetails::Struct(props) => {
-            let prop_streams = props.iter().map(|prop| {
-                let prop_doc = prop.description.as_ref().map(|s| quote! { #[doc = #s] });
-
-                let prop_type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
-                let (prop_serde, _) = generate_serde_attr(
-                    &format!("{}{}", type_name, variant.ident_name.as_ref().unwrap()),
-                    &prop.name,
-                    &prop.rename,
-                    &prop.state,
-                    prop_type_entry,
-                    type_space,
-                    output,
-                );
-
-                let prop_name = format_ident!("{}", prop.name);
-                let prop_type = prop_type_entry.type_ident(type_space, &None);
-
-                quote! {
-                    #prop_doc
-                    #prop_serde
-                    #prop_name: #prop_type,
-                }
-            });
-            quote! {
-                #doc
-                #serde
-                #variant_name {
-                    #(#prop_streams)*
-                },
-            }
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashSet;
 
-    use quote::quote;
     use schema::Schema;
     use schemars::{
         schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
@@ -858,11 +738,13 @@ mod tests {
     use serde::Serialize;
 
     use crate::{
-        output::OutputSpace,
-        test_util::{validate_output, validate_output_for_untagged_enm},
-        type_entry::{EnumTagType, TypeEntryEnum, Variant, VariantDetails},
-        Name, RefKey, TypeEntryDetails, TypeId, TypeSpace, TypeSpaceSettings,
+        test_util::{render_items_for, validate_output, validate_output_for_untagged_enm},
+        type_entry::TypeEntry,
+        Name, RefKey, TypeId, TypeSpace, TypeSpaceSettings,
     };
+
+    use quote::quote;
+    use typespace::build::{EnumTagType, Type, VariantDetails};
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
@@ -1045,55 +927,33 @@ mod tests {
             )
             .unwrap();
 
-        match &ty.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                name,
-                rename: None,
-                description: None,
-                default: None,
-                tag_type: EnumTagType::Untagged,
-                variants,
-                deny_unknown_fields: _,
-                bespoke_impls: _,
-                schema: _,
-            }) => {
-                assert_eq!(name, "UntaggedEnum");
+        match &ty {
+            TypeEntry::Type(Type::Enum(type_enum))
+                if type_enum.get_tag_type() == Some(&EnumTagType::Untagged) =>
+            {
+                let variants = type_enum.get_variants();
+                assert_eq!(type_enum.get_name(), Some("UntaggedEnum"));
                 assert_eq!(variants.len(), 5);
 
                 assert!(matches!(
-                    variants.first().unwrap(),
-                    Variant {
-                        details: VariantDetails::Simple,
-                        ..
-                    }
+                    variants.first().unwrap().details(),
+                    VariantDetails::Unit
                 ));
                 assert!(matches!(
-                    variants.get(1).unwrap(),
-                    Variant {
-                        details: VariantDetails::Struct(_),
-                        ..
-                    }
+                    variants.get(1).unwrap().details(),
+                    VariantDetails::Struct(_)
                 ));
                 assert!(matches!(
-                    variants.get(2).unwrap(),
-                    Variant {
-                        details: VariantDetails::Item(_),
-                        ..
-                    }
+                    variants.get(2).unwrap().details(),
+                    VariantDetails::Item(_)
                 ));
                 assert!(matches!(
-                    variants.get(3).unwrap(),
-                    Variant {
-                        details: VariantDetails::Tuple(tup),
-                        ..
-                    } if tup.len() == 2
+                    variants.get(3).unwrap().details(),
+                    VariantDetails::Tuple(tup) if tup.len() == 2
                 ));
                 assert!(matches!(
-                    variants.get(4).unwrap(),
-                    Variant {
-                        details: VariantDetails::Tuple(tup),
-                        ..
-                    } if tup.len() == 3
+                    variants.get(4).unwrap().details(),
+                    VariantDetails::Tuple(tup) if tup.len() == 3
                 ));
             }
 
@@ -1124,13 +984,9 @@ mod tests {
         // This confirms in particular that the tag type is untagged and
         // therefore that the other enum tagging regimes did not match.
         assert!(matches!(
-            &ty.details,
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                rename: None,
-                description: None,
-                tag_type: EnumTagType::Untagged,
-                ..
-            })
+            &ty,
+            TypeEntry::Type(Type::Enum(type_enum))
+                if type_enum.get_tag_type() == Some(&EnumTagType::Untagged)
         ));
     }
 
@@ -1218,46 +1074,20 @@ mod tests {
             )
             .unwrap();
 
-        if let TypeEntryDetails::Enum(TypeEntryEnum {
-            variants,
-            tag_type,
-            deny_unknown_fields,
-            ..
-        }) = &type_entry.details
-        {
+        if let TypeEntry::Type(Type::Enum(type_enum)) = &type_entry {
+            let variants = type_enum.get_variants();
+            let tag_type = type_enum.get_tag_type().unwrap();
+            let deny_unknown_fields = type_enum.get_deny_unknown_fields();
             let variant_names = variants
                 .iter()
-                .map(|variant| variant.ident_name.as_ref().unwrap().clone())
+                .map(|variant| variant.rust_name().to_string())
                 .collect::<HashSet<_>>();
             assert_eq!(variant_names.len(), variants.len());
             assert_eq!(tag_type, &EnumTagType::Untagged);
-            assert_eq!(deny_unknown_fields, &true);
+            assert!(deny_unknown_fields);
         } else {
             panic!();
         }
-    }
-
-    #[test]
-    fn test_maybe_option() {
-        let subschemas = vec![
-            SchemaObject {
-                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
-                ..Default::default()
-            }
-            .into(),
-            SchemaObject {
-                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Null))),
-                ..Default::default()
-            }
-            .into(),
-        ];
-
-        let mut type_space = TypeSpace::default();
-        let type_entry = type_space
-            .maybe_option(Name::Unknown, &None, &subschemas)
-            .unwrap();
-
-        assert_eq!(type_entry.details, TypeEntryDetails::Option(TypeId(1)))
     }
 
     #[test]
@@ -1332,23 +1162,15 @@ mod tests {
             .unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
-        match &type_entry.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                tag_type,
-                variants,
-                deny_unknown_fields: _,
-                ..
-            }) => {
-                assert_eq!(tag_type, &EnumTagType::Untagged);
-                //assert_eq!(deny_unknown_fields, &true);
-                for variant in variants {
-                    match &variant.details {
+        match type_entry.as_type() {
+            Type::Enum(type_enum) => {
+                assert_eq!(type_enum.get_tag_type(), Some(&EnumTagType::Untagged));
+                //assert_eq!(type_enum.get_deny_unknown_fields(), true);
+                for variant in type_enum.get_variants() {
+                    match variant.details() {
                         VariantDetails::Item(item) => {
                             let variant_type = type_space.id_to_entry.get(item).unwrap();
-                            assert!(variant_type
-                                .name()
-                                .unwrap()
-                                .ends_with(variant.ident_name.as_ref().unwrap()));
+                            assert!(variant_type.name().unwrap().ends_with(variant.rust_name()));
                         }
                         _ => panic!("{:#?}", type_entry),
                     }
@@ -1434,11 +1256,8 @@ mod tests {
             .unwrap();
         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
 
-        match &type_entry.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                tag_type: EnumTagType::Untagged,
-                ..
-            }) => {}
+        match type_entry.as_type() {
+            Type::Enum(type_enum) if type_enum.get_tag_type() == Some(&EnumTagType::Untagged) => {}
             _ => panic!("{:#?}", type_entry),
         }
     }
@@ -1471,9 +1290,15 @@ mod tests {
                 &subschemas,
             )
             .unwrap();
-        let mut output = OutputSpace::default();
-        type_entry.output(&type_space, &mut output);
-        let actual = output.into_stream();
+        let _ = type_space.assign_type(type_entry);
+        let actual = render_items_for(&type_space, "ResultX");
+
+        // This is typify1's output for this type. Differences from
+        // typespace's rendering are gaps: the derive list, the doc
+        // rendering (one #[doc] vs. line-by-line), and the convenience
+        // From<VariantType> impl.
+        let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
+        let schema_lines = schema_json.lines();
         let expected = quote! {
             #[doc = "`ResultX`"]
             #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
@@ -1488,7 +1313,7 @@ mod tests {
                 }
             }
         };
-        assert_eq!(actual.to_string(), expected.to_string());
+        assert_eq!(actual, expected.to_string());
     }
 
     #[test]
@@ -1510,9 +1335,10 @@ mod tests {
                 &subschemas,
             )
             .unwrap();
-        let mut output = OutputSpace::default();
-        type_entry.output(&type_space, &mut output);
-        let actual = output.into_stream();
+        let _ = type_space.assign_type(type_entry);
+        let actual = render_items_for(&type_space, "ResultX");
+
+        // typify1's output; see test_result.
         let expected = quote! {
             #[doc = "`ResultX`"]
             #[derive(::serde::Deserialize, ::serde::Serialize, A, B, C, Clone, D, Debug)]
@@ -1527,7 +1353,7 @@ mod tests {
                 }
             }
         };
-        assert_eq!(actual.to_string(), expected.to_string());
+        assert_eq!(actual, expected.to_string());
     }
 
     #[test]
@@ -1540,5 +1366,28 @@ mod tests {
         }
 
         validate_output::<Hobsons>();
+    }
+
+    #[test]
+    fn test_maybe_option() {
+        let subschemas = vec![
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::String))),
+                ..Default::default()
+            }
+            .into(),
+            SchemaObject {
+                instance_type: Some(SingleOrVec::Single(Box::new(InstanceType::Null))),
+                ..Default::default()
+            }
+            .into(),
+        ];
+
+        let mut type_space = TypeSpace::default();
+        let type_entry = type_space
+            .maybe_option(Name::Unknown, &None, &subschemas)
+            .unwrap();
+
+        assert!(matches!(type_entry.as_type(), Type::Option(TypeId(1))));
     }
 }

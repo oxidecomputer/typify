@@ -52,7 +52,6 @@ fn test_generation() {
     let mut type_space = TypeSpace::new(
         TypeSpaceSettings::default()
             .with_derive("JsonSchema".to_string())
-            .with_type_mod("types")
             .with_struct_builder(true)
             .with_patch(
                 "AllTheTraits",
@@ -78,20 +77,24 @@ fn test_generation() {
         .unwrap();
 
     let tid = type_space.add_type(&body_schema).unwrap();
-    let t = type_space.get_type(&tid).unwrap();
-    let ret = t.ident();
-    let body = t.parameter_ident();
-
     let string_id = type_space.add_type(&string_schema).unwrap();
-    let string = type_space.get_type(&string_id).unwrap().parameter_ident();
     let opt_int_id = type_space.add_type(&opt_int_schema).unwrap();
-    let opt_int = type_space.get_type(&opt_int_id).unwrap().parameter_ident();
     let strenum_id = type_space.add_type(&strenum_schema).unwrap();
-    let strenum = type_space.get_type(&strenum_id).unwrap().parameter_ident();
     let _ = type_space.add_type(&pair_schema).unwrap();
     let _ = type_space.add_type(&all_the_traits).unwrap();
 
-    let types = type_space.to_stream();
+    // Identifier queries are typespace's job. The generated types land
+    // in the `types` module below, so ask for identifiers scoped to it
+    // (typify1 expressed the same thing with a type_mod setting).
+    let typespace = type_space.to_typespace().unwrap();
+    let t = typespace.get_type(&tid);
+    let ret = t.ident_in("types");
+    let body = t.parameter_ident_in("types");
+    let string = typespace.get_type(&string_id).parameter_ident_in("types");
+    let opt_int = typespace.get_type(&opt_int_id).parameter_ident_in("types");
+    let strenum = typespace.get_type(&strenum_id).parameter_ident_in("types");
+
+    let types = type_space.to_stream().unwrap();
 
     let file = quote! {
         mod types {

@@ -152,18 +152,16 @@ pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::MapType;
-pub use typify_impl::Type;
-pub use typify_impl::TypeDetails;
-pub use typify_impl::TypeEnum;
-pub use typify_impl::TypeEnumVariant;
 pub use typify_impl::TypeId;
-pub use typify_impl::TypeNewtype;
 pub use typify_impl::TypeSpace;
 pub use typify_impl::TypeSpaceImpl;
 pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
-pub use typify_impl::TypeStruct;
-pub use typify_impl::TypeStructPropInfo;
 pub use typify_impl::UnknownPolicy;
+// The typespace crate is the query and rendering surface for converted
+// types: [`TypeSpace::to_typespace`] yields a `typespace::Typespace`
+// whose view API answers the type queries (identifiers, structure,
+// trait impls) that used to live on wrapper types in this crate.
+pub use typify_impl::typespace;
 #[cfg(feature = "macro")]
 pub use typify_macro::import_types;

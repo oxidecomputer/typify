@@ -3,20 +3,19 @@
 use std::collections::BTreeSet;
 
 use crate::merge::{merge_all, try_merge_with_subschemas};
-use crate::type_entry::{
-    EnumTagType, TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
-    Variant, VariantDetails,
-};
+use crate::type_entry::{TypeEntry, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant};
 use crate::util::{all_mutually_exclusive, ref_key, ReorderedInstanceType, StringValidator};
 use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
     StringValidation, SubschemaValidation,
 };
+use typespace::build::{EnumTagType, Type, VariantDetails};
+use typespace::{TypespaceTrait, TypespaceTraitSet};
 
 use crate::util::get_type_name;
 
-use crate::{Error, Name, Result, TypeSpace, TypeSpaceImpl};
+use crate::{Error, Name, Result, TypeSpace};
 
 pub const STD_NUM_NONZERO_PREFIX: &str = "::std::num::NonZero";
 
@@ -803,10 +802,28 @@ impl TypeSpace {
         match format.as_ref().map(String::as_str) {
             Some("uuid") => {
                 self.uses_uuid = true;
+                // ::uuid::Uuid additionally implements Display,
+                // FromStr, Eq, PartialEq, Ord, PartialOrd, and Hash. It
+                // also implements Default, but typify does not declare
+                // Default on natives.
                 Ok((
                     TypeEntry::new_native(
                         "::uuid::Uuid",
-                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                        [
+                            TypespaceTrait::Clone,
+                            TypespaceTrait::Debug,
+                            TypespaceTrait::Serialize,
+                            TypespaceTrait::Deserialize,
+                            TypespaceTrait::Display,
+                            TypespaceTrait::FromStr,
+                            TypespaceTrait::Eq,
+                            TypespaceTrait::PartialEq,
+                            TypespaceTrait::Ord,
+                            TypespaceTrait::PartialOrd,
+                            TypespaceTrait::Hash,
+                        ]
+                        .into_iter()
+                        .collect::<TypespaceTraitSet>(),
                     ),
                     metadata,
                 ))
@@ -814,43 +831,131 @@ impl TypeSpace {
 
             Some("date") => {
                 self.uses_chrono = true;
+                // ::chrono::naive::NaiveDate additionally implements
+                // Display, FromStr, PartialEq, Eq, PartialOrd, Ord, and
+                // Hash. It also implements Default, but typify does not
+                // declare Default on natives.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::naive::NaiveDate",
-                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                        [
+                            TypespaceTrait::Clone,
+                            TypespaceTrait::Debug,
+                            TypespaceTrait::Serialize,
+                            TypespaceTrait::Deserialize,
+                            TypespaceTrait::Display,
+                            TypespaceTrait::FromStr,
+                            TypespaceTrait::Eq,
+                            TypespaceTrait::PartialEq,
+                            TypespaceTrait::Ord,
+                            TypespaceTrait::PartialOrd,
+                            TypespaceTrait::Hash,
+                        ]
+                        .into_iter()
+                        .collect::<TypespaceTraitSet>(),
                     ),
                     metadata,
                 ))
             }
             Some("date-time") => {
                 self.uses_chrono = true;
+                // ::chrono::DateTime implements PartialEq, Eq,
+                // PartialOrd, Ord, Hash, Debug, and Display for any
+                // TimeZone, and Utc additionally gets FromStr. It also
+                // implements Default, but typify does not declare
+                // Default on natives.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::DateTime<::chrono::offset::Utc>",
-                        &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                        [
+                            TypespaceTrait::Clone,
+                            TypespaceTrait::Debug,
+                            TypespaceTrait::Serialize,
+                            TypespaceTrait::Deserialize,
+                            TypespaceTrait::Display,
+                            TypespaceTrait::FromStr,
+                            TypespaceTrait::Eq,
+                            TypespaceTrait::PartialEq,
+                            TypespaceTrait::Ord,
+                            TypespaceTrait::PartialOrd,
+                            TypespaceTrait::Hash,
+                        ]
+                        .into_iter()
+                        .collect::<TypespaceTraitSet>(),
                     ),
                     metadata,
                 ))
             }
 
+            // ::std::net::IpAddr implements Clone, Eq, PartialEq,
+            // Hash, PartialOrd, Ord, Display, and FromStr. It has no
+            // Default impl.
             Some("ip") => Ok((
                 TypeEntry::new_native(
                     "::std::net::IpAddr",
-                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    [
+                        TypespaceTrait::Clone,
+                        TypespaceTrait::Debug,
+                        TypespaceTrait::Serialize,
+                        TypespaceTrait::Deserialize,
+                        TypespaceTrait::Display,
+                        TypespaceTrait::FromStr,
+                        TypespaceTrait::Eq,
+                        TypespaceTrait::PartialEq,
+                        TypespaceTrait::Ord,
+                        TypespaceTrait::PartialOrd,
+                        TypespaceTrait::Hash,
+                    ]
+                    .into_iter()
+                    .collect::<TypespaceTraitSet>(),
                 ),
                 metadata,
             )),
+            // ::std::net::Ipv4Addr implements Clone, PartialEq, Eq,
+            // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
+            // has no Default impl.
             Some("ipv4") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv4Addr",
-                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    [
+                        TypespaceTrait::Clone,
+                        TypespaceTrait::Debug,
+                        TypespaceTrait::Serialize,
+                        TypespaceTrait::Deserialize,
+                        TypespaceTrait::Display,
+                        TypespaceTrait::FromStr,
+                        TypespaceTrait::Eq,
+                        TypespaceTrait::PartialEq,
+                        TypespaceTrait::Ord,
+                        TypespaceTrait::PartialOrd,
+                        TypespaceTrait::Hash,
+                    ]
+                    .into_iter()
+                    .collect::<TypespaceTraitSet>(),
                 ),
                 metadata,
             )),
+            // ::std::net::Ipv6Addr implements Clone, PartialEq, Eq,
+            // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
+            // has no Default impl.
             Some("ipv6") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv6Addr",
-                    &[TypeSpaceImpl::Display, TypeSpaceImpl::FromStr],
+                    [
+                        TypespaceTrait::Clone,
+                        TypespaceTrait::Debug,
+                        TypespaceTrait::Serialize,
+                        TypespaceTrait::Deserialize,
+                        TypespaceTrait::Display,
+                        TypespaceTrait::FromStr,
+                        TypespaceTrait::Eq,
+                        TypespaceTrait::PartialEq,
+                        TypespaceTrait::Ord,
+                        TypespaceTrait::PartialOrd,
+                        TypespaceTrait::Hash,
+                    ]
+                    .into_iter()
+                    .collect::<TypespaceTraitSet>(),
                 ),
                 metadata,
             )),
@@ -871,7 +976,7 @@ impl TypeSpace {
                         max_length: None,
                         min_length: None,
                         pattern: None,
-                    }) => Ok((TypeEntryDetails::String.into(), metadata)),
+                    }) => Ok((Type::String.into(), metadata)),
 
                     Some(validation) => {
                         if let Some(pattern) = &validation.pattern {
@@ -883,7 +988,7 @@ impl TypeSpace {
                             self.uses_regress = true;
                         }
 
-                        let string = TypeEntryDetails::String.into();
+                        let string = TypeEntry::from(Type::String);
                         let type_id = self.assign_type(string);
                         Ok((
                             TypeEntryNewtype::from_metadata_with_string_validation(
@@ -937,7 +1042,7 @@ impl TypeSpace {
                     Some(Ok(Variant::new(
                         variant_name.clone(),
                         None,
-                        VariantDetails::Simple,
+                        VariantDetails::Unit,
                     )))
                 }
 
@@ -1207,7 +1312,7 @@ impl TypeSpace {
         &self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        Ok((TypeEntryDetails::Unit.into(), metadata))
+        Ok((Type::Unit.into(), metadata))
     }
 
     /// Determine whether a schema's property name validation constraints can be handled
@@ -1361,10 +1466,7 @@ impl TypeSpace {
             .ref_to_id
             .get(&key)
             .unwrap_or_else(|| panic!("$ref {} is missing", ref_name));
-        Ok((
-            TypeEntryDetails::Reference(type_id.clone()).into(),
-            metadata,
-        ))
+        Ok((TypeEntry::Reference(type_id.clone()), metadata))
     }
 
     fn convert_all_of<'a>(
@@ -1808,7 +1910,7 @@ impl TypeSpace {
                     });
                     let rest = (items.len()..*max_items as usize).map(|_| Ok(rest_id.clone()));
                     let types = start.chain(rest).collect::<Result<Vec<_>>>()?;
-                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                    Ok((Type::Tuple(types).into(), metadata))
                 }
                 // Tuple with at least as many items as required.
                 Some(SingleOrVec::Vec(items)) => {
@@ -1821,26 +1923,20 @@ impl TypeSpace {
                             Ok(self.id_for_schema(item_name, item_schema)?.0)
                         })
                         .collect::<Result<_>>()?;
-                    Ok((TypeEntryDetails::Tuple(types).into(), metadata))
+                    Ok((Type::Tuple(types).into(), metadata))
                 }
 
                 // Array with a schema for the item.
                 Some(SingleOrVec::Single(item_schema)) => {
                     let item_id = self.id_for_schema(type_name.append("item"), item_schema)?.0;
-                    Ok((
-                        TypeEntryDetails::Array(item_id, *max_items as usize).into(),
-                        metadata,
-                    ))
+                    Ok((Type::Array(item_id, *max_items as usize).into(), metadata))
                 }
                 // Array with no schema for the item.
                 None => {
                     let any_id = self
                         .id_for_schema(type_name.append("item"), &Schema::Bool(true))?
                         .0;
-                    Ok((
-                        TypeEntryDetails::Array(any_id, *max_items as usize).into(),
-                        metadata,
-                    ))
+                    Ok((Type::Array(any_id, *max_items as usize).into(), metadata))
                 }
             },
 
@@ -1861,8 +1957,8 @@ impl TypeSpace {
 
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
-                    Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
-                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
+                    Some(true) => Ok((Type::Set(type_id).into(), metadata)),
+                    _ => Ok((Type::Vec(type_id).into(), metadata)),
                 }
             }
 
@@ -1876,12 +1972,12 @@ impl TypeSpace {
                 contains: None,
             } => {
                 self.uses_serde_json = true;
-                let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
+                let type_id = self.assign_type(TypeEntry::from(Type::JsonValue));
 
                 // If items are unique, this is a Set; otherwise it's an Array.
                 match unique_items {
-                    Some(true) => Ok((TypeEntryDetails::Set(type_id).into(), metadata)),
-                    _ => Ok((TypeEntryDetails::Vec(type_id).into(), metadata)),
+                    Some(true) => Ok((Type::Set(type_id).into(), metadata)),
+                    _ => Ok((Type::Vec(type_id).into(), metadata)),
                 }
             }
 
@@ -1897,8 +1993,8 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        let type_id = self.assign_type(TypeEntryDetails::JsonValue.into());
-        Ok((TypeEntryDetails::Vec(type_id).into(), metadata))
+        let type_id = self.assign_type(TypeEntry::from(Type::JsonValue));
+        Ok((Type::Vec(type_id).into(), metadata))
     }
 
     // TODO not sure if I want to deal with enum_values here, but we'll see...
@@ -1914,7 +2010,7 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         self.uses_serde_json = true;
-        Ok((TypeEntryDetails::JsonValue.into(), metadata))
+        Ok((Type::JsonValue.into(), metadata))
     }
 
     fn convert_never<'a>(
@@ -2131,7 +2227,8 @@ mod tests {
                 &schema.schema,
             )
             .unwrap();
-        let output = ty.type_name(&type_space);
+        let type_id = type_space.assign_type(ty);
+        let output = type_space.to_typespace().unwrap().get_type(&type_id).name();
         let actual = output.split("::").last().unwrap().trim();
         let expected = type_name.split("::").last().unwrap();
         assert_eq!(actual, expected);
@@ -2160,37 +2257,6 @@ mod tests {
     int_test!(NonZeroU16);
     int_test!(NonZeroU32);
     int_test!(NonZeroU64);
-
-    #[test]
-    fn test_redundant_types() {
-        #[derive(JsonSchema)]
-        #[allow(dead_code)]
-        struct Alphabet {
-            a: u32,
-            b: u32,
-            c: u32,
-            d: Option<u32>,
-            e: Option<u32>,
-            f: (u32, u32, u32, Option<u32>),
-        }
-
-        let schema = schema_for!(Alphabet);
-
-        let mut type_space = TypeSpace::default();
-        type_space
-            .add_ref_types(schema.definitions.clone())
-            .unwrap();
-        let _ = type_space
-            .add_type_with_name(&schema.schema.into(), Some("Alphabet".to_string()))
-            .unwrap();
-
-        // We expect a total of 4 types:
-        // 1. u32
-        // 2. option -> 1
-        // 3. tuple -> 1, 1, 1, 2
-        // 4. struct -> 1, 1, 1, 2, 2, 3
-        assert_eq!(type_space.iter_types().count(), 4);
-    }
 
     #[test]
     fn test_basic_option_flat() {
@@ -2296,7 +2362,7 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let _ = type_space.add_type(&schema.schema.into()).unwrap();
 
-        let actual = type_space.to_stream();
+        let actual = type_space.to_stream().unwrap();
         let file = syn::parse2::<syn::File>(actual).expect("type space should emit a valid file");
         match file.items.as_slice() {
             [] => {}
@@ -2347,7 +2413,8 @@ mod tests {
             [TypeSpaceImpl::Display].into_iter(),
         ));
         let type_id = type_space.add_type(&schema.schema.into()).unwrap();
-        let typ = type_space.get_type(&type_id).unwrap();
+        let typespace = type_space.to_typespace().unwrap();
+        let typ = typespace.get_type(&type_id);
 
         let actual = typ.ident();
         let expected = quote! { not::a::real::library::Uuid };

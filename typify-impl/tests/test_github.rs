@@ -18,7 +18,7 @@ fn test_github() {
 
     type_space.add_root_schema(schema).unwrap();
 
-    let file = type_space.to_stream();
+    let file = type_space.to_stream().unwrap();
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 
@@ -78,7 +78,7 @@ fn test_vega() {
 
     type_space.add_root_schema(schema).unwrap();
 
-    let file = type_space.to_stream();
+    let file = type_space.to_stream().unwrap();
 
     let fmt = rustfmt_wrapper::rustfmt(file.to_string()).unwrap();
 

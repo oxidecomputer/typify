@@ -1,20 +1,38 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::collections::BTreeMap;
 
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 
 use crate::{
-    convert::STD_NUM_NONZERO_PREFIX,
-    type_entry::{
-        DefaultKind, EnumTagType, StructProperty, StructPropertyRename, StructPropertyState,
-        TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant,
-        VariantDetails, WrappedValue,
-    },
-    util::{sanitize, Case},
-    DefaultImpl, Error, Result, TypeId, TypeSpace,
+    convert::STD_NUM_NONZERO_PREFIX, type_entry::TypeEntry, DefaultImpl, Error, Result, TypeId,
+    TypeSpace,
 };
+
+use typespace::build::{
+    EnumTagType, EnumVariant, StructProperty, StructPropertySerde, StructPropertyState, Type,
+    VariantDetails,
+};
+
+/// The disposition of a valid default value; see
+/// [`TypeEntry::validate_value`].
+///
+/// typify1 used this to route rendering: `Generic` defaults shared one
+/// of the stock functions below, `Specific` defaults got a bespoke
+/// generated function, and `Intrinsic` defaults used
+/// `#[serde(default)]`. Rendering is now typespace's job
+/// (IMPLEMENTATION GAP: typespace renders every explicit default via a
+/// runtime `serde_json::from_value` call rather than a typed
+/// expression; see the note in `TypeSpace::to_stream`), but validation
+/// still uses these distinctions to track which shared impls would be
+/// needed.
+#[derive(Debug)]
+pub(crate) enum DefaultKind {
+    Intrinsic,
+    Specific,
+    Generic(DefaultImpl),
+}
 
 // Implementations for "stock" default functions so we don't litter the
 // namespace with many that are effectively identical.
@@ -62,41 +80,25 @@ impl From<&DefaultImpl> for TokenStream {
 impl TypeEntry {
     pub(crate) fn check_defaults(&self, type_space: &mut TypeSpace) -> Result<()> {
         // Check the "whole-type" default.
-        match &self.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                default: Some(WrappedValue(default)),
-                ..
-            })
-            | TypeEntryDetails::Struct(TypeEntryStruct {
-                default: Some(WrappedValue(default)),
-                ..
-            })
-            | TypeEntryDetails::Newtype(TypeEntryNewtype {
-                default: Some(WrappedValue(default)),
-                ..
-            }) => {
-                if let DefaultKind::Generic(default_fn) =
-                    self.validate_value(type_space, default)?
-                {
-                    type_space.defaults.insert(default_fn);
-                }
+        if let Some(default) = self.as_type().default() {
+            if let DefaultKind::Generic(default_fn) = self.validate_value(type_space, default)? {
+                type_space.defaults.insert(default_fn);
             }
-
-            _ => (),
         }
 
         // Check default values for struct properties or those of struct-type
         // enum variants.
-        match &self.details {
-            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
-                properties
+        match self.as_type() {
+            Type::Struct(type_struct) => {
+                type_struct
+                    .get_properties()
                     .iter()
                     .try_for_each(|prop| Self::check_property_defaults(prop, type_space))?;
             }
 
-            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) => {
-                variants.iter().try_for_each(|variant| {
-                    if let VariantDetails::Struct(properties) = &variant.details {
+            Type::Enum(type_enum) => {
+                type_enum.get_variants().iter().try_for_each(|variant| {
+                    if let VariantDetails::Struct(properties) = variant.details() {
                         properties
                             .iter()
                             .try_for_each(|prop| Self::check_property_defaults(prop, type_space))
@@ -113,16 +115,13 @@ impl TypeEntry {
     }
 
     fn check_property_defaults(
-        property: &StructProperty,
+        property: &StructProperty<TypeId>,
         type_space: &mut TypeSpace,
     ) -> Result<()> {
-        if let StructProperty {
-            state: StructPropertyState::Default(WrappedValue(prop_default)),
-            type_id,
-            ..
-        } = property
+        if let StructPropertyState::DefaultValue(typespace::build::JsonValue(prop_default)) =
+            property.state()
         {
-            let type_entry = type_space.id_to_entry.get(type_id).unwrap();
+            let type_entry = type_space.id_to_entry.get(property.type_id()).unwrap();
             if let DefaultKind::Generic(default_fn) =
                 type_entry.validate_value(type_space, prop_default)?
             {
@@ -136,9 +135,7 @@ impl TypeEntry {
     ///
     /// The return value indicates whether the default is the "intrinsic",
     /// typical default for the given type, can be handled by generic function,
-    /// or requires a bespoke function to generate the value. This contains
-    /// additional validation logic compared with [`value()`] but is able to
-    /// skip the parts where we actually emit code.
+    /// or requires a bespoke function to generate the value.
     ///
     /// [`Value`]: serde_json::Value
     pub(crate) fn validate_value(
@@ -146,40 +143,42 @@ impl TypeEntry {
         type_space: &TypeSpace,
         default: &serde_json::Value,
     ) -> Result<DefaultKind> {
-        match &self.details {
-            TypeEntryDetails::Enum(TypeEntryEnum {
-                tag_type, variants, ..
-            }) => match tag_type {
-                EnumTagType::External => {
-                    validate_default_for_external_enum(type_space, variants, default)
-                        .ok_or_else(Error::invalid_value)
+        match self.as_type() {
+            Type::Enum(type_enum) => {
+                let variants = type_enum.get_variants();
+                match type_enum.get_tag_type().expect("built enum has a tag type") {
+                    EnumTagType::External => {
+                        validate_default_for_external_enum(type_space, variants, default)
+                            .ok_or_else(Error::invalid_value)
+                    }
+                    EnumTagType::Internal { tag } => {
+                        validate_default_for_internal_enum(type_space, variants, default, tag)
+                            .ok_or_else(Error::invalid_value)
+                    }
+                    EnumTagType::Adjacent { tag, content } => validate_default_for_adjacent_enum(
+                        type_space, variants, default, tag, content,
+                    )
+                    .ok_or_else(Error::invalid_value),
+                    EnumTagType::Untagged => {
+                        validate_default_for_untagged_enum(type_space, variants, default)
+                            .ok_or_else(Error::invalid_value)
+                    }
                 }
-                EnumTagType::Internal { tag } => {
-                    validate_default_for_internal_enum(type_space, variants, default, tag)
-                        .ok_or_else(Error::invalid_value)
-                }
-                EnumTagType::Adjacent { tag, content } => {
-                    validate_default_for_adjacent_enum(type_space, variants, default, tag, content)
-                        .ok_or_else(Error::invalid_value)
-                }
-                EnumTagType::Untagged => {
-                    validate_default_for_untagged_enum(type_space, variants, default)
-                        .ok_or_else(Error::invalid_value)
-                }
-            },
-            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
-                validate_default_struct_props(properties, type_space, default)
+            }
+            Type::Struct(type_struct) => {
+                validate_default_struct_props(type_struct.get_properties(), type_space, default)
                     .ok_or_else(Error::invalid_value)
             }
 
-            TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
+            Type::NewtypeStruct(type_newtype) => {
+                let inner = type_newtype.get_inner();
                 // Validate the inner type, but irrespective of the result,
                 // we'll need a custom function to make a default of the outer
                 // newtype.
-                let _ = validate_type_id(type_id, type_space, default)?;
+                let _ = validate_type_id(inner, type_space, default)?;
                 Ok(DefaultKind::Specific)
             }
-            TypeEntryDetails::Option(type_id) => {
+            Type::Option(type_id) => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
                 } else {
@@ -188,9 +187,9 @@ impl TypeEntry {
                     Ok(DefaultKind::Specific)
                 }
             }
-            TypeEntryDetails::Box(type_id) => validate_type_id(type_id, type_space, default),
+            Type::Box(type_id) => validate_type_id(type_id, type_space, default),
 
-            TypeEntryDetails::Vec(type_id) => {
+            Type::Vec(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -205,7 +204,7 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Map(key_id, value_id) => {
+            Type::Map(key_id, value_id) => {
                 if let serde_json::Value::Object(m) = default {
                     if m.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -225,7 +224,7 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Set(type_id) => {
+            Type::Set(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
                         Ok(DefaultKind::Intrinsic)
@@ -247,11 +246,11 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Tuple(ids) => {
+            Type::Tuple(ids) => {
                 validate_default_tuple(ids, type_space, default).ok_or_else(Error::invalid_value)
             }
 
-            TypeEntryDetails::Array(type_id, length) => {
+            Type::Array(type_id, length) => {
                 let Some(arr) = default.as_array() else {
                     return Err(Error::invalid_value());
                 };
@@ -265,32 +264,32 @@ impl TypeEntry {
                 }
                 Ok(DefaultKind::Specific)
             }
-            TypeEntryDetails::Unit => {
+            Type::Unit => {
                 if let serde_json::Value::Null = default {
                     Ok(DefaultKind::Intrinsic)
                 } else {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::Native(_) => {
+            Type::Native(_) => {
                 // This is tricky. There's not a lot we can do--particularly if
                 // and when we start to consider arbitrary types as "built-in"
                 // (e.g. if schemars tags types with an extension to denote
                 // their rust type or if the user can supply a list of type
                 // names to treat as built-in). So we just do no checking and
-                // will fail an `unwrap()` in the code emitted by `value()` if
-                // this Value is not valid for this built-in type.
+                // will fail an `unwrap()` in the generated code if this Value
+                // is not valid for this built-in type.
                 Ok(DefaultKind::Specific)
             }
-            TypeEntryDetails::JsonValue => Ok(DefaultKind::Specific),
-            TypeEntryDetails::Boolean => match default {
+            Type::JsonValue => Ok(DefaultKind::Specific),
+            Type::Boolean => match default {
                 serde_json::Value::Bool(false) => Ok(DefaultKind::Intrinsic),
                 serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
                 _ => Err(Error::invalid_value()),
             },
             // Note that min and max values are handled already by the
             // conversion routines since we have those close at hand.
-            TypeEntryDetails::Integer(itype) => match (default.as_u64(), default.as_i64()) {
+            Type::Integer(itype) => match (default.as_u64(), default.as_i64()) {
                 (None, None) => Err(Error::invalid_value()),
                 (Some(0), _) => Ok(DefaultKind::Intrinsic),
                 (_, Some(0)) => unreachable!(),
@@ -303,7 +302,7 @@ impl TypeEntry {
                 }
                 (_, Some(_)) => Ok(DefaultKind::Generic(DefaultImpl::I64)),
             },
-            TypeEntryDetails::Float(_) => {
+            Type::Float(_) => {
                 if let Some(value) = default.as_f64() {
                     if value == 0.0 {
                         Ok(DefaultKind::Intrinsic)
@@ -314,7 +313,7 @@ impl TypeEntry {
                     Err(Error::invalid_value())
                 }
             }
-            TypeEntryDetails::String => {
+            Type::String => {
                 if let Some("") = default.as_str() {
                     Ok(DefaultKind::Intrinsic)
                 } else {
@@ -322,77 +321,23 @@ impl TypeEntry {
                 }
             }
 
-            TypeEntryDetails::Reference(_) => unreachable!(),
-        }
-    }
-
-    /// Return a string representing the function that can be called to produce
-    /// the value for the given default. If there is no such built-in function,
-    /// the .1 will be Some with a TokenStream for a function that can produce
-    /// that value.
-    pub(crate) fn default_fn(
-        &self,
-        default: &serde_json::Value,
-        type_space: &TypeSpace,
-        type_name: &str,
-        prop_name: &str,
-    ) -> (String, Option<TokenStream>) {
-        let maybe_builtin = match &self.details {
-            // This can only be covered by the intrinsic default
-            TypeEntryDetails::Unit => unreachable!(),
-            TypeEntryDetails::Boolean => Some("defaults::default_bool::<true>".to_string()),
-            TypeEntryDetails::Integer(name) => {
-                if let Some(value) = default.as_u64() {
-                    if name.starts_with(STD_NUM_NONZERO_PREFIX) {
-                        Some(format!("defaults::default_nzu64::<{}, {}>", name, value))
-                    } else {
-                        Some(format!("defaults::default_u64::<{}, {}>", name, value))
-                    }
-                } else if let Some(value) = default.as_i64() {
-                    Some(format!("defaults::default_i64::<{}, {}>", name, value))
-                } else {
-                    panic!()
-                }
-            }
-            _ => None,
-        };
-
-        if let Some(fn_name) = maybe_builtin {
-            (fn_name, None)
-        } else {
-            let n = self.type_ident(type_space, &Some("super".to_string()));
-            let value = self
-                .output_value(type_space, default, &quote! { super:: })
-                .unwrap_or_else(|| {
-                    panic!(
-                        "{}\nvalue: {}\ntype: {:#?}",
-                        "The default value could not be rendered for this type",
-                        serde_json::to_string_pretty(default).unwrap(),
-                        self,
-                    )
-                });
-            let fn_name = sanitize(&format!("{}_{}", type_name, prop_name), Case::Snake);
-            let fn_ident = format_ident!("{}", fn_name);
-            let def = quote! {
-                pub(super) fn #fn_ident() -> #n {
-                    #value
-                }
-            };
-            (format!("defaults::{}", fn_name), Some(def))
+            // typify never constructs unit structs, tuple structs, or
+            // type aliases; Type is non_exhaustive besides.
+            _ => unreachable!("unexpected typespace type variant"),
         }
     }
 }
 
 pub(crate) fn validate_default_for_external_enum(
     type_space: &TypeSpace,
-    variants: &[Variant],
+    variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
     if let Some(simple_name) = default.as_str() {
         let variant = variants
             .iter()
-            .find(|variant| simple_name == variant.raw_name)?;
-        matches!(&variant.details, VariantDetails::Simple).then(|| ())?;
+            .find(|variant| simple_name == variant.json_name())?;
+        matches!(variant.details(), VariantDetails::Unit).then(|| ())?;
 
         Some(DefaultKind::Specific)
     } else {
@@ -403,10 +348,12 @@ pub(crate) fn validate_default_for_external_enum(
 
         let (name, value) = map.iter().next()?;
 
-        let variant = variants.iter().find(|variant| name == &variant.raw_name)?;
+        let variant = variants
+            .iter()
+            .find(|variant| name == variant.json_name())?;
 
-        match &variant.details {
-            VariantDetails::Simple => None,
+        match variant.details() {
+            VariantDetails::Unit => None,
             VariantDetails::Item(type_id) => validate_type_id(type_id, type_space, value).ok(),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, value),
             VariantDetails::Struct(props) => {
@@ -418,16 +365,18 @@ pub(crate) fn validate_default_for_external_enum(
 
 pub(crate) fn validate_default_for_internal_enum(
     type_space: &TypeSpace,
-    variants: &[Variant],
+    variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
     tag: &str,
 ) -> Option<DefaultKind> {
     let map = default.as_object()?;
     let name = map.get(tag).and_then(serde_json::Value::as_str)?;
-    let variant = variants.iter().find(|variant| name == variant.raw_name)?;
+    let variant = variants
+        .iter()
+        .find(|variant| name == variant.json_name())?;
 
-    match &variant.details {
-        VariantDetails::Simple => Some(DefaultKind::Specific),
+    match variant.details() {
+        VariantDetails::Unit => Some(DefaultKind::Specific),
         VariantDetails::Struct(props) => {
             // Make an object without the tag.
             let inner_default = serde_json::Value::Object(
@@ -446,7 +395,7 @@ pub(crate) fn validate_default_for_internal_enum(
 
 pub(crate) fn validate_default_for_adjacent_enum(
     type_space: &TypeSpace,
-    variants: &[Variant],
+    variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
     tag: &str,
     content: &str,
@@ -465,10 +414,10 @@ pub(crate) fn validate_default_for_adjacent_enum(
 
     let variant = variants
         .iter()
-        .find(|variant| tag_value == variant.raw_name)?;
+        .find(|variant| tag_value == variant.json_name())?;
 
-    match (&variant.details, content_value) {
-        (VariantDetails::Simple, None) => Some(DefaultKind::Specific),
+    match (variant.details(), content_value) {
+        (VariantDetails::Unit, None) => Some(DefaultKind::Specific),
         (VariantDetails::Tuple(tup), Some(content_value)) => {
             validate_default_tuple(tup, type_space, content_value)
         }
@@ -481,14 +430,14 @@ pub(crate) fn validate_default_for_adjacent_enum(
 
 pub(crate) fn validate_default_for_untagged_enum(
     type_space: &TypeSpace,
-    variants: &[Variant],
+    variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
     variants.iter().find_map(|variant| {
         // The name of the variant is not meaningful; we just need to see
         // if any of the variants are valid with the given default.
-        match &variant.details {
-            VariantDetails::Simple => {
+        match variant.details() {
+            VariantDetails::Unit => {
                 default.as_null()?;
                 Some(DefaultKind::Specific)
             }
@@ -528,7 +477,7 @@ fn validate_default_tuple(
 }
 
 fn validate_default_struct_props(
-    properties: &[StructProperty],
+    properties: &[StructProperty<TypeId>],
     type_space: &TypeSpace,
     default: &serde_json::Value,
 ) -> Option<DefaultKind> {
@@ -579,43 +528,41 @@ fn validate_default_struct_props(
     named_properties
         .iter()
         .filter(|(_, (_, required))| *required)
-        .try_for_each(|(name, _)| map.get(*name).map(|_| ()))?;
+        .try_for_each(|(name, _)| map.get(name.as_str()).map(|_| ()))?;
 
     Some(DefaultKind::Specific)
 }
 
 fn all_props<'a>(
-    property: &'a StructProperty,
+    property: &'a StructProperty<TypeId>,
     type_space: &'a TypeSpace,
-) -> Vec<(Option<&'a String>, &'a TypeId, bool)> {
-    let maybe_name = match &property.rename {
-        StructPropertyRename::None => Some(&property.name),
-        StructPropertyRename::Rename(rename) => Some(rename),
-        StructPropertyRename::Flatten => None,
+) -> Vec<(Option<String>, &'a TypeId, bool)> {
+    // The JSON name of the property; typespace stores the Rust name and
+    // an optional serde rename, so the JSON name is the rename when
+    // present and the Rust name otherwise.
+    let maybe_name = match property.json_name() {
+        StructPropertySerde::None => Some(property.rust_name().to_string()),
+        StructPropertySerde::Rename(rename) => Some(rename.clone()),
+        StructPropertySerde::Flatten => None,
     };
 
     if let Some(name) = maybe_name {
-        let required = match &property.state {
-            StructPropertyState::Required => true,
-            StructPropertyState::Optional | StructPropertyState::Default(_) => false,
-        };
+        let required = matches!(property.state(), StructPropertyState::Required);
 
-        vec![(Some(name), &property.type_id, required)]
+        vec![(Some(name), property.type_id(), required)]
     } else {
         // The type must be a struct, an option for a struct, or a map.
-        let type_entry = type_space.id_to_entry.get(&property.type_id).unwrap();
+        let type_entry = type_space.id_to_entry.get(property.type_id()).unwrap();
 
-        let (properties, all_required) = match &type_entry.details {
-            TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => {
-                let optional = matches!(&property.state, StructPropertyState::Optional);
-                (properties, !optional)
+        let (properties, all_required) = match type_entry.as_type() {
+            Type::Struct(type_struct) => {
+                let optional = matches!(property.state(), StructPropertyState::Optional);
+                (type_struct.get_properties(), !optional)
             }
-            TypeEntryDetails::Option(type_id) => {
+            Type::Option(type_id) => {
                 let type_entry = type_space.id_to_entry.get(type_id).unwrap();
-                if let TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) =
-                    &type_entry.details
-                {
-                    (properties, false)
+                if let Type::Struct(type_struct) = type_entry.as_type() {
+                    (type_struct.get_properties(), false)
                 } else {
                     unreachable!()
                 }
@@ -623,7 +570,7 @@ fn all_props<'a>(
 
             // TODO Rather than an option, this should probably be something
             // that lets us say "explicit name" or "type to validate against"
-            TypeEntryDetails::Map(_, value_id) => return vec![(None, value_id, false)],
+            Type::Map(_, value_id) => return vec![(None, value_id, false)],
             _ => unreachable!(),
         };
 
@@ -643,11 +590,7 @@ mod tests {
     use serde_json::json;
     use uuid::Uuid;
 
-    use crate::{
-        test_util::get_type,
-        type_entry::{DefaultKind, TypeEntry},
-        DefaultImpl,
-    };
+    use crate::{defaults::DefaultKind, test_util::get_type, type_entry::TypeEntry, DefaultImpl};
 
     #[test]
     fn test_default_option() {
@@ -671,11 +614,7 @@ mod tests {
     fn test_default_box() {
         let (type_space, type_id) = get_type::<Option<u32>>();
 
-        let type_entry = TypeEntry {
-            details: crate::type_entry::TypeEntryDetails::Box(type_id),
-            extra_derives: Default::default(),
-            extra_attrs: Default::default(),
-        };
+        let type_entry = TypeEntry::from(typespace::build::Type::Box(type_id));
 
         assert!(type_entry
             .validate_value(&type_space, &json!("forty-two"))

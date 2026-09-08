@@ -193,7 +193,8 @@ pub fn convert(args: &CliArgs) -> Result<String> {
 #![allow(clippy::clone_on_copy)]
 ";
 
-    let contents = format!("{intro}\n{}", type_space.to_stream());
+    let stream = type_space.to_stream().wrap_err("Type generation failed")?;
+    let contents = format!("{intro}\n{stream}");
 
     let contents = rustfmt_wrapper::rustfmt(contents).wrap_err("Failed to format Rust code")?;
 

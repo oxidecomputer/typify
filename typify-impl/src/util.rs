@@ -877,18 +877,11 @@ impl TypePatch {
                 derives: Default::default(),
                 attrs: Default::default(),
             },
-
-            Some(patch) => {
-                let name = patch.rename.clone().unwrap_or(type_name);
-                let derives = patch.derives.iter().cloned().collect();
-                let attrs = patch.attrs.iter().cloned().collect();
-
-                Self {
-                    name,
-                    derives,
-                    attrs,
-                }
-            }
+            Some(patch) => Self {
+                name: patch.rename.clone().unwrap_or(type_name),
+                derives: patch.derives.iter().cloned().collect(),
+                attrs: patch.attrs.iter().cloned().collect(),
+            },
         }
     }
 }
@@ -902,7 +895,7 @@ pub(crate) struct StringValidator {
 impl StringValidator {
     pub fn new(type_name: &Name, validation: Option<&StringValidation>) -> Result<Self> {
         let (max_length, min_length, pattern) =
-            validation.map_or(Ok((None, None, None)), |validation| {
+            validation.map_or(Ok::<_, Error>((None, None, None)), |validation| {
                 let max = validation.max_length;
                 let min = validation.min_length;
                 let pattern = validation

@@ -5,13 +5,7 @@ use std::{
     ops::Range,
 };
 
-use crate::{
-    type_entry::{
-        TypeEntry, TypeEntryDetails, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct,
-        VariantDetails,
-    },
-    TypeId, TypeSpace,
-};
+use crate::{type_entry::TypeEntry, TypeId, TypeSpace};
 
 impl TypeSpace {
     /// We need to root out any containment cycles, breaking them by inserting
@@ -141,36 +135,16 @@ impl TypeSpace {
 
 /// For types that could potentially participate in a cycle, return a list of
 /// mutable references to the child types.
+///
+/// typespace models exactly this notion as `Type::contained_children_mut`
+/// (finalization uses it for its own cycle breaking), so we delegate to
+/// it. typify continues to break cycles itself--before entry
+/// finalization--because queries such as `has_impl` recurse through
+/// contained types and must not encounter a cycle.
 fn get_child_ids(type_entry: &mut TypeEntry) -> Vec<&mut TypeId> {
-    match &mut type_entry.details {
-        TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) => variants
-            .iter_mut()
-            .flat_map(|variant| match &mut variant.details {
-                VariantDetails::Simple => Vec::new(),
-                VariantDetails::Item(type_id) => vec![type_id],
-                VariantDetails::Tuple(type_ids) => type_ids.iter_mut().collect(),
-                VariantDetails::Struct(properties) => properties
-                    .iter_mut()
-                    .map(|prop| &mut prop.type_id)
-                    .collect(),
-            })
-            .collect::<Vec<_>>(),
-
-        TypeEntryDetails::Struct(TypeEntryStruct { properties, .. }) => properties
-            .iter_mut()
-            .map(|prop| &mut prop.type_id)
-            .collect(),
-
-        TypeEntryDetails::Newtype(TypeEntryNewtype { type_id, .. }) => {
-            vec![type_id]
-        }
-
-        // Unnamed types that can participate in containment cycles.
-        TypeEntryDetails::Option(type_id) => vec![type_id],
-        TypeEntryDetails::Array(type_id, _) => vec![type_id],
-        TypeEntryDetails::Tuple(type_ids) => type_ids.iter_mut().collect(),
-
-        _ => Vec::new(),
+    match type_entry {
+        TypeEntry::Type(typ) => typ.contained_children_mut(),
+        TypeEntry::Reference(_) => Vec::new(),
     }
 }
 

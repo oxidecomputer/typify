@@ -1,26 +1,34 @@
-// Copyright 2024 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use heck::ToSnakeCase;
-use proc_macro2::TokenStream;
-use quote::quote;
 use schemars::schema::{InstanceType, Metadata, ObjectValidation, Schema, SchemaObject};
 
 use crate::{
-    output::{OutputSpace, OutputSpaceMod},
-    type_entry::{
-        StructProperty, StructPropertyRename, StructPropertyState, TypeEntry, TypeEntryStruct,
-        WrappedValue,
-    },
+    type_entry::{TypeEntry, TypeEntryStruct},
     util::{get_type_name, metadata_description, recase, Case},
-    Name, Result, TypeEntryDetails, TypeId, TypeSpace,
+    Name, Result, TypeId, TypeSpace,
 };
+
+use typespace::build::{JsonValue, StructProperty, StructPropertySerde, StructPropertyState, Type};
+
+/// The pre-mapping volitionality of a property, mirroring typify1's
+/// internal `StructPropertyState`. This is in-flight data: it captures
+/// what `has_default` learns from the schema before `struct_property`
+/// maps it onto typespace's `StructPropertyState` (and decides whether
+/// to Option-wrap the property type). See the comment in
+/// `struct_property` for the mapping.
+enum PropertyState {
+    Required,
+    Optional,
+    Default(serde_json::Value),
+}
 
 impl TypeSpace {
     pub(crate) fn struct_members(
         &mut self,
         type_name: Option<String>,
         validation: &ObjectValidation,
-    ) -> Result<(Vec<StructProperty>, bool)> {
+    ) -> Result<(Vec<StructProperty<TypeId>>, bool)> {
         // These are the fields we don't currently handle
         //assert!(validation.max_properties.is_none());
         //assert!(validation.min_properties.is_none());
@@ -71,7 +79,7 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()?;
 
         // Sort parameters by name to ensure a deterministic result.
-        properties.sort_by(|a, b| a.name.cmp(&b.name));
+        properties.sort_by(|a, b| a.rust_name().cmp(b.rust_name()));
 
         // If there are additional properties tack them on, flattened, at the
         // end. Note that a `None` value for additional_properties is
@@ -103,13 +111,8 @@ impl TypeSpace {
                     additional_properties,
                 )?;
                 let map_type_id = self.assign_type(map_type);
-                let extra_prop = StructProperty {
-                    name: "extra".to_string(),
-                    rename: StructPropertyRename::Flatten,
-                    state: StructPropertyState::Required,
-                    description: None,
-                    type_id: map_type_id,
-                };
+                let extra_prop = StructProperty::new("extra", map_type_id)
+                    .with_json_name(StructPropertySerde::Flatten);
 
                 properties.push(extra_prop);
                 false
@@ -125,13 +128,43 @@ impl TypeSpace {
         required: &schemars::Set<String>,
         prop_name: &str,
         schema: &schemars::schema::Schema,
-    ) -> Result<StructProperty> {
+    ) -> Result<StructProperty<TypeId>> {
         let sub_type_name = match type_name {
             Some(name) => Name::Suggested(name),
             None => Name::Unknown,
         };
         let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
 
+        // Map the property's volitionality onto typespace's
+        // StructPropertyState. This is the most delicate judgment call in
+        // the typespace migration because the two models split the work
+        // differently:
+        //
+        // typify1 Option-wraps at conversion time: a non-required
+        // property with no intrinsic or explicit default gets its type
+        // wrapped in Option here, and its state (typify1's "Optional")
+        // then means "may be absent; when absent, take the type's
+        // intrinsic default"--a state that applied equally to Option,
+        // Vec, Map, and Unit typed properties.
+        //
+        // typespace Option-wraps at render time: its Optional state on a
+        // non-Option type produces Option<T> in the output along with
+        // json_serde::deserialize_some (preserving absent-vs-null), a
+        // semantic typify1 never expresses. Its Default state means "may
+        // be absent; absent means the intrinsic default" and emits
+        // #[serde(default)] plus is_empty-style skips.
+        //
+        // We keep typify1's behavior: wrap here, and then
+        // - a wrapped (or intrinsically Option) property maps to
+        //   typespace Optional. Under the default ConflateAsAbsent
+        //   setting typespace leaves an Option type unwrapped, so there
+        //   is no double-wrapping.
+        // - a non-required, non-Option property with an intrinsic
+        //   default (Vec, Map, Unit, or a default value that equals the
+        //   intrinsic one) maps to typespace Default. Mapping these to
+        //   typespace Optional would wrap them in Option, which typify1
+        //   deliberately does not do.
+        // - an explicit default value maps to typespace DefaultValue.
         let state = if required.contains(prop_name) {
             StructPropertyState::Required
         } else {
@@ -159,27 +192,43 @@ impl TypeSpace {
                 &type_id,
                 metadata.as_ref().and_then(|m| m.default.as_ref()),
             ) {
-                StructPropertyState::Required => {
+                PropertyState::Required => {
                     type_id = self.id_to_option(&type_id);
                     StructPropertyState::Optional
                 }
-                other => other,
+                PropertyState::Optional => {
+                    // The type may itself be an Option (may be null and
+                    // may be absent); otherwise it has an intrinsic
+                    // default (Vec, Map, Unit, or a matching explicit
+                    // default). See the mapping note above.
+                    if matches!(
+                        self.id_to_entry.get(&type_id).map(TypeEntry::as_type),
+                        Some(Type::Option(_))
+                    ) {
+                        StructPropertyState::Optional
+                    } else {
+                        StructPropertyState::Default
+                    }
+                }
+                PropertyState::Default(value) => {
+                    StructPropertyState::DefaultValue(JsonValue::new(value))
+                }
             }
         };
 
         let (name, rename) = recase(prop_name, Case::Snake);
         let rename = match rename {
-            Some(old_name) => StructPropertyRename::Rename(old_name),
-            None => StructPropertyRename::None,
+            Some(old_name) => StructPropertySerde::Rename(old_name),
+            None => StructPropertySerde::None,
         };
 
-        Ok(StructProperty {
-            name,
-            rename,
-            state,
-            description: metadata_description(metadata),
-            type_id,
-        })
+        let mut property = StructProperty::new(name, type_id)
+            .with_json_name(rename)
+            .with_state(state);
+        if let Some(description) = metadata_description(metadata) {
+            property = property.with_description(description);
+        }
+        Ok(property)
     }
 
     pub(crate) fn make_map(
@@ -189,7 +238,7 @@ impl TypeSpace {
         additional_properties: &Option<Box<Schema>>,
     ) -> Result<TypeEntry> {
         let key_id = match property_names.as_deref() {
-            Some(Schema::Bool(true)) | None => self.assign_type(TypeEntryDetails::String.into()),
+            Some(Schema::Bool(true)) | None => self.assign_type(Type::String.into()),
 
             // TODO this would correspond to an empty object: an object with
             // no legal property values.
@@ -216,7 +265,7 @@ impl TypeSpace {
             None => self.id_for_schema(Name::Unknown, &Schema::Bool(true))?,
         };
 
-        Ok(TypeEntryDetails::Map(key_id, value_id).into())
+        Ok(Type::Map(key_id, value_id).into())
     }
 
     /// Perform a schema conversion for a type that must be string-like.
@@ -291,17 +340,18 @@ impl TypeSpace {
                 // from the name of the type
                 let name = format!("subtype_{}", idx);
 
-                Ok(StructProperty {
-                    name,
-                    rename: StructPropertyRename::Flatten,
-                    state: if optional {
-                        StructPropertyState::Optional
-                    } else {
-                        StructPropertyState::Required
-                    },
-                    description: None,
-                    type_id,
-                })
+                // The optional case wraps the type in an Option just
+                // above, so typespace's Optional state (which leaves
+                // Option types unwrapped under ConflateAsAbsent) is
+                // the right mapping.
+                let state = if optional {
+                    StructPropertyState::Optional
+                } else {
+                    StructPropertyState::Required
+                };
+                Ok(StructProperty::new(name, type_id)
+                    .with_json_name(StructPropertySerde::Flatten)
+                    .with_state(state))
             })
             .collect::<Result<Vec<_>>>()?;
 
@@ -319,108 +369,6 @@ impl TypeSpace {
     }
 }
 
-pub(crate) enum DefaultFunction {
-    None,
-    Default,
-    Custom(String),
-}
-
-/// Generate the serde attribute parameters for the given property.
-///
-/// This may include a default value that requires a generated function to
-/// produce it. In such a case, that function will be added to the OutputSpace.
-///
-/// Note that if we have several serde attribute parameters, they could each
-/// appear in their own attribute. We choose to condense them for the sake of
-/// legibility.
-pub(crate) fn generate_serde_attr(
-    type_name: &str,
-    prop_name: &str,
-    naming: &StructPropertyRename,
-    state: &StructPropertyState,
-    prop_type: &TypeEntry,
-    type_space: &TypeSpace,
-    output: &mut OutputSpace,
-) -> (TokenStream, DefaultFunction) {
-    let mut serde_options = Vec::new();
-    match naming {
-        StructPropertyRename::Rename(s) => serde_options.push(quote! { rename = #s }),
-        StructPropertyRename::Flatten => serde_options.push(quote! { flatten }),
-        StructPropertyRename::None => (),
-    }
-
-    let default_fn = match (state, &prop_type.details) {
-        (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
-            serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
-            DefaultFunction::Default
-        }
-        (StructPropertyState::Optional, TypeEntryDetails::Vec(_)) => {
-            serde_options.push(quote! { default });
-            serde_options.push(quote! { skip_serializing_if = "::std::vec::Vec::is_empty" });
-            DefaultFunction::Default
-        }
-        (StructPropertyState::Optional, TypeEntryDetails::Map(key_id, value_id)) => {
-            serde_options.push(quote! { default });
-
-            let map_to_use = &type_space.settings.map_type;
-            let key_ty = type_space
-                .id_to_entry
-                .get(key_id)
-                .expect("unresolved key type id for map");
-            let value_ty = type_space
-                .id_to_entry
-                .get(value_id)
-                .expect("unresolved value type id for map");
-
-            if key_ty.details == TypeEntryDetails::String
-                && value_ty.details == TypeEntryDetails::JsonValue
-            {
-                serde_options.push(quote! {
-                    skip_serializing_if = "::serde_json::Map::is_empty"
-                });
-            } else {
-                let is_empty = format!("{}::is_empty", map_to_use);
-                serde_options.push(quote! {
-                    skip_serializing_if = #is_empty
-                });
-            }
-            DefaultFunction::Default
-        }
-        (StructPropertyState::Optional, _) => {
-            serde_options.push(quote! { default });
-            DefaultFunction::Default
-        }
-
-        (StructPropertyState::Default(WrappedValue(value)), _) => {
-            let (fn_name, default_fn) =
-                prop_type.default_fn(value, type_space, type_name, prop_name);
-            serde_options.push(quote! { default = #fn_name });
-
-            if let Some(default_fn) = default_fn {
-                output.add_item(OutputSpaceMod::Defaults, type_name, default_fn);
-            }
-            DefaultFunction::Custom(fn_name)
-        }
-
-        // Required Option types need a serde annotation.
-        (StructPropertyState::Required, TypeEntryDetails::Option(_)) => {
-            serde_options.push(quote! { deserialize_with = "::std::option::Option::deserialize" });
-            DefaultFunction::None
-        }
-        (StructPropertyState::Required, _) => DefaultFunction::None,
-    };
-
-    let serde = if serde_options.is_empty() {
-        quote! {}
-    } else {
-        quote! {
-            #[serde( #(#serde_options),*)]
-        }
-    };
-
-    (serde, default_fn)
-}
-
 /// See if this type is a type that we can omit with a serde directive; note
 /// that the type id lookup will fail only for references (and only during
 /// initial reference processing).
@@ -428,7 +376,7 @@ fn has_default(
     type_space: &mut TypeSpace,
     type_id: &TypeId,
     default: Option<&serde_json::Value>,
-) -> StructPropertyState {
+) -> PropertyState {
     // This lookup can fail in the scenario where a struct (or struct
     // variant) member is optional and the type of that optional member is a
     // reference to a type that has not yet been converted. This is fine: those
@@ -437,54 +385,46 @@ fn has_default(
         type_space
             .id_to_entry
             .get(type_id)
-            .map(|type_entry| &type_entry.details),
+            .map(|type_entry| type_entry.as_type()),
         default,
     ) {
         // No default specified.
-        (Some(TypeEntryDetails::Option(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Vec(_)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Map(..)), None) => StructPropertyState::Optional,
-        (Some(TypeEntryDetails::Unit), None) => StructPropertyState::Optional,
-        (_, None) => StructPropertyState::Required,
+        (Some(Type::Option(_)), None) => PropertyState::Optional,
+        (Some(Type::Vec(_)), None) => PropertyState::Optional,
+        (Some(Type::Map(..)), None) => PropertyState::Optional,
+        (Some(Type::Unit), None) => PropertyState::Optional,
+        (_, None) => PropertyState::Required,
 
         // Default specified is the same as the implicit default: null
-        (Some(TypeEntryDetails::Option(_)), Some(serde_json::Value::Null)) => {
-            StructPropertyState::Optional
-        }
+        (Some(Type::Option(_)), Some(serde_json::Value::Null)) => PropertyState::Optional,
         // Default specified is the same as the implicit default: []
-        (Some(TypeEntryDetails::Vec(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
-            StructPropertyState::Optional
+        (Some(Type::Vec(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
+            PropertyState::Optional
         }
         // Default specified is the same as the implicit default: {}
-        (Some(TypeEntryDetails::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
-            StructPropertyState::Optional
+        (Some(Type::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
+            PropertyState::Optional
         }
         // Default specified is the same as the implicit default: false
-        (Some(TypeEntryDetails::Boolean), Some(serde_json::Value::Bool(false))) => {
-            StructPropertyState::Optional
-        }
+        (Some(Type::Boolean), Some(serde_json::Value::Bool(false))) => PropertyState::Optional,
         // Default specified is the same as the implicit default: 0
-        (Some(TypeEntryDetails::Integer(_)), Some(serde_json::Value::Number(n)))
-            if n.as_u64() == Some(0) =>
-        {
-            StructPropertyState::Optional
+        (Some(Type::Integer(_)), Some(serde_json::Value::Number(n))) if n.as_u64() == Some(0) => {
+            PropertyState::Optional
         }
         // Default specified is the same as the implicit default: 0.0
-        (Some(TypeEntryDetails::Integer(_)), Some(serde_json::Value::Number(n)))
-            if n.as_f64() == Some(0.0) =>
-        {
-            StructPropertyState::Optional
+        (Some(Type::Integer(_)), Some(serde_json::Value::Number(n))) if n.as_f64() == Some(0.0) => {
+            PropertyState::Optional
         }
         // Default specified is the same as the implicit default: ""
-        (Some(TypeEntryDetails::String), Some(serde_json::Value::String(s))) if s.is_empty() => {
-            StructPropertyState::Optional
+        (Some(Type::String), Some(serde_json::Value::String(s))) if s.is_empty() => {
+            PropertyState::Optional
         }
 
         // This is a reference that will resolve to this type id later.
-        (None, Some(default)) => StructPropertyState::Default(WrappedValue(default.clone())),
+        (None, Some(default)) => PropertyState::Default(default.clone()),
         // All other types as well as types with intrinsic defaults that have
         // been explicitly overridden.
-        (Some(_), Some(default)) => StructPropertyState::Default(WrappedValue(default.clone())),
+        (Some(_), Some(default)) => PropertyState::Default(default.clone()),
     }
 }
 
@@ -572,7 +512,13 @@ mod tests {
 
         let mut type_space = TypeSpace::default();
         let (ty, _) = type_space.convert_schema(Name::Unknown, &schema).unwrap();
-        let output = ty.type_name(&type_space).replace(" ", "");
+        let type_id = type_space.assign_type(ty);
+        let output = type_space
+            .to_typespace()
+            .unwrap()
+            .get_type(&type_id)
+            .name()
+            .replace(" ", "");
         assert_eq!(
             output,
             "::serde_json::Map<::std::string::String,::serde_json::Value>"

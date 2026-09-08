@@ -271,9 +271,15 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
         .add_root_schema(root_schema)
         .map_err(|e| into_syn_err(e, schema.span()))?;
 
+    // Rendering finalizes the type graph and can fail; report the
+    // error as a compile error at the macro invocation.
+    let types = type_space
+        .to_stream()
+        .map_err(|e| into_syn_err(e, schema.span()))?;
+
     let path_str = path.to_string_lossy();
     let output = quote! {
-        #type_space
+        #types
 
         // Force a rebuild when the given file is modified.
         const _: &str = include_str!(#path_str);
