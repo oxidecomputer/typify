@@ -8,6 +8,7 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "README.md"
 keywords = ["json", "schema", "cargo"]
 categories = ["api-bindings", "compilers"]
+rust-version.workspace = true
 
 default-run = "cargo-typify"
 
