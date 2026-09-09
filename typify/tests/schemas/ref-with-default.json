@@ -1,0 +1,48 @@
+{
+  "$comment": "definition-level defaults should survive $ref resolution",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "DefaultedStruct": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "default": {
+        "a": "hello"
+      }
+    },
+    "DefaultedEnum": {
+      "type": "string",
+      "enum": [
+        "alpha",
+        "beta",
+        "gamma"
+      ],
+      "default": "beta"
+    },
+    "Root": {
+      "type": "object",
+      "properties": {
+        "via_ref": {
+          "$ref": "#/definitions/DefaultedStruct"
+        },
+        "enum_via_ref": {
+          "$ref": "#/definitions/DefaultedEnum"
+        },
+        "override_at_ref": {
+          "default": {
+            "a": "override"
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/DefaultedStruct"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
