@@ -1133,6 +1133,7 @@ impl TypeEntry {
         let mut prop_error = Vec::new();
         let mut prop_type = Vec::new();
         let mut prop_type_scoped = Vec::new();
+        let mut prop_is_unit = Vec::new();
 
         properties.iter().for_each(|prop| {
             prop_doc.push(prop.description.as_ref().map(|d| quote! { #[doc = #d] }));
@@ -1143,6 +1144,7 @@ impl TypeEntry {
             ));
 
             let prop_type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+            prop_is_unit.push(matches!(prop_type_entry.details, TypeEntryDetails::Unit));
             prop_type.push(prop_type_entry.type_ident(type_space, &None));
             prop_type_scoped
                 .push(prop_type_entry.type_ident(type_space, &Some("super".to_string())));
@@ -1279,10 +1281,38 @@ impl TypeEntry {
                 quote! { value }
             };
 
-            let prop_default = prop_default.iter().map(|pd| match pd {
-                PropDefault::None(err_msg) => quote! { Err(#err_msg.to_string()) },
-                PropDefault::Default(default_fn) => quote! { Ok(#default_fn) },
-                PropDefault::Custom(custom_fn) => quote! { Ok(super::#custom_fn) },
+            // The source value is not read when every property is unit-typed.
+            let from_value_ident = if prop_is_unit.iter().all(|is_unit| *is_unit) {
+                quote! { _value }
+            } else {
+                quote! { value }
+            };
+
+            // For unit-typed properties (produced by null schemas) the value is
+            // always `()`, so we emit `Ok(())` rather than passing the unit value
+            // to `Ok(..)`, which would trip clippy's `unit_arg` lint.
+            let prop_default =
+                prop_default
+                    .iter()
+                    .zip(&prop_is_unit)
+                    .map(|(pd, is_unit)| match pd {
+                        PropDefault::None(err_msg) => quote! { Err(#err_msg.to_string()) },
+                        PropDefault::Default(_) | PropDefault::Custom(_) if *is_unit => {
+                            quote! { Ok(()) }
+                        }
+                        PropDefault::Default(default_fn) => quote! { Ok(#default_fn) },
+                        PropDefault::Custom(custom_fn) => quote! { Ok(super::#custom_fn) },
+                    });
+
+            // Per-property initializers for the `From<super::T>` impl. Reading a
+            // unit field yields `()`, so we emit `Ok(())` directly to avoid
+            // passing a unit value to `Ok(..)` (clippy's `unit_arg` lint).
+            let prop_from = prop_name.iter().zip(&prop_is_unit).map(|(name, is_unit)| {
+                if *is_unit {
+                    quote! { #name: Ok(()) }
+                } else {
+                    quote! { #name: Ok(value.#name) }
+                }
             });
 
             output.add_item(
@@ -1339,10 +1369,10 @@ impl TypeEntry {
 
                     // Construct a builder from the item.
                     impl ::std::convert::From<super::#type_name> for #type_name {
-                        fn from(#value_ident: super::#type_name) -> Self {
+                        fn from(#from_value_ident: super::#type_name) -> Self {
                             Self {
                                 #(
-                                    #prop_name: Ok(value.#prop_name),
+                                    #prop_from,
                                 )*
                             }
                         }
