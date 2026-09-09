@@ -351,7 +351,6 @@ pub(crate) fn generate_serde_attr(
 
     let default_fn = match (state, &prop_type.details) {
         (StructPropertyState::Optional, TypeEntryDetails::Option(_)) => {
-            serde_options.push(quote! { default });
             serde_options.push(quote! { skip_serializing_if = "::std::option::Option::is_none" });
             DefaultFunction::Default
         }
@@ -403,6 +402,11 @@ pub(crate) fn generate_serde_attr(
             DefaultFunction::Custom(fn_name)
         }
 
+        // Required Option types need a serde annotation.
+        (StructPropertyState::Required, TypeEntryDetails::Option(_)) => {
+            serde_options.push(quote! { deserialize_with = "::std::option::Option::deserialize" });
+            DefaultFunction::None
+        }
         (StructPropertyState::Required, _) => DefaultFunction::None,
     };
 

@@ -1081,8 +1081,8 @@ impl TypeEntry {
 
             #simple_enum_impl
             #default_impl
-            #untagged_newtype_from_string_impl
             #untagged_newtype_to_string_impl
+            #untagged_newtype_from_string_impl
             #convenience_from
         };
         output.add_item(OutputSpaceMod::Crate, name, item);
@@ -1458,9 +1458,9 @@ impl TypeEntry {
                         }
                     }
 
+                    #display_impl
                     #str_impl
                     #from_str_impl
-                    #display_impl
                 }
             }
 

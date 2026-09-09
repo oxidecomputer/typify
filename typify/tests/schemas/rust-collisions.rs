@@ -1,30 +1,4 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`Box`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Box {
@@ -48,7 +22,7 @@ impl Copy {
 #[doc = "`DoubleOptionCollision`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollision {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
 }
 impl DoubleOptionCollision {
@@ -59,7 +33,7 @@ impl DoubleOptionCollision {
 #[doc = "`DoubleOptionCollisionOption`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollisionOption {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
 }
 impl DoubleOptionCollisionOption {
@@ -286,7 +260,7 @@ impl ::std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapV
 #[doc = "`NestedTypeCollisions`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct NestedTypeCollisions {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option_type: ::std::option::Option<NestedTypeCollisionsOptionType>,
     #[serde(rename = "type")]
     pub type_: TypeWithOptionField,
@@ -302,7 +276,6 @@ impl NestedTypeCollisions {
 pub struct NestedTypeCollisionsOptionType {
     #[serde(
         rename = "type",
-        default,
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
@@ -680,7 +653,7 @@ impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVari
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TypeWithOptionField {
     pub boxed_field: Box,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub optional_field: ::std::option::Option<::std::string::String>,
 }
 impl TypeWithOptionField {
@@ -698,7 +671,7 @@ impl Vec {
         Default::default()
     }
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Box {
@@ -2543,6 +2516,32 @@ pub mod builder {
             Self {
                 items: Ok(value.items),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

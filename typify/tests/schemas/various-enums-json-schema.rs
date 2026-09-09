@@ -1,30 +1,4 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`AlternativeEnum`"]
 #[derive(
     :: serde :: Deserialize,
@@ -297,7 +271,7 @@ impl ::std::default::Default for DiskAttachmentState {
     :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default, schemars :: JsonSchema,
 )]
 pub struct EmptyObject {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub prop: ::std::option::Option<EmptyObjectProp>,
 }
 impl EmptyObject {
@@ -382,6 +356,14 @@ pub enum IpNet {
     V4(Ipv4Net),
     V6(Ipv6Net),
 }
+impl ::std::fmt::Display for IpNet {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::V4(x) => x.fmt(f),
+            Self::V6(x) => x.fmt(f),
+        }
+    }
+}
 impl ::std::str::FromStr for IpNet {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -406,14 +388,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IpNet {
         value: ::std::string::String,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
-    }
-}
-impl ::std::fmt::Display for IpNet {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::V4(x) => x.fmt(f),
-            Self::V6(x) => x.fmt(f),
-        }
     }
 }
 impl ::std::convert::From<Ipv4Net> for IpNet {
@@ -763,17 +737,17 @@ impl ::std::convert::TryFrom<::std::string::String> for NullStringEnumWithUnknow
 #[serde(untagged)]
 pub enum OneOfMissingTitle {
     Variant0 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
     Variant1 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         bar: ::std::option::Option<i64>,
     },
     Variant2 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         bar: ::std::option::Option<i64>,
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         baz: ::std::option::Option<i64>,
     },
 }
@@ -961,15 +935,15 @@ impl ::std::convert::From<::std::string::String> for ReferenceDef {
         Self(value)
     }
 }
+impl ::std::fmt::Display for ReferenceDef {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 impl ::std::str::FromStr for ReferenceDef {
     type Err = ::std::convert::Infallible;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
-    }
-}
-impl ::std::fmt::Display for ReferenceDef {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
     }
 }
 #[doc = "issue 280"]
@@ -1056,15 +1030,15 @@ impl ::std::convert::From<::std::string::String> for StringVersion {
         Self(value)
     }
 }
+impl ::std::fmt::Display for StringVersion {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 impl ::std::str::FromStr for StringVersion {
     type Err = ::std::convert::Infallible;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
-    }
-}
-impl ::std::fmt::Display for StringVersion {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
     }
 }
 #[doc = "`VariantsDifferByPunct`"]
@@ -1123,7 +1097,7 @@ impl ::std::convert::TryFrom<::std::string::String> for VariantsDifferByPunct {
         value.parse()
     }
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct DiskAttachment {
@@ -1218,6 +1192,32 @@ pub mod builder {
             Self {
                 prop: Ok(value.prop),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

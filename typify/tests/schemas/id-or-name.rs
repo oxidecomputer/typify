@@ -1,36 +1,18 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`IdOrName`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(::uuid::Uuid),
     Name(Name),
+}
+impl ::std::fmt::Display for IdOrName {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Id(x) => x.fmt(f),
+            Self::Name(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrName {
     type Err = self::error::ConversionError;
@@ -58,14 +40,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrName {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IdOrName {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Id(x) => x.fmt(f),
-            Self::Name(x) => x.fmt(f),
-        }
-    }
-}
 impl ::std::convert::From<::uuid::Uuid> for IdOrName {
     fn from(value: ::uuid::Uuid) -> Self {
         Self::Id(value)
@@ -82,6 +56,14 @@ impl ::std::convert::From<Name> for IdOrName {
 pub enum IdOrNameRedundant {
     Uuid(::uuid::Uuid),
     String(Name),
+}
+impl ::std::fmt::Display for IdOrNameRedundant {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Uuid(x) => x.fmt(f),
+            Self::String(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
@@ -109,14 +91,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IdOrNameRedundant {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Uuid(x) => x.fmt(f),
-            Self::String(x) => x.fmt(f),
-        }
-    }
-}
 impl ::std::convert::From<::uuid::Uuid> for IdOrNameRedundant {
     fn from(value: ::uuid::Uuid) -> Self {
         Self::Uuid(value)
@@ -133,6 +107,14 @@ impl ::std::convert::From<Name> for IdOrNameRedundant {
 pub enum IdOrYolo {
     Id(::uuid::Uuid),
     Yolo(IdOrYoloYolo),
+}
+impl ::std::fmt::Display for IdOrYolo {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Id(x) => x.fmt(f),
+            Self::Yolo(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrYolo {
     type Err = self::error::ConversionError;
@@ -158,14 +140,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrYolo {
         value: ::std::string::String,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
-    }
-}
-impl ::std::fmt::Display for IdOrYolo {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Id(x) => x.fmt(f),
-            Self::Yolo(x) => x.fmt(f),
-        }
     }
 }
 impl ::std::convert::From<::uuid::Uuid> for IdOrYolo {
@@ -286,6 +260,32 @@ impl<'de> ::serde::Deserialize<'de> for Name {
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
     }
 }
 fn main() {}
