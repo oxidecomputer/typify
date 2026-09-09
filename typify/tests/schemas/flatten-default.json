@@ -1,0 +1,23 @@
+{
+  "$comment": "regression test: a default value for a struct type with a flattened property must produce a valid Rust identifier for the flattened field",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Container",
+  "type": "object",
+  "properties": {
+    "thing": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {
+        "id": "abc",
+        "extra_key": "extra_value"
+      }
+    }
+  }
+}
