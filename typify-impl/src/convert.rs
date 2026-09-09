@@ -2319,7 +2319,7 @@ mod tests {
 
         match &type_space.id_to_entry[&type_id].details {
             super::TypeEntryDetails::Enum(details) => assert!(details.variants.is_empty()),
-            details => panic!("empty anyOf should be uninhabited, got {details:?}"),
+            details => panic!("empty anyOf should be unsatisfiable, got {details:?}"),
         }
     }
 
