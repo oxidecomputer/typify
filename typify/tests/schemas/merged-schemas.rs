@@ -1,34 +1,8 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`BarProp`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct BarProp {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
 }
 impl BarProp {
@@ -39,7 +13,7 @@ impl BarProp {
 #[doc = "`ButNotThat`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ButNotThat {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
 }
 impl ButNotThat {
@@ -50,9 +24,9 @@ impl ButNotThat {
 #[doc = "if we don't see this, we dropped the metadata"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct CommentedTypeMerged {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub x: ::std::option::Option<::serde_json::Value>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
 }
 impl CommentedTypeMerged {
@@ -65,22 +39,22 @@ impl CommentedTypeMerged {
 #[serde(untagged)]
 pub enum HereAndThere {
     Variant0 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         bar: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
     Variant1 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         baz: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
 }
 #[doc = "`JsonResponseBase`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct JsonResponseBase {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
 }
 impl JsonResponseBase {
@@ -234,6 +208,11 @@ impl ::std::convert::From<f64> for MergeNumberBounds {
         Self(value)
     }
 }
+impl ::std::fmt::Display for MergeNumberBounds {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 impl ::std::str::FromStr for MergeNumberBounds {
     type Err = <f64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
@@ -250,11 +229,6 @@ impl ::std::convert::TryFrom<String> for MergeNumberBounds {
     type Error = <f64 as ::std::str::FromStr>::Err;
     fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
         value.parse()
-    }
-}
-impl ::std::fmt::Display for MergeNumberBounds {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
     }
 }
 #[doc = "`MergeStringBounds`"]
@@ -330,6 +304,11 @@ impl ::std::convert::From<::std::num::NonZeroU64> for NarrowNumber {
         Self(value)
     }
 }
+impl ::std::fmt::Display for NarrowNumber {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 impl ::std::str::FromStr for NarrowNumber {
     type Err = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
@@ -348,15 +327,10 @@ impl ::std::convert::TryFrom<String> for NarrowNumber {
         value.parse()
     }
 }
-impl ::std::fmt::Display for NarrowNumber {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
 #[doc = "`OrderDependentMerge`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OrderDependentMerge {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
@@ -378,7 +352,7 @@ impl Pickingone {
 #[doc = "`PickingoneInstallation`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneInstallation {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
 }
 impl PickingoneInstallation {
@@ -389,7 +363,7 @@ impl PickingoneInstallation {
 #[doc = "`PickingoneSuspendedBy`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneSuspendedBy {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
 impl PickingoneSuspendedBy {
@@ -400,7 +374,7 @@ impl PickingoneSuspendedBy {
 #[doc = "`PickingoneUser`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneUser {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
 }
 impl PickingoneUser {
@@ -592,7 +566,7 @@ pub enum Unsatisfiable3 {}
 #[doc = "`Unsatisfiable3A`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Unsatisfiable3A {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
 }
 impl Unsatisfiable3A {
@@ -713,7 +687,7 @@ pub enum WeirdEnum {
         pattern_regex: ::std::string::String,
     },
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct BarProp {
@@ -1356,6 +1330,32 @@ pub mod builder {
             Self {
                 action: Ok(value.action),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }
