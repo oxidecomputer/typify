@@ -63,7 +63,15 @@
     "array-sans-items": {
       "type": "array",
       "minItems": 1,
-      "uniqueItems": true
+      "uniqueItems": false
+    },
+    "set-avec-item": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
     }
   }
 }

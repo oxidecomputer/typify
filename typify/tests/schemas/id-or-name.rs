@@ -1,63 +1,18 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`IdOrName`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"title\": \"Id\","]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"format\": \"uuid\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"title\": \"Name\","]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/Name\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrName {
     Id(::uuid::Uuid),
     Name(Name),
+}
+impl ::std::fmt::Display for IdOrName {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Id(x) => x.fmt(f),
+            Self::Name(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrName {
     type Err = self::error::ConversionError;
@@ -85,14 +40,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrName {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IdOrName {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Id(x) => x.fmt(f),
-            Self::Name(x) => x.fmt(f),
-        }
-    }
-}
 impl ::std::convert::From<::uuid::Uuid> for IdOrName {
     fn from(value: ::uuid::Uuid) -> Self {
         Self::Id(value)
@@ -104,30 +51,19 @@ impl ::std::convert::From<Name> for IdOrName {
     }
 }
 #[doc = "`IdOrNameRedundant`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"format\": \"uuid\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"$ref\": \"#/definitions/Name\""]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"tests references that include a redundant type field\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrNameRedundant {
     Uuid(::uuid::Uuid),
     String(Name),
+}
+impl ::std::fmt::Display for IdOrNameRedundant {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Uuid(x) => x.fmt(f),
+            Self::String(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrNameRedundant {
     type Err = self::error::ConversionError;
@@ -155,14 +91,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrNameRedundant {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IdOrNameRedundant {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Uuid(x) => x.fmt(f),
-            Self::String(x) => x.fmt(f),
-        }
-    }
-}
 impl ::std::convert::From<::uuid::Uuid> for IdOrNameRedundant {
     fn from(value: ::uuid::Uuid) -> Self {
         Self::Uuid(value)
@@ -174,39 +102,19 @@ impl ::std::convert::From<Name> for IdOrNameRedundant {
     }
 }
 #[doc = "`IdOrYolo`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"title\": \"Id\","]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"format\": \"uuid\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"title\": \"Yolo\","]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"pattern\": \".*\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum IdOrYolo {
     Id(::uuid::Uuid),
     Yolo(IdOrYoloYolo),
+}
+impl ::std::fmt::Display for IdOrYolo {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match self {
+            Self::Id(x) => x.fmt(f),
+            Self::Yolo(x) => x.fmt(f),
+        }
+    }
 }
 impl ::std::str::FromStr for IdOrYolo {
     type Err = self::error::ConversionError;
@@ -234,14 +142,6 @@ impl ::std::convert::TryFrom<::std::string::String> for IdOrYolo {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IdOrYolo {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        match self {
-            Self::Id(x) => x.fmt(f),
-            Self::Yolo(x) => x.fmt(f),
-        }
-    }
-}
 impl ::std::convert::From<::uuid::Uuid> for IdOrYolo {
     fn from(value: ::uuid::Uuid) -> Self {
         Self::Id(value)
@@ -253,16 +153,6 @@ impl ::std::convert::From<IdOrYoloYolo> for IdOrYolo {
     }
 }
 #[doc = "`IdOrYoloYolo`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"pattern\": \".*\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct IdOrYoloYolo(::std::string::String);
@@ -315,19 +205,6 @@ impl<'de> ::serde::Deserialize<'de> for IdOrYoloYolo {
     }
 }
 #[doc = "Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID."]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"A name unique within the parent collection\","]
-#[doc = "  \"description\": \"Names must begin with a lower case ASCII letter, be composed exclusively of lowercase ASCII, uppercase ASCII, numbers, and '-', and may not end with a '-'. Names cannot be a UUID though they may contain a UUID.\","]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"maxLength\": 63,"]
-#[doc = "  \"pattern\": \"^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct Name(::std::string::String);
@@ -383,6 +260,32 @@ impl<'de> ::serde::Deserialize<'de> for Name {
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
     }
 }
 fn main() {}

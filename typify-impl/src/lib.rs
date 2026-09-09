@@ -241,9 +241,25 @@ pub struct MapType(pub syn::Type);
 
 impl MapType {
     /// Create a new MapType from a [`str`].
+    ///
+    /// # Panics
+    ///
+    /// Panics if `s` cannot be parsed as a Rust type. Prefer
+    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
+    /// implementation) to handle invalid input without panicking.
     pub fn new(s: &str) -> Self {
         let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
         Self(map_type)
+    }
+}
+
+impl std::str::FromStr for MapType {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        let map_type = syn::parse_str::<syn::Type>(s)
+            .map_err(|err| format!("invalid map type {s:?}: {err}"))?;
+        Ok(Self(map_type))
     }
 }
 
@@ -270,18 +286,28 @@ impl<'de> serde::Deserialize<'de> for MapType {
     where
         D: serde::Deserializer<'de>,
     {
-        let s = <&str>::deserialize(deserializer)?;
-        Ok(Self::new(s))
+        let s = String::deserialize(deserializer)?;
+        s.parse().map_err(serde::de::Error::custom)
     }
 }
 
 impl From<String> for MapType {
+    /// # Panics
+    ///
+    /// Panics if `s` cannot be parsed as a Rust type. Prefer
+    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
+    /// implementation) to handle invalid input without panicking.
     fn from(s: String) -> Self {
         Self::new(&s)
     }
 }
 
 impl From<&str> for MapType {
+    /// # Panics
+    ///
+    /// Panics if `s` cannot be parsed as a Rust type. Prefer
+    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
+    /// implementation) to handle invalid input without panicking.
     fn from(s: &str) -> Self {
         Self::new(s)
     }
@@ -1224,8 +1250,33 @@ mod tests {
         output::OutputSpace,
         test_util::validate_output,
         type_entry::{TypeEntryEnum, VariantDetails},
-        Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
+        MapType, Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
     };
+
+    #[test]
+    fn test_map_type_from_str() {
+        let map_type = "::std::collections::BTreeMap".parse::<MapType>().unwrap();
+        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
+
+        "not a valid!!type".parse::<MapType>().unwrap_err();
+        "".parse::<MapType>().unwrap_err();
+    }
+
+    #[test]
+    fn test_map_type_deserialize() {
+        let map_type: MapType =
+            serde_json::from_value(json!("::std::collections::BTreeMap")).unwrap();
+        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
+
+        // Strings with escape sequences require owned deserialization; make
+        // sure that works.
+        let map_type: MapType =
+            serde_json::from_str("\"::std::collections::\\u0042TreeMap\"").unwrap();
+        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
+
+        // ... and invalid types must produce an error rather than a panic.
+        serde_json::from_value::<MapType>(json!("not a valid!!type")).unwrap_err();
+    }
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema)]

@@ -779,10 +779,10 @@ impl TypeEntry {
             variants,
             deny_unknown_fields,
             bespoke_impls,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = enum_details;
 
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         // TODO this is a one-off for some useful traits; this should move into
         // the creation of the enum type.
@@ -1081,8 +1081,8 @@ impl TypeEntry {
 
             #simple_enum_impl
             #default_impl
-            #untagged_newtype_from_string_impl
             #untagged_newtype_to_string_impl
+            #untagged_newtype_from_string_impl
             #convenience_from
         };
         output.add_item(OutputSpaceMod::Crate, name, item);
@@ -1093,7 +1093,7 @@ impl TypeEntry {
         type_space: &TypeSpace,
         output: &mut OutputSpace,
         struct_details: &TypeEntryStruct,
-        derive_set: BTreeSet<&str>,
+        mut derive_set: BTreeSet<&str>,
     ) {
         enum PropDefault {
             None(String),
@@ -1108,9 +1108,9 @@ impl TypeEntry {
             default,
             properties,
             deny_unknown_fields,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = struct_details;
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         // Generate the serde directives as needed.
         let mut serde_options = Vec::new();
@@ -1175,6 +1175,19 @@ impl TypeEntry {
             });
         });
 
+        // If there's no whole-type default value and every property's default
+        // is the intrinsic `Default::default()`, the hand-written `impl Default`
+        // would be exactly what `#[derive(Default)]` produces (and would trip
+        // clippy's `derivable_impls` lint downstream). In that case we derive
+        // `Default` rather than emitting the manual impl below.
+        let derive_default = default.is_none()
+            && prop_default
+                .iter()
+                .all(|pd| matches!(pd, PropDefault::Default(_)));
+        if derive_default {
+            derive_set.insert("Default");
+        }
+
         let derives = strings_to_derives(
             derive_set,
             &self.extra_derives,
@@ -1215,6 +1228,8 @@ impl TypeEntry {
                     }
                 },
             );
+        } else if derive_default {
+            // Handled above via `#[derive(Default)]`.
         } else if let Some(prop_default) = prop_default
             .iter()
             .map(|pd| match pd {
@@ -1351,9 +1366,9 @@ impl TypeEntry {
             default,
             type_id,
             constraints,
-            schema: SchemaWrapper(schema),
+            schema: _,
         } = newtype_details;
-        let doc = make_doc(name, description.as_ref(), schema);
+        let doc = make_doc(name, description.as_ref());
 
         let type_name = format_ident!("{}", name);
         let inner_type = type_space.id_to_entry.get(type_id).unwrap();
@@ -1443,9 +1458,9 @@ impl TypeEntry {
                         }
                     }
 
+                    #display_impl
                     #str_impl
                     #from_str_impl
-                    #display_impl
                 }
             }
 
@@ -1791,7 +1806,9 @@ impl TypeEntry {
                 if key_ty.details == TypeEntryDetails::String
                     && value_ty.details == TypeEntryDetails::JsonValue
                 {
-                    quote! { ::serde_json::Map<::std::string::String, ::serde_json::Value> }
+                    quote! {
+                        ::serde_json::Map<::std::string::String, ::serde_json::Value>
+                    }
                 } else {
                     let key_ident = key_ty.type_ident(type_space, type_mod);
                     let value_ident = value_ty.type_ident(type_space, type_mod);
@@ -1809,7 +1826,7 @@ impl TypeEntry {
                 let item = inner_ty.type_ident(type_space, type_mod);
                 // TODO we'll want this to be a Set of some kind, but we need
                 // to get the derives right first.
-                quote! { Vec<#item> }
+                quote! { ::std::vec::Vec<#item> }
             }
 
             TypeEntryDetails::Tuple(items) => {
@@ -2010,25 +2027,13 @@ impl TypeEntry {
     }
 }
 
-fn make_doc(name: &str, description: Option<&String>, schema: &Schema) -> TokenStream {
+fn make_doc(name: &str, description: Option<&String>) -> TokenStream {
     let desc = match description {
         Some(desc) => desc,
         None => &format!("`{}`", name),
     };
-    let schema_json = serde_json::to_string_pretty(schema).unwrap();
-    let schema_lines = schema_json.lines();
-    quote! {
-        #[doc = #desc]
-        ///
-        /// <details><summary>JSON schema</summary>
-        ///
-        /// ```json
-        #(
-            #[doc = #schema_lines]
-        )*
-        /// ```
-        /// </details>
-    }
+
+    quote! { #[doc = #desc] }
 }
 
 fn strings_to_derives<'a>(

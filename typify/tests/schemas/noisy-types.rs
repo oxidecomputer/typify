@@ -1,51 +1,5 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`ArrayBs`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"array\","]
-#[doc = "  \"multipleOf\": 100.0,"]
-#[doc = "  \"maxLength\": 100,"]
-#[doc = "  \"items\": {"]
-#[doc = "    \"type\": \"boolean\""]
-#[doc = "  },"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"ok\": {}"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct ArrayBs(pub ::std::vec::Vec<bool>);
@@ -66,23 +20,6 @@ impl ::std::convert::From<::std::vec::Vec<bool>> for ArrayBs {
     }
 }
 #[doc = "`IntegerBs`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"integer\","]
-#[doc = "  \"minimum\": 0.0,"]
-#[doc = "  \"maxLength\": 100,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"ok\": {}"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct IntegerBs(pub u64);
@@ -100,6 +37,11 @@ impl ::std::convert::From<IntegerBs> for u64 {
 impl ::std::convert::From<u64> for IntegerBs {
     fn from(value: u64) -> Self {
         Self(value)
+    }
+}
+impl ::std::fmt::Display for IntegerBs {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 impl ::std::str::FromStr for IntegerBs {
@@ -120,47 +62,18 @@ impl ::std::convert::TryFrom<String> for IntegerBs {
         value.parse()
     }
 }
-impl ::std::fmt::Display for IntegerBs {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
 #[doc = "`ObjectBs`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"multipleOf\": 100.0,"]
-#[doc = "  \"maxLength\": 100,"]
-#[doc = "  \"maxItems\": 100,"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"ok\": {"]
-#[doc = "      \"type\": \"boolean\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ObjectBs {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub ok: ::std::option::Option<bool>,
-}
-impl ::std::default::Default for ObjectBs {
-    fn default() -> Self {
-        Self {
-            ok: Default::default(),
-        }
-    }
 }
 impl ObjectBs {
     pub fn builder() -> builder::ObjectBs {
         Default::default()
     }
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct ObjectBs {
@@ -194,6 +107,32 @@ pub mod builder {
     impl ::std::convert::From<super::ObjectBs> for ObjectBs {
         fn from(value: super::ObjectBs) -> Self {
             Self { ok: Ok(value.ok) }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

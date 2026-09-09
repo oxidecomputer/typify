@@ -919,13 +919,15 @@ impl StringValidator {
     }
 
     pub fn is_valid<S: AsRef<str>>(&self, s: S) -> bool {
+        // Per the JSON Schema spec (and RFC 8259), minLength/maxLength count
+        // Unicode code points, not UTF-8 bytes, so we must not use `len()`.
         self.max_length
             .as_ref()
-            .is_none_or(|max| s.as_ref().len() as u32 <= *max)
+            .is_none_or(|max| s.as_ref().chars().count() as u32 <= *max)
             && self
                 .min_length
                 .as_ref()
-                .is_none_or(|min| s.as_ref().len() as u32 >= *min)
+                .is_none_or(|min| s.as_ref().chars().count() as u32 >= *min)
             && self
                 .pattern
                 .as_ref()
@@ -1177,6 +1179,61 @@ mod tests {
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));
         assert!(!ach.is_valid("Abednego"));
+    }
+
+    #[test]
+    fn test_string_validation_multi_byte() {
+        // minLength/maxLength count Unicode code points, not UTF-8 bytes.
+        // "héllo" is 5 code points but 6 bytes (the "é" is 2 bytes).
+        let five = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: Some(5),
+                min_length: Some(5),
+                pattern: None,
+            }),
+        )
+        .unwrap();
+        assert!(five.is_valid("héllo"));
+        assert!(five.is_valid("hello"));
+        // 6 bytes but only 5 code points -- should still be valid.
+        assert_eq!("héllo".len(), 6);
+        assert_eq!("héllo".chars().count(), 5);
+
+        // A single 4-byte emoji is one code point, so it satisfies a
+        // minLength/maxLength of 1 even though it is 4 bytes long.
+        let one = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: Some(1),
+                min_length: Some(1),
+                pattern: None,
+            }),
+        )
+        .unwrap();
+        assert!(one.is_valid("🍔"));
+        assert_eq!("🍔".len(), 4);
+        assert_eq!("🍔".chars().count(), 1);
+        // Two code points should now be rejected by maxLength: 1.
+        assert!(!one.is_valid("🍔🍔"));
+
+        // A string of exactly 8 code points, each multi-byte, should pass
+        // an exact-length-8 validator even though its byte length is 24.
+        let eight = StringValidator::new(
+            &Name::Unknown,
+            Some(&StringValidation {
+                max_length: Some(8),
+                min_length: Some(8),
+                pattern: None,
+            }),
+        )
+        .unwrap();
+        let emoji8 = "🍔".repeat(8);
+        assert_eq!(emoji8.len(), 32);
+        assert_eq!(emoji8.chars().count(), 8);
+        assert!(eight.is_valid(&emoji8));
+        assert!(!eight.is_valid("🍔".repeat(7)));
+        assert!(!eight.is_valid("🍔".repeat(9)));
     }
 
     #[test]

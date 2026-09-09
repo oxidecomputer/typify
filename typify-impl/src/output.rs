@@ -12,10 +12,10 @@ pub struct OutputSpace {
 
 #[derive(Clone, Debug, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum OutputSpaceMod {
-    Error,
     Crate,
     Builder,
     Defaults,
+    Error,
 }
 
 impl OutputSpace {
@@ -49,19 +49,19 @@ impl OutputSpace {
                 #items
             },
             OutputSpaceMod::Builder => quote! {
-                /// Types for composing complex structures.
+                #[doc = " Types for composing complex structures."]
                 pub mod builder {
                     #items
                 }
             },
             OutputSpaceMod::Defaults => quote! {
-                /// Generation of default values for serde.
+                #[doc = " Generation of default values for serde."]
                 pub mod defaults {
                     #items
                 }
             },
             OutputSpaceMod::Error => quote! {
-                /// Error types.
+                #[doc = " Error types."]
                 pub mod error {
                     #items
                 }

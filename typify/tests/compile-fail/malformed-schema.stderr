@@ -1,0 +1,5 @@
+error: couldn't parse file Cargo.toml: invalid type: sequence, expected struct RootSchema at line 1 column 1
+ --> tests/compile-fail/malformed-schema.rs:4:15
+  |
+4 | import_types!("Cargo.toml");
+  |               ^^^^^^^^^^^^
