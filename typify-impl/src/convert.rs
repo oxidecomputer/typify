@@ -805,7 +805,8 @@ impl TypeSpace {
                 // ::uuid::Uuid additionally implements Display,
                 // FromStr, Eq, PartialEq, Ord, PartialOrd, and Hash. It
                 // also implements Default, but typify does not declare
-                // Default on natives.
+                // Default on natives. JsonSchema comes from schemars'
+                // uuid1 feature.
                 Ok((
                     TypeEntry::new_native(
                         "::uuid::Uuid",
@@ -821,6 +822,7 @@ impl TypeSpace {
                             TypespaceTrait::Ord,
                             TypespaceTrait::PartialOrd,
                             TypespaceTrait::Hash,
+                            TypespaceTrait::JsonSchema,
                         ]
                         .into_iter()
                         .collect::<TypespaceTraitSet>(),
@@ -834,7 +836,8 @@ impl TypeSpace {
                 // ::chrono::naive::NaiveDate additionally implements
                 // Display, FromStr, PartialEq, Eq, PartialOrd, Ord, and
                 // Hash. It also implements Default, but typify does not
-                // declare Default on natives.
+                // declare Default on natives. JsonSchema comes from
+                // schemars' chrono feature.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::naive::NaiveDate",
@@ -850,6 +853,7 @@ impl TypeSpace {
                             TypespaceTrait::Ord,
                             TypespaceTrait::PartialOrd,
                             TypespaceTrait::Hash,
+                            TypespaceTrait::JsonSchema,
                         ]
                         .into_iter()
                         .collect::<TypespaceTraitSet>(),
@@ -863,7 +867,8 @@ impl TypeSpace {
                 // PartialOrd, Ord, Hash, Debug, and Display for any
                 // TimeZone, and Utc additionally gets FromStr. It also
                 // implements Default, but typify does not declare
-                // Default on natives.
+                // Default on natives. JsonSchema comes from schemars'
+                // chrono feature.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::DateTime<::chrono::offset::Utc>",
@@ -879,6 +884,7 @@ impl TypeSpace {
                             TypespaceTrait::Ord,
                             TypespaceTrait::PartialOrd,
                             TypespaceTrait::Hash,
+                            TypespaceTrait::JsonSchema,
                         ]
                         .into_iter()
                         .collect::<TypespaceTraitSet>(),
@@ -889,7 +895,7 @@ impl TypeSpace {
 
             // ::std::net::IpAddr implements Clone, Eq, PartialEq,
             // Hash, PartialOrd, Ord, Display, and FromStr. It has no
-            // Default impl.
+            // Default impl. JsonSchema needs no schemars feature.
             Some("ip") => Ok((
                 TypeEntry::new_native(
                     "::std::net::IpAddr",
@@ -905,6 +911,7 @@ impl TypeSpace {
                         TypespaceTrait::Ord,
                         TypespaceTrait::PartialOrd,
                         TypespaceTrait::Hash,
+                        TypespaceTrait::JsonSchema,
                     ]
                     .into_iter()
                     .collect::<TypespaceTraitSet>(),
@@ -913,7 +920,8 @@ impl TypeSpace {
             )),
             // ::std::net::Ipv4Addr implements Clone, PartialEq, Eq,
             // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
-            // has no Default impl.
+            // has no Default impl. JsonSchema needs no schemars
+            // feature.
             Some("ipv4") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv4Addr",
@@ -929,6 +937,7 @@ impl TypeSpace {
                         TypespaceTrait::Ord,
                         TypespaceTrait::PartialOrd,
                         TypespaceTrait::Hash,
+                        TypespaceTrait::JsonSchema,
                     ]
                     .into_iter()
                     .collect::<TypespaceTraitSet>(),
@@ -937,7 +946,8 @@ impl TypeSpace {
             )),
             // ::std::net::Ipv6Addr implements Clone, PartialEq, Eq,
             // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
-            // has no Default impl.
+            // has no Default impl. JsonSchema needs no schemars
+            // feature.
             Some("ipv6") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv6Addr",
@@ -953,6 +963,7 @@ impl TypeSpace {
                         TypespaceTrait::Ord,
                         TypespaceTrait::PartialOrd,
                         TypespaceTrait::Hash,
+                        TypespaceTrait::JsonSchema,
                     ]
                     .into_iter()
                     .collect::<TypespaceTraitSet>(),
