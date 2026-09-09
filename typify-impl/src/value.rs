@@ -8,8 +8,9 @@ use quote::{format_ident, quote};
 use crate::{
     convert::STD_NUM_NONZERO_PREFIX,
     type_entry::{
-        EnumTagType, StructProperty, StructPropertyRename, TypeEntry, TypeEntryDetails,
-        TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct, Variant, VariantDetails,
+        EnumTagType, StructProperty, StructPropertyRename, StructPropertyState, TypeEntry,
+        TypeEntryDetails, TypeEntryEnum, TypeEntryNative, TypeEntryNewtype, TypeEntryStruct,
+        Variant, VariantDetails,
     },
     TypeId, TypeSpace,
 };
@@ -399,8 +400,17 @@ fn value_for_struct_props(
             let prop_value = type_entry.output_value(type_space, value, scope)?;
 
             Some(quote! { #name_ident: #prop_value })
+        } else if let StructPropertyState::Default(default) = &prop.state {
+            // The property is absent from the whole-type default value, but it
+            // declares its own default. Use that so that `T::default()` agrees
+            // with deserializing the (partial) default value, which fills in
+            // absent properties via their serde default functions.
+            let type_entry = type_space.id_to_entry.get(&prop.type_id).unwrap();
+            let prop_value = type_entry.output_value(type_space, &default.0, scope)?;
+
+            Some(quote! { #name_ident: #prop_value })
         } else {
-            Some(quote! { #name_ident: Default::default() })
+            Some(quote! { #name_ident: ::std::default::Default::default() })
         }
     });
 
@@ -643,7 +653,7 @@ mod tests {
                         a: "aaaa".to_string(),
                         b: 7_u32,
                         c: ::std::option::Option::Some("cccc".to_string()),
-                        d: Default::default()
+                        d: ::std::default::Default::default()
                     }
                 }
                 .to_string()
@@ -685,7 +695,7 @@ mod tests {
                         a: "aaaa".to_string(),
                         b: 7_u32,
                         c: ::std::option::Option::Some("cccc".to_string()),
-                        d: Default::default()
+                        d: ::std::default::Default::default()
                     }
                 }
                 .to_string()
