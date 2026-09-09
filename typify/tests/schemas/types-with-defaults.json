@@ -86,6 +86,19 @@
         }
       }
     },
+    "MrDefaultFloats": {
+      "type": "object",
+      "properties": {
+        "frequency": {
+          "type": "number",
+          "default": 0.1
+        },
+        "zfreq": {
+          "type": "number",
+          "default": 0.0
+        }
+      }
+    },
     "UInt": {
       "type": "integer"
     },
