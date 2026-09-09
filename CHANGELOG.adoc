@@ -15,6 +15,17 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.7.0\...HEAD[Full list of commits]
 
+* Remove the original JSON Schema from generated type docs (#1066)
+* Require `Option` fields marked as *required* to be present when deserializing (#1071)
+* Small output changes such as item reordering (#1071)
+* Derive `Default` for structs when all field defaults are the type's intrinsic default (#1035)
+* Report malformed schema JSON as a compile error instead of panicking (#1030)
+* Report an error instead of panicking on invalid map types; re-export `MapType` from the `typify` crate (#1031)
+* Fix panic with internally tagged enums whose name comes from a schema title (#1020)
+* Count code points, not bytes, in string length validation during schema processing (#1038)
+* Remove remaining non-idiomatic `TryFrom<&String>` trait impls (#1040)
+* Fix invalid Rust emitted for default values on types with flattened properties (#1039)
+
 == 0.7.0 (released 2026-06-05)
 
 https://github.com/oxidecomputer/typify/compare/v0.6.2\...v0.7.0[Full list of commits]
