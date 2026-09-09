@@ -1461,7 +1461,8 @@ impl TypeSpace {
         metadata: &'a Option<Box<Metadata>>,
         subschemas: &'a [Schema],
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        // An empty `anyOf` cannot match any instance.
+        // An empty `anyOf` cannot match any instance (Note that an empty array
+        // of subschemas isn't technically valid).
         if subschemas.is_empty() {
             let type_name = match get_type_name(&type_name, metadata) {
                 Some(name) => Name::Required(name),
@@ -2305,6 +2306,7 @@ mod tests {
 
     #[test]
     fn test_empty_any_of() {
+        // Note: "anyOf": [] is not technically valid
         let schema_json = r#"
         {
             "title": "EmptyAnyOf",
