@@ -1,55 +1,9 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`BarProp`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"bar\": {"]
-#[doc = "      \"bar\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct BarProp {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for BarProp {
-    fn default() -> Self {
-        Self {
-            bar: Default::default(),
-        }
-    }
 }
 impl BarProp {
     pub fn builder() -> builder::BarProp {
@@ -57,35 +11,10 @@ impl BarProp {
     }
 }
 #[doc = "`ButNotThat`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"not\": {"]
-#[doc = "    \"required\": ["]
-#[doc = "      \"that\""]
-#[doc = "    ]"]
-#[doc = "  },"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"that\": {},"]
-#[doc = "    \"this\": {}"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ButNotThat {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub this: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for ButNotThat {
-    fn default() -> Self {
-        Self {
-            this: Default::default(),
-        }
-    }
 }
 impl ButNotThat {
     pub fn builder() -> builder::ButNotThat {
@@ -93,41 +22,12 @@ impl ButNotThat {
     }
 }
 #[doc = "if we don't see this, we dropped the metadata"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"description\": \"if we don't see this, we dropped the metadata\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"y\": true"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"x\": true"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct CommentedTypeMerged {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub x: ::std::option::Option<::serde_json::Value>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub y: ::std::option::Option<::serde_json::Value>,
-}
-impl ::std::default::Default for CommentedTypeMerged {
-    fn default() -> Self {
-        Self {
-            x: Default::default(),
-            y: Default::default(),
-        }
-    }
 }
 impl CommentedTypeMerged {
     pub fn builder() -> builder::CommentedTypeMerged {
@@ -135,84 +35,27 @@ impl CommentedTypeMerged {
     }
 }
 #[doc = "`HereAndThere`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"foo\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"bar\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"baz\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum HereAndThere {
     Variant0 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         bar: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
     Variant1 {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         baz: ::std::option::Option<::std::string::String>,
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(skip_serializing_if = "::std::option::Option::is_none")]
         foo: ::std::option::Option<::std::string::String>,
     },
 }
 #[doc = "`JsonResponseBase`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"result\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct JsonResponseBase {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub result: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for JsonResponseBase {
-    fn default() -> Self {
-        Self {
-            result: Default::default(),
-        }
-    }
 }
 impl JsonResponseBase {
     pub fn builder() -> builder::JsonResponseBase {
@@ -220,26 +63,6 @@ impl JsonResponseBase {
     }
 }
 #[doc = "`JsonSuccess`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/components/schemas/JsonSuccessBase\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"msg\": {},"]
-#[doc = "        \"result\": {}"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct JsonSuccess {
@@ -252,36 +75,6 @@ impl JsonSuccess {
     }
 }
 #[doc = "x"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"description\": \"x\","]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/components/schemas/JsonResponseBase\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"required\": ["]
-#[doc = "        \"msg\","]
-#[doc = "        \"result\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"msg\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        },"]
-#[doc = "        \"result\": {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"success\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct JsonSuccessBase {
     pub msg: ::std::string::String,
@@ -293,18 +86,6 @@ impl JsonSuccessBase {
     }
 }
 #[doc = "`JsonSuccessBaseResult`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"success\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -352,18 +133,6 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessBaseResult {
     }
 }
 #[doc = "`JsonSuccessResult`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"success\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -411,82 +180,15 @@ impl ::std::convert::TryFrom<::std::string::String> for JsonSuccessResult {
     }
 }
 #[doc = "`MergeEmpty`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"action\": {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"foo\""]
-#[doc = "          ]"]
-#[doc = "        },"]
-#[doc = "        \"token\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"action\": {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"bar\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false,"]
-#[doc = "      \"token\": {"]
-#[doc = "        \"type\": \"integer\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"properties conflict but are not required so we end up with an empty object\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 #[serde(deny_unknown_fields)]
 pub struct MergeEmpty {}
-impl ::std::default::Default for MergeEmpty {
-    fn default() -> Self {
-        Self {}
-    }
-}
 impl MergeEmpty {
     pub fn builder() -> builder::MergeEmpty {
         Default::default()
     }
 }
 #[doc = "`MergeNumberBounds`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\","]
-#[doc = "      \"maximum\": 100.0,"]
-#[doc = "      \"minimum\": 1.0"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"number\","]
-#[doc = "      \"exclusiveMaximum\": 50.0,"]
-#[doc = "      \"exclusiveMinimum\": 5.0"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"merging number constraints takes the most restrictive bounds; mixed inclusive/exclusive bounds are normalized to drop the subsumed one\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct MergeNumberBounds(pub f64);
@@ -504,6 +206,11 @@ impl ::std::convert::From<MergeNumberBounds> for f64 {
 impl ::std::convert::From<f64> for MergeNumberBounds {
     fn from(value: f64) -> Self {
         Self(value)
+    }
+}
+impl ::std::fmt::Display for MergeNumberBounds {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 impl ::std::str::FromStr for MergeNumberBounds {
@@ -524,33 +231,7 @@ impl ::std::convert::TryFrom<String> for MergeNumberBounds {
         value.parse()
     }
 }
-impl ::std::fmt::Display for MergeNumberBounds {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
 #[doc = "`MergeStringBounds`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"maxLength\": 20,"]
-#[doc = "      \"minLength\": 5"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"maxLength\": 10,"]
-#[doc = "      \"minLength\": 2"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"merging string constraints takes the most restrictive bounds: max_length takes the min, min_length takes the max\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct MergeStringBounds(::std::string::String);
@@ -604,22 +285,6 @@ impl<'de> ::serde::Deserialize<'de> for MergeStringBounds {
     }
 }
 #[doc = "`NarrowNumber`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"integer\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"minimum\": 1.0"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct NarrowNumber(pub ::std::num::NonZeroU64);
@@ -637,6 +302,11 @@ impl ::std::convert::From<NarrowNumber> for ::std::num::NonZeroU64 {
 impl ::std::convert::From<::std::num::NonZeroU64> for NarrowNumber {
     fn from(value: ::std::num::NonZeroU64) -> Self {
         Self(value)
+    }
+}
+impl ::std::fmt::Display for NarrowNumber {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 impl ::std::str::FromStr for NarrowNumber {
@@ -657,38 +327,10 @@ impl ::std::convert::TryFrom<String> for NarrowNumber {
         value.parse()
     }
 }
-impl ::std::fmt::Display for NarrowNumber {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
 #[doc = "`OrderDependentMerge`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/components/schemas/BarProp\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"baz\": {"]
-#[doc = "          \"type\": \"boolean\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"baz\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OrderDependentMerge {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub bar: ::std::option::Option<::serde_json::Value>,
     pub baz: bool,
 }
@@ -698,31 +340,6 @@ impl OrderDependentMerge {
     }
 }
 #[doc = "`Pickingone`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/pickingone-installation\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"suspended_by\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"suspended_by\": {"]
-#[doc = "          \"$ref\": \"#/definitions/pickingone-user\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"TODO this generates an extra type for the pickingone-user dependency\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Pickingone {
     pub suspended_by: PickingoneSuspendedBy,
@@ -733,38 +350,10 @@ impl Pickingone {
     }
 }
 #[doc = "`PickingoneInstallation`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"suspended_by\": {"]
-#[doc = "      \"oneOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/pickingone-user\""]
-#[doc = "        },"]
-#[doc = "        {"]
-#[doc = "          \"type\": \"null\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneInstallation {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub suspended_by: ::std::option::Option<PickingoneUser>,
-}
-impl ::std::default::Default for PickingoneInstallation {
-    fn default() -> Self {
-        Self {
-            suspended_by: Default::default(),
-        }
-    }
 }
 impl PickingoneInstallation {
     pub fn builder() -> builder::PickingoneInstallation {
@@ -772,46 +361,10 @@ impl PickingoneInstallation {
     }
 }
 #[doc = "`PickingoneSuspendedBy`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"email\": {"]
-#[doc = "          \"type\": ["]
-#[doc = "            \"string\","]
-#[doc = "            \"null\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/pickingone-user\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"type\": \"null\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneSuspendedBy {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for PickingoneSuspendedBy {
-    fn default() -> Self {
-        Self {
-            email: Default::default(),
-        }
-    }
 }
 impl PickingoneSuspendedBy {
     pub fn builder() -> builder::PickingoneSuspendedBy {
@@ -819,34 +372,10 @@ impl PickingoneSuspendedBy {
     }
 }
 #[doc = "`PickingoneUser`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"email\": {"]
-#[doc = "      \"type\": ["]
-#[doc = "        \"string\","]
-#[doc = "        \"null\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct PickingoneUser {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub email: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for PickingoneUser {
-    fn default() -> Self {
-        Self {
-            email: Default::default(),
-        }
-    }
 }
 impl PickingoneUser {
     pub fn builder() -> builder::PickingoneUser {
@@ -854,37 +383,6 @@ impl PickingoneUser {
     }
 }
 #[doc = "`TrimFat`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"not\": {"]
-#[doc = "    \"anyOf\": ["]
-#[doc = "      {"]
-#[doc = "        \"required\": ["]
-#[doc = "          \"b\""]
-#[doc = "        ]"]
-#[doc = "      },"]
-#[doc = "      {"]
-#[doc = "        \"required\": ["]
-#[doc = "          \"c\""]
-#[doc = "        ]"]
-#[doc = "      }"]
-#[doc = "    ]"]
-#[doc = "  },"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"a\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"a\": {},"]
-#[doc = "    \"b\": {},"]
-#[doc = "    \"c\": {}"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TrimFat {
     pub a: ::serde_json::Value,
@@ -895,29 +393,6 @@ impl TrimFat {
     }
 }
 #[doc = "`TriplePattern`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"format\": \"custom-id\","]
-#[doc = "      \"pattern\": \"^[a-z].+$\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"pattern\": \"^.{4,8}$\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"pattern\": \".+[a-z]$\""]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct TriplePattern(::std::string::String);
@@ -972,44 +447,6 @@ impl<'de> ::serde::Deserialize<'de> for TriplePattern {
     }
 }
 #[doc = "`UnchangedByMerge`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"tag\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"tag\": {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"something\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"type\": \"object\","]
-#[doc = "        \"required\": ["]
-#[doc = "          \"tag\""]
-#[doc = "        ],"]
-#[doc = "        \"properties\": {"]
-#[doc = "          \"tag\": {"]
-#[doc = "            \"enum\": ["]
-#[doc = "              \"something_else\""]
-#[doc = "            ]"]
-#[doc = "          }"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct UnchangedByMerge {
     pub tag: UnchangedByMergeTag,
@@ -1020,17 +457,6 @@ impl UnchangedByMerge {
     }
 }
 #[doc = "`UnchangedByMergeTag`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"something\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1078,54 +504,6 @@ impl ::std::convert::TryFrom<::std::string::String> for UnchangedByMergeTag {
     }
 }
 #[doc = "`Unresolvable`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"x\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"x\": {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"a\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"x\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"x\": {"]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"b\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"required\": ["]
-#[doc = "    \"x\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"x\": {"]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"c\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"$comment\": \"subschemas all end up unresolvable\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1141,28 +519,6 @@ impl ::std::convert::TryFrom<::std::string::String> for UnchangedByMergeTag {
 #[serde(deny_unknown_fields)]
 pub enum Unresolvable {}
 #[doc = "`Unsatisfiable1`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"string\","]
-#[doc = "      \"enum\": ["]
-#[doc = "        \"foo\""]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"bar\": {}"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1178,44 +534,6 @@ pub enum Unresolvable {}
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable1 {}
 #[doc = "`Unsatisfiable2`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"action\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"action\": {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"foo\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"action\": {"]
-#[doc = "          \"type\": \"string\","]
-#[doc = "          \"enum\": ["]
-#[doc = "            \"bar\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"can't be satisfied because required properties conflict in their enum values\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1231,31 +549,6 @@ pub enum Unsatisfiable1 {}
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable2 {}
 #[doc = "`Unsatisfiable3`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"allOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"$ref\": \"#/definitions/unsatisfiable-3-a\""]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"action\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"action\": {"]
-#[doc = "          \"$ref\": \"#/definitions/unsatisfiable-3-b\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"$comment\": \"tests a complex merge that can't be satisfied; it's basically the same as unsatisfiable-2, but is broken into multiple pieces\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1271,35 +564,10 @@ pub enum Unsatisfiable2 {}
 #[serde(deny_unknown_fields)]
 pub enum Unsatisfiable3 {}
 #[doc = "`Unsatisfiable3A`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"action\": {"]
-#[doc = "      \"allOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/definitions/unsatisfiable-3-c\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Unsatisfiable3A {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub action: ::std::option::Option<Unsatisfiable3C>,
-}
-impl ::std::default::Default for Unsatisfiable3A {
-    fn default() -> Self {
-        Self {
-            action: Default::default(),
-        }
-    }
 }
 impl Unsatisfiable3A {
     pub fn builder() -> builder::Unsatisfiable3A {
@@ -1307,18 +575,6 @@ impl Unsatisfiable3A {
     }
 }
 #[doc = "`Unsatisfiable3B`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"bar\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1366,18 +622,6 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3B {
     }
 }
 #[doc = "`Unsatisfiable3C`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"foo\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1425,127 +669,6 @@ impl ::std::convert::TryFrom<::std::string::String> for Unsatisfiable3C {
     }
 }
 #[doc = "`WeirdEnum`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"anyOf\": ["]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"patterns\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-either\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-regex\""]
-#[doc = "            ]"]
-#[doc = "          }"]
-#[doc = "        ]"]
-#[doc = "      },"]
-#[doc = "      \"required\": ["]
-#[doc = "        \"pattern\""]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"anyOf\": ["]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-either\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-regex\""]
-#[doc = "            ]"]
-#[doc = "          }"]
-#[doc = "        ]"]
-#[doc = "      },"]
-#[doc = "      \"required\": ["]
-#[doc = "        \"patterns\""]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"anyOf\": ["]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"patterns\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-regex\""]
-#[doc = "            ]"]
-#[doc = "          }"]
-#[doc = "        ]"]
-#[doc = "      },"]
-#[doc = "      \"required\": ["]
-#[doc = "        \"pattern-either\""]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"not\": {"]
-#[doc = "        \"anyOf\": ["]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"patterns\""]
-#[doc = "            ]"]
-#[doc = "          },"]
-#[doc = "          {"]
-#[doc = "            \"required\": ["]
-#[doc = "              \"pattern-either\""]
-#[doc = "            ]"]
-#[doc = "          }"]
-#[doc = "        ]"]
-#[doc = "      },"]
-#[doc = "      \"required\": ["]
-#[doc = "        \"pattern-regex\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"pattern\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"pattern-either\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"pattern-regex\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"patterns\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum WeirdEnum {
@@ -1564,7 +687,7 @@ pub enum WeirdEnum {
         pattern_regex: ::std::string::String,
     },
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct BarProp {
@@ -2207,6 +1330,32 @@ pub mod builder {
             Self {
                 action: Ok(value.action),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

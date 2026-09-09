@@ -1,56 +1,5 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`TestGrammarForPatternProperties`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"test grammar for pattern properties\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"rules\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"rules\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"patternProperties\": {"]
-#[doc = "        \"^[a-zA-Z_]\\\\w*$\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      },"]
-#[doc = "      \"additionalProperties\": false"]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": false"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct TestGrammarForPatternProperties {
@@ -63,16 +12,6 @@ impl TestGrammarForPatternProperties {
     }
 }
 #[doc = "`TestGrammarForPatternPropertiesRulesKey`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"pattern\": \"^[a-zA-Z_]\\\\w*$\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct TestGrammarForPatternPropertiesRulesKey(::std::string::String);
@@ -124,7 +63,7 @@ impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey 
             })
     }
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct TestGrammarForPatternProperties {
@@ -179,6 +118,32 @@ pub mod builder {
             Self {
                 rules: Ok(value.rules),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

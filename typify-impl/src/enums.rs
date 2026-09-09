@@ -1474,19 +1474,8 @@ mod tests {
         let mut output = OutputSpace::default();
         type_entry.output(&type_space, &mut output);
         let actual = output.into_stream();
-        let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
-        let schema_lines = schema_json.lines();
         let expected = quote! {
             #[doc = "`ResultX`"]
-            ///
-            /// <details><summary>JSON schema</summary>
-            ///
-            /// ```json
-            #(
-                #[doc = #schema_lines]
-            )*
-            /// ```
-            /// </details>
             #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
             pub enum ResultX {
                 Ok(u32),
@@ -1526,13 +1515,6 @@ mod tests {
         let actual = output.into_stream();
         let expected = quote! {
             #[doc = "`ResultX`"]
-            ///
-            /// <details><summary>JSON schema</summary>
-            ///
-            /// ```json
-            #[doc = "true"]
-            /// ```
-            /// </details>
             #[derive(::serde::Deserialize, ::serde::Serialize, A, B, C, Clone, D, Debug)]
             pub enum ResultX {
                 Ok(u32),

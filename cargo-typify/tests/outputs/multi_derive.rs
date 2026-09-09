@@ -3,45 +3,7 @@
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`Fruit`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
@@ -70,32 +32,6 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::s
     }
 }
 #[doc = "`FruitOrVeg`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"title\": \"veg\","]
-#[doc = "      \"anyOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/defs/veggie\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"title\": \"fruit\","]
-#[doc = "      \"anyOf\": ["]
-#[doc = "        {"]
-#[doc = "          \"$ref\": \"#/defs/fruit\""]
-#[doc = "        }"]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
@@ -115,29 +51,6 @@ impl ::std::convert::From<Fruit> for FruitOrVeg {
     }
 }
 #[doc = "`Veggie`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"veggieLike\","]
-#[doc = "    \"veggieName\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"veggieLike\": {"]
-#[doc = "      \"description\": \"Do I like this vegetable?\","]
-#[doc = "      \"type\": \"boolean\""]
-#[doc = "    },"]
-#[doc = "    \"veggieName\": {"]
-#[doc = "      \"description\": \"The name of the vegetable.\","]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
 )]
@@ -150,34 +63,14 @@ pub struct Veggie {
     pub veggie_name: ::std::string::String,
 }
 #[doc = "A representation of a person, company, organization, or place"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"$id\": \"https://example.com/arrays.schema.json\","]
-#[doc = "  \"title\": \"veggies\","]
-#[doc = "  \"description\": \"A representation of a person, company, organization, or place\","]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"fruits\": {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"vegetables\": {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {"]
-#[doc = "        \"$ref\": \"#/$defs/veggie\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
-    :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    AnotherDerive,
+    Clone,
+    Debug,
+    Default,
+    ExtraDerive,
 )]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
@@ -185,11 +78,29 @@ pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub vegetables: ::std::vec::Vec<Veggie>,
 }
-impl ::std::default::Default for Veggies {
-    fn default() -> Self {
-        Self {
-            fruits: Default::default(),
-            vegetables: Default::default(),
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

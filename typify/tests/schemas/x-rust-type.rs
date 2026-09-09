@@ -1,62 +1,11 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`AllTheThings`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"option_marker\": {"]
-#[doc = "      \"$ref\": \"#/$defs/OptionMarker\""]
-#[doc = "    },"]
-#[doc = "    \"path\": {"]
-#[doc = "      \"$ref\": \"#/$defs/PathBuf\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct AllTheThings {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option_marker: ::std::option::Option<::std::option::Option<Marker>>,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub path: ::std::option::Option<::std::path::PathBuf>,
-}
-impl ::std::default::Default for AllTheThings {
-    fn default() -> Self {
-        Self {
-            option_marker: Default::default(),
-            path: Default::default(),
-        }
-    }
 }
 impl AllTheThings {
     pub fn builder() -> builder::AllTheThings {
@@ -64,13 +13,6 @@ impl AllTheThings {
     }
 }
 #[doc = "`Marker`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "false"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -85,7 +27,7 @@ impl AllTheThings {
 )]
 #[serde(deny_unknown_fields)]
 pub enum Marker {}
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct AllTheThings {
@@ -145,6 +87,32 @@ pub mod builder {
                 option_marker: Ok(value.option_marker),
                 path: Ok(value.path),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }

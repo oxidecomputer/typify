@@ -1,48 +1,5 @@
 #![deny(warnings)]
-#[doc = r" Error types."]
-pub mod error {
-    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
-    pub struct ConversionError(::std::borrow::Cow<'static, str>);
-    impl ::std::error::Error for ConversionError {}
-    impl ::std::fmt::Display for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Display::fmt(&self.0, f)
-        }
-    }
-    impl ::std::fmt::Debug for ConversionError {
-        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
-            ::std::fmt::Debug::fmt(&self.0, f)
-        }
-    }
-    impl From<&'static str> for ConversionError {
-        fn from(value: &'static str) -> Self {
-            Self(value.into())
-        }
-    }
-    impl From<String> for ConversionError {
-        fn from(value: String) -> Self {
-            Self(value.into())
-        }
-    }
-}
 #[doc = "`Box`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"data\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"data\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Box {
     pub data: ::std::string::String,
@@ -53,23 +10,6 @@ impl Box {
     }
 }
 #[doc = "`Copy`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"integer\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Copy {
     pub value: i64,
@@ -80,42 +20,10 @@ impl Copy {
     }
 }
 #[doc = "`DoubleOptionCollision`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"option\": {"]
-#[doc = "      \"type\": ["]
-#[doc = "        \"null\","]
-#[doc = "        \"object\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"option\": {"]
-#[doc = "          \"type\": ["]
-#[doc = "            \"null\","]
-#[doc = "            \"string\""]
-#[doc = "          ]"]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollision {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<DoubleOptionCollisionOption>,
-}
-impl ::std::default::Default for DoubleOptionCollision {
-    fn default() -> Self {
-        Self {
-            option: Default::default(),
-        }
-    }
 }
 impl DoubleOptionCollision {
     pub fn builder() -> builder::DoubleOptionCollision {
@@ -123,34 +31,10 @@ impl DoubleOptionCollision {
     }
 }
 #[doc = "`DoubleOptionCollisionOption`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"option\": {"]
-#[doc = "      \"type\": ["]
-#[doc = "        \"null\","]
-#[doc = "        \"string\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct DoubleOptionCollisionOption {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for DoubleOptionCollisionOption {
-    fn default() -> Self {
-        Self {
-            option: Default::default(),
-        }
-    }
 }
 impl DoubleOptionCollisionOption {
     pub fn builder() -> builder::DoubleOptionCollisionOption {
@@ -158,23 +42,6 @@ impl DoubleOptionCollisionOption {
     }
 }
 #[doc = "`Drop`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"cleanup\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"cleanup\": {"]
-#[doc = "      \"type\": \"boolean\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Drop {
     pub cleanup: bool,
@@ -185,26 +52,6 @@ impl Drop {
     }
 }
 #[doc = "`FlattenedKeywords`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"normal\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"normal\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  },"]
-#[doc = "  \"additionalProperties\": {"]
-#[doc = "    \"type\": \"string\""]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct FlattenedKeywords {
     pub normal: ::std::string::String,
@@ -217,21 +64,6 @@ impl FlattenedKeywords {
     }
 }
 #[doc = "`FormatCollision`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"{abc}def\","]
-#[doc = "    \"{http://example.com/Foo}Thing\","]
-#[doc = "    \"{self}\","]
-#[doc = "    \"quote\\\"unquote\","]
-#[doc = "    \"xyz\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -295,48 +127,6 @@ impl ::std::convert::TryFrom<::std::string::String> for FormatCollision {
     }
 }
 #[doc = "`KeywordFieldsEnum`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"oneOf\": ["]
-#[doc = "    {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"impl\","]
-#[doc = "        \"match\","]
-#[doc = "        \"ref\","]
-#[doc = "        \"type\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"impl\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        },"]
-#[doc = "        \"match\": {"]
-#[doc = "          \"type\": \"integer\""]
-#[doc = "        },"]
-#[doc = "        \"ref\": {"]
-#[doc = "          \"type\": \"boolean\""]
-#[doc = "        },"]
-#[doc = "        \"type\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      },"]
-#[doc = "      \"maxItems\": 2,"]
-#[doc = "      \"minItems\": 2"]
-#[doc = "    }"]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum KeywordFieldsEnum {
@@ -358,42 +148,6 @@ impl ::std::convert::From<[::std::string::String; 2usize]> for KeywordFieldsEnum
     }
 }
 #[doc = "`MapOfKeywords`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"keyword_map\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"keyword_map\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"additionalProperties\": {"]
-#[doc = "        \"type\": \"string\","]
-#[doc = "        \"enum\": ["]
-#[doc = "          \"type\","]
-#[doc = "          \"impl\","]
-#[doc = "          \"fn\","]
-#[doc = "          \"let\","]
-#[doc = "          \"match\","]
-#[doc = "          \"mod\","]
-#[doc = "          \"move\","]
-#[doc = "          \"pub\","]
-#[doc = "          \"ref\","]
-#[doc = "          \"self\","]
-#[doc = "          \"super\","]
-#[doc = "          \"trait\","]
-#[doc = "          \"use\","]
-#[doc = "          \"where\""]
-#[doc = "        ]"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct MapOfKeywords {
     pub keyword_map:
@@ -405,31 +159,6 @@ impl MapOfKeywords {
     }
 }
 #[doc = "`MapOfKeywordsKeywordMapValue`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"type\","]
-#[doc = "    \"impl\","]
-#[doc = "    \"fn\","]
-#[doc = "    \"let\","]
-#[doc = "    \"match\","]
-#[doc = "    \"mod\","]
-#[doc = "    \"move\","]
-#[doc = "    \"pub\","]
-#[doc = "    \"ref\","]
-#[doc = "    \"self\","]
-#[doc = "    \"super\","]
-#[doc = "    \"trait\","]
-#[doc = "    \"use\","]
-#[doc = "    \"where\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -529,44 +258,9 @@ impl ::std::convert::TryFrom<::std::string::String> for MapOfKeywordsKeywordMapV
     }
 }
 #[doc = "`NestedTypeCollisions`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"type\","]
-#[doc = "    \"types\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"option_type\": {"]
-#[doc = "      \"type\": ["]
-#[doc = "        \"null\","]
-#[doc = "        \"object\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"type\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"$ref\": \"#/definitions/TypeWithOptionField\""]
-#[doc = "    },"]
-#[doc = "    \"types\": {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {"]
-#[doc = "        \"$ref\": \"#/definitions/TypeWithOptionField\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct NestedTypeCollisions {
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub option_type: ::std::option::Option<NestedTypeCollisionsOptionType>,
     #[serde(rename = "type")]
     pub type_: TypeWithOptionField,
@@ -578,35 +272,13 @@ impl NestedTypeCollisions {
     }
 }
 #[doc = "`NestedTypeCollisionsOptionType`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct NestedTypeCollisionsOptionType {
     #[serde(
         rename = "type",
-        default,
         skip_serializing_if = "::std::option::Option::is_none"
     )]
     pub type_: ::std::option::Option<::std::string::String>,
-}
-impl ::std::default::Default for NestedTypeCollisionsOptionType {
-    fn default() -> Self {
-        Self {
-            type_: Default::default(),
-        }
-    }
 }
 impl NestedTypeCollisionsOptionType {
     pub fn builder() -> builder::NestedTypeCollisionsOptionType {
@@ -614,23 +286,6 @@ impl NestedTypeCollisionsOptionType {
     }
 }
 #[doc = "`Option`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"maybe\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"maybe\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Option {
     pub maybe: ::std::string::String,
@@ -641,23 +296,6 @@ impl Option {
     }
 }
 #[doc = "`Pin`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"pointer\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"pointer\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Pin {
     pub pointer: ::std::string::String,
@@ -668,223 +306,6 @@ impl Pin {
     }
 }
 #[doc = "`RustKeywordMonster`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"abstract\","]
-#[doc = "    \"as\","]
-#[doc = "    \"async\","]
-#[doc = "    \"await\","]
-#[doc = "    \"become\","]
-#[doc = "    \"box\","]
-#[doc = "    \"break\","]
-#[doc = "    \"const\","]
-#[doc = "    \"continue\","]
-#[doc = "    \"crate\","]
-#[doc = "    \"do\","]
-#[doc = "    \"dyn\","]
-#[doc = "    \"else\","]
-#[doc = "    \"enum\","]
-#[doc = "    \"extern\","]
-#[doc = "    \"false\","]
-#[doc = "    \"final\","]
-#[doc = "    \"fn\","]
-#[doc = "    \"for\","]
-#[doc = "    \"gen\","]
-#[doc = "    \"if\","]
-#[doc = "    \"impl\","]
-#[doc = "    \"in\","]
-#[doc = "    \"let\","]
-#[doc = "    \"loop\","]
-#[doc = "    \"macro\","]
-#[doc = "    \"match\","]
-#[doc = "    \"mod\","]
-#[doc = "    \"move\","]
-#[doc = "    \"mut\","]
-#[doc = "    \"override\","]
-#[doc = "    \"priv\","]
-#[doc = "    \"pub\","]
-#[doc = "    \"ref\","]
-#[doc = "    \"return\","]
-#[doc = "    \"self\","]
-#[doc = "    \"static\","]
-#[doc = "    \"struct\","]
-#[doc = "    \"super\","]
-#[doc = "    \"trait\","]
-#[doc = "    \"true\","]
-#[doc = "    \"try\","]
-#[doc = "    \"type\","]
-#[doc = "    \"typeof\","]
-#[doc = "    \"unsafe\","]
-#[doc = "    \"unsized\","]
-#[doc = "    \"use\","]
-#[doc = "    \"virtual\","]
-#[doc = "    \"where\","]
-#[doc = "    \"while\","]
-#[doc = "    \"yield\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"abstract\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"as\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"async\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"await\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"become\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"box\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"break\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"const\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"continue\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"crate\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"do\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"dyn\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"else\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"enum\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"extern\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"false\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"final\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"fn\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"for\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"gen\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"if\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"impl\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"in\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"let\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"loop\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"macro\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"match\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"mod\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"move\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"mut\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"override\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"priv\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"pub\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"ref\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"return\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"self\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"static\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"struct\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"super\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"trait\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"true\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"try\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"type\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"typeof\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"unsafe\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"unsized\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"use\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"virtual\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"where\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"while\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    },"]
-#[doc = "    \"yield\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct RustKeywordMonster {
     #[serde(rename = "abstract")]
@@ -996,23 +417,6 @@ impl RustKeywordMonster {
     }
 }
 #[doc = "`Send`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"message\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"message\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Send {
     pub message: ::std::string::String,
@@ -1023,103 +427,6 @@ impl Send {
     }
 }
 #[doc = "`Std`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"boxed\","]
-#[doc = "    \"convert\","]
-#[doc = "    \"fmt\","]
-#[doc = "    \"option\","]
-#[doc = "    \"result\","]
-#[doc = "    \"str\","]
-#[doc = "    \"string\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"boxed\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"convert\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"fmt\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"option\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"result\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"str\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    },"]
-#[doc = "    \"string\": {"]
-#[doc = "      \"type\": \"object\","]
-#[doc = "      \"required\": ["]
-#[doc = "        \"value\""]
-#[doc = "      ],"]
-#[doc = "      \"properties\": {"]
-#[doc = "        \"value\": {"]
-#[doc = "          \"type\": \"string\""]
-#[doc = "        }"]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Std {
     pub boxed: StdBoxed,
@@ -1136,23 +443,6 @@ impl Std {
     }
 }
 #[doc = "`StdBoxed`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdBoxed {
     pub value: ::std::string::String,
@@ -1163,23 +453,6 @@ impl StdBoxed {
     }
 }
 #[doc = "`StdConvert`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdConvert {
     pub value: ::std::string::String,
@@ -1190,23 +463,6 @@ impl StdConvert {
     }
 }
 #[doc = "`StdFmt`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdFmt {
     pub value: ::std::string::String,
@@ -1217,23 +473,6 @@ impl StdFmt {
     }
 }
 #[doc = "`StdOption`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdOption {
     pub value: ::std::string::String,
@@ -1244,23 +483,6 @@ impl StdOption {
     }
 }
 #[doc = "`StdResult`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdResult {
     pub value: ::std::string::String,
@@ -1271,23 +493,6 @@ impl StdResult {
     }
 }
 #[doc = "`StdStr`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdStr {
     pub value: ::std::string::String,
@@ -1298,23 +503,6 @@ impl StdStr {
     }
 }
 #[doc = "`StdString`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"value\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"value\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct StdString {
     pub value: ::std::string::String,
@@ -1325,23 +513,6 @@ impl StdString {
     }
 }
 #[doc = "`String`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"text\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"text\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct String {
     pub text: ::std::string::String,
@@ -1352,20 +523,6 @@ impl String {
     }
 }
 #[doc = "`StringEnum`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"enum\": ["]
-#[doc = "    \"one\","]
-#[doc = "    \"two\","]
-#[doc = "    \"three\""]
-#[doc = "  ]"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(
     :: serde :: Deserialize,
     :: serde :: Serialize,
@@ -1421,17 +578,6 @@ impl ::std::convert::TryFrom<::std::string::String> for StringEnum {
     }
 }
 #[doc = "`StringNewtype`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"string\","]
-#[doc = "  \"maxLength\": 100,"]
-#[doc = "  \"minLength\": 1"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct StringNewtype(::std::string::String);
@@ -1485,23 +631,6 @@ impl<'de> ::serde::Deserialize<'de> for StringNewtype {
     }
 }
 #[doc = "`Sync`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"data\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"data\": {"]
-#[doc = "      \"type\": \"string\""]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Sync {
     pub data: ::std::string::String,
@@ -1512,15 +641,6 @@ impl Sync {
     }
 }
 #[doc = "`TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"title\": \"Test schema with various definitions, type names, and properties that likely conflict with built-in Rust types and keywords\""]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords(
@@ -1530,33 +650,10 @@ impl :: std :: ops :: Deref for TestSchemaWithVariousDefinitionsTypeNamesAndProp
 impl :: std :: convert :: From < TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords > for :: serde_json :: Value { fn from (value : TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords) -> Self { value . 0 } }
 impl :: std :: convert :: From < :: serde_json :: Value > for TestSchemaWithVariousDefinitionsTypeNamesAndPropertiesThatLikelyConflictWithBuiltInRustTypesAndKeywords { fn from (value : :: serde_json :: Value) -> Self { Self (value) } }
 #[doc = "`TypeWithOptionField`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"boxed_field\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"boxed_field\": {"]
-#[doc = "      \"$ref\": \"#/definitions/Box\""]
-#[doc = "    },"]
-#[doc = "    \"optional_field\": {"]
-#[doc = "      \"type\": ["]
-#[doc = "        \"string\","]
-#[doc = "        \"null\""]
-#[doc = "      ]"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct TypeWithOptionField {
     pub boxed_field: Box,
-    #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub optional_field: ::std::option::Option<::std::string::String>,
 }
 impl TypeWithOptionField {
@@ -1565,26 +662,6 @@ impl TypeWithOptionField {
     }
 }
 #[doc = "`Vec`"]
-#[doc = r""]
-#[doc = r" <details><summary>JSON schema</summary>"]
-#[doc = r""]
-#[doc = r" ```json"]
-#[doc = "{"]
-#[doc = "  \"type\": \"object\","]
-#[doc = "  \"required\": ["]
-#[doc = "    \"items\""]
-#[doc = "  ],"]
-#[doc = "  \"properties\": {"]
-#[doc = "    \"items\": {"]
-#[doc = "      \"type\": \"array\","]
-#[doc = "      \"items\": {"]
-#[doc = "        \"type\": \"string\""]
-#[doc = "      }"]
-#[doc = "    }"]
-#[doc = "  }"]
-#[doc = "}"]
-#[doc = r" ```"]
-#[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Vec {
     pub items: ::std::vec::Vec<::std::string::String>,
@@ -1594,7 +671,7 @@ impl Vec {
         Default::default()
     }
 }
-#[doc = r" Types for composing complex structures."]
+#[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Box {
@@ -3439,6 +2516,32 @@ pub mod builder {
             Self {
                 items: Ok(value.items),
             }
+        }
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
         }
     }
 }
