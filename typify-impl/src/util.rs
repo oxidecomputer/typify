@@ -48,6 +48,12 @@ pub(crate) fn all_mutually_exclusive(
     definitions: &BTreeMap<RefKey, Schema>,
 ) -> bool {
     let len = subschemas.len();
+    // With fewer than two subschemas, this is a degenerate case where the
+    // lone schema is mutually exclusive with everything else (which happens
+    // to be nothing).
+    if len < 2 {
+        return true;
+    }
     // Consider all pairs
     (0..len - 1)
         .flat_map(|ii| (ii + 1..len).map(move |jj| (ii, jj)))
@@ -1003,7 +1009,10 @@ mod tests {
     };
 
     use crate::{
-        util::{decode_segment, sanitize, schemas_mutually_exclusive, Case, ReorderedInstanceType},
+        util::{
+            all_mutually_exclusive, decode_segment, sanitize, schemas_mutually_exclusive, Case,
+            ReorderedInstanceType,
+        },
         Name,
     };
 
@@ -1107,6 +1116,11 @@ mod tests {
 
         assert!(schemas_mutually_exclusive(&a, &b, &BTreeMap::new()));
         assert!(schemas_mutually_exclusive(&b, &a, &BTreeMap::new()));
+    }
+
+    #[test]
+    fn test_all_mutually_exclusive_empty() {
+        assert!(all_mutually_exclusive(&[], &BTreeMap::new()));
     }
 
     #[test]
