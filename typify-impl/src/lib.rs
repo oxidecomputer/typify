@@ -404,15 +404,18 @@ impl TypeSpaceImpl {
     /// its own built-in natives, so it takes the markers at face
     /// value. typify has always assumed the basic complement (`Clone`,
     /// `Debug`, `Serialize`, `Deserialize`) regardless of what markers
-    /// are given, so those are added unconditionally.
-    /// `FromStringIrrefutable` has no typespace equivalent (see
-    /// typespace_ext.rs gap note 2) and is dropped.
+    /// are given, so those are added unconditionally. `JsonSchema`
+    /// joins them: a requested derive was always emitted without
+    /// consulting the conversion target, so a named native must
+    /// satisfy it. `FromStringIrrefutable` has no typespace equivalent
+    /// (see typespace_ext.rs gap note 2) and is dropped.
     pub(crate) fn native_traits(impls: &[Self]) -> typespace::TypespaceTraitSet {
         let mut traits = [
             typespace::TypespaceTrait::Clone,
             typespace::TypespaceTrait::Debug,
             typespace::TypespaceTrait::Serialize,
             typespace::TypespaceTrait::Deserialize,
+            typespace::TypespaceTrait::JsonSchema,
         ]
         .into_iter()
         .collect::<typespace::TypespaceTraitSet>();
