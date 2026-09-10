@@ -1003,7 +1003,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use schemars::{
-        gen::{SchemaGenerator, SchemaSettings},
+        r#gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
         schema_for, JsonSchema,
     };
@@ -1053,9 +1053,9 @@ mod tests {
 
         let mut settings = SchemaSettings::default();
         settings.inline_subschemas = true;
-        let gen = SchemaGenerator::new(settings);
+        let generator = SchemaGenerator::new(settings);
 
-        let a = gen.into_root_schema_for::<Vec<A>>().schema.into();
+        let a = generator.into_root_schema_for::<Vec<A>>().schema.into();
 
         assert!(!schemas_mutually_exclusive(&a, &a, &BTreeMap::new()));
     }
