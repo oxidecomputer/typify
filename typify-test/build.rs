@@ -67,7 +67,7 @@ impl JsonSchema for LoginName {
         "LoginName".to_string()
     }
 
-    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+    fn json_schema(_: &mut schemars::r#gen::SchemaGenerator) -> Schema {
         schemars::schema::SchemaObject {
             string: Some(Box::new(schemars::schema::StringValidation {
                 max_length: Some(8),
@@ -86,7 +86,7 @@ impl JsonSchema for NonAsciiChars {
         "NonAsciiChars".to_string()
     }
 
-    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+    fn json_schema(_: &mut schemars::r#gen::SchemaGenerator) -> Schema {
         schemars::schema::SchemaObject {
             string: Some(Box::new(schemars::schema::StringValidation {
                 max_length: Some(8),
@@ -105,7 +105,7 @@ impl JsonSchema for Pancakes {
         "Pancakes".to_string()
     }
 
-    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+    fn json_schema(_: &mut schemars::r#gen::SchemaGenerator) -> Schema {
         schemars::schema::SchemaObject {
             instance_type: Some(schemars::schema::InstanceType::String.into()),
             format: Some("pancakes".to_string()),
@@ -131,7 +131,7 @@ impl JsonSchema for TriplePattern {
         "TriplePattern".to_string()
     }
 
-    fn json_schema(_: &mut schemars::gen::SchemaGenerator) -> Schema {
+    fn json_schema(_: &mut schemars::r#gen::SchemaGenerator) -> Schema {
         schemars::schema::SchemaObject {
             subschemas: Some(Box::new(schemars::schema::SubschemaValidation {
                 all_of: Some(vec![

@@ -127,8 +127,8 @@ impl ::schemars::JsonSchema for BlockSize {
     fn schema_name() -> ::std::string::String {
         "BlockSize".to_string()
     }
-    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
-        let mut schema = <i64 as ::schemars::JsonSchema>::json_schema(gen).into_object();
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = <i64 as ::schemars::JsonSchema>::json_schema(g).into_object();
         schema.enum_values = ::std::option::Option::Some(
             [
                 ::serde_json::from_str("512").unwrap(),
@@ -326,8 +326,8 @@ impl ::schemars::JsonSchema for EmptyObjectProp {
     fn schema_name() -> ::std::string::String {
         "EmptyObjectProp".to_string()
     }
-    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
-        let mut schema = < :: serde_json :: Map < :: std :: string :: String , :: serde_json :: Value > as :: schemars :: JsonSchema > :: json_schema (gen) . into_object () ;
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = < :: serde_json :: Map < :: std :: string :: String , :: serde_json :: Value > as :: schemars :: JsonSchema > :: json_schema (g) . into_object () ;
         schema.enum_values = ::std::option::Option::Some(
             [::serde_json::from_str("{}").unwrap()]
                 .into_iter()
@@ -632,8 +632,8 @@ impl ::schemars::JsonSchema for NotBlockSize {
     fn schema_name() -> ::std::string::String {
         "NotBlockSize".to_string()
     }
-    fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator) -> ::schemars::schema::Schema {
-        let mut schema = <f64 as ::schemars::JsonSchema>::json_schema(gen).into_object();
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = <f64 as ::schemars::JsonSchema>::json_schema(g).into_object();
         let not = ::schemars::schema::SchemaObject {
             enum_values: ::std::option::Option::Some(
                 [

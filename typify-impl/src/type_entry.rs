@@ -1,4 +1,4 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
@@ -1499,11 +1499,11 @@ impl TypeEntry {
                                 #name.to_string()
                             }
 
-                            fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator)
+                            fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator)
                                 -> ::schemars::schema::Schema {
                                 let mut schema =
                                     <#inner_type_name as ::schemars::JsonSchema>
-                                        ::json_schema(gen)
+                                        ::json_schema(g)
                                         .into_object();
                                 let not = ::schemars::schema::SchemaObject {
                                     enum_values: ::std::option::Option::Some([
@@ -1524,11 +1524,11 @@ impl TypeEntry {
                                 #name.to_string()
                             }
 
-                            fn json_schema(gen: &mut ::schemars::gen::SchemaGenerator)
+                            fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator)
                                 -> ::schemars::schema::Schema {
                                 let mut schema =
                                     <#inner_type_name as ::schemars::JsonSchema>
-                                        ::json_schema(gen)
+                                        ::json_schema(g)
                                         .into_object();
                                 schema.enum_values = ::std::option::Option::Some([
                                     #( ::serde_json::from_str(#value_string).unwrap(), )*
