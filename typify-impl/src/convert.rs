@@ -802,11 +802,8 @@ impl TypeSpace {
         match format.as_ref().map(String::as_str) {
             Some("uuid") => {
                 self.uses_uuid = true;
-                // ::uuid::Uuid additionally implements Display,
-                // FromStr, Eq, PartialEq, Ord, PartialOrd, and Hash. It
-                // also implements Default, but typify does not declare
-                // Default on natives. JsonSchema comes from schemars'
-                // uuid1 feature.
+                // ::uuid::Uuid Default, but we ignore it because there's no
+                // useful value. We assume the uuid feature in schemars.
                 Ok((
                     TypeEntry::new_native(
                         "::uuid::Uuid",
@@ -833,11 +830,8 @@ impl TypeSpace {
 
             Some("date") => {
                 self.uses_chrono = true;
-                // ::chrono::naive::NaiveDate additionally implements
-                // Display, FromStr, PartialEq, Eq, PartialOrd, Ord, and
-                // Hash. It also implements Default, but typify does not
-                // declare Default on natives. JsonSchema comes from
-                // schemars' chrono feature.
+                // ::chrono::naive::NaiveDate implements Default, but there's
+                // no useful value. We assume the chrono feaeture in schemars.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::naive::NaiveDate",
@@ -863,12 +857,8 @@ impl TypeSpace {
             }
             Some("date-time") => {
                 self.uses_chrono = true;
-                // ::chrono::DateTime implements PartialEq, Eq,
-                // PartialOrd, Ord, Hash, Debug, and Display for any
-                // TimeZone, and Utc additionally gets FromStr. It also
-                // implements Default, but typify does not declare
-                // Default on natives. JsonSchema comes from schemars'
-                // chrono feature.
+                // ::chrono::DateTime implements Default, but not usefully.
+                // We assume the chrono feaeture in schemars.
                 Ok((
                     TypeEntry::new_native(
                         "::chrono::DateTime<::chrono::offset::Utc>",
@@ -893,9 +883,7 @@ impl TypeSpace {
                 ))
             }
 
-            // ::std::net::IpAddr implements Clone, Eq, PartialEq,
-            // Hash, PartialOrd, Ord, Display, and FromStr. It has no
-            // Default impl. JsonSchema needs no schemars feature.
+            // ::std::net::IpAddr has no Default impl.
             Some("ip") => Ok((
                 TypeEntry::new_native(
                     "::std::net::IpAddr",
@@ -918,10 +906,7 @@ impl TypeSpace {
                 ),
                 metadata,
             )),
-            // ::std::net::Ipv4Addr implements Clone, PartialEq, Eq,
-            // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
-            // has no Default impl. JsonSchema needs no schemars
-            // feature.
+            // ::std::net::Ipv4Addr has no Default impl.
             Some("ipv4") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv4Addr",
@@ -944,10 +929,7 @@ impl TypeSpace {
                 ),
                 metadata,
             )),
-            // ::std::net::Ipv6Addr implements Clone, PartialEq, Eq,
-            // Hash, PartialOrd, Ord, Debug, Display, and FromStr. It
-            // has no Default impl. JsonSchema needs no schemars
-            // feature.
+            // ::std::net::Ipv6Addr has not Default impl.
             Some("ipv6") => Ok((
                 TypeEntry::new_native(
                     "::std::net::Ipv6Addr",
