@@ -732,6 +732,12 @@ impl TypeSpace {
 
     fn convert_ref_type(&mut self, type_name: Name, schema: Schema, type_id: TypeId) -> Result<()> {
         let (mut type_entry, metadata) = self.convert_schema(type_name.clone(), &schema)?;
+        // Note that the conversion may have already recorded a default drawn
+        // from the definition's own metadata (e.g. structs record it in
+        // TypeEntryStruct::from_metadata and return no metadata). Only
+        // override that value if the metadata returned by the conversion
+        // actually specifies a default--such as one declared at the reference
+        // site--rather than clobbering it with `None`.
         let default = metadata
             .as_ref()
             .and_then(|m| m.default.as_ref())
@@ -740,15 +746,21 @@ impl TypeSpace {
         let type_entry = match &mut type_entry.details {
             // The types that are already named are good to go.
             TypeEntryDetails::Enum(details) => {
-                details.default = default;
+                if default.is_some() {
+                    details.default = default;
+                }
                 type_entry
             }
             TypeEntryDetails::Struct(details) => {
-                details.default = default;
+                if default.is_some() {
+                    details.default = default;
+                }
                 type_entry
             }
             TypeEntryDetails::Newtype(details) => {
-                details.default = default;
+                if default.is_some() {
+                    details.default = default;
+                }
                 type_entry
             }
 
