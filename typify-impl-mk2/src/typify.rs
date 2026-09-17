@@ -220,7 +220,7 @@ impl Typify {
                         // TODO 3/31/2026
                         // Need to fill in impls and type params
                         let typ = Type::Native(Native::new(
-                            conv.native.name.clone(),
+                            &conv.native.name,
                             TypespaceTraitSet::empty(),
                             vec![],
                         ));

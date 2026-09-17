@@ -116,7 +116,7 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     }
 
     let canonical_out = typify.canonical_output();
-    let typespace = typify.typify(Default::default(), Default::default())?;
+    let typespace = typify.typify(Default::default(), Settings::minimal())?;
 
     validate_output(path, canonical_out, typespace);
 
@@ -133,13 +133,25 @@ struct TestJson {
     files: Vec<TestJsonEntry>,
 }
 
-#[derive(Debug, Deserialize, Default)]
+// typespace::Settings has no Default impl on purpose: every field
+// defaults, but the presets are the documented way in, so a caller has
+// to say which one they mean. Name minimal() here rather than deriving.
+#[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TestJsonSettings {
     #[serde(default)]
     typify: TypifySettings,
-    #[serde(default)]
+    #[serde(default = "Settings::minimal")]
     typespace: Settings,
+}
+
+impl Default for TestJsonSettings {
+    fn default() -> Self {
+        Self {
+            typify: TypifySettings::default(),
+            typespace: Settings::minimal(),
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
