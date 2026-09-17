@@ -905,7 +905,7 @@ impl TypeSpace {
         )
         .with_provision(
             typespace::TypespaceTrait::JsonSchema,
-            typespace::settings::TraitProvision::IfParameters,
+            typespace::TraitProvision::IfParameters,
         );
         let mut settings = typespace::settings::Settings::minimal()
             .with_required_trait(typespace::TypespaceTrait::Serialize)
@@ -1113,9 +1113,18 @@ impl TypeSpace {
 /// reference type (or the native type has parameters and so couldn't
 /// simply be aliased).
 fn native_name_match(native: &typespace::build::Native<TypeId>, type_name: &Name) -> bool {
-    let native_name = native.name().rsplit("::").next().unwrap();
+    // typespace answers a native's path as a syn::Type, so read the
+    // last segment rather than splitting the rendered tokens, which
+    // carry spaces around their separators.
+    let native_name = match native.path() {
+        syn::Type::Path(path) => path.path.segments.last().map(|seg| seg.ident.to_string()),
+        _ => None,
+    };
     !native.parameters().is_empty()
-        || matches!(type_name, Name::Required(req) if req == native_name)
+        || matches!(
+            (type_name, native_name.as_deref()),
+            (Name::Required(req), Some(name)) if req == name
+        )
 }
 
 #[cfg(test)]

@@ -89,10 +89,16 @@ fn test_generation() {
     let typespace = type_space.to_typespace().unwrap();
     let t = typespace.get_type(&tid);
     let ret = t.ident_in("types");
-    let body = t.parameter_ident_in("types");
-    let string = typespace.get_type(&string_id).parameter_ident_in("types");
-    let opt_int = typespace.get_type(&opt_int_id).parameter_ident_in("types");
-    let strenum = typespace.get_type(&strenum_id).parameter_ident_in("types");
+    let body = t.parameter_ident(Some("types"), None);
+    let string = typespace
+        .get_type(&string_id)
+        .parameter_ident(Some("types"), None);
+    let opt_int = typespace
+        .get_type(&opt_int_id)
+        .parameter_ident(Some("types"), None);
+    let strenum = typespace
+        .get_type(&strenum_id)
+        .parameter_ident(Some("types"), None);
 
     let types = type_space.to_stream().unwrap();
 

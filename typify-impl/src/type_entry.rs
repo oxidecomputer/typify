@@ -377,7 +377,7 @@ impl TypeEntry {
         type_name: S,
         traits: typespace::TypespaceTraitSet,
     ) -> Self {
-        Type::Native(Native::new(type_name, traits, Vec::new())).into()
+        Type::Native(Native::new(&type_name.to_string(), traits, Vec::new())).into()
     }
 
     pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
@@ -390,7 +390,7 @@ impl TypeEntry {
         .into_iter()
         .collect::<typespace::TypespaceTraitSet>();
 
-        Type::Native(Native::new(type_name, traits, params.to_vec())).into()
+        Type::Native(Native::new(&type_name.to_string(), traits, params.to_vec())).into()
     }
 
     pub(crate) fn new_boolean() -> Self {

@@ -2221,7 +2221,10 @@ mod tests {
             )
             .unwrap();
         let type_id = type_space.assign_type(ty);
-        let output = type_space.to_typespace().unwrap().get_type(&type_id).name();
+        // name() borrows from the typespace now that it answers a Cow,
+        // so the typespace has to outlive the name.
+        let typespace = type_space.to_typespace().unwrap();
+        let output = typespace.get_type(&type_id).name();
         let actual = output.split("::").last().unwrap().trim();
         let expected = type_name.split("::").last().unwrap();
         assert_eq!(actual, expected);
