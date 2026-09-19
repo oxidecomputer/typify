@@ -219,18 +219,6 @@ impl ::std::str::FromStr for MergeNumberBounds {
         Ok(Self(value.parse()?))
     }
 }
-impl ::std::convert::TryFrom<&str> for MergeNumberBounds {
-    type Error = <f64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for MergeNumberBounds {
-    type Error = <f64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
 #[doc = "`MergeStringBounds`"]
 #[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
@@ -312,18 +300,6 @@ impl ::std::str::FromStr for NarrowNumber {
     type Err = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
     fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.parse()?))
-    }
-}
-impl ::std::convert::TryFrom<&str> for NarrowNumber {
-    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for NarrowNumber {
-    type Error = <::std::num::NonZeroU64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
     }
 }
 #[doc = "`OrderDependentMerge`"]

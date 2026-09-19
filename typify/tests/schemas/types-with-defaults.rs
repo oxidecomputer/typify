@@ -129,18 +129,6 @@ impl ::std::str::FromStr for UInt {
         Ok(Self(value.parse()?))
     }
 }
-impl ::std::convert::TryFrom<&str> for UInt {
-    type Error = <i64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for UInt {
-    type Error = <i64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
 #[doc = "`UIntContainer`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct UIntContainer {
