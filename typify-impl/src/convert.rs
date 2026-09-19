@@ -2381,9 +2381,11 @@ mod tests {
         let mut type_space = TypeSpace::default();
         let type_id = type_space.add_type(&schema.schema.into()).unwrap();
 
-        match &type_space.id_to_entry[&type_id].details {
-            super::TypeEntryDetails::Enum(details) => assert!(details.variants.is_empty()),
-            details => panic!("empty anyOf should be unsatisfiable, got {details:?}"),
+        match &type_space.id_to_entry[&type_id] {
+            crate::type_entry::TypeEntry::Type(typespace::build::Type::Enum(details)) => {
+                assert!(details.get_variants().is_empty())
+            }
+            entry => panic!("empty anyOf should be unsatisfiable, got {entry:?}"),
         }
     }
 
