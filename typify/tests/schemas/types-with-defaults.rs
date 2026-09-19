@@ -466,7 +466,7 @@ pub mod defaults {
         ::serde_json::from_str::<::chrono::DateTime<::chrono::offset::Utc>>(
             "\"1970-01-01T00:00:00Z\"",
         )
-        .unwrap()
+        .expect("invalid default provided")
     }
     pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
     {
@@ -474,12 +474,15 @@ pub mod defaults {
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
-            ::serde_json::from_str::<::serde_json::Value>("[8,6,7]").unwrap(),
-            ::serde_json::from_str::<::serde_json::Value>("[5,3,0,9]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[8,6,7]")
+                .expect("invalid default provided"),
+            ::serde_json::from_str::<::serde_json::Value>("[5,3,0,9]")
+                .expect("invalid default provided"),
         ]
     }
     pub(super) fn test_bed_id() -> ::uuid::Uuid {
-        ::serde_json::from_str::<::uuid::Uuid>("\"abc123-is-this-a-uuid\"").unwrap()
+        ::serde_json::from_str::<::uuid::Uuid>("\"abc123-is-this-a-uuid\"")
+            .expect("invalid default provided")
     }
     pub(super) fn u_int_container_max_path() -> super::UInt {
         super::UInt(1_i64)

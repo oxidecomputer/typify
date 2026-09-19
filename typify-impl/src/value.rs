@@ -142,17 +142,19 @@ impl TypeEntry {
                 let text = value.to_string();
                 let type_path = syn::parse_str::<syn::TypePath>(type_name).unwrap();
 
-                // Deserialize the string to the type; the unwrap() is
+                // Deserialize the string to the type; the runtime expect() is
                 // unfortunate, but unavoidable without getting in the
                 // underpants of the serialized form of these built-in types.
                 quote! {
-                    ::serde_json::from_str::< #type_path >(#text).unwrap()
+                    ::serde_json::from_str::< #type_path >(#text)
+                        .expect("invalid default provided")
                 }
             }
             TypeEntryDetails::JsonValue => {
                 let text = value.to_string();
                 quote! {
-                    ::serde_json::from_str::<::serde_json::Value>(#text).unwrap()
+                    ::serde_json::from_str::<::serde_json::Value>(#text)
+                        .expect("invalid default provided")
                 }
             }
             TypeEntryDetails::Boolean => {
@@ -564,7 +566,8 @@ mod tests {
                 .map(|x| x.to_string()),
             Some(
                 quote! {
-                    ::serde_json::from_str::<::uuid::Uuid>("\"not-a-uuid\"").unwrap()
+                    ::serde_json::from_str::<::uuid::Uuid>("\"not-a-uuid\"")
+                        .expect("invalid default provided")
                 }
                 .to_string()
             ),
