@@ -235,6 +235,18 @@ pub(crate) enum DefaultImpl {
     NZU64,
 }
 
+impl DefaultImpl {
+    /// The name of the shared function this renders as.
+    fn fn_name(&self) -> &'static str {
+        match self {
+            DefaultImpl::Boolean => "default_bool",
+            DefaultImpl::I64 => "default_i64",
+            DefaultImpl::U64 => "default_u64",
+            DefaultImpl::NZU64 => "default_nzu64",
+        }
+    }
+}
+
 /// Type name to use in generated code.
 #[derive(Clone)]
 pub struct MapType(pub syn::Type);
@@ -907,14 +919,22 @@ impl TypeSpace {
             .values()
             .for_each(|type_entry| type_entry.output(self, &mut output));
 
-        // Add all shared default functions.
-        self.defaults
+        // Add the shared default functions that some emitted item actually
+        // calls. This is gross, and may have false-positives, but those should
+        // be basically benign.
+        let called = self
+            .defaults
             .iter()
+            .filter(|x| output.contains(x.fn_name()))
+            .collect::<Vec<_>>();
+        called
+            .into_iter()
             .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
 
         // Add the error type conversions use, but only when some emitted item
-        // references it. This is kind of gross that we're groveling around
-        // through output to decide, but it will--I hope--be short-lived.
+        // references it. This is also kind of gross that we're groveling
+        // around through output to decide, but it will--I hope--be
+        // short-lived.
         if output.contains("ConversionError") {
             self.add_error_item(&mut output);
         }
