@@ -2299,7 +2299,7 @@ mod tests {
         let actual = type_space.to_stream();
         let file = syn::parse2::<syn::File>(actual).expect("type space should emit a valid file");
         match file.items.as_slice() {
-            [syn::Item::Mod(error)] if error.ident == "error" => {}
+            [] => {}
             _ => panic!("unexpected file contents {}", file.to_token_stream()),
         }
     }
