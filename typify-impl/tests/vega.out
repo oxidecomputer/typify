@@ -44272,8 +44272,10 @@ pub enum VoronoiTransformExtent {
 impl ::std::default::Default for VoronoiTransformExtent {
     fn default() -> Self {
         VoronoiTransformExtent::Array([
-            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]").unwrap(),
-            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]")
+                .expect("invalid default provided"),
+            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]")
+                .expect("invalid default provided"),
         ])
     }
 }
@@ -45762,8 +45764,10 @@ pub mod defaults {
     }
     pub(super) fn voronoi_transform_extent() -> super::VoronoiTransformExtent {
         super::VoronoiTransformExtent::Array([
-            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]").unwrap(),
-            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]").unwrap(),
+            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]")
+                .expect("invalid default provided"),
+            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]")
+                .expect("invalid default provided"),
         ])
     }
     pub(super) fn window_transform_frame() -> super::WindowTransformFrame {
