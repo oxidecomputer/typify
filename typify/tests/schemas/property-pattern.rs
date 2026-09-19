@@ -29,6 +29,12 @@ impl ::std::convert::From<TestGrammarForPatternPropertiesRulesKey> for ::std::st
 impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        ::std::convert::TryFrom::try_from(value)
+    }
+}
+impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| ::regress::Regex::new("^[a-zA-Z_]\\w*$").unwrap());
         if PATTERN.find(value).is_none() {
@@ -37,18 +43,12 @@ impl ::std::str::FromStr for TestGrammarForPatternPropertiesRulesKey {
         Ok(Self(value.to_string()))
     }
 }
-impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
-    type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
-    }
-}
 impl ::std::convert::TryFrom<::std::string::String> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
-        value.parse()
+        ::std::convert::TryFrom::try_from(value.as_str())
     }
 }
 impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey {
@@ -56,8 +56,7 @@ impl<'de> ::serde::Deserialize<'de> for TestGrammarForPatternPropertiesRulesKey 
     where
         D: ::serde::Deserializer<'de>,
     {
-        ::std::string::String::deserialize(deserializer)?
-            .parse()
+        ::std::convert::TryFrom::try_from(::std::string::String::deserialize(deserializer)?)
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
