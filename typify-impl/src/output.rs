@@ -31,6 +31,13 @@ impl OutputSpace {
             .extend(stream);
     }
 
+    /// Whether any accumulated item's tokens contain `needle`.
+    pub fn contains(&self, needle: &str) -> bool {
+        self.items
+            .values()
+            .any(|stream| stream.to_string().contains(needle))
+    }
+
     pub fn into_stream(self) -> TokenStream {
         let mods = self
             .items

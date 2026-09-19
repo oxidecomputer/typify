@@ -902,8 +902,28 @@ impl TypeSpace {
     pub fn to_stream(&self) -> TokenStream {
         let mut output = OutputSpace::default();
 
-        // Add the error type we use for conversions; it's fine if this is
-        // unused.
+        // Add all types.
+        self.id_to_entry
+            .values()
+            .for_each(|type_entry| type_entry.output(self, &mut output));
+
+        // Add all shared default functions.
+        self.defaults
+            .iter()
+            .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
+
+        // Add the error type conversions use, but only when some emitted item
+        // references it. This is kind of gross that we're groveling around
+        // through output to decide, but it will--I hope--be short-lived.
+        if output.contains("ConversionError") {
+            self.add_error_item(&mut output);
+        }
+
+        output.into_stream()
+    }
+
+    /// The error type generated `TryFrom` and `FromStr` impls report.
+    fn add_error_item(&self, output: &mut OutputSpace) {
         output.add_item(
             output::OutputSpaceMod::Error,
             "",
@@ -939,18 +959,6 @@ impl TypeSpace {
                 }
             },
         );
-
-        // Add all types.
-        self.id_to_entry
-            .values()
-            .for_each(|type_entry| type_entry.output(self, &mut output));
-
-        // Add all shared default functions.
-        self.defaults
-            .iter()
-            .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
-
-        output.into_stream()
     }
 
     /// Allocated the next TypeId.
