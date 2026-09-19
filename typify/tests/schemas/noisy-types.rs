@@ -50,18 +50,6 @@ impl ::std::str::FromStr for IntegerBs {
         Ok(Self(value.parse()?))
     }
 }
-impl ::std::convert::TryFrom<&str> for IntegerBs {
-    type Error = <u64 as ::std::str::FromStr>::Err;
-    fn try_from(value: &str) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
-impl ::std::convert::TryFrom<String> for IntegerBs {
-    type Error = <u64 as ::std::str::FromStr>::Err;
-    fn try_from(value: String) -> ::std::result::Result<Self, Self::Error> {
-        value.parse()
-    }
-}
 #[doc = "`ObjectBs`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct ObjectBs {
