@@ -16,9 +16,7 @@ typify = { version = "0.8.0", path = "typify" }
 typify-impl = { version = "0.8.0", path = "typify-impl" }
 typify-macro = { version = "0.8.0", path = "typify-macro" }
 
-# Discovery: the standalone type-modeling crate that typify's code
-# generation is expected to migrate to. Path dependency for now.
-typespace = { path = "../typespace/typespace" }
+typespace = { git = "https://github.com/oxidecomputer/typespace", branch = "main" }
 
 assert_cmd = "2.2.2"
 chrono = { version = "0.4.45", features = ["serde"] }
