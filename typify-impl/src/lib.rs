@@ -176,18 +176,6 @@ pub(crate) enum DefaultImpl {
     NZU64,
 }
 
-impl DefaultImpl {
-    /// The name of the shared function this renders as.
-    fn fn_name(&self) -> &'static str {
-        match self {
-            DefaultImpl::Boolean => "default_bool",
-            DefaultImpl::I64 => "default_i64",
-            DefaultImpl::U64 => "default_u64",
-            DefaultImpl::NZU64 => "default_nzu64",
-        }
-    }
-}
-
 /// Type name to use in generated code.
 #[derive(Clone)]
 pub struct MapType(pub syn::Type);
