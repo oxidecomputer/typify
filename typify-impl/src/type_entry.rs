@@ -10,8 +10,7 @@
 //! (see `TypeSpace::to_stream`). What remains here is:
 //!
 //! - `TypeEntry`, which wraps a typespace type or an in-flight
-//!   reference (see the gap notes in typespace_ext.rs for the
-//!   typify-specific data typespace has no home for);
+//!   reference.
 //! - the `from_metadata` constructors that turn schema metadata into
 //!   named typespace types.
 //!
@@ -178,8 +177,7 @@ impl TypeEntryEnum {
 
         let name = get_type_name(&type_name, metadata).unwrap();
         // INTERFACE GAP: container-level serde rename (set when a patch
-        // renames the type) has no home in typespace's TypeEnum; see
-        // typespace_ext.rs gap note 4.
+        // renames the type) has no home in typespace's TypeEnum.
         let description = metadata_description(metadata);
 
         let type_patch = TypePatch::new(type_space, name);
@@ -290,17 +288,9 @@ impl TypeEntryNewtype {
         enum_values: &[serde_json::Value],
         schema: Schema,
     ) -> TypeEntry {
-        // INTERFACE GAP: typespace has no representation for a newtype
-        // constrained to a fixed set of permitted values; the validation
-        // (TryFrom constructor plus bespoke Deserialize impl in typify1)
-        // is dropped. The ideal call is:
-        //
         let constraints = NewtypeConstraints::AllowList(
             enum_values.iter().cloned().map(JsonValue::new).collect(),
         );
-        //
-        // See typespace_ext.rs gap note 1.
-        let _ = enum_values;
         Self::make(
             type_space,
             type_name,
@@ -319,14 +309,8 @@ impl TypeEntryNewtype {
         enum_values: &[serde_json::Value],
         schema: Schema,
     ) -> TypeEntry {
-        // INTERFACE GAP: as with from_metadata_with_enum_values, but for
-        // a set of rejected values. The ideal call is:
-        //
         let constraints =
             NewtypeConstraints::DenyList(enum_values.iter().cloned().map(JsonValue::new).collect());
-        //
-        // See typespace_ext.rs gap note 1.
-        let _ = enum_values;
         Self::make(
             type_space,
             type_name,

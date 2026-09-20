@@ -7,7 +7,7 @@
 use std::collections::BTreeMap;
 
 use conversions::SchemaCache;
-use log::{debug, info};
+use log::info;
 use proc_macro2::TokenStream;
 use quote::ToTokens;
 use schemars::schema::{Metadata, RootSchema, Schema};
@@ -30,13 +30,11 @@ mod test_util;
 
 mod conversions;
 mod convert;
-mod cycles;
 mod enums;
 mod merge;
 mod rust_extension;
 mod structs;
 mod type_entry;
-mod typespace_ext;
 mod util;
 mod validate;
 
@@ -377,7 +375,7 @@ impl TypeSpaceImpl {
     /// joins them: a requested derive was always emitted without
     /// consulting the conversion target, so a named native must
     /// satisfy it. `FromStringIrrefutable` has no typespace equivalent
-    /// (see typespace_ext.rs gap note 2) and is dropped.
+    /// and is dropped.
     pub(crate) fn native_traits(impls: &[Self]) -> typespace::TypespaceTraitSet {
         let mut traits = [
             typespace::TypespaceTrait::Clone,
@@ -671,15 +669,10 @@ impl TypeSpace {
             }
         }
 
-        // Eliminate cycles. It's sufficient to only start from referenced
-        // types as a reference is required to make a cycle.
-        self.break_cycles(base_id..base_id + def_len);
-
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
             let type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-            debug!("finalizing type entry: {} {:#?}", index, &type_entry);
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -853,9 +846,7 @@ impl TypeSpace {
     /// parameters), which is the conservative answer for a path typify
     /// cannot otherwise reason about. `with_typify_compat` withholds
     /// `Default` from a tuple struct, a unit struct, and a newtype, which
-    /// typify never derives it for. Global extra attributes have no
-    /// typespace home yet; see the implementation gaps on
-    /// [`TypeSpace::to_stream`] and typespace_ext.rs gap note 3.
+    /// typify never derives it for.
     fn typespace_settings(&self) -> typespace::settings::Settings {
         let map_key_obligation = [
             typespace::TypespaceTrait::Hash,
@@ -930,12 +921,6 @@ impl TypeSpace {
             }
         }
 
-        // typify breaks containment cycles itself (see cycles.rs) by
-        // inserting Box entries before output, so typespace finalization
-        // should never need to manufacture a Box of its own. Provide a
-        // real generator anyway--if it ever fires we'd rather get a
-        // distinctive id than a panic--by mapping the inner id into a
-        // range that TypeSpace::assign never produces.
         Ok(builder.finalize(|inner: &TypeId| TypeId(inner.0 | (1 << 63)))?)
     }
 
@@ -945,29 +930,7 @@ impl TypeSpace {
     /// inserted into a `TypespaceBuilder`, finalized, and rendered
     /// through codespace. Finalization errors (dangling references,
     /// name collisions, unsatisfiable trait requirements) surface as
-    /// [`Error::Typespace`]. Known IMPLEMENTATION GAPS relative to
-    /// typify1's renderer (each of these is a construct typespace can
-    /// or should express but does not yet render):
-    ///
-    /// - no `error` module / `ConversionError` type (nothing typespace
-    ///   emits refers to it yet, so the output is self-consistent);
-    ///   this method injects the module itself to match typify1's
-    ///   unconditional emission;
-    /// - no bespoke enum impls: Display/FromStr for all-simple-variant
-    ///   enums, untagged Display/FromStr proxies, TryFrom<&str>, and
-    ///   the convenience `From<VariantType>` impls;
-    /// - no `impl Default` for whole-type default values, and explicit
-    ///   property defaults are runtime `serde_json::from_value` calls
-    ///   rather than typify1's typed expressions (see value.rs, retained
-    ///   unbuilt for reference) with shared `defaults::` helpers;
-    /// - no string-constraint validation (min/max length, pattern) on
-    ///   newtypes, and no value-list constraints at all;
-    /// - no `#[serde(deny_unknown_fields)]` on structs or enums;
-    /// - no derives beyond serde and the settings-wide extra derives
-    ///   (typify1 derived Debug/Clone always, Copy/Eq/Ord/Hash for
-    ///   simple enums, and applied per-type derives and attrs from
-    ///   patches);
-    /// - no struct builder types (TypeSpaceSettings::with_struct_builder);
+    /// [`Error::Typespace`].
     pub fn to_stream(&self) -> Result<TokenStream> {
         let typespace = self.to_typespace()?;
 
@@ -1068,11 +1031,6 @@ impl TypeSpace {
             return ty;
         }
         typespace::build::Type::Option(self.assign_type(ty)).into()
-    }
-
-    /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.
-    fn id_to_box(&mut self, id: &TypeId) -> TypeId {
-        self.assign_type(typespace::build::Type::Box(id.clone()).into())
     }
 }
 
