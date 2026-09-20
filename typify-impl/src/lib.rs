@@ -898,6 +898,22 @@ impl TypeSpace {
         settings
     }
 
+    /// The type inserted under `type_id`, as it was inserted.
+    ///
+    /// This is the declaration typify handed typespace, available before
+    /// finalization: what kind of type it is, and the ids its children
+    /// carry. Anything the finalized graph decides, such as trait impls or
+    /// identifiers, is not known here; ask the [`typespace::Typespace`]
+    /// from [`TypeSpace::to_typespace`] for those.
+    ///
+    /// Answers `None` for an id this type space never returned.
+    pub fn inserted_type(&self, type_id: &TypeId) -> Option<&typespace::build::Type<TypeId>> {
+        match self.id_to_entry.get(type_id)? {
+            TypeEntry::Type(typ) => Some(typ),
+            TypeEntry::Reference(_) => None,
+        }
+    }
+
     /// Finalize the collected types into a [`typespace::Typespace`].
     ///
     /// The typespace is the query surface for the collected types: use
