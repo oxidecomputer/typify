@@ -31,7 +31,6 @@ mod test_util;
 mod conversions;
 mod convert;
 mod cycles;
-mod defaults;
 mod enums;
 mod merge;
 mod rust_extension;
@@ -55,12 +54,6 @@ pub enum Error {
         type_name: Option<String>,
         reason: String,
     },
-}
-
-impl Error {
-    fn invalid_value() -> Self {
-        Self::InvalidValue
-    }
 }
 
 #[allow(missing_docs)]

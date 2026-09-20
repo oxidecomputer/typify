@@ -17,8 +17,6 @@ use crate::util::get_type_name;
 
 use crate::{Error, Name, Result, TypeSpace};
 
-pub const STD_NUM_NONZERO_PREFIX: &str = "::std::num::NonZero";
-
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
         &mut self,
@@ -1772,13 +1770,6 @@ impl TypeSpace {
                 let (type_entry, _) =
                     self.convert_schema_object(Name::Unknown, original_schema, &type_schema)?;
 
-                // Make sure all the values are valid.
-                // TODO this isn't strictly legal since we may not yet have
-                // resolved references.
-                enum_values
-                    .iter()
-                    .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
-
                 let type_id = self.assign_type(type_entry);
 
                 let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
@@ -1838,13 +1829,6 @@ impl TypeSpace {
                             original_schema,
                             &typed_schema,
                         )?;
-                        // Make sure all the values are valid.
-                        // TODO this isn't strictly legal since we may not yet
-                        // have resolved references.
-                        enum_values.iter().try_for_each(|value| {
-                            type_entry.validate_value(self, value).map(|_| ())
-                        })?;
-
                         let type_id = self.assign_type(type_entry);
 
                         let newtype_entry = TypeEntryNewtype::from_metadata_with_deny_values(
@@ -2042,11 +2026,6 @@ impl TypeSpace {
 
         let (type_entry, metadata) =
             self.convert_schema_object(inner_type_name, original_schema, &type_schema)?;
-
-        // Make sure all the values are valid.
-        enum_values
-            .iter()
-            .try_for_each(|value| type_entry.validate_value(self, value).map(|_| ()))?;
 
         let type_id = self.assign_type(type_entry);
 
