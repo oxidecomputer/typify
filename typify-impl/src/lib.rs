@@ -4,7 +4,7 @@
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use conversions::SchemaCache;
 use log::{debug, info};
@@ -144,9 +144,6 @@ pub struct TypeSpace {
     settings: TypeSpaceSettings,
 
     cache: SchemaCache,
-
-    // Shared functions for generating default values
-    defaults: BTreeSet<DefaultImpl>,
 }
 
 impl Default for TypeSpace {
@@ -163,17 +160,8 @@ impl Default for TypeSpace {
             uses_regress: Default::default(),
             settings: Default::default(),
             cache: Default::default(),
-            defaults: Default::default(),
         }
     }
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum DefaultImpl {
-    Boolean,
-    I64,
-    U64,
-    NZU64,
 }
 
 /// Type name to use in generated code.
@@ -697,9 +685,8 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
+            let type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             debug!("finalizing type entry: {} {:#?}", index, &type_entry);
-            type_entry.finalize(self)?;
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -790,8 +777,7 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-            type_entry.finalize(self)?;
+            let type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             self.id_to_entry.insert(type_id, type_entry);
         }
 

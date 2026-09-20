@@ -27,7 +27,7 @@ use unicode_ident::is_xid_continue;
 use crate::{
     sanitize,
     util::{get_type_name, metadata_description, unique, TypePatch},
-    Case, Name, Result, TypeId, TypeSpace,
+    Case, Name, TypeId, TypeSpace,
 };
 
 use typespace::build::{
@@ -422,15 +422,6 @@ impl TypeEntry {
             Self::Type(typ) => Some(typ),
             Self::Reference(_) => None,
         }
-    }
-
-    pub(crate) fn finalize(&mut self, type_space: &mut TypeSpace) -> Result<()> {
-        // typify1 cached the enum "bespoke impl" analysis (all-simple-
-        // variants, untagged Display/FromStr proxies) here; those
-        // answers are now computed on demand in has_impl since typespace
-        // has no place to store them (and no rendering that would
-        // consume them; that's an IMPLEMENTATION GAP--see to_stream).
-        self.check_defaults(type_space)
     }
 
     pub(crate) fn name(&self) -> Option<&str> {

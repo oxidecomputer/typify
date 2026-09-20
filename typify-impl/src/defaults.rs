@@ -2,12 +2,8 @@
 
 use std::collections::BTreeMap;
 
-use proc_macro2::TokenStream;
-use quote::quote;
-
 use crate::{
-    convert::STD_NUM_NONZERO_PREFIX, type_entry::TypeEntry, DefaultImpl, Error, Result, TypeId,
-    TypeSpace,
+    convert::STD_NUM_NONZERO_PREFIX, type_entry::TypeEntry, Error, Result, TypeId, TypeSpace,
 };
 
 use typespace::build::{
@@ -15,122 +11,7 @@ use typespace::build::{
     VariantDetails,
 };
 
-/// The disposition of a valid default value; see
-/// [`TypeEntry::validate_value`].
-///
-/// typify1 used this to route rendering: `Generic` defaults shared one
-/// of the stock functions below, `Specific` defaults got a bespoke
-/// generated function, and `Intrinsic` defaults used
-/// `#[serde(default)]`. Rendering is now typespace's job
-/// (IMPLEMENTATION GAP: typespace renders every explicit default via a
-/// runtime `serde_json::from_value` call rather than a typed
-/// expression; see the note in `TypeSpace::to_stream`), but validation
-/// still uses these distinctions to track which shared impls would be
-/// needed.
-#[derive(Debug)]
-pub(crate) enum DefaultKind {
-    Intrinsic,
-    Specific,
-    Generic(DefaultImpl),
-}
-
-// Implementations for "stock" default functions so we don't litter the
-// namespace with many that are effectively identical.
-impl From<&DefaultImpl> for TokenStream {
-    fn from(default: &DefaultImpl) -> Self {
-        match default {
-            DefaultImpl::Boolean => quote! {
-                pub(super) fn default_bool<const V: bool>() -> bool {
-                    V
-                }
-            },
-            DefaultImpl::I64 => quote! {
-                pub(super) fn default_i64<T, const V: i64>() -> T
-                where
-                    T: ::std::convert::TryFrom<i64>,
-                    <T as ::std::convert::TryFrom<i64>>::Error: ::std::fmt::Debug,
-                {
-                    T::try_from(V).unwrap()
-                }
-            },
-            DefaultImpl::U64 => quote! {
-                pub(super) fn default_u64<T, const V: u64>() -> T
-                where
-                    T: ::std::convert::TryFrom<u64>,
-                    <T as ::std::convert::TryFrom<u64>>::Error: ::std::fmt::Debug,
-                {
-                    T::try_from(V).unwrap()
-                }
-            },
-            DefaultImpl::NZU64 => quote! {
-                pub(super) fn default_nzu64<T, const V: u64>() -> T
-                where
-                    T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
-                    <T as ::std::convert::TryFrom<::std::num::NonZeroU64>>::Error:
-                        ::std::fmt::Debug,
-                {
-                    T::try_from(::std::num::NonZeroU64::try_from(V).unwrap())
-                        .unwrap()
-                }
-            },
-        }
-    }
-}
-
 impl TypeEntry {
-    pub(crate) fn check_defaults(&self, type_space: &mut TypeSpace) -> Result<()> {
-        // Check the "whole-type" default.
-        if let Some(default) = self.as_type().default() {
-            if let DefaultKind::Generic(default_fn) = self.validate_value(type_space, default)? {
-                type_space.defaults.insert(default_fn);
-            }
-        }
-
-        // Check default values for struct properties or those of struct-type
-        // enum variants.
-        match self.as_type() {
-            Type::Struct(type_struct) => {
-                type_struct
-                    .get_properties()
-                    .iter()
-                    .try_for_each(|prop| Self::check_property_defaults(prop, type_space))?;
-            }
-
-            Type::Enum(type_enum) => {
-                type_enum.get_variants().iter().try_for_each(|variant| {
-                    if let VariantDetails::Struct(properties) = variant.details() {
-                        properties
-                            .iter()
-                            .try_for_each(|prop| Self::check_property_defaults(prop, type_space))
-                    } else {
-                        Ok(())
-                    }
-                })?;
-            }
-
-            _ => (),
-        };
-
-        Ok(())
-    }
-
-    fn check_property_defaults(
-        property: &StructProperty<TypeId>,
-        type_space: &mut TypeSpace,
-    ) -> Result<()> {
-        if let StructPropertyState::DefaultValue(typespace::build::JsonValue(prop_default)) =
-            property.state()
-        {
-            let type_entry = type_space.id_to_entry.get(property.type_id()).unwrap();
-            if let DefaultKind::Generic(default_fn) =
-                type_entry.validate_value(type_space, prop_default)?
-            {
-                type_space.defaults.insert(default_fn);
-            }
-        }
-        Ok(())
-    }
-
     /// Check that the given [`Value`] is a valid instance of this type
     ///
     /// The return value indicates whether the default is the "intrinsic",
@@ -142,7 +23,7 @@ impl TypeEntry {
         &self,
         type_space: &TypeSpace,
         default: &serde_json::Value,
-    ) -> Result<DefaultKind> {
+    ) -> Result<()> {
         match self.as_type() {
             Type::Enum(type_enum) => {
                 let variants = type_enum.get_variants();
@@ -176,15 +57,15 @@ impl TypeEntry {
                 // we'll need a custom function to make a default of the outer
                 // newtype.
                 let _ = validate_type_id(inner, type_space, default)?;
-                Ok(DefaultKind::Specific)
+                Ok(())
             }
             Type::Option(type_id) => {
                 if let serde_json::Value::Null = default {
-                    Ok(DefaultKind::Intrinsic)
+                    Ok(())
                 } else {
                     // Make sure the default is valid for the sub-type.
                     let _ = validate_type_id(type_id, type_space, default)?;
-                    Ok(DefaultKind::Specific)
+                    Ok(())
                 }
             }
             Type::Box(type_id) => validate_type_id(type_id, type_space, default),
@@ -192,13 +73,13 @@ impl TypeEntry {
             Type::Vec(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
-                        Ok(DefaultKind::Intrinsic)
+                        Ok(())
                     } else {
                         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                         for value in v {
                             let _ = type_entry.validate_value(type_space, value)?;
                         }
-                        Ok(DefaultKind::Specific)
+                        Ok(())
                     }
                 } else {
                     Err(Error::invalid_value())
@@ -207,7 +88,7 @@ impl TypeEntry {
             Type::Map(key_id, value_id) => {
                 if let serde_json::Value::Object(m) = default {
                     if m.is_empty() {
-                        Ok(DefaultKind::Intrinsic)
+                        Ok(())
                     } else {
                         let key_ty = type_space.id_to_entry.get(key_id).unwrap();
                         let value_ty = type_space.id_to_entry.get(value_id).unwrap();
@@ -218,7 +99,7 @@ impl TypeEntry {
                             )?;
                             let _ = value_ty.validate_value(type_space, value)?;
                         }
-                        Ok(DefaultKind::Specific)
+                        Ok(())
                     }
                 } else {
                     Err(Error::invalid_value())
@@ -227,7 +108,7 @@ impl TypeEntry {
             Type::Set(type_id) => {
                 if let serde_json::Value::Array(v) = default {
                     if v.is_empty() {
-                        Ok(DefaultKind::Intrinsic)
+                        Ok(())
                     } else {
                         let type_entry = type_space.id_to_entry.get(type_id).unwrap();
                         for (i, value) in v.iter().enumerate() {
@@ -240,7 +121,7 @@ impl TypeEntry {
                             }
                             let _ = type_entry.validate_value(type_space, value)?;
                         }
-                        Ok(DefaultKind::Specific)
+                        Ok(())
                     }
                 } else {
                     Err(Error::invalid_value())
@@ -262,11 +143,11 @@ impl TypeEntry {
                 for value in arr {
                     let _ = type_entry.validate_value(type_space, value)?;
                 }
-                Ok(DefaultKind::Specific)
+                Ok(())
             }
             Type::Unit => {
                 if let serde_json::Value::Null = default {
-                    Ok(DefaultKind::Intrinsic)
+                    Ok(())
                 } else {
                     Err(Error::invalid_value())
                 }
@@ -279,35 +160,35 @@ impl TypeEntry {
                 // names to treat as built-in). So we just do no checking and
                 // will fail an `unwrap()` in the generated code if this Value
                 // is not valid for this built-in type.
-                Ok(DefaultKind::Specific)
+                Ok(())
             }
-            Type::JsonValue => Ok(DefaultKind::Specific),
+            Type::JsonValue => Ok(()),
             Type::Boolean => match default {
-                serde_json::Value::Bool(false) => Ok(DefaultKind::Intrinsic),
-                serde_json::Value::Bool(true) => Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
+                serde_json::Value::Bool(false) => Ok(()),
+                serde_json::Value::Bool(true) => Ok(()),
                 _ => Err(Error::invalid_value()),
             },
             // Note that min and max values are handled already by the
             // conversion routines since we have those close at hand.
             Type::Integer(itype) => match (default.as_u64(), default.as_i64()) {
                 (None, None) => Err(Error::invalid_value()),
-                (Some(0), _) => Ok(DefaultKind::Intrinsic),
+                (Some(0), _) => Ok(()),
                 (_, Some(0)) => unreachable!(),
                 (Some(_), _) => {
                     if itype.starts_with(STD_NUM_NONZERO_PREFIX) {
-                        Ok(DefaultKind::Generic(DefaultImpl::NZU64))
+                        Ok(())
                     } else {
-                        Ok(DefaultKind::Generic(DefaultImpl::U64))
+                        Ok(())
                     }
                 }
-                (_, Some(_)) => Ok(DefaultKind::Generic(DefaultImpl::I64)),
+                (_, Some(_)) => Ok(()),
             },
             Type::Float(_) => {
                 if let Some(value) = default.as_f64() {
                     if value == 0.0 {
-                        Ok(DefaultKind::Intrinsic)
+                        Ok(())
                     } else {
-                        Ok(DefaultKind::Generic(DefaultImpl::I64))
+                        Ok(())
                     }
                 } else {
                     Err(Error::invalid_value())
@@ -315,9 +196,9 @@ impl TypeEntry {
             }
             Type::String => {
                 if let Some("") = default.as_str() {
-                    Ok(DefaultKind::Intrinsic)
+                    Ok(())
                 } else {
-                    Ok(DefaultKind::Specific)
+                    Ok(())
                 }
             }
 
@@ -332,14 +213,14 @@ pub(crate) fn validate_default_for_external_enum(
     type_space: &TypeSpace,
     variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     if let Some(simple_name) = default.as_str() {
         let variant = variants
             .iter()
             .find(|variant| simple_name == variant.json_name())?;
         matches!(variant.details(), VariantDetails::Unit).then(|| ())?;
 
-        Some(DefaultKind::Specific)
+        Some(())
     } else {
         let map = default.as_object()?;
         if map.len() != 1 {
@@ -368,7 +249,7 @@ pub(crate) fn validate_default_for_internal_enum(
     variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
     tag: &str,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     let map = default.as_object()?;
     let name = map.get(tag).and_then(serde_json::Value::as_str)?;
     let variant = variants
@@ -376,7 +257,7 @@ pub(crate) fn validate_default_for_internal_enum(
         .find(|variant| name == variant.json_name())?;
 
     match variant.details() {
-        VariantDetails::Unit => Some(DefaultKind::Specific),
+        VariantDetails::Unit => Some(()),
         VariantDetails::Struct(props) => {
             // Make an object without the tag.
             let inner_default = serde_json::Value::Object(
@@ -399,7 +280,7 @@ pub(crate) fn validate_default_for_adjacent_enum(
     default: &serde_json::Value,
     tag: &str,
     content: &str,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     let map = default.as_object()?;
 
     let (tag_value, content_value) = match (
@@ -417,7 +298,7 @@ pub(crate) fn validate_default_for_adjacent_enum(
         .find(|variant| tag_value == variant.json_name())?;
 
     match (variant.details(), content_value) {
-        (VariantDetails::Unit, None) => Some(DefaultKind::Specific),
+        (VariantDetails::Unit, None) => Some(()),
         (VariantDetails::Tuple(tup), Some(content_value)) => {
             validate_default_tuple(tup, type_space, content_value)
         }
@@ -432,14 +313,14 @@ pub(crate) fn validate_default_for_untagged_enum(
     type_space: &TypeSpace,
     variants: &[EnumVariant<TypeId>],
     default: &serde_json::Value,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     variants.iter().find_map(|variant| {
         // The name of the variant is not meaningful; we just need to see
         // if any of the variants are valid with the given default.
         match variant.details() {
             VariantDetails::Unit => {
                 default.as_null()?;
-                Some(DefaultKind::Specific)
+                Some(())
             }
             VariantDetails::Item(type_id) => validate_type_id(type_id, type_space, default).ok(),
             VariantDetails::Tuple(tup) => validate_default_tuple(tup, type_space, default),
@@ -454,7 +335,7 @@ fn validate_type_id(
     type_id: &TypeId,
     type_space: &TypeSpace,
     default: &serde_json::Value,
-) -> Result<DefaultKind> {
+) -> Result<()> {
     let type_entry = type_space.id_to_entry.get(type_id).unwrap();
     type_entry.validate_value(type_space, default)
 }
@@ -463,7 +344,7 @@ fn validate_default_tuple(
     types: &[TypeId],
     type_space: &TypeSpace,
     default: &serde_json::Value,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     let arr = default.as_array()?;
     if arr.len() != types.len() {
         return None;
@@ -473,14 +354,14 @@ fn validate_default_tuple(
         .iter()
         .zip(arr.iter())
         .all(|(type_id, value)| validate_type_id(type_id, type_space, value).is_ok())
-        .then_some(DefaultKind::Specific)
+        .then_some(())
 }
 
 fn validate_default_struct_props(
     properties: &[StructProperty<TypeId>],
     type_space: &TypeSpace,
     default: &serde_json::Value,
-) -> Option<DefaultKind> {
+) -> Option<()> {
     let map = default.as_object()?;
 
     // Gather up all properties including those of flattened struct properties:
@@ -530,7 +411,7 @@ fn validate_default_struct_props(
         .filter(|(_, (_, required))| *required)
         .try_for_each(|(name, _)| map.get(name.as_str()).map(|_| ()))?;
 
-    Some(DefaultKind::Specific)
+    Some(())
 }
 
 fn all_props<'a>(
@@ -590,7 +471,7 @@ mod tests {
     use serde_json::json;
     use uuid::Uuid;
 
-    use crate::{defaults::DefaultKind, test_util::get_type, type_entry::TypeEntry, DefaultImpl};
+    use crate::{test_util::get_type, type_entry::TypeEntry};
 
     #[test]
     fn test_default_option() {
@@ -602,11 +483,11 @@ mod tests {
             .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
-            Ok(DefaultKind::Intrinsic)
+            Ok(())
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(42)),
-            Ok(DefaultKind::Specific)
+            Ok(())
         ));
     }
 
@@ -621,11 +502,11 @@ mod tests {
             .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
-            Ok(DefaultKind::Intrinsic)
+            Ok(())
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(42)),
-            Ok(DefaultKind::Specific)
+            Ok(())
         ));
     }
 
@@ -639,11 +520,11 @@ mod tests {
             .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([])),
-            Ok(DefaultKind::Intrinsic),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([1, 2, 5])),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
     }
 
@@ -655,11 +536,11 @@ mod tests {
         assert!(type_entry.validate_value(&type_space, &json!([])).is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!({})),
-            Ok(DefaultKind::Intrinsic),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!({"a": 1, "b": 2})),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
     }
 
@@ -673,7 +554,7 @@ mod tests {
             .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!([1, 2, "three"])),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
     }
 
@@ -684,7 +565,7 @@ mod tests {
 
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!("not-a-uuid")),
-            Ok(DefaultKind::Specific)
+            Ok(())
         ));
     }
 
@@ -695,11 +576,11 @@ mod tests {
 
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(false)),
-            Ok(DefaultKind::Intrinsic),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(true)),
-            Ok(DefaultKind::Generic(DefaultImpl::Boolean)),
+            Ok(()),
         ));
     }
 
@@ -713,11 +594,11 @@ mod tests {
             .is_err());
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(0)),
-            Ok(DefaultKind::Intrinsic),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(42)),
-            Ok(DefaultKind::Generic(DefaultImpl::U64)),
+            Ok(()),
         ));
 
         let (type_space, type_id) = get_type::<String>();
@@ -725,11 +606,11 @@ mod tests {
 
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!("")),
-            Ok(DefaultKind::Intrinsic),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!("howdy")),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
     }
 
@@ -758,7 +639,7 @@ mod tests {
                     }
                 )
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(type_entry
             .validate_value(
@@ -801,7 +682,7 @@ mod tests {
 
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!("A")),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(
@@ -810,7 +691,7 @@ mod tests {
                     "B": ["xx", "yy"]
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(
@@ -819,7 +700,7 @@ mod tests {
                     "C": { "cc": "xx", "dd": "yy" }
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(type_entry
             .validate_value(&type_space, &json!({ "A": null }))
@@ -847,7 +728,7 @@ mod tests {
                     "tag": "A"
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(
@@ -858,7 +739,7 @@ mod tests {
                     "dd": "yy"
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(type_entry
             .validate_value(
@@ -900,7 +781,7 @@ mod tests {
                     "tag": "A"
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(
@@ -910,7 +791,7 @@ mod tests {
                     "content": ["xx", "yy"]
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(
@@ -920,7 +801,7 @@ mod tests {
                     "content": { "cc": "xx", "dd": "yy" }
                 })
             ),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(type_entry.validate_value(&type_space, &json!("A")).is_err());
         assert!(type_entry
@@ -949,15 +830,15 @@ mod tests {
 
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(null)),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!(["xx", "yy"])),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!( { "cc": "xx", "dd": "yy" })),
-            Ok(DefaultKind::Specific),
+            Ok(()),
         ));
         assert!(type_entry.validate_value(&type_space, &json!({})).is_err());
     }
