@@ -34,14 +34,6 @@ use typespace::build::{
     StructProperty, Type, VariantDetails,
 };
 
-// [typespace migration note] Struct-variant property names were
-// `&'a str` borrowed out of typify's own representation; typespace's
-// `StructProperty::rust_name` is a `syn::Ident`, which can only give up
-// its name as an owned String. INTERFACE GAP: consider `rust_name()
-// -> &str` (or storing the name as a String) in typespace. This applies
-// to typespace's view module too, whose property names are owned
-// Strings for the same reason.
-
 /// A typespace type under construction, or an in-flight reference to
 /// another type ID.
 ///
@@ -176,8 +168,6 @@ impl TypeEntryEnum {
             .collect();
 
         let name = get_type_name(&type_name, metadata).unwrap();
-        // INTERFACE GAP: container-level serde rename (set when a patch
-        // renames the type) has no home in typespace's TypeEnum.
         let description = metadata_description(metadata);
 
         let type_patch = TypePatch::new(type_space, name);
@@ -208,8 +198,6 @@ impl TypeEntryStruct {
         schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
-        // INTERFACE GAP: container-level serde rename; see
-        // TypeEntryEnum::from_metadata.
         let description = metadata_description(metadata);
         let default = metadata
             .as_ref()
@@ -245,8 +233,6 @@ impl TypeEntryNewtype {
         schema: Schema,
     ) -> TypeEntry {
         let name = get_type_name(&type_name, metadata).unwrap();
-        // INTERFACE GAP: container-level serde rename; see
-        // TypeEntryEnum::from_metadata.
         let description = metadata_description(metadata);
 
         let type_patch = TypePatch::new(type_space, name);
@@ -416,21 +402,12 @@ impl TypeEntry {
     }
 }
 
-/// Flatten typify's doc block into typespace's single description
-/// string.
+/// A named type's description: the schema's, or `` `Name` `` when the
+/// schema has none.
 ///
-/// typify rendered a type's documentation as a description attribute
-/// followed by a `<details>` block containing the pretty-printed JSON
-/// schema, as line-by-line `#[doc]` attributes, falling back to
-/// `` `Name` `` when the schema has no description.
-///
-/// INTERFACE GAP: typespace's TypeCommon has only a single description
-/// string with no structured place for the schema block, so the whole
-/// thing is flattened into one multi-line string here (which typespace
-/// emits as one `#[doc = "..."]` attribute). The rendered rustdoc is
-/// equivalent but the generated source is not. It also means the schema
-/// must be captured at construction time rather than carried alongside
-/// the type as typify1 did.
+/// The schema itself is unused. It arrives through the converter's
+/// `original_schema` parameters, which on this branch serve nothing
+/// else; removing it means removing that thread.
 fn make_doc(name: &str, description: Option<&String>, _schema: &Schema) -> String {
     match description {
         Some(desc) => desc.clone(),

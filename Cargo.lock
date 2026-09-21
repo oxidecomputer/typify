@@ -1305,7 +1305,7 @@ dependencies = [
 [[package]]
 name = "typespace"
 version = "0.0.1-alpha.1"
-source = "git+https://github.com/oxidecomputer/typespace?branch=main#6086e2a8916ab88a45b283b894dac5a15fef1339"
+source = "git+https://github.com/oxidecomputer/typespace?branch=main#03dda159e7e70e46788a98a629507475a281ccc0"
 dependencies = [
  "codespace",
  "heck",

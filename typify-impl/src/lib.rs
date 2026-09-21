@@ -240,11 +240,6 @@ impl From<syn::Type> for MapType {
 }
 
 /// Settings that alter type generation.
-// [typespace migration note] typify1 had a `type_mod` setting that
-// qualified every named-type identifier query with a module path;
-// typespace makes scope a per-query argument (`ident_in`,
-// `parameter_ident_in`), so the setting is gone and callers pass the
-// scope where they ask for identifiers.
 #[derive(Default, Debug, Clone)]
 pub struct TypeSpaceSettings {
     extra_derives: Vec<String>,
