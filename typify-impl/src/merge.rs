@@ -382,14 +382,20 @@ fn try_merge_with_each_subschema(
                     .iter()
                     .enumerate()
                     .filter(|(jj, _)| *jj != ii)
-                    .map(|(_, not_schema)| {
-                        Schema::Object(SchemaObject {
+                    .filter_map(|(_, not_schema)| {
+                        // A disjoint branch is already excluded by the merged
+                        // schema. Subtracting it again can lose information
+                        // when a shared property accepts any value.
+                        if try_merge_schema(&merged_schema, not_schema, defs).is_err() {
+                            return None;
+                        }
+                        Some(Schema::Object(SchemaObject {
                             subschemas: Some(Box::new(SubschemaValidation {
                                 not: Some(Box::new(not_schema.clone())),
                                 ..Default::default()
                             })),
                             ..Default::default()
-                        })
+                        }))
                     });
                 let joined_schema = [schema.clone(), other.clone()]
                     .into_iter()
@@ -1334,6 +1340,61 @@ mod tests {
     use crate::{merge::merge_so_instance_type, RefKey};
 
     use super::try_merge_schema;
+
+    #[test]
+    fn disjoint_oneof_branches_keep_shared_and_variant_properties() {
+        let input: schemars::schema::Schema = serde_json::from_value(json!({
+            "type": "object",
+            "properties": {"serverName": {"type": "string"}},
+            "required": ["serverName"],
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "mode": {"enum": ["form"]},
+                        "requestedSchema": {"type": "object"},
+                        "_meta": true
+                    },
+                    "required": ["mode", "requestedSchema"]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "mode": {"enum": ["openai/form"]},
+                        "requestedSchema": true,
+                        "_meta": true
+                    },
+                    "required": ["mode", "requestedSchema"]
+                }
+            ]
+        }))
+        .unwrap();
+
+        let object = input.into_object();
+        let merged = super::try_merge_with_subschemas(
+            schemars::schema::SchemaObject {
+                subschemas: None,
+                ..object.clone()
+            },
+            object.subschemas.as_deref(),
+            &BTreeMap::new(),
+        )
+        .unwrap();
+        let branches = merged.subschemas.unwrap().one_of.unwrap();
+        assert_eq!(branches.len(), 2);
+        for branch in branches {
+            let branch = branch.into_object();
+            let parts = branch.subschemas.unwrap().all_of.unwrap();
+            let properties = super::merge_all(&parts, &BTreeMap::new())
+                .into_object()
+                .object
+                .unwrap()
+                .properties;
+            for key in ["serverName", "mode", "requestedSchema", "_meta"] {
+                assert!(properties.contains_key(key), "missing {key}");
+            }
+        }
+    }
 
     #[test]
     fn test_simple_merge() {
