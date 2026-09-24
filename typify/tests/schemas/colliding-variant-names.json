@@ -1,0 +1,18 @@
+{
+  "definitions": {
+    "comparison-operator": {
+      "type": "string",
+      "enum": [
+        "=",
+        ">",
+        "<",
+        "≥",
+        ">=",
+        "≤",
+        "<=",
+        "≠",
+        "!="
+      ]
+    }
+  }
+}
