@@ -7,6 +7,8 @@ use glob::glob;
 use quote::quote;
 use schemars::schema::RootSchema;
 use serde_json::json;
+use typify::typespace::settings::ContainerType;
+use typify::typespace::TypespaceTrait;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
 
@@ -17,7 +19,8 @@ fn test_schemas() {
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
         let entry = entry.unwrap();
         let out_path = entry.clone().with_extension("rs");
-        validate_schema(entry, out_path, &mut TypeSpaceSettings::default()).unwrap();
+        validate_schema(entry.clone(), out_path, TypeSpaceSettings::default())
+            .expect(&format!("failed for {}", entry.to_string_lossy()))
     }
 
     // Make sure it all compiles.
@@ -27,10 +30,14 @@ fn test_schemas() {
 /// Ensure that setting the global config to use a custom map type works.
 #[test]
 fn test_custom_map() {
+    let mut settings = TypeSpaceSettings::default();
+    settings.map_typespace_settings(|s| {
+        s.with_map_type(ContainerType::btree_map().with_path("std::collections::BTreeMap"))
+    });
     validate_schema(
         "tests/schemas/maps.json".into(),
         "tests/schemas/maps_custom.rs".into(),
-        TypeSpaceSettings::default().with_map_type("std::collections::BTreeMap"),
+        settings,
     )
     .unwrap();
 
@@ -41,10 +48,12 @@ fn test_custom_map() {
 /// implementation.
 #[test]
 fn test_various_enums_json_schema() {
+    let mut settings = TypeSpaceSettings::default();
+    settings.map_typespace_settings(|s| s.with_required_trait(TypespaceTrait::JsonSchema));
     validate_schema(
         "tests/schemas/various-enums.json".into(),
         "tests/schemas/various-enums-json-schema.rs".into(),
-        TypeSpaceSettings::default().with_derive("schemars::JsonSchema".to_string()),
+        settings,
     )
     .unwrap();
 
@@ -54,7 +63,7 @@ fn test_various_enums_json_schema() {
 fn validate_schema(
     path: std::path::PathBuf,
     out_path: std::path::PathBuf,
-    typespace: &mut TypeSpaceSettings,
+    mut settings: TypeSpaceSettings,
 ) -> Result<(), Box<dyn Error>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
@@ -70,7 +79,7 @@ fn validate_schema(
     let schema = serde_json::from_value(schema_raw).unwrap();
 
     let mut type_space = TypeSpace::new(
-        typespace
+        settings
             .with_replacement(
                 "HandGeneratedType",
                 "String",
@@ -95,15 +104,17 @@ fn validate_schema(
                 typify::CrateVers::Version("1.0.0".parse().unwrap()),
                 None,
             )
-            .with_struct_builder(true),
+            .map_typespace_settings(|s| s.with_struct_builder(true)),
     );
     type_space.add_root_schema(root_schema)?;
+
+    let types = type_space.to_stream()?;
 
     // Make a file with the generated code.
     let code = quote! {
         #![deny(warnings)]
 
-        #type_space
+        #types
 
         fn main() {}
     };

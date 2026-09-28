@@ -15,6 +15,15 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.8.0\...HEAD[Full list of commits]
 
+**Big Release**
+
+Type generation moves to the `typespace` crate. This impacts a lot of API
+surface area for both builder and macro consumers including how settings are
+configured and how rendered code is produced, including item ordering in the
+rendered code.
+
+Feedback is very welcome as we head to a proper release.
+
 == 0.8.0 (released 2026-09-09)
 
 https://github.com/oxidecomputer/typify/compare/v0.7.0\...v0.8.0[Full list of commits]

@@ -1,64 +1,56 @@
-// Copyright 2025 Oxide Computer Company
+// Copyright 2026 Oxide Computer Company
 
 //! typify backend implementation.
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use conversions::SchemaCache;
-use log::{debug, info};
-use output::OutputSpace;
+use log::info;
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
 use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
-use type_entry::{
-    StructPropertyState, TypeEntry, TypeEntryDetails, TypeEntryNative, TypeEntryNewtype,
-    WrappedValue,
-};
+use type_entry::{TypeEntry, TypeEntryNewtype};
 
 use crate::util::{sanitize, Case};
 
 pub use crate::util::accept_as_ident;
+
+/// The typespace crate, re-exported for consumers of this one.
+///
+/// [`TypeSpace::to_typespace`] yields a [`typespace::Typespace`];
+/// its view API answers type queries (identifiers, structure, trait
+/// impls) that used to live on this crate's own wrapper types.
+pub use ::typespace;
 
 #[cfg(test)]
 mod test_util;
 
 mod conversions;
 mod convert;
-mod cycles;
-mod defaults;
 mod enums;
 mod merge;
-mod output;
 mod rust_extension;
 mod structs;
 mod type_entry;
 mod util;
 mod validate;
-mod value;
 
 #[allow(missing_docs)]
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("unexpected value type")]
     BadValue(String, serde_json::Value),
-    #[error("invalid TypeId")]
-    InvalidTypeId,
     #[error("value does not conform to the given schema")]
     InvalidValue,
+    #[error(transparent)]
+    Typespace(#[from] typespace::error::Error<TypeId>),
     #[error("invalid schema for {}: {reason}", show_type_name(.type_name.as_deref()))]
     InvalidSchema {
         type_name: Option<String>,
         reason: String,
     },
-}
-
-impl Error {
-    fn invalid_value() -> Self {
-        Self::InvalidValue
-    }
 }
 
 #[allow(missing_docs)]
@@ -68,83 +60,18 @@ fn show_type_name(type_name: Option<&str>) -> &str {
     type_name.unwrap_or("<unknown type>")
 }
 
-/// Representation of a type which may have a definition or may be built-in.
-#[derive(Debug)]
-pub struct Type<'a> {
-    type_space: &'a TypeSpace,
-    type_entry: &'a TypeEntry,
-}
-
-#[allow(missing_docs)]
-/// Type details returned by Type::details() to inspect a type.
-pub enum TypeDetails<'a> {
-    Enum(TypeEnum<'a>),
-    Struct(TypeStruct<'a>),
-    Newtype(TypeNewtype<'a>),
-
-    Option(TypeId),
-    Vec(TypeId),
-    Map(TypeId, TypeId),
-    Set(TypeId),
-    Box(TypeId),
-    Tuple(Box<dyn Iterator<Item = TypeId> + 'a>),
-    Array(TypeId, usize),
-    Builtin(&'a str),
-
-    Unit,
-    String,
-}
-
-/// Enum type details.
-pub struct TypeEnum<'a> {
-    details: &'a type_entry::TypeEntryEnum,
-}
-
-/// Enum variant details.
-pub enum TypeEnumVariant<'a> {
-    /// Variant with no associated data.
-    Simple,
-    /// Tuple-type variant with at least one associated type.
-    Tuple(Vec<TypeId>),
-    /// Struct-type variant with named properties and types.
-    Struct(Vec<(&'a str, TypeId)>),
-}
-
-/// Full information pertaining to an enum variant.
-pub struct TypeEnumVariantInfo<'a> {
-    /// Name.
-    pub name: &'a str,
-    /// Description.
-    pub description: Option<&'a str>,
-    /// Details for the enum variant.
-    pub details: TypeEnumVariant<'a>,
-}
-
-/// Struct type details.
-pub struct TypeStruct<'a> {
-    details: &'a type_entry::TypeEntryStruct,
-}
-
-/// Full information pertaining to a struct property.
-pub struct TypeStructPropInfo<'a> {
-    /// Name.
-    pub name: &'a str,
-    /// Description.
-    pub description: Option<&'a str>,
-    /// Whether the propertty is required.
-    pub required: bool,
-    /// Identifies the schema for the property.
-    pub type_id: TypeId,
-}
-
-/// Newtype details.
-pub struct TypeNewtype<'a> {
-    details: &'a type_entry::TypeEntryNewtype,
-}
-
 /// Type identifier returned from type creation and used to lookup types.
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Clone, Hash)]
 pub struct TypeId(u64);
+
+// typespace requires its Id type to implement Display (for error
+// reporting); typify's TypeId is an opaque integer, so this shows the
+// number.
+impl std::fmt::Display for TypeId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Name {
@@ -177,7 +104,13 @@ pub(crate) enum RefKey {
     Def(String),
 }
 
-/// A collection of types.
+/// A collection of types under conversion from JSON Schema.
+///
+/// Add schemas with the `add_*` methods. Querying and rendering are
+/// typespace's job: [`TypeSpace::to_typespace`] finalizes the
+/// collected types into a [`typespace::Typespace`] whose view API
+/// answers identifier, structure, and trait-impl queries;
+/// [`TypeSpace::to_stream`] renders everything to code.
 #[derive(Debug)]
 pub struct TypeSpace {
     next_id: u64,
@@ -189,7 +122,6 @@ pub struct TypeSpace {
     definitions: BTreeMap<RefKey, Schema>,
 
     id_to_entry: BTreeMap<TypeId, TypeEntry>,
-    type_to_id: BTreeMap<TypeEntryDetails, TypeId>,
 
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<RefKey, TypeId>,
@@ -202,9 +134,6 @@ pub struct TypeSpace {
     settings: TypeSpaceSettings,
 
     cache: SchemaCache,
-
-    // Shared functions for generating default values
-    defaults: BTreeSet<DefaultImpl>,
 }
 
 impl Default for TypeSpace {
@@ -213,7 +142,6 @@ impl Default for TypeSpace {
             next_id: 1,
             definitions: Default::default(),
             id_to_entry: Default::default(),
-            type_to_id: Default::default(),
             name_to_id: Default::default(),
             ref_to_id: Default::default(),
             uses_chrono: Default::default(),
@@ -222,130 +150,95 @@ impl Default for TypeSpace {
             uses_regress: Default::default(),
             settings: Default::default(),
             cache: Default::default(),
-            defaults: Default::default(),
         }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum DefaultImpl {
-    Boolean,
-    I64,
-    U64,
-    NZU64,
-}
-
-impl DefaultImpl {
-    /// The name of the shared function this renders as.
-    fn fn_name(&self) -> &'static str {
-        match self {
-            DefaultImpl::Boolean => "default_bool",
-            DefaultImpl::I64 => "default_i64",
-            DefaultImpl::U64 => "default_u64",
-            DefaultImpl::NZU64 => "default_nzu64",
-        }
-    }
-}
-
-/// Type name to use in generated code.
-#[derive(Clone)]
-pub struct MapType(pub syn::Type);
-
-impl MapType {
-    /// Create a new MapType from a [`str`].
-    ///
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    pub fn new(s: &str) -> Self {
-        let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
-        Self(map_type)
-    }
-}
-
-impl std::str::FromStr for MapType {
-    type Err = String;
-
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        let map_type = syn::parse_str::<syn::Type>(s)
-            .map_err(|err| format!("invalid map type {s:?}: {err}"))?;
-        Ok(Self(map_type))
-    }
-}
-
-impl Default for MapType {
-    fn default() -> Self {
-        Self::new("::std::collections::HashMap")
-    }
-}
-
-impl std::fmt::Debug for MapType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "MapType({})", self.0.to_token_stream())
-    }
-}
-
-impl std::fmt::Display for MapType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.0.to_token_stream().fmt(f)
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for MapType {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        s.parse().map_err(serde::de::Error::custom)
-    }
-}
-
-impl From<String> for MapType {
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    fn from(s: String) -> Self {
-        Self::new(&s)
-    }
-}
-
-impl From<&str> for MapType {
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    fn from(s: &str) -> Self {
-        Self::new(s)
-    }
-}
-
-impl From<syn::Type> for MapType {
-    fn from(t: syn::Type) -> Self {
-        Self(t)
     }
 }
 
 /// Settings that alter type generation.
-#[derive(Default, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct TypeSpaceSettings {
-    type_mod: Option<String>,
-    extra_derives: Vec<String>,
-    extra_attrs: Vec<String>,
-    struct_builder: bool,
+    typespace: typespace::settings::Settings,
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
-    map_type: MapType,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+impl Default for TypeSpaceSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl TypeSpaceSettings {
+    /// typify's defaults: types render with the typespace settings typify
+    /// starts from (every type must serialize, deserialize, clone, and
+    /// debug-print; comparison, hashing, string conversion, `Copy`, and
+    /// `Default` are taken wherever the type can support them; maps
+    /// render as `::std::collections::HashMap`; typespace's typify
+    /// compatibility mode is on), with no replacements, patches, or
+    /// conversions and the default policy for external crates.
+    pub fn new() -> Self {
+        Self {
+            typespace: baseline_typespace_settings(),
+            unknown_crates: Default::default(),
+            crates: Default::default(),
+            patch: Default::default(),
+            replace: Default::default(),
+            convert: Default::default(),
+        }
+    }
+
+    /// Adjust the typespace settings generated code is rendered with.
+    ///
+    /// `f` receives the settings as they stand and returns the settings
+    /// to use: extra derives and attributes, a struct builder, a
+    /// different map type, and anything else typespace offers.
+    pub fn map_typespace_settings<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(typespace::settings::Settings) -> typespace::settings::Settings,
+    {
+        let typespace = std::mem::replace(
+            &mut self.typespace,
+            typespace::settings::Settings::minimal(),
+        );
+        self.typespace = f(typespace);
+        self
+    }
+}
+
+/// The typespace settings behind [`TypeSpaceSettings::new`]; see there.
+/// Compatibility mode withholds `Default` from a tuple struct, a unit
+/// struct, and a newtype, which typify never derives it for.
+///
+/// A JSON object's keys are strings, so a map key here is always
+/// `String`, a string newtype, or a string enum, every one of which
+/// carries both the hashed and the ordered lookup traits. Whatever a
+/// configured map container demands of its key is therefore satisfied,
+/// and a map named by path alone can take the `hash_map` preset's
+/// obligations and provisions without a second thought; see the
+/// consumers that set one (cargo-typify's `--map-type`, the macro's
+/// `map_type`).
+fn baseline_typespace_settings() -> typespace::settings::Settings {
+    typespace::settings::Settings::minimal()
+        .with_required_trait(typespace::TypespaceTrait::Serialize)
+        .with_required_trait(typespace::TypespaceTrait::Deserialize)
+        .with_required_trait(typespace::TypespaceTrait::Clone)
+        .with_required_trait(typespace::TypespaceTrait::Debug)
+        .with_desired_trait(typespace::TypespaceTrait::Default)
+        .with_desired_trait(typespace::TypespaceTrait::Eq)
+        .with_desired_trait(typespace::TypespaceTrait::PartialEq)
+        .with_desired_trait(typespace::TypespaceTrait::Ord)
+        .with_desired_trait(typespace::TypespaceTrait::PartialOrd)
+        .with_desired_trait(typespace::TypespaceTrait::Hash)
+        .with_desired_trait(typespace::TypespaceTrait::Display)
+        .with_desired_trait(typespace::TypespaceTrait::FromStr)
+        .with_desired_trait(typespace::TypespaceTrait::Copy)
+        .with_map_type(typespace::settings::ContainerType::hash_map())
+        .with_typify_compat(true)
 }
 
 #[derive(Debug, Clone)]
@@ -449,35 +342,44 @@ impl std::str::FromStr for TypeSpaceImpl {
     }
 }
 
+impl TypeSpaceImpl {
+    /// Translate consumer-supplied capability markers into the trait
+    /// set typespace expects a native to declare.
+    ///
+    /// This backs `with_conversion` and `with_replacement`, the two
+    /// public settings that let a consumer name an opaque native type;
+    /// typify cannot verify the consumer's claim the way it verifies
+    /// its own built-in natives, so it takes the markers at face
+    /// value. typify has always assumed the basic complement (`Clone`,
+    /// `Debug`, `Serialize`, `Deserialize`) regardless of what markers
+    /// are given, so those are added unconditionally. `JsonSchema`
+    /// joins them: a requested derive was always emitted without
+    /// consulting the conversion target, so a named native must
+    /// satisfy it. `FromStringIrrefutable` has no typespace equivalent
+    /// and is dropped.
+    pub(crate) fn native_traits(impls: &[Self]) -> typespace::TypespaceTraitSet {
+        let mut traits = [
+            typespace::TypespaceTrait::Clone,
+            typespace::TypespaceTrait::Debug,
+            typespace::TypespaceTrait::Serialize,
+            typespace::TypespaceTrait::Deserialize,
+            typespace::TypespaceTrait::JsonSchema,
+        ]
+        .into_iter()
+        .collect::<typespace::TypespaceTraitSet>();
+        for impl_ in impls {
+            match impl_ {
+                Self::FromStr => traits.add(typespace::TypespaceTrait::FromStr),
+                Self::Display => traits.add(typespace::TypespaceTrait::Display),
+                Self::Default => traits.add(typespace::TypespaceTrait::Default),
+                Self::FromStringIrrefutable => {}
+            }
+        }
+        traits
+    }
+}
+
 impl TypeSpaceSettings {
-    /// Set the name of the path prefix for types defined in this [TypeSpace].
-    pub fn with_type_mod<S: AsRef<str>>(&mut self, type_mod: S) -> &mut Self {
-        self.type_mod = Some(type_mod.as_ref().to_string());
-        self
-    }
-
-    /// Add an additional derive macro to apply to all defined types.
-    pub fn with_derive(&mut self, derive: String) -> &mut Self {
-        if !self.extra_derives.contains(&derive) {
-            self.extra_derives.push(derive);
-        }
-        self
-    }
-
-    /// Add an additional attribute to apply to all defined types.
-    pub fn with_attr(&mut self, attr: String) -> &mut Self {
-        if !self.extra_attrs.contains(&attr) {
-            self.extra_attrs.push(attr);
-        }
-        self
-    }
-
-    /// For structs, include a "builder" type that can be used to construct it.
-    pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
-        self.struct_builder = struct_builder;
-        self
-    }
-
     /// Replace a referenced type with a named type. This causes the referenced
     /// type *not* to be generated. If the same `type_name` is specified multiple times,
     /// the last one is honored.
@@ -524,7 +426,7 @@ impl TypeSpaceSettings {
     /// use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
     /// let mut type_space = TypeSpace::new(
     ///        TypeSpaceSettings::default()
-    ///            .with_struct_builder(true)
+    ///            .map_typespace_settings(|s| s.with_struct_builder(true))
     ///            .with_conversion(
     ///                SchemaObject {
     ///                    instance_type: Some(InstanceType::Number.into()),
@@ -578,25 +480,6 @@ impl TypeSpaceSettings {
                 rename: rename.cloned(),
             },
         );
-        self
-    }
-
-    /// Specify the map-like type to be used in generated code.
-    ///
-    /// ## Requirements
-    ///
-    /// - An `is_empty` method that returns a boolean
-    /// - Two generic parameters, `K` and `V`
-    /// - [`Default`] + [`Clone`] + [`Debug`] +
-    ///   [`Serialize`][serde::Serialize] + [`Deserialize`][serde::Deserialize]
-    ///
-    /// ## Examples
-    ///
-    /// - [`::std::collections::HashMap`]
-    /// - [`::std::collections::BTreeMap`]
-    /// - [`::indexmap::IndexMap`](https://docs.rs/indexmap/latest/indexmap/map/struct.IndexMap.html)
-    pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
-        self.map_type = map_type.into();
         self
     }
 }
@@ -719,23 +602,17 @@ impl TypeSpace {
                 Some(replace_type) => {
                     let type_entry = TypeEntry::new_native(
                         replace_type.replace_type.clone(),
-                        &replace_type.impls.clone(),
+                        TypeSpaceImpl::native_traits(&replace_type.impls),
                     );
                     self.id_to_entry.insert(type_id, type_entry);
                 }
             }
         }
 
-        // Eliminate cycles. It's sufficient to only start from referenced
-        // types as a reference is required to make a cycle.
-        self.break_cycles(base_id..base_id + def_len);
-
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-            debug!("finalizing type entry: {} {:#?}", index, &type_entry);
-            type_entry.finalize(self)?;
+            let type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -748,19 +625,11 @@ impl TypeSpace {
             .as_ref()
             .and_then(|m| m.default.as_ref())
             .cloned()
-            .map(WrappedValue::new);
-        let type_entry = match &mut type_entry.details {
+            .map(typespace::build::JsonValue::new);
+        let type_entry = match &mut type_entry {
             // The types that are already named are good to go.
-            TypeEntryDetails::Enum(details) => {
-                details.default = default;
-                type_entry
-            }
-            TypeEntryDetails::Struct(details) => {
-                details.default = default;
-                type_entry
-            }
-            TypeEntryDetails::Newtype(details) => {
-                details.default = default;
+            TypeEntry::Type(typ) if typ.is_named() => {
+                typ.set_default(default);
                 type_entry
             }
 
@@ -768,7 +637,7 @@ impl TypeSpace {
             // simple alias to another type in this list of definitions
             // (which may nor may not have already been converted). We
             // simply create a newtype with that type ID.
-            TypeEntryDetails::Reference(type_id) => TypeEntryNewtype::from_metadata(
+            TypeEntry::Reference(type_id) => TypeEntryNewtype::from_metadata(
                 self,
                 type_name,
                 metadata,
@@ -776,7 +645,11 @@ impl TypeSpace {
                 schema.clone(),
             ),
 
-            TypeEntryDetails::Native(native) if native.name_match(&type_name) => type_entry,
+            TypeEntry::Type(typespace::build::Type::Native(native))
+                if native_name_match(native, &type_name) =>
+            {
+                type_entry
+            }
 
             // For types that don't have names, this is effectively a type
             // alias which we treat as a newtype.
@@ -799,7 +672,8 @@ impl TypeSpace {
         };
         // TODO need a type alias?
         if let Some(entry_name) = type_entry.name() {
-            self.name_to_id.insert(entry_name.clone(), type_id.clone());
+            self.name_to_id
+                .insert(entry_name.to_string(), type_id.clone());
         }
         self.id_to_entry.insert(type_id, type_entry);
         Ok(())
@@ -829,8 +703,7 @@ impl TypeSpace {
         // Finalize all created types.
         for index in base_id..self.next_id {
             let type_id = TypeId(index);
-            let mut type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
-            type_entry.finalize(self)?;
+            let type_entry = self.id_to_entry.get(&type_id).unwrap().clone();
             self.id_to_entry.insert(type_id, type_entry);
         }
 
@@ -872,15 +745,6 @@ impl TypeSpace {
         }
     }
 
-    /// Get a type given its ID.
-    pub fn get_type(&self, type_id: &TypeId) -> Result<Type<'_>> {
-        let type_entry = self.id_to_entry.get(type_id).ok_or(Error::InvalidTypeId)?;
-        Ok(Type {
-            type_space: self,
-            type_entry,
-        })
-    }
-
     /// Whether the generated code needs `chrono` crate.
     pub fn uses_chrono(&self) -> bool {
         self.uses_chrono
@@ -901,84 +765,61 @@ impl TypeSpace {
         self.uses_uuid
     }
 
-    /// Iterate over all types including those defined in this [TypeSpace] and
-    /// those referred to by those types.
-    pub fn iter_types(&self) -> impl Iterator<Item = Type<'_>> {
-        self.id_to_entry.values().map(move |type_entry| Type {
-            type_space: self,
-            type_entry,
-        })
+    /// The type inserted under `type_id`, as it was inserted.
+    ///
+    /// This is the declaration typify handed typespace, available before
+    /// finalization: what kind of type it is, and the ids its children
+    /// carry. Anything the finalized graph decides, such as trait impls or
+    /// identifiers, is not known here; ask the [`typespace::Typespace`]
+    /// from [`TypeSpace::to_typespace`] for those.
+    ///
+    /// Answers `None` for an id this type space never returned.
+    pub fn inserted_type(&self, type_id: &TypeId) -> Option<&typespace::build::Type<TypeId>> {
+        match self.id_to_entry.get(type_id)? {
+            TypeEntry::Type(typ) => Some(typ),
+            TypeEntry::Reference(_) => None,
+        }
+    }
+
+    /// Finalize the collected types into a [`typespace::Typespace`].
+    ///
+    /// The typespace is the query surface for the collected types: use
+    /// its `get_type` and `iter_types` to inspect a type's structure,
+    /// render its identifier (optionally scoped by a module path), and
+    /// ask about trait impls. Conversion may continue after this call;
+    /// a later call reflects the additional types.
+    pub fn to_typespace(&self) -> Result<typespace::Typespace<TypeId>> {
+        let mut builder = typespace::TypespaceBuilder::new(self.settings.typespace.clone());
+
+        for (type_id, type_entry) in &self.id_to_entry {
+            match type_entry {
+                TypeEntry::Type(typ) => {
+                    builder
+                        .insert(type_id.clone(), typ.clone())
+                        .expect("type IDs are unique by construction");
+                }
+                // References never land in id_to_entry (assign_type
+                // unwraps them); this is defensive.
+                TypeEntry::Reference(_) => {}
+            }
+        }
+
+        Ok(builder.finalize(|inner: &TypeId| TypeId(inner.0 | (1 << 63)))?)
     }
 
     /// All code for processed types.
-    pub fn to_stream(&self) -> TokenStream {
-        let mut output = OutputSpace::default();
+    ///
+    /// Rendering is delegated to typespace: the stored types are
+    /// inserted into a `TypespaceBuilder`, finalized, and rendered
+    /// through codespace. Finalization errors (dangling references,
+    /// name collisions, unsatisfiable trait requirements) surface as
+    /// [`Error::Typespace`].
+    pub fn to_stream(&self) -> Result<TokenStream> {
+        let typespace = self.to_typespace()?;
 
-        // Add all types.
-        self.id_to_entry
-            .values()
-            .for_each(|type_entry| type_entry.output(self, &mut output));
+        let codespace = typespace.to_codespace();
 
-        // Add the shared default functions that some emitted item actually
-        // calls. This is gross, and may have false-positives, but those should
-        // be basically benign.
-        let called = self
-            .defaults
-            .iter()
-            .filter(|x| output.contains(x.fn_name()))
-            .collect::<Vec<_>>();
-        called
-            .into_iter()
-            .for_each(|x| output.add_item(output::OutputSpaceMod::Defaults, "", x.into()));
-
-        // Add the error type conversions use, but only when some emitted item
-        // references it. This is also kind of gross that we're groveling
-        // around through output to decide, but it will--I hope--be
-        // short-lived.
-        if output.contains("ConversionError") {
-            self.add_error_item(&mut output);
-        }
-
-        output.into_stream()
-    }
-
-    /// The error type generated `TryFrom` and `FromStr` impls report.
-    fn add_error_item(&self, output: &mut OutputSpace) {
-        output.add_item(
-            output::OutputSpaceMod::Error,
-            "",
-            quote! {
-                /// Error from a `TryFrom` or `FromStr` implementation.
-                pub struct ConversionError(::std::borrow::Cow<'static, str>);
-
-                impl ::std::error::Error for ConversionError {}
-                impl ::std::fmt::Display for ConversionError {
-                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
-                        -> Result<(), ::std::fmt::Error>
-                    {
-                        ::std::fmt::Display::fmt(&self.0, f)
-                    }
-                }
-
-                impl ::std::fmt::Debug for ConversionError {
-                    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>)
-                        -> Result<(), ::std::fmt::Error>
-                    {
-                        ::std::fmt::Debug::fmt(&self.0, f)
-                    }
-                }
-                impl From<&'static str> for ConversionError {
-                    fn from(value: &'static str) -> Self {
-                        Self(value.into())
-                    }
-                }
-                impl From<String> for ConversionError {
-                    fn from(value: String) -> Self {
-                        Self(value.into())
-                    }
-                }
-            },
-        );
+        Ok(codespace.into_stream())
     }
 
     /// Allocated the next TypeId.
@@ -988,14 +829,13 @@ impl TypeSpace {
         id
     }
 
-    /// Assign a TypeId for a TypeEntry. This handles resolving references,
-    /// checking for duplicate type definitions (e.g. to make sure there aren't
-    /// two conflicting types of the same name), and deduplicates various
-    /// flavors of built-in types.
+    /// Assign a TypeId for a TypeEntry. This handles resolving references
+    /// and checking for duplicate type definitions (e.g. to make sure there
+    /// aren't two conflicting types of the same name).
     fn assign_type(&mut self, ty: TypeEntry) -> TypeId {
-        if let TypeEntryDetails::Reference(type_id) = ty.details {
+        if let TypeEntry::Reference(type_id) = ty {
             type_id
-        } else if let Some(name) = ty.name() {
+        } else if let Some(name) = ty.name().map(str::to_string) {
             // If there's already a type of this name, we make sure it's
             // identical. Note that this covers all user-defined types.
 
@@ -1005,7 +845,7 @@ impl TypeSpace {
             // bunch of places and if that were the case we might expect
             // them to be different and resolve that by renaming or scoping
             // them in some way.
-            if let Some(type_id) = self.name_to_id.get(name) {
+            if let Some(type_id) = self.name_to_id.get(&name) {
                 // TODO we'd like to verify that the type is structurally the
                 // same, but the types may not be functionally equal. This is a
                 // consequence of types being "finalized" after each type
@@ -1014,15 +854,12 @@ impl TypeSpace {
                 type_id.clone()
             } else {
                 let type_id = self.assign();
-                self.name_to_id.insert(name.clone(), type_id.clone());
+                self.name_to_id.insert(name, type_id.clone());
                 self.id_to_entry.insert(type_id.clone(), ty);
                 type_id
             }
-        } else if let Some(type_id) = self.type_to_id.get(&ty.details) {
-            type_id.clone()
         } else {
             let type_id = self.assign();
-            self.type_to_id.insert(ty.details.clone(), type_id.clone());
             self.id_to_entry.insert(type_id.clone(), ty);
             type_id
         }
@@ -1039,18 +876,14 @@ impl TypeSpace {
     ) -> Result<(TypeId, &'a Option<Box<Metadata>>)> {
         let (mut type_entry, metadata) = self.convert_schema(type_name, schema)?;
         if let Some(metadata) = metadata {
-            let default = metadata.default.clone().map(WrappedValue::new);
-            match &mut type_entry.details {
-                TypeEntryDetails::Enum(details) => {
-                    details.default = default;
-                }
-                TypeEntryDetails::Struct(details) => {
-                    details.default = default;
-                }
-                TypeEntryDetails::Newtype(details) => {
-                    details.default = default;
-                }
-                _ => (),
+            let default = metadata
+                .default
+                .clone()
+                .map(typespace::build::JsonValue::new);
+            // Only named types carry a default; set_default is a no-op
+            // otherwise.
+            if let Some(typ) = type_entry.as_type_mut() {
+                typ.set_default(default);
             }
         }
         let type_id = self.assign_type(type_entry);
@@ -1058,212 +891,48 @@ impl TypeSpace {
     }
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
+    ///
+    /// typify1 tolerated nested Option types internally and flattened
+    /// them when rendering identifiers; typespace renders exactly the
+    /// types it is given, so we avoid constructing Option<Option<T>> in
+    /// the first place. (A forward reference won't have an entry yet,
+    /// but references always name named types, never raw Options, so
+    /// wrapping is correct in that case.)
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
-        self.assign_type(TypeEntryDetails::Option(id.clone()).into())
+        if let Some(entry) = self.id_to_entry.get(id) {
+            if matches!(entry, TypeEntry::Type(typespace::build::Type::Option(_))) {
+                return id.clone();
+            }
+        }
+        self.assign_type(typespace::build::Type::Option(id.clone()).into())
     }
 
     // Create an Option<T> from a TypeEntry by assigning it type.
     fn type_to_option(&mut self, ty: TypeEntry) -> TypeEntry {
-        TypeEntryDetails::Option(self.assign_type(ty)).into()
-    }
-
-    /// Create a Box<T> from a pre-assigned TypeId and assign it an ID.
-    fn id_to_box(&mut self, id: &TypeId) -> TypeId {
-        self.assign_type(TypeEntryDetails::Box(id.clone()).into())
-    }
-}
-
-impl ToTokens for TypeSpace {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        tokens.extend(self.to_stream())
-    }
-}
-
-impl Type<'_> {
-    /// The name of the type as a String.
-    pub fn name(&self) -> String {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.type_name(type_space)
-    }
-
-    /// The identifier for the type as might be used for a function return or
-    /// defining the type of a member of a struct..
-    pub fn ident(&self) -> TokenStream {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.type_ident(type_space, &type_space.settings.type_mod)
-    }
-
-    /// The identifier for the type as might be used for a parameter in a
-    /// function signature. In general: simple types are the same as
-    /// [Type::ident] and complex types prepend a `&`.
-    pub fn parameter_ident(&self) -> TokenStream {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.type_parameter_ident(type_space, None)
-    }
-
-    /// The identifier for the type as might be used for a parameter in a
-    /// function signature along with a lifetime parameter. In general: simple
-    /// types are the same as [Type::ident] and complex types prepend a
-    /// `&'<lifetime>`.
-    pub fn parameter_ident_with_lifetime(&self, lifetime: &str) -> TokenStream {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.type_parameter_ident(type_space, Some(lifetime))
-    }
-
-    /// A textual description of the type appropriate for debug output.
-    pub fn describe(&self) -> String {
-        self.type_entry.describe()
-    }
-
-    /// Get details about the type.
-    pub fn details(&self) -> TypeDetails<'_> {
-        match &self.type_entry.details {
-            // Named user-defined types
-            TypeEntryDetails::Enum(details) => TypeDetails::Enum(TypeEnum { details }),
-            TypeEntryDetails::Struct(details) => TypeDetails::Struct(TypeStruct { details }),
-            TypeEntryDetails::Newtype(details) => TypeDetails::Newtype(TypeNewtype { details }),
-
-            // Compound types
-            TypeEntryDetails::Option(type_id) => TypeDetails::Option(type_id.clone()),
-            TypeEntryDetails::Vec(type_id) => TypeDetails::Vec(type_id.clone()),
-            TypeEntryDetails::Map(key_id, value_id) => {
-                TypeDetails::Map(key_id.clone(), value_id.clone())
-            }
-            TypeEntryDetails::Set(type_id) => TypeDetails::Set(type_id.clone()),
-            TypeEntryDetails::Box(type_id) => TypeDetails::Box(type_id.clone()),
-            TypeEntryDetails::Tuple(types) => TypeDetails::Tuple(Box::new(types.iter().cloned())),
-            TypeEntryDetails::Array(type_id, length) => {
-                TypeDetails::Array(type_id.clone(), *length)
-            }
-
-            // Builtin types
-            TypeEntryDetails::Unit => TypeDetails::Unit,
-            TypeEntryDetails::Native(TypeEntryNative {
-                type_name: name, ..
-            })
-            | TypeEntryDetails::Integer(name)
-            | TypeEntryDetails::Float(name) => TypeDetails::Builtin(name.as_str()),
-            TypeEntryDetails::Boolean => TypeDetails::Builtin("bool"),
-            TypeEntryDetails::String => TypeDetails::String,
-            TypeEntryDetails::JsonValue => TypeDetails::Builtin("::serde_json::Value"),
-
-            // Only used during processing; shouldn't be visible at this point
-            TypeEntryDetails::Reference(_) => unreachable!(),
+        // As with id_to_option, don't nest Options.
+        if matches!(&ty, TypeEntry::Type(typespace::build::Type::Option(_))) {
+            return ty;
         }
-    }
-
-    /// Checks if the type has the associated impl.
-    pub fn has_impl(&self, impl_name: TypeSpaceImpl) -> bool {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-        type_entry.has_impl(type_space, impl_name)
-    }
-
-    /// Provides the the type identifier for the builder if one exists.
-    pub fn builder(&self) -> Option<TokenStream> {
-        let Type {
-            type_space,
-            type_entry,
-        } = self;
-
-        if !type_space.settings.struct_builder {
-            return None;
-        }
-
-        match &type_entry.details {
-            TypeEntryDetails::Struct(type_entry::TypeEntryStruct { name, .. }) => {
-                match &type_space.settings.type_mod {
-                    Some(type_mod) => {
-                        let type_mod = format_ident!("{}", type_mod);
-                        let type_name = format_ident!("{}", name);
-                        Some(quote! { #type_mod :: builder :: #type_name })
-                    }
-                    None => {
-                        let type_name = format_ident!("{}", name);
-                        Some(quote! { builder :: #type_name })
-                    }
-                }
-            }
-            _ => None,
-        }
+        typespace::build::Type::Option(self.assign_type(ty)).into()
     }
 }
 
-impl<'a> TypeEnum<'a> {
-    /// Get name and information of each enum variant.
-    pub fn variants(&'a self) -> impl Iterator<Item = (&'a str, TypeEnumVariant<'a>)> {
-        self.variants_info().map(|info| (info.name, info.details))
-    }
-
-    /// Get all information for each enum variant.
-    pub fn variants_info(&'a self) -> impl Iterator<Item = TypeEnumVariantInfo<'a>> {
-        self.details.variants.iter().map(move |variant| {
-            let details = match &variant.details {
-                type_entry::VariantDetails::Simple => TypeEnumVariant::Simple,
-                // The distinction between a lone item variant and a tuple
-                // variant with a single item is only relevant internally.
-                type_entry::VariantDetails::Item(type_id) => {
-                    TypeEnumVariant::Tuple(vec![type_id.clone()])
-                }
-                type_entry::VariantDetails::Tuple(types) => TypeEnumVariant::Tuple(types.clone()),
-                type_entry::VariantDetails::Struct(properties) => TypeEnumVariant::Struct(
-                    properties
-                        .iter()
-                        .map(|prop| (prop.name.as_str(), prop.type_id.clone()))
-                        .collect(),
-                ),
-            };
-            TypeEnumVariantInfo {
-                name: variant.ident_name.as_ref().unwrap(),
-                description: variant.description.as_deref(),
-                details,
-            }
-        })
-    }
-}
-
-impl<'a> TypeStruct<'a> {
-    /// Get name and type of each property.
-    pub fn properties(&'a self) -> impl Iterator<Item = (&'a str, TypeId)> {
-        self.details
-            .properties
-            .iter()
-            .map(move |prop| (prop.name.as_str(), prop.type_id.clone()))
-    }
-
-    /// Get all information about each struct property.
-    pub fn properties_info(&'a self) -> impl Iterator<Item = TypeStructPropInfo<'a>> {
-        self.details
-            .properties
-            .iter()
-            .map(move |prop| TypeStructPropInfo {
-                name: prop.name.as_str(),
-                description: prop.description.as_deref(),
-                required: matches!(&prop.state, StructPropertyState::Required),
-                type_id: prop.type_id.clone(),
-            })
-    }
-}
-
-impl TypeNewtype<'_> {
-    /// Get the inner type of the newtype struct.
-    pub fn inner(&self) -> TypeId {
-        self.details.type_id.clone()
-    }
+/// Whether a native type's name matches the required name for a
+/// reference type (or the native type has parameters and so couldn't
+/// simply be aliased).
+fn native_name_match(native: &typespace::build::Native<TypeId>, type_name: &Name) -> bool {
+    // typespace answers a native's path as a syn::Type, so read the
+    // last segment rather than splitting the rendered tokens, which
+    // carry spaces around their separators.
+    let native_name = match native.path() {
+        syn::Type::Path(path) => path.path.segments.last().map(|seg| seg.ident.to_string()),
+        _ => None,
+    };
+    !native.parameters().is_empty()
+        || matches!(
+            (type_name, native_name.as_deref()),
+            (Name::Required(req), Some(name)) if req == name
+        )
 }
 
 #[cfg(test)]
@@ -1275,36 +944,9 @@ mod tests {
     use std::collections::HashSet;
 
     use crate::{
-        output::OutputSpace,
-        test_util::validate_output,
-        type_entry::{TypeEntryEnum, VariantDetails},
-        MapType, Name, TypeEntryDetails, TypeSpace, TypeSpaceSettings,
+        test_util::validate_output, type_entry::TypeEntry, Name, TypeSpace, TypeSpaceSettings,
     };
-
-    #[test]
-    fn test_map_type_from_str() {
-        let map_type = "::std::collections::BTreeMap".parse::<MapType>().unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        "not a valid!!type".parse::<MapType>().unwrap_err();
-        "".parse::<MapType>().unwrap_err();
-    }
-
-    #[test]
-    fn test_map_type_deserialize() {
-        let map_type: MapType =
-            serde_json::from_value(json!("::std::collections::BTreeMap")).unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        // Strings with escape sequences require owned deserialization; make
-        // sure that works.
-        let map_type: MapType =
-            serde_json::from_str("\"::std::collections::\\u0042TreeMap\"").unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        // ... and invalid types must produce an error rather than a panic.
-        serde_json::from_value::<MapType>(json!("not a valid!!type")).unwrap_err();
-    }
+    use typespace::build::{Type, VariantDetails};
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema)]
@@ -1367,16 +1009,10 @@ mod tests {
 
         println!("{:#?}", ty);
 
-        let mut output = OutputSpace::default();
-        ty.output(&type_space, &mut output);
-        println!("{}", output.into_stream());
-
-        for ty in type_space.id_to_entry.values() {
-            println!("{:#?}", ty);
-            let mut output = OutputSpace::default();
-            ty.output(&type_space, &mut output);
-            println!("{}", output.into_stream());
-        }
+        // Render everything (including the newly converted type) via
+        // typespace.
+        let _ = type_space.assign_type(ty);
+        println!("{}", type_space.to_stream().unwrap());
     }
 
     #[test]
@@ -1403,7 +1039,7 @@ mod tests {
         let settings = TypeSpaceSettings::default();
         let mut type_space = TypeSpace::new(&settings);
         type_space.add_root_schema(schema).unwrap();
-        let tokens = type_space.to_stream().to_string();
+        let tokens = type_space.to_stream().unwrap().to_string();
         println!("{}", tokens);
         assert!(tokens
             .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"))
@@ -1433,14 +1069,15 @@ mod tests {
             )
             .unwrap();
 
-        match ty.details {
-            TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) => {
-                for variant in &variants {
-                    assert_eq!(variant.details, VariantDetails::Simple);
+        match &ty {
+            TypeEntry::Type(Type::Enum(type_enum)) => {
+                let variants = type_enum.get_variants();
+                for variant in variants {
+                    assert_eq!(variant.details(), &VariantDetails::Unit);
                 }
                 let var_names = variants
                     .iter()
-                    .map(|variant| variant.ident_name.as_ref().unwrap().clone())
+                    .map(|variant| variant.rust_name().to_string())
                     .collect::<HashSet<_>>();
                 assert_eq!(
                     var_names,
@@ -1451,10 +1088,7 @@ mod tests {
                 );
             }
             _ => {
-                let mut output = OutputSpace::default();
-                ty.output(&type_space, &mut output);
-                println!("{}", output.into_stream());
-                panic!();
+                panic!("unexpected type entry {:#?}", ty);
             }
         }
     }
@@ -1480,13 +1114,14 @@ mod tests {
             )
             .unwrap();
 
-        if let TypeEntryDetails::Option(id) = &te.details {
+        if let TypeEntry::Type(Type::Option(id)) = &te {
             let ote = type_space.id_to_entry.get(id).unwrap();
-            if let TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) = &ote.details {
-                let variants = variants
+            if let Type::Enum(type_enum) = ote.as_type() {
+                let variants = type_enum
+                    .get_variants()
                     .iter()
-                    .map(|v| match v.details {
-                        VariantDetails::Simple => v.ident_name.as_ref().unwrap().clone(),
+                    .map(|v| match v.details() {
+                        VariantDetails::Unit => v.rust_name().to_string(),
                         _ => panic!("unexpected variant type"),
                     })
                     .collect::<HashSet<_>>();
@@ -1520,61 +1155,5 @@ mod tests {
         }
 
         validate_output::<Things>();
-    }
-
-    #[test]
-    fn test_builder_name() {
-        #[allow(dead_code)]
-        #[derive(JsonSchema)]
-        struct TestStruct {
-            x: u32,
-        }
-
-        let mut type_space = TypeSpace::default();
-        let schema = schema_for!(TestStruct);
-        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
-        let ty = type_space.get_type(&type_id).unwrap();
-
-        assert!(ty.builder().is_none());
-
-        let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
-        let schema = schema_for!(TestStruct);
-        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
-        let ty = type_space.get_type(&type_id).unwrap();
-
-        assert_eq!(
-            ty.builder().map(|ts| ts.to_string()),
-            Some("builder :: TestStruct".to_string())
-        );
-
-        let mut type_space = TypeSpace::new(
-            TypeSpaceSettings::default()
-                .with_type_mod("types")
-                .with_struct_builder(true),
-        );
-        let schema = schema_for!(TestStruct);
-        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
-        let ty = type_space.get_type(&type_id).unwrap();
-
-        assert_eq!(
-            ty.builder().map(|ts| ts.to_string()),
-            Some("types :: builder :: TestStruct".to_string())
-        );
-
-        #[allow(dead_code)]
-        #[derive(JsonSchema)]
-        enum TestEnum {
-            X,
-            Y,
-        }
-        let mut type_space = TypeSpace::new(
-            TypeSpaceSettings::default()
-                .with_type_mod("types")
-                .with_struct_builder(true),
-        );
-        let schema = schema_for!(TestEnum);
-        let type_id = type_space.add_root_schema(schema).unwrap().unwrap();
-        let ty = type_space.get_type(&type_id).unwrap();
-        assert!(ty.builder().is_none());
     }
 }

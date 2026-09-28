@@ -91,7 +91,7 @@ fn test_derive() {
             input,
             "--no-builder",
             "--additional-derive",
-            "ExtraDerive",
+            "::extra::ExtraDerive",
             "--output",
             output_file.to_str().unwrap(),
         ])
@@ -141,9 +141,9 @@ fn test_multi_derive() {
             input,
             "--no-builder",
             "--additional-derive",
-            "ExtraDerive",
+            "::extra::ExtraDerive",
             "--additional-derive",
-            "AnotherDerive",
+            "::extra::AnotherDerive",
             "--output",
             output_file.to_str().unwrap(),
         ])

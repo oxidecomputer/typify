@@ -6,6 +6,7 @@ use std::{env, fs, path::Path};
 use schemars::schema::Schema;
 use schemars::JsonSchema;
 use serde::Serialize;
+use typify::typespace::settings::ContainerType;
 use typify::{TypeSpace, TypeSpaceSettings};
 
 #[allow(dead_code)]
@@ -179,7 +180,7 @@ fn main() {
     TriplePattern::add(&mut type_space);
 
     let contents =
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream().unwrap()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");
@@ -191,21 +192,21 @@ fn main() {
     WithMap::add(&mut type_space);
 
     let contents =
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream().unwrap()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen_hashmap.rs");
     fs::write(out_file, contents).unwrap();
 
     // Generate with a custom map type to validate requirements.
-    let mut settings = TypeSpaceSettings::default();
-    settings.with_map_type("CustomMap");
-    let mut type_space = TypeSpace::new(&settings);
+    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().map_typespace_settings(|s| {
+        s.with_map_type(ContainerType::hash_map().with_path("CustomMap"))
+    }));
 
     WithMap::add(&mut type_space);
 
     let contents =
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream().unwrap()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen_custommap.rs");

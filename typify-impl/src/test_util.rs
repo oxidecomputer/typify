@@ -12,7 +12,7 @@ use syn::{
     FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
 };
 
-use crate::{output::OutputSpace, RefKey, TypeId, TypeSpace};
+use crate::{RefKey, TypeId, TypeSpace};
 
 pub(crate) fn get_type<T: JsonSchema>() -> (TypeSpace, TypeId) {
     let schema = schema_for!(T);
@@ -62,14 +62,54 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
     validate_output_impl::<T>(true)
 }
 
+/// Render the full type space via typespace and pluck out the items
+/// (type definitions and impl blocks) that pertain to the type of the
+/// given name. typify1 could render a single type in isolation; with
+/// rendering delegated to typespace, the whole (finalized) type space is
+/// rendered and filtered.
+pub(crate) fn items_for(type_space: &TypeSpace, name: &str) -> Vec<syn::Item> {
+    let stream = type_space.to_stream().unwrap();
+    let file =
+        parse2::<File>(stream.clone()).unwrap_or_else(|_| panic!("invalid output: {}", stream));
+    file.items
+        .into_iter()
+        .filter(|item| match item {
+            syn::Item::Struct(s) => s.ident == name,
+            syn::Item::Enum(e) => e.ident == name,
+            syn::Item::Type(t) => t.ident == name,
+            syn::Item::Impl(i) => match i.self_ty.as_ref() {
+                Type::Path(type_path) => type_path
+                    .path
+                    .segments
+                    .last()
+                    .is_some_and(|segment| segment.ident == name),
+                _ => false,
+            },
+            _ => false,
+        })
+        .collect()
+}
+
+/// The rendered tokens (as a string) for all items pertaining to the
+/// named type; see [`items_for`].
+pub(crate) fn render_items_for(type_space: &TypeSpace, name: &str) -> String {
+    items_for(type_space, name)
+        .into_iter()
+        .map(|item| item.to_token_stream())
+        .collect::<TokenStream>()
+        .to_string()
+}
+
 #[track_caller]
 fn validate_output_impl<T: JsonSchema + Schema>(ignore_variant_names: bool) {
     let (type_space, type_id) = get_type::<T>();
     let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
 
-    let mut output = OutputSpace::default();
-    type_entry.output(&type_space, &mut output);
-    let output = output.into_stream();
+    let type_name = type_entry.name().expect("type must be named").to_string();
+    let output = items_for(&type_space, &type_name)
+        .into_iter()
+        .map(|item| item.to_token_stream())
+        .collect::<TokenStream>();
 
     let expected = T::schema();
 

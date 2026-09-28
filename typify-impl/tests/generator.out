@@ -7,10 +7,10 @@ mod types {
         Debug,
         Eq,
         Hash,
-        JsonSchema,
         Ord,
         PartialEq,
         PartialOrd,
+        schemars :: JsonSchema,
     )]
     pub struct AllTheTraits {
         pub ok: ::std::string::String,
@@ -21,7 +21,9 @@ mod types {
         }
     }
     #[doc = "`CompoundType`"]
-    #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
+    #[derive(
+        :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema,
+    )]
     pub struct CompoundType {
         pub value1: ::std::string::String,
         pub value2: u64,
@@ -32,7 +34,9 @@ mod types {
         }
     }
     #[doc = "`Pair`"]
-    #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, JsonSchema)]
+    #[derive(
+        :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema,
+    )]
     pub struct Pair {
         #[serde(default = "defaults::pair_a")]
         pub a: StringEnum,
@@ -61,10 +65,10 @@ mod types {
         Debug,
         Eq,
         Hash,
-        JsonSchema,
         Ord,
         PartialEq,
         PartialOrd,
+        schemars :: JsonSchema,
     )]
     pub enum StringEnum {
         One,
@@ -289,7 +293,7 @@ mod types {
 pub fn do_stuff(
     body: &types::CompoundType,
     string: &str,
-    opt_int: Option<u32>,
+    opt_int: ::std::option::Option<u32>,
     strenum: types::StringEnum,
 ) -> types::CompoundType {
     todo!()

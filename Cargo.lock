@@ -163,7 +163,7 @@ checksum = "7f30e7476521f6f8af1a1c4c0b8cc94f0bee37d91763d0ca2665f299b6cd8aec"
 
 [[package]]
 name = "cargo-typify"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -175,6 +175,7 @@ dependencies = [
  "schemars",
  "semver",
  "serde_json",
+ "syn 3.0.6",
  "tempfile",
  "typify",
 ]
@@ -247,6 +248,17 @@ name = "clap_lex"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a822ea5bc7590f9d40f1ba12c0dc3c2760f3482c6984db1573ad11031420831"
+
+[[package]]
+name = "codespace"
+version = "0.0.1-alpha.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61018db61b1cdf32bed05d3addbd3a49d03be38e1a7674e067e6ded193d0cf49"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.6",
+]
 
 [[package]]
 name = "color-eyre"
@@ -1023,6 +1035,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
+name = "strum"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9628de9b8791db39ceda2b119bbe13134770b56c138ec1d3af810d045c04f9bd"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab85eea0270ee17587ed4156089e10b9e6880ee688791d45a905f5b1ca36f664"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.118",
+]
+
+[[package]]
 name = "syn"
 version = "2.0.118"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1271,8 +1304,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "typespace"
+version = "0.0.1-alpha.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e351db219780cb453ee29422f86eaba6fa2538c45febb6043c2424595412fd02"
+dependencies = [
+ "codespace",
+ "heck",
+ "log",
+ "proc-macro2",
+ "quote",
+ "schemars",
+ "serde",
+ "serde_json",
+ "strum",
+ "syn 3.0.6",
+ "thiserror 2.0.20",
+]
+
+[[package]]
 name = "typify"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "chrono",
  "env_logger",
@@ -1292,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "env_logger",
  "expectorate",
@@ -1310,13 +1362,14 @@ dependencies = [
  "serde_json",
  "syn 3.0.6",
  "thiserror 2.0.20",
+ "typespace",
  "unicode-ident",
  "uuid",
 ]
 
 [[package]]
 name = "typify-macro"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "proc-macro2",
  "quote",
