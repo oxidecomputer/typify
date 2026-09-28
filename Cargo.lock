@@ -163,7 +163,7 @@ checksum = "7f30e7476521f6f8af1a1c4c0b8cc94f0bee37d91763d0ca2665f299b6cd8aec"
 
 [[package]]
 name = "cargo-typify"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "assert_cmd",
  "clap",
@@ -1324,7 +1324,7 @@ dependencies = [
 
 [[package]]
 name = "typify"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "chrono",
  "env_logger",
@@ -1344,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "typify-impl"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "env_logger",
  "expectorate",
@@ -1369,7 +1369,7 @@ dependencies = [
 
 [[package]]
 name = "typify-macro"
-version = "0.8.0"
+version = "0.10.0-alpha.1"
 dependencies = [
  "proc-macro2",
  "quote",
