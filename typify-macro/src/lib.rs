@@ -13,7 +13,8 @@ use serde_tokenstream::{ParseWrapper, TokenStreamWrapper};
 use syn::LitStr;
 use token_utils::TypeAndImpls;
 use typify_impl::{
-    CrateVers, MapType, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
+    typespace::settings::{ContainerType, TraitSpec},
+    CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
 };
 
 mod token_utils;
@@ -206,14 +207,37 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             map_type,
             attrs,
         } = serde_tokenstream::from_tokenstream(&item.into())?;
+        // A derive names a trait typespace models or a foreign one; typespace
+        // tells them apart, and a bad name is an error at the derive's span.
+        let derives = derives
+            .into_iter()
+            .map(|derive| {
+                let path = derive.into_inner();
+                TraitSpec::parse(&path.to_token_stream().to_string()).map_err(|err| {
+                    syn::Error::new(syn::spanned::Spanned::span(&path), err.to_string())
+                })
+            })
+            .collect::<Result<Vec<_>, syn::Error>>()?;
+
         let mut settings = TypeSpaceSettings::default();
-        derives.into_iter().for_each(|derive| {
-            settings.with_derive(derive.to_token_stream().to_string());
+        settings.map_typespace_settings(|mut typespace| {
+            typespace = typespace.with_struct_builder(struct_builder);
+            for derive in derives {
+                typespace = typespace.with_extra_required_trait(derive);
+            }
+            for attr in attrs {
+                typespace = typespace.with_attr(attr.to_token_stream().to_string());
+            }
+            // A map key is always string-like, so any container the path names
+            // can probably carry the HashMap preset's obligations.
+            if let Some(map_type) = map_type {
+                typespace = typespace.with_map_type(
+                    ContainerType::hash_map()
+                        .with_path(&map_type.into_inner().to_token_stream().to_string()),
+                );
+            }
+            typespace
         });
-        attrs.into_iter().for_each(|attr| {
-            settings.with_attr(attr.to_token_stream().to_string());
-        });
-        settings.with_struct_builder(struct_builder);
 
         patch.into_iter().for_each(|(type_name, patch)| {
             settings.with_patch(type_name.to_token_stream(), &patch.into());
@@ -237,10 +261,6 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             },
         );
         settings.with_unknown_crates(unknown_crates);
-
-        if let Some(map_type) = map_type {
-            settings.with_map_type(MapType(map_type.into_inner()));
-        }
 
         (schema.into_inner(), settings)
     };

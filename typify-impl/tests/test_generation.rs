@@ -3,6 +3,7 @@
 use quote::quote;
 use schemars::{r#gen::SchemaGenerator, schema::Schema, JsonSchema};
 use serde::Serialize;
+use typify_impl::typespace::TypespaceTrait;
 use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 
 #[allow(dead_code)]
@@ -51,8 +52,10 @@ fn add_type<T: JsonSchema>(generator: &mut SchemaGenerator) -> Schema {
 fn test_generation() {
     let mut type_space = TypeSpace::new(
         TypeSpaceSettings::default()
-            .with_derive("JsonSchema".to_string())
-            .with_struct_builder(true)
+            .map_typespace_settings(|s| {
+                s.with_required_trait(TypespaceTrait::JsonSchema)
+                    .with_struct_builder(true)
+            })
             .with_patch(
                 "AllTheTraits",
                 TypeSpacePatch::default()

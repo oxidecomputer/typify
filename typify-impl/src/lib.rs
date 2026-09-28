@@ -9,7 +9,6 @@ use std::collections::BTreeMap;
 use conversions::SchemaCache;
 use log::info;
 use proc_macro2::TokenStream;
-use quote::ToTokens;
 use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{TypeEntry, TypeEntryNewtype};
@@ -155,104 +154,91 @@ impl Default for TypeSpace {
     }
 }
 
-/// Type name to use in generated code.
-#[derive(Clone)]
-pub struct MapType(pub syn::Type);
-
-impl MapType {
-    /// Create a new MapType from a [`str`].
-    ///
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    pub fn new(s: &str) -> Self {
-        let map_type = syn::parse_str::<syn::Type>(s).expect("valid ident");
-        Self(map_type)
-    }
-}
-
-impl std::str::FromStr for MapType {
-    type Err = String;
-
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        let map_type = syn::parse_str::<syn::Type>(s)
-            .map_err(|err| format!("invalid map type {s:?}: {err}"))?;
-        Ok(Self(map_type))
-    }
-}
-
-impl Default for MapType {
-    fn default() -> Self {
-        Self::new("::std::collections::HashMap")
-    }
-}
-
-impl std::fmt::Debug for MapType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "MapType({})", self.0.to_token_stream())
-    }
-}
-
-impl std::fmt::Display for MapType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.0.to_token_stream().fmt(f)
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for MapType {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        s.parse().map_err(serde::de::Error::custom)
-    }
-}
-
-impl From<String> for MapType {
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    fn from(s: String) -> Self {
-        Self::new(&s)
-    }
-}
-
-impl From<&str> for MapType {
-    /// # Panics
-    ///
-    /// Panics if `s` cannot be parsed as a Rust type. Prefer
-    /// [`str::parse`] (via the [`FromStr`](std::str::FromStr)
-    /// implementation) to handle invalid input without panicking.
-    fn from(s: &str) -> Self {
-        Self::new(s)
-    }
-}
-
-impl From<syn::Type> for MapType {
-    fn from(t: syn::Type) -> Self {
-        Self(t)
-    }
-}
-
 /// Settings that alter type generation.
-#[derive(Default, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct TypeSpaceSettings {
-    extra_derives: Vec<String>,
-    extra_attrs: Vec<String>,
-    struct_builder: bool,
+    typespace: typespace::settings::Settings,
 
     unknown_crates: UnknownPolicy,
     crates: BTreeMap<String, CrateSpec>,
-    map_type: MapType,
 
     patch: BTreeMap<String, TypeSpacePatch>,
     replace: BTreeMap<String, TypeSpaceReplace>,
     convert: Vec<TypeSpaceConversion>,
+}
+
+impl Default for TypeSpaceSettings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl TypeSpaceSettings {
+    /// typify's defaults: types render with the typespace settings typify
+    /// starts from (every type must serialize, deserialize, clone, and
+    /// debug-print; comparison, hashing, string conversion, `Copy`, and
+    /// `Default` are taken wherever the type can support them; maps
+    /// render as `::std::collections::HashMap`; typespace's typify
+    /// compatibility mode is on), with no replacements, patches, or
+    /// conversions and the default policy for external crates.
+    pub fn new() -> Self {
+        Self {
+            typespace: baseline_typespace_settings(),
+            unknown_crates: Default::default(),
+            crates: Default::default(),
+            patch: Default::default(),
+            replace: Default::default(),
+            convert: Default::default(),
+        }
+    }
+
+    /// Adjust the typespace settings generated code is rendered with.
+    ///
+    /// `f` receives the settings as they stand and returns the settings
+    /// to use: extra derives and attributes, a struct builder, a
+    /// different map type, and anything else typespace offers.
+    pub fn map_typespace_settings<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(typespace::settings::Settings) -> typespace::settings::Settings,
+    {
+        let typespace = std::mem::replace(
+            &mut self.typespace,
+            typespace::settings::Settings::minimal(),
+        );
+        self.typespace = f(typespace);
+        self
+    }
+}
+
+/// The typespace settings behind [`TypeSpaceSettings::new`]; see there.
+/// Compatibility mode withholds `Default` from a tuple struct, a unit
+/// struct, and a newtype, which typify never derives it for.
+///
+/// A JSON object's keys are strings, so a map key here is always
+/// `String`, a string newtype, or a string enum, every one of which
+/// carries both the hashed and the ordered lookup traits. Whatever a
+/// configured map container demands of its key is therefore satisfied,
+/// and a map named by path alone can take the `hash_map` preset's
+/// obligations and provisions without a second thought; see the
+/// consumers that set one (cargo-typify's `--map-type`, the macro's
+/// `map_type`).
+fn baseline_typespace_settings() -> typespace::settings::Settings {
+    typespace::settings::Settings::minimal()
+        .with_required_trait(typespace::TypespaceTrait::Serialize)
+        .with_required_trait(typespace::TypespaceTrait::Deserialize)
+        .with_required_trait(typespace::TypespaceTrait::Clone)
+        .with_required_trait(typespace::TypespaceTrait::Debug)
+        .with_desired_trait(typespace::TypespaceTrait::Default)
+        .with_desired_trait(typespace::TypespaceTrait::Eq)
+        .with_desired_trait(typespace::TypespaceTrait::PartialEq)
+        .with_desired_trait(typespace::TypespaceTrait::Ord)
+        .with_desired_trait(typespace::TypespaceTrait::PartialOrd)
+        .with_desired_trait(typespace::TypespaceTrait::Hash)
+        .with_desired_trait(typespace::TypespaceTrait::Display)
+        .with_desired_trait(typespace::TypespaceTrait::FromStr)
+        .with_desired_trait(typespace::TypespaceTrait::Copy)
+        .with_map_type(typespace::settings::ContainerType::hash_map())
+        .with_typify_compat(true)
 }
 
 #[derive(Debug, Clone)]
@@ -394,28 +380,6 @@ impl TypeSpaceImpl {
 }
 
 impl TypeSpaceSettings {
-    /// Add an additional derive macro to apply to all defined types.
-    pub fn with_derive(&mut self, derive: String) -> &mut Self {
-        if !self.extra_derives.contains(&derive) {
-            self.extra_derives.push(derive);
-        }
-        self
-    }
-
-    /// Add an additional attribute to apply to all defined types.
-    pub fn with_attr(&mut self, attr: String) -> &mut Self {
-        if !self.extra_attrs.contains(&attr) {
-            self.extra_attrs.push(attr);
-        }
-        self
-    }
-
-    /// For structs, include a "builder" type that can be used to construct it.
-    pub fn with_struct_builder(&mut self, struct_builder: bool) -> &mut Self {
-        self.struct_builder = struct_builder;
-        self
-    }
-
     /// Replace a referenced type with a named type. This causes the referenced
     /// type *not* to be generated. If the same `type_name` is specified multiple times,
     /// the last one is honored.
@@ -462,7 +426,7 @@ impl TypeSpaceSettings {
     /// use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
     /// let mut type_space = TypeSpace::new(
     ///        TypeSpaceSettings::default()
-    ///            .with_struct_builder(true)
+    ///            .map_typespace_settings(|s| s.with_struct_builder(true))
     ///            .with_conversion(
     ///                SchemaObject {
     ///                    instance_type: Some(InstanceType::Number.into()),
@@ -516,25 +480,6 @@ impl TypeSpaceSettings {
                 rename: rename.cloned(),
             },
         );
-        self
-    }
-
-    /// Specify the map-like type to be used in generated code.
-    ///
-    /// ## Requirements
-    ///
-    /// - An `is_empty` method that returns a boolean
-    /// - Two generic parameters, `K` and `V`
-    /// - [`Default`] + [`Clone`] + [`Debug`] +
-    ///   [`Serialize`][serde::Serialize] + [`Deserialize`][serde::Deserialize]
-    ///
-    /// ## Examples
-    ///
-    /// - [`::std::collections::HashMap`]
-    /// - [`::std::collections::BTreeMap`]
-    /// - [`::indexmap::IndexMap`](https://docs.rs/indexmap/latest/indexmap/map/struct.IndexMap.html)
-    pub fn with_map_type<T: Into<MapType>>(&mut self, map_type: T) -> &mut Self {
-        self.map_type = map_type.into();
         self
     }
 }
@@ -820,79 +765,6 @@ impl TypeSpace {
         self.uses_uuid
     }
 
-    /// The typespace settings derived from typify's settings.
-    ///
-    /// typify has always emitted `Serialize`, `Deserialize`, `Clone`, and
-    /// `Debug` on every generated type, so those four are requested as
-    /// required traits regardless of user settings. Global extra derives
-    /// forward to typespace's settings-wide `with_derive`, and the map
-    /// type forwards to `with_map_type` along with the traits a map key
-    /// requires. `ContainerType::new` accepts an arbitrary type path, so
-    /// typify cannot know whether the configured container needs
-    /// hashed-lookup traits (`Hash`, `Eq`, `PartialEq`) or ordered-lookup
-    /// traits (`Ord`, `PartialOrd`, along with `Eq` and `PartialEq`, which
-    /// `Ord` and `PartialOrd` require); the union of both is forwarded as
-    /// the key obligation, matching typify's own generated key types,
-    /// which always derive all five (see
-    /// `typify/tests/schemas/maps_custom.rs`); the value obligation is
-    /// empty. `ContainerType::new` also claims only what rendering
-    /// assumes of the container itself (`Default` unconditionally, and
-    /// `Clone`, `Debug`, `Serialize`, `Deserialize` following the
-    /// parameters), which is the conservative answer for a path typify
-    /// cannot otherwise reason about. `with_typify_compat` withholds
-    /// `Default` from a tuple struct, a unit struct, and a newtype, which
-    /// typify never derives it for.
-    fn typespace_settings(&self) -> typespace::settings::Settings {
-        let map_key_obligation = [
-            typespace::TypespaceTrait::Hash,
-            typespace::TypespaceTrait::Eq,
-            typespace::TypespaceTrait::PartialEq,
-            typespace::TypespaceTrait::Ord,
-            typespace::TypespaceTrait::PartialOrd,
-        ]
-        .into_iter()
-        .collect::<typespace::TypespaceTraitSet>();
-        let map_type = typespace::settings::ContainerType::new(
-            &self.settings.map_type.0.to_token_stream().to_string(),
-            [map_key_obligation, typespace::TypespaceTraitSet::empty()],
-        )
-        .with_provision(
-            typespace::TypespaceTrait::JsonSchema,
-            typespace::TraitProvision::IfParameters,
-        );
-        let mut settings = typespace::settings::Settings::minimal()
-            .with_required_trait(typespace::TypespaceTrait::Serialize)
-            .with_required_trait(typespace::TypespaceTrait::Deserialize)
-            .with_required_trait(typespace::TypespaceTrait::Clone)
-            .with_required_trait(typespace::TypespaceTrait::Debug)
-            .with_desired_trait(typespace::TypespaceTrait::Default)
-            .with_desired_trait(typespace::TypespaceTrait::Eq)
-            .with_desired_trait(typespace::TypespaceTrait::PartialEq)
-            .with_desired_trait(typespace::TypespaceTrait::Ord)
-            .with_desired_trait(typespace::TypespaceTrait::PartialOrd)
-            .with_desired_trait(typespace::TypespaceTrait::Hash)
-            .with_desired_trait(typespace::TypespaceTrait::Display)
-            .with_desired_trait(typespace::TypespaceTrait::FromStr)
-            .with_desired_trait(typespace::TypespaceTrait::Copy)
-            .with_map_type(map_type)
-            .with_typify_compat(true);
-        for derive in &self.settings.extra_derives {
-            match derive.as_str() {
-                "::schemars::JsonSchema" | "schemars::JsonSchema" | "JsonSchema" => {
-                    settings = settings.with_required_trait(typespace::TypespaceTrait::JsonSchema)
-                }
-                _ => {
-                    settings = settings.with_derive(derive.clone());
-                }
-            }
-        }
-        for attr in &self.settings.extra_attrs {
-            settings = settings.with_attr(attr.clone());
-        }
-        settings = settings.with_struct_builder(self.settings.struct_builder);
-        settings
-    }
-
     /// The type inserted under `type_id`, as it was inserted.
     ///
     /// This is the declaration typify handed typespace, available before
@@ -917,7 +789,7 @@ impl TypeSpace {
     /// ask about trait impls. Conversion may continue after this call;
     /// a later call reflects the additional types.
     pub fn to_typespace(&self) -> Result<typespace::Typespace<TypeId>> {
-        let mut builder = typespace::TypespaceBuilder::new(self.typespace_settings());
+        let mut builder = typespace::TypespaceBuilder::new(self.settings.typespace.clone());
 
         for (type_id, type_entry) in &self.id_to_entry {
             match type_entry {
@@ -1072,35 +944,9 @@ mod tests {
     use std::collections::HashSet;
 
     use crate::{
-        test_util::validate_output, type_entry::TypeEntry, MapType, Name, TypeSpace,
-        TypeSpaceSettings,
+        test_util::validate_output, type_entry::TypeEntry, Name, TypeSpace, TypeSpaceSettings,
     };
     use typespace::build::{Type, VariantDetails};
-
-    #[test]
-    fn test_map_type_from_str() {
-        let map_type = "::std::collections::BTreeMap".parse::<MapType>().unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        "not a valid!!type".parse::<MapType>().unwrap_err();
-        "".parse::<MapType>().unwrap_err();
-    }
-
-    #[test]
-    fn test_map_type_deserialize() {
-        let map_type: MapType =
-            serde_json::from_value(json!("::std::collections::BTreeMap")).unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        // Strings with escape sequences require owned deserialization; make
-        // sure that works.
-        let map_type: MapType =
-            serde_json::from_str("\"::std::collections::\\u0042TreeMap\"").unwrap();
-        assert_eq!(map_type.to_string(), ":: std :: collections :: BTreeMap");
-
-        // ... and invalid types must produce an error rather than a panic.
-        serde_json::from_value::<MapType>(json!("not a valid!!type")).unwrap_err();
-    }
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema)]

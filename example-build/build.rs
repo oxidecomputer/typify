@@ -8,7 +8,9 @@ fn main() {
     let content = std::fs::read_to_string("../example.json").unwrap();
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
-    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+    let mut type_space = TypeSpace::new(
+        TypeSpaceSettings::default().map_typespace_settings(|s| s.with_struct_builder(true)),
+    );
     type_space.add_root_schema(schema).unwrap();
 
     let contents =

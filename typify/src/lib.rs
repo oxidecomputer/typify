@@ -151,7 +151,6 @@
 pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
-pub use typify_impl::MapType;
 pub use typify_impl::TypeId;
 pub use typify_impl::TypeSpace;
 pub use typify_impl::TypeSpaceImpl;

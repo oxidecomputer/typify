@@ -175,6 +175,7 @@ dependencies = [
  "schemars",
  "semver",
  "serde_json",
+ "syn 3.0.6",
  "tempfile",
  "typify",
 ]
@@ -256,7 +257,7 @@ checksum = "61018db61b1cdf32bed05d3addbd3a49d03be38e1a7674e067e6ded193d0cf49"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.5",
+ "syn 3.0.6",
 ]
 
 [[package]]
@@ -1305,17 +1306,18 @@ dependencies = [
 [[package]]
 name = "typespace"
 version = "0.0.1-alpha.1"
-source = "git+https://github.com/oxidecomputer/typespace?branch=main#03dda159e7e70e46788a98a629507475a281ccc0"
+source = "git+https://github.com/oxidecomputer/typespace?branch=main#391d823b72351a8b8d97856e2e5d0d0f529f2a1b"
 dependencies = [
  "codespace",
  "heck",
  "log",
  "proc-macro2",
  "quote",
+ "schemars",
  "serde",
  "serde_json",
  "strum",
- "syn 3.0.5",
+ "syn 3.0.6",
  "thiserror 2.0.20",
 ]
 

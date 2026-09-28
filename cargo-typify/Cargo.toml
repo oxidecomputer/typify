@@ -12,6 +12,7 @@ categories = ["api-bindings", "compilers"]
 default-run = "cargo-typify"
 
 [dependencies]
+syn = { workspace = true }
 typify = { workspace = true }
 
 clap = { workspace = true }

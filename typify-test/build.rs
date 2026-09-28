@@ -6,6 +6,7 @@ use std::{env, fs, path::Path};
 use schemars::schema::Schema;
 use schemars::JsonSchema;
 use serde::Serialize;
+use typify::typespace::settings::ContainerType;
 use typify::{TypeSpace, TypeSpaceSettings};
 
 #[allow(dead_code)]
@@ -198,9 +199,9 @@ fn main() {
     fs::write(out_file, contents).unwrap();
 
     // Generate with a custom map type to validate requirements.
-    let mut settings = TypeSpaceSettings::default();
-    settings.with_map_type("CustomMap");
-    let mut type_space = TypeSpace::new(&settings);
+    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().map_typespace_settings(|s| {
+        s.with_map_type(ContainerType::hash_map().with_path("CustomMap"))
+    }));
 
     WithMap::add(&mut type_space);
 

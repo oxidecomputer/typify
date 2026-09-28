@@ -8,7 +8,8 @@ use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{eyre, Context, Result};
-use typify::{CrateVers, MapType, TypeSpace, TypeSpaceSettings, UnknownPolicy};
+use typify::typespace::settings::{ContainerType, TraitSpec};
+use typify::{CrateVers, TypeSpace, TypeSpaceSettings, UnknownPolicy};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
@@ -144,16 +145,44 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content)
         .wrap_err("Failed to parse input file as JSON Schema")?;
 
+    // For JSON Schema, a map key is always string-like, so any type a path
+    // names can use the HashMap preset with the given type path. The parse is
+    // checked here so a bad path is a CLI error rather than a panic inside
+    // typespace.
+    let map_type = args
+        .map_type
+        .as_deref()
+        .map(|path| {
+            syn::parse_str::<syn::Type>(path)
+                .map(|_| ContainerType::hash_map().with_path(path))
+                .map_err(|err| eyre!("invalid map type {path:?}: {err}"))
+        })
+        .transpose()
+        .wrap_err("Invalid map type")?;
+
+    // A derive names a trait typespace models or a foreign one; typespace
+    // tells them apart. A bad name is a CLI error.
+    let derives = args
+        .additional_derives
+        .iter()
+        .map(|derive| TraitSpec::parse(derive).map_err(|err| eyre!("{err}")))
+        .collect::<Result<Vec<_>>>()
+        .wrap_err("Invalid derive")?;
+
     let mut settings = TypeSpaceSettings::default();
-    settings.with_struct_builder(args.use_builder());
-
-    for derive in &args.additional_derives {
-        settings.with_derive(derive.clone());
-    }
-
-    for attr in &args.additional_attrs {
-        settings.with_attr(attr.clone());
-    }
+    settings.map_typespace_settings(|mut typespace| {
+        typespace = typespace.with_struct_builder(args.use_builder());
+        for derive in derives {
+            typespace = typespace.with_extra_required_trait(derive);
+        }
+        for attr in &args.additional_attrs {
+            typespace = typespace.with_attr(attr.clone());
+        }
+        if let Some(map_type) = map_type {
+            typespace = typespace.with_map_type(map_type);
+        }
+        typespace
+    });
 
     for CrateSpec {
         name,
@@ -162,14 +191,6 @@ pub fn convert(args: &CliArgs) -> Result<String> {
     } in &args.crates
     {
         settings.with_crate(name, version.clone(), rename.as_ref());
-    }
-
-    if let Some(map_type) = &args.map_type {
-        let map_type = map_type
-            .parse::<MapType>()
-            .map_err(|msg| eyre!(msg))
-            .wrap_err("Invalid map type")?;
-        settings.with_map_type(map_type);
     }
 
     if let Some(unknown_crates) = &args.unknown_crates {

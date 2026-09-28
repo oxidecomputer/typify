@@ -745,6 +745,7 @@ mod tests {
 
     use quote::quote;
     use typespace::build::{EnumTagType, Type, VariantDetails};
+    use typespace::settings::ForeignTrait;
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]
@@ -1318,13 +1319,12 @@ mod tests {
 
     #[test]
     fn test_result_derives() {
-        let mut type_space = TypeSpace::new(
-            TypeSpaceSettings::default()
-                .with_derive("A".to_string())
-                .with_derive("B".to_string())
-                .with_derive("C".to_string())
-                .with_derive("D".to_string()),
-        );
+        let mut type_space =
+            TypeSpace::new(TypeSpaceSettings::default().map_typespace_settings(|s| {
+                ["::a::A", "::b::B", "::c::C", "::d::D"]
+                    .into_iter()
+                    .fold(s, |s, path| s.with_derive(ForeignTrait::new(path).unwrap()))
+            }));
         let schema = schema_for!(Result<u32, String>);
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
         let type_entry = type_space
@@ -1338,10 +1338,9 @@ mod tests {
         let _ = type_space.assign_type(type_entry);
         let actual = render_items_for(&type_space, "ResultX");
 
-        // typify1's output; see test_result.
         let expected = quote! {
             #[doc = "`ResultX`"]
-            #[derive(::serde::Deserialize, ::serde::Serialize, A, B, C, Clone, D, Debug)]
+            #[derive(::a::A, ::b::B, ::c::C, ::d::D, ::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
             pub enum ResultX {
                 Ok(u32),
                 Err(::std::string::String),
