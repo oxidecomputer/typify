@@ -57,26 +57,42 @@ impl TypeSpace {
             return None;
         }
 
-        let path = {
+        let (path, dependency) = {
             if let Some(crate_spec) = self.settings.crates.get(crate_name.as_str()) {
                 // The version must be non-Never and match the requirements
                 // from the extension.
-                match &crate_spec.version {
-                    CrateVers::Any => (),
-                    CrateVers::Version(version) if req.matches(version) => (),
+                let version = match &crate_spec.version {
+                    CrateVers::Any => semver::VersionReq::STAR,
+                    CrateVers::Version(version) if req.matches(version) => {
+                        semver::VersionReq::parse(&version.to_string())
+                            .expect("a version is a valid requirement")
+                    }
                     _ => return None,
-                }
+                };
+                let dependency = typespace::codespace::Dependency {
+                    version,
+                    ..typespace::codespace::Dependency::new(&crate_name)
+                };
 
                 // Replace the initial path component with the new crate name.
                 if let Some(new_crate) = &crate_spec.rename {
-                    format!("{}{}", new_crate.replace('-', "_"), &path[path_sep..])
+                    let new_crate = new_crate.replace('-', "_");
+                    (
+                        format!("{}{}", new_crate, &path[path_sep..]),
+                        typespace::codespace::Dependency {
+                            rename: Some(new_crate),
+                            ..dependency
+                        },
+                    )
                 } else {
-                    path
+                    (path, dependency)
                 }
             } else {
                 match self.settings.unknown_crates {
                     crate::UnknownPolicy::Generate => return None,
-                    crate::UnknownPolicy::Allow => path,
+                    crate::UnknownPolicy::Allow => {
+                        (path, typespace::codespace::Dependency::new(&crate_name))
+                    }
 
                     // TODO need to bubble up a coherent compiler error via the
                     // generated code.
@@ -84,6 +100,7 @@ impl TypeSpace {
                 }
             }
         };
+        self.add_dependency(dependency);
 
         // Convert and collect type parameters.
         let param_ids = parameters

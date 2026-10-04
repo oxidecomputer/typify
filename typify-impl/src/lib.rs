@@ -126,10 +126,13 @@ pub struct TypeSpace {
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<RefKey, TypeId>,
 
-    uses_chrono: bool,
-    uses_uuid: bool,
-    uses_serde_json: bool,
-    uses_regress: bool,
+    /// The crates behind the native types typify chose: `chrono` and
+    /// `uuid` for the string formats it maps to them, and each crate an
+    /// `x-rust-type` extension names, at the version
+    /// [`TypeSpaceSettings::with_crate`] declared for it. Recorded on
+    /// the `TypespaceBuilder` so the finalized typespace reports them
+    /// with the crates of what typespace renders itself.
+    dependencies: Vec<typespace::codespace::Dependency>,
 
     settings: TypeSpaceSettings,
 
@@ -144,10 +147,7 @@ impl Default for TypeSpace {
             id_to_entry: Default::default(),
             name_to_id: Default::default(),
             ref_to_id: Default::default(),
-            uses_chrono: Default::default(),
-            uses_uuid: Default::default(),
-            uses_serde_json: Default::default(),
-            uses_regress: Default::default(),
+            dependencies: Default::default(),
             settings: Default::default(),
             cache: Default::default(),
         }
@@ -745,26 +745,6 @@ impl TypeSpace {
         }
     }
 
-    /// Whether the generated code needs `chrono` crate.
-    pub fn uses_chrono(&self) -> bool {
-        self.uses_chrono
-    }
-
-    /// Whether the generated code needs [regress] crate.
-    pub fn uses_regress(&self) -> bool {
-        self.uses_regress
-    }
-
-    /// Whether the generated code needs [serde_json] crate.
-    pub fn uses_serde_json(&self) -> bool {
-        self.uses_serde_json
-    }
-
-    /// Whether the generated code needs `uuid` crate.
-    pub fn uses_uuid(&self) -> bool {
-        self.uses_uuid
-    }
-
     /// The type inserted under `type_id`, as it was inserted.
     ///
     /// This is the declaration typify handed typespace, available before
@@ -791,6 +771,10 @@ impl TypeSpace {
     pub fn to_typespace(&self) -> Result<typespace::Typespace<TypeId>> {
         let mut builder = typespace::TypespaceBuilder::new(self.settings.typespace.clone());
 
+        for dependency in &self.dependencies {
+            builder.add_dependency(dependency.clone());
+        }
+
         for (type_id, type_entry) in &self.id_to_entry {
             match type_entry {
                 TypeEntry::Type(typ) => {
@@ -807,19 +791,34 @@ impl TypeSpace {
         Ok(builder.finalize(|inner: &TypeId| TypeId(inner.0 | (1 << 63)))?)
     }
 
-    /// All code for processed types.
+    /// All code for processed types, as a codespace.
     ///
     /// Rendering is delegated to typespace: the stored types are
     /// inserted into a `TypespaceBuilder`, finalized, and rendered
-    /// through codespace. Finalization errors (dangling references,
-    /// name collisions, unsatisfiable trait requirements) surface as
-    /// [`Error::Typespace`].
+    /// through codespace. The codespace tracks the crates its code
+    /// depends on; see its `dependencies`. Finalization errors (dangling
+    /// references, name collisions, unsatisfiable trait requirements)
+    /// surface as [`Error::Typespace`].
+    pub fn to_codespace(&self) -> Result<typespace::codespace::Codespace> {
+        Ok(self.to_typespace()?.to_codespace())
+    }
+
+    /// All code for processed types.
+    ///
+    /// [`TypeSpace::to_codespace`] rendered to a token stream.
     pub fn to_stream(&self) -> Result<TokenStream> {
-        let typespace = self.to_typespace()?;
+        Ok(self.to_codespace()?.into_stream())
+    }
 
-        let codespace = typespace.to_codespace();
-
-        Ok(codespace.into_stream())
+    /// Record a crate behind a native type, once per crate.
+    fn add_dependency(&mut self, dependency: typespace::codespace::Dependency) {
+        if !self
+            .dependencies
+            .iter()
+            .any(|known| known.name == dependency.name)
+        {
+            self.dependencies.push(dependency);
+        }
     }
 
     /// Allocated the next TypeId.
