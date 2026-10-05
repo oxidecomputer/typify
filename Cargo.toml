@@ -12,9 +12,9 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-typify = { version = "0.10.0-alpha.1", path = "typify" }
-typify-impl = { version = "0.10.0-alpha.1", path = "typify-impl" }
-typify-macro = { version = "0.10.0-alpha.1", path = "typify-macro" }
+typify = { version = "0.10.0-alpha.2", path = "typify" }
+typify-impl = { version = "0.10.0-alpha.2", path = "typify-impl" }
+typify-macro = { version = "0.10.0-alpha.2", path = "typify-macro" }
 
 typespace = "0.0.1-alpha.3"
 

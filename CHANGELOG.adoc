@@ -13,7 +13,11 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.8.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.2\...HEAD[Full list of commits]
+
+== 0.10.0-alpha.2 (released 2026-10-05)
+
+https://github.com/oxidecomputer/typify/compare/v0.8.0\...v0.10.0-alpha.2[Full list of commits]
 
 **Big Release**
 
