@@ -5,9 +5,9 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, v0_10 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, v0_10 ]
 
 jobs:
   check-style:

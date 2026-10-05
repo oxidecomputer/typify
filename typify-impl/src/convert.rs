@@ -799,7 +799,7 @@ impl TypeSpace {
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
         match format.as_ref().map(String::as_str) {
             Some("uuid") => {
-                self.uses_uuid = true;
+                self.add_dependency(typespace::codespace::Dependency::new("uuid"));
                 // ::uuid::Uuid Default, but we ignore it because there's no
                 // useful value. We assume the uuid feature in schemars.
                 Ok((
@@ -827,7 +827,7 @@ impl TypeSpace {
             }
 
             Some("date") => {
-                self.uses_chrono = true;
+                self.add_dependency(typespace::codespace::Dependency::new("chrono"));
                 // ::chrono::naive::NaiveDate implements Default, but there's
                 // no useful value. We assume the chrono feaeture in schemars.
                 Ok((
@@ -854,7 +854,7 @@ impl TypeSpace {
                 ))
             }
             Some("date-time") => {
-                self.uses_chrono = true;
+                self.add_dependency(typespace::codespace::Dependency::new("chrono"));
                 // ::chrono::DateTime implements Default, but not usefully.
                 // We assume the chrono feaeture in schemars.
                 Ok((
@@ -976,7 +976,6 @@ impl TypeSpace {
                                     type_name: type_name.clone().into_option(),
                                     reason: format!("invalid pattern '{}' {}", pattern, e),
                                 })?;
-                            self.uses_regress = true;
                         }
 
                         let string = TypeEntry::from(Type::String);
@@ -1948,7 +1947,6 @@ impl TypeSpace {
                 unique_items,
                 contains: None,
             } => {
-                self.uses_serde_json = true;
                 let type_id = self.assign_type(TypeEntry::from(Type::JsonValue));
 
                 // If items are unique, this is a Set; otherwise it's an Array.
@@ -1969,7 +1967,6 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        self.uses_serde_json = true;
         let type_id = self.assign_type(TypeEntry::from(Type::JsonValue));
         Ok((Type::Vec(type_id).into(), metadata))
     }
@@ -1986,7 +1983,6 @@ impl TypeSpace {
         &mut self,
         metadata: &'a Option<Box<Metadata>>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        self.uses_serde_json = true;
         Ok((Type::JsonValue.into(), metadata))
     }
 
