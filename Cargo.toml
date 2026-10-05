@@ -16,7 +16,7 @@ typify = { version = "0.10.0-alpha.1", path = "typify" }
 typify-impl = { version = "0.10.0-alpha.1", path = "typify-impl" }
 typify-macro = { version = "0.10.0-alpha.1", path = "typify-macro" }
 
-typespace = { path = "../typespace-codespace-deps/typespace" }
+typespace = "0.0.1-alpha.3"
 
 assert_cmd = "2.2.2"
 chrono = { version = "0.4.45", features = ["serde"] }

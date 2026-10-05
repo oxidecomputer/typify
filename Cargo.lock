@@ -1313,7 +1313,9 @@ dependencies = [
 
 [[package]]
 name = "typespace"
-version = "0.0.1-alpha.2"
+version = "0.0.1-alpha.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ac9bd6fcb72ab3ddfb1b9b20e28520f697df23a4b4340562685e7b6a8e8dc44"
 dependencies = [
  "codespace",
  "heck",
