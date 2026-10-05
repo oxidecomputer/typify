@@ -126,12 +126,11 @@ pub struct TypeSpace {
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<RefKey, TypeId>,
 
-    /// The crates behind the native types typify chose: `chrono` and
-    /// `uuid` for the string formats it maps to them, and each crate an
-    /// `x-rust-type` extension names, at the version
-    /// [`TypeSpaceSettings::with_crate`] declared for it. Recorded on
-    /// the `TypespaceBuilder` so the finalized typespace reports them
-    /// with the crates of what typespace renders itself.
+    /// The crates needed for native types: `chrono` and `uuid` for the string
+    /// formats it maps to them, and each crate an `x-rust-type` extension
+    /// names, at the version [`TypeSpaceSettings::with_crate`] declared for
+    /// it. Recorded on the `TypespaceBuilder` so the finalized typespace
+    /// reports them with the crates of what typespace renders itself.
     dependencies: Vec<typespace::codespace::Dependency>,
 
     settings: TypeSpaceSettings,
@@ -791,21 +790,19 @@ impl TypeSpace {
         Ok(builder.finalize(|inner: &TypeId| TypeId(inner.0 | (1 << 63)))?)
     }
 
-    /// All code for processed types, as a codespace.
+    /// All code for processed types.
     ///
-    /// Rendering is delegated to typespace: the stored types are
-    /// inserted into a `TypespaceBuilder`, finalized, and rendered
-    /// through codespace. The codespace tracks the crates its code
-    /// depends on; see its `dependencies`. Finalization errors (dangling
-    /// references, name collisions, unsatisfiable trait requirements)
-    /// surface as [`Error::Typespace`].
+    /// Rendering is delegated to typespace: the stored types are inserted into
+    /// a `TypespaceBuilder`, finalized, and rendered through codespace. The
+    /// codespace tracks depenencies. Finalization errors result in
+    /// [`Error::Typespace`].
     pub fn to_codespace(&self) -> Result<typespace::codespace::Codespace> {
         Ok(self.to_typespace()?.to_codespace())
     }
 
     /// All code for processed types.
     ///
-    /// [`TypeSpace::to_codespace`] rendered to a token stream.
+    /// [`TypeSpace::to_codespace`] rendered to a `TokenStream`.
     pub fn to_stream(&self) -> Result<TokenStream> {
         Ok(self.to_codespace()?.into_stream())
     }
