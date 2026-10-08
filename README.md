@@ -63,6 +63,11 @@ applied. Non-required properties with types that already have a default value
 (such as a `Vec<T>`) simply get the `#[serde(default)]` attribute (so you won't
 see e.g. `Option<Vec<T>>`).
 
+By default, properties are ordered by their original name.
+The feature `preserve_order` may be used to keep the order as set in the given schema.
+To ensure deserializing a schema using `serde_json` does not change the order of properties,
+set the `preserve_order` feature of `serde_json`.
+
 #### Alternate Map types
 
 By default, Typify uses `std::collections::HashMap` as described above.
