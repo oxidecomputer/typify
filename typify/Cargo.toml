@@ -12,6 +12,7 @@ categories = ["api-bindings", "compilers"]
 [features]
 default = ["macro"]
 macro = ["typify-macro"]
+preserve_order = ["typify-impl/preserve_order"]
 
 [dependencies]
 typify-macro = { workspace = true, optional = true }

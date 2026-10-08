@@ -7,6 +7,9 @@ description = "typify backend implementation"
 repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 
+[features]
+preserve_order = []
+
 [dependencies]
 heck = { workspace = true }
 log = { workspace = true }

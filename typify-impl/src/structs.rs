@@ -71,7 +71,20 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()?;
 
         // Sort parameters by name to ensure a deterministic result.
-        properties.sort_by(|a, b| a.name.cmp(&b.name));
+        #[cfg(not(feature = "preserve_order"))]
+        properties.sort_by(|a, b| {
+            let a_name = match &a.rename {
+                StructPropertyRename::Rename(a_rename) => a_rename,
+                _ => &a.name,
+            };
+
+            let b_name = match &b.rename {
+                StructPropertyRename::Rename(b_rename) => b_rename,
+                _ => &b.name,
+            };
+
+            a_name.cmp(b_name)
+        });
 
         // If there are additional properties tack them on, flattened, at the
         // end. Note that a `None` value for additional_properties is
