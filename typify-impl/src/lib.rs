@@ -599,9 +599,10 @@ impl TypeSpace {
                 }
 
                 Some(replace_type) => {
-                    let type_entry = TypeEntry::new_native(
+                    let type_entry = TypeEntry::new_consumer_native(
                         replace_type.replace_type.clone(),
                         TypeSpaceImpl::native_traits(&replace_type.impls),
+                        &[],
                     );
                     self.id_to_entry.insert(type_id, type_entry);
                 }

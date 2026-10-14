@@ -13,7 +13,8 @@ pub(crate) struct SchemaCache {
 
 impl SchemaCache {
     pub fn insert(&mut self, schema: &SchemaObject, type_name: &String, impls: &[TypeSpaceImpl]) {
-        let type_entry = TypeEntry::new_native(type_name, TypeSpaceImpl::native_traits(impls));
+        let type_entry =
+            TypeEntry::new_consumer_native(type_name, TypeSpaceImpl::native_traits(impls), &[]);
         self.schemas.push((
             SchemaObject {
                 metadata: None,

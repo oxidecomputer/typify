@@ -343,6 +343,7 @@ impl From<Type<TypeId>> for TypeEntry {
 }
 
 impl TypeEntry {
+    /// A native typify knows: `traits` is everything it implements.
     pub(crate) fn new_native<S: ToString>(
         type_name: S,
         traits: typespace::TypespaceTraitSet,
@@ -350,17 +351,19 @@ impl TypeEntry {
         Type::Native(Native::new(&type_name.to_string(), traits, Vec::new())).into()
     }
 
-    pub(crate) fn new_native_params<S: ToString>(type_name: S, params: &[TypeId]) -> Self {
-        let traits = [
-            typespace::TypespaceTrait::Clone,
-            typespace::TypespaceTrait::Debug,
-            typespace::TypespaceTrait::Serialize,
-            typespace::TypespaceTrait::Deserialize,
-        ]
-        .into_iter()
-        .collect::<typespace::TypespaceTraitSet>();
-
-        Type::Native(Native::new(&type_name.to_string(), traits, params.to_vec())).into()
+    /// A native type that the consumer named, through a replacement, a
+    /// conversion, or an `x-rust-type` extension. `traits` is what the
+    /// consumer vouched for. Ultimately the compiler decides whether the
+    /// generated code is valid...
+    pub(crate) fn new_consumer_native<S: ToString>(
+        type_name: S,
+        traits: typespace::TypespaceTraitSet,
+        params: &[TypeId],
+    ) -> Self {
+        Type::Native(
+            Native::new(&type_name.to_string(), traits, params.to_vec()).with_rest_unknown(),
+        )
+        .into()
     }
 
     pub(crate) fn new_boolean() -> Self {
