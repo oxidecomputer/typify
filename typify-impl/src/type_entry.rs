@@ -353,7 +353,7 @@ impl TypeEntry {
 
     /// A native type that the consumer named, through a replacement, a
     /// conversion, or an `x-rust-type` extension. `traits` is what the
-    /// consumer vouched for. Ultiamtely the compiler decides whether the
+    /// consumer vouched for. Ultimately the compiler decides whether the
     /// generated code is valid...
     pub(crate) fn new_consumer_native<S: ToString>(
         type_name: S,
