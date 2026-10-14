@@ -26891,6 +26891,8 @@ impl ::std::convert::From<::chrono::DateTime<::chrono::offset::Utc>>
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason: ::std::option::Option<PullRequestActiveLockReason>,
     pub additions: i64,
@@ -26919,8 +26921,6 @@ pub struct PullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -27278,6 +27278,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestClosedAction 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestClosedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestClosedPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason: ::std::option::Option<PullRequestClosedPullRequestActiveLockReason>,
     pub additions: i64,
@@ -27305,8 +27307,6 @@ pub struct PullRequestClosedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestClosedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -27568,6 +27568,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestConvertedToDr
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestConvertedToDraftPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestConvertedToDraftPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestConvertedToDraftPullRequestActiveLockReason>,
@@ -27595,8 +27597,6 @@ pub struct PullRequestConvertedToDraftPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestConvertedToDraftPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -28207,6 +28207,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestOpenedAction 
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestOpenedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestOpenedPullRequestLinks,
     pub active_lock_reason: PullRequestOpenedPullRequestActiveLockReason,
     pub additions: i64,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
@@ -28233,8 +28235,6 @@ pub struct PullRequestOpenedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestOpenedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -28467,6 +28467,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReadyForRevie
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReadyForReviewPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReadyForReviewPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReadyForReviewPullRequestActiveLockReason>,
@@ -28494,8 +28496,6 @@ pub struct PullRequestReadyForReviewPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReadyForReviewPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -28756,6 +28756,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReopenedActio
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReopenedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReopenedPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason: ::std::option::Option<PullRequestReopenedPullRequestActiveLockReason>,
     pub additions: i64,
@@ -28783,8 +28785,6 @@ pub struct PullRequestReopenedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReopenedPullRequestLinks,
     pub locked: bool,
     #[doc = "Indicates whether maintainers can modify the pull request."]
     pub maintainer_can_modify: bool,
@@ -28998,6 +28998,8 @@ impl ::std::convert::From<Team> for PullRequestRequestedReviewersItem {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewComment {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewCommentLinks,
     pub author_association: AuthorAssociation,
     #[doc = "The text of the comment."]
     pub body: ::std::string::String,
@@ -29016,8 +29018,6 @@ pub struct PullRequestReviewComment {
     #[doc = "The line of the blob to which the comment applies. The last line of the range for a multi-line comment"]
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub line: ::std::option::Option<i64>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewCommentLinks,
     #[doc = "The node ID of the pull request review comment."]
     pub node_id: ::std::string::String,
     #[doc = "The SHA of the original commit to which the comment applies."]
@@ -29116,6 +29116,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewComment
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentCreatedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewCommentCreatedPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentCreatedPullRequestActiveLockReason>,
@@ -29140,8 +29142,6 @@ pub struct PullRequestReviewCommentCreatedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewCommentCreatedPullRequestLinks,
     pub locked: bool,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
@@ -29400,6 +29400,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewComment
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentDeletedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewCommentDeletedPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentDeletedPullRequestActiveLockReason>,
@@ -29424,8 +29426,6 @@ pub struct PullRequestReviewCommentDeletedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewCommentDeletedPullRequestLinks,
     pub locked: bool,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
@@ -29699,6 +29699,8 @@ pub struct PullRequestReviewCommentEditedChangesBody {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewCommentEditedPullRequest {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewCommentEditedPullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason:
         ::std::option::Option<PullRequestReviewCommentEditedPullRequestActiveLockReason>,
@@ -29723,8 +29725,6 @@ pub struct PullRequestReviewCommentEditedPullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewCommentEditedPullRequestLinks,
     pub locked: bool,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
@@ -30117,6 +30117,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewDismiss
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewDismissedReview {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewDismissedReviewLinks,
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
@@ -30126,8 +30128,6 @@ pub struct PullRequestReviewDismissedReview {
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the review"]
     pub id: i64,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewDismissedReviewLinks,
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: PullRequestReviewDismissedReviewState,
@@ -30268,6 +30268,8 @@ pub struct PullRequestReviewEditedChangesBody {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewEditedReview {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewEditedReviewLinks,
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
@@ -30277,8 +30279,6 @@ pub struct PullRequestReviewEditedReview {
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the review"]
     pub id: i64,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewEditedReviewLinks,
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: ::std::string::String,
@@ -30634,6 +30634,8 @@ impl ::std::convert::TryFrom<::std::string::String> for PullRequestReviewSubmitt
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct PullRequestReviewSubmittedReview {
+    #[serde(rename = "_links")]
+    pub links: PullRequestReviewSubmittedReviewLinks,
     pub author_association: AuthorAssociation,
     #[doc = "The text of the review."]
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
@@ -30643,8 +30645,6 @@ pub struct PullRequestReviewSubmittedReview {
     pub html_url: ::std::string::String,
     #[doc = "Unique identifier of the review"]
     pub id: i64,
-    #[serde(rename = "_links")]
-    pub links: PullRequestReviewSubmittedReviewLinks,
     pub node_id: ::std::string::String,
     pub pull_request_url: ::std::string::String,
     pub state: ::std::string::String,
@@ -34669,6 +34669,8 @@ pub struct SecurityAdvisoryWithdrawnSecurityAdvisoryVulnerabilitiesItemPackage {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SimplePullRequest {
+    #[serde(rename = "_links")]
+    pub links: SimplePullRequestLinks,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub active_lock_reason: ::std::option::Option<SimplePullRequestActiveLockReason>,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
@@ -34690,8 +34692,6 @@ pub struct SimplePullRequest {
     pub id: i64,
     pub issue_url: ::std::string::String,
     pub labels: ::std::vec::Vec<Label>,
-    #[serde(rename = "_links")]
-    pub links: SimplePullRequestLinks,
     pub locked: bool,
     #[serde(deserialize_with = "::std::option::Option::deserialize")]
     pub merge_commit_sha: ::std::option::Option<::std::string::String>,
