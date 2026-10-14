@@ -113,8 +113,16 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntry::new_native_params(
+        Some(TypeEntry::new_consumer_native(
             format!("::{path}"),
+            [
+                typespace::TypespaceTrait::Clone,
+                typespace::TypespaceTrait::Debug,
+                typespace::TypespaceTrait::Serialize,
+                typespace::TypespaceTrait::Deserialize,
+            ]
+            .into_iter()
+            .collect(),
             &param_ids,
         ))
     }
