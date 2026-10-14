@@ -15,6 +15,13 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.2\...HEAD[Full list of commits]
 
+* A type named through `replace`, `convert`, or `x-rust-type` no longer
+  fails generation for a trait typify cannot see it implement, such as `Ord`
+  for a set element; the compiler checks the real type (#1094)
+* Under `typify_compat`, a derive the consumer asks for is written on every
+  type rather than withheld with typify's own comparison derives (typespace
+  0.0.1-alpha.4)
+
 == 0.10.0-alpha.2 (released 2026-10-05)
 
 https://github.com/oxidecomputer/typify/compare/v0.8.0\...v0.10.0-alpha.2[Full list of commits]
