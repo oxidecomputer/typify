@@ -351,11 +351,10 @@ impl TypeEntry {
         Type::Native(Native::new(&type_name.to_string(), traits, Vec::new())).into()
     }
 
-    /// A native the consumer named, through a replacement, a conversion,
-    /// or an `x-rust-type` extension: `traits` is what the consumer
-    /// vouched for, and the declaration says nothing about the rest.
-    /// A requirement the declaration cannot answer for then passes to
-    /// the compiler, which checks the real type.
+    /// A native type that the consumer named, through a replacement, a
+    /// conversion, or an `x-rust-type` extension. `traits` is what the
+    /// consumer vouched for. Ultiamtely the compiler decides whether the
+    /// generated code is valid...
     pub(crate) fn new_consumer_native<S: ToString>(
         type_name: S,
         traits: typespace::TypespaceTraitSet,
