@@ -1237,6 +1237,47 @@ mod tests {
         }
     }
 
+    // See https://github.com/oxidecomputer/typify/issues/948
+    #[test]
+    fn test_variant_name_collisions() {
+        let schema_json = r##"
+        {
+            "type": "string",
+            "enum": ["=", ">", "<", "≥", ">=", "≤", "<=", "≠", "!="]
+        }
+        "##;
+
+        let schema: schemars::schema::Schema = serde_json::from_str(schema_json).unwrap();
+
+        let mut type_space = TypeSpace::default();
+        let (type_entry, _) = type_space
+            .convert_schema(Name::Required("ComparisonOperator".to_string()), &schema)
+            .unwrap();
+
+        let TypeEntryDetails::Enum(TypeEntryEnum { variants, .. }) = &type_entry.details else {
+            panic!("expected an enum");
+        };
+
+        // The raw names--used for serialization--are preserved, in order.
+        let raw_names = variants
+            .iter()
+            .map(|variant| variant.raw_name.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(raw_names, ["=", ">", "<", "≥", ">=", "≤", "<=", "≠", "!="]);
+
+        // The identifier names are disambiguated with deterministic numeric
+        // suffixes: the first variant with a given name keeps it and each
+        // subsequent duplicate gets the next available suffix.
+        let ident_names = variants
+            .iter()
+            .map(|variant| variant.ident_name.as_deref().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            ident_names,
+            ["X", "X2", "X3", "X4", "Xx", "X5", "Xx2", "X6", "Xx3"]
+        );
+    }
+
     #[test]
     fn test_maybe_option() {
         let subschemas = vec![
