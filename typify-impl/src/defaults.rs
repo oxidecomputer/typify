@@ -308,7 +308,7 @@ impl TypeEntry {
                     if value == 0.0 {
                         Ok(DefaultKind::Intrinsic)
                     } else {
-                        Ok(DefaultKind::Generic(DefaultImpl::I64))
+                        Ok(DefaultKind::Specific)
                     }
                 } else {
                     Err(Error::invalid_value())
@@ -790,6 +790,24 @@ mod tests {
         ));
         assert!(matches!(
             type_entry.validate_value(&type_space, &json!("howdy")),
+            Ok(DefaultKind::Specific),
+        ));
+    }
+
+    #[test]
+    fn test_default_float() {
+        let (type_space, type_id) = get_type::<f64>();
+        let type_entry = type_space.id_to_entry.get(&type_id).unwrap();
+
+        assert!(type_entry
+            .validate_value(&type_space, &json!(true))
+            .is_err());
+        assert!(matches!(
+            type_entry.validate_value(&type_space, &json!(0.0)),
+            Ok(DefaultKind::Intrinsic),
+        ));
+        assert!(matches!(
+            type_entry.validate_value(&type_space, &json!(0.1)),
             Ok(DefaultKind::Specific),
         ));
     }
