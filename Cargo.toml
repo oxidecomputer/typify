@@ -1,13 +1,10 @@
 [workspace]
 members = [
-	"codespace",
 	"typify",
 	"typify-impl",
 	"typify-impl-mk2",
 	"typify-macro",
 	"typify-test",
-	"typespace",
-	"typespace-test-macro",
 	"cargo-typify",
 	"example-build",
 	"example-macro",
@@ -17,26 +14,22 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-codespace = { version = "0.1.0", path = "codespace" }
-json-serde = "0.0.1-alpha.3"
 typify = { version = "0.10.0", path = "typify" }
 typify-impl = { version = "0.10.0", path = "typify-impl" }
 typify-impl-mk2 = { version = "0.10.0", path = "typify-impl-mk2" }
 typify-macro = { version = "0.10.0", path = "typify-macro" }
-# The standalone typespace crate (not the stale in-repo copy). The published
-# 0.0.1-alpha.1 lacks the latest local API hardening, so this is a path
-# dependency for now.
-typespace = { version = "0.0.1-alpha.1", path = "../typespace/typespace" }
 
 assert_cmd = "2.1.1"
 chrono = { version = "0.4.42", features = ["serde"] }
 clap = { version = "4.5.54", features = ["derive"] }
+codespace = { version = "0.1.0" }
 color-eyre = "0.6"
 env_logger = "0.11"
 expectorate = "1.2.0"
 glob = "0.3.3"
 heck = "0.5.0"
 ipnetwork = { version = "0.21.1", features = ["schemars"] }
+json-serde = "1.0.0"
 jsonschema = "0.33.0"
 log = "0.4.29"
 newline-converter = "0.3.0"
@@ -56,6 +49,7 @@ syn = { version = "2.0.114", features = ["full"] }
 tempdir = "0.3.7"
 thiserror = "2.0.17"
 trybuild = "1.0.114"
+typespace = "0.1.0"
 unicode-ident = "1.0.22"
 url = "2.5.4"
 uuid = "1.16.0"

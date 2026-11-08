@@ -320,21 +320,15 @@ checksum = "f46ad14479a25103f283c0f10005961cf086d8dc42205bb44c46ac563475dca6"
 
 [[package]]
 name = "codespace"
-version = "0.0.1-alpha.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61018db61b1cdf32bed05d3addbd3a49d03be38e1a7674e067e6ded193d0cf49"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 3.0.3",
-]
-
-[[package]]
-name = "codespace"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ad2220b174fd87f25c53717f0cfd18eb43b9cb69c67ca43176d3e9c50865a08"
 dependencies = [
  "proc-macro2",
  "quote",
+ "semver",
+ "syn 3.0.3",
+ "version-ranges",
 ]
 
 [[package]]
@@ -995,9 +989,9 @@ dependencies = [
 
 [[package]]
 name = "json-serde"
-version = "0.0.1-alpha.3"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "269422472f06bdae6e4c7813238356c76274c99813f44ae270ab5fc55ac3c979"
+checksum = "aaa37e0b13e9def7d0e560a95865e376b3e521c7e7c4430f50f40fa80cf1a010"
 dependencies = [
  "serde_core",
 ]
@@ -1790,6 +1784,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
+name = "strum"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9628de9b8791db39ceda2b119bbe13134770b56c138ec1d3af810d045c04f9bd"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab85eea0270ee17587ed4156089e10b9e6880ee688791d45a905f5b1ca36f664"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.114",
+]
+
+[[package]]
 name = "syn"
 version = "2.0.114"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2146,47 +2161,21 @@ dependencies = [
 
 [[package]]
 name = "typespace"
-version = "0.0.1-alpha.1"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6bfd314a399873b377783fb16852995be87d0d3bb574f9180bc1eb001604c089"
 dependencies = [
- "codespace 0.0.1-alpha.2",
+ "codespace",
  "heck",
  "log",
  "proc-macro2",
  "quote",
+ "schemars",
  "serde",
  "serde_json",
+ "strum",
  "syn 3.0.3",
  "thiserror 2.0.17",
-]
-
-[[package]]
-name = "typespace"
-version = "0.1.0"
-dependencies = [
- "codespace 0.1.0",
- "expectorate",
- "heck",
- "json-serde",
- "log",
- "newline-converter",
- "prettyplease",
- "proc-macro2",
- "quote",
- "serde",
- "serde_json",
- "syn 2.0.114",
- "typespace-test-macro",
-]
-
-[[package]]
-name = "typespace-test-macro"
-version = "0.1.0"
-dependencies = [
- "expectorate",
- "prettyplease",
- "proc-macro2",
- "quote",
- "syn 2.0.114",
 ]
 
 [[package]]
@@ -2255,7 +2244,7 @@ dependencies = [
  "syn 2.0.114",
  "thiserror 2.0.17",
  "trybuild",
- "typespace 0.0.1-alpha.1",
+ "typespace",
  "unicode-ident",
  "url",
 ]
@@ -2356,6 +2345,16 @@ name = "valuable"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba73ea9cf16a25df0c8caa16c51acb937d5712a8429db78a3ee29d5dcacd3a65"
+
+[[package]]
+name = "version-ranges"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "31e9bd4e9c9ff6a2a9b5969462ba26216af3e010df0377dad8320ab515262ef8"
+dependencies = [
+ "semver",
+ "smallvec",
+]
 
 [[package]]
 name = "version_check"
