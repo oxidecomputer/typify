@@ -178,6 +178,31 @@ fn main() {
     ipnetwork::IpNetwork::add(&mut type_space);
     TriplePattern::add(&mut type_space);
 
+    let mut integer_range_schema: serde_json::Value = serde_json::from_str(
+        r#"{
+            "title": "Config",
+            "type": "object",
+            "properties": {
+                "n": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 9223372036854775808
+                }
+            },
+            "required": ["n"]
+        }"#,
+    )
+    .unwrap();
+    type_space
+        .add_root_schema(serde_json::from_value(integer_range_schema.clone()).unwrap())
+        .unwrap();
+    integer_range_schema["title"] = serde_json::json!("SignedConfig");
+    integer_range_schema["properties"]["n"]["minimum"] = serde_json::json!(i64::MIN);
+    integer_range_schema["properties"]["n"]["maximum"] = serde_json::json!(i64::MAX);
+    type_space
+        .add_root_schema(serde_json::from_value(integer_range_schema).unwrap())
+        .unwrap();
+
     let contents =
         prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
 
