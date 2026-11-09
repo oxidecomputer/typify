@@ -16,8 +16,6 @@ typify = { version = "0.10.0-alpha.3", path = "typify" }
 typify-impl = { version = "0.10.0-alpha.3", path = "typify-impl" }
 typify-macro = { version = "0.10.0-alpha.3", path = "typify-macro" }
 
-typespace = "0.0.1-alpha.4"
-
 assert_cmd = "2.2.2"
 chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.1", features = ["derive"] }
@@ -45,5 +43,6 @@ syn = { version = "3.0.2", features = ["full"] }
 tempfile = "3.27.0"
 thiserror = "2.0.18"
 trybuild = "1.0.116"
+typespace = "0.1.0"
 unicode-ident = "1.0.24"
 uuid = "1.16.0"
