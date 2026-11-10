@@ -11205,6 +11205,11 @@ impl<'de> ::serde::Deserialize<'de> for EncodeKey {
 #[doc = "`Everything`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct Everything {
+    #[serde(
+        rename = "$schema",
+        skip_serializing_if = "::std::option::Option::is_none"
+    )]
+    pub schema: ::std::option::Option<::std::string::String>,
     #[serde(skip_serializing_if = "::std::option::Option::is_none")]
     pub autosize: ::std::option::Option<Autosize>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
@@ -11233,11 +11238,6 @@ pub struct Everything {
     pub projections: ::std::vec::Vec<Projection>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub scales: ::std::vec::Vec<Scale>,
-    #[serde(
-        rename = "$schema",
-        skip_serializing_if = "::std::option::Option::is_none"
-    )]
-    pub schema: ::std::option::Option<::std::string::String>,
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub signals: ::std::vec::Vec<Signal>,
     #[serde(skip_serializing_if = "::std::option::Option::is_none")]
