@@ -36,7 +36,9 @@ impl ::std::convert::TryFrom<&str> for TestGrammarForPatternPropertiesRulesKey {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^[a-zA-Z_]\\w*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^[a-zA-Z_]\\w*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^[a-zA-Z_]\\w*$\"".into());
         }

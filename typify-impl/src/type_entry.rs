@@ -1596,7 +1596,7 @@ impl TypeEntry {
                     let err = format!("doesn't match pattern \"{}\"", p);
                     quote! {
                         static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(|| {
-                            ::regress::Regex::new(#p).unwrap()
+                            ::regress::Regex::with_flags(#p, "u").unwrap()
                         });
                         if PATTERN.find(value).is_none() {
                             return Err(#err.into());
