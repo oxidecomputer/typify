@@ -5,7 +5,7 @@ use serde::Deserialize;
 use syn::parse_quote;
 use typify_impl_mk2::{
     bundler::{Bundle, FileMapLoader},
-    typespace::settings::Settings,
+    typespace::settings::{Settings, Std},
     Typespace, Typify, Typify2NameHint, TypifySettings,
 };
 use url::Url;
@@ -116,7 +116,7 @@ fn test_schemas_json(path: &PathBuf) -> anyhow::Result<()> {
     }
 
     let canonical_out = typify.canonical_output();
-    let typespace = typify.typify(Default::default(), Settings::minimal())?;
+    let typespace = typify.typify(Default::default(), base_settings())?;
 
     validate_output(path, canonical_out, typespace);
 
@@ -133,25 +133,45 @@ struct TestJson {
     files: Vec<TestJsonEntry>,
 }
 
-// typespace::Settings has no Default impl on purpose: every field
-// defaults, but the presets are the documented way in, so a caller has
-// to say which one they mean. Name minimal() here rather than deriving.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TestJsonSettings {
     #[serde(default)]
     typify: TypifySettings,
-    #[serde(default = "Settings::minimal")]
-    typespace: Settings,
+    #[serde(default)]
+    typespace: TypespaceOverrides,
 }
 
-impl Default for TestJsonSettings {
-    fn default() -> Self {
-        Self {
-            typify: TypifySettings::default(),
-            typespace: Settings::minimal(),
+/// The typespace settings a fixture may vary, applied over
+/// [`base_settings`]. A fixture names only what it changes; everything
+/// else is the preset, so the trait set is stated once, in code.
+#[derive(Debug, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct TypespaceOverrides {
+    std: Option<Std>,
+    struct_builder: Option<bool>,
+}
+
+impl TypespaceOverrides {
+    fn apply(self, settings: Settings) -> Settings {
+        let Self {
+            std,
+            struct_builder,
+        } = self;
+        let settings = match std {
+            Some(std) => settings.with_std(std),
+            None => settings,
+        };
+        match struct_builder {
+            Some(struct_builder) => settings.with_struct_builder(struct_builder),
+            None => settings,
         }
     }
+}
+
+/// The preset every fixture starts from.
+fn base_settings() -> Settings {
+    Settings::typical()
 }
 
 #[derive(Debug, Deserialize)]
@@ -243,7 +263,10 @@ fn test_schemas_directory(path: &PathBuf) -> anyhow::Result<()> {
         .unwrap();
 
     let canonical_out = typify.canonical_output();
-    let typespace = typify.typify(test_json.settings.typify, test_json.settings.typespace)?;
+    let typespace = typify.typify(
+        test_json.settings.typify,
+        test_json.settings.typespace.apply(base_settings()),
+    )?;
 
     validate_output(path, canonical_out, typespace);
 
