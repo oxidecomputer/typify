@@ -13,7 +13,7 @@ use crate::{
     convert::{ConvertResult, Converter},
     naming,
     normalizer::Normalizer,
-    normalizer2::Normalizer2,
+    // normalizer2::Normalizer2,
     schemalet::SchemaRef,
 };
 
@@ -80,8 +80,7 @@ pub struct Typify {
     // currently implement).
     bundle: Bundle,
     normalizer: Normalizer,
-    normalizer2: Normalizer2,
-
+    // normalizer2: Normalizer2,
     roots: Vec<(SchemaRef, Typify2NameHint)>,
 }
 
@@ -97,7 +96,7 @@ impl Typify {
         Self {
             bundle,
             normalizer: Default::default(),
-            normalizer2: Default::default(),
+            // normalizer2: Default::default(),
             roots: Default::default(),
         }
     }
@@ -116,7 +115,7 @@ impl Typify {
 
         // TODO 6/16/2026
         // We're going to shadow build the new Normalizer2
-        let _root_ref = self.normalizer2.add(&self.bundle, &id)?;
+        // let _root_ref = self.normalizer2.add(&self.bundle, &id)?;
 
         let root_ref = self.normalizer.add(&self.bundle, &id)?;
 
@@ -136,11 +135,11 @@ impl Typify {
         let Self {
             bundle,
             normalizer,
-            normalizer2,
+            // normalizer2,
             roots,
         } = self;
 
-        let _normalizer = normalizer2.to_normalized_graph();
+        // let _normalizer = normalizer2.to_normalized_graph();
 
         let mut converter = Converter::new(normalizer.to_normalized_graph());
         let mut work = VecDeque::new();

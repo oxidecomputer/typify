@@ -5,7 +5,7 @@ mod error;
 mod namespace;
 mod naming;
 mod normalizer;
-mod normalizer2;
+// mod normalizer2;
 mod schema;
 mod schemalet;
 mod typify;
