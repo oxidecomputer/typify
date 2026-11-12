@@ -218,11 +218,10 @@ impl Typify {
                     if jsonschema::is_valid(&conv.pattern, original_json) {
                         // TODO 3/31/2026
                         // Need to fill in impls and type params
-                        let typ = Type::Native(Native::new(
-                            &conv.native.name,
-                            TypespaceTraitSet::empty(),
-                            vec![],
-                        ));
+                        let typ = Type::Native(
+                            Native::new(&conv.native.name, TypespaceTraitSet::empty(), vec![])
+                                .with_rest_unknown(),
+                        );
                         converted.insert(work_id.clone(), typ);
                         continue 'outer;
                     }
