@@ -5,8 +5,7 @@
       "details": {
         "Value": {
           "Array": {
-            "min_items": 1,
-            "unique_items": true
+            "min_items": 1
           }
         }
       }

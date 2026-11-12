@@ -1,8 +1,10 @@
 //! Code generated from tests/schemas/input/json-2019-09
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct NonNegativeInteger(pub i64);
 impl ::std::ops::Deref for NonNegativeInteger {
     type Target = i64;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &i64 {
         &self.0
     }
 }
@@ -11,26 +13,17 @@ impl ::std::convert::From<NonNegativeInteger> for i64 {
         value.0
     }
 }
-impl ::serde::Serialize for NonNegativeInteger {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::From<i64> for NonNegativeInteger {
+    fn from(value: i64) -> Self {
+        Self(value)
     }
 }
-impl<'de> ::serde::Deserialize<'de> for NonNegativeInteger {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
-    }
-}
-pub struct SchemaArray(pub Vec<SchemaRoot>);
+#[derive(::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct SchemaArray(Vec<SchemaRoot>);
 impl ::std::ops::Deref for SchemaArray {
     type Target = Vec<SchemaRoot>;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &Vec<SchemaRoot> {
         &self.0
     }
 }
@@ -39,23 +32,27 @@ impl ::std::convert::From<SchemaArray> for Vec<SchemaRoot> {
         value.0
     }
 }
-impl ::serde::Serialize for SchemaArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::TryFrom<Vec<SchemaRoot>> for SchemaArray {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: Vec<SchemaRoot>,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value.is_empty() {
+            return Err("at least one item required".into());
+        }
+        Ok(Self(value))
     }
 }
 impl<'de> ::serde::Deserialize<'de> for SchemaArray {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+        Self::try_from(<Vec<SchemaRoot>>::deserialize(deserializer)?)
+            .map_err(|e| { <D::Error as ::serde::de::Error>::custom(e.to_string()) })
     }
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum SchemaRoot {
     Boolean(bool),
@@ -460,10 +457,17 @@ pub enum SchemaRoot {
         write_only: Option<bool>,
     },
 }
-pub struct SchemaRootObjectAnchor(pub String);
+impl ::std::convert::From<bool> for SchemaRoot {
+    fn from(value: bool) -> Self {
+        Self::Boolean(value)
+    }
+}
+#[derive(::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct SchemaRootObjectAnchor(String);
 impl ::std::ops::Deref for SchemaRootObjectAnchor {
     type Target = String;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &String {
         &self.0
     }
 }
@@ -472,32 +476,62 @@ impl ::std::convert::From<SchemaRootObjectAnchor> for String {
         value.0
     }
 }
-impl ::serde::Serialize for SchemaRootObjectAnchor {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::TryFrom<&str> for SchemaRootObjectAnchor {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+        { ::regress::Regex::new("^[A-Za-z][-A-Za-z0-9.:_]*$").unwrap() });
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \"^[A-Za-z][-A-Za-z0-9.:_]*$\"".into());
+        }
+        Ok(Self(value.to_string()))
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for SchemaRootObjectAnchor {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        ::std::convert::TryFrom::try_from(value.as_str())
     }
 }
 impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectAnchor {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+        ::std::convert::TryFrom::try_from(
+                ::std::string::String::deserialize(deserializer)?,
+            )
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum SchemaRootObjectDependenciesValue {
     Variant0(SchemaRoot),
     Variant1(StringArray),
 }
-pub struct SchemaRootObjectId(pub ::url::Url);
+impl ::std::convert::From<SchemaRoot> for SchemaRootObjectDependenciesValue {
+    fn from(value: SchemaRoot) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl ::std::convert::From<StringArray> for SchemaRootObjectDependenciesValue {
+    fn from(value: StringArray) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[derive(::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct SchemaRootObjectId(::url::Url);
 impl ::std::ops::Deref for SchemaRootObjectId {
     type Target = ::url::Url;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &::url::Url {
         &self.0
     }
 }
@@ -506,38 +540,81 @@ impl ::std::convert::From<SchemaRootObjectId> for ::url::Url {
         value.0
     }
 }
-impl ::serde::Serialize for SchemaRootObjectId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::TryFrom<&str> for SchemaRootObjectId {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &str,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(||
+        { ::regress::Regex::new("^[^#]*#?$").unwrap() });
+        if PATTERN.find(value).is_none() {
+            return Err("doesn't match pattern \"^[^#]*#?$\"".into());
+        }
+        value
+            .parse()
+            .map(Self)
+            .map_err(|e| { ::std::string::ToString::to_string(&e).into() })
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for SchemaRootObjectId {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        ::std::convert::TryFrom::try_from(value.as_str())
     }
 }
 impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectId {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+        ::std::convert::TryFrom::try_from(
+                ::std::string::String::deserialize(deserializer)?,
+            )
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum SchemaRootObjectItems {
     Variant0(SchemaRoot),
     Variant1(SchemaArray),
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
+impl ::std::convert::From<SchemaRoot> for SchemaRootObjectItems {
+    fn from(value: SchemaRoot) -> Self {
+        Self::Variant0(value)
+    }
+}
+impl ::std::convert::From<SchemaArray> for SchemaRootObjectItems {
+    fn from(value: SchemaArray) -> Self {
+        Self::Variant1(value)
+    }
+}
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum SchemaRootObjectType {
     String(SimpleTypes),
     Array(SchemaRootObjectTypeArray),
 }
-pub struct SchemaRootObjectTypeArray(pub Vec<SimpleTypes>);
+impl ::std::convert::From<SimpleTypes> for SchemaRootObjectType {
+    fn from(value: SimpleTypes) -> Self {
+        Self::String(value)
+    }
+}
+impl ::std::convert::From<SchemaRootObjectTypeArray> for SchemaRootObjectType {
+    fn from(value: SchemaRootObjectTypeArray) -> Self {
+        Self::Array(value)
+    }
+}
+#[derive(::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct SchemaRootObjectTypeArray(Vec<SimpleTypes>);
 impl ::std::ops::Deref for SchemaRootObjectTypeArray {
     type Target = Vec<SimpleTypes>;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &Vec<SimpleTypes> {
         &self.0
     }
 }
@@ -546,23 +623,36 @@ impl ::std::convert::From<SchemaRootObjectTypeArray> for Vec<SimpleTypes> {
         value.0
     }
 }
-impl ::serde::Serialize for SchemaRootObjectTypeArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::TryFrom<Vec<SimpleTypes>> for SchemaRootObjectTypeArray {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: Vec<SimpleTypes>,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if value.is_empty() {
+            return Err("at least one item required".into());
+        }
+        Ok(Self(value))
     }
 }
 impl<'de> ::serde::Deserialize<'de> for SchemaRootObjectTypeArray {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+        Self::try_from(<Vec<SimpleTypes>>::deserialize(deserializer)?)
+            .map_err(|e| { <D::Error as ::serde::de::Error>::custom(e.to_string()) })
     }
 }
-#[derive(::serde::Deserialize, ::serde::Serialize)]
+#[derive(
+    ::serde::Deserialize,
+    ::serde::Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Ord,
+    PartialEq,
+    PartialOrd
+)]
 pub enum SimpleTypes {
     #[serde(rename = "array")]
     Array,
@@ -579,10 +669,12 @@ pub enum SimpleTypes {
     #[serde(rename = "string")]
     String,
 }
+#[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+#[serde(transparent)]
 pub struct StringArray(pub Vec<String>);
 impl ::std::ops::Deref for StringArray {
     type Target = Vec<String>;
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &Vec<String> {
         &self.0
     }
 }
@@ -591,20 +683,41 @@ impl ::std::convert::From<StringArray> for Vec<String> {
         value.0
     }
 }
-impl ::serde::Serialize for StringArray {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        self.0.serialize(serializer)
+impl ::std::convert::From<Vec<String>> for StringArray {
+    fn from(value: Vec<String>) -> Self {
+        Self(value)
     }
 }
-impl<'de> ::serde::Deserialize<'de> for StringArray {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::Deserializer<'de>,
-    {
-        Ok(Self(::serde::Deserialize::deserialize(deserializer)?))
+/// Error types.
+pub mod error {
+    /// Error from a `TryFrom` or `FromStr` implementation.
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(
+            &self,
+            f: &mut ::std::fmt::Formatter<'_>,
+        ) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(
+            &self,
+            f: &mut ::std::fmt::Formatter<'_>,
+        ) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
     }
 }
 fn main() {}

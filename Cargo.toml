@@ -53,3 +53,6 @@ typespace = "0.1.0"
 unicode-ident = "1.0.22"
 url = "2.5.4"
 uuid = "1.16.0"
+
+[patch."crates-io"]
+typespace = { path = "../typespace/typespace" }

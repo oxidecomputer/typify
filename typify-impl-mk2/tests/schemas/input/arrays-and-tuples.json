@@ -62,8 +62,7 @@
     },
     "array-sans-items": {
       "type": "array",
-      "minItems": 1,
-      "uniqueItems": true
+      "minItems": 1
     },
     "tuple-with-bonus-array": {
       "$comment": "this type requires a custom name because it requires a custom serialization",
