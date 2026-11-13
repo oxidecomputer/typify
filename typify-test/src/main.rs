@@ -6,6 +6,28 @@ include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 fn main() {}
 
 #[test]
+fn test_integer_range_above_i64_max() {
+    for (input, expected) in [
+        (r#"{"n": 2}"#, 2),
+        (r#"{"n": 9223372036854775808}"#, 9223372036854775808),
+    ] {
+        let config: Config = serde_json::from_str(input).unwrap();
+        assert_eq!(config.n, expected);
+    }
+}
+
+#[test]
+fn test_integer_full_i64_range() {
+    for (input, expected) in [
+        (r#"{"n": -9223372036854775808}"#, i64::MIN),
+        (r#"{"n": 9223372036854775807}"#, i64::MAX),
+    ] {
+        let config: SignedConfig = serde_json::from_str(input).unwrap();
+        assert_eq!(config.n, expected);
+    }
+}
+
+#[test]
 fn test_with_set() {
     // Validate that a set is currently represented as a Vec
     // See type_entry.rs

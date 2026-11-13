@@ -437,7 +437,7 @@ impl TypeSpace {
                         break;
                     }
                 }
-                let (type_entry, _) = self.convert_schema(type_name, &new_schema).unwrap();
+                let (type_entry, _) = self.convert_schema(type_name, &new_schema)?;
                 Ok((type_entry, metadata))
             }
 
@@ -986,15 +986,15 @@ impl TypeSpace {
         let (mut min, mut max, multiple) = if let Some(validation) = validation {
             let min = match (&validation.minimum, &validation.exclusive_minimum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value + 1.0),
+                (None, Some(value)) => Some(value.floor() + 1.0),
                 (Some(value), None) => Some(*value),
-                (Some(min), Some(emin)) => Some(min.max(emin + 1.0)),
+                (Some(min), Some(emin)) => Some(min.max(emin.floor() + 1.0)),
             };
             let max = match (&validation.maximum, &validation.exclusive_maximum) {
                 (None, None) => None,
-                (None, Some(value)) => Some(value - 1.0),
+                (None, Some(value)) => Some(value.ceil() - 1.0),
                 (Some(value), None) => Some(*value),
-                (Some(max), Some(emax)) => Some(max.min(emax - 1.0)),
+                (Some(max), Some(emax)) => Some(max.min(emax.ceil() - 1.0)),
             };
             (min, max, validation.multiple_of)
         } else {
@@ -1083,9 +1083,10 @@ impl TypeSpace {
                 .iter()
                 .find(|(int_format, _, _, _, _)| int_format == format)
             {
-                let valid_min = min.is_none() || min.map(|fmin| fmin.ge(imin)).unwrap_or(false);
-                let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(false);
-                if multiple.is_none() && valid_min && valid_max {
+                let valid_min = min.is_none_or(|min| *imin <= min && min <= *imax);
+                let valid_max = max.is_none_or(|max| *imin <= max && max <= *imax);
+                let valid_range = min.zip(max).is_none_or(|(min, max)| min <= max);
+                if multiple.is_none() && valid_min && valid_max && valid_range {
                     // If there's a default value and it's either not a number
                     // or outside of the range for this format, return an
                     // error.
@@ -1107,10 +1108,10 @@ impl TypeSpace {
                     }
                 }
 
-                if min.is_none() {
+                if min.is_none() && max.is_none_or(|max| *imin <= max) {
                     min = Some(*imin);
                 }
-                if max.is_none() {
+                if max.is_none() && min.is_none_or(|min| min <= *imax) {
                     max = Some(*imax);
                 }
             }
@@ -1167,16 +1168,32 @@ impl TypeSpace {
             (None, None) => None,
         };
 
-        // TODO we should do something with `multiple`
-        if let Some(ty) = maybe_type {
-            Ok((TypeEntry::new_integer(ty), metadata))
-        } else {
-            // TODO we could construct a type that itself enforces the various
-            // bounds.
-            // TODO failing that, we should find the type that most tightly
-            // matches these bounds.
-            Ok((TypeEntry::new_integer("i64"), metadata))
+        let ty = maybe_type.unwrap_or_else(|| {
+            if min.is_some_and(|min| min >= 0.) {
+                "u64".to_string()
+            } else {
+                "i64".to_string()
+            }
+        });
+
+        // NonZero types share signed/unsigned rows; use their unsigned limits.
+        let (_, _, _, imin, imax) = formats
+            .iter()
+            .rev()
+            .find(|(_, int_ty, nz_ty, _, _)| ty == *int_ty || ty == *nz_ty)
+            .unwrap();
+        if min.is_some_and(|min| min < *imin || min > *imax)
+            || max.is_some_and(|max| max < *imin || max > *imax)
+            || min.zip(max).is_some_and(|(min, max)| min > max)
+        {
+            return Err(Error::InvalidSchema {
+                type_name: metadata.as_ref().and_then(|m| m.title.clone()),
+                reason: "integer bounds do not fit any supported integer type".to_string(),
+            });
         }
+
+        // TODO we should do something with `multiple`
+        Ok((TypeEntry::new_integer(ty), metadata))
     }
 
     fn convert_number<'a>(
@@ -2118,9 +2135,7 @@ mod tests {
     };
 
     #[track_caller]
-    fn int_helper<T: JsonSchema>(type_name: &'static str) {
-        let schema = schema_for!(T);
-
+    fn int_helper(schema: RootSchema, type_name: &str) {
         let mut type_space = TypeSpace::default();
         type_space
             .add_ref_types(schema.definitions.clone())
@@ -2135,7 +2150,7 @@ mod tests {
         let output = ty.type_name(&type_space);
         let actual = output.split("::").last().unwrap().trim();
         let expected = type_name.split("::").last().unwrap();
-        assert_eq!(actual, expected);
+        assert_eq!(actual, expected, "{schema:?}");
     }
 
     macro_rules! int_test {
@@ -2143,7 +2158,7 @@ mod tests {
             paste! {
                 #[test]
                 fn [<test_int_ $t:lower>]() {
-                    int_helper::<$t>(stringify!($t))
+                    int_helper(schema_for!($t), stringify!($t))
                 }
             }
         };
@@ -2161,6 +2176,110 @@ mod tests {
     int_test!(NonZeroU16);
     int_test!(NonZeroU32);
     int_test!(NonZeroU64);
+
+    #[test]
+    fn test_integer_fallback() {
+        for (bounds, expected) in [
+            (json!({"minimum": 0, "maximum": 100}), "u64"),
+            (json!({"minimum": 2, "maximum": 100}), "u64"),
+            (
+                json!({"minimum": 2, "maximum": 9223372036854775808u64}),
+                "u64",
+            ),
+            (
+                json!({"minimum": 1, "maximum": 100}),
+                "::std::num::NonZeroU64",
+            ),
+            (json!({"minimum": -2, "maximum": 100}), "i64"),
+            (json!({"minimum": -128, "maximum": 127}), "i8"),
+            (json!({"minimum": 0, "maximum": 255}), "u8"),
+            (json!({"minimum": 2}), "u64"),
+            (json!({"minimum": 2, "multipleOf": 2}), "u64"),
+            (json!({"format": "uint8", "minimum": 1000}), "u64"),
+            (json!({"format": "int8", "maximum": -1000}), "i64"),
+            (
+                json!({"exclusiveMinimum": 0, "exclusiveMaximum": 1.5}),
+                "::std::num::NonZeroU64",
+            ),
+            (
+                json!({"exclusiveMinimum": 5, "exclusiveMaximum": 6.5}),
+                "u64",
+            ),
+            (
+                json!({"exclusiveMinimum": -1.5, "exclusiveMaximum": -0.5}),
+                "i64",
+            ),
+            (
+                json!({"minimum": 6, "exclusiveMinimum": 5.1, "maximum": 7, "exclusiveMaximum": 6.5}),
+                "u64",
+            ),
+            (json!({}), "i64"),
+            (
+                json!({"format": "int32", "minimum": 2, "maximum": 100}),
+                "i32",
+            ),
+            (
+                json!({"minimum": -9223372036854775808i64, "maximum": 9223372036854775807i64}),
+                "i64",
+            ),
+            (
+                json!({"format": "uint64", "minimum": 0, "maximum": 18446744073709551615u64}),
+                "u64",
+            ),
+        ] {
+            let mut schema = bounds;
+            schema["type"] = json!("integer");
+            int_helper(serde_json::from_value(schema).unwrap(), expected);
+        }
+    }
+
+    #[test]
+    fn test_integer_unsupported_ranges() {
+        for bounds in [
+            json!({"minimum": 2, "maximum": 36893488147419103232.0}),
+            json!({"minimum": 1, "maximum": 36893488147419103232.0}),
+            json!({"format": "uint64", "minimum": 0, "maximum": 36893488147419103232.0}),
+            json!({"minimum": -2, "maximum": 9223372036854777856u64}),
+            json!({"minimum": -18446744073709551616.0}),
+            json!({"minimum": 36893488147419103232.0}),
+            json!({"exclusiveMinimum": 2, "exclusiveMaximum": 3}),
+            json!({"format": "int8", "minimum": 20, "maximum": 10}),
+            json!({"format": "uint64", "minimum": -1}),
+        ] {
+            let mut schema = bounds;
+            schema["type"] = json!("integer");
+            let schema: RootSchema = serde_json::from_value(schema).unwrap();
+            let result = TypeSpace::default().add_type(&schema.schema.clone().into());
+            assert!(
+                matches!(result, Err(Error::InvalidSchema { ref reason, .. })
+                    if reason.contains("supported integer type")),
+                "{schema:?}: {result:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_integer_unsupported_reference_bounds() {
+        let schema: RootSchema = serde_json::from_value(json!({
+            "title": "Config",
+            "type": "object",
+            "definitions": {"Base": {"type": "integer"}},
+            "properties": {
+                "n": {
+                    "$ref": "#/definitions/Base",
+                    "minimum": 2,
+                    "maximum": 36893488147419103232.0
+                }
+            }
+        }))
+        .unwrap();
+        let result = TypeSpace::default().add_root_schema(schema);
+        assert!(
+            matches!(result, Err(Error::InvalidSchema { ref reason, .. })
+            if reason.contains("supported integer type")),
+            "{result:?}"
+        );
+    }
 
     #[test]
     fn test_redundant_types() {
@@ -2240,28 +2359,18 @@ mod tests {
 
     #[test]
     fn test_low_default() {
-        let schema = SchemaObject {
-            instance_type: Some(InstanceType::Integer.into()),
-            format: Some("uint".to_string()),
-            metadata: Some(
-                Metadata {
-                    default: Some(json!(-1i32)),
-                    ..Default::default()
-                }
-                .into(),
-            ),
-            number: Some(NumberValidation::default().into()),
-            ..Default::default()
-        };
-
-        let mut type_space = TypeSpace::default();
-        match type_space.convert_schema_object(
-            Name::Unknown,
-            &schemars::schema::Schema::Object(schema.clone()),
-            &schema,
-        ) {
-            Err(Error::InvalidValue) => (),
-            _ => panic!("unexpected result"),
+        for schema in [
+            json!({"type": "integer", "format": "uint", "default": -1}),
+            json!({"type": "integer", "minimum": 2, "default": 1}),
+        ] {
+            let schema: SchemaObject = serde_json::from_value(schema).unwrap();
+            let original_schema = schemars::schema::Schema::Object(schema.clone());
+            let result = TypeSpace::default().convert_schema_object(
+                Name::Unknown,
+                &original_schema,
+                &schema,
+            );
+            assert!(matches!(result, Err(Error::InvalidValue)), "{schema:?}");
         }
     }
 
