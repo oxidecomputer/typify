@@ -632,9 +632,9 @@ fn try_merge_schema_object_not(
     Ok(schema_object)
 }
 
-/// Merge instance types which could be None (meaning type is valid), a
+/// Merge instance types which could be None (meaning any type is valid), a
 /// singleton type, or an array of types. An error result indicates that the
-/// types were non-overlappin and therefore incompatible.
+/// types were non-overlapping and therefore incompatible.
 fn merge_so_instance_type(
     a: Option<&SingleOrVec<InstanceType>>,
     b: Option<&SingleOrVec<InstanceType>>,
@@ -643,39 +643,31 @@ fn merge_so_instance_type(
         (None, None) => Ok(None),
         (None, other @ Some(_)) | (other @ Some(_), None) => Ok(other.cloned()),
 
-        // If each has a single type, it must match.
-        (Some(SingleOrVec::Single(aa)), Some(SingleOrVec::Single(bb))) => {
-            if aa == bb {
-                Ok(Some(SingleOrVec::Single(aa.clone())))
-            } else {
-                Err(())
-            }
-        }
+        (Some(aa), Some(bb)) => {
+            let expand = |types: &SingleOrVec<InstanceType>| {
+                let mut types = match types {
+                    SingleOrVec::Single(it) => BTreeSet::from([**it]),
+                    SingleOrVec::Vec(types) => types.iter().copied().collect(),
+                };
+                // JSON Schema numbers include integers.
+                if types.contains(&InstanceType::Number) {
+                    types.insert(InstanceType::Integer);
+                }
+                types
+            };
 
-        // If one has a single type and the other is an array, the type must
-        // appear in the array (and that's the resulting type).
-        (Some(SingleOrVec::Vec(types)), Some(SingleOrVec::Single(it)))
-        | (Some(SingleOrVec::Single(it)), Some(SingleOrVec::Vec(types))) => {
-            if types.contains(it) {
-                Ok(Some(SingleOrVec::Single(it.clone())))
-            } else {
-                Err(())
-            }
-        }
+            let mut types = expand(aa)
+                .intersection(&expand(bb))
+                .copied()
+                .collect::<BTreeSet<_>>();
 
-        // If both are arrays, we take the intersection; if the intersection is
-        // empty, we return an error.
-        (Some(SingleOrVec::Vec(aa)), Some(SingleOrVec::Vec(bb))) => {
-            let types = aa
-                .iter()
-                .collect::<BTreeSet<_>>()
-                .intersection(&bb.iter().collect::<BTreeSet<_>>())
-                .cloned()
-                .cloned()
-                .collect::<Vec<_>>();
+            // Integer is redundant when Number is also in the union.
+            if types.contains(&InstanceType::Number) {
+                types.remove(&InstanceType::Integer);
+            }
+            let types = types.into_iter().collect::<Vec<_>>();
 
             match types.len() {
-                // No intersection
                 0 => Err(()),
                 1 => Ok(Some(types.into_iter().next().unwrap().into())),
                 _ => Ok(Some(types.into())),
@@ -1501,6 +1493,8 @@ mod tests {
 
     #[test]
     fn test_merge_instance_types() {
+        use InstanceType::{Integer, Null, Number, String};
+
         // Simple cases
         assert_eq!(merge_so_instance_type(None, None), Ok(None));
 
@@ -1579,6 +1573,42 @@ mod tests {
             ),
             Err(()),
         );
+
+        let cases = [
+            (Number.into(), Integer.into(), Ok(Integer.into())),
+            (Integer.into(), vec![Number].into(), Ok(Integer.into())),
+            (
+                Number.into(),
+                vec![Integer, Null].into(),
+                Ok(Integer.into()),
+            ),
+            (
+                vec![Number, Null].into(),
+                vec![Integer, Null].into(),
+                Ok(vec![Null, Integer].into()),
+            ),
+            (
+                Number.into(),
+                vec![Number, Integer].into(),
+                Ok(Number.into()),
+            ),
+            (
+                vec![Number, Integer].into(),
+                vec![Number, Integer].into(),
+                Ok(Number.into()),
+            ),
+            (vec![Number].into(), vec![String, Null].into(), Err(())),
+        ];
+
+        for (a, b, expected) in cases {
+            for (a, b) in [(&a, &b), (&b, &a)] {
+                assert_eq!(
+                    merge_so_instance_type(Some(a), Some(b)),
+                    expected.clone().map(Some),
+                    "{a:?} intersect {b:?}",
+                );
+            }
+        }
     }
 
     #[test]

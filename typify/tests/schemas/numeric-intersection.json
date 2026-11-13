@@ -1,0 +1,10 @@
+{
+  "title": "NumericIntersection",
+  "type": "object",
+  "required": ["n"],
+  "properties": {
+    "n": {
+      "allOf": [{"type": "number"}, {"type": "integer"}]
+    }
+  }
+}
