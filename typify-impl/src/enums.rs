@@ -1340,7 +1340,10 @@ mod tests {
 
         let expected = quote! {
             #[doc = "`ResultX`"]
-            #[derive(::a::A, ::b::B, ::c::C, ::d::D, ::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
+            #[derive(
+                ::a::A, ::b::B, ::c::C, ::d::D, ::serde::Deserialize, ::serde::Serialize,
+                Clone, Debug
+            )]
             pub enum ResultX {
                 Ok(u32),
                 Err(::std::string::String),
