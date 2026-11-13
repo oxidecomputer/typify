@@ -24,7 +24,7 @@ impl ::std::convert::TryFrom<&str> for PatternString {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("xx").unwrap());
+            ::std::sync::LazyLock::new(|| ::regress::Regex::with_flags("xx", "u").unwrap());
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"xx\"".into());
         }

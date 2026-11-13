@@ -909,7 +909,7 @@ impl StringValidator {
                     .pattern
                     .as_ref()
                     .map(|pattern| {
-                        regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                        regress::Regex::with_flags(pattern, "u").map_err(|e| Error::InvalidSchema {
                             type_name: type_name.clone().into_option(),
                             reason: format!("invalid pattern '{}' {}", pattern, e),
                         })
@@ -1193,6 +1193,25 @@ mod tests {
         assert!(ach.is_valid("Shadrach"));
         assert!(ach.is_valid("Meshach"));
         assert!(!ach.is_valid("Abednego"));
+    }
+
+    #[test]
+    fn test_string_validation_unicode_pattern() {
+        for (pattern, valid, invalid) in [
+            (r"^\p{Letter}+$", "héllo", "123"),
+            (r"^\u{1F354}$", "🍔", "a"),
+        ] {
+            let validator = StringValidator::new(
+                &Name::Unknown,
+                Some(&StringValidation {
+                    pattern: Some(pattern.to_string()),
+                    ..Default::default()
+                }),
+            )
+            .unwrap();
+            assert!(validator.is_valid(valid), "{pattern} should match {valid}");
+            assert!(!validator.is_valid(invalid));
+        }
     }
 
     #[test]

@@ -393,7 +393,7 @@ impl ::std::convert::TryFrom<&str> for TriplePattern {
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| {
-                ::regress::Regex::new("(?=^[a-z].+$)(?=^.{4,8}$)(?=.+[a-z]$)").unwrap()
+                ::regress::Regex::with_flags("(?=^[a-z].+$)(?=^.{4,8}$)(?=.+[a-z]$)", "u").unwrap()
             });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"(?=^[a-z].+$)(?=^.{4,8}$)(?=.+[a-z]$)\"".into());
