@@ -971,11 +971,12 @@ impl TypeSpace {
 
                     Some(validation) => {
                         if let Some(pattern) = &validation.pattern {
-                            let _ =
-                                regress::Regex::new(pattern).map_err(|e| Error::InvalidSchema {
+                            let _ = regress::Regex::with_flags(pattern, "u").map_err(|e| {
+                                Error::InvalidSchema {
                                     type_name: type_name.clone().into_option(),
                                     reason: format!("invalid pattern '{}' {}", pattern, e),
-                                })?;
+                                }
+                            })?;
                         }
 
                         let string = TypeEntry::from(Type::String);
@@ -2228,6 +2229,21 @@ mod tests {
     int_test!(NonZeroU16);
     int_test!(NonZeroU32);
     int_test!(NonZeroU64);
+
+    #[test]
+    fn test_unicode_pattern_rejects_identity_escape() {
+        let schema = serde_json::from_value(json!({
+            "title": "InvalidUnicodePattern",
+            "type": "string",
+            "pattern": r"\a",
+        }))
+        .unwrap();
+
+        assert!(matches!(
+            TypeSpace::default().add_root_schema(schema),
+            Err(Error::InvalidSchema { .. })
+        ));
+    }
 
     #[test]
     fn test_basic_option_flat() {
