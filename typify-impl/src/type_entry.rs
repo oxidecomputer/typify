@@ -43,6 +43,7 @@ use typespace::build::{
 /// References exist only during conversion (see `convert_reference`) and
 /// are unwrapped by `TypeSpace::assign_type` before storage.
 #[derive(Debug, Clone)]
+#[allow(clippy::large_enum_variant)]
 pub(crate) enum TypeEntry {
     Type(Type<TypeId>),
     Reference(TypeId),
