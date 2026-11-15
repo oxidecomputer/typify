@@ -15,27 +15,25 @@
 
 https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.3\...HEAD[Full list of commits]
 
-Type generation moves to the https://github.com/oxidecomputer/typespace[typespace]
-crate. The schema-to-type translation is still typify's; typespace renders the
-Rust code. The sections for the 0.10.0 alphas below record the steps; this is
-the view from 0.8.0.
+Type generation moves to the
+https://github.com/oxidecomputer/typespace[typespace] crate.
 
 *Builder API*
 
-* `TypeSpaceSettings` keeps what governs translation (`with_replacement`,
-  `with_patch`, `with_conversion`, `with_crate`, `with_unknown_crates`) and
-  hands everything about rendering to a `typespace::Settings` reached through
-  `map_typespace_settings`; `with_derive`, `with_attr`, `with_struct_builder`,
-  `with_map_type`, and `with_type_mod` are gone, as is `MapType`
+* `TypeSpaceSettings` retains settings that modify translation (`with_replacement`,
+  `with_patch`, `with_conversion`, `with_crate`, `with_unknown_crates`);
+  everything pertaining to rendering is specified in `typespace::Settings`
+  which can be reached through `map_typespace_settings`; `with_derive`,
+  `with_attr`, `with_struct_builder`, `with_map_type`, and `with_type_mod` are
+  gone, as is `MapType`
 * `TypeSpace::to_stream` returns a `Result`; `to_codespace` gives the rendered
-  code as a `codespace::Codespace` (one module per type group, or files) and
-  `to_typespace` the finished `typespace::Typespace`
+  code as a `codespace::Codespace` and `to_typespace` produces the finished
+  `typespace::Typespace`
 * The `Type`, `TypeDetails`, `TypeEnum`, `TypeStruct`, and `TypeNewtype` views
-  are gone; `TypeSpace::inserted_type` answers the typespace type for an id and
-  the typespace crate is re-exported as `typify::typespace`
-* A derive name is parsed by typespace: a trait it models is handled as that
-  trait, any other path is a foreign derive written on every type, and a bare
-  name that is neither is an error
+  are gone; `TypeSpace::inserted_type` may be used for queries
+* A derive name is parsed by `typespace`: a trait it models is handled as that
+  trait, any other path is a foreign derive written on every type; a bare name
+  that is neither is an error
 
 *Generated code*
 
@@ -48,19 +46,16 @@ the view from 0.8.0.
   (#1078, #1079)
 * The `error` module and shared default functions are emitted only when
   something references them (#1080, #1082)
-* `expect` with a message replaces `unwrap` in generated code (#1081)
 * The 2024 keyword `gen` is no longer used as an identifier (#1074)
-* Generated code depends on `json-serde` 1.x for flattened sequences and
-  the `Absent` type; the crate list a generator reports comes from codespace
-  (#1089)
+* An `anyOf` construction with mixed types that previously generated an
+  unusable type now results in an error
 
 *Other*
 
 * A type named through `replace`, `convert`, or `x-rust-type` is assumed to
   implement whatever the compiler can check rather than failing generation
   for a trait typify cannot see (#1094)
-* The minimum supported Rust version is 1.97, from typespace
-* typespace 0.1.1
+* The minimum supported Rust version is 1.97
 
 == 0.10.0-alpha.3 (released 2026-10-14)
 
