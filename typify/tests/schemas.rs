@@ -20,7 +20,7 @@ fn test_schemas() {
         let entry = entry.unwrap();
         let out_path = entry.clone().with_extension("rs");
         validate_schema(entry.clone(), out_path, TypeSpaceSettings::default())
-            .expect(&format!("failed for {}", entry.to_string_lossy()))
+            .unwrap_or_else(|e| panic!("failed for {}: {e}", entry.to_string_lossy()))
     }
 
     // Make sure it all compiles.

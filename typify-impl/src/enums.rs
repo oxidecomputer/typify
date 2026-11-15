@@ -1298,8 +1298,6 @@ mod tests {
         // typespace's rendering are gaps: the derive list, the doc
         // rendering (one #[doc] vs. line-by-line), and the convenience
         // From<VariantType> impl.
-        let schema_json = serde_json::to_string_pretty(&original_schema).unwrap();
-        let schema_lines = schema_json.lines();
         let expected = quote! {
             #[doc = "`ResultX`"]
             #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
