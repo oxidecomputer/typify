@@ -288,7 +288,7 @@ impl TypeSpace {
                 properties,
                 false,
                 original_schema.clone(),
-            ),
+            )?,
             metadata,
         ))
     }

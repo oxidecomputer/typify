@@ -95,7 +95,7 @@ impl TypeEntryEnum {
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         // Let's find some decent names for variants. We first try the simple
         // sanitization.
         let mut ident_names = variants
@@ -182,9 +182,9 @@ impl TypeEntryEnum {
         if deny_unknown_fields {
             type_enum = type_enum.deny_unknown_fields();
         }
-        let typ = type_enum.build().unwrap();
+        let typ = type_enum.build()?;
 
-        TypeEntry::Type(typ)
+        Ok(TypeEntry::Type(typ))
     }
 }
 
@@ -196,7 +196,7 @@ impl TypeEntryStruct {
         properties: Vec<StructProperty<TypeId>>,
         deny_unknown_fields: bool,
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         let name = get_type_name(&type_name, metadata).unwrap();
         let description = metadata_description(metadata);
         let default = metadata
@@ -216,10 +216,10 @@ impl TypeEntryStruct {
         if deny_unknown_fields {
             type_struct = type_struct.deny_unknown_fields();
         }
-        let mut typ = type_struct.build().unwrap();
+        let mut typ = type_struct.build()?;
         typ.set_default(default);
 
-        TypeEntry::Type(typ)
+        Ok(TypeEntry::Type(typ))
     }
 }
 
@@ -231,7 +231,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         constraints: NewtypeConstraints,
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         let name = get_type_name(&type_name, metadata).unwrap();
         let description = metadata_description(metadata);
 
@@ -243,10 +243,9 @@ impl TypeEntryNewtype {
             .extra_derives(type_patch.derives)
             .extra_attrs(type_patch.attrs)
             .constraints(constraints)
-            .build()
-            .unwrap();
+            .build()?;
 
-        TypeEntry::Type(typ)
+        Ok(TypeEntry::Type(typ))
     }
 
     pub(crate) fn from_metadata(
@@ -255,7 +254,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         Self::make(
             type_space,
             type_name,
@@ -273,7 +272,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         let constraints = NewtypeConstraints::AllowList(
             enum_values.iter().cloned().map(JsonValue::new).collect(),
         );
@@ -294,7 +293,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         let constraints =
             NewtypeConstraints::DenyList(enum_values.iter().cloned().map(JsonValue::new).collect());
         Self::make(
@@ -314,7 +313,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
         schema: Schema,
-    ) -> TypeEntry {
+    ) -> crate::Result<TypeEntry> {
         let schemars::schema::StringValidation {
             max_length,
             min_length,

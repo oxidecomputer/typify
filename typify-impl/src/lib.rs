@@ -643,7 +643,7 @@ impl TypeSpace {
                 metadata,
                 type_id.clone(),
                 schema.clone(),
-            ),
+            )?,
 
             TypeEntry::Type(typespace::build::Type::Native(native))
                 if native_name_match(native, &type_name) =>
@@ -667,7 +667,7 @@ impl TypeSpace {
                     metadata,
                     subtype_id,
                     schema.clone(),
-                )
+                )?
             }
         };
         // TODO need a type alias?

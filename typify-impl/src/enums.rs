@@ -224,7 +224,7 @@ impl TypeSpace {
             })
             .collect::<Option<Vec<_>>>()?;
 
-        Some(TypeEntryEnum::from_metadata(
+        TypeEntryEnum::from_metadata(
             self,
             type_name,
             enum_metadata,
@@ -232,7 +232,8 @@ impl TypeSpace {
             variants,
             deny_unknown_fields,
             original_schema.clone(),
-        ))
+        )
+        .ok()
     }
 
     /// Return the variant details and a bool indicating if the schema denies
@@ -357,7 +358,7 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntryEnum::from_metadata(
+        TypeEntryEnum::from_metadata(
             self,
             type_name,
             metadata,
@@ -365,7 +366,8 @@ impl TypeSpace {
             variants,
             deny_unknown_fields,
             original_schema.clone(),
-        ))
+        )
+        .ok()
     }
 
     fn internal_variant(
@@ -483,7 +485,7 @@ impl TypeSpace {
             .collect::<Result<Vec<_>>>()
             .ok()?;
 
-        Some(TypeEntryEnum::from_metadata(
+        TypeEntryEnum::from_metadata(
             self,
             type_name,
             metadata,
@@ -491,7 +493,8 @@ impl TypeSpace {
             variants,
             deny_unknown_fields,
             original_schema.clone(),
-        ))
+        )
+        .ok()
     }
 
     fn adjacent_variant(
@@ -659,7 +662,7 @@ impl TypeSpace {
             })
             .collect();
 
-        Ok(TypeEntryEnum::from_metadata(
+        TypeEntryEnum::from_metadata(
             self,
             // TODO should this be tmp_type_name?
             type_name,
@@ -668,7 +671,7 @@ impl TypeSpace {
             variants,
             deny_unknown_fields,
             original_schema.clone(),
-        ))
+        )
     }
 }
 
