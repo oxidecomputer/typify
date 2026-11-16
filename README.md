@@ -67,16 +67,31 @@ see e.g. `Option<Vec<T>>`).
 
 By default, Typify uses `std::collections::HashMap` as described above.
 
-If you prefer to use `std::collections::BTreeMap` or a map type from a crate such
-as `indexmap::IndexMap`, you can specify this by calling `with_map_type` on the
-`TypeSpaceSettings` object, and providing the full path to the type you want to
-use. E.g. `::std::collections::BTreeMap` or `::indexmap::IndexMap`.
+If you prefer to use `std::collections::BTreeMap` or a map type from a crate
+such as `indexmap::IndexMap`, set the map type in the typespace settings that
+`TypeSpaceSettings::map_typespace_settings` exposes. A
+`typespace::settings::ContainerType` names the type by its full path; the
+`hash_map` and `btree_map` presets describe what each standard map asks of its
+key type.
+
+```rust
+use typify::typespace::settings::ContainerType;
+
+let mut settings = typify::TypeSpaceSettings::default();
+settings.map_typespace_settings(|s| {
+    s.with_map_type(
+        ContainerType::hash_map().with_path("::indexmap::IndexMap"),
+    )
+});
+```
+
+The CLI takes the path as `--map-type` and the macro as `map_type`.
 
 Note that for a custom map type to work you must have `T` defined to generate
 a struct as described in [Objects](#objects). If `T` is not defined, typify
 will generate code using a `serde_json::Map<String, serde_json::Value>` instead.
 
-See the documentation for `TypeSpaceSettings::with_map_type` for the
+See the documentation for `typespace::settings::ContainerType` for the
 requirements for a map type.
 
 ### OneOf
@@ -291,7 +306,8 @@ You can format generated code using crates such as
 when checking in code or emitting code from a `build.rs`.
 
 The examples below show different ways to convert a `TypeSpace` to a string
-(`typespace` is a `typify::TypeSpace`).
+(`type_space` is a `typify::TypeSpace`). Rendering finalizes the collected
+types and can fail, so `to_stream` returns a `Result`.
 
 
 ### `rustfmt`
@@ -301,7 +317,7 @@ code such as in the case of an `xtask` or stand-alone code generator (such as
 `cargo-typify`).
 
 ```rust
-rustfmt_wrapper::rustfmt(typespace.to_stream().to_string())?
+rustfmt_wrapper::rustfmt(type_space.to_stream()?.to_string())?
 ```
 
 ### `prettyplease`
@@ -310,7 +326,7 @@ Best for `build.rs` scripts where transitive dependencies might not have
 `rustfmt` installed so should be self-contained.
 
 ```rust
-prettyplease::unparse(&syn::parse2::<syn::File>(typespace.to_stream())?)
+prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()?)?)
 ```
 
 ### No formatting
@@ -318,7 +334,7 @@ prettyplease::unparse(&syn::parse2::<syn::File>(typespace.to_stream())?)
 If no human will ever see the code (and this is almost never the case).
 
 ```rust
-typespace.to_stream().to_string()
+type_space.to_stream()?.to_string()
 ```
 
 ## WIP
