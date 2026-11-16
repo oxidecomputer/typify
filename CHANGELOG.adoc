@@ -13,7 +13,7 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.3\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.8.0\...HEAD[Full list of commits]
 
 Type generation moves to the
 https://github.com/oxidecomputer/typespace[typespace] crate.
