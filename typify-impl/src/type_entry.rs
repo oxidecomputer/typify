@@ -24,7 +24,7 @@ use schemars::schema::{Metadata, Schema};
 use unicode_ident::is_xid_continue;
 
 use crate::{
-    Case, Name, TypeId, TypeSpace, sanitize,
+    Case, Name, Result, TypeId, TypeSpace, sanitize,
     util::{TypePatch, get_type_name, metadata_description, unique},
 };
 
@@ -95,7 +95,7 @@ impl TypeEntryEnum {
         variants: Vec<Variant>,
         deny_unknown_fields: bool,
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         // Let's find some decent names for variants. We first try the simple
         // sanitization.
         let mut ident_names = variants
@@ -196,7 +196,7 @@ impl TypeEntryStruct {
         properties: Vec<StructProperty<TypeId>>,
         deny_unknown_fields: bool,
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         let name = get_type_name(&type_name, metadata).unwrap();
         let description = metadata_description(metadata);
         let default = metadata
@@ -231,7 +231,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         constraints: NewtypeConstraints,
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         let name = get_type_name(&type_name, metadata).unwrap();
         let description = metadata_description(metadata);
 
@@ -254,7 +254,7 @@ impl TypeEntryNewtype {
         metadata: &Option<Box<Metadata>>,
         type_id: TypeId,
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         Self::make(
             type_space,
             type_name,
@@ -272,7 +272,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         let constraints = NewtypeConstraints::AllowList(
             enum_values.iter().cloned().map(JsonValue::new).collect(),
         );
@@ -293,7 +293,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         enum_values: &[serde_json::Value],
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         let constraints =
             NewtypeConstraints::DenyList(enum_values.iter().cloned().map(JsonValue::new).collect());
         Self::make(
@@ -313,7 +313,7 @@ impl TypeEntryNewtype {
         type_id: TypeId,
         validation: &schemars::schema::StringValidation,
         schema: Schema,
-    ) -> crate::Result<TypeEntry> {
+    ) -> Result<TypeEntry> {
         let schemars::schema::StringValidation {
             max_length,
             min_length,
