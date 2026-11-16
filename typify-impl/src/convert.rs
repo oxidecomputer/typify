@@ -989,7 +989,7 @@ impl TypeSpace {
                                 type_id,
                                 validation,
                                 original_schema.clone(),
-                            ),
+                            )?,
                             metadata,
                         ))
                     }
@@ -1062,7 +1062,7 @@ impl TypeSpace {
                 variants,
                 false,
                 original_schema.clone(),
-            );
+            )?;
 
             if has_null {
                 ty = self.type_to_option(ty);
@@ -1435,7 +1435,7 @@ impl TypeSpace {
                         properties,
                         deny_unknown_fields,
                         original_schema.clone(),
-                    ),
+                    )?,
                     &None,
                 ))
             }
@@ -1777,7 +1777,7 @@ impl TypeSpace {
                     type_id,
                     enum_values,
                     original_schema.clone(),
-                );
+                )?;
 
                 Ok((newtype_entry, metadata))
             }
@@ -1836,7 +1836,7 @@ impl TypeSpace {
                             type_id,
                             enum_values,
                             original_schema.clone(),
-                        );
+                        )?;
 
                         Ok((newtype_entry, metadata))
                     }
@@ -1998,7 +1998,7 @@ impl TypeSpace {
             vec![],
             true,
             schema.clone(),
-        );
+        )?;
         Ok((ty, &None))
     }
 
@@ -2031,7 +2031,7 @@ impl TypeSpace {
             type_id,
             enum_values,
             original_schema.clone(),
-        );
+        )?;
 
         Ok((
             newtype_entry,
