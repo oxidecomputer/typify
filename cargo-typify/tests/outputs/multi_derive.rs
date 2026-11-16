@@ -5,7 +5,12 @@
 
 #[doc = "`Fruit`"]
 #[derive(
-    :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
+    :: extra :: AnotherDerive,
+    :: extra :: ExtraDerive,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
 )]
 #[serde(transparent)]
 pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
@@ -33,7 +38,12 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::s
 }
 #[doc = "`FruitOrVeg`"]
 #[derive(
-    :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
+    :: extra :: AnotherDerive,
+    :: extra :: ExtraDerive,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
 )]
 #[serde(untagged)]
 pub enum FruitOrVeg {
@@ -52,7 +62,12 @@ impl ::std::convert::From<Fruit> for FruitOrVeg {
 }
 #[doc = "`Veggie`"]
 #[derive(
-    :: serde :: Deserialize, :: serde :: Serialize, AnotherDerive, Clone, Debug, ExtraDerive,
+    :: extra :: AnotherDerive,
+    :: extra :: ExtraDerive,
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
 )]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
@@ -64,13 +79,13 @@ pub struct Veggie {
 }
 #[doc = "A representation of a person, company, organization, or place"]
 #[derive(
+    :: extra :: AnotherDerive,
+    :: extra :: ExtraDerive,
     :: serde :: Deserialize,
     :: serde :: Serialize,
-    AnotherDerive,
     Clone,
     Debug,
     Default,
-    ExtraDerive,
 )]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]

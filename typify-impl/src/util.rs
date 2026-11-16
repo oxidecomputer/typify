@@ -10,7 +10,7 @@ use schemars::schema::{
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{validate::schema_value_validate, Error, Name, RefKey, Result, TypeSpace};
+use crate::{Error, Name, RefKey, Result, TypeSpace, validate::schema_value_validate};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -877,18 +877,11 @@ impl TypePatch {
                 derives: Default::default(),
                 attrs: Default::default(),
             },
-
-            Some(patch) => {
-                let name = patch.rename.clone().unwrap_or(type_name);
-                let derives = patch.derives.iter().cloned().collect();
-                let attrs = patch.attrs.iter().cloned().collect();
-
-                Self {
-                    name,
-                    derives,
-                    attrs,
-                }
-            }
+            Some(patch) => Self {
+                name: patch.rename.clone().unwrap_or(type_name),
+                derives: patch.derives.iter().cloned().collect(),
+                attrs: patch.attrs.iter().cloned().collect(),
+            },
         }
     }
 }
@@ -902,7 +895,7 @@ pub(crate) struct StringValidator {
 impl StringValidator {
     pub fn new(type_name: &Name, validation: Option<&StringValidation>) -> Result<Self> {
         let (max_length, min_length, pattern) =
-            validation.map_or(Ok((None, None, None)), |validation| {
+            validation.map_or(Ok::<_, Error>((None, None, None)), |validation| {
                 let max = validation.max_length;
                 let min = validation.min_length;
                 let pattern = validation
@@ -1003,17 +996,18 @@ mod tests {
     use std::collections::BTreeMap;
 
     use schemars::{
+        JsonSchema,
         r#gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
-        schema_for, JsonSchema,
+        schema_for,
     };
 
     use crate::{
-        util::{
-            all_mutually_exclusive, decode_segment, sanitize, schemas_mutually_exclusive, Case,
-            ReorderedInstanceType,
-        },
         Name,
+        util::{
+            Case, ReorderedInstanceType, all_mutually_exclusive, decode_segment, sanitize,
+            schemas_mutually_exclusive,
+        },
     };
 
     use super::StringValidator;
@@ -1198,8 +1192,8 @@ mod tests {
     #[test]
     fn test_string_validation_unicode_pattern() {
         for (pattern, valid, invalid) in [
-            (r"^\p{Letter}+$", "héllo", "123"),
-            (r"^\u{1F354}$", "🍔", "a"),
+            (r"^\p{Letter}+$", "h\u{e9}llo", "123"),
+            (r"^\u{1F354}$", "\u{1F354}", "a"),
         ] {
             let validator = StringValidator::new(
                 &Name::Unknown,

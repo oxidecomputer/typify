@@ -1,7 +1,7 @@
 [package]
 name = "typify"
-version = "0.8.0"
-edition = "2021"
+version = "0.10.0"
+edition = "2024"
 license = "Apache-2.0"
 description = "JSON schema to rust type code generator"
 repository = "https://github.com/oxidecomputer/typify"

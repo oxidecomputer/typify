@@ -4,7 +4,7 @@
 #![allow(clippy::clone_on_copy)]
 
 #[doc = "`Fruit`"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
+#[derive(:: extra :: ExtraDerive, :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(transparent)]
 pub struct Fruit(pub ::std::collections::HashMap<::std::string::String, ::std::string::String>);
 impl ::std::ops::Deref for Fruit {
@@ -30,7 +30,7 @@ impl ::std::convert::From<::std::collections::HashMap<::std::string::String, ::s
     }
 }
 #[doc = "`FruitOrVeg`"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
+#[derive(:: extra :: ExtraDerive, :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum FruitOrVeg {
     Veg(Veggie),
@@ -47,7 +47,7 @@ impl ::std::convert::From<Fruit> for FruitOrVeg {
     }
 }
 #[doc = "`Veggie`"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, ExtraDerive)]
+#[derive(:: extra :: ExtraDerive, :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Veggie {
     #[doc = "Do I like this vegetable?"]
     #[serde(rename = "veggieLike")]
@@ -57,7 +57,9 @@ pub struct Veggie {
     pub veggie_name: ::std::string::String,
 }
 #[doc = "A representation of a person, company, organization, or place"]
-#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default, ExtraDerive)]
+#[derive(
+    :: extra :: ExtraDerive, :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default,
+)]
 pub struct Veggies {
     #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
     pub fruits: ::std::vec::Vec<::std::string::String>,

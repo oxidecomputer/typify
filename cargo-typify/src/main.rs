@@ -1,6 +1,6 @@
 // Copyright 2023 Oxide Computer Company
 
-use cargo_typify::{convert, CliArgs};
+use cargo_typify::{CliArgs, convert};
 use clap::Parser;
 
 use color_eyre::eyre::{Context, Result};

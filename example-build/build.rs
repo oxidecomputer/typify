@@ -8,11 +8,13 @@ fn main() {
     let content = std::fs::read_to_string("../example.json").unwrap();
     let schema = serde_json::from_str::<schemars::schema::RootSchema>(&content).unwrap();
 
-    let mut type_space = TypeSpace::new(TypeSpaceSettings::default().with_struct_builder(true));
+    let mut type_space = TypeSpace::new(
+        TypeSpaceSettings::default().map_typespace_settings(|s| s.with_struct_builder(true)),
+    );
     type_space.add_root_schema(schema).unwrap();
 
     let contents =
-        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream()).unwrap());
+        prettyplease::unparse(&syn::parse2::<syn::File>(type_space.to_stream().unwrap()).unwrap());
 
     let mut out_file = Path::new(&env::var("OUT_DIR").unwrap()).to_path_buf();
     out_file.push("codegen.rs");

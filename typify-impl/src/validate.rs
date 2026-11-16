@@ -24,22 +24,22 @@ fn schema_object_value_validate(
     value: &Value,
     _defs: &BTreeMap<RefKey, Schema>,
 ) -> Result<(), String> {
-    if let Some(const_value) = &object.const_value {
-        if value != const_value {
-            return Err(format!(
-                "{} does not match the const value {}",
-                value, const_value,
-            ));
-        }
+    if let Some(const_value) = &object.const_value
+        && value != const_value
+    {
+        return Err(format!(
+            "{} does not match the const value {}",
+            value, const_value,
+        ));
     }
-    if let Some(enum_values) = &object.enum_values {
-        if !enum_values.contains(value) {
-            return Err(format!(
-                "{} does not match the enum values {}",
-                value,
-                serde_json::to_string(enum_values).unwrap(),
-            ));
-        }
+    if let Some(enum_values) = &object.enum_values
+        && !enum_values.contains(value)
+    {
+        return Err(format!(
+            "{} does not match the enum values {}",
+            value,
+            serde_json::to_string(enum_values).unwrap(),
+        ));
     }
 
     let SchemaObject { instance_type, .. } = object;

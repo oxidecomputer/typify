@@ -1,7 +1,7 @@
 [package]
 name = "typify-impl"
-version = "0.8.0"
-edition = "2021"
+version = "0.10.0"
+edition = "2024"
 license = "Apache-2.0"
 description = "typify backend implementation"
 repository = "https://github.com/oxidecomputer/typify"
@@ -19,6 +19,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 syn = { workspace = true }
 thiserror = { workspace = true }
+typespace = { workspace = true }
 unicode-ident = { workspace = true }
 
 [dev-dependencies]

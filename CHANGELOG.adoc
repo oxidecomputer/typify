@@ -13,7 +13,73 @@
 
 == Unreleased changes (release date TBD)
 
-https://github.com/oxidecomputer/typify/compare/v0.8.0\...HEAD[Full list of commits]
+https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.3\...HEAD[Full list of commits]
+
+Type generation moves to the
+https://github.com/oxidecomputer/typespace[typespace] crate.
+
+*Builder API*
+
+* `TypeSpaceSettings` retains settings that modify translation (`with_replacement`,
+  `with_patch`, `with_conversion`, `with_crate`, `with_unknown_crates`);
+  everything pertaining to rendering is specified in `typespace::Settings`
+  which can be reached through `map_typespace_settings`; `with_derive`,
+  `with_attr`, `with_struct_builder`, `with_map_type`, and `with_type_mod` are
+  gone, as is `MapType`
+* `TypeSpace::to_stream` returns a `Result`; `to_codespace` gives the rendered
+  code as a `codespace::Codespace` and `to_typespace` produces the finished
+  `typespace::Typespace`
+* The `Type`, `TypeDetails`, `TypeEnum`, `TypeStruct`, and `TypeNewtype` views
+  are gone; `TypeSpace::inserted_type` may be used for queries
+* A derive name is parsed by `typespace`: a trait it models is handled as that
+  trait, any other path is a foreign derive written on every type; a bare name
+  that is neither is an error
+
+*Generated code*
+
+* Items are emitted in type-name order rather than in schema order
+* Pattern checks compile the regex with the ECMA-262 `u` flag, as JSON Schema
+  specifies, so `\p{..}` and `\u{..}` escapes work; a pattern with an identity
+  escape the `u` flag forbids is now a generation error (#1103)
+* A constrained string newtype does its validation in `TryFrom<&str>`, and a
+  non-string newtype no longer gets `TryFrom<&str>` or `TryFrom<String>`
+  (#1078, #1079)
+* The `error` module and shared default functions are emitted only when
+  something references them (#1080, #1082)
+* The 2024 keyword `gen` is no longer used as an identifier (#1074)
+* An `anyOf` construction with mixed types that previously generated an
+  unusable type now results in an error
+
+*Other*
+
+* A type named through `replace`, `convert`, or `x-rust-type` is assumed to
+  implement whatever the compiler can check rather than failing generation
+  for a trait typify cannot see (#1094)
+* The minimum supported Rust version is 1.97; edition is 2024
+
+== 0.10.0-alpha.3 (released 2026-10-14)
+
+https://github.com/oxidecomputer/typify/compare/v0.10.0-alpha.2\...v0.10.0-alpha.3[Full list of commits]
+
+* A type named through `replace`, `convert`, or `x-rust-type` no longer
+  fails generation for a trait typify cannot see it implement, such as `Ord`
+  for a set element; the compiler checks the real type (#1094)
+* Under `typify_compat`, a derive the consumer asks for is written on every
+  type rather than withheld with typify's own comparison derives (typespace
+  0.0.1-alpha.4)
+
+== 0.10.0-alpha.2 (released 2026-10-05)
+
+https://github.com/oxidecomputer/typify/compare/v0.8.0\...v0.10.0-alpha.2[Full list of commits]
+
+**Big Release**
+
+Type generation moves to the `typespace` crate. This impacts a lot of API
+surface area for both builder and macro consumers including how settings are
+configured and how rendered code is produced, including item ordering in the
+rendered code.
+
+Feedback is very welcome as we head to a proper release.
 
 == 0.8.0 (released 2026-09-09)
 
