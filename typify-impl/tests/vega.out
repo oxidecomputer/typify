@@ -7165,7 +7165,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -7451,7 +7453,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -7779,7 +7783,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -8112,7 +8118,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -8635,7 +8643,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -8921,7 +8931,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -9249,7 +9261,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -9582,7 +9596,9 @@ impl ::std::convert::TryFrom<&str>
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^(date|utc):.*$").unwrap());
+            ::std::sync::LazyLock::new(|| {
+                ::regress::Regex::with_flags("^(date|utc):.*$", "u").unwrap()
+            });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(date|utc):.*$\"".into());
         }
@@ -11176,7 +11192,7 @@ impl ::std::convert::TryFrom<&str> for EncodeKey {
     type Error = self::error::ConversionError;
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-            ::std::sync::LazyLock::new(|| ::regress::Regex::new("^.+$").unwrap());
+            ::std::sync::LazyLock::new(|| ::regress::Regex::with_flags("^.+$", "u").unwrap());
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^.+$\"".into());
         }
@@ -42548,7 +42564,7 @@ impl ::std::convert::TryFrom<&str> for TitleObjectEncodeSubtype0Key {
     fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
             ::std::sync::LazyLock::new(|| {
-                ::regress::Regex::new("^(?!interactive|name|style).+$").unwrap()
+                ::regress::Regex::with_flags("^(?!interactive|name|style).+$", "u").unwrap()
             });
         if PATTERN.find(value).is_none() {
             return Err("doesn't match pattern \"^(?!interactive|name|style).+$\"".into());

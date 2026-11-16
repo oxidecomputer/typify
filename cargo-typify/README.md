@@ -134,7 +134,7 @@ impl std::str::FromStr for Name {
         if value.len() > 63usize {
             return Err("longer than 63 characters");
         }
-        if regress::Regex::new("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$")
+        if regress::Regex::with_flags("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$", "u")
             .unwrap()
             .find(value)
             .is_none()
