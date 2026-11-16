@@ -11,18 +11,6 @@ use crate::{
 
 use typespace::build::{JsonValue, StructProperty, StructPropertySerde, StructPropertyState, Type};
 
-/// The pre-mapping volitionality of a property, mirroring typify1's
-/// internal `StructPropertyState`. This is in-flight data: it captures
-/// what `has_default` learns from the schema before `struct_property`
-/// maps it onto typespace's `StructPropertyState` (and decides whether
-/// to Option-wrap the property type). See the comment in
-/// `struct_property` for the mapping.
-enum PropertyState {
-    Required,
-    Optional,
-    Default(serde_json::Value),
-}
-
 impl TypeSpace {
     pub(crate) fn struct_members(
         &mut self,
@@ -135,84 +123,25 @@ impl TypeSpace {
         };
         let (mut type_id, metadata) = self.id_for_schema(sub_type_name, schema)?;
 
-        // Map the property's volitionality onto typespace's
-        // StructPropertyState. This is the most delicate judgment call in
-        // the typespace migration because the two models split the work
-        // differently:
-        //
-        // typify1 Option-wraps at conversion time: a non-required
-        // property with no intrinsic or explicit default gets its type
-        // wrapped in Option here, and its state (typify1's "Optional")
-        // then means "may be absent; when absent, take the type's
-        // intrinsic default"--a state that applied equally to Option,
-        // Vec, Map, and Unit typed properties.
-        //
-        // typespace Option-wraps at render time: its Optional state on a
-        // non-Option type produces Option<T> in the output along with
-        // json_serde::deserialize_some (preserving absent-vs-null), a
-        // semantic typify1 never expresses. Its Default state means "may
-        // be absent; absent means the intrinsic default" and emits
-        // #[serde(default)] plus is_empty-style skips.
-        //
-        // We keep typify1's behavior: wrap here, and then
-        // - a wrapped (or intrinsically Option) property maps to
-        //   typespace Optional. Under the default ConflateAsAbsent
-        //   setting typespace leaves an Option type unwrapped, so there
-        //   is no double-wrapping.
-        // - a non-required, non-Option property with an intrinsic
-        //   default (Vec, Map, Unit, or a default value that equals the
-        //   intrinsic one) maps to typespace Default. Mapping these to
-        //   typespace Optional would wrap them in Option, which typify1
-        //   deliberately does not do.
-        // - an explicit default value maps to typespace DefaultValue.
+        // Determine the property's volitionality.
         let state = if required.contains(prop_name) {
             StructPropertyState::Required
         } else {
-            // We can use serde's `default` and `skip_serializing_if`
-            // construction for options, arrays, and maps--i.e. properties that
-            // have an "intrinsic" default value. We can also apply `default`
-            // to properties for which there's a default value present. (We
-            // could also skip serializing them when they match the default
-            // value, but that seems both uncommon and more trouble than it's
-            // worth.) Properties with no intrinsic or explicit default value
-            // are converted to an Option<T> type in order to represent the
-            // field as non-required.
-            //
-            // Note that arrays, maps, and even options may have default values
-            // that differ from the intrinsic default values. That is to say,
-            // they may have defaults other than `[]`, `{}`, and `null`
-            // respectively. This affects the eventual generated code, but not
-            // the internal representation produced here.
-            //
-            // We will validate the default values, but not here: the type
-            // space is not yet in a consistent state with regard to references
-            // so we cannot reliably resolve references here.
-            match has_default(
+            // Examine the type to determine the proper handling for an
+            // optional property.
+            match optional_property_state(
                 self,
                 &type_id,
                 metadata.as_ref().and_then(|m| m.default.as_ref()),
             ) {
-                PropertyState::Required => {
+                StructPropertyState::Required => {
+                    // TODO this is legacy behavior, but it isn't accurate.
+                    // We'll keep this to minimize churn during the typespace
+                    // migration, but modify it afterwards.
                     type_id = self.id_to_option(&type_id);
                     StructPropertyState::Optional
                 }
-                PropertyState::Optional => {
-                    // The type may itself be an Option (may be null and
-                    // may be absent); otherwise it has an intrinsic
-                    // default (Vec, Map, Unit, or a matching explicit
-                    // default). See the mapping note above.
-                    if matches!(
-                        self.id_to_entry.get(&type_id).map(TypeEntry::as_type),
-                        Some(Type::Option(_))
-                    ) {
-                        StructPropertyState::Optional
-                    } else {
-                        StructPropertyState::Default
-                    }
-                }
-                PropertyState::Default(value) => {
-                    StructPropertyState::DefaultValue(JsonValue::new(value))
-                }
+                state => state,
             }
         };
 
@@ -340,10 +269,6 @@ impl TypeSpace {
                 // from the name of the type
                 let name = format!("subtype_{}", idx);
 
-                // The optional case wraps the type in an Option just
-                // above, so typespace's Optional state (which leaves
-                // Option types unwrapped under ConflateAsAbsent) is
-                // the right mapping.
                 let state = if optional {
                     StructPropertyState::Optional
                 } else {
@@ -369,14 +294,12 @@ impl TypeSpace {
     }
 }
 
-/// See if this type is a type that we can omit with a serde directive; note
-/// that the type id lookup will fail only for references (and only during
-/// initial reference processing).
-fn has_default(
+/// Determine the state for an optional property.
+fn optional_property_state(
     type_space: &mut TypeSpace,
     type_id: &TypeId,
     default: Option<&serde_json::Value>,
-) -> PropertyState {
+) -> StructPropertyState {
     // This lookup can fail in the scenario where a struct (or struct
     // variant) member is optional and the type of that optional member is a
     // reference to a type that has not yet been converted. This is fine: those
@@ -389,42 +312,45 @@ fn has_default(
         default,
     ) {
         // No default specified.
-        (Some(Type::Option(_)), None) => PropertyState::Optional,
-        (Some(Type::Vec(_)), None) => PropertyState::Optional,
-        (Some(Type::Map(..)), None) => PropertyState::Optional,
-        (Some(Type::Unit), None) => PropertyState::Optional,
-        (_, None) => PropertyState::Required,
+        (Some(Type::Option(_)), None) => StructPropertyState::Optional,
+        (Some(Type::Vec(_)), None) => StructPropertyState::Default,
+        (Some(Type::Map(..)), None) => StructPropertyState::Default,
+        (Some(Type::Unit), None) => StructPropertyState::Default,
+
+        // TODO the caller converts this to Optional after inserting an Option
+        // type; this is for legacy compatibility.
+        (_, None) => StructPropertyState::Required,
 
         // Default specified is the same as the implicit default: null
-        (Some(Type::Option(_)), Some(serde_json::Value::Null)) => PropertyState::Optional,
+        (Some(Type::Option(_)), Some(serde_json::Value::Null)) => StructPropertyState::Optional,
         // Default specified is the same as the implicit default: []
         (Some(Type::Vec(_)), Some(serde_json::Value::Array(a))) if a.is_empty() => {
-            PropertyState::Optional
+            StructPropertyState::Default
         }
         // Default specified is the same as the implicit default: {}
         (Some(Type::Map(..)), Some(serde_json::Value::Object(m))) if m.is_empty() => {
-            PropertyState::Optional
+            StructPropertyState::Default
         }
         // Default specified is the same as the implicit default: false
-        (Some(Type::Boolean), Some(serde_json::Value::Bool(false))) => PropertyState::Optional,
+        (Some(Type::Boolean), Some(serde_json::Value::Bool(false))) => StructPropertyState::Default,
         // Default specified is the same as the implicit default: 0
         (Some(Type::Integer(_)), Some(serde_json::Value::Number(n))) if n.as_u64() == Some(0) => {
-            PropertyState::Optional
+            StructPropertyState::Default
         }
         // Default specified is the same as the implicit default: 0.0
-        (Some(Type::Integer(_)), Some(serde_json::Value::Number(n))) if n.as_f64() == Some(0.0) => {
-            PropertyState::Optional
+        (Some(Type::Float(_)), Some(serde_json::Value::Number(n))) if n.as_f64() == Some(0.0) => {
+            StructPropertyState::Default
         }
         // Default specified is the same as the implicit default: ""
         (Some(Type::String), Some(serde_json::Value::String(s))) if s.is_empty() => {
-            PropertyState::Optional
+            StructPropertyState::Default
         }
 
         // This is a reference that will resolve to this type id later.
-        (None, Some(default)) => PropertyState::Default(default.clone()),
+        (None, Some(default)) => StructPropertyState::DefaultValue(JsonValue(default.clone())),
         // All other types as well as types with intrinsic defaults that have
         // been explicitly overridden.
-        (Some(_), Some(default)) => PropertyState::Default(default.clone()),
+        (Some(_), Some(default)) => StructPropertyState::DefaultValue(JsonValue(default.clone())),
     }
 }
 

@@ -889,12 +889,10 @@ impl TypeSpace {
 
     /// Create an Option<T> from a pre-assigned TypeId and assign it an ID.
     ///
-    /// typify1 tolerated nested Option types internally and flattened
-    /// them when rendering identifiers; typespace renders exactly the
-    /// types it is given, so we avoid constructing Option<Option<T>> in
-    /// the first place. (A forward reference won't have an entry yet,
-    /// but references always name named types, never raw Options, so
-    /// wrapping is correct in that case.)
+    /// typespace renders exactly the types it is given, so we avoid
+    /// constructing Option<Option<T>>. (A forward reference won't have an
+    /// entry yet, but references always name named types, never raw Options,
+    /// so wrapping is correct in that case.)
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
         if let Some(TypeEntry::Type(typespace::build::Type::Option(_))) = self.id_to_entry.get(id) {
             return id.clone();

@@ -86,9 +86,7 @@ fn test_generation() {
     let _ = type_space.add_type(&pair_schema).unwrap();
     let _ = type_space.add_type(&all_the_traits).unwrap();
 
-    // Identifier queries are typespace's job. The generated types land
-    // in the `types` module below, so ask for identifiers scoped to it
-    // (typify1 expressed the same thing with a type_mod setting).
+    // Identifier queries are typespace's job.
     let typespace = type_space.to_typespace().unwrap();
     let t = typespace.get_type(&tid);
     let ret = t.ident_in("types");

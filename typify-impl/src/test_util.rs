@@ -64,9 +64,7 @@ pub(crate) fn validate_output_for_untagged_enm<T: JsonSchema + Schema>() {
 
 /// Render the full type space via typespace and pluck out the items
 /// (type definitions and impl blocks) that pertain to the type of the
-/// given name. typify1 could render a single type in isolation; with
-/// rendering delegated to typespace, the whole (finalized) type space is
-/// rendered and filtered.
+/// given name.
 pub(crate) fn items_for(type_space: &TypeSpace, name: &str) -> Vec<syn::Item> {
     let stream = type_space.to_stream().unwrap();
     let file =

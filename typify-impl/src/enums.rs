@@ -1311,10 +1311,6 @@ mod tests {
         let _ = type_space.assign_type(type_entry);
         let actual = render_items_for(&type_space, "ResultX");
 
-        // This is typify1's output for this type. Differences from
-        // typespace's rendering are gaps: the derive list, the doc
-        // rendering (one #[doc] vs. line-by-line), and the convenience
-        // From<VariantType> impl.
         let expected = quote! {
             #[doc = "`ResultX`"]
             #[derive(::serde::Deserialize, ::serde::Serialize, Clone, Debug)]
