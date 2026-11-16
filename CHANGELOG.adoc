@@ -17,7 +17,7 @@ https://github.com/oxidecomputer/typify/compare/v0.10.0\...HEAD[Full list of com
 
 * A `uniqueItems` array whose element type cannot be compared no longer fails
   generation; it renders as a `Vec` as before, with no `Ord` demanded of the
-  element (typespace 0.1.2)
+  element (#1109)
 * A type typespace rejects while it is built, such as two properties that
   share a Rust name, is reported as an error rather than a panic (#1108)
 
