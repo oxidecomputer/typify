@@ -3,8 +3,8 @@
 use std::collections::{HashMap, HashSet};
 use std::{env, fs, path::Path};
 
-use schemars::schema::Schema;
 use schemars::JsonSchema;
+use schemars::schema::Schema;
 use serde::Serialize;
 use typify::typespace::settings::ContainerType;
 use typify::{TypeSpace, TypeSpaceSettings};

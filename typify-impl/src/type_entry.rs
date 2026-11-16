@@ -24,9 +24,8 @@ use schemars::schema::{Metadata, Schema};
 use unicode_ident::is_xid_continue;
 
 use crate::{
-    sanitize,
-    util::{get_type_name, metadata_description, unique, TypePatch},
-    Case, Name, TypeId, TypeSpace,
+    Case, Name, TypeId, TypeSpace, sanitize,
+    util::{TypePatch, get_type_name, metadata_description, unique},
 };
 
 use typespace::build::{

@@ -2,7 +2,7 @@
 
 use schemars::schema::SchemaObject;
 
-use crate::{type_entry::TypeEntry, TypeSpaceImpl};
+use crate::{TypeSpaceImpl, type_entry::TypeEntry};
 
 // TODO Everything about this is inefficient.
 

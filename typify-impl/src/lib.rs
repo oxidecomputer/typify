@@ -13,7 +13,7 @@ use schemars::schema::{Metadata, RootSchema, Schema};
 use thiserror::Error;
 use type_entry::{TypeEntry, TypeEntryNewtype};
 
-use crate::util::{sanitize, Case};
+use crate::util::{Case, sanitize};
 
 pub use crate::util::accept_as_ident;
 
@@ -896,10 +896,8 @@ impl TypeSpace {
     /// but references always name named types, never raw Options, so
     /// wrapping is correct in that case.)
     fn id_to_option(&mut self, id: &TypeId) -> TypeId {
-        if let Some(entry) = self.id_to_entry.get(id) {
-            if matches!(entry, TypeEntry::Type(typespace::build::Type::Option(_))) {
-                return id.clone();
-            }
+        if let Some(TypeEntry::Type(typespace::build::Type::Option(_))) = self.id_to_entry.get(id) {
+            return id.clone();
         }
         self.assign_type(typespace::build::Type::Option(id.clone()).into())
     }
@@ -935,13 +933,13 @@ fn native_name_match(native: &typespace::build::Native<TypeId>, type_name: &Name
 #[cfg(test)]
 mod tests {
     use schema::Schema;
-    use schemars::{schema_for, JsonSchema};
+    use schemars::{JsonSchema, schema_for};
     use serde::Serialize;
     use serde_json::json;
     use std::collections::HashSet;
 
     use crate::{
-        test_util::validate_output, type_entry::TypeEntry, Name, TypeSpace, TypeSpaceSettings,
+        Name, TypeSpace, TypeSpaceSettings, test_util::validate_output, type_entry::TypeEntry,
     };
     use typespace::build::{Type, VariantDetails};
 
@@ -1038,8 +1036,11 @@ mod tests {
         type_space.add_root_schema(schema).unwrap();
         let tokens = type_space.to_stream().unwrap().to_string();
         println!("{}", tokens);
-        assert!(tokens
-            .contains(" pub struct Somename { pub someproperty : :: std :: string :: String , }"))
+        assert!(
+            tokens.contains(
+                " pub struct Somename { pub someproperty : :: std :: string :: String , }"
+            )
+        )
     }
 
     #[test]

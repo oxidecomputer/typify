@@ -148,7 +148,6 @@
 
 #![deny(missing_docs)]
 
-pub use typify_impl::accept_as_ident;
 pub use typify_impl::CrateVers;
 pub use typify_impl::Error;
 pub use typify_impl::TypeId;
@@ -157,6 +156,7 @@ pub use typify_impl::TypeSpaceImpl;
 pub use typify_impl::TypeSpacePatch;
 pub use typify_impl::TypeSpaceSettings;
 pub use typify_impl::UnknownPolicy;
+pub use typify_impl::accept_as_ident;
 // The typespace crate is the query and rendering surface for converted
 // types: [`TypeSpace::to_typespace`] yields a `typespace::Typespace`
 // whose view API answers the type queries (identifiers, structure,

@@ -4,7 +4,7 @@ use log::warn;
 use schemars::schema::{Schema, SchemaObject};
 use serde::Deserialize;
 
-use crate::{type_entry::TypeEntry, CrateVers, Name, Result, TypeSpace};
+use crate::{CrateVers, Name, Result, TypeSpace, type_entry::TypeEntry};
 
 const RUST_TYPE_EXTENSION: &str = "x-rust-type";
 

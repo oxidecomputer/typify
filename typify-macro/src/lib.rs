@@ -7,14 +7,14 @@
 use std::{collections::HashMap, path::Path};
 
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use serde::Deserialize;
 use serde_tokenstream::{ParseWrapper, TokenStreamWrapper};
 use syn::LitStr;
 use token_utils::TypeAndImpls;
 use typify_impl::{
-    typespace::settings::{ContainerType, TraitSpec},
     CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
+    typespace::settings::{ContainerType, TraitSpec},
 };
 
 mod token_utils;

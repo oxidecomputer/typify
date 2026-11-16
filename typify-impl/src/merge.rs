@@ -11,7 +11,7 @@ use schemars::schema::{
     SingleOrVec, StringValidation, SubschemaValidation,
 };
 
-use crate::{util::ref_key, validate::schema_value_validate, RefKey};
+use crate::{RefKey, util::ref_key, validate::schema_value_validate};
 
 /// Merge all schemas in array of schemas. If the result is unsatisfiable, this
 /// returns `Schema::Bool(false)`.
@@ -364,7 +364,7 @@ fn try_merge_with_each_subschema(
     // only need to to *that* if at least one schema contains a ref). This
     // could probably be an opportunity for memoization, but this is an
     // infrequent construction so... whatever for now.
-    let joined_schemas = subschemas
+    subschemas
         .iter()
         .enumerate()
         .filter_map(|(ii, other)| {
@@ -407,9 +407,7 @@ fn try_merge_with_each_subschema(
                 )
             }
         })
-        .collect::<Vec<_>>();
-
-    joined_schemas
+        .collect::<Vec<_>>()
 }
 
 fn merge_schema_not(
@@ -790,10 +788,10 @@ fn merge_so_string(
                 (Some(x), Some(y)) => Some(format!("(?={x})(?={y})")),
             };
 
-            if let (Some(min), Some(max)) = (min_length, max_length) {
-                if min > max {
-                    return Err(());
-                }
+            if let (Some(min), Some(max)) = (min_length, max_length)
+                && min > max
+            {
+                return Err(());
             }
 
             Ok(Some(Box::new(StringValidation {
@@ -833,10 +831,10 @@ fn merge_so_array(
             };
 
             // If min > max the schema is unsatisfiable.
-            if let (Some(min), Some(max)) = (min_items, max_items) {
-                if min > max {
-                    return Err(());
-                }
+            if let (Some(min), Some(max)) = (min_items, max_items)
+                && min > max
+            {
+                return Err(());
             }
 
             // The items and additional_items fields need to be considered
@@ -1008,10 +1006,10 @@ fn merge_items_array<'a>(
         match try_merge_schema(a, b, defs) {
             Ok(schema) => {
                 items.push(schema);
-                if let Some(max) = max_items {
-                    if items.len() == max as usize {
-                        return Ok((items, false));
-                    }
+                if let Some(max) = max_items
+                    && items.len() == max as usize
+                {
+                    return Ok((items, false));
                 }
             }
             Err(_) => {
@@ -1126,10 +1124,10 @@ fn merge_so_object(
             let max_properties = choose_value(aa.max_properties, bb.max_properties, Ord::min);
             let min_properties = choose_value(aa.min_properties, bb.min_properties, Ord::max);
 
-            if let (Some(min), Some(max)) = (min_properties, max_properties) {
-                if min > max {
-                    return Err(());
-                }
+            if let (Some(min), Some(max)) = (min_properties, max_properties)
+                && min > max
+            {
+                return Err(());
             }
 
             let object_validation = ObjectValidation {
@@ -1331,7 +1329,7 @@ mod tests {
     use schemars::schema::InstanceType;
     use serde_json::json;
 
-    use crate::{merge::merge_so_instance_type, RefKey};
+    use crate::{RefKey, merge::merge_so_instance_type};
 
     use super::try_merge_schema;
 

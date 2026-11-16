@@ -55,7 +55,7 @@ https://github.com/oxidecomputer/typespace[typespace] crate.
 * A type named through `replace`, `convert`, or `x-rust-type` is assumed to
   implement whatever the compiler can check rather than failing generation
   for a trait typify cannot see (#1094)
-* The minimum supported Rust version is 1.97
+* The minimum supported Rust version is 1.97; edition is 2024
 
 == 0.10.0-alpha.3 (released 2026-10-14)
 

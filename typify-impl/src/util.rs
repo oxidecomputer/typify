@@ -10,7 +10,7 @@ use schemars::schema::{
 };
 use unicode_ident::{is_xid_continue, is_xid_start};
 
-use crate::{validate::schema_value_validate, Error, Name, RefKey, Result, TypeSpace};
+use crate::{Error, Name, RefKey, Result, TypeSpace, validate::schema_value_validate};
 
 pub(crate) fn metadata_description(metadata: &Option<Box<Metadata>>) -> Option<String> {
     metadata
@@ -996,17 +996,18 @@ mod tests {
     use std::collections::BTreeMap;
 
     use schemars::{
+        JsonSchema,
         r#gen::{SchemaGenerator, SchemaSettings},
         schema::StringValidation,
-        schema_for, JsonSchema,
+        schema_for,
     };
 
     use crate::{
-        util::{
-            all_mutually_exclusive, decode_segment, sanitize, schemas_mutually_exclusive, Case,
-            ReorderedInstanceType,
-        },
         Name,
+        util::{
+            Case, ReorderedInstanceType, all_mutually_exclusive, decode_segment, sanitize,
+            schemas_mutually_exclusive,
+        },
     };
 
     use super::StringValidator;

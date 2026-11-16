@@ -7,8 +7,8 @@ use glob::glob;
 use quote::quote;
 use schemars::schema::RootSchema;
 use serde_json::json;
-use typify::typespace::settings::ContainerType;
 use typify::typespace::TypespaceTrait;
+use typify::typespace::settings::ContainerType;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
 

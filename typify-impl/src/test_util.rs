@@ -6,10 +6,10 @@ use proc_macro2::TokenStream;
 use quote::ToTokens;
 use rustfmt_wrapper::rustfmt;
 use schema::Schema;
-use schemars::{schema_for, JsonSchema};
+use schemars::{JsonSchema, schema_for};
 use syn::{
-    parse2, punctuated::Punctuated, Attribute, DataEnum, DataStruct, DeriveInput, Field, Fields,
-    FieldsNamed, FieldsUnnamed, File, Type, TypePath, TypeTuple, Variant,
+    Attribute, DataEnum, DataStruct, DeriveInput, Field, Fields, FieldsNamed, FieldsUnnamed, File,
+    Type, TypePath, TypeTuple, Variant, parse2, punctuated::Punctuated,
 };
 
 use crate::{RefKey, TypeId, TypeSpace};
@@ -162,13 +162,12 @@ fn decanonicalize_std_types(mut input: DeriveInput) -> DeriveInput {
             if path.leading_colon.is_some()
                 && !path.segments.is_empty()
                 && path.segments[0].ident == "std"
+                && let Some(last_segment) = path.segments.last().cloned()
             {
-                if let Some(last_segment) = path.segments.last().cloned() {
-                    // Replace the entire path with just the last segment
-                    path.leading_colon = None;
-                    path.segments.clear();
-                    path.segments.push(last_segment);
-                }
+                // Replace the entire path with just the last segment
+                path.leading_colon = None;
+                path.segments.clear();
+                path.segments.push(last_segment);
             }
 
             // Delegate to the default impl to visit nested paths

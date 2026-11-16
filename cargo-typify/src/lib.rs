@@ -7,7 +7,7 @@
 use std::path::PathBuf;
 
 use clap::{ArgGroup, Args};
-use color_eyre::eyre::{eyre, Context, Result};
+use color_eyre::eyre::{Context, Result, eyre};
 use typify::typespace::settings::{ContainerType, TraitSpec};
 use typify::{CrateVers, TypeSpace, TypeSpaceSettings, UnknownPolicy};
 

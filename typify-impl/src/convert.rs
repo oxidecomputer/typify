@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 
 use crate::merge::{merge_all, try_merge_with_subschemas};
 use crate::type_entry::{TypeEntry, TypeEntryEnum, TypeEntryNewtype, TypeEntryStruct, Variant};
-use crate::util::{all_mutually_exclusive, ref_key, ReorderedInstanceType, StringValidator};
+use crate::util::{ReorderedInstanceType, StringValidator, all_mutually_exclusive, ref_key};
 use log::{debug, info};
 use schemars::schema::{
     ArrayValidation, InstanceType, Metadata, ObjectValidation, Schema, SchemaObject, SingleOrVec,
@@ -1173,41 +1173,39 @@ impl TypeSpace {
             ),
         ];
 
-        if let Some(format) = format {
-            if let Some((_fmt, ty, nz_ty, imin, imax)) = formats
+        if let Some(format) = format
+            && let Some((_fmt, ty, nz_ty, imin, imax)) = formats
                 .iter()
                 .find(|(int_format, _, _, _, _)| int_format == format)
-            {
-                let valid_min = min.is_none() || min.map(|fmin| fmin.ge(imin)).unwrap_or(false);
-                let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(false);
-                if multiple.is_none() && valid_min && valid_max {
-                    // If there's a default value and it's either not a number
-                    // or outside of the range for this format, return an
-                    // error.
-                    if let Some(default) = metadata
-                        .as_ref()
-                        .and_then(|m| m.default.as_ref())
-                        .and_then(|v| v.as_f64())
-                    {
-                        if default < *imin || default > *imax {
-                            return Err(Error::InvalidValue);
-                        }
-                    }
-
-                    // Use NonZero types for minimum 1
-                    if min == Some(1.) {
-                        return Ok((TypeEntry::new_integer(nz_ty), metadata));
-                    } else {
-                        return Ok((TypeEntry::new_integer(ty), metadata));
-                    }
+        {
+            let valid_min = min.is_none() || min.map(|fmin| fmin.ge(imin)).unwrap_or(false);
+            let valid_max = max.is_none() || max.map(|fmax| fmax.le(imax)).unwrap_or(false);
+            if multiple.is_none() && valid_min && valid_max {
+                // If there's a default value and it's either not a number
+                // or outside of the range for this format, return an
+                // error.
+                if let Some(default) = metadata
+                    .as_ref()
+                    .and_then(|m| m.default.as_ref())
+                    .and_then(|v| v.as_f64())
+                    && (default < *imin || default > *imax)
+                {
+                    return Err(Error::InvalidValue);
                 }
 
-                if min.is_none() {
-                    min = Some(*imin);
+                // Use NonZero types for minimum 1
+                if min == Some(1.) {
+                    return Ok((TypeEntry::new_integer(nz_ty), metadata));
+                } else {
+                    return Ok((TypeEntry::new_integer(ty), metadata));
                 }
-                if max.is_none() {
-                    max = Some(*imax);
-                }
+            }
+
+            if min.is_none() {
+                min = Some(*imin);
+            }
+            if max.is_none() {
+                max = Some(*imax);
             }
         }
 
@@ -2166,19 +2164,20 @@ impl TypeSpace {
 
 #[cfg(test)]
 mod tests {
-    use std::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
+    use std::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 
     use paste::paste;
-    use quote::{quote, ToTokens};
+    use quote::{ToTokens, quote};
     use schema::Schema;
     use schemars::{
+        JsonSchema,
         schema::{InstanceType, Metadata, NumberValidation, RootSchema, SchemaObject},
-        schema_for, JsonSchema,
+        schema_for,
     };
     use serde_json::json;
 
     use crate::{
-        test_util::validate_output, Error, Name, TypeSpace, TypeSpaceImpl, TypeSpaceSettings,
+        Error, Name, TypeSpace, TypeSpaceImpl, TypeSpaceSettings, test_util::validate_output,
     };
 
     #[track_caller]

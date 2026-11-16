@@ -8,12 +8,12 @@ use schemars::schema::{
 };
 
 use crate::{
+    Name, Result, TypeSpace,
     type_entry::{TypeEntry, TypeEntryEnum, Variant},
     util::{
         constant_string_value, get_object, get_type_name, metadata_description,
         metadata_title_and_description, schema_is_named,
     },
-    Name, Result, TypeSpace,
 };
 
 use typespace::build::{EnumTagType, Type, VariantDetails};
@@ -732,15 +732,16 @@ mod tests {
 
     use schema::Schema;
     use schemars::{
+        JsonSchema,
         schema::{InstanceType, RootSchema, SchemaObject, SingleOrVec},
-        schema_for, JsonSchema,
+        schema_for,
     };
     use serde::Serialize;
 
     use crate::{
+        Name, RefKey, TypeId, TypeSpace, TypeSpaceSettings,
         test_util::{render_items_for, validate_output, validate_output_for_untagged_enm},
         type_entry::TypeEntry,
-        Name, RefKey, TypeId, TypeSpace, TypeSpaceSettings,
     };
 
     use quote::quote;
@@ -769,30 +770,36 @@ mod tests {
         let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
-        assert!(type_space
-            .maybe_externally_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_some());
-        assert!(type_space
-            .maybe_adjacently_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_none());
-        assert!(type_space
-            .maybe_internally_tagged_enum(
-                Name::Required("ExternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_none());
+        assert!(
+            type_space
+                .maybe_externally_tagged_enum(
+                    Name::Required("ExternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_some()
+        );
+        assert!(
+            type_space
+                .maybe_adjacently_tagged_enum(
+                    Name::Required("ExternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_none()
+        );
+        assert!(
+            type_space
+                .maybe_internally_tagged_enum(
+                    Name::Required("ExternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_none()
+        );
     }
 
     #[test]
@@ -822,22 +829,26 @@ mod tests {
         let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
-        assert!(type_space
-            .maybe_adjacently_tagged_enum(
-                Name::Required("AdjacentlyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_some());
-        assert!(type_space
-            .maybe_externally_tagged_enum(
-                Name::Required("AdjacentlyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_none());
+        assert!(
+            type_space
+                .maybe_adjacently_tagged_enum(
+                    Name::Required("AdjacentlyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_some()
+        );
+        assert!(
+            type_space
+                .maybe_externally_tagged_enum(
+                    Name::Required("AdjacentlyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_none()
+        );
     }
     #[test]
     fn test_adjacently_tagged_enum_output() {
@@ -867,30 +878,36 @@ mod tests {
         let original_schema = schemars::schema::Schema::Object(schema.schema.clone());
         let subschemas = schema.schema.subschemas.unwrap().one_of.unwrap();
 
-        assert!(type_space
-            .maybe_internally_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_some());
-        assert!(type_space
-            .maybe_adjacently_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_none());
-        assert!(type_space
-            .maybe_externally_tagged_enum(
-                Name::Required("InternallyTaggedEnum".to_string()),
-                &original_schema,
-                &None,
-                &subschemas,
-            )
-            .is_none());
+        assert!(
+            type_space
+                .maybe_internally_tagged_enum(
+                    Name::Required("InternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_some()
+        );
+        assert!(
+            type_space
+                .maybe_adjacently_tagged_enum(
+                    Name::Required("InternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_none()
+        );
+        assert!(
+            type_space
+                .maybe_externally_tagged_enum(
+                    Name::Required("InternallyTaggedEnum".to_string()),
+                    &original_schema,
+                    &None,
+                    &subschemas,
+                )
+                .is_none()
+        );
     }
 
     #[test]

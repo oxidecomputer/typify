@@ -4,9 +4,9 @@ use heck::ToSnakeCase;
 use schemars::schema::{InstanceType, Metadata, ObjectValidation, Schema, SchemaObject};
 
 use crate::{
-    type_entry::{TypeEntry, TypeEntryStruct},
-    util::{get_type_name, metadata_description, recase, Case},
     Name, Result, TypeId, TypeSpace,
+    type_entry::{TypeEntry, TypeEntryStruct},
+    util::{Case, get_type_name, metadata_description, recase},
 };
 
 use typespace::build::{JsonValue, StructProperty, StructPropertySerde, StructPropertyState, Type};
@@ -434,7 +434,7 @@ mod tests {
     use schemars::JsonSchema;
     use serde::Serialize;
 
-    use crate::{test_util::validate_output, Name, TypeSpace};
+    use crate::{Name, TypeSpace, test_util::validate_output};
 
     #[allow(dead_code)]
     #[derive(Serialize, JsonSchema, Schema)]

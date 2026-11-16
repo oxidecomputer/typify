@@ -1,7 +1,7 @@
 // Copyright 2022 Oxide Computer Company
 
 use quote::quote;
-use schemars::{r#gen::SchemaGenerator, schema::Schema, JsonSchema};
+use schemars::{JsonSchema, r#gen::SchemaGenerator, schema::Schema};
 use serde::Serialize;
 use typify_impl::typespace::TypespaceTrait;
 use typify_impl::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
