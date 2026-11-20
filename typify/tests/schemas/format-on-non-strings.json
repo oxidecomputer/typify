@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "date-of-birth": {
+      "description": "an object that carries a string format",
+      "type": "object",
+      "format": "date",
+      "properties": {
+        "day": {
+          "type": "integer",
+          "format": "uint8"
+        },
+        "month": {
+          "type": "integer",
+          "format": "uint8"
+        },
+        "year": {
+          "type": "integer",
+          "format": "uint16"
+        }
+      },
+      "required": [
+        "day",
+        "month",
+        "year"
+      ]
+    },
+    "maybe-date-of-birth": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "format": "date",
+      "properties": {
+        "year": {
+          "type": "integer",
+          "format": "uint16"
+        }
+      }
+    },
+    "flag": {
+      "type": "boolean",
+      "format": "yes-no"
+    },
+    "tags": {
+      "type": "array",
+      "format": "csv",
+      "items": {
+        "type": "string"
+      }
+    },
+    "anything-list": {
+      "type": "array",
+      "format": "csv"
+    }
+  }
+}
