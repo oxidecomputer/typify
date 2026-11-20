@@ -220,10 +220,15 @@ impl TypeSpace {
             }
 
             // Boolean
+            //
+            // The formats that JSON Schema and OpenAPI define apply to strings
+            // and numbers. JSON Schema Validation section 7.1 says a format
+            // SHOULD succeed for an instance type it does not apply to, so the
+            // boolean, object and array arms ignore it.
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: _,
                 const_value: None,
                 subschemas: None,
@@ -239,7 +244,7 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
@@ -273,7 +278,7 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
@@ -307,7 +312,7 @@ impl TypeSpace {
             SchemaObject {
                 metadata,
                 instance_type: Some(SingleOrVec::Single(single)),
-                format: None,
+                format: _,
                 enum_values: None,
                 const_value: None,
                 subschemas: None,
