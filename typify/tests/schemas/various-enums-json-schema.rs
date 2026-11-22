@@ -104,6 +104,15 @@ impl ::std::convert::From<BlockSize> for i64 {
         value.0
     }
 }
+impl ::std::str::FromStr for BlockSize {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<i64>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<i64> for BlockSize {
     type Error = self::error::ConversionError;
     fn try_from(value: i64) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -131,9 +140,9 @@ impl ::schemars::JsonSchema for BlockSize {
         let mut schema = <i64 as ::schemars::JsonSchema>::json_schema(g).into_object();
         schema.enum_values = ::std::option::Option::Some(
             [
-                ::serde_json::from_str("512").unwrap(),
-                ::serde_json::from_str("2048").unwrap(),
-                ::serde_json::from_str("4096").unwrap(),
+                ::serde_json::Value::Number(::serde_json::Number::from(512i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(2048i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(4096i64)),
             ]
             .into_iter()
             .collect(),
@@ -329,9 +338,11 @@ impl ::schemars::JsonSchema for EmptyObjectProp {
     fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
         let mut schema = < :: serde_json :: Map < :: std :: string :: String , :: serde_json :: Value > as :: schemars :: JsonSchema > :: json_schema (g) . into_object () ;
         schema.enum_values = ::std::option::Option::Some(
-            [::serde_json::from_str("{}").unwrap()]
-                .into_iter()
-                .collect(),
+            [::serde_json::Value::Object(
+                ::serde_json::Map::from_iter([]),
+            )]
+            .into_iter()
+            .collect(),
         );
         schema.into()
     }
@@ -401,17 +412,7 @@ impl ::std::convert::From<Ipv6Net> for IpNet {
     }
 }
 #[doc = "`Ipv4Net`"]
-#[derive(
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    schemars :: JsonSchema,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct Ipv4Net(::std::string::String);
 impl ::std::ops::Deref for Ipv4Net {
@@ -461,18 +462,19 @@ impl<'de> ::serde::Deserialize<'de> for Ipv4Net {
             })
     }
 }
+impl ::schemars::JsonSchema for Ipv4Net {
+    fn schema_name() -> ::std::string::String {
+        "Ipv4Net".to_string()
+    }
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema =
+            <::std::string::String as ::schemars::JsonSchema>::json_schema(g).into_object();
+        schema.string().pattern = ::std::option::Option::Some(".*".to_string());
+        schema.into()
+    }
+}
 #[doc = "`Ipv6Net`"]
-#[derive(
-    :: serde :: Serialize,
-    Clone,
-    Debug,
-    Eq,
-    Hash,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    schemars :: JsonSchema,
-)]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[serde(transparent)]
 pub struct Ipv6Net(::std::string::String);
 impl ::std::ops::Deref for Ipv6Net {
@@ -520,6 +522,17 @@ impl<'de> ::serde::Deserialize<'de> for Ipv6Net {
             .map_err(|e: self::error::ConversionError| {
                 <D::Error as ::serde::de::Error>::custom(e.to_string())
             })
+    }
+}
+impl ::schemars::JsonSchema for Ipv6Net {
+    fn schema_name() -> ::std::string::String {
+        "Ipv6Net".to_string()
+    }
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema =
+            <::std::string::String as ::schemars::JsonSchema>::json_schema(g).into_object();
+        schema.string().pattern = ::std::option::Option::Some(".*".to_string());
+        schema.into()
     }
 }
 #[doc = "`JankNames`"]
@@ -607,6 +620,15 @@ impl ::std::convert::From<NotBlockSize> for f64 {
         value.0
     }
 }
+impl ::std::str::FromStr for NotBlockSize {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<f64>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<f64> for NotBlockSize {
     type Error = self::error::ConversionError;
     fn try_from(value: f64) -> ::std::result::Result<Self, self::error::ConversionError> {
@@ -635,9 +657,9 @@ impl ::schemars::JsonSchema for NotBlockSize {
         let not = ::schemars::schema::SchemaObject {
             enum_values: ::std::option::Option::Some(
                 [
-                    ::serde_json::from_str("512").unwrap(),
-                    ::serde_json::from_str("2048").unwrap(),
-                    ::serde_json::from_str("4096").unwrap(),
+                    ::serde_json::Value::Number(::serde_json::Number::from(512i64)),
+                    ::serde_json::Value::Number(::serde_json::Number::from(2048i64)),
+                    ::serde_json::Value::Number(::serde_json::Number::from(4096i64)),
                 ]
                 .into_iter()
                 .collect(),

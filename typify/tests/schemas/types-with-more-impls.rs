@@ -65,6 +65,15 @@ impl ::std::convert::From<Sub10Primes> for u32 {
         value.0
     }
 }
+impl ::std::str::FromStr for Sub10Primes {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<u32>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<u32> for Sub10Primes {
     type Error = self::error::ConversionError;
     fn try_from(value: u32) -> ::std::result::Result<Self, self::error::ConversionError> {

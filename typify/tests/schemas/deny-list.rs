@@ -25,6 +25,15 @@ impl ::std::convert::From<TestTypeWhereNot> for ::std::string::String {
         value.0
     }
 }
+impl ::std::str::FromStr for TestTypeWhereNot {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<::std::string::String>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhereNot {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -59,6 +68,15 @@ impl ::std::ops::Deref for TestTypeWhyNot {
 impl ::std::convert::From<TestTypeWhyNot> for ::std::string::String {
     fn from(value: TestTypeWhyNot) -> Self {
         value.0
+    }
+}
+impl ::std::str::FromStr for TestTypeWhyNot {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<::std::string::String>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for TestTypeWhyNot {
