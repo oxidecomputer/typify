@@ -66,7 +66,10 @@ impl TypeSpace {
                 };
                 let (type_entry, _) =
                     self.convert_schema_object(type_name, original_schema, &new_schema)?;
-                Ok((type_entry, &None))
+                // The rewritten schema's metadata is a clone of this
+                // schema's and lives only as long as this arm, so the
+                // caller takes the original's.
+                Ok((type_entry, &schema.metadata))
             }
 
             // If we have a schema that has an instance type array that's

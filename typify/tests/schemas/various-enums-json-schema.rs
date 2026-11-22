@@ -266,12 +266,18 @@ impl ::schemars::JsonSchema for ConstInteger {
     }
 }
 #[doc = "`ConstProperty`"]
-#[derive(
-    :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default, schemars :: JsonSchema,
-)]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 pub struct ConstProperty {
-    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
-    pub kind: ::std::option::Option<ConstPropertyKind>,
+    #[doc = "always a widget"]
+    #[serde(default = "defaults::const_property_kind")]
+    pub kind: ConstPropertyKind,
+}
+impl ::std::default::Default for ConstProperty {
+    fn default() -> Self {
+        Self {
+            kind: defaults::const_property_kind(),
+        }
+    }
 }
 impl ConstProperty {
     pub fn builder() -> builder::ConstProperty {
@@ -324,6 +330,11 @@ impl ::std::convert::TryFrom<::std::string::String> for ConstPropertyKind {
         value: ::std::string::String,
     ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
+    }
+}
+impl ::std::default::Default for ConstPropertyKind {
+    fn default() -> Self {
+        ConstPropertyKind::Widget
     }
 }
 #[doc = "`ConstString`"]
@@ -1289,22 +1300,19 @@ impl ::std::convert::TryFrom<::std::string::String> for VariantsDifferByPunct {
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct ConstProperty {
-        kind: ::std::result::Result<
-            ::std::option::Option<super::ConstPropertyKind>,
-            ::std::string::String,
-        >,
+        kind: ::std::result::Result<super::ConstPropertyKind, ::std::string::String>,
     }
     impl ::std::default::Default for ConstProperty {
         fn default() -> Self {
             Self {
-                kind: Ok(Default::default()),
+                kind: Ok(super::defaults::const_property_kind()),
             }
         }
     }
     impl ConstProperty {
         pub fn kind<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<::std::option::Option<super::ConstPropertyKind>>,
+            T: ::std::convert::TryInto<super::ConstPropertyKind>,
             T::Error: ::std::fmt::Display,
         {
             self.kind = value
@@ -1422,6 +1430,12 @@ pub mod builder {
                 prop: Ok(value.prop),
             }
         }
+    }
+}
+#[doc = " Generation of default values for serde."]
+pub mod defaults {
+    pub(super) fn const_property_kind() -> super::ConstPropertyKind {
+        super::ConstPropertyKind::Widget
     }
 }
 #[doc = " Error types."]
