@@ -1178,14 +1178,15 @@ fn filter_prop(
         .unwrap_or(Schema::Bool(false))
 }
 
-/// Merge the patternProperties of two objects. Struct and map generation read
-/// patternProperties only for names that properties does not list, and
-/// `filter_prop` applies the patterns to the listed names, so this works in
-/// the same terms. A pattern on both sides takes both schemas. A pattern on one side
-/// also takes the other side's additionalProperties, which is what validates
-/// a name there when none of its patterns match. If a name can match a
-/// pattern on each side without the two sides sharing that pattern, the
-/// result is stricter than the intersection for that name.
+/// Merge the patternProperties of two objects. A pattern on both sides takes
+/// both schemas. A pattern on one side also takes the other side's
+/// additionalProperties, which is what validates a name there when none of
+/// the other side's patterns match. That is exact unless a name can match a
+/// pattern on each side without the two sides sharing that pattern. Such a
+/// name should not get the other side's additionalProperties, so the result
+/// is stricter than the intersection for it. When that additionalProperties
+/// is false, the pattern becomes false and is dropped below, and the name is
+/// then checked only against the other side's pattern, which is looser.
 fn merge_pattern_properties(
     aa: &ObjectValidation,
     bb: &ObjectValidation,
