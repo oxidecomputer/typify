@@ -206,6 +206,174 @@ impl ::std::convert::TryFrom<::std::string::String> for CommentedVariants {
         value.parse()
     }
 }
+#[doc = "`ConstInteger`"]
+#[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct ConstInteger(i64);
+impl ::std::ops::Deref for ConstInteger {
+    type Target = i64;
+    fn deref(&self) -> &i64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<ConstInteger> for i64 {
+    fn from(value: ConstInteger) -> Self {
+        value.0
+    }
+}
+impl ::std::str::FromStr for ConstInteger {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<i64>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
+impl ::std::convert::TryFrom<i64> for ConstInteger {
+    type Error = self::error::ConversionError;
+    fn try_from(value: i64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if ![42_i64].contains(&value) {
+            Err("invalid value".into())
+        } else {
+            Ok(Self(value))
+        }
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for ConstInteger {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<i64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+impl ::schemars::JsonSchema for ConstInteger {
+    fn schema_name() -> ::std::string::String {
+        "ConstInteger".to_string()
+    }
+    fn json_schema(g: &mut ::schemars::r#gen::SchemaGenerator) -> ::schemars::schema::Schema {
+        let mut schema = <i64 as ::schemars::JsonSchema>::json_schema(g).into_object();
+        schema.enum_values = ::std::option::Option::Some(
+            [::serde_json::Value::Number(::serde_json::Number::from(
+                42i64,
+            ))]
+            .into_iter()
+            .collect(),
+        );
+        schema.into()
+    }
+}
+#[doc = "`ConstProperty`"]
+#[derive(
+    :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default, schemars :: JsonSchema,
+)]
+pub struct ConstProperty {
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+    pub kind: ::std::option::Option<ConstPropertyKind>,
+}
+impl ConstProperty {
+    pub fn builder() -> builder::ConstProperty {
+        Default::default()
+    }
+}
+#[doc = "always a widget"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    schemars :: JsonSchema,
+)]
+pub enum ConstPropertyKind {
+    #[serde(rename = "widget")]
+    Widget,
+}
+impl ::std::fmt::Display for ConstPropertyKind {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Widget => f.write_str("widget"),
+        }
+    }
+}
+impl ::std::str::FromStr for ConstPropertyKind {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "widget" => Ok(Self::Widget),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for ConstPropertyKind {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for ConstPropertyKind {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`ConstString`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    schemars :: JsonSchema,
+)]
+pub enum ConstString {
+    #[serde(rename = "fixed")]
+    Fixed,
+}
+impl ::std::fmt::Display for ConstString {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Fixed => f.write_str("fixed"),
+        }
+    }
+}
+impl ::std::str::FromStr for ConstString {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "fixed" => Ok(Self::Fixed),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for ConstString {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for ConstString {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
 #[doc = "`DiskAttachment`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 pub struct DiskAttachment {
@@ -1119,6 +1287,47 @@ impl ::std::convert::TryFrom<::std::string::String> for VariantsDifferByPunct {
 }
 #[doc = " Types for composing complex structures."]
 pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct ConstProperty {
+        kind: ::std::result::Result<
+            ::std::option::Option<super::ConstPropertyKind>,
+            ::std::string::String,
+        >,
+    }
+    impl ::std::default::Default for ConstProperty {
+        fn default() -> Self {
+            Self {
+                kind: Ok(Default::default()),
+            }
+        }
+    }
+    impl ConstProperty {
+        pub fn kind<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<super::ConstPropertyKind>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.kind = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for kind: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ConstProperty> for super::ConstProperty {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ConstProperty,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { kind: value.kind? })
+        }
+    }
+    impl ::std::convert::From<super::ConstProperty> for ConstProperty {
+        fn from(value: super::ConstProperty) -> Self {
+            Self {
+                kind: Ok(value.kind),
+            }
+        }
+    }
     #[derive(Clone, Debug)]
     pub struct DiskAttachment {
         alternate: ::std::result::Result<super::AlternativeEnum, ::std::string::String>,
