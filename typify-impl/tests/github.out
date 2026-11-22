@@ -10680,29 +10680,911 @@ impl ::std::convert::TryFrom<::std::string::String> for GithubAppAuthorizationRe
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct GithubOrg {
-    pub avatar_url: ::std::string::String,
+    pub avatar_url: GithubOrgAvatarUrl,
     #[serde(default)]
     pub email: (),
-    pub events_url: ::std::string::String,
-    pub followers_url: ::std::string::String,
-    pub following_url: ::std::string::String,
-    pub gists_url: ::std::string::String,
-    pub gravatar_id: ::std::string::String,
-    pub html_url: ::std::string::String,
-    pub id: i64,
-    pub login: ::std::string::String,
+    pub events_url: GithubOrgEventsUrl,
+    pub followers_url: GithubOrgFollowersUrl,
+    pub following_url: GithubOrgFollowingUrl,
+    pub gists_url: GithubOrgGistsUrl,
+    pub gravatar_id: GithubOrgGravatarId,
+    pub html_url: GithubOrgHtmlUrl,
+    pub id: GithubOrgId,
+    pub login: GithubOrgLogin,
     #[serde(skip_serializing_if = "::std::option::Option::is_none")]
-    pub name: ::std::option::Option<::std::string::String>,
-    pub node_id: ::std::string::String,
-    pub organizations_url: ::std::string::String,
-    pub received_events_url: ::std::string::String,
-    pub repos_url: ::std::string::String,
+    pub name: ::std::option::Option<GithubOrgName>,
+    pub node_id: GithubOrgNodeId,
+    pub organizations_url: GithubOrgOrganizationsUrl,
+    pub received_events_url: GithubOrgReceivedEventsUrl,
+    pub repos_url: GithubOrgReposUrl,
     pub site_admin: bool,
-    pub starred_url: ::std::string::String,
-    pub subscriptions_url: ::std::string::String,
+    pub starred_url: GithubOrgStarredUrl,
+    pub subscriptions_url: GithubOrgSubscriptionsUrl,
     #[serde(rename = "type")]
-    pub type_: ::std::string::String,
-    pub url: ::std::string::String,
+    pub type_: GithubOrgType,
+    pub url: GithubOrgUrl,
+}
+#[doc = "`GithubOrgAvatarUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgAvatarUrl {
+    #[serde(rename = "https://avatars.githubusercontent.com/u/9919?v=4")]
+    HttpsAvatarsGithubusercontentComU9919V4,
+}
+impl ::std::fmt::Display for GithubOrgAvatarUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsAvatarsGithubusercontentComU9919V4 => {
+                f.write_str("https://avatars.githubusercontent.com/u/9919?v=4")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgAvatarUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://avatars.githubusercontent.com/u/9919?v=4" => {
+                Ok(Self::HttpsAvatarsGithubusercontentComU9919V4)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgAvatarUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgAvatarUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgEventsUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgEventsUrl {
+    #[serde(rename = "https://api.github.com/users/github/events{/privacy}")]
+    HttpsApiGithubComUsersGithubEventsPrivacy,
+}
+impl ::std::fmt::Display for GithubOrgEventsUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubEventsPrivacy => {
+                f.write_str("https://api.github.com/users/github/events{/privacy}")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgEventsUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/events{/privacy}" => {
+                Ok(Self::HttpsApiGithubComUsersGithubEventsPrivacy)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgEventsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgEventsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgFollowersUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgFollowersUrl {
+    #[serde(rename = "https://api.github.com/users/github/followers")]
+    HttpsApiGithubComUsersGithubFollowers,
+}
+impl ::std::fmt::Display for GithubOrgFollowersUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubFollowers => {
+                f.write_str("https://api.github.com/users/github/followers")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgFollowersUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/followers" => {
+                Ok(Self::HttpsApiGithubComUsersGithubFollowers)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgFollowersUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgFollowersUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgFollowingUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgFollowingUrl {
+    #[serde(rename = "https://api.github.com/users/github/following{/other_user}")]
+    HttpsApiGithubComUsersGithubFollowingOtherUser,
+}
+impl ::std::fmt::Display for GithubOrgFollowingUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubFollowingOtherUser => {
+                f.write_str("https://api.github.com/users/github/following{/other_user}")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgFollowingUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/following{/other_user}" => {
+                Ok(Self::HttpsApiGithubComUsersGithubFollowingOtherUser)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgFollowingUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgFollowingUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgGistsUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgGistsUrl {
+    #[serde(rename = "https://api.github.com/users/github/gists{/gist_id}")]
+    HttpsApiGithubComUsersGithubGistsGistId,
+}
+impl ::std::fmt::Display for GithubOrgGistsUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubGistsGistId => {
+                f.write_str("https://api.github.com/users/github/gists{/gist_id}")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgGistsUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/gists{/gist_id}" => {
+                Ok(Self::HttpsApiGithubComUsersGithubGistsGistId)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgGistsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgGistsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgGravatarId`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgGravatarId {
+    #[serde(rename = "")]
+    X,
+}
+impl ::std::fmt::Display for GithubOrgGravatarId {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::X => f.write_str(""),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgGravatarId {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "" => Ok(Self::X),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgGravatarId {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgGravatarId {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgHtmlUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgHtmlUrl {
+    #[serde(rename = "https://github.com/github")]
+    HttpsGithubComGithub,
+}
+impl ::std::fmt::Display for GithubOrgHtmlUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsGithubComGithub => f.write_str("https://github.com/github"),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgHtmlUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://github.com/github" => Ok(Self::HttpsGithubComGithub),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgHtmlUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgHtmlUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgId`"]
+#[derive(:: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct GithubOrgId(i64);
+impl ::std::ops::Deref for GithubOrgId {
+    type Target = i64;
+    fn deref(&self) -> &i64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<GithubOrgId> for i64 {
+    fn from(value: GithubOrgId) -> Self {
+        value.0
+    }
+}
+impl ::std::str::FromStr for GithubOrgId {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<i64>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
+impl ::std::convert::TryFrom<i64> for GithubOrgId {
+    type Error = self::error::ConversionError;
+    fn try_from(value: i64) -> ::std::result::Result<Self, self::error::ConversionError> {
+        if ![9919_i64].contains(&value) {
+            Err("invalid value".into())
+        } else {
+            Ok(Self(value))
+        }
+    }
+}
+impl<'de> ::serde::Deserialize<'de> for GithubOrgId {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    where
+        D: ::serde::Deserializer<'de>,
+    {
+        Self::try_from(<i64>::deserialize(deserializer)?)
+            .map_err(|e| <D::Error as ::serde::de::Error>::custom(e.to_string()))
+    }
+}
+#[doc = "`GithubOrgLogin`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgLogin {
+    #[serde(rename = "github")]
+    Github,
+}
+impl ::std::fmt::Display for GithubOrgLogin {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Github => f.write_str("github"),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgLogin {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "github" => Ok(Self::Github),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgLogin {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgLogin {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgName`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgName {
+    GitHub,
+}
+impl ::std::fmt::Display for GithubOrgName {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::GitHub => f.write_str("GitHub"),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgName {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "GitHub" => Ok(Self::GitHub),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgName {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgName {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgNodeId`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgNodeId {
+    #[serde(rename = "MDEyOk9yZ2FuaXphdGlvbjk5MTk=")]
+    MdEyOk9yZ2FuaXphdGlvbjk5MTk,
+}
+impl ::std::fmt::Display for GithubOrgNodeId {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::MdEyOk9yZ2FuaXphdGlvbjk5MTk => f.write_str("MDEyOk9yZ2FuaXphdGlvbjk5MTk="),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgNodeId {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "MDEyOk9yZ2FuaXphdGlvbjk5MTk=" => Ok(Self::MdEyOk9yZ2FuaXphdGlvbjk5MTk),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgNodeId {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgNodeId {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgOrganizationsUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgOrganizationsUrl {
+    #[serde(rename = "https://api.github.com/users/github/orgs")]
+    HttpsApiGithubComUsersGithubOrgs,
+}
+impl ::std::fmt::Display for GithubOrgOrganizationsUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubOrgs => {
+                f.write_str("https://api.github.com/users/github/orgs")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgOrganizationsUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/orgs" => {
+                Ok(Self::HttpsApiGithubComUsersGithubOrgs)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgOrganizationsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgOrganizationsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgReceivedEventsUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgReceivedEventsUrl {
+    #[serde(rename = "https://api.github.com/users/github/received_events")]
+    HttpsApiGithubComUsersGithubReceivedEvents,
+}
+impl ::std::fmt::Display for GithubOrgReceivedEventsUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubReceivedEvents => {
+                f.write_str("https://api.github.com/users/github/received_events")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgReceivedEventsUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/received_events" => {
+                Ok(Self::HttpsApiGithubComUsersGithubReceivedEvents)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgReceivedEventsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgReceivedEventsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgReposUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgReposUrl {
+    #[serde(rename = "https://api.github.com/users/github/repos")]
+    HttpsApiGithubComUsersGithubRepos,
+}
+impl ::std::fmt::Display for GithubOrgReposUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubRepos => {
+                f.write_str("https://api.github.com/users/github/repos")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgReposUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/repos" => {
+                Ok(Self::HttpsApiGithubComUsersGithubRepos)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgReposUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgReposUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgStarredUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgStarredUrl {
+    #[serde(rename = "https://api.github.com/users/github/starred{/owner}{/repo}")]
+    HttpsApiGithubComUsersGithubStarredOwnerRepo,
+}
+impl ::std::fmt::Display for GithubOrgStarredUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubStarredOwnerRepo => {
+                f.write_str("https://api.github.com/users/github/starred{/owner}{/repo}")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgStarredUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/starred{/owner}{/repo}" => {
+                Ok(Self::HttpsApiGithubComUsersGithubStarredOwnerRepo)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgStarredUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgStarredUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgSubscriptionsUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgSubscriptionsUrl {
+    #[serde(rename = "https://api.github.com/users/github/subscriptions")]
+    HttpsApiGithubComUsersGithubSubscriptions,
+}
+impl ::std::fmt::Display for GithubOrgSubscriptionsUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithubSubscriptions => {
+                f.write_str("https://api.github.com/users/github/subscriptions")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgSubscriptionsUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github/subscriptions" => {
+                Ok(Self::HttpsApiGithubComUsersGithubSubscriptions)
+            }
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgSubscriptionsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgSubscriptionsUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgType`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgType {
+    Organization,
+}
+impl ::std::fmt::Display for GithubOrgType {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::Organization => f.write_str("Organization"),
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgType {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "Organization" => Ok(Self::Organization),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgType {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`GithubOrgUrl`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum GithubOrgUrl {
+    #[serde(rename = "https://api.github.com/users/github")]
+    HttpsApiGithubComUsersGithub,
+}
+impl ::std::fmt::Display for GithubOrgUrl {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::HttpsApiGithubComUsersGithub => {
+                f.write_str("https://api.github.com/users/github")
+            }
+        }
+    }
+}
+impl ::std::str::FromStr for GithubOrgUrl {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "https://api.github.com/users/github" => Ok(Self::HttpsApiGithubComUsersGithub),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for GithubOrgUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for GithubOrgUrl {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
 }
 #[doc = "A wiki page is created or updated."]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
@@ -36520,15 +37402,15 @@ impl ::std::convert::TryFrom<::std::string::String> for WatchStartedAction {
 #[serde(untagged)]
 pub enum WebhookEvents {
     Variant0(::std::vec::Vec<WebhookEventsVariant0Item>),
-    Variant1([::std::string::String; 1usize]),
+    Variant1([WebhookEventsVariant1Item; 1usize]),
 }
 impl ::std::convert::From<::std::vec::Vec<WebhookEventsVariant0Item>> for WebhookEvents {
     fn from(value: ::std::vec::Vec<WebhookEventsVariant0Item>) -> Self {
         Self::Variant0(value)
     }
 }
-impl ::std::convert::From<[::std::string::String; 1usize]> for WebhookEvents {
-    fn from(value: [::std::string::String; 1usize]) -> Self {
+impl ::std::convert::From<[WebhookEventsVariant1Item; 1usize]> for WebhookEvents {
+    fn from(value: [WebhookEventsVariant1Item; 1usize]) -> Self {
         Self::Variant1(value)
     }
 }
@@ -36756,6 +37638,53 @@ impl ::std::convert::TryFrom<&str> for WebhookEventsVariant0Item {
     }
 }
 impl ::std::convert::TryFrom<::std::string::String> for WebhookEventsVariant0Item {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: ::std::string::String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+#[doc = "`WebhookEventsVariant1Item`"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+pub enum WebhookEventsVariant1Item {
+    #[serde(rename = "*")]
+    X,
+}
+impl ::std::fmt::Display for WebhookEventsVariant1Item {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        match *self {
+            Self::X => f.write_str("*"),
+        }
+    }
+}
+impl ::std::str::FromStr for WebhookEventsVariant1Item {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        match value {
+            "*" => Ok(Self::X),
+            _ => Err("invalid value".into()),
+        }
+    }
+}
+impl ::std::convert::TryFrom<&str> for WebhookEventsVariant1Item {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value.parse()
+    }
+}
+impl ::std::convert::TryFrom<::std::string::String> for WebhookEventsVariant1Item {
     type Error = self::error::ConversionError;
     fn try_from(
         value: ::std::string::String,

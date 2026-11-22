@@ -53,6 +53,36 @@ impl TypeSpace {
         }
 
         match schema {
+            // If both const and enum are present and the enumerated values
+            // *don't* contain the const value, then there's no value that
+            // satisfies this schema.
+            SchemaObject {
+                metadata,
+                const_value: Some(const_value),
+                enum_values: Some(enum_values),
+                ..
+            } if !enum_values.contains(const_value) => {
+                let (type_entry, _) = self.convert_never(type_name, original_schema)?;
+                Ok((type_entry, metadata))
+            }
+
+            // Treat const like a lone enum value. From the case above we know
+            // we can ignore enum_values.
+            SchemaObject {
+                metadata,
+                const_value: Some(const_value),
+                ..
+            } => {
+                let new_schema = SchemaObject {
+                    const_value: None,
+                    enum_values: Some(vec![const_value.clone()]),
+                    ..schema.clone()
+                };
+                let (type_entry, _) =
+                    self.convert_schema_object(type_name, original_schema, &new_schema)?;
+                Ok((type_entry, metadata))
+            }
+
             // If we have a schema that has an instance type array that's
             // exactly two elements and one of them is Null, we have the
             // equivalent of an Option<T> where T is the type defined by the
@@ -406,7 +436,7 @@ impl TypeSpace {
                 instance_type: _,
                 format: _,
                 enum_values: _,
-                const_value: _,
+                const_value: None,
                 subschemas: _,
                 number: _,
                 string: _,
@@ -582,28 +612,6 @@ impl TypeSpace {
 
                     Err(_) => self.convert_never(type_name, original_schema),
                 }
-            }
-
-            // TODO let's not bother with const values at the moment. In the
-            // future we could create types that have a single value with a
-            // newtype wrapper, but it's too much of a mess for too little
-            // value at the moment. Instead, we act as though this const_value
-            // field were None.
-            SchemaObject {
-                metadata,
-                const_value: Some(_),
-                ..
-            } => {
-                let new_schema = SchemaObject {
-                    const_value: None,
-                    ..schema.clone()
-                };
-                self.convert_schema_object(type_name, original_schema, &new_schema)
-                    .map(|(te, m)| match m {
-                        Some(_) if m == metadata => (te, metadata),
-                        Some(_) => panic!("unexpected metadata value"),
-                        None => (te, &None),
-                    })
             }
 
             // In actual, not-made-up, in-the-wild specs, I've seen the type

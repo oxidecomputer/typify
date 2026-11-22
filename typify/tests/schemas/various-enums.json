@@ -420,6 +420,24 @@
           4096
         ]
       }
+    },
+    "ConstString": {
+      "type": "string",
+      "const": "fixed"
+    },
+    "ConstInteger": {
+      "type": "integer",
+      "const": 42
+    },
+    "ConstProperty": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "description": "always a widget",
+          "const": "widget",
+          "default": "widget"
+        }
+      }
     }
   }
 }
