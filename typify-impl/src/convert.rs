@@ -53,6 +53,22 @@ impl TypeSpace {
         }
 
         match schema {
+            // Treat const like a single-item enum
+            SchemaObject {
+                const_value: Some(const_value),
+                enum_values: None,
+                ..
+            } => {
+                let new_schema = SchemaObject {
+                    const_value: None,
+                    enum_values: Some(vec![const_value.clone()]),
+                    ..schema.clone()
+                };
+                let (type_entry, _) =
+                    self.convert_schema_object(type_name, original_schema, &new_schema)?;
+                Ok((type_entry, &None))
+            }
+
             // If we have a schema that has an instance type array that's
             // exactly two elements and one of them is Null, we have the
             // equivalent of an Option<T> where T is the type defined by the
