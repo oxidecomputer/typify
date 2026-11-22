@@ -5065,6 +5065,15 @@ impl ::std::convert::From<BindVariant3Input> for ::std::string::String {
         value.0
     }
 }
+impl ::std::str::FromStr for BindVariant3Input {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<::std::string::String>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<::std::string::String> for BindVariant3Input {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -39350,6 +39359,15 @@ impl ::std::convert::From<SignalName> for ::std::string::String {
         value.0
     }
 }
+impl ::std::str::FromStr for SignalName {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+        value
+            .parse::<::std::string::String>()
+            .map_err(|e| ::std::string::ToString::to_string(&e).into())
+            .and_then(Self::try_from)
+    }
+}
 impl ::std::convert::TryFrom<::std::string::String> for SignalName {
     type Error = self::error::ConversionError;
     fn try_from(
@@ -44288,10 +44306,14 @@ pub enum VoronoiTransformExtent {
 impl ::std::default::Default for VoronoiTransformExtent {
     fn default() -> Self {
         VoronoiTransformExtent::Array([
-            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]")
-                .expect("invalid default provided"),
-            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]")
-                .expect("invalid default provided"),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(-100000i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(-100000i64)),
+            ]),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(100000i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(100000i64)),
+            ]),
         ])
     }
 }
@@ -45773,10 +45795,14 @@ pub mod defaults {
     }
     pub(super) fn voronoi_transform_extent() -> super::VoronoiTransformExtent {
         super::VoronoiTransformExtent::Array([
-            ::serde_json::from_str::<::serde_json::Value>("[-100000,-100000]")
-                .expect("invalid default provided"),
-            ::serde_json::from_str::<::serde_json::Value>("[100000,100000]")
-                .expect("invalid default provided"),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(-100000i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(-100000i64)),
+            ]),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(100000i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(100000i64)),
+            ]),
         ])
     }
     pub(super) fn window_transform_frame() -> super::WindowTransformFrame {

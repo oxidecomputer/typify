@@ -474,10 +474,17 @@ pub mod defaults {
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
         vec![
-            ::serde_json::from_str::<::serde_json::Value>("[8,6,7]")
-                .expect("invalid default provided"),
-            ::serde_json::from_str::<::serde_json::Value>("[5,3,0,9]")
-                .expect("invalid default provided"),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(8i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(6i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(7i64)),
+            ]),
+            ::serde_json::Value::Array(vec![
+                ::serde_json::Value::Number(::serde_json::Number::from(5i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(3i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(0i64)),
+                ::serde_json::Value::Number(::serde_json::Number::from(9i64)),
+            ]),
         ]
     }
     pub(super) fn test_bed_id() -> ::uuid::Uuid {
