@@ -21,6 +21,8 @@ https://github.com/oxidecomputer/typify/compare/v0.10.1\...HEAD[Full list of com
   (typespace #74).
 * A default on a constrained newtype that the generated `TryFrom` would refuse
   now fails generation instead of being baked into the output (typespace #77).
+* An optional flattened property is a plain `#[serde(flatten)] Option<T>`
+  without a `skip_serializing_if`, which serde ignores on a flattened field.
 
 == 0.10.1 (released 2026-11-16)
 
