@@ -438,6 +438,71 @@
           "default": "widget"
         }
       }
+    },
+    "AdjacentUnitDescription": {
+      "oneOf": [
+        {
+          "description": "a unit variant",
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["off"]
+            }
+          },
+          "required": ["action"]
+        },
+        {
+          "description": "a variant with content",
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["wait"]
+            },
+            "seconds": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0
+            }
+          },
+          "required": ["action", "seconds"]
+        }
+      ]
+    },
+    "InternalUnitDescription": {
+      "oneOf": [
+        {
+          "description": "a unit variant",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["off"]
+            }
+          },
+          "required": ["kind"]
+        },
+        {
+          "description": "a struct variant",
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["wait"]
+            },
+            "seconds": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": ["kind", "seconds", "reason"]
+        }
+      ]
     }
   }
 }
