@@ -6905,15 +6905,15 @@ impl ::std::convert::From<::std::vec::Vec<::std::string::String>> for DataVarian
 #[serde(untagged)]
 pub enum DataVariant2Format {
     Variant0 {
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_0: ::std::option::Option<DataVariant2FormatVariant0Subtype0>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_1: ::std::option::Option<DataVariant2FormatVariant0Subtype1>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_2: ::std::option::Option<DataVariant2FormatVariant0Subtype2>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_3: ::std::option::Option<DataVariant2FormatVariant0Subtype3>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_4: ::std::option::Option<DataVariant2FormatVariant0Subtype4>,
     },
     Variant1(SignalRef),
@@ -8383,15 +8383,15 @@ impl ::std::convert::TryFrom<::std::string::String>
 #[serde(untagged)]
 pub enum DataVariant3Format {
     Variant0 {
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_0: ::std::option::Option<DataVariant3FormatVariant0Subtype0>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_1: ::std::option::Option<DataVariant3FormatVariant0Subtype1>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_2: ::std::option::Option<DataVariant3FormatVariant0Subtype2>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_3: ::std::option::Option<DataVariant3FormatVariant0Subtype3>,
-        #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+        #[serde(flatten)]
         subtype_4: ::std::option::Option<DataVariant3FormatVariant0Subtype4>,
     },
     Variant1(SignalRef),
@@ -42549,11 +42549,11 @@ impl ::std::convert::From<NumberValue> for TitleObjectDy {
 #[doc = "`TitleObjectEncode`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
 pub struct TitleObjectEncode {
-    #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(flatten)]
     pub subtype_0: ::std::option::Option<
         ::std::collections::HashMap<TitleObjectEncodeSubtype0Key, EncodeEntry>,
     >,
-    #[serde(flatten, skip_serializing_if = "::std::option::Option::is_none")]
+    #[serde(flatten)]
     pub subtype_1: ::std::option::Option<TitleObjectEncodeSubtype1>,
 }
 #[doc = "`TitleObjectEncodeSubtype0Key`"]

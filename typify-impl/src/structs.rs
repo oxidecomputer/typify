@@ -260,10 +260,7 @@ impl TypeSpace {
                     None => Name::Unknown,
                 };
 
-                let (mut type_id, _) = self.id_for_schema(type_name, schema)?;
-                if optional {
-                    type_id = self.id_to_option(&type_id);
-                }
+                let (type_id, _) = self.id_for_schema(type_name, schema)?;
 
                 // TODO we need a reasonable name that could be derived
                 // from the name of the type
