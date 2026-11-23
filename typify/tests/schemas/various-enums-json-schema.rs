@@ -1,4 +1,19 @@
 #![deny(warnings)]
+#[doc = "`AdjacentUnitDescription`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
+#[serde(tag = "action", content = "seconds")]
+pub enum AdjacentUnitDescription {
+    #[serde(rename = "off")]
+    Off,
+    #[doc = "a variant with content"]
+    #[serde(rename = "wait")]
+    Wait(u32),
+}
+impl ::std::convert::From<u32> for AdjacentUnitDescription {
+    fn from(value: u32) -> Self {
+        Self::Wait(value)
+    }
+}
 #[doc = "`AlternativeEnum`"]
 #[derive(
     :: serde :: Deserialize,
@@ -538,6 +553,19 @@ pub enum EnumAndConstant {
     Monkey { help: ::std::string::String },
     #[serde(rename = "fish")]
     Fish { float: ::std::string::String },
+}
+#[doc = "`InternalUnitDescription`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
+#[serde(tag = "kind")]
+pub enum InternalUnitDescription {
+    #[serde(rename = "off")]
+    Off,
+    #[doc = "a struct variant"]
+    #[serde(rename = "wait")]
+    Wait {
+        reason: ::std::string::String,
+        seconds: u32,
+    },
 }
 #[doc = "`IpNet`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
