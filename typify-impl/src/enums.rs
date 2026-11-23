@@ -387,7 +387,7 @@ impl TypeSpace {
 
             Ok(Variant::new(
                 variant_name.to_string(),
-                None,
+                metadata_title_and_description(metadata),
                 VariantDetails::Unit,
             ))
         } else {
@@ -513,7 +513,11 @@ impl TypeSpace {
             assert_eq!(tag_name, tag);
             assert_eq!(validation.required.len(), 1);
 
-            let variant = Variant::new(variant_name.to_string(), None, VariantDetails::Unit);
+            let variant = Variant::new(
+                variant_name.to_string(),
+                metadata_title_and_description(metadata),
+                VariantDetails::Unit,
+            );
             Ok((variant, false))
         } else {
             let tag_schema = validation.properties.get(tag).unwrap();

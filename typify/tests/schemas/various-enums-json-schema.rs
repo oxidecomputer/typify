@@ -3,6 +3,7 @@
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(tag = "action", content = "seconds")]
 pub enum AdjacentUnitDescription {
+    #[doc = "a unit variant"]
     #[serde(rename = "off")]
     Off,
     #[doc = "a variant with content"]
@@ -558,6 +559,7 @@ pub enum EnumAndConstant {
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema)]
 #[serde(tag = "kind")]
 pub enum InternalUnitDescription {
+    #[doc = "a unit variant"]
     #[serde(rename = "off")]
     Off,
     #[doc = "a struct variant"]
