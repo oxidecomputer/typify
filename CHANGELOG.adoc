@@ -16,6 +16,11 @@
 https://github.com/oxidecomputer/typify/compare/v0.10.1\...HEAD[Full list of commits]
 
 * Handle the `const` keyword (#1115)
+* Lower the MSRV to 1.88, matching typespace 0.1.4.
+* A newtype with a schema `default` gets its `Default` impl back, as in 0.8
+  (typespace #74).
+* A default on a constrained newtype that the generated `TryFrom` would refuse
+  now fails generation instead of being baked into the output (typespace #77).
 
 == 0.10.1 (released 2026-11-16)
 
