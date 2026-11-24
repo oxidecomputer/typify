@@ -12,9 +12,14 @@ rust-version.workspace = true
 
 default-run = "cargo-typify"
 
+[features]
+default = ["chrono"]
+chrono = ["typify/chrono"]
+jiff = ["typify/jiff"]
+
 [dependencies]
 syn = { workspace = true }
-typify = { workspace = true }
+typify = { workspace = true, features = ["macro"] }
 
 clap = { workspace = true }
 color-eyre = { workspace = true }

@@ -19,6 +19,11 @@ https://github.com/oxidecomputer/typify/compare/v0.10.1\...HEAD[Full list of com
 * Lower the MSRV to 1.88
 * A newtype with a schema `default` gets its `Default` impl back, per 0.8
   (typespace #74).
+* The `date` and `date-time` string formats can map to `jiff` types
+  (`jiff::civil::Date` and `jiff::Timestamp`) through a new `jiff` feature.
+  The `chrono` feature, which is on by default, keeps the existing mapping.
+  When both are enabled, `jiff` takes precedence. Types from `jiff` do not
+  implement `JsonSchema`.
 
 == 0.10.1 (released 2026-11-16)
 

@@ -1,0 +1,515 @@
+#![deny(warnings)]
+#[doc = "`EventWithDefault`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct EventWithDefault {
+    #[serde(default = "defaults::event_with_default_when")]
+    pub when: ::jiff::Timestamp,
+}
+impl ::std::default::Default for EventWithDefault {
+    fn default() -> Self {
+        Self {
+            when: defaults::event_with_default_when(),
+        }
+    }
+}
+impl EventWithDefault {
+    pub fn builder() -> builder::EventWithDefault {
+        Default::default()
+    }
+}
+#[doc = "`IntegerDefaults`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct IntegerDefaults {
+    #[serde(default = "defaults::integer_defaults_big_nullable")]
+    pub big_nullable: ::std::option::Option<::std::num::NonZeroU64>,
+    #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU16, 3>")]
+    pub little_u16: ::std::num::NonZeroU16,
+    #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU8, 2>")]
+    pub little_u8: ::std::num::NonZeroU8,
+}
+impl ::std::default::Default for IntegerDefaults {
+    fn default() -> Self {
+        Self {
+            big_nullable: defaults::integer_defaults_big_nullable(),
+            little_u16: defaults::default_nzu64::<::std::num::NonZeroU16, 3>(),
+            little_u8: defaults::default_nzu64::<::std::num::NonZeroU8, 2>(),
+        }
+    }
+}
+impl IntegerDefaults {
+    pub fn builder() -> builder::IntegerDefaults {
+        Default::default()
+    }
+}
+#[doc = "`OuterThing`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, Default)]
+pub struct OuterThing {
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+    pub thing: ::std::option::Option<ThingWithDefaults>,
+}
+impl OuterThing {
+    pub fn builder() -> builder::OuterThing {
+        Default::default()
+    }
+}
+#[doc = "`TestBed`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct TestBed {
+    #[serde(default = "defaults::test_bed_any")]
+    pub any: ::std::vec::Vec<::serde_json::Value>,
+    #[serde(default = "defaults::test_bed_id")]
+    pub id: ::uuid::Uuid,
+}
+impl ::std::default::Default for TestBed {
+    fn default() -> Self {
+        Self {
+            any: defaults::test_bed_any(),
+            id: defaults::test_bed_id(),
+        }
+    }
+}
+impl TestBed {
+    pub fn builder() -> builder::TestBed {
+        Default::default()
+    }
+}
+#[doc = "`ThingWithDefaults`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(deny_unknown_fields)]
+pub struct ThingWithDefaults {
+    #[serde(skip_serializing_if = "::std::option::Option::is_none")]
+    pub a: ::std::option::Option<::std::string::String>,
+    #[serde(
+        rename = "type",
+        skip_serializing_if = "::std::option::Option::is_none"
+    )]
+    pub type_: ::std::option::Option<::std::string::String>,
+}
+impl ::std::default::Default for ThingWithDefaults {
+    fn default() -> Self {
+        ThingWithDefaults {
+            a: Default::default(),
+            type_: ::std::option::Option::Some("bee".to_string()),
+        }
+    }
+}
+impl ThingWithDefaults {
+    pub fn builder() -> builder::ThingWithDefaults {
+        Default::default()
+    }
+}
+#[doc = "`UInt`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+#[serde(transparent)]
+pub struct UInt(pub i64);
+impl ::std::ops::Deref for UInt {
+    type Target = i64;
+    fn deref(&self) -> &i64 {
+        &self.0
+    }
+}
+impl ::std::convert::From<UInt> for i64 {
+    fn from(value: UInt) -> Self {
+        value.0
+    }
+}
+impl ::std::convert::From<i64> for UInt {
+    fn from(value: i64) -> Self {
+        Self(value)
+    }
+}
+impl ::std::fmt::Display for UInt {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+impl ::std::str::FromStr for UInt {
+    type Err = <i64 as ::std::str::FromStr>::Err;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+        Ok(Self(value.parse()?))
+    }
+}
+#[doc = "`UIntContainer`"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
+pub struct UIntContainer {
+    #[serde(default = "defaults::u_int_container_max_path")]
+    pub max_path: UInt,
+}
+impl ::std::default::Default for UIntContainer {
+    fn default() -> Self {
+        Self {
+            max_path: defaults::u_int_container_max_path(),
+        }
+    }
+}
+impl UIntContainer {
+    pub fn builder() -> builder::UIntContainer {
+        Default::default()
+    }
+}
+#[doc = " Types for composing complex structures."]
+pub mod builder {
+    #[derive(Clone, Debug)]
+    pub struct EventWithDefault {
+        when: ::std::result::Result<::jiff::Timestamp, ::std::string::String>,
+    }
+    impl ::std::default::Default for EventWithDefault {
+        fn default() -> Self {
+            Self {
+                when: Ok(super::defaults::event_with_default_when()),
+            }
+        }
+    }
+    impl EventWithDefault {
+        pub fn when<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::jiff::Timestamp>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.when = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for when: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<EventWithDefault> for super::EventWithDefault {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: EventWithDefault,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self { when: value.when? })
+        }
+    }
+    impl ::std::convert::From<super::EventWithDefault> for EventWithDefault {
+        fn from(value: super::EventWithDefault) -> Self {
+            Self {
+                when: Ok(value.when),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct IntegerDefaults {
+        big_nullable: ::std::result::Result<
+            ::std::option::Option<::std::num::NonZeroU64>,
+            ::std::string::String,
+        >,
+        little_u16: ::std::result::Result<::std::num::NonZeroU16, ::std::string::String>,
+        little_u8: ::std::result::Result<::std::num::NonZeroU8, ::std::string::String>,
+    }
+    impl ::std::default::Default for IntegerDefaults {
+        fn default() -> Self {
+            Self {
+                big_nullable: Ok(super::defaults::integer_defaults_big_nullable()),
+                little_u16: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU16, 3>()),
+                little_u8: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU8, 2>()),
+            }
+        }
+    }
+    impl IntegerDefaults {
+        pub fn big_nullable<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::num::NonZeroU64>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.big_nullable = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for big_nullable: {e}"));
+            self
+        }
+        pub fn little_u16<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::num::NonZeroU16>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.little_u16 = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for little_u16: {e}"));
+            self
+        }
+        pub fn little_u8<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::num::NonZeroU8>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.little_u8 = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for little_u8: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<IntegerDefaults> for super::IntegerDefaults {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: IntegerDefaults,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                big_nullable: value.big_nullable?,
+                little_u16: value.little_u16?,
+                little_u8: value.little_u8?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::IntegerDefaults> for IntegerDefaults {
+        fn from(value: super::IntegerDefaults) -> Self {
+            Self {
+                big_nullable: Ok(value.big_nullable),
+                little_u16: Ok(value.little_u16),
+                little_u8: Ok(value.little_u8),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct OuterThing {
+        thing: ::std::result::Result<
+            ::std::option::Option<super::ThingWithDefaults>,
+            ::std::string::String,
+        >,
+    }
+    impl ::std::default::Default for OuterThing {
+        fn default() -> Self {
+            Self {
+                thing: Ok(Default::default()),
+            }
+        }
+    }
+    impl OuterThing {
+        pub fn thing<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<super::ThingWithDefaults>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.thing = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for thing: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<OuterThing> for super::OuterThing {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: OuterThing,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                thing: value.thing?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::OuterThing> for OuterThing {
+        fn from(value: super::OuterThing) -> Self {
+            Self {
+                thing: Ok(value.thing),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct TestBed {
+        any: ::std::result::Result<::std::vec::Vec<::serde_json::Value>, ::std::string::String>,
+        id: ::std::result::Result<::uuid::Uuid, ::std::string::String>,
+    }
+    impl ::std::default::Default for TestBed {
+        fn default() -> Self {
+            Self {
+                any: Ok(super::defaults::test_bed_any()),
+                id: Ok(super::defaults::test_bed_id()),
+            }
+        }
+    }
+    impl TestBed {
+        pub fn any<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::vec::Vec<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.any = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for any: {e}"));
+            self
+        }
+        pub fn id<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::uuid::Uuid>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.id = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for id: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<TestBed> for super::TestBed {
+        type Error = super::error::ConversionError;
+        fn try_from(value: TestBed) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                any: value.any?,
+                id: value.id?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::TestBed> for TestBed {
+        fn from(value: super::TestBed) -> Self {
+            Self {
+                any: Ok(value.any),
+                id: Ok(value.id),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct ThingWithDefaults {
+        a: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+        type_: ::std::result::Result<
+            ::std::option::Option<::std::string::String>,
+            ::std::string::String,
+        >,
+    }
+    impl ::std::default::Default for ThingWithDefaults {
+        fn default() -> Self {
+            Self {
+                a: Ok(Default::default()),
+                type_: Ok(Default::default()),
+            }
+        }
+    }
+    impl ThingWithDefaults {
+        pub fn a<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.a = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for a: {e}"));
+            self
+        }
+        pub fn type_<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.type_ = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for type_: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<ThingWithDefaults> for super::ThingWithDefaults {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: ThingWithDefaults,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                a: value.a?,
+                type_: value.type_?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::ThingWithDefaults> for ThingWithDefaults {
+        fn from(value: super::ThingWithDefaults) -> Self {
+            Self {
+                a: Ok(value.a),
+                type_: Ok(value.type_),
+            }
+        }
+    }
+    #[derive(Clone, Debug)]
+    pub struct UIntContainer {
+        max_path: ::std::result::Result<super::UInt, ::std::string::String>,
+    }
+    impl ::std::default::Default for UIntContainer {
+        fn default() -> Self {
+            Self {
+                max_path: Ok(super::defaults::u_int_container_max_path()),
+            }
+        }
+    }
+    impl UIntContainer {
+        pub fn max_path<T>(mut self, value: T) -> Self
+        where
+            T: ::std::convert::TryInto<super::UInt>,
+            T::Error: ::std::fmt::Display,
+        {
+            self.max_path = value
+                .try_into()
+                .map_err(|e| format!("error converting supplied value for max_path: {e}"));
+            self
+        }
+    }
+    impl ::std::convert::TryFrom<UIntContainer> for super::UIntContainer {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: UIntContainer,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+            Ok(Self {
+                max_path: value.max_path?,
+            })
+        }
+    }
+    impl ::std::convert::From<super::UIntContainer> for UIntContainer {
+        fn from(value: super::UIntContainer) -> Self {
+            Self {
+                max_path: Ok(value.max_path),
+            }
+        }
+    }
+}
+#[doc = " Generation of default values for serde."]
+pub mod defaults {
+    pub(super) fn default_nzu64<T, const V: u64>() -> T
+    where
+        T: ::std::convert::TryFrom<::std::num::NonZeroU64>,
+        <T as ::std::convert::TryFrom<::std::num::NonZeroU64>>::Error: ::std::fmt::Debug,
+    {
+        T::try_from(::std::num::NonZeroU64::try_from(V).unwrap()).unwrap()
+    }
+    pub(super) fn event_with_default_when() -> ::jiff::Timestamp {
+        ::serde_json::from_str::<::jiff::Timestamp>("\"1970-01-01T00:00:00Z\"")
+            .expect("invalid default provided")
+    }
+    pub(super) fn integer_defaults_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64> {
+        ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
+    }
+    pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {
+        vec![
+            ::serde_json::from_str::<::serde_json::Value>("[8,6,7]")
+                .expect("invalid default provided"),
+            ::serde_json::from_str::<::serde_json::Value>("[5,3,0,9]")
+                .expect("invalid default provided"),
+        ]
+    }
+    pub(super) fn test_bed_id() -> ::uuid::Uuid {
+        ::serde_json::from_str::<::uuid::Uuid>("\"abc123-is-this-a-uuid\"")
+            .expect("invalid default provided")
+    }
+    pub(super) fn u_int_container_max_path() -> super::UInt {
+        super::UInt(1_i64)
+    }
+}
+#[doc = " Error types."]
+pub mod error {
+    #[doc = r" Error from a `TryFrom` or `FromStr` implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
+fn main() {}

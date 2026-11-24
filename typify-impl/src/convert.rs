@@ -17,6 +17,68 @@ use crate::util::get_type_name;
 
 use crate::{Error, Name, Result, TypeSpace};
 
+/// The date library that `date` and `date-time` strings map to, chosen by the
+/// `chrono` and `jiff` features. jiff takes precedence when both are enabled.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum DateLibrary {
+    Chrono,
+    Jiff,
+}
+
+impl DateLibrary {
+    fn crate_name(self) -> &'static str {
+        match self {
+            DateLibrary::Chrono => "chrono",
+            DateLibrary::Jiff => "jiff",
+        }
+    }
+}
+
+fn date_library() -> Option<DateLibrary> {
+    if cfg!(feature = "jiff") {
+        Some(DateLibrary::Jiff)
+    } else if cfg!(feature = "chrono") {
+        Some(DateLibrary::Chrono)
+    } else {
+        None
+    }
+}
+
+/// The Rust path a `date` or `date-time` string maps to under `library`.
+fn date_path(format: &str, library: DateLibrary) -> &'static str {
+    match (format, library) {
+        ("date", DateLibrary::Chrono) => "::chrono::naive::NaiveDate",
+        ("date", DateLibrary::Jiff) => "::jiff::civil::Date",
+        (_, DateLibrary::Chrono) => "::chrono::DateTime<::chrono::offset::Utc>",
+        (_, DateLibrary::Jiff) => "::jiff::Timestamp",
+    }
+}
+
+/// The traits a date native declares. jiff types have no schemars 0.8 impl,
+/// so they omit `JsonSchema`.
+fn date_traits(library: DateLibrary) -> TypespaceTraitSet {
+    let traits = [
+        TypespaceTrait::Clone,
+        TypespaceTrait::Debug,
+        TypespaceTrait::Serialize,
+        TypespaceTrait::Deserialize,
+        TypespaceTrait::Display,
+        TypespaceTrait::FromStr,
+        TypespaceTrait::Eq,
+        TypespaceTrait::PartialEq,
+        TypespaceTrait::Ord,
+        TypespaceTrait::PartialOrd,
+        TypespaceTrait::Hash,
+    ];
+    match library {
+        DateLibrary::Chrono => traits
+            .into_iter()
+            .chain([TypespaceTrait::JsonSchema])
+            .collect(),
+        DateLibrary::Jiff => traits.into_iter().collect(),
+    }
+}
+
 impl TypeSpace {
     pub(crate) fn convert_schema<'a>(
         &mut self,
@@ -810,7 +872,30 @@ impl TypeSpace {
         format: &Option<String>,
         validation: Option<&StringValidation>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        match format.as_ref().map(String::as_str) {
+        let date = date_library();
+        match (format.as_ref().map(String::as_str), date) {
+            (Some(format @ ("date" | "date-time")), Some(library)) => {
+                self.add_dependency(typespace::codespace::Dependency::new(library.crate_name()));
+                Ok((
+                    TypeEntry::new_native(date_path(format, library), date_traits(library)),
+                    metadata,
+                ))
+            }
+            (format, _) => {
+                self.convert_format(type_name, original_schema, metadata, format, validation)
+            }
+        }
+    }
+
+    fn convert_format<'a>(
+        &mut self,
+        type_name: Name,
+        original_schema: &'a Schema,
+        metadata: &'a Option<Box<Metadata>>,
+        format: Option<&str>,
+        validation: Option<&StringValidation>,
+    ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
+        match format {
             Some("uuid") => {
                 self.add_dependency(typespace::codespace::Dependency::new("uuid"));
                 // ::uuid::Uuid Default, but we ignore it because there's no
@@ -818,61 +903,6 @@ impl TypeSpace {
                 Ok((
                     TypeEntry::new_native(
                         "::uuid::Uuid",
-                        [
-                            TypespaceTrait::Clone,
-                            TypespaceTrait::Debug,
-                            TypespaceTrait::Serialize,
-                            TypespaceTrait::Deserialize,
-                            TypespaceTrait::Display,
-                            TypespaceTrait::FromStr,
-                            TypespaceTrait::Eq,
-                            TypespaceTrait::PartialEq,
-                            TypespaceTrait::Ord,
-                            TypespaceTrait::PartialOrd,
-                            TypespaceTrait::Hash,
-                            TypespaceTrait::JsonSchema,
-                        ]
-                        .into_iter()
-                        .collect::<TypespaceTraitSet>(),
-                    ),
-                    metadata,
-                ))
-            }
-
-            Some("date") => {
-                self.add_dependency(typespace::codespace::Dependency::new("chrono"));
-                // ::chrono::naive::NaiveDate implements Default, but there's
-                // no useful value. We assume the chrono feaeture in schemars.
-                Ok((
-                    TypeEntry::new_native(
-                        "::chrono::naive::NaiveDate",
-                        [
-                            TypespaceTrait::Clone,
-                            TypespaceTrait::Debug,
-                            TypespaceTrait::Serialize,
-                            TypespaceTrait::Deserialize,
-                            TypespaceTrait::Display,
-                            TypespaceTrait::FromStr,
-                            TypespaceTrait::Eq,
-                            TypespaceTrait::PartialEq,
-                            TypespaceTrait::Ord,
-                            TypespaceTrait::PartialOrd,
-                            TypespaceTrait::Hash,
-                            TypespaceTrait::JsonSchema,
-                        ]
-                        .into_iter()
-                        .collect::<TypespaceTraitSet>(),
-                    ),
-                    metadata,
-                ))
-            }
-            Some("date-time") => {
-                self.add_dependency(typespace::codespace::Dependency::new("chrono"));
-                // ::chrono::DateTime implements Default, but not usefully.
-                // We assume the chrono feaeture in schemars.
-                Ok((
-                    TypeEntry::new_native(
-                        "::chrono::DateTime<::chrono::offset::Utc>",
                         [
                             TypespaceTrait::Clone,
                             TypespaceTrait::Debug,

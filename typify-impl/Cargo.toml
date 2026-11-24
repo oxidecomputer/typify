@@ -8,6 +8,14 @@ repository = "https://github.com/oxidecomputer/typify"
 readme = "../README.md"
 rust-version.workspace = true
 
+[features]
+default = ["chrono"]
+# Selects the date library that `date` and `date-time` strings map to. These
+# are marker features: typify emits paths and never links either crate. When
+# both are enabled, jiff takes precedence.
+chrono = []
+jiff = []
+
 [dependencies]
 heck = { workspace = true }
 log = { workspace = true }

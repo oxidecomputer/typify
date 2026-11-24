@@ -43,6 +43,23 @@ appropriate Rust type. For example `{ "type": "string", "format": "uuid" }` is
 represented as a `uuid::Uuid` (which requires the `uuid` crate be included as a
 dependency).
 
+The `date` and `date-time` formats are represented by a date library, chosen
+with the `chrono` (default) or `jiff` feature:
+
+| Format      | `chrono`                          | `jiff`               |
+| ----------- | --------------------------------- | -------------------- |
+| `date`      | `chrono::naive::NaiveDate`                 | `jiff::civil::Date` |
+| `date-time` | `chrono::DateTime<chrono::offset::Utc>`    | `jiff::Timestamp`   |
+
+Enable `jiff` with `default-features = false` to drop chrono. When both features
+are enabled, `jiff` takes precedence. With neither, dates are plain `String`s.
+The generated code needs the chosen crate as a dependency; enable its `serde`
+feature so the date types deserialize.
+
+Types from `jiff` do not implement `schemars::JsonSchema` (schemars 0.8 has no
+`jiff` impl), so a generated type that requires `JsonSchema` cannot contain a
+`jiff` date.
+
 ### Arrays
 
 JSON Schema arrays can turn into one of three Rust types `Vec<T>`, `HashSet<T>`,

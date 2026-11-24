@@ -126,8 +126,8 @@ pub struct TypeSpace {
     name_to_id: BTreeMap<String, TypeId>,
     ref_to_id: BTreeMap<RefKey, TypeId>,
 
-    /// The crates needed for native types: `chrono` and `uuid` for the string
-    /// formats it maps to them, and each crate an `x-rust-type` extension
+    /// The crates needed for native types: `uuid` and the date library
+    /// (`chrono` or `jiff`) for the string formats they map to, and each crate an `x-rust-type` extension
     /// names, at the version [`TypeSpaceSettings::with_crate`] declared for
     /// it. Recorded on the `TypespaceBuilder` so the finalized typespace
     /// reports them with the crates of what typespace renders itself.

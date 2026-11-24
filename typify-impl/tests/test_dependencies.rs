@@ -31,7 +31,14 @@ fn formats_report_their_crates() {
     type_space
         .add_type_with_name(&schema, Some("Thing".to_string()))
         .unwrap();
-    assert_eq!(names(&type_space), ["chrono", "serde", "uuid"]);
+    let expected: &[&str] = if cfg!(feature = "jiff") {
+        &["jiff", "serde", "uuid"]
+    } else if cfg!(feature = "chrono") {
+        &["chrono", "serde", "uuid"]
+    } else {
+        &["serde", "uuid"]
+    };
+    assert_eq!(names(&type_space), expected);
 }
 
 /// A type from an `x-rust-type` extension reports its crate at the

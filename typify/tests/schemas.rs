@@ -1,6 +1,6 @@
 // Copyright 2025 Oxide Computer Company
 
-use std::{error::Error, fs::File, io::BufReader};
+use std::{error::Error, fs::File, io::BufReader, path::PathBuf};
 
 use expectorate::assert_contents;
 use glob::glob;
@@ -8,26 +8,63 @@ use quote::quote;
 use schemars::schema::RootSchema;
 use serde_json::json;
 use typify::typespace::TypespaceTrait;
+#[cfg(all(feature = "chrono", not(feature = "jiff")))]
 use typify::typespace::settings::ContainerType;
 use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
 
+/// Checked-in outputs that name chrono types. `maps` and `types-with-defaults`
+/// are regenerated under jiff; `maps_custom` is chrono-only and is excluded
+/// from the jiff compile pass.
+const CHRONO_GOLDENS: &[&str] = &["maps", "types-with-defaults", "maps_custom"];
+
+/// Whether `stem` has checked-in output that depends on the date library.
+fn is_chrono_golden(stem: &str) -> bool {
+    CHRONO_GOLDENS.contains(&stem)
+}
+
 #[test]
 fn test_schemas() {
     env_logger::init();
-    // Make sure output is up to date.
+    // Make sure output is up to date. Golden files that name chrono types
+    // only match the chrono backend; under jiff they are regenerated into
+    // `tests/schemas/jiff/` instead.
+    let chrono_active = cfg!(feature = "chrono") && !cfg!(feature = "jiff");
+    let jiff_active = cfg!(feature = "jiff");
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
         let entry = entry.unwrap();
+        let stem = entry.file_stem().unwrap().to_str().unwrap().to_string();
+        if is_chrono_golden(&stem) && !chrono_active {
+            if jiff_active {
+                let out_path = PathBuf::from("tests/schemas/jiff").join(format!("{stem}.rs"));
+                validate_schema(entry.clone(), out_path, TypeSpaceSettings::default())
+                    .unwrap_or_else(|e| panic!("failed for {}: {e}", entry.to_string_lossy()))
+            }
+            continue;
+        }
         let out_path = entry.clone().with_extension("rs");
         validate_schema(entry.clone(), out_path, TypeSpaceSettings::default())
             .unwrap_or_else(|e| panic!("failed for {}: {e}", entry.to_string_lossy()))
     }
 
-    // Make sure it all compiles.
-    trybuild::TestCases::new().pass("tests/schemas/*.rs");
+    // Make sure it all compiles. Under jiff, the chrono-named goldens are
+    // compiled from `jiff/` instead of the top-level directory.
+    let cases = trybuild::TestCases::new();
+    if jiff_active {
+        cases.pass("tests/schemas/jiff/*.rs");
+    }
+    for entry in glob("tests/schemas/*.rs").expect("Failed to read glob pattern") {
+        let entry = entry.unwrap();
+        let stem = entry.file_stem().unwrap().to_str().unwrap();
+        if chrono_active || !is_chrono_golden(stem) {
+            cases.pass(&entry);
+        }
+    }
 }
 
 /// Ensure that setting the global config to use a custom map type works.
+/// Compares against chrono-named golden output, so it runs only under chrono.
+#[cfg(all(feature = "chrono", not(feature = "jiff")))]
 #[test]
 fn test_custom_map() {
     let mut settings = TypeSpaceSettings::default();

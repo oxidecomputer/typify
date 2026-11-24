@@ -64,6 +64,35 @@ jobs:
     - name: Run tests
       run: cargo test --locked --workspace --no-fail-fast --verbose
 
+  # Each date backend is tested on its own. The packages are run one at a time
+  # so that a feature enabled by one package cannot leak into another through
+  # feature unification.
+  date-backends:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: jiff
+            impl_flags: --no-default-features --features jiff
+            typify_flags: --no-default-features --features macro,jiff
+            cli_flags: --no-default-features --features jiff
+          - backend: none
+            impl_flags: --no-default-features
+            typify_flags: --no-default-features --features macro
+            cli_flags: --no-default-features
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      with:
+        key: date-${{ matrix.backend }}
+    - name: Run typify-impl
+      run: cargo test --locked -p typify-impl ${{ matrix.impl_flags }} --no-fail-fast
+    - name: Run typify
+      run: cargo test --locked -p typify ${{ matrix.typify_flags }} --no-fail-fast
+    - name: Run cargo-typify
+      run: cargo test --locked -p cargo-typify ${{ matrix.cli_flags }} --no-fail-fast
+
   msrv:
     runs-on: ubuntu-latest
     env:
