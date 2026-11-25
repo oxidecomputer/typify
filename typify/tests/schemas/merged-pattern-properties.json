@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "names-base": {
+      "type": "object",
+      "properties": {
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "string-map-over-base": {
+      "description": "the reduced schema from typify#882",
+      "patternProperties": {
+        "^([^.]+)$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "$ref": "#/definitions/names-base"
+    },
+    "counted-base": {
+      "type": "object",
+      "required": [
+        "count"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer"
+        }
+      }
+    },
+    "counted-with-pattern": {
+      "description": "count matches the pattern, so it takes the pattern's minimum",
+      "allOf": [
+        {
+          "$ref": "#/definitions/counted-base"
+        },
+        {
+          "patternProperties": {
+            "^[a-z]+$": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "extension-map": {
+      "description": "both sides constrain the same pattern",
+      "allOf": [
+        {
+          "type": "object",
+          "patternProperties": {
+            "^x-": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "patternProperties": {
+            "^x-": {
+              "type": "string",
+              "maxLength": 10
+            }
+          }
+        }
+      ]
+    }
+  }
+}

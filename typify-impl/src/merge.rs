@@ -1075,8 +1075,8 @@ fn merge_so_object(
                 // both.
                 .filter_map(|(name, ab_schema)| {
                     let resolved_schema = match ab_schema {
-                        AOrB::A(a_schema) => filter_prop(name, a_schema, bb),
-                        AOrB::B(b_schema) => filter_prop(name, b_schema, aa),
+                        AOrB::A(a_schema) => filter_prop(name, a_schema, bb, defs),
+                        AOrB::B(b_schema) => filter_prop(name, b_schema, aa, defs),
                         AOrB::Both(a_schema, b_schema) => merge_schema(a_schema, b_schema, defs),
                     };
                     match resolved_schema {
@@ -1122,21 +1122,29 @@ fn merge_so_object(
                 return Err(());
             }
 
+            let pattern_properties =
+                merge_pattern_properties(aa, bb, additional_properties.as_ref(), defs);
+
             let object_validation = ObjectValidation {
                 required,
                 properties,
                 additional_properties: additional_properties.map(Box::new),
                 max_properties,
                 min_properties,
-                pattern_properties: Default::default(), // TODO
-                property_names: Default::default(),     // TODO
+                pattern_properties,
+                property_names: Default::default(), // TODO
             };
             Ok(Some(object_validation.into()))
         }
     }
 }
 
-fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidation) -> Schema {
+fn filter_prop(
+    name: &str,
+    prop_schema: &Schema,
+    object_schema: &ObjectValidation,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> Schema {
     // We're only considering properties we *know* do not appear in the other
     // object's schema.
     assert!(!object_schema.properties.contains_key(name));
@@ -1145,14 +1153,76 @@ fn filter_prop(name: &str, prop_schema: &Schema, object_schema: &ObjectValidatio
     // propertyNames if that schema is specified.
     assert!(object_schema.property_names.is_none());
 
-    // TODO We should first check patternProperties, but that's such a pain in
-    // the neck and so weird that I can't be bothered right now (until we hit
-    // some examples in the wild). A match here would exempt the property from
-    // the check below against additionalProperties.
-    assert!(object_schema.pattern_properties.is_empty());
+    // The other object validates this property with the schema of every
+    // pattern that matches its name, and with additionalProperties only when
+    // no pattern matches. A pattern that does not compile matches nothing
+    // here, and conversion reports it where the pattern is used.
+    let mut matching = object_schema
+        .pattern_properties
+        .iter()
+        .filter(|(pattern, _)| {
+            regress::Regex::with_flags(pattern, "u").is_ok_and(|re| re.find(name).is_some())
+        })
+        .map(|(_, pattern_schema)| pattern_schema)
+        .peekable();
 
-    merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+    if matching.peek().is_none() {
+        return merge_additional(object_schema.additional_properties.as_deref(), prop_schema)
+            .unwrap_or(Schema::Bool(false));
+    }
+
+    matching
+        .try_fold(prop_schema.clone(), |merged, pattern_schema| {
+            try_merge_schema(&merged, pattern_schema, defs)
+        })
         .unwrap_or(Schema::Bool(false))
+}
+
+/// Merge the patternProperties of two objects. A pattern on both sides takes
+/// both schemas. A pattern on one side also takes the other side's
+/// additionalProperties, which is what validates a name there when none of
+/// the other side's patterns match. That is exact unless a name can match a
+/// pattern on each side without the two sides sharing that pattern. Such a
+/// name should not get the other side's additionalProperties, so the result
+/// is stricter than the intersection for it. When that additionalProperties
+/// is false, the pattern becomes false and is dropped below, and the name is
+/// then checked only against the other side's pattern, which is looser.
+fn merge_pattern_properties(
+    aa: &ObjectValidation,
+    bb: &ObjectValidation,
+    merged_additional: Option<&Schema>,
+    defs: &BTreeMap<RefKey, Schema>,
+) -> schemars::Map<String, Schema> {
+    let one_sided = |pattern_schema: &Schema, other: &ObjectValidation| {
+        merge_additional(other.additional_properties.as_deref(), pattern_schema)
+            .unwrap_or(Schema::Bool(false))
+    };
+
+    aa.pattern_properties
+        .iter()
+        .map(|(pattern, a_schema)| {
+            let schema = match bb.pattern_properties.get(pattern) {
+                Some(b_schema) => merge_schema(a_schema, b_schema, defs),
+                None => one_sided(a_schema, bb),
+            };
+            (pattern, schema)
+        })
+        .chain(
+            bb.pattern_properties
+                .iter()
+                .filter(|(pattern, _)| !aa.pattern_properties.contains_key(*pattern))
+                .map(|(pattern, b_schema)| (pattern, one_sided(b_schema, aa))),
+        )
+        // As with properties, an unsatisfiable pattern adds nothing when
+        // additionalProperties already excludes every other name.
+        .filter(|(_, schema)| {
+            !matches!(
+                (schema, merged_additional),
+                (Schema::Bool(false), Some(Schema::Bool(false)))
+            )
+        })
+        .map(|(pattern, schema)| (pattern.clone(), schema))
+        .collect()
 }
 
 fn merge_additional(additional: Option<&Schema>, prop_schema: &Schema) -> Result<Schema, ()> {
@@ -1946,5 +2016,139 @@ mod tests {
             "{}",
             serde_json::to_string_pretty(&merged).unwrap(),
         );
+    }
+
+    #[test]
+    fn test_merge_property_matching_pattern() {
+        // `count` is not named by `b`, but its name matches `b`'s pattern, so
+        // the pattern's schema applies to it instead of additionalProperties.
+        let a = json!({
+            "type": "object",
+            "required": ["count"],
+            "properties": {
+                "count": { "type": "integer" }
+            }
+        });
+        let b = json!({
+            "patternProperties": {
+                "^[a-z]+$": { "minimum": 0 }
+            },
+            "additionalProperties": false
+        });
+        let ab = json!({
+            "type": "object",
+            "required": ["count"],
+            "properties": {
+                "count": { "type": "integer", "minimum": 0 }
+            },
+            "patternProperties": {
+                "^[a-z]+$": { "minimum": 0 }
+            },
+            "additionalProperties": false
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let ab: schemars::schema::Schema = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(
+            merged,
+            ab,
+            "{}",
+            serde_json::to_string_pretty(&merged).unwrap(),
+        );
+    }
+
+    #[test]
+    fn test_merge_required_property_matching_no_pattern() {
+        // `Count` matches no pattern of `b`, so `b`'s additionalProperties
+        // decides, and `false` makes the required property unsatisfiable.
+        let a = json!({
+            "type": "object",
+            "required": ["Count"],
+            "properties": {
+                "Count": { "type": "integer" }
+            }
+        });
+        let b = json!({
+            "patternProperties": {
+                "^[a-z]+$": { "type": "integer" }
+            },
+            "additionalProperties": false
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+
+        assert!(try_merge_schema(&a, &b, &BTreeMap::default()).is_err());
+    }
+
+    #[test]
+    fn test_merge_pattern_against_closed_object() {
+        // `a` admits no names beyond `id`, so `b`'s pattern can match nothing
+        // in the merged object and is dropped.
+        let a = json!({
+            "type": "object",
+            "properties": {
+                "id": { "type": "string" }
+            },
+            "additionalProperties": false
+        });
+        let b = json!({
+            "patternProperties": {
+                "^x-": { "type": "string" }
+            }
+        });
+        let ab = json!({
+            "type": "object",
+            "properties": {
+                "id": { "type": "string" }
+            },
+            "additionalProperties": false
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let ab: schemars::schema::Schema = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(
+            merged,
+            ab,
+            "{}",
+            serde_json::to_string_pretty(&merged).unwrap(),
+        );
+    }
+
+    #[test]
+    fn test_merge_invalid_pattern_matches_nothing() {
+        let a = json!({
+            "type": "object",
+            "properties": {
+                "name": { "type": "string" }
+            }
+        });
+        let b = json!({
+            "patternProperties": {
+                "(": { "type": "integer" }
+            }
+        });
+        let ab = json!({
+            "type": "object",
+            "properties": {
+                "name": { "type": "string" }
+            },
+            "patternProperties": {
+                "(": { "type": "integer" }
+            }
+        });
+
+        let a = serde_json::from_value(a).unwrap();
+        let b = serde_json::from_value(b).unwrap();
+        let ab: schemars::schema::Schema = serde_json::from_value(ab).unwrap();
+
+        let merged = try_merge_schema(&a, &b, &BTreeMap::default()).unwrap();
+        assert_eq!(merged, ab);
     }
 }
