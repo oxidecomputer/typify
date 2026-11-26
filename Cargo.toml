@@ -15,9 +15,9 @@ resolver = "2"
 rust-version = "1.88"
 
 [workspace.dependencies]
-typify = { version = "0.10.1", path = "typify", default-features = false }
-typify-impl = { version = "0.10.1", path = "typify-impl", default-features = false }
-typify-macro = { version = "0.10.1", path = "typify-macro", default-features = false }
+typify = { version = "0.10.1", path = "typify" }
+typify-impl = { version = "0.10.1", path = "typify-impl" }
+typify-macro = { version = "0.10.1", path = "typify-macro" }
 
 assert_cmd = "2.2.2"
 chrono = { version = "0.4.45", features = ["serde"] }

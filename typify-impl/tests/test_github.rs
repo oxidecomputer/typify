@@ -5,9 +5,6 @@ use std::{fs::File, io::BufReader, path::Path};
 use schemars::schema::RootSchema;
 use typify_impl::{TypeSpace, TypeSpaceImpl, TypeSpaceSettings};
 
-/// `github.out` names chrono types, so this golden only matches the chrono
-/// backend.
-#[cfg(all(feature = "chrono", not(feature = "jiff")))]
 #[test]
 fn test_github() {
     let mut type_space = TypeSpace::default();

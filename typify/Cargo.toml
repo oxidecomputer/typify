@@ -11,12 +11,8 @@ categories = ["api-bindings", "compilers"]
 rust-version.workspace = true
 
 [features]
-default = ["macro", "chrono"]
+default = ["macro"]
 macro = ["typify-macro"]
-# Selects the date library that `date` and `date-time` strings map to. jiff
-# takes precedence when both are enabled.
-chrono = ["typify-impl/chrono", "typify-macro?/chrono"]
-jiff = ["typify-impl/jiff", "typify-macro?/jiff"]
 
 [dependencies]
 typify-macro = { workspace = true, optional = true }

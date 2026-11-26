@@ -3,8 +3,6 @@
 //! Runs the generated jiff code, not just compiles it: date-time fields
 //! round-trip through serde, and a default date-time parses.
 
-#![cfg(all(feature = "jiff", not(feature = "chrono")))]
-
 #[allow(dead_code, unused_imports)]
 #[path = "schemas/jiff/types-with-defaults.rs"]
 mod generated;

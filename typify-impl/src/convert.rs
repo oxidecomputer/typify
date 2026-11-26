@@ -15,32 +15,15 @@ use typespace::{TypespaceTrait, TypespaceTraitSet};
 
 use crate::util::get_type_name;
 
-use crate::{Error, Name, Result, TypeSpace};
+use crate::{DateLibrary, Error, Name, Result, TypeSpace};
 
-/// The date library that `date` and `date-time` strings map to, chosen by the
-/// `chrono` and `jiff` features. jiff takes precedence when both are enabled.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum DateLibrary {
-    Chrono,
-    Jiff,
-}
-
-impl DateLibrary {
-    fn crate_name(self) -> &'static str {
-        match self {
-            DateLibrary::Chrono => "chrono",
-            DateLibrary::Jiff => "jiff",
-        }
-    }
-}
-
-fn date_library() -> Option<DateLibrary> {
-    if cfg!(feature = "jiff") {
-        Some(DateLibrary::Jiff)
-    } else if cfg!(feature = "chrono") {
-        Some(DateLibrary::Chrono)
-    } else {
-        None
+/// The crate a date library's types come from, or `None` when dates are plain
+/// strings.
+fn date_crate(library: DateLibrary) -> Option<&'static str> {
+    match library {
+        DateLibrary::Chrono => Some("chrono"),
+        DateLibrary::Jiff => Some("jiff"),
+        DateLibrary::String => None,
     }
 }
 
@@ -51,6 +34,7 @@ fn date_path(format: &str, library: DateLibrary) -> &'static str {
         ("date", DateLibrary::Jiff) => "::jiff::civil::Date",
         (_, DateLibrary::Chrono) => "::chrono::DateTime<::chrono::offset::Utc>",
         (_, DateLibrary::Jiff) => "::jiff::Timestamp",
+        (_, DateLibrary::String) => unreachable!("string dates have no native path"),
     }
 }
 
@@ -76,6 +60,7 @@ fn date_traits(library: DateLibrary) -> TypespaceTraitSet {
             .chain([TypespaceTrait::JsonSchema])
             .collect(),
         DateLibrary::Jiff => traits.into_iter().collect(),
+        DateLibrary::String => unreachable!("string dates have no native traits"),
     }
 }
 
@@ -872,10 +857,10 @@ impl TypeSpace {
         format: &Option<String>,
         validation: Option<&StringValidation>,
     ) -> Result<(TypeEntry, &'a Option<Box<Metadata>>)> {
-        let date = date_library();
-        match (format.as_ref().map(String::as_str), date) {
-            (Some(format @ ("date" | "date-time")), Some(library)) => {
-                self.add_dependency(typespace::codespace::Dependency::new(library.crate_name()));
+        let library = self.settings.date_library;
+        match (format.as_ref().map(String::as_str), date_crate(library)) {
+            (Some(format @ ("date" | "date-time")), Some(krate)) => {
+                self.add_dependency(typespace::codespace::Dependency::new(krate));
                 Ok((
                     TypeEntry::new_native(date_path(format, library), date_traits(library)),
                     metadata,

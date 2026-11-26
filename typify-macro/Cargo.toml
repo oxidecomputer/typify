@@ -11,11 +11,6 @@ rust-version.workspace = true
 [lib]
 proc-macro = true
 
-[features]
-default = ["chrono"]
-chrono = ["typify-impl/chrono"]
-jiff = ["typify-impl/jiff"]
-
 [dependencies]
 proc-macro2 = { workspace = true }
 quote = { workspace = true }

@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use clap::{ArgGroup, Args};
 use color_eyre::eyre::{Context, Result, eyre};
 use typify::typespace::settings::{ContainerType, TraitSpec};
-use typify::{CrateVers, TypeSpace, TypeSpaceSettings, UnknownPolicy};
+use typify::{CrateVers, DateLibrary, TypeSpace, TypeSpaceSettings, UnknownPolicy};
 
 /// A CLI for the `typify` crate that converts JSON Schema files to Rust code.
 #[derive(Args)]
@@ -62,6 +62,16 @@ pub struct CliArgs {
         value_parser = ["generate", "allow", "deny"]
     )]
     unknown_crates: Option<String>,
+
+    /// Specify the library `date` and `date-time` formats are represented
+    /// with.
+    #[arg(
+        long = "date-library",
+        value_name = "library",
+        value_parser = ["chrono", "jiff", "string"],
+        default_value = "chrono"
+    )]
+    date_library: String,
 }
 
 impl CliArgs {
@@ -203,6 +213,14 @@ pub fn convert(args: &CliArgs) -> Result<String> {
         settings.with_unknown_crates(unknown_crates);
     }
 
+    let date_library = match args.date_library.as_str() {
+        "chrono" => DateLibrary::Chrono,
+        "jiff" => DateLibrary::Jiff,
+        "string" => DateLibrary::String,
+        _ => unreachable!(),
+    };
+    settings.with_date_library(date_library);
+
     let mut type_space = TypeSpace::new(&settings);
     type_space
         .add_root_schema(schema)
@@ -238,6 +256,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert_eq!(args.output_path(), None);
@@ -255,6 +274,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("some_file.rs")));
@@ -272,6 +292,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert_eq!(args.output_path(), Some(PathBuf::from("input.rs")));
@@ -289,6 +310,7 @@ mod tests {
             crates: vec![],
             map_type: Some("::std::collections::BTreeMap".to_string()),
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert_eq!(
@@ -309,6 +331,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert!(args.use_builder());
@@ -326,6 +349,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert!(!args.use_builder());
@@ -343,6 +367,7 @@ mod tests {
             crates: vec![],
             map_type: None,
             unknown_crates: Default::default(),
+            date_library: "chrono".to_string(),
         };
 
         assert!(args.use_builder());

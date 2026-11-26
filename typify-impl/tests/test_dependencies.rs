@@ -3,7 +3,7 @@
 //! The crates a generated type space reports.
 
 use schemars::schema::Schema;
-use typify_impl::{CrateVers, TypeSpace, TypeSpaceSettings};
+use typify_impl::{CrateVers, DateLibrary, TypeSpace, TypeSpaceSettings};
 
 fn names(type_space: &TypeSpace) -> Vec<String> {
     type_space
@@ -14,11 +14,8 @@ fn names(type_space: &TypeSpace) -> Vec<String> {
         .collect()
 }
 
-/// A string format mapped to a native type reports that type's crate,
-/// alongside what typespace reports for the rendered code.
-#[test]
-fn formats_report_their_crates() {
-    let schema: Schema = serde_json::from_value(serde_json::json!({
+fn date_time_and_uuid() -> Schema {
+    serde_json::from_value(serde_json::json!({
         "type": "object",
         "properties": {
             "when": { "type": "string", "format": "date-time" },
@@ -26,19 +23,49 @@ fn formats_report_their_crates() {
         },
         "required": ["when", "id"]
     }))
-    .unwrap();
-    let mut type_space = TypeSpace::new(&TypeSpaceSettings::default());
+    .unwrap()
+}
+
+fn generate_names(library: DateLibrary) -> Vec<String> {
+    let mut settings = TypeSpaceSettings::default();
+    settings.with_date_library(library);
+    let mut type_space = TypeSpace::new(&settings);
     type_space
-        .add_type_with_name(&schema, Some("Thing".to_string()))
+        .add_type_with_name(&date_time_and_uuid(), Some("Thing".to_string()))
         .unwrap();
-    let expected: &[&str] = if cfg!(feature = "jiff") {
-        &["jiff", "serde", "uuid"]
-    } else if cfg!(feature = "chrono") {
-        &["chrono", "serde", "uuid"]
-    } else {
-        &["serde", "uuid"]
-    };
-    assert_eq!(names(&type_space), expected);
+    names(&type_space)
+}
+
+/// A string format mapped to a native type reports that type's crate,
+/// alongside what typespace reports for the rendered code.
+#[test]
+fn chrono_reports_chrono() {
+    assert_eq!(
+        generate_names(DateLibrary::Chrono),
+        ["chrono", "serde", "uuid"]
+    );
+}
+
+#[test]
+fn jiff_reports_jiff() {
+    assert_eq!(generate_names(DateLibrary::Jiff), ["jiff", "serde", "uuid"]);
+}
+
+/// Plain strings link no date crate.
+#[test]
+fn string_reports_no_date_crate() {
+    assert_eq!(generate_names(DateLibrary::String), ["serde", "uuid"]);
+}
+
+/// Each generation carries its own library, so generating with one does not
+/// change what another generation reports.
+#[test]
+fn libraries_do_not_leak_between_generations() {
+    let chrono = generate_names(DateLibrary::Chrono);
+    let jiff = generate_names(DateLibrary::Jiff);
+    assert_eq!(chrono, ["chrono", "serde", "uuid"]);
+    assert_eq!(jiff, ["jiff", "serde", "uuid"]);
+    assert_eq!(generate_names(DateLibrary::Chrono), chrono);
 }
 
 /// A type from an `x-rust-type` extension reports its crate at the

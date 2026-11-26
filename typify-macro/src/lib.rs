@@ -13,7 +13,7 @@ use serde_tokenstream::{ParseWrapper, TokenStreamWrapper};
 use syn::LitStr;
 use token_utils::TypeAndImpls;
 use typify_impl::{
-    CrateVers, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
+    CrateVers, DateLibrary, TypeSpace, TypeSpacePatch, TypeSpaceSettings, UnknownPolicy,
     typespace::settings::{ContainerType, TraitSpec},
 };
 
@@ -51,6 +51,9 @@ mod token_utils;
 ///   compile-time error (requiring the user to specify the crate's disposition
 ///   in the `crates` section).
 ///
+/// - `date_library`: optional; the library `date` and `date-time` formats are
+///   represented with, one of `Chrono` (the default), `Jiff`, or `String`
+///
 /// - `crates`: optional map from crate name to the version of the crate in
 ///   use. Types encountered with the Rust type extension (`x-rust-type`) will
 ///   use types from the specified crates rather than generating them (within
@@ -87,6 +90,8 @@ struct MacroSettings {
 
     #[serde(default)]
     unknown_crates: UnknownPolicy,
+    #[serde(default)]
+    date_library: DateLibrary,
     #[serde(default)]
     crates: HashMap<CrateName, MacroCrateSpec>,
     #[serde(default)]
@@ -203,6 +208,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             struct_builder,
             convert,
             unknown_crates,
+            date_library,
             crates,
             map_type,
             attrs,
@@ -261,6 +267,7 @@ fn do_import_types(item: TokenStream) -> Result<TokenStream, syn::Error> {
             },
         );
         settings.with_unknown_crates(unknown_crates);
+        settings.with_date_library(date_library);
 
         (schema.into_inner(), settings)
     };
@@ -315,6 +322,7 @@ fn into_syn_err(e: typify_impl::Error, span: proc_macro2::Span) -> syn::Error {
 #[cfg(test)]
 mod tests {
     use quote::quote;
+    use typify_impl::DateLibrary;
 
     use crate::MacroSettings;
 
@@ -331,5 +339,28 @@ mod tests {
         };
 
         let MacroSettings { .. } = serde_tokenstream::from_tokenstream(&item).unwrap();
+    }
+
+    #[test]
+    fn test_date_library_option() {
+        let omitted = quote! { schema = "foo.json" };
+        let settings: MacroSettings = serde_tokenstream::from_tokenstream(&omitted).unwrap();
+        assert_eq!(settings.date_library, DateLibrary::Chrono);
+
+        for (value, expected) in [
+            (quote! { Chrono }, DateLibrary::Chrono),
+            (quote! { Jiff }, DateLibrary::Jiff),
+            (quote! { String }, DateLibrary::String),
+        ] {
+            let item = quote! { schema = "foo.json", date_library = #value };
+            let settings: MacroSettings = serde_tokenstream::from_tokenstream(&item).unwrap();
+            assert_eq!(settings.date_library, expected);
+        }
+    }
+
+    #[test]
+    fn test_date_library_rejects_unknown_values() {
+        let item = quote! { schema = "foo.json", date_library = Nope };
+        assert!(serde_tokenstream::from_tokenstream::<MacroSettings>(&item).is_err());
     }
 }

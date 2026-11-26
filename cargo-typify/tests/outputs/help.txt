@@ -35,6 +35,12 @@ Options:
           
           [possible values: generate, allow, deny]
 
+      --date-library <library>
+          Specify the library `date` and `date-time` formats are represented with
+          
+          [default: chrono]
+          [possible values: chrono, jiff, string]
+
   -h, --help
           Print help (see a summary with '-h')
 
