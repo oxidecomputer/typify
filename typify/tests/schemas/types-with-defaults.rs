@@ -1,43 +1,43 @@
 #![deny(warnings)]
-#[doc = "`Doodad`"]
+#[doc = "`EventWithDefault`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct Doodad {
-    #[serde(default = "defaults::doodad_when")]
+pub struct EventWithDefault {
+    #[serde(default = "defaults::event_with_default_when")]
     pub when: ::chrono::DateTime<::chrono::offset::Utc>,
 }
-impl ::std::default::Default for Doodad {
+impl ::std::default::Default for EventWithDefault {
     fn default() -> Self {
         Self {
-            when: defaults::doodad_when(),
+            when: defaults::event_with_default_when(),
         }
     }
 }
-impl Doodad {
-    pub fn builder() -> builder::Doodad {
+impl EventWithDefault {
+    pub fn builder() -> builder::EventWithDefault {
         Default::default()
     }
 }
-#[doc = "`MrDefaultNumbers`"]
+#[doc = "`IntegerDefaults`"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-pub struct MrDefaultNumbers {
-    #[serde(default = "defaults::mr_default_numbers_big_nullable")]
+pub struct IntegerDefaults {
+    #[serde(default = "defaults::integer_defaults_big_nullable")]
     pub big_nullable: ::std::option::Option<::std::num::NonZeroU64>,
     #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU16, 3>")]
     pub little_u16: ::std::num::NonZeroU16,
     #[serde(default = "defaults::default_nzu64::<::std::num::NonZeroU8, 2>")]
     pub little_u8: ::std::num::NonZeroU8,
 }
-impl ::std::default::Default for MrDefaultNumbers {
+impl ::std::default::Default for IntegerDefaults {
     fn default() -> Self {
         Self {
-            big_nullable: defaults::mr_default_numbers_big_nullable(),
+            big_nullable: defaults::integer_defaults_big_nullable(),
             little_u16: defaults::default_nzu64::<::std::num::NonZeroU16, 3>(),
             little_u8: defaults::default_nzu64::<::std::num::NonZeroU8, 2>(),
         }
     }
 }
-impl MrDefaultNumbers {
-    pub fn builder() -> builder::MrDefaultNumbers {
+impl IntegerDefaults {
+    pub fn builder() -> builder::IntegerDefaults {
         Default::default()
     }
 }
@@ -150,18 +150,18 @@ impl UIntContainer {
 #[doc = " Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
-    pub struct Doodad {
+    pub struct EventWithDefault {
         when:
             ::std::result::Result<::chrono::DateTime<::chrono::offset::Utc>, ::std::string::String>,
     }
-    impl ::std::default::Default for Doodad {
+    impl ::std::default::Default for EventWithDefault {
         fn default() -> Self {
             Self {
-                when: Ok(super::defaults::doodad_when()),
+                when: Ok(super::defaults::event_with_default_when()),
             }
         }
     }
-    impl Doodad {
+    impl EventWithDefault {
         pub fn when<T>(mut self, value: T) -> Self
         where
             T: ::std::convert::TryInto<::chrono::DateTime<::chrono::offset::Utc>>,
@@ -173,21 +173,23 @@ pub mod builder {
             self
         }
     }
-    impl ::std::convert::TryFrom<Doodad> for super::Doodad {
+    impl ::std::convert::TryFrom<EventWithDefault> for super::EventWithDefault {
         type Error = super::error::ConversionError;
-        fn try_from(value: Doodad) -> ::std::result::Result<Self, super::error::ConversionError> {
+        fn try_from(
+            value: EventWithDefault,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self { when: value.when? })
         }
     }
-    impl ::std::convert::From<super::Doodad> for Doodad {
-        fn from(value: super::Doodad) -> Self {
+    impl ::std::convert::From<super::EventWithDefault> for EventWithDefault {
+        fn from(value: super::EventWithDefault) -> Self {
             Self {
                 when: Ok(value.when),
             }
         }
     }
     #[derive(Clone, Debug)]
-    pub struct MrDefaultNumbers {
+    pub struct IntegerDefaults {
         big_nullable: ::std::result::Result<
             ::std::option::Option<::std::num::NonZeroU64>,
             ::std::string::String,
@@ -195,16 +197,16 @@ pub mod builder {
         little_u16: ::std::result::Result<::std::num::NonZeroU16, ::std::string::String>,
         little_u8: ::std::result::Result<::std::num::NonZeroU8, ::std::string::String>,
     }
-    impl ::std::default::Default for MrDefaultNumbers {
+    impl ::std::default::Default for IntegerDefaults {
         fn default() -> Self {
             Self {
-                big_nullable: Ok(super::defaults::mr_default_numbers_big_nullable()),
+                big_nullable: Ok(super::defaults::integer_defaults_big_nullable()),
                 little_u16: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU16, 3>()),
                 little_u8: Ok(super::defaults::default_nzu64::<::std::num::NonZeroU8, 2>()),
             }
         }
     }
-    impl MrDefaultNumbers {
+    impl IntegerDefaults {
         pub fn big_nullable<T>(mut self, value: T) -> Self
         where
             T: ::std::convert::TryInto<::std::option::Option<::std::num::NonZeroU64>>,
@@ -236,10 +238,10 @@ pub mod builder {
             self
         }
     }
-    impl ::std::convert::TryFrom<MrDefaultNumbers> for super::MrDefaultNumbers {
+    impl ::std::convert::TryFrom<IntegerDefaults> for super::IntegerDefaults {
         type Error = super::error::ConversionError;
         fn try_from(
-            value: MrDefaultNumbers,
+            value: IntegerDefaults,
         ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 big_nullable: value.big_nullable?,
@@ -248,8 +250,8 @@ pub mod builder {
             })
         }
     }
-    impl ::std::convert::From<super::MrDefaultNumbers> for MrDefaultNumbers {
-        fn from(value: super::MrDefaultNumbers) -> Self {
+    impl ::std::convert::From<super::IntegerDefaults> for IntegerDefaults {
+        fn from(value: super::IntegerDefaults) -> Self {
             Self {
                 big_nullable: Ok(value.big_nullable),
                 little_u16: Ok(value.little_u16),
@@ -462,14 +464,13 @@ pub mod defaults {
     {
         T::try_from(::std::num::NonZeroU64::try_from(V).unwrap()).unwrap()
     }
-    pub(super) fn doodad_when() -> ::chrono::DateTime<::chrono::offset::Utc> {
+    pub(super) fn event_with_default_when() -> ::chrono::DateTime<::chrono::offset::Utc> {
         ::serde_json::from_str::<::chrono::DateTime<::chrono::offset::Utc>>(
             "\"1970-01-01T00:00:00Z\"",
         )
         .expect("invalid default provided")
     }
-    pub(super) fn mr_default_numbers_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64>
-    {
+    pub(super) fn integer_defaults_big_nullable() -> ::std::option::Option<::std::num::NonZeroU64> {
         ::std::option::Option::Some(::std::num::NonZeroU64::new(1).unwrap())
     }
     pub(super) fn test_bed_any() -> ::std::vec::Vec<::serde_json::Value> {

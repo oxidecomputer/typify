@@ -43,6 +43,41 @@ appropriate Rust type. For example `{ "type": "string", "format": "uuid" }` is
 represented as a `uuid::Uuid` (which requires the `uuid` crate be included as a
 dependency).
 
+The `date` and `date-time` formats are represented by a date library, selected
+per generation with `DateLibrary`:
+
+| Format      | `Chrono` (default)                      | `Jiff`              | `String`  |
+| ----------- | --------------------------------------- | ------------------- | --------- |
+| `date`      | `chrono::naive::NaiveDate`              | `jiff::civil::Date` | `String`  |
+| `date-time` | `chrono::DateTime<chrono::offset::Utc>` | `jiff::Timestamp`   | `String`  |
+
+Select the library in the macro, the CLI, or the Rust API:
+
+```rust
+typify::import_types!(schema = "schema.json", date_library = Jiff);
+```
+
+```text
+cargo typify schema.json --date-library jiff
+```
+
+```rust
+let mut settings = typify::TypeSpaceSettings::default();
+settings.with_date_library(typify::DateLibrary::Jiff);
+```
+
+Each generation carries its own choice, so one build can generate output for
+several libraries. The generator names the library's types but does not depend
+on the library; the generated code needs the chosen crate as a dependency, with
+its `serde` feature enabled so the date types deserialize.
+
+`String` keeps the string's length and pattern constraints. It does not validate
+the date format itself.
+
+Types from `jiff` do not implement `schemars::JsonSchema` (schemars 0.8 has no
+`jiff` impl), so a generated type that requires `JsonSchema` cannot contain a
+`jiff` date.
+
 ### Arrays
 
 JSON Schema arrays can turn into one of three Rust types `Vec<T>`, `HashSet<T>`,

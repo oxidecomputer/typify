@@ -21,6 +21,7 @@ typify-impl = { workspace = true }
 [dev-dependencies]
 chrono = { workspace = true }
 env_logger = { workspace = true }
+jiff = { workspace = true }
 expectorate = { workspace = true }
 glob = { workspace = true }
 quote = { workspace = true }

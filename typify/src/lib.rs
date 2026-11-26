@@ -149,6 +149,7 @@
 #![deny(missing_docs)]
 
 pub use typify_impl::CrateVers;
+pub use typify_impl::DateLibrary;
 pub use typify_impl::Error;
 pub use typify_impl::TypeId;
 pub use typify_impl::TypeSpace;

@@ -23,6 +23,10 @@ https://github.com/oxidecomputer/typify/compare/v0.10.1\...v0.10.2[Full list of 
 * Lower the MSRV to 1.88
 * A newtype with a schema `default` gets its `Default` impl back, per 0.8
   (typespace #74).
+* The `date` and `date-time` string formats can be represented by `chrono`
+  (the default), `jiff`, or plain `String`s, chosen per generation with
+  `DateLibrary` (`date_library` in the macro, `--date-library` in the CLI).
+  Types from `jiff` do not implement `JsonSchema`.
 
 == 0.10.1 (released 2026-11-16)
 

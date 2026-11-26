@@ -9,22 +9,44 @@ use schemars::schema::RootSchema;
 use serde_json::json;
 use typify::typespace::TypespaceTrait;
 use typify::typespace::settings::ContainerType;
-use typify::{TypeSpace, TypeSpacePatch, TypeSpaceSettings};
+use typify::{DateLibrary, TypeSpace, TypeSpacePatch, TypeSpaceSettings};
 use typify_impl::TypeSpaceImpl;
 
+/// Fixtures with checked-in jiff output alongside their chrono output.
+const JIFF_GOLDENS: &[&str] = &["maps", "types-with-defaults"];
+
+/// Each fixture's checked-in output is compared with the chrono default. The
+/// fixtures that also have jiff output are compared with that output too.
 #[test]
 fn test_schemas() {
     env_logger::init();
-    // Make sure output is up to date.
     for entry in glob("tests/schemas/*.json").expect("Failed to read glob pattern") {
         let entry = entry.unwrap();
-        let out_path = entry.clone().with_extension("rs");
-        validate_schema(entry.clone(), out_path, TypeSpaceSettings::default())
-            .unwrap_or_else(|e| panic!("failed for {}: {e}", entry.to_string_lossy()))
+        validate_schema(
+            entry.clone(),
+            entry.clone().with_extension("rs"),
+            TypeSpaceSettings::default(),
+        )
+        .unwrap_or_else(|e| panic!("failed for {}: {e}", entry.to_string_lossy()));
+    }
+    for stem in JIFF_GOLDENS {
+        let mut settings = TypeSpaceSettings::default();
+        settings.with_date_library(DateLibrary::Jiff);
+        validate_schema(
+            format!("tests/schemas/{stem}.json").into(),
+            format!("tests/schemas/jiff/{stem}.rs").into(),
+            settings,
+        )
+        .unwrap_or_else(|e| panic!("failed for jiff {stem}: {e}"));
     }
 
-    // Make sure it all compiles.
-    trybuild::TestCases::new().pass("tests/schemas/*.rs");
+    let cases = trybuild::TestCases::new();
+    for entry in glob("tests/schemas/*.rs").expect("Failed to read glob pattern") {
+        cases.pass(entry.unwrap());
+    }
+    for stem in JIFF_GOLDENS {
+        cases.pass(format!("tests/schemas/jiff/{stem}.rs"));
+    }
 }
 
 /// Ensure that setting the global config to use a custom map type works.

@@ -50,7 +50,7 @@
         }
       }
     },
-    "Doodad": {
+    "EventWithDefault": {
       "type": "object",
       "properties": {
         "when": {
@@ -60,7 +60,7 @@
         }
       }
     },
-    "MrDefaultNumbers": {
+    "IntegerDefaults": {
       "type": "object",
       "properties": {
         "little_u8": {
